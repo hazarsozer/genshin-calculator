@@ -74,7 +74,8 @@ export interface ConditionConstellation extends ConditionBase {
  */
 export interface ConditionStaticRefine extends ConditionBase {
   readonly type: "refine";
-  /** Refinement-indexed stat tables. */
+  /** Refinement-indexed stat tables. Aspirine: `params.stats` (renamed here to
+   *  avoid clashing with ConditionBase.stats). Typed as StatTable[] in P1.3. */
   readonly refinementStats?: readonly unknown[];
 }
 

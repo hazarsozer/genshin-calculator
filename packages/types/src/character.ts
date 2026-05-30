@@ -61,9 +61,12 @@ export type WeaponType =
  *   name, rarity, element, weapon, origin, talents, statTable, features,
  *   postEffects, conditions, multipliers, constellation, partyData.
  *
- * NOTE: `talents`, `statTable`, `features`, etc. are typed as their
- * structural interfaces — see feature.ts / condition.ts for those shapes.
- * P1.5 (engine core, Opus) will refine how Feature and Condition are consumed.
+ * NOTE: `statTable`, `talents`, `features`, `conditions`, `postEffects`,
+ * `constellation`, and `multipliers` are intentionally kept opaque (`unknown`)
+ * here. Their real shapes (StatTable; the Feature2 compilation model) are
+ * designed in P1.3 / P1.5. `feature.ts` and `condition.ts` define provisional
+ * shapes, but DbObjectChar is deliberately NOT bound to them yet, so P1.5 can
+ * design the engine model without reworking a premature contract.
  */
 export interface DbObjectChar {
   readonly name: string;
@@ -76,8 +79,12 @@ export interface DbObjectChar {
   readonly origin: string;
   /** Stat-table data for base stats at each level/ascension. */
   readonly statTable: unknown;
+  /** Talent multiplier tables (StatTable-like); typed in P1.3. */
+  readonly talents: unknown;
   /** Ordered list of combat feature declarations. */
   readonly features: readonly unknown[];
+  /** Weapon/constellation proc multipliers (defaults to []); typed in P1.5. */
+  readonly multipliers: readonly unknown[];
   /** Optional post-effects (HP→ATK derivations, etc.). */
   readonly postEffects?: readonly unknown[];
   /** Character-level conditions (buffs, toggles). */
