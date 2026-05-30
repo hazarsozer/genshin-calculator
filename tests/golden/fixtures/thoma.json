@@ -1,0 +1,263 @@
+{
+  "defaultWeapon": "weapon_name.blackcliff_pole",
+  "element": "pyro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3123.744589721464,
+      "category": "attack",
+      "crit": 6899.2761813968455,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2704.2410795353103
+    },
+    "attack.normal_hit_1": {
+      "average": 1147.9622375285571,
+      "category": "attack",
+      "crit": 2535.4532981296074,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 993.7965641284405
+    },
+    "attack.normal_hit_2": {
+      "average": 1128.1697851573751,
+      "category": "attack",
+      "crit": 2491.73858609289,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 976.6621406089846
+    },
+    "attack.normal_hit_3": {
+      "average": 1385.4716659827413,
+      "category": "attack",
+      "crit": 3060.0298425702154,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1199.4096463619107
+    },
+    "attack.normal_hit_3_1": {
+      "average": 692.7358329913707,
+      "category": "attack",
+      "crit": 1530.0149212851077,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 599.7048231809554
+    },
+    "attack.normal_hit_4": {
+      "average": 1741.735808664018,
+      "category": "attack",
+      "crit": 3846.8946592311286,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1507.8292697121167
+    },
+    "attack.plunge": {
+      "average": 1535.1381878457246,
+      "category": "attack",
+      "crit": 3390.591653814157,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1328.9766916270096
+    },
+    "attack.plunge_high": {
+      "average": 3834.1284279972515,
+      "category": "attack",
+      "crit": 8468.26946951405,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3319.223867828718
+    },
+    "attack.plunge_low": {
+      "average": 3069.6265007682055,
+      "category": "attack",
+      "crit": 6779.747957698113,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2657.390783331549
+    },
+    "burst.burst_dmg": {
+      "average": 3034.182387862443,
+      "category": "burst",
+      "crit": 6701.464116968589,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2626.706640183982
+    },
+    "burst.shield": {
+      "average": 727.1823348279121,
+      "category": "burst",
+      "crit": 727.1823348279121,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 727.1823348279121
+    },
+    "burst.thoma_fiery_collapse_dmg": {
+      "average": 2441.608691125039,
+      "category": "burst",
+      "crit": 5392.672865252585,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2113.7126717775336
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.shield": {
+      "average": 4578.4614702456,
+      "category": "skill",
+      "crit": 4578.4614702456,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 4578.4614702456
+    },
+    "skill.shield_max_absorption": {
+      "average": 12463.6081078908,
+      "category": "skill",
+      "crit": 12463.6081078908,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 12463.6081078908
+    },
+    "skill.skill_dmg": {
+      "average": 4062.8442217962947,
+      "category": "skill",
+      "crit": 8973.423902965256,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3517.2242572219657
+    },
+    "stats.atk": {
+      "average": 2246.984273788,
+      "category": "stats",
+      "crit": 2246.984273788,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2246.984273788
+    },
+    "stats.crit_dmg": {
+      "average": 155.128,
+      "category": "stats",
+      "crit": 155.128,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 155.128
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1626.7736774999998,
+      "category": "stats",
+      "crit": 1626.7736774999998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1626.7736774999998
+    },
+    "stats.hp": {
+      "average": 23557.1695235,
+      "category": "stats",
+      "crit": 23557.1695235,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23557.1695235
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 44,
+  "key": "Thoma",
+  "schema": 1,
+  "slug": "thoma",
+  "weaponType": "polearm"
+}

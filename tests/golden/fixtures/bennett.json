@@ -1,0 +1,326 @@
+{
+  "defaultWeapon": "weapon_name.the_alley_flash",
+  "element": "pyro",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 1302.8844250207583,
+      "category": "attack",
+      "crit": 2368.880772765015,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1184.4403863825075
+    },
+    "attack.charged_hit_2": {
+      "average": 1415.1329293302392,
+      "category": "attack",
+      "crit": 2572.9689624186167,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1286.4844812093083
+    },
+    "attack.charged_hit_total": {
+      "average": 2718.0173543509977,
+      "category": "attack",
+      "crit": 4941.849735183632,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2470.924867591816
+    },
+    "attack.normal_hit_1": {
+      "average": 969.0787538718506,
+      "category": "attack",
+      "crit": 1761.961370676092,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 880.980685338046
+    },
+    "attack.normal_hit_2": {
+      "average": 929.7917773635323,
+      "category": "attack",
+      "crit": 1690.5305042973314,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 845.2652521486657
+    },
+    "attack.normal_hit_3": {
+      "average": 1187.9633372753383,
+      "category": "attack",
+      "crit": 2159.933340500615,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1079.9666702503075
+    },
+    "attack.normal_hit_4": {
+      "average": 1298.3410331796606,
+      "category": "attack",
+      "crit": 2360.6200603266557,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1180.3100301633278
+    },
+    "attack.normal_hit_5": {
+      "average": 1563.9958267120985,
+      "category": "attack",
+      "crit": 2843.628775840179,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1421.8143879200895
+    },
+    "attack.plunge": {
+      "average": 1291.419042080576,
+      "category": "attack",
+      "crit": 2348.0346219646835,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1174.0173109823418
+    },
+    "attack.plunge_high": {
+      "average": 3225.42068258139,
+      "category": "attack",
+      "crit": 5864.401241057072,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2932.200620528536
+    },
+    "attack.plunge_low": {
+      "average": 2582.2913836377124,
+      "category": "attack",
+      "crit": 4695.0752429776585,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2347.5376214888292
+    },
+    "burst.atk_bonus": {
+      "average": 1695.6479698704002,
+      "category": "burst",
+      "crit": 1695.6479698704002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1695.6479698704002
+    },
+    "burst.burst_dmg": {
+      "average": 6752.45498277184,
+      "category": "burst",
+      "crit": 12277.190877766983,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 6138.595438883492
+    },
+    "burst.heal_dot": {
+      "average": 4037.5692875256004,
+      "category": "burst",
+      "crit": 4037.5692875256004,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 4037.5692875256004
+    },
+    "reaction.burgeon": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "reaction.burning": {
+      "average": 597.3836964386046,
+      "category": "reaction",
+      "crit": 597.3836964386046,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 597.3836964386046
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.overloaded": {
+      "average": 6571.2206608246515,
+      "category": "reaction",
+      "crit": 6571.2206608246515,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 6571.2206608246515
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "skill.bennet_unexpected_odyssey_dmg": {
+      "average": 2899.548653967465,
+      "category": "skill",
+      "crit": 5271.906643577208,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2635.953321788604
+    },
+    "skill.charge_level_1": {
+      "average": 4108.861216572253,
+      "category": "skill",
+      "crit": 7470.656757404096,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3735.328378702048
+    },
+    "skill.charge_level_1_1": {
+      "average": 1961.047398818575,
+      "category": "skill",
+      "crit": 3565.540725124682,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1782.770362562341
+    },
+    "skill.charge_level_1_2": {
+      "average": 2147.813817753678,
+      "category": "skill",
+      "crit": 3905.1160322794144,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1952.5580161397072
+    },
+    "skill.charge_level_2": {
+      "average": 4295.627635507356,
+      "category": "skill",
+      "crit": 7810.23206455883,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3905.116032279415
+    },
+    "skill.charge_level_2_1": {
+      "average": 2054.4306082861267,
+      "category": "skill",
+      "crit": 3735.3283787020487,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1867.6641893510243
+    },
+    "skill.charge_level_2_2": {
+      "average": 2241.1970272212293,
+      "category": "skill",
+      "crit": 4074.9036858567806,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2037.4518429283903
+    },
+    "skill.press_dmg": {
+      "average": 3212.382405683761,
+      "category": "skill",
+      "crit": 5840.695283061384,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2920.347641530692
+    },
+    "stats.atk": {
+      "average": 1984.984726634,
+      "category": "stats",
+      "crit": 1984.984726634,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1984.984726634
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1647.2489057999999,
+      "category": "stats",
+      "crit": 1647.2489057999999,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1647.2489057999999
+    },
+    "stats.hp": {
+      "average": 25623.403588200003,
+      "category": "stats",
+      "crit": 25623.403588200003,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 25623.403588200003
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 226.67000000000002,
+      "category": "stats",
+      "crit": 226.67000000000002,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 226.67000000000002
+    }
+  },
+  "id": 5,
+  "key": "Bennet",
+  "schema": 1,
+  "slug": "bennett",
+  "weaponType": "sword"
+}

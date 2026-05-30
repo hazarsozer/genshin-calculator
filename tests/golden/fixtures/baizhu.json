@@ -1,0 +1,263 @@
+{
+  "defaultWeapon": "weapon_name.solar_pearl",
+  "element": "dendro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3530.1120570451394,
+      "category": "attack",
+      "crit": 5132.319585131488,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2566.159792565744
+    },
+    "attack.normal_hit_1": {
+      "average": 1028.0629832402049,
+      "category": "attack",
+      "crit": 1494.6686389465337,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 747.3343194732669
+    },
+    "attack.normal_hit_2": {
+      "average": 1002.049130861938,
+      "category": "attack",
+      "crit": 1456.8479120437587,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 728.4239560218793
+    },
+    "attack.normal_hit_3": {
+      "average": 1240.2437681251788,
+      "category": "attack",
+      "crit": 1803.1516503230189,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 901.5758251615094
+    },
+    "attack.normal_hit_3_1": {
+      "average": 620.1218840625894,
+      "category": "attack",
+      "crit": 901.5758251615094,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 450.7879125807547
+    },
+    "attack.normal_hit_4": {
+      "average": 1489.330875037671,
+      "category": "attack",
+      "crit": 2165.2916097782427,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1082.6458048891213
+    },
+    "attack.plunge": {
+      "average": 1613.6038723311758,
+      "category": "attack",
+      "crit": 2345.9682363571515,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1172.9841181785757
+    },
+    "attack.plunge_high": {
+      "average": 4030.102649660067,
+      "category": "attack",
+      "crit": 5859.240280393224,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2929.620140196612
+    },
+    "attack.plunge_low": {
+      "average": 3226.5240142079742,
+      "category": "attack",
+      "crit": 4690.942418376863,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2345.4712091884317
+    },
+    "burst.baizhu_bloom_bonus": {
+      "average": 68.45473423528321,
+      "category": "burst",
+      "crit": 68.45473423528321,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 68.45473423528321
+    },
+    "burst.baizhu_quicken_bonus": {
+      "average": 27.38189369411328,
+      "category": "burst",
+      "crit": 27.38189369411328,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 27.38189369411328
+    },
+    "burst.baizhu_seamless_heal": {
+      "average": 4305.402062211253,
+      "category": "burst",
+      "crit": 4305.402062211253,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 4305.402062211253
+    },
+    "burst.baizhu_seamless_shield": {
+      "average": 662.369486494039,
+      "category": "burst",
+      "crit": 662.369486494039,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 662.369486494039
+    },
+    "burst.baizu_spiritvein_dmg": {
+      "average": 3794.5515096850095,
+      "category": "burst",
+      "crit": 5516.779840198031,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2758.3899200990154
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.heal": {
+      "average": 6623.6954649403915,
+      "category": "skill",
+      "crit": 6623.6954649403915,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 6623.6954649403915
+    },
+    "skill.skill_dmg": {
+      "average": 2571.966442259407,
+      "category": "skill",
+      "crit": 3739.301622894663,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1869.6508114473315
+    },
+    "stats.atk": {
+      "average": 1856.310620802,
+      "category": "stats",
+      "crit": 1856.310620802,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1856.310620802
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 37.564,
+      "category": "stats",
+      "crit": 37.564,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 37.564
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1375.5603405000002,
+      "category": "stats",
+      "crit": 1375.5603405000002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1375.5603405000002
+    },
+    "stats.hp": {
+      "average": 34227.3671176416,
+      "category": "stats",
+      "crit": 34227.3671176416,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 34227.3671176416
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 70,
+  "key": "Baizhu",
+  "schema": 1,
+  "slug": "baizhu",
+  "weaponType": "catalyst"
+}

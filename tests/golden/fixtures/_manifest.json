@@ -36,13 +36,643 @@
       "refine": 1
     }
   },
-  "characterCount": 2,
+  "characterCount": 107,
   "characters": [
+    {
+      "featureCount": 26,
+      "id": 1,
+      "key": "Albedo",
+      "slug": "albedo"
+    },
+    {
+      "featureCount": 26,
+      "id": 2,
+      "key": "Amber",
+      "slug": "amber"
+    },
+    {
+      "featureCount": 24,
+      "id": 3,
+      "key": "Barbara",
+      "slug": "barbara"
+    },
+    {
+      "featureCount": 31,
+      "id": 4,
+      "key": "Beidou",
+      "slug": "beidou"
+    },
+    {
+      "featureCount": 35,
+      "id": 5,
+      "key": "Bennet",
+      "slug": "bennett"
+    },
+    {
+      "featureCount": 23,
+      "id": 6,
+      "key": "Chongyun",
+      "slug": "chongyun"
+    },
+    {
+      "featureCount": 29,
+      "id": 7,
+      "key": "Diluc",
+      "slug": "diluc"
+    },
+    {
+      "featureCount": 27,
+      "id": 8,
+      "key": "Diona",
+      "slug": "diona"
+    },
+    {
+      "featureCount": 28,
+      "id": 9,
+      "key": "Fischl",
+      "slug": "fischl"
+    },
+    {
+      "featureCount": 27,
+      "id": 10,
+      "key": "Ganyu",
+      "slug": "ganyu"
+    },
     {
       "featureCount": 32,
       "id": 11,
       "key": "Hutao",
       "slug": "hu_tao"
+    },
+    {
+      "featureCount": 35,
+      "id": 12,
+      "key": "Jean",
+      "slug": "jean"
+    },
+    {
+      "featureCount": 25,
+      "id": 13,
+      "key": "Kaeya",
+      "slug": "kaeya"
+    },
+    {
+      "featureCount": 33,
+      "id": 14,
+      "key": "Keqing",
+      "slug": "keqing"
+    },
+    {
+      "featureCount": 23,
+      "id": 15,
+      "key": "Klee",
+      "slug": "klee"
+    },
+    {
+      "featureCount": 28,
+      "id": 16,
+      "key": "Lisa",
+      "slug": "lisa"
+    },
+    {
+      "featureCount": 24,
+      "id": 17,
+      "key": "Mona",
+      "slug": "mona"
+    },
+    {
+      "featureCount": 20,
+      "id": 18,
+      "key": "Ningguang",
+      "slug": "ningguang"
+    },
+    {
+      "featureCount": 27,
+      "id": 19,
+      "key": "Noelle",
+      "slug": "noelle"
+    },
+    {
+      "featureCount": 29,
+      "id": 20,
+      "key": "Qiqi",
+      "slug": "qiqi"
+    },
+    {
+      "featureCount": 26,
+      "id": 21,
+      "key": "Razor",
+      "slug": "razor"
+    },
+    {
+      "featureCount": 35,
+      "id": 22,
+      "key": "Sucrose",
+      "slug": "sucrose"
+    },
+    {
+      "featureCount": 28,
+      "id": 23,
+      "key": "Tartaglia",
+      "slug": "tartaglia"
+    },
+    {
+      "featureCount": 58,
+      "id": 24,
+      "key": "TravelerAnemo",
+      "slug": "traveler_anemo"
+    },
+    {
+      "featureCount": 25,
+      "id": 25,
+      "key": "TravelerGeo",
+      "slug": "traveler_geo"
+    },
+    {
+      "featureCount": 40,
+      "id": 26,
+      "key": "Venti",
+      "slug": "venti"
+    },
+    {
+      "featureCount": 29,
+      "id": 27,
+      "key": "Xiangling",
+      "slug": "xiangling"
+    },
+    {
+      "featureCount": 33,
+      "id": 28,
+      "key": "Xiao",
+      "slug": "xiao"
+    },
+    {
+      "featureCount": 30,
+      "id": 29,
+      "key": "Xingqiu",
+      "slug": "xingqiu"
+    },
+    {
+      "featureCount": 30,
+      "id": 30,
+      "key": "Xinyan",
+      "slug": "xinyan"
+    },
+    {
+      "featureCount": 30,
+      "id": 31,
+      "key": "Zhongli",
+      "slug": "zhongli"
+    },
+    {
+      "featureCount": 31,
+      "id": 32,
+      "key": "Rosaria",
+      "slug": "rosaria"
+    },
+    {
+      "featureCount": 30,
+      "id": 33,
+      "key": "Eula",
+      "slug": "eula"
+    },
+    {
+      "featureCount": 26,
+      "id": 34,
+      "key": "YanFei",
+      "slug": "yanfei"
+    },
+    {
+      "featureCount": 50,
+      "id": 35,
+      "key": "Kazuha",
+      "slug": "kaedehara_kazuha"
+    },
+    {
+      "featureCount": 25,
+      "id": 36,
+      "key": "Ayaka",
+      "slug": "kamisato_ayaka"
+    },
+    {
+      "featureCount": 28,
+      "id": 37,
+      "key": "Yoimiya",
+      "slug": "yoimiya"
+    },
+    {
+      "featureCount": 48,
+      "id": 38,
+      "key": "Sayu",
+      "slug": "sayu"
+    },
+    {
+      "featureCount": 28,
+      "id": 39,
+      "key": "TravelerElectro",
+      "slug": "traveler_electro"
+    },
+    {
+      "featureCount": 30,
+      "id": 40,
+      "key": "RaidenShogun",
+      "slug": "raiden_shogun"
+    },
+    {
+      "featureCount": 22,
+      "id": 41,
+      "key": "Kokomi",
+      "slug": "sangonomiya_kokomi"
+    },
+    {
+      "featureCount": 28,
+      "id": 42,
+      "key": "Sara",
+      "slug": "kujou_sara"
+    },
+    {
+      "featureCount": 26,
+      "id": 43,
+      "key": "Aloy",
+      "slug": "aloy"
+    },
+    {
+      "featureCount": 28,
+      "id": 44,
+      "key": "Thoma",
+      "slug": "thoma"
+    },
+    {
+      "featureCount": 24,
+      "id": 45,
+      "key": "Gorou",
+      "slug": "gorou"
+    },
+    {
+      "featureCount": 25,
+      "id": 46,
+      "key": "Itto",
+      "slug": "arataki_itto"
+    },
+    {
+      "featureCount": 30,
+      "id": 47,
+      "key": "YunJin",
+      "slug": "yun_jin"
+    },
+    {
+      "featureCount": 26,
+      "id": 48,
+      "key": "Shenhe",
+      "slug": "shenhe"
+    },
+    {
+      "featureCount": 26,
+      "id": 49,
+      "key": "YaeMiko",
+      "slug": "yae_miko"
+    },
+    {
+      "featureCount": 22,
+      "id": 50,
+      "key": "Ayato",
+      "slug": "kamisato_ayato"
+    },
+    {
+      "featureCount": 24,
+      "id": 51,
+      "key": "Yelan",
+      "slug": "yelan"
+    },
+    {
+      "featureCount": 27,
+      "id": 52,
+      "key": "KukiShinobu",
+      "slug": "kuki_shinobu"
+    },
+    {
+      "featureCount": 42,
+      "id": 53,
+      "key": "Heizou",
+      "slug": "shikanoin_heizou"
+    },
+    {
+      "featureCount": 28,
+      "id": 54,
+      "key": "Tighnari",
+      "slug": "tighnari"
+    },
+    {
+      "featureCount": 25,
+      "id": 55,
+      "key": "Collei",
+      "slug": "collei"
+    },
+    {
+      "featureCount": 29,
+      "id": 56,
+      "key": "Dori",
+      "slug": "dori"
+    },
+    {
+      "featureCount": 28,
+      "id": 57,
+      "key": "TravelerDendro",
+      "slug": "traveler_dendro"
+    },
+    {
+      "featureCount": 27,
+      "id": 58,
+      "key": "Candace",
+      "slug": "candace"
+    },
+    {
+      "featureCount": 24,
+      "id": 59,
+      "key": "Cyno",
+      "slug": "cyno"
+    },
+    {
+      "featureCount": 30,
+      "id": 60,
+      "key": "Nilou",
+      "slug": "nilou"
+    },
+    {
+      "featureCount": 24,
+      "id": 61,
+      "key": "Nahida",
+      "slug": "nahida"
+    },
+    {
+      "featureCount": 24,
+      "id": 62,
+      "key": "Layla",
+      "slug": "layla"
+    },
+    {
+      "featureCount": 31,
+      "id": 63,
+      "key": "Wanderer",
+      "slug": "wanderer"
+    },
+    {
+      "featureCount": 32,
+      "id": 64,
+      "key": "Faruzan",
+      "slug": "faruzan"
+    },
+    {
+      "featureCount": 29,
+      "id": 65,
+      "key": "Yaoyao",
+      "slug": "yaoyao"
+    },
+    {
+      "featureCount": 30,
+      "id": 66,
+      "key": "Alhaitham",
+      "slug": "alhaitham"
+    },
+    {
+      "featureCount": 30,
+      "id": 67,
+      "key": "Dehya",
+      "slug": "dehya"
+    },
+    {
+      "featureCount": 26,
+      "id": 68,
+      "key": "Mika",
+      "slug": "mika"
+    },
+    {
+      "featureCount": 25,
+      "id": 69,
+      "key": "Kaveh",
+      "slug": "kaveh"
+    },
+    {
+      "featureCount": 28,
+      "id": 70,
+      "key": "Baizhu",
+      "slug": "baizhu"
+    },
+    {
+      "featureCount": 32,
+      "id": 71,
+      "key": "Kirara",
+      "slug": "kirara"
+    },
+    {
+      "featureCount": 40,
+      "id": 72,
+      "key": "Lynette",
+      "slug": "lynette"
+    },
+    {
+      "featureCount": 31,
+      "id": 73,
+      "key": "Lyney",
+      "slug": "lyney"
+    },
+    {
+      "featureCount": 33,
+      "id": 74,
+      "key": "Freminet",
+      "slug": "freminet"
+    },
+    {
+      "featureCount": 27,
+      "id": 75,
+      "key": "TravelerHydro",
+      "slug": "traveler_hydro"
+    },
+    {
+      "featureCount": 24,
+      "id": 76,
+      "key": "Wriothesley",
+      "slug": "wriothesley"
+    },
+    {
+      "featureCount": 23,
+      "id": 77,
+      "key": "Neuvillette",
+      "slug": "neuvillette"
+    },
+    {
+      "featureCount": 27,
+      "id": 78,
+      "key": "Charlotte",
+      "slug": "charlotte"
+    },
+    {
+      "featureCount": 30,
+      "id": 79,
+      "key": "Furina",
+      "slug": "furina"
+    },
+    {
+      "featureCount": 31,
+      "id": 80,
+      "key": "Chevreuse",
+      "slug": "chevreuse"
+    },
+    {
+      "featureCount": 26,
+      "id": 81,
+      "key": "Navia",
+      "slug": "navia"
+    },
+    {
+      "featureCount": 27,
+      "id": 82,
+      "key": "Gaming",
+      "slug": "gaming"
+    },
+    {
+      "featureCount": 35,
+      "id": 83,
+      "key": "Xianyun",
+      "slug": "xianyun"
+    },
+    {
+      "featureCount": 25,
+      "id": 84,
+      "key": "Chiori",
+      "slug": "chiori"
+    },
+    {
+      "featureCount": 29,
+      "id": 85,
+      "key": "Arlecchino",
+      "slug": "arlecchino"
+    },
+    {
+      "featureCount": 28,
+      "id": 86,
+      "key": "Clorinde",
+      "slug": "clorinde"
+    },
+    {
+      "featureCount": 26,
+      "id": 87,
+      "key": "Sigewinne",
+      "slug": "sigewinne"
+    },
+    {
+      "featureCount": 25,
+      "id": 88,
+      "key": "Sethos",
+      "slug": "sethos"
+    },
+    {
+      "featureCount": 27,
+      "id": 89,
+      "key": "Emilie",
+      "slug": "emilie"
+    },
+    {
+      "featureCount": 24,
+      "id": 90,
+      "key": "Kachina",
+      "slug": "kachina"
+    },
+    {
+      "featureCount": 25,
+      "id": 91,
+      "key": "Kinich",
+      "slug": "kinich"
+    },
+    {
+      "featureCount": 20,
+      "id": 92,
+      "key": "Mualani",
+      "slug": "mualani"
+    },
+    {
+      "featureCount": 24,
+      "id": 93,
+      "key": "Xilonen",
+      "slug": "xilonen"
+    },
+    {
+      "featureCount": 48,
+      "id": 94,
+      "key": "Chasca",
+      "slug": "chasca"
+    },
+    {
+      "featureCount": 25,
+      "id": 95,
+      "key": "Ororon",
+      "slug": "ororon"
+    },
+    {
+      "featureCount": 27,
+      "id": 96,
+      "key": "Mavuika",
+      "slug": "mavuika"
+    },
+    {
+      "featureCount": 40,
+      "id": 98,
+      "key": "LanYan",
+      "slug": "lan_yan"
+    },
+    {
+      "featureCount": 23,
+      "id": 99,
+      "key": "Citlali",
+      "slug": "citlali"
+    },
+    {
+      "featureCount": 28,
+      "id": 100,
+      "key": "TravelerPyro",
+      "slug": "traveler_pyro"
+    },
+    {
+      "featureCount": 34,
+      "id": 101,
+      "key": "Mizuki",
+      "slug": "yumemizuki_mizuki"
+    },
+    {
+      "featureCount": 25,
+      "id": 102,
+      "key": "Iansan",
+      "slug": "iansan"
+    },
+    {
+      "featureCount": 23,
+      "id": 103,
+      "key": "Varesa",
+      "slug": "varesa"
+    },
+    {
+      "featureCount": 26,
+      "id": 104,
+      "key": "Escoffier",
+      "slug": "escoffier"
+    },
+    {
+      "featureCount": 36,
+      "id": 105,
+      "key": "Ifa",
+      "slug": "ifa"
+    },
+    {
+      "featureCount": 24,
+      "id": 106,
+      "key": "Skirk",
+      "slug": "skirk"
+    },
+    {
+      "featureCount": 27,
+      "id": 107,
+      "key": "Dahlia",
+      "slug": "dahlia"
     },
     {
       "featureCount": 31,
@@ -51,5 +681,5 @@
       "slug": "ineffa"
     }
   ],
-  "featureTotal": 63
+  "featureTotal": 3088
 }

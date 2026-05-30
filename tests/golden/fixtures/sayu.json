@@ -1,0 +1,443 @@
+{
+  "defaultWeapon": "weapon_name.the_bell",
+  "element": "anemo",
+  "features": {
+    "attack.charged_final": {
+      "average": 2546.0081702331336,
+      "category": "attack",
+      "crit": 4629.105764060243,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2314.5528820301215
+    },
+    "attack.charged_spin": {
+      "average": 1408.093422224164,
+      "category": "attack",
+      "crit": 2560.169858589389,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1280.0849292946946
+    },
+    "attack.normal_hit_1": {
+      "average": 1517.9242627093365,
+      "category": "attack",
+      "crit": 2759.862295835157,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1379.9311479175785
+    },
+    "attack.normal_hit_2": {
+      "average": 1499.8537357723203,
+      "category": "attack",
+      "crit": 2727.0067923133097,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1363.5033961566548
+    },
+    "attack.normal_hit_3": {
+      "average": 1825.1232206386069,
+      "category": "attack",
+      "crit": 3318.4058557065578,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1659.2029278532789
+    },
+    "attack.normal_hit_3_1": {
+      "average": 912.5616103193034,
+      "category": "attack",
+      "crit": 1659.2029278532789,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 829.6014639266394
+    },
+    "attack.normal_hit_4": {
+      "average": 2061.8471235135157,
+      "category": "attack",
+      "crit": 3748.8129518427554,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1874.4064759213777
+    },
+    "attack.plunge": {
+      "average": 1455.309886872576,
+      "category": "attack",
+      "crit": 2646.0179761319564,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1323.0089880659782
+    },
+    "attack.plunge_high": {
+      "average": 3634.750964428723,
+      "category": "attack",
+      "crit": 6608.638117143132,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3304.319058571566
+    },
+    "attack.plunge_low": {
+      "average": 2910.0028702520294,
+      "category": "attack",
+      "crit": 5290.9143095491445,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2645.4571547745722
+    },
+    "burst.sayu_burst_dmg": {
+      "average": 3272.375019175782,
+      "category": "burst",
+      "crit": 5949.772762137785,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2974.8863810688927
+    },
+    "burst.sayu_heal": {
+      "average": 4450.8753182494,
+      "category": "burst",
+      "crit": 4450.8753182494,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 4450.8753182494
+    },
+    "burst.sayu_mujimuji_add_heal": {
+      "average": 771.4850471632294,
+      "category": "burst",
+      "crit": 771.4850471632294,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 771.4850471632294
+    },
+    "burst.sayu_mujimuji_dmg": {
+      "average": 1456.8792893590808,
+      "category": "burst",
+      "crit": 2648.8714351983285,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1324.4357175991643
+    },
+    "burst.sayu_mujimuji_heal": {
+      "average": 3857.4252358161466,
+      "category": "burst",
+      "crit": 3857.4252358161466,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3857.4252358161466
+    },
+    "other.sayu_mujimuji_swirl_heal": {
+      "average": 481.2,
+      "category": "other",
+      "crit": 481.2,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 481.2
+    },
+    "reaction.burgeon": {
+      "average": 8294.284436610877,
+      "category": "reaction",
+      "crit": 8294.284436610877,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8294.284436610877
+    },
+    "reaction.burning": {
+      "average": 691.1903697175732,
+      "category": "reaction",
+      "crit": 691.1903697175732,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 691.1903697175732
+    },
+    "reaction.electrocharged": {
+      "average": 5529.522957740585,
+      "category": "reaction",
+      "crit": 5529.522957740585,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5529.522957740585
+    },
+    "reaction.hyperbloom": {
+      "average": 8294.284436610877,
+      "category": "reaction",
+      "crit": 8294.284436610877,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8294.284436610877
+    },
+    "reaction.overloaded": {
+      "average": 7603.094066893304,
+      "category": "reaction",
+      "crit": 7603.094066893304,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7603.094066893304
+    },
+    "reaction.rupture": {
+      "average": 5529.522957740585,
+      "category": "reaction",
+      "crit": 5529.522957740585,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5529.522957740585
+    },
+    "reaction.shatter": {
+      "average": 8294.284436610877,
+      "category": "reaction",
+      "crit": 8294.284436610877,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8294.284436610877
+    },
+    "reaction.superconduct": {
+      "average": 4147.142218305438,
+      "category": "reaction",
+      "crit": 4147.142218305438,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4147.142218305438
+    },
+    "reaction.swirl_cryo": {
+      "average": 1658.8568873221755,
+      "category": "reaction",
+      "crit": 1658.8568873221755,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1658.8568873221755
+    },
+    "reaction.swirl_electro": {
+      "average": 1658.8568873221755,
+      "category": "reaction",
+      "crit": 1658.8568873221755,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1658.8568873221755
+    },
+    "reaction.swirl_hydro": {
+      "average": 1658.8568873221755,
+      "category": "reaction",
+      "crit": 1658.8568873221755,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1658.8568873221755
+    },
+    "reaction.swirl_pyro": {
+      "average": 1658.8568873221755,
+      "category": "reaction",
+      "crit": 1658.8568873221755,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1658.8568873221755
+    },
+    "skill.sayu_windwheel_dmg": {
+      "average": 811.8070336578744,
+      "category": "skill",
+      "crit": 1476.0127884688625,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 738.0063942344312
+    },
+    "skill.sayu_windwheel_elemental_cryo_dmg": {
+      "average": 378.84328237367464,
+      "category": "skill",
+      "crit": 688.8059679521357,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 344.40298397606784
+    },
+    "skill.sayu_windwheel_elemental_electro_dmg": {
+      "average": 384.58333210660913,
+      "category": "skill",
+      "crit": 699.2424220120166,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 349.6212110060083
+    },
+    "skill.sayu_windwheel_elemental_hydro_dmg": {
+      "average": 378.84328237367464,
+      "category": "skill",
+      "crit": 688.8059679521357,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 344.40298397606784
+    },
+    "skill.sayu_windwheel_elemental_pyro_dmg": {
+      "average": 378.84328237367464,
+      "category": "skill",
+      "crit": 688.8059679521357,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 344.40298397606784
+    },
+    "skill.sayu_windwheel_kick_dmg": {
+      "average": 3571.950948094647,
+      "category": "skill",
+      "crit": 6494.456269262994,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3247.228134631497
+    },
+    "skill.sayu_windwheel_kick_elemental_cryo_dmg": {
+      "average": 1717.4228800939918,
+      "category": "skill",
+      "crit": 3122.5870547163486,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1561.2935273581743
+    },
+    "skill.sayu_windwheel_kick_elemental_electro_dmg": {
+      "average": 1743.4444388832947,
+      "category": "skill",
+      "crit": 3169.8989797878085,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1584.9494898939042
+    },
+    "skill.sayu_windwheel_kick_elemental_hydro_dmg": {
+      "average": 1717.4228800939918,
+      "category": "skill",
+      "crit": 3122.5870547163486,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1561.2935273581743
+    },
+    "skill.sayu_windwheel_kick_elemental_pyro_dmg": {
+      "average": 1717.4228800939918,
+      "category": "skill",
+      "crit": 3122.5870547163486,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1561.2935273581743
+    },
+    "skill.sayu_windwheel_kick_hold_dmg": {
+      "average": 4906.922514554262,
+      "category": "skill",
+      "crit": 8921.677299189569,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4460.838649594784
+    },
+    "stats.atk": {
+      "average": 1917.337973964,
+      "category": "stats",
+      "crit": 1917.337973964,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1917.337973964
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1620.6311425,
+      "category": "stats",
+      "crit": 1620.6311425,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1620.6311425
+    },
+    "stats.hp": {
+      "average": 35449.09257376359,
+      "category": "stats",
+      "crit": 35449.09257376359,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 35449.09257376359
+    },
+    "stats.mastery": {
+      "average": 151,
+      "category": "stats",
+      "crit": 151,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 151
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.bell_shield": {
+      "average": 7089.818514752718,
+      "category": "weapon",
+      "crit": 7089.818514752718,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 7089.818514752718
+    }
+  },
+  "id": 38,
+  "key": "Sayu",
+  "schema": 1,
+  "slug": "sayu",
+  "weaponType": "claymore"
+}

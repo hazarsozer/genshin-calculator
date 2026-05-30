@@ -1,0 +1,227 @@
+{
+  "defaultWeapon": "weapon_name.alley_hunter",
+  "element": "hydro",
+  "features": {
+    "attack.aimed": {
+      "average": 1479.0160681419134,
+      "category": "attack",
+      "crit": 2289.498557495222,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1144.749278747611
+    },
+    "attack.charged_aimed": {
+      "average": 3680.6517515836117,
+      "category": "attack",
+      "crit": 5697.603330624786,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2848.801665312393
+    },
+    "attack.normal_hit_1": {
+      "average": 1280.267242253039,
+      "category": "attack",
+      "crit": 1981.8378363050144,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 990.9189181525072
+    },
+    "attack.normal_hit_2": {
+      "average": 1228.8400168771245,
+      "category": "attack",
+      "crit": 1902.2291282927624,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 951.1145641463812
+    },
+    "attack.normal_hit_3": {
+      "average": 1624.0176434499442,
+      "category": "attack",
+      "crit": 2513.9592003869107,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1256.9796001934553
+    },
+    "attack.normal_hit_4": {
+      "average": 1023.131115373465,
+      "category": "attack",
+      "crit": 1583.794296243754,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 791.897148121877
+    },
+    "attack.plunge": {
+      "average": 1660.8287100348093,
+      "category": "attack",
+      "crit": 2570.9422755956803,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1285.4711377978401
+    },
+    "attack.plunge_high": {
+      "average": 4148.050398065148,
+      "category": "attack",
+      "crit": 6421.130647159672,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3210.565323579836
+    },
+    "attack.plunge_low": {
+      "average": 3320.9536790907905,
+      "category": "attack",
+      "crit": 5140.795168871193,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2570.3975844355964
+    },
+    "attack.yelan_breakthrough_barb_dmg": {
+      "average": 4122.645306583402,
+      "category": "attack",
+      "crit": 6381.803880160065,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3190.9019400800325
+    },
+    "burst.burst_dmg": {
+      "average": 3679.610513788849,
+      "category": "burst",
+      "crit": 5695.9915074130795,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2847.9957537065397
+    },
+    "burst.yelan_exquisite_throw_dmg": {
+      "average": 2453.073675859233,
+      "category": "burst",
+      "crit": 3797.32767160872,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1898.66383580436
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.skill_dmg": {
+      "average": 9164.384769023036,
+      "category": "skill",
+      "crit": 14186.354131614607,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 7093.177065807304
+    },
+    "stats.atk": {
+      "average": 2445.10504239312,
+      "category": "stats",
+      "crit": 2445.10504239312,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2445.10504239312
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 29.2,
+      "category": "stats",
+      "crit": 29.2,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 29.2
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1423.9793532,
+      "category": "stats",
+      "crit": 1423.9793532,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1423.9793532
+    },
+    "stats.hp": {
+      "average": 29336.745400784006,
+      "category": "stats",
+      "crit": 29336.745400784006,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 29336.745400784006
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 51,
+  "key": "Yelan",
+  "schema": 1,
+  "slug": "yelan",
+  "weaponType": "bow"
+}

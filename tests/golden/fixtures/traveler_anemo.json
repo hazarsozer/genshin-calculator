@@ -1,0 +1,533 @@
+{
+  "defaultWeapon": "weapon_name.the_alley_flash",
+  "element": "anemo",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 1587.6742313346053,
+      "category": "attack",
+      "crit": 2886.6804206083734,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1443.3402103041867
+    },
+    "attack.charged_hit_2": {
+      "average": 2051.7636220324134,
+      "category": "attack",
+      "crit": 3730.4793127862063,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1865.2396563931031
+    },
+    "attack.charged_hit_total": {
+      "average": 3639.4378533670188,
+      "category": "attack",
+      "crit": 6617.159733394579,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3308.5798666972896
+    },
+    "attack.normal_hit_1": {
+      "average": 1178.6242139897308,
+      "category": "attack",
+      "crit": 2142.953116344965,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1071.4765581724826
+    },
+    "attack.normal_hit_2": {
+      "average": 1151.2673656959655,
+      "category": "attack",
+      "crit": 2093.2133921744826,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1046.6066960872413
+    },
+    "attack.normal_hit_3": {
+      "average": 1404.3182124132964,
+      "category": "attack",
+      "crit": 2553.3058407514477,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1276.6529203757239
+    },
+    "attack.normal_hit_4": {
+      "average": 1545.661928597752,
+      "category": "attack",
+      "crit": 2810.294415632276,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1405.147207816138
+    },
+    "attack.normal_hit_5": {
+      "average": 1876.2238454807518,
+      "category": "attack",
+      "crit": 3411.316082692276,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1705.658041346138
+    },
+    "attack.plunge": {
+      "average": 1573.7026980988612,
+      "category": "attack",
+      "crit": 2861.2776329070202,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1430.6388164535101
+    },
+    "attack.plunge_high": {
+      "average": 3930.4463270919496,
+      "category": "attack",
+      "crit": 7146.26604925809,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3573.133024629045
+    },
+    "attack.plunge_low": {
+      "average": 3146.7391956379074,
+      "category": "attack",
+      "crit": 5721.3439920689225,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2860.6719960344612
+    },
+    "attack.traveler_slitting_wind": {
+      "average": 775.8769999282237,
+      "category": "attack",
+      "crit": 1410.6854544149521,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 705.3427272074761
+    },
+    "burst.anemoskill_cryo_dmg": {
+      "average": 876.5685928077976,
+      "category": "burst",
+      "crit": 1593.7610778323592,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 796.8805389161796
+    },
+    "burst.anemoskill_electro_dmg": {
+      "average": 887.2584536956977,
+      "category": "burst",
+      "crit": 1613.197188537632,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 806.598594268816
+    },
+    "burst.anemoskill_hydro_dmg": {
+      "average": 876.5685928077976,
+      "category": "burst",
+      "crit": 1593.7610778323592,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 796.8805389161796
+    },
+    "burst.anemoskill_pyro_dmg": {
+      "average": 876.5685928077976,
+      "category": "burst",
+      "crit": 1593.7610778323592,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 796.8805389161796
+    },
+    "burst.traveler_tornado_dmg": {
+      "average": 2855.9170281802435,
+      "category": "burst",
+      "crit": 5192.57641487317,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2596.288207436585
+    },
+    "reaction.burgeon": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "reaction.burning": {
+      "average": 597.3836964386046,
+      "category": "reaction",
+      "crit": 597.3836964386046,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 597.3836964386046
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.hyperbloom": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "reaction.overloaded": {
+      "average": 6571.2206608246515,
+      "category": "reaction",
+      "crit": 6571.2206608246515,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 6571.2206608246515
+    },
+    "reaction.rupture": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "reaction.superconduct": {
+      "average": 3584.3021786316276,
+      "category": "reaction",
+      "crit": 3584.3021786316276,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3584.3021786316276
+    },
+    "reaction.swirl_cryo": {
+      "average": 1433.7208714526512,
+      "category": "reaction",
+      "crit": 1433.7208714526512,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1433.7208714526512
+    },
+    "reaction.swirl_electro": {
+      "average": 1433.7208714526512,
+      "category": "reaction",
+      "crit": 1433.7208714526512,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1433.7208714526512
+    },
+    "reaction.swirl_hydro": {
+      "average": 1433.7208714526512,
+      "category": "reaction",
+      "crit": 1433.7208714526512,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1433.7208714526512
+    },
+    "reaction.swirl_pyro": {
+      "average": 1433.7208714526512,
+      "category": "reaction",
+      "crit": 1433.7208714526512,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1433.7208714526512
+    },
+    "skill.heal_dot": {
+      "average": 482.01829718,
+      "category": "skill",
+      "crit": 482.01829718,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 482.01829718
+    },
+    "skill.traveler_initial_cutting_cryo_dmg": {
+      "average": 85.3464699921046,
+      "category": "skill",
+      "crit": 155.17539998564473,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 77.58769999282237
+    },
+    "skill.traveler_initial_cutting_dmg": {
+      "average": 341.3858799684184,
+      "category": "skill",
+      "crit": 620.7015999425789,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 310.35079997128946
+    },
+    "skill.traveler_initial_cutting_electro_dmg": {
+      "average": 86.6395983253183,
+      "category": "skill",
+      "crit": 157.52654240966964,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 78.76327120483482
+    },
+    "skill.traveler_initial_cutting_hydro_dmg": {
+      "average": 85.3464699921046,
+      "category": "skill",
+      "crit": 155.17539998564473,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 77.58769999282237
+    },
+    "skill.traveler_initial_cutting_pyro_dmg": {
+      "average": 85.3464699921046,
+      "category": "skill",
+      "crit": 155.17539998564473,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 77.58769999282237
+    },
+    "skill.traveler_initial_storm_cryo_dmg": {
+      "average": 1251.7482265508675,
+      "category": "skill",
+      "crit": 2275.9058664561226,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1137.9529332280613
+    },
+    "skill.traveler_initial_storm_dmg": {
+      "average": 5006.99290620347,
+      "category": "skill",
+      "crit": 9103.62346582449,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4551.811732912245
+    },
+    "skill.traveler_initial_storm_electro_dmg": {
+      "average": 1270.7141087713353,
+      "category": "skill",
+      "crit": 2310.389288675155,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1155.1946443375775
+    },
+    "skill.traveler_initial_storm_hydro_dmg": {
+      "average": 1251.7482265508675,
+      "category": "skill",
+      "crit": 2275.9058664561226,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1137.9529332280613
+    },
+    "skill.traveler_initial_storm_pyro_dmg": {
+      "average": 1251.7482265508675,
+      "category": "skill",
+      "crit": 2275.9058664561226,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1137.9529332280613
+    },
+    "skill.traveler_max_cutting_cryo_dmg": {
+      "average": 119.48505798894644,
+      "category": "skill",
+      "crit": 217.2455599799026,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 108.6227799899513
+    },
+    "skill.traveler_max_cutting_dmg": {
+      "average": 477.94023195578575,
+      "category": "skill",
+      "crit": 868.9822399196104,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 434.4911199598052
+    },
+    "skill.traveler_max_cutting_electro_dmg": {
+      "average": 121.29543765544562,
+      "category": "skill",
+      "crit": 220.5371593735375,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.26857968676875
+    },
+    "skill.traveler_max_cutting_hydro_dmg": {
+      "average": 119.48505798894644,
+      "category": "skill",
+      "crit": 217.2455599799026,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 108.6227799899513
+    },
+    "skill.traveler_max_cutting_pyro_dmg": {
+      "average": 119.48505798894644,
+      "category": "skill",
+      "crit": 217.2455599799026,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 108.6227799899513
+    },
+    "skill.traveler_max_storm_cryo_dmg": {
+      "average": 1365.5435198736736,
+      "category": "skill",
+      "crit": 2482.8063997703157,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1241.4031998851578
+    },
+    "skill.traveler_max_storm_dmg": {
+      "average": 5462.1740794946945,
+      "category": "skill",
+      "crit": 9931.225599081263,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4965.612799540631
+    },
+    "skill.traveler_max_storm_electro_dmg": {
+      "average": 1386.2335732050929,
+      "category": "skill",
+      "crit": 2520.4246785547143,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1260.2123392773572
+    },
+    "skill.traveler_max_storm_hydro_dmg": {
+      "average": 1365.5435198736736,
+      "category": "skill",
+      "crit": 2482.8063997703157,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1241.4031998851578
+    },
+    "skill.traveler_max_storm_pyro_dmg": {
+      "average": 1365.5435198736736,
+      "category": "skill",
+      "crit": 2482.8063997703157,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1241.4031998851578
+    },
+    "stats.atk": {
+      "average": 2418.87080661,
+      "category": "stats",
+      "crit": 2418.87080661,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2418.87080661
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1558.521525,
+      "category": "stats",
+      "crit": 1558.521525,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1558.521525
+    },
+    "stats.hp": {
+      "average": 24100.914859,
+      "category": "stats",
+      "crit": 24100.914859,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 24100.914859
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 24,
+  "key": "TravelerAnemo",
+  "schema": 1,
+  "slug": "traveler_anemo",
+  "weaponType": "sword"
+}
