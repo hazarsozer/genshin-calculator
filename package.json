@@ -8,6 +8,7 @@
     "typecheck": "pnpm -r --filter='./packages/*' typecheck"
   },
   "devDependencies": {
+    "esbuild": "^0.28.0",
     "typescript": "^5.4.5"
   }
 }
