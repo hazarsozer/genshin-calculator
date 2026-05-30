@@ -12,8 +12,17 @@
  * every downstream damage number is wrong. The tests in postEffects.test.ts verify
  * this order directly.
  *
- * Her engine's applyPostEffects groups effects by priority, sorts ascending, then
- * runs each group's derived stats as a batch-concat. We faithful-port that ordering.
+ * Her engine's applyPostEffects (Stats.js:213-222) groups effects by priority,
+ * sorts ascending, then for each group:
+ *   - creates a fresh scratch Stats (`postStats = new Stats()`)
+ *   - each effect calls `getData(this, settings)` reading the PRE-GROUP `this`
+ *     and returns a delta record; that delta is `postStats.concat()`-ed in
+ *   - AFTER the whole group, `this.concat(postStats)` applies all group writes
+ *
+ * This means same-priority effects do NOT see each other's writes (they all read
+ * the same pre-group snapshot). Effects in higher-priority groups DO see all
+ * writes from lower-priority groups (groups are sequential, effects within a
+ * group are isolated).
  */
 
 import type { Stats } from "./Stats.js";
@@ -23,28 +32,39 @@ import type { Stats } from "./Stats.js";
  * Stats bag. Called after full aggregation, before the formula reads totals.
  *
  * `priority` controls execution order: lower runs first. Effects at the same
- * priority run in the order they appear in the input array (stable sort).
+ * priority run simultaneously (isolation: they all read the pre-group snapshot,
+ * their writes are merged after the group — mirroring Stats.js:213-222).
+ *
+ * `contribute(readStats)` must NOT mutate `readStats`. It reads from it and
+ * returns a plain { key: delta } record. `applyPostEffects` collects all
+ * same-priority contributions into a scratch, then applies the scratch in one
+ * batch — matching her `postStats.concat(getData(...))` / `this.concat(postStats)`
+ * pattern exactly.
  */
 export interface PostEffect {
   readonly priority: number;
   /**
-   * Mutates `stats` to add derived values.
-   * Called with the fully-aggregated Stats bag.
+   * Read the PRE-GROUP stats snapshot and return a delta record.
+   * MUST NOT mutate `readStats`.
+   *
+   * Mirrors `item.getData(this, settings)` in her Stats.js:217.
    */
-  apply(stats: Stats): void;
+  contribute(readStats: Stats): Record<string, number>;
 }
 
 /**
  * Apply all post-effects to `stats` in ascending priority order.
  *
- * Faithful port of Stats.applyPostEffects():
+ * Faithful port of Stats.applyPostEffects() (Stats.js:213-222):
  *   1. Group by priority
  *   2. Sort group keys ascending (numeric)
- *   3. For each group: collect all derived stats into a scratch bag, then concat
+ *   3. For each group:
+ *      a. Call each effect's `contribute(stats)` — reads pre-group snapshot
+ *      b. Collect all returned deltas into a scratch record
+ *      c. Apply the scratch to `stats` via concat — all writes land at once
  *
- * The batch-concat per priority level means effects in the same priority group
- * do NOT see each other's outputs (they read the stats BEFORE the group ran).
- * Effects in higher-priority groups DO see the output of lower-priority groups.
+ * Within a priority group, no effect sees another's writes.
+ * Across groups, each group sees all prior groups' applied writes.
  */
 export function applyPostEffects(stats: Stats, effects: readonly PostEffect[]): void {
   if (effects.length === 0) return;
@@ -64,16 +84,21 @@ export function applyPostEffects(stats: Stats, effects: readonly PostEffect[]): 
   const sortedPriorities = [...byPriority.keys()].sort((a, b) => a - b);
 
   for (const priority of sortedPriorities) {
-    const group = byPriority.get(priority);
-    if (group === undefined) continue;
+    const group = byPriority.get(priority)!;
 
-    // Each effect in the group applies directly to stats.
-    // (Her engine collects into a scratch Stats and batch-concats; we apply
-    // directly here because each effect controls its own stats.add() calls.
-    // The ordering contract — lower-priority effects' outputs are visible to
-    // higher-priority effects — is preserved.)
+    // Scratch record: collects all group contributions (mirrors `postStats = new Stats()`)
+    const scratch: Record<string, number> = {};
+
+    // Each effect reads the PRE-GROUP stats snapshot, returns a delta
+    // (mirrors `postStats.concat(item.getData(this, settings))`)
     for (const effect of group) {
-      effect.apply(stats);
+      const delta = effect.contribute(stats);
+      for (const key of Object.keys(delta)) {
+        scratch[key] = (scratch[key] ?? 0) + (delta[key] ?? 0);
+      }
     }
+
+    // Apply the whole group's writes at once (mirrors `this.concat(postStats)`)
+    stats.concat(scratch);
   }
 }
