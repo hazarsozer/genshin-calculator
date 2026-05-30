@@ -29,7 +29,21 @@ export type {
   ConstellationLevel,
   Element,
   WeaponType,
+  StatTableEntry,
+  CharStatTable,
+  TalentTable,
+  TalentResolver,
+  CharPostEffect,
+  CharConstellation,
   DbObjectChar,
+} from "./character.js";
+
+export {
+  asCharacterLevel,
+  asTalentLevel,
+  asAscensionLevel,
+  asRefinement,
+  asConstellationLevel,
 } from "./character.js";
 
 export type {

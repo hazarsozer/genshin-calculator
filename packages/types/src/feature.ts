@@ -13,7 +13,7 @@
  *   raw/genshin_calc_pub/src/js/db/Char/Hutao.js (usage examples)
  */
 
-import type { Element } from "./character.js";
+import type { Element, TalentTable } from "./character.js";
 import type { DamageContext, DamageResult } from "./damage.js";
 
 /** High-level category of a feature declaration. */
@@ -34,10 +34,18 @@ export interface FeatureMultiplierEntry {
    * (max HP — used for Hu Tao burst heal, etc.).
    */
   readonly scaling?: string;
-  /** Which level table governs this multiplier (e.g. 'char_skill_attack'). */
+  /**
+   * Which level setting governs this multiplier's talent level (e.g.
+   * 'char_skill_attack'). The glue reads this key from the EvalContext/build to
+   * pick the talent level fed into `values.getValue(level)`.
+   */
   readonly leveling: string;
-  /** Talent-level-indexed values (15 entries for char talents, 5 for weapon refine). */
-  readonly values: unknown;
+  /**
+   * Talent-level-indexed multiplier table; `getValue(talentLevel)` yields the
+   * percent-of-scaling value (her `Talents.get(path)` result). For a constant
+   * multiplier (e.g. constellation flat %) this is a 1-entry table.
+   */
+  readonly values: TalentTable;
 }
 
 /**
