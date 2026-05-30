@@ -7,8 +7,11 @@
     "test": "pnpm -r --filter='./packages/*' test",
     "typecheck": "pnpm -r --filter='./packages/*' typecheck"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "devDependencies": {
-    "esbuild": "^0.28.0",
+    "esbuild": "0.28.0",
     "typescript": "^5.4.5"
   }
 }
