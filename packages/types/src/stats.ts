@@ -155,6 +155,19 @@ export const ASPIRINE_STAT_KEYS: readonly AspirineStatKey[] = [
   "dmg_physical",
 ] as const;
 
+// Load-time invariant: the two key arrays are positionally paired, so they MUST
+// be equal length. Enforce it here so a future drift fails loudly at import (the
+// `as` casts below otherwise mask a `GoodStatKey | undefined` under
+// noUncheckedIndexedAccess). Cardinality is also asserted in stats.test.ts.
+/* v8 ignore start -- defensive: the throw branch is unreachable while the arrays stay paired */
+if (GOOD_STAT_KEYS.length !== ASPIRINE_STAT_KEYS.length) {
+  throw new Error(
+    `BUG: GOOD_STAT_KEYS (${GOOD_STAT_KEYS.length}) and ASPIRINE_STAT_KEYS ` +
+      `(${ASPIRINE_STAT_KEYS.length}) must be equal length (positional bijection).`
+  );
+}
+/* v8 ignore stop */
+
 /** Maps Aspirine stat key → GOOD stat key. */
 export const aspirineToGood: Readonly<Record<AspirineStatKey, GoodStatKey>> =
   Object.fromEntries(

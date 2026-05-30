@@ -14,7 +14,7 @@
  */
 
 import type { Element } from "./character.js";
-import type { DamageResult } from "./damage.js";
+import type { DamageContext, DamageResult } from "./damage.js";
 
 /** High-level category of a feature declaration. */
 export type FeatureCategory =
@@ -63,8 +63,9 @@ export interface Feature {
 }
 
 /**
- * A compiled, executable damage feature: accepts aggregated build stats
- * and returns the DamageResult triple.
- * This is what Feature2 + Compiler.js produce; P1.5 implements the compilation.
+ * A compiled, executable damage feature: accepts the damage context (build
+ * stats + enemy + settings) and returns the DamageResult triple.
+ * This is what Feature2 + Compiler.js produce; P1.5 implements the compilation
+ * and will refine this signature as the engine model is designed.
  */
-export type CompiledFeature = (stats: Record<string, number>) => DamageResult;
+export type CompiledFeature = (context: DamageContext) => DamageResult;
