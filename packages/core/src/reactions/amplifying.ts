@@ -27,7 +27,7 @@
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Reaction/Amplifying/Melt/Reverse.js:6-10
  */
 
-import { cConst, cStat, cSum, cMulti, cDivide } from "../compile/blocks.js";
+import { cConst, cStat, cSum, cMulti, cDivide, cMultiplierReaction } from "../compile/blocks.js";
 import { cDamage } from "../compile/damage.js";
 import type { Block } from "../compile/blocks.js";
 import type { DamageBlock } from "../compile/damage.js";
@@ -116,15 +116,7 @@ export function cAmplifyingFactor(params: AmplifyingFactorParams): DamageBlock {
     params.reactionBonusKeys?.map((key) => cStat(key)) ?? [];
 
   // (1 + emBonus + Σ reactionBonus)
-  const bonusFactor: Block = {
-    kind: "multiplier_reaction",
-    children: [emBonus, ...reactionBonusTerms],
-    run: (ctx) => {
-      let total = 1 + emBonus.run(ctx);
-      for (const term of reactionBonusTerms) total += term.run(ctx);
-      return total;
-    },
-  };
+  const bonusFactor: Block = cMultiplierReaction([emBonus, ...reactionBonusTerms]);
 
   // baseMultiplier × bonusFactor
   const amplifyingBlock: Block = cMulti([cConst(baseMult), bonusFactor]);

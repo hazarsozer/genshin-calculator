@@ -359,4 +359,17 @@ describe("cLunarChargedDamage — CRIT hook", () => {
     const { avg } = fn(ctx({ mastery: 0, enemy_res_electro: 0.1 }));
     expect(avg).toBeCloseTo(base * 0.9, 3);
   });
+
+  it("reaction bonus key adds into (1 + emBonus + reactionBonus) → 1.8 × LV90 × (1 + emBonus + bonus)", () => {
+    const tree = cLunarChargedDamage({
+      element: "electro",
+      characterLevel: 90,
+      reactionBonusKeys: ["dmg_reaction_lunarcharged"],
+    });
+    const fn = compile(tree);
+    const emBonus = 6 * (200 / (200 + 2000));
+    const expected = 1.8 * LV90_MULT * (1 + emBonus + 0.1) * 1; // no res
+    const { avg } = fn(ctx({ mastery: 200, dmg_reaction_lunarcharged: 0.1, enemy_res_electro: 0 }));
+    expect(avg).toBeCloseTo(expected, 3);
+  });
 });

@@ -24,7 +24,7 @@
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Reaction/Transformative.js:6-23 (composition)
  */
 
-import { cConst, cStat, cSum, cMulti, cDivide, cMultiplierResistance } from "../compile/blocks.js";
+import { cConst, cStat, cSum, cMulti, cDivide, cMultiplierResistance, cMultiplierReaction } from "../compile/blocks.js";
 import { cDamage } from "../compile/damage.js";
 import type { Block } from "../compile/blocks.js";
 import type { DamageBlock } from "../compile/damage.js";
@@ -119,16 +119,8 @@ export function cTransformativeDamage(params: TransformativeDamageParams): Damag
   const reactionBonusTerms: Block[] =
     params.reactionBonusKeys?.map((key) => cStat(key)) ?? [];
 
-  // (1 + emBonus + Σ reactionBonus)  — mirrors CMultiplierReaction (CSumPlusOne shape)
-  const reactionFactor: Block = {
-    kind: "multiplier_reaction",
-    children: [emBonus, ...reactionBonusTerms],
-    run: (ctx) => {
-      let total = 1 + emBonus.run(ctx);
-      for (const term of reactionBonusTerms) total += term.run(ctx);
-      return total;
-    },
-  };
+  // (1 + emBonus + Σ reactionBonus)
+  const reactionFactor: Block = cMultiplierReaction([emBonus, ...reactionBonusTerms]);
 
   // resMultiplier(element) — same piecewise as normal hits
   const resMult = cMultiplierResistance(params.element);
