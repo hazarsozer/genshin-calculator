@@ -48,6 +48,10 @@ export interface PostEffect {
    * MUST NOT mutate `readStats`.
    *
    * Mirrors `item.getData(this, settings)` in her Stats.js:217.
+   *
+   * TODO(P1.4): add a `settings` parameter — her `getData(this, settings)` passes
+   * settings for condition `isActive` checks. PostEffect subclasses authored in
+   * P1.5 will need updating when the condition system lands.
    */
   contribute(readStats: Stats): Record<string, number>;
 }
@@ -94,7 +98,7 @@ export function applyPostEffects(stats: Stats, effects: readonly PostEffect[]): 
     for (const effect of group) {
       const delta = effect.contribute(stats);
       for (const key of Object.keys(delta)) {
-        scratch[key] = (scratch[key] ?? 0) + (delta[key] ?? 0);
+        scratch[key] = (scratch[key] ?? 0) + (delta[key] as number);
       }
     }
 
