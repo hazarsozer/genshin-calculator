@@ -1,0 +1,26 @@
+# Dependencies / build
+node_modules/
+dist/
+build/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Obsidian: keep vault content + shared settings, ignore volatile local state
+.obsidian/workspace*
+.obsidian/cache
+
+# raw/ image blobs are intentionally excluded from the vendor (regenerable via her make_*_images.py)
+raw/**/*.png
+raw/**/*.jpg
+raw/**/*.jpeg
+raw/**/*.webp
+raw/**/*.ttf
