@@ -34,7 +34,14 @@ importers:
         specifier: workspace:*
         version: link:../types
 
-  packages/types: {}
+  packages/types:
+    devDependencies:
+      '@vitest/coverage-v8':
+        specifier: ^1.6.0
+        version: 1.6.1(vitest@1.6.1)
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1
 
 packages:
 
