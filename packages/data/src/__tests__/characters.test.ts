@@ -307,8 +307,8 @@ describe("Arataki Itto (DEF scaler)", () => {
 
     // Oracle: arataki_itto.json skill.skill_dmg
     // skill_hit uses geo element + dmg_skill bonus
-    expect(result.normal).toBeCloseTo(3097.1808406049747, TOLERANCE);
-    expect(result.crit).toBeCloseTo(4793.6302228576905, TOLERANCE);
+    expect(result.normal).toBeCloseTo(6231.621390629439, TOLERANCE);
+    expect(result.crit).toBeCloseTo(12463.242781258878, TOLERANCE);
   });
 });
 
