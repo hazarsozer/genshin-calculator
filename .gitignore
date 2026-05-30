@@ -27,6 +27,7 @@ raw/**/*.ttf
 
 # TypeScript build output
 packages/*/dist/
+*.tsbuildinfo
 
 # Vitest coverage
 coverage/
