@@ -144,3 +144,47 @@ describe("buildStats — transforms", () => {
     expect(context.characterLevel).toBe(90);
   });
 });
+
+describe("buildStats — condition-gated HP→ATK post-effect (Paramita)", () => {
+  function build(
+    settings: Record<string, unknown>,
+    statBlock: Record<string, number> = FIXED.statBlock
+  ) {
+    return buildStats({
+      char: minimalHuTao,
+      weaponStatTable: blackcliffPoleStatTable,
+      statBlock,
+      levels: {
+        charLevel: 90,
+        ascension: 6,
+        weaponLevel: 90,
+        weaponAscension: 6,
+        talents: FIXED.skills,
+      },
+      enemy: { level: 90, resistance: 10 },
+      settings,
+    });
+  }
+
+  it("contributes nothing when Paramita is OFF (gate fails)", () => {
+    const { stats } = build({});
+    expect(stats.atk_total).toBeCloseTo(1754.7075883379998, 3);
+  });
+
+  it("adds HP×0.06256 to ATK when Paramita is ON — matches hu_tao.json skill.hutao_atk_bonus", () => {
+    const { stats } = build({ hutao_paramita_papilio: true });
+    // bonus = hp_total(28778.3066196) × 0.06256 = 1800.370862122176 (oracle value)
+    expect(stats.atk_total).toBeCloseTo(1754.7075883379998 + 1800.370862122176, 3);
+  });
+
+  it("caps the HP→ATK bonus at capRatio × atk_total", () => {
+    // Inflate HP so HP×0.06256 exceeds the 400%-of-ATK cap and the clamp bites.
+    // atk_total = 1754.7075883379998 → cap = 4 × that = 7018.830353…
+    // HP bonus uncapped at hp_base 200000 ≈ (200000+charHP)×0.06256 ≫ cap.
+    const bigHp = { ...FIXED.statBlock, hp_base: 200000 };
+    const { stats } = build({ hutao_paramita_papilio: true }, bigHp);
+    const atkTotal = 1754.7075883379998;
+    const cap = atkTotal * 4;
+    expect(stats.atk_total).toBeCloseTo(atkTotal + cap, 2);
+  });
+});

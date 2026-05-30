@@ -17,7 +17,8 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["src/**/*.ts"],
-      exclude: ["src/**/*.test.ts", "src/**/__tests__/**"],
+      // index.ts is a pure re-export barrel; __tests__ holds tests + fixtures.
+      exclude: ["src/**/*.test.ts", "src/**/__tests__/**", "src/index.ts"],
       thresholds: {
         lines: 80,
         functions: 80,
