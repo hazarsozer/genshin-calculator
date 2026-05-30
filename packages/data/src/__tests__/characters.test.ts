@@ -158,7 +158,7 @@ describe("Hu Tao (HP scaler)", () => {
       settings: { hutao_paramita_papilio: true },
     });
     // ATK should be higher with Paramita on (HP→ATK conversion active)
-    expect(statsOn.atk_total).toBeGreaterThan(statsOff.atk_total);
+    expect(statsOn.atk_total).toBeGreaterThan(statsOff.atk_total!);
   });
 });
 
@@ -285,7 +285,7 @@ describe("Arataki Itto (DEF scaler)", () => {
       settings: { itto_royal_descent: true },
     });
     // ATK should be higher with Royal Descent on (DEF→ATK conversion)
-    expect(statsOn.atk_total).toBeGreaterThan(statsOff.atk_total);
+    expect(statsOn.atk_total).toBeGreaterThan(statsOff.atk_total!);
   });
 
   it("geo skill_dmg (explicit geo element) matches oracle fixture within tolerance 0.5", () => {
@@ -424,7 +424,7 @@ describe("resolveElement — innate-element branch for skill/burst with no expli
     });
 
     const feature = ineffa.features.find((f) => f.name === "burst_dmg")!;
-    const ctx = { charElement: ineffa.element as const, talentLevels: TALENTS, settings: {} };
+    const ctx = { charElement: ineffa.element, talentLevels: TALENTS, settings: {} };
     const block = compileFeature(feature, ctx);
 
     const normal10Res = compile(block)(contextElectro);
