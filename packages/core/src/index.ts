@@ -9,6 +9,22 @@ export type { PostEffect, StatTableAscensionScaleParams } from "./stats/index.js
 
 export { evaluate, getStackCount } from "./conditions/index.js";
 
+export {
+  AmplifyingVariant,
+  cAmplifyingEmBonus,
+  cAmplifyingFactor,
+  REACTION_LEVEL_MULTIPLIERS,
+  cTransformativeEmBonus,
+  cTransformativeDamage,
+  cLunarChargedEmBonus,
+  cLunarChargedDamage,
+} from "./reactions/index.js";
+export type {
+  AmplifyingFactorParams,
+  TransformativeDamageParams,
+  LunarChargedDamageParams,
+} from "./reactions/index.js";
+
 export type { Block, BlockKind, DamageBlock, DamageParams } from "./compile/index.js";
 export {
   cConst,
