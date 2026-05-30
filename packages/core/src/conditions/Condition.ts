@@ -22,8 +22,11 @@
 import type {
   Condition,
   ConditionBoolean,
-  ConditionStacks,
+  ConditionStatic,
+  ConditionStaticRefine,
   ConditionConstellation,
+  ConditionNumber,
+  ConditionStacks,
   EvalContext,
 } from "@genshin/types";
 
@@ -59,6 +62,11 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
       return condition.items.some((item) => evaluate(item, ctx));
+    default: {
+      // Exhaustiveness tripwire: a new Condition variant without a case is a compile error.
+      const _exhaustive: never = condition;
+      return _exhaustive;
+    }
   }
 }
 
@@ -71,7 +79,8 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
 export function getStackCount(condition: ConditionStacks, ctx: EvalContext): number {
   if (!evaluateStacks(condition, ctx)) return 0;
 
-  const raw = condition.name !== undefined ? (ctx[condition.name] as number | undefined) : 0;
+  // name absent → raw is 0; the typeof guard below narrows the unknown ctx[name] path.
+  const raw = condition.name !== undefined ? ctx[condition.name] : 0;
   const value = typeof raw === "number" ? raw : 0;
   return Math.min(value, condition.maxStacks);
 }
@@ -92,7 +101,7 @@ function evaluateBoolean(condition: ConditionBoolean, ctx: EvalContext): boolean
 
 /** Ports ConditionStatic.isActive — always true unless gated/inverted */
 function evaluateStatic(
-  condition: { condition?: Condition; invert?: boolean },
+  condition: ConditionStatic | ConditionStaticRefine,
   ctx: EvalContext
 ): boolean {
   const base = checkGate(condition, ctx);
@@ -109,7 +118,7 @@ function evaluateConstellation(condition: ConditionConstellation, ctx: EvalConte
 
 /** Ports ConditionNumber.isActive */
 function evaluateNumber(
-  condition: { name?: string; condition?: Condition; invert?: boolean },
+  condition: ConditionNumber,
   ctx: EvalContext
 ): boolean {
   const base = checkGate(condition, ctx);
@@ -121,7 +130,7 @@ function evaluateNumber(
 
 /** Ports ConditionStacks.isActive */
 function evaluateStacks(
-  condition: { name?: string; condition?: Condition; invert?: boolean },
+  condition: ConditionStacks,
   ctx: EvalContext
 ): boolean {
   const base = checkGate(condition, ctx);
