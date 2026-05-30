@@ -24,3 +24,12 @@ raw/**/*.jpg
 raw/**/*.jpeg
 raw/**/*.webp
 raw/**/*.ttf
+
+# TypeScript build output
+packages/*/dist/
+
+# Vitest coverage
+coverage/
+packages/*/coverage/
+
+# pnpm lock is committed; node_modules already covered above
