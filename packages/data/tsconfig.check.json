@@ -2,6 +2,9 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "noEmit": true,
+    // Resolve @genshin/types from source so `typecheck` is self-contained and always
+    // fresh (no prior `tsc -b` of types needed). Intentional vs project `references`,
+    // which would require types/dist pre-built. See wiki/tasks/phase-1-00-scaffold.md.
     "paths": {
       "@genshin/types": ["../types/src/index.ts"]
     }
