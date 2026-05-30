@@ -60,6 +60,7 @@ export type {
 } from "./feature.js";
 
 export type {
+  EvalContext,
   ConditionStats,
   ConditionSettings,
   ConditionBase,
@@ -67,6 +68,9 @@ export type {
   ConditionStatic,
   ConditionConstellation,
   ConditionStaticRefine,
+  ConditionNumber,
+  ConditionStacks,
+  ConditionAnd,
+  ConditionOr,
   Condition,
-  ConditionLike,
 } from "./condition.js";
