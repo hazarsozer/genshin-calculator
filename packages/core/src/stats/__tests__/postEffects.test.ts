@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import type { EvalContext } from "@genshin/types";
 import { Stats } from "../Stats.js";
 import { applyPostEffects, type PostEffect } from "../postEffects.js";
 
@@ -76,6 +77,47 @@ describe("post-effect ordering: aggregate → derive → read", () => {
     // Priority 2 runs second: atk flat += 50
     // total atk = 110 + 50 = 160
     expect(s.getTotal("atk")).toBe(160);
+  });
+
+  it("threads the settings EvalContext to contribute() (condition-gated effect)", () => {
+    // Her getData(this, settings): a post-effect can gate on settings. Here the
+    // HP→ATK bonus only applies when settings.hutao_paramita_papilio is truthy.
+    const s = new Stats();
+    s.add("hp_base", 20000);
+    s.add("atk_base", 800);
+
+    const gatedEffect: PostEffect = {
+      priority: 1,
+      contribute(readStats: Stats, settings: EvalContext): Record<string, number> {
+        if (!settings["hutao_paramita_papilio"]) return {};
+        return { atk: readStats.getTotal("hp") * 0.02 };
+      },
+    };
+
+    // Settings OFF → effect contributes nothing → atk_total = 800
+    const off = new Stats(s.toRecord());
+    applyPostEffects(off, [gatedEffect], {});
+    expect(off.getTotal("atk")).toBe(800);
+
+    // Settings ON → effect contributes 20000*0.02=400 → atk_total = 1200
+    const on = new Stats(s.toRecord());
+    applyPostEffects(on, [gatedEffect], { hutao_paramita_papilio: true });
+    expect(on.getTotal("atk")).toBeCloseTo(1200, 5);
+  });
+
+  it("defaults settings to an empty context when omitted", () => {
+    const s = new Stats();
+    s.add("atk_base", 500);
+    let seen: EvalContext | undefined;
+    const effect: PostEffect = {
+      priority: 1,
+      contribute(_readStats: Stats, settings: EvalContext): Record<string, number> {
+        seen = settings;
+        return {};
+      },
+    };
+    applyPostEffects(s, [effect]);
+    expect(seen).toEqual({});
   });
 
   it("applying no post-effects leaves stats unchanged", () => {

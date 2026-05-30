@@ -25,6 +25,7 @@
  * group are isolated).
  */
 
+import type { EvalContext } from "@genshin/types";
 import type { Stats } from "./Stats.js";
 
 /**
@@ -35,8 +36,8 @@ import type { Stats } from "./Stats.js";
  * priority run simultaneously (isolation: they all read the pre-group snapshot,
  * their writes are merged after the group — mirroring Stats.js:213-222).
  *
- * `contribute(readStats)` must NOT mutate `readStats`. It reads from it and
- * returns a plain { key: delta } record. `applyPostEffects` collects all
+ * `contribute(readStats, settings)` must NOT mutate `readStats`. It reads from
+ * it and returns a plain { key: delta } record. `applyPostEffects` collects all
  * same-priority contributions into a scratch, then applies the scratch in one
  * batch — matching her `postStats.concat(getData(...))` / `this.concat(postStats)`
  * pattern exactly.
@@ -44,16 +45,15 @@ import type { Stats } from "./Stats.js";
 export interface PostEffect {
   readonly priority: number;
   /**
-   * Read the PRE-GROUP stats snapshot and return a delta record.
-   * MUST NOT mutate `readStats`.
+   * Read the PRE-GROUP stats snapshot (+ the immutable evaluation settings) and
+   * return a delta record. MUST NOT mutate `readStats`.
    *
-   * Mirrors `item.getData(this, settings)` in her Stats.js:217.
-   *
-   * TODO(P1.4): add a `settings` parameter — her `getData(this, settings)` passes
-   * settings for condition `isActive` checks. PostEffect subclasses authored in
-   * P1.5 will need updating when the condition system lands.
+   * Mirrors `item.getData(this, settings)` in her Stats.js:217 — `settings` is
+   * the EvalContext her condition-gated post-effects consult (e.g. an HP→ATK
+   * buff active only when `hutao_paramita_papilio` is toggled). Effects that
+   * don't gate on settings simply ignore the parameter.
    */
-  contribute(readStats: Stats): Record<string, number>;
+  contribute(readStats: Stats, settings: EvalContext): Record<string, number>;
 }
 
 /**
@@ -69,8 +69,16 @@ export interface PostEffect {
  *
  * Within a priority group, no effect sees another's writes.
  * Across groups, each group sees all prior groups' applied writes.
+ *
+ * `settings` is the immutable EvalContext threaded to each effect's
+ * `contribute(stats, settings)` — her `getData(this, settings)`. Defaults to an
+ * empty context for effects that don't gate on settings.
  */
-export function applyPostEffects(stats: Stats, effects: readonly PostEffect[]): void {
+export function applyPostEffects(
+  stats: Stats,
+  effects: readonly PostEffect[],
+  settings: EvalContext = {}
+): void {
   if (effects.length === 0) return;
 
   // Group by priority
@@ -96,7 +104,7 @@ export function applyPostEffects(stats: Stats, effects: readonly PostEffect[]): 
     // Each effect reads the PRE-GROUP stats snapshot, returns a delta
     // (mirrors `postStats.concat(item.getData(this, settings))`)
     for (const effect of group) {
-      const delta = effect.contribute(stats);
+      const delta = effect.contribute(stats, settings);
       for (const key of Object.keys(delta)) {
         scratch[key] = (scratch[key] ?? 0) + (delta[key] as number);
       }
