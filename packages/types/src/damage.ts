@@ -38,11 +38,26 @@ export type AnyStatKey = GoodStatKey | EngineStatKey;
 
 /**
  * Aggregated build stats consumed by the engine at formula-execution time.
- * Keys are AnyStatKey; values follow the GOOD convention for build stats
- * (whole-number percents for % stats), and Aspirine's internal convention
- * for engine-internal keys (verify per key during P1.3).
+ *
+ * This is an OPEN bag (string → number): the engine reads dynamically-named and
+ * derived keys at execution time — e.g. `atk_total` (a "total" stat aggregated
+ * by the Stats layer, P1.3), per-element `enemy_res_pyro`, post-effect-minted
+ * keys, and feature-specific flat-bonus keys (`<feature>_bonus_flat`). Her engine
+ * models stats as exactly such an open `Record<string, number>` (Stats.js); a
+ * closed union would wrongly reject these and is the wrong contract for the
+ * compile layer (P1.5).
+ *
+ * The intersection with `Partial<Record<AnyStatKey, number>>` keeps the known
+ * GOOD + engine-internal keys discoverable (autocomplete / spell-check) while
+ * still permitting any string key. Absent keys read as 0 in the engine
+ * (matching Stats.get()).
+ *
+ * Value convention: percent stats are FRACTIONS at execution time (her
+ * processPercent divides by 100 once before the formula runs); flat stats are
+ * raw. See wiki/concepts/stat-keys-and-good-format.md.
  */
-export type BuildStats = Readonly<Partial<Record<AnyStatKey, number>>>;
+export type BuildStats = Readonly<Partial<Record<AnyStatKey, number>>> &
+  Readonly<Record<string, number>>;
 
 /**
  * Enemy parameters for the defence and resistance multipliers.

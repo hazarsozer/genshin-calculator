@@ -6,3 +6,28 @@ export { Stats } from "./stats/index.js";
 export { StatTable, StatTableAscensionScale } from "./stats/index.js";
 export { applyPostEffects } from "./stats/index.js";
 export type { PostEffect, StatTableAscensionScaleParams } from "./stats/index.js";
+
+export { evaluate, getStackCount } from "./conditions/index.js";
+
+export type { Block, BlockKind, DamageBlock, DamageParams } from "./compile/index.js";
+export {
+  cConst,
+  cStat,
+  cSum,
+  cSubtract,
+  cMulti,
+  cDivide,
+  cMin,
+  cMax,
+  cBaseDamage,
+  cMultiplierBonus,
+  cMultiplierReaction,
+  cMultiplierDefence,
+  cMultiplierResistance,
+  cCritRate,
+  cCritDmg,
+  cDamage,
+  isDamageBlock,
+  compile,
+  runBlock,
+} from "./compile/index.js";
