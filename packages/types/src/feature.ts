@@ -59,6 +59,15 @@ export interface FeatureMultiplierEntry {
 export interface Feature {
   readonly name: string;
   readonly category?: FeatureCategory;
+  /**
+   * Explicit damage type for DMG-bonus key selection (e.g. `"charged"`, `"normal"`,
+   * `"plunge"`, `"skill"`, `"burst"`). When present, this overrides the category-based
+   * inference in `damageTypeOf()`. Required for charged-attack features because their
+   * raw `category` is `"attack"` (same as normal hits) but they need `dmg_charged`.
+   *
+   * Source: raw/.../Feature2/Damage/Charged.js → damageType: 'charged'
+   */
+  readonly damageType?: string;
   /** Overrides the character's innate element for this hit (e.g. Hu Tao Blood Blossom). */
   readonly element?: Element;
   readonly multipliers?: readonly FeatureMultiplierEntry[];

@@ -108,8 +108,15 @@ function resolveElement(feature: Feature, ctx: CompileContext): Element {
   return ctx.charElement;
 }
 
-/** Map a feature category to her damageType for the DMG-bonus / RES keys. */
+/**
+ * Map a feature to her damageType for the DMG-bonus / RES keys.
+ *
+ * If the Feature carries an explicit `damageType` field, it takes precedence
+ * (needed for charged attacks: category="attack" but damageType="charged" so
+ * the `dmg_charged` bonus is applied correctly).
+ */
 function damageTypeOf(feature: Feature): string {
+  if (feature.damageType !== undefined) return feature.damageType;
   switch (feature.category) {
     case "attack":
       return "normal";
