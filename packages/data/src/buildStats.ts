@@ -79,14 +79,16 @@ const DMG_BONUS_KEYS = [
   "dmg_dendro",
 ] as const;
 
-/** Level/ascension parameters for the build. */
+/**
+ * Level/ascension parameters for base-stat assembly. (Talent levels are a
+ * compileFeature concern — they pick the talent-table row, not a base stat — so
+ * they live on CompileContext, not here.)
+ */
 export interface BuildLevels {
   readonly charLevel: number;
   readonly ascension: number;
   readonly weaponLevel: number;
   readonly weaponAscension: number;
-  /** Talent levels per slot (drives the leveling-setting keys). */
-  readonly talents: { readonly attack: number; readonly elemental: number; readonly burst: number };
 }
 
 /** Enemy parameters: level + resistance as a percent (uniform number) or per-element map. */

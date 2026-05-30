@@ -42,7 +42,6 @@ describe("loader", () => {
         ascension: 6,
         weaponLevel: 90,
         weaponAscension: 6,
-        talents: { attack: 10, elemental: 10, burst: 10 },
       },
       enemy: { level: 90, resistance: 10 },
       settings: {},
