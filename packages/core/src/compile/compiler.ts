@@ -33,14 +33,13 @@ import type { DamageBlock } from "./damage.js";
 /**
  * Compile a CDamage block tree into a fast, pure `(ctx) => DamageResult` closure.
  *
- * The closure captures the root's pre-resolved `damage` function, so each call
- * is a flat chain of arithmetic with no allocation beyond the result object and
- * no tree traversal. Safe to memoise and reuse across millions of contexts (the
- * future optimiser's hot loop).
+ * `tree.damage` is already typed `(ctx: DamageContext) => DamageResult`, which is
+ * structurally identical to `CompiledFeature`. Returning it directly avoids an
+ * unnecessary wrapper closure. Safe to memoise and reuse across millions of
+ * contexts (the future optimiser's hot loop).
  */
 export function compile(tree: DamageBlock): CompiledFeature {
-  const { damage } = tree;
-  return (ctx: DamageContext): DamageResult => damage(ctx);
+  return tree.damage;
 }
 
 /**

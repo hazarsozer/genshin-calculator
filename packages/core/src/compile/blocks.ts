@@ -199,16 +199,22 @@ export function cBaseDamage(children: readonly Block[]): Block {
   return { kind: "base_damage", children, run: sum.run };
 }
 
+// ---------------------------------------------------------------------------
+// Private helper for the three `(1 + Σ)` factories
+// ---------------------------------------------------------------------------
+
 /**
- * DMG% bonus factor: additive among themselves, then `(1 + Σ)`. Ports
- * CMultiplierBonus (a CSumPlusOne). Children are the individual DMG% terms
- * (`dmg_all`, `dmg_<element>`, `dmg_<type>`), each a fraction at execution time.
- * Empty → 1. See wiki/concepts/damage-formula.md.
+ * Shared `(1 + Σ children)` factory used by cMultiplierBonus, cMultiplierReaction,
+ * and cCritDmg. The three factories are structurally identical — they differ only
+ * in `kind`. Behaviour is unchanged: empty children → 1.
  */
-export function cMultiplierBonus(children: readonly Block[]): Block {
+function makeSumPlusOne(
+  kind: BlockKind,
+  children: readonly Block[]
+): Block {
   const fns = children.map((c) => c.run);
   return {
-    kind: "multiplier_bonus",
+    kind,
     children,
     run: (ctx) => {
       let total = 1;
@@ -219,21 +225,22 @@ export function cMultiplierBonus(children: readonly Block[]): Block {
 }
 
 /**
+ * DMG% bonus factor: additive among themselves, then `(1 + Σ)`. Ports
+ * CMultiplierBonus (a CSumPlusOne). Children are the individual DMG% terms
+ * (`dmg_all`, `dmg_<element>`, `dmg_<type>`), each a fraction at execution time.
+ * Empty → 1. See wiki/concepts/damage-formula.md.
+ */
+export function cMultiplierBonus(children: readonly Block[]): Block {
+  return makeSumPlusOne("multiplier_bonus", children);
+}
+
+/**
  * Reaction multiplier factor: `(1 + Σ reactionBonus)`. Ports CMultiplierReaction
  * (a CSumPlusOne). Provided here as the typed seam P1.6 will populate; the core
  * triple machinery is agnostic to it — it is just another factor in CDamage.items.
  */
 export function cMultiplierReaction(children: readonly Block[]): Block {
-  const fns = children.map((c) => c.run);
-  return {
-    kind: "multiplier_reaction",
-    children,
-    run: (ctx) => {
-      let total = 1;
-      for (const f of fns) total += f(ctx);
-      return total;
-    },
-  };
+  return makeSumPlusOne("multiplier_reaction", children);
 }
 
 /** Default Aspirine stat keys for DEF reduction / ignore. */
@@ -282,7 +289,7 @@ export function cMultiplierDefence(
  *   0 ≤ r ≤ .75 → 1 − r       (linear)
  *   r > .75     → 1/(1 + 4r)  (heavily diminishing)
  *
- * Ports CResistanceValue.compile() exactly (the ternary at Damage.js:536).
+ * Ports CResistanceValue.compile() exactly (the ternary at Block.js:534-536).
  * `r` is read from the aggregated `enemy_res_<element>` stat (already a fraction,
  * shred folded in — shred is negative). See wiki/concepts/res-multiplier.md.
  */
@@ -318,14 +325,5 @@ export function cCritRate(children: readonly Block[]): Block {
  * critDMG is a fraction at execution time. See wiki/concepts/crit.md.
  */
 export function cCritDmg(children: readonly Block[]): Block {
-  const fns = children.map((c) => c.run);
-  return {
-    kind: "crit_dmg",
-    children,
-    run: (ctx) => {
-      let total = 1;
-      for (const f of fns) total += f(ctx);
-      return total;
-    },
-  };
+  return makeSumPlusOne("crit_dmg", children);
 }

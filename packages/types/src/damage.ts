@@ -68,7 +68,15 @@ export type BuildStats = Readonly<Partial<Record<AnyStatKey, number>>> &
  */
 export interface EnemyParams {
   readonly level: number;
-  /** Base elemental resistances keyed by element, as percentages (e.g. 10 = 10%). */
+  /**
+   * Base elemental resistances keyed by element, as percentages (e.g. 10 = 10%).
+   *
+   * INPUT FIELD — reserved for the P1.7 data layer. The compile engine does NOT
+   * read this field directly; it reads the aggregated `enemy_res_<element>` stat
+   * keys from `ctx.stats` (already a fraction, with shred folded in). The P1.7
+   * data loader is responsible for folding `resistance` entries into the
+   * appropriate `enemy_res_<element>` keys before building the DamageContext.
+   */
   readonly resistance: Readonly<Partial<Record<Element, number>>>;
 }
 
@@ -76,8 +84,11 @@ export interface EnemyParams {
  * The full context the engine needs to evaluate a damage formula.
  * Passed to the compiled function that returns DamageResult.
  *
- * NOTE: This is a minimal faithful shape. P1.5 (engine core) will extend it
- * with talent levels, reaction multipliers, and post-effect state.
+ * NOTE: This shape is FINAL for the compile engine (P1.5 is done). The engine
+ * reads everything it needs from the `stats` bag — talent-level resolution,
+ * reaction multipliers, and post-effect-minted keys are all handled by the data
+ * layer (P1.7) before the block tree is built. `DamageContext` itself is not
+ * extended by the engine.
  */
 export interface DamageContext {
   readonly stats: BuildStats;
