@@ -18,7 +18,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Xinyan)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Xinyan as XinyanStatTable } from "../generated/charTables.js";
 import { Xinyan as XinyanTalents } from "../generated/charTalentTables.js";
 
@@ -134,10 +134,14 @@ const features: readonly Feature[] = [
   // burst_dmg: PHYSICAL (FeatureDamageBurstXinyan has no element param → phys)
   // raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:276-283
   // Must set element: "physical" explicitly to override charElement (pyro).
+  // C2 "Impromptu Opening": ConditionStatic (always-on) crit_rate_xinyan +100% on burst_dmg.
+  // raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:343-350 (constellation[1]).
+  // crit_rate_xinyan is a char-suffixed key → must be wired to critRateBonuses here.
   {
     name: "burst_dmg",
     category: "burst",
     element: "physical",
+    critRateBonuses: ["crit_rate_xinyan"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
   // dot_dmg: pyro burst DoT (FeatureDamageBurst with element: 'pyro')
@@ -154,6 +158,29 @@ const features: readonly Feature[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1: ConditionBoolean toggle (atk_speed — display-only keys) → SKIP.
+// C2 "Impromptu Opening" — ConditionStatic (always-on at C2+), crit_rate_xinyan +100%
+//   on burst_dmg. Wired via critRateBonuses in the burst_dmg feature above.
+//   raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:341-351 (constellation[1]).
+// C3 "Double-Stop" — +3 Elemental Skill talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:352-360 (constellation[2]).
+// C4: ConditionBoolean toggle (enemy_res_phys:-15) → SKIP.
+// C5 "Banned Music" — +3 Burst talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:373-381 (constellation[4]).
+// C6: ConditionBoolean toggle (PostEffectStatsDef gated) → SKIP.
+
+const constellationConditions: readonly Condition[] = [
+  // C2 — crit_rate_xinyan +100% (always-on ConditionStatic; wired to burst_dmg above).
+  { type: "constellation", constellation: 2, stats: { crit_rate_xinyan: 100 } },
+  // C3 — char_skill_elemental_bonus +3 (skill talent level up).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 — char_skill_burst_bonus +3 (burst talent level up).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
 export const xinyan: DbObjectChar = {
   name: "xinyan",
   gameId: 10000044,
@@ -165,4 +192,5 @@ export const xinyan: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
