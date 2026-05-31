@@ -21,7 +21,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (YunJin)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { YunJin as YunJinStatTable } from "../generated/charTables.js";
 import { YunJin as YunJinTalents } from "../generated/charTalentTables.js";
 
@@ -189,6 +189,25 @@ const features: readonly Feature[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic display-only → SKIP.
+// C2: ConditionBoolean toggle (dmg_normal:15) → SKIP.
+// C3 "Seafaring General" — +3 Burst talent levels (NOTE: C3 is burst, C5 is skill here).
+//   raw/genshin_calc_pub/src/js/db/Char/YunJin.js:430-438 (constellation[2]).
+// C4: ConditionBoolean toggle (def_percent:20) → SKIP.
+// C5 "War God" — +3 Elemental Skill talent levels (NOTE: reversed C3↔C5 vs typical).
+//   raw/genshin_calc_pub/src/js/db/Char/YunJin.js:452-459 (constellation[4]).
+// C6: ConditionStatic{atk_speed_normal:12} gated by ConditionBoolean(yunjin_flag) → SKIP.
+
+const constellationConditions: readonly Condition[] = [
+  // C3 — char_skill_burst_bonus +3 (burst talent level up — Yun Jin reverses C3/C5).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 — char_skill_elemental_bonus +3 (skill talent level up).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
 export const yunJin: DbObjectChar = {
   name: "yun_jin",
   gameId: 10000064,
@@ -200,4 +219,5 @@ export const yunJin: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
