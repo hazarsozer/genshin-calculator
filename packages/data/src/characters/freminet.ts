@@ -40,7 +40,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Freminet)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Freminet as FreminetStatTable } from "../generated/charTables.js";
 import { Freminet as FreminetTalents } from "../generated/charTalentTables.js";
 
@@ -247,6 +247,34 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Dreams of the Foamy Deep": crit_rate_freminet +15. ConditionStatic (always-on
+//   at C1). crit_rate_freminet is a critRateBonuses key used by pressure-stage features.
+// C2 "Penguins and the Land of Plenty": ConditionStatic with no real stats → SKIP (inert).
+// C3 "Song of the Eddies": +3 Normal Attack talent levels.
+//    Raw cons[2]: Condition{ settings:{ char_skill_attack_bonus:3 } }
+// C4 "Dance of the Snowy Moon and Flute": ConditionStacks toggle (atk_percent) → SKIP.
+// C5 "Nights of Nightmares": +3 Elemental Skill talent levels.
+//    Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C6 "Moment of Waking and Resolve": ConditionStacks toggle (crit_dmg per stack) → SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Freminet.js:423-490
+
+const constellationConditions: readonly Condition[] = [
+  // C1: crit_rate_freminet +15. ConditionStatic{ stats:{ crit_rate_freminet:15 } }
+  // This is a char-specific critRateBonuses key applied to Pressurized Floe features.
+  // Raw cons[0]: ConditionStatic{ stats:{ crit_rate_freminet: TalentValues.C1CritRateSkill=15 } }
+  { type: "constellation", constellation: 1, stats: { crit_rate_freminet: 15 } },
+  // C3: +3 Normal Attack talent levels.
+  // Raw cons[2]: Condition{ settings:{ char_skill_attack_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_attack_bonus: 3 } },
+  // C5: +3 Elemental Skill talent levels.
+  // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -261,4 +289,5 @@ export const freminet: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
