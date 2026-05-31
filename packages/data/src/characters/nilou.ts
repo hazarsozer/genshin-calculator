@@ -38,7 +38,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Nilou)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Nilou as NilouStatTable } from "../generated/charTables.js";
 import { Nilou as NilouTalents } from "../generated/charTalentTables.js";
 
@@ -214,6 +214,36 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Dance of the Waning Moon": ConditionStatic — dmg_skill_nilou +65 (always-on).
+//    Raw cons[0]: ConditionStatic{ stats:{ dmg_skill_nilou: C1SkillDmg=65 } }
+//    nilou_watery_moon_dmg feature already carries damageBonuses:['dmg_skill_nilou'].
+// C2 "The Starry Skies Their Flowers Rain": ConditionBoolean (enemy hydro/dendro RES,
+//    gated by NilouParty + stance_bonus + ascension) → SKIP (toggle+party condition).
+// C3 "Orchestrated Pearls of Slaughter": +3 Elemental Burst talent levels.
+//    Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C4 "Fricative Pulse": ConditionBoolean toggle (dmg_burst) → SKIP.
+// C5 "Twirling Lotus": +3 Elemental Skill talent levels.
+//    Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C6 "Frostbreaker's Melody": ConditionStatic with ONLY text_percent display keys → SKIP.
+//    (text_percent_rate/max, text_percent_dmg/max are display-only, not real stat keys.)
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Nilou.js:459-546
+
+const constellationConditions: readonly Condition[] = [
+  // C1: dmg_skill_nilou +65 (always-on ConditionStatic, no subConditions).
+  // nilou_watery_moon_dmg already has damageBonuses:['dmg_skill_nilou'] → picks this up.
+  { type: "constellation", constellation: 1, stats: { dmg_skill_nilou: 65 } },
+  // C3: +3 Elemental Burst (Distant Dreams, Listening Spring).
+  // Raw cons[2]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 Elemental Skill (Dance of Haftkarsvar).
+  // Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -228,4 +258,5 @@ export const nilou: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
