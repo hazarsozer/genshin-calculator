@@ -21,7 +21,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Xingqiu)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Xingqiu as XingqiuStatTable } from "../generated/charTables.js";
 import { Xingqiu as XingqiuTalents } from "../generated/charTalentTables.js";
 
@@ -200,6 +200,25 @@ const features: readonly Feature[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic no real stats → SKIP.
+// C2: ConditionBoolean toggle (enemy_res_hydro:-15) → SKIP.
+// C3 "Weaver of Verses" — +3 Burst talent levels (constellation[2]).
+//   raw/genshin_calc_pub/src/js/db/Char/Xingqiu.js:446-451.
+// C4: ConditionBoolean toggle → SKIP.
+// C5 "Embrace of Rain" — +3 Elemental Skill talent levels (char-level conditions:).
+//   raw/genshin_calc_pub/src/js/db/Char/Xingqiu.js:387-393.
+// C6: ConditionStatic no real stats → SKIP.
+
+const constellationConditions: readonly Condition[] = [
+  // C3 — char_skill_burst_bonus +3 (burst talent level up).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 — char_skill_elemental_bonus +3 (skill talent level up).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
 export const xingqiu: DbObjectChar = {
   name: "xingqiu",
   gameId: 10000025,
@@ -215,4 +234,5 @@ export const xingqiu: DbObjectChar = {
   // (ConditionStatic gated only by ConditionAscensionChar({ascension:4})).
   // raw/genshin_calc_pub/src/js/db/Char/Xingqiu.js:406-416
   baseStats: { dmg_hydro: 20 },
+  conditions: constellationConditions,
 };
