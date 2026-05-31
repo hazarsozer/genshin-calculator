@@ -17,3 +17,4 @@ export { chongyun } from "./chongyun.js";
 // razor.ts exists but is excluded from index pending infra fix (dmg_phys_base)
 export { xiangling } from "./xiangling.js";
 // amber.ts exists but excluded pending infra fix (critRateBonuses/crit_rate_amber)
+export { lisa } from "./lisa.js";
