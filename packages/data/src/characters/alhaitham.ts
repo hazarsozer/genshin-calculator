@@ -29,7 +29,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Alhaitham)
  */
 
-import type { DbObjectChar, Feature, TalentResolver, CharPostEffect } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Alhaitham as AlhaithamStatTable } from "../generated/charTables.js";
 import { Alhaitham as AlhaithamTalents } from "../generated/charTalentTables.js";
 
@@ -284,6 +284,25 @@ const a4PostEffects: readonly CharPostEffect[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Intuition": ConditionStatic no stats → display-only, SKIP.
+// C2 "Debate": ConditionStacks mastery toggle → SKIP (toggle off).
+// C4 "Elucidation": ConditionStacks dmg_dendro + mastery toggle → SKIP.
+// C6 "Structuration": ConditionBoolean crit_rate/crit_dmg toggle → SKIP.
+//
+// Source: raw/genshin_calc_pub/src/js/db/Char/Alhaitham.js:498-568
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Compact Ingenuity": +3 levels to Universality: An Elaboration on Form (Elemental Skill).
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus: 3 } }.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Sagacity": +3 levels to Particular Field: Fetters of Phenomena (Elemental Burst).
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -299,4 +318,5 @@ export const alhaitham: DbObjectChar = {
   features,
   multipliers: [],
   postEffects: a4PostEffects,
+  conditions: constellationConditions,
 };
