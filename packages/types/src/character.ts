@@ -186,6 +186,19 @@ export interface CharPostEffect {
    * default (`getTotal(capStat)`) is preserved for any `getTotal`-cap effect.
    */
   readonly capUsesBase?: boolean;
+  /**
+   * When true, the produced bonus is already a percent-STAT value (the `toStat`
+   * satisfies her `isPercent`), so the `isPercent /100` fold is applied INSIDE the
+   * adapter — `ratio`/`capValue` stay her literal raw-percent constants and the
+   * adapter emits the FRACTION. `buildStats` then writes the key via the
+   * `damageBonusesRaw` channel (emit-as-is, NOT divided by 100 again).
+   *
+   * Mirrors her `PostEffectStats.getTree`, which folds `value/100` (and the cap
+   * `/100`) when `isPercent(stat)` (Stats.js:63-66) — so a percent-stat post-effect
+   * lands in the bag as a fraction. Furina's A4 writes `dmg_skill_furina`
+   * (`min(0.0007 × hp_total, 28)` → fraction; Furina.js:503-509).
+   */
+  readonly toStatIsDamageBonus?: boolean;
   /** Conditions gating the effect; ALL must evaluate true (settings-driven). */
   readonly conditions?: readonly Condition[];
 }

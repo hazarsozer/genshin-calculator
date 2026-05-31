@@ -155,10 +155,14 @@ export interface BuildResult {
  * capped at `capRatio × getTotal(capStat)`, gated by ALL `conditions` evaluating
  * true against the settings. Reads the PRE-GROUP snapshot (never mutates).
  *
- * `capUsesBase` is a faithful variant of her `getTree` (Stats.js:58-66): the
- * stat-relative `cap` reads the BASE stat (`capStat_base`) × capRatio, not
- * `getTotal(capStat)` — her `statCapPost` whose base is a `from: '<stat>_base'`
- * term (Hu Tao's `atk_base × 4`, Hutao.js:155-158).
+ * Two faithful variants of her `getTree` (Stats.js:58-66):
+ *  - `capUsesBase`: the stat-relative `cap` reads the BASE stat (`capStat_base`)
+ *    × capRatio, not `getTotal(capStat)` — her `statCapPost` whose base is a
+ *    `from: '<stat>_base'` term (Hu Tao's `atk_base × 4`, Hutao.js:155-158).
+ *  - `toStatIsDamageBonus`: the `toStat` is a percent stat, so the `isPercent
+ *    /100` fold is applied to BOTH the bonus and the absolute `capValue` here
+ *    (her Stats.js:63-66) — `ratio`/`capValue` stay her literal raw-percent
+ *    constants; the adapter emits the FRACTION (Furina's A4 `dmg_skill_furina`).
  */
 function toPostEffect(effect: CharPostEffect): PostEffect {
   const conditions: readonly Condition[] = effect.conditions ?? [];
@@ -176,9 +180,28 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       if (effect.capValue !== undefined) {
         bonus = Math.min(bonus, effect.capValue);
       }
+      // Percent-stat post-effect: fold the isPercent /100 here (her Stats.js:63-66),
+      // turning the raw-percent bonus into the FRACTION the bag/engine expects.
+      if (effect.toStatIsDamageBonus) {
+        bonus = bonus / 100;
+      }
       return { [effect.toStat]: bonus };
     },
   };
+}
+
+/**
+ * Keys whose VALUE in the stat bag is produced by a `toStatIsDamageBonus`
+ * post-effect — already a FRACTION (the adapter folded the isPercent /100). The
+ * `damageBonusesRaw` emit channel writes these as-is; they must NOT be divided by
+ * 100 again by the feature-bonus-key emit loop (the double-divide constraint).
+ */
+function rawDamageBonusKeys(effects: readonly CharPostEffect[]): ReadonlySet<string> {
+  const keys = new Set<string>();
+  for (const e of effects) {
+    if (e.toStatIsDamageBonus) keys.add(e.toStat);
+  }
+  return keys;
 }
 
 /**
@@ -240,8 +263,12 @@ export function buildStats(input: BuildInput): BuildResult {
   for (const cond of input.extraConditions ?? []) raw.concat(conditionStats(cond, settings));
 
   // 3. Derive — condition-gated post-effects (reads RAW percents via getTotal).
-  const effects = (input.char.postEffects ?? []).map(toPostEffect);
+  const charEffects = input.char.postEffects ?? [];
+  const effects = charEffects.map(toPostEffect);
   applyPostEffects(raw, effects, settings);
+  // Keys a `toStatIsDamageBonus` post-effect already wrote as a FRACTION — the
+  // `damageBonusesRaw` channel emits them as-is (skip the feature-bonus /100).
+  const rawDmgKeys = rawDamageBonusKeys(charEffects);
 
   // 4. Read — emit the engine-facing bag.
   const out: Record<string, number> = {};
@@ -287,8 +314,15 @@ export function buildStats(input: BuildInput): BuildResult {
   // matching term, so emit every referenced key present in the bag as a FRACTION
   // (all are percent stats). Absent → unset (engine reads 0). This stays in the
   // explicit-emit spirit: only keys the character's features actually reference.
+  //
+  // damageBonusesRaw exception: a key written by a `toStatIsDamageBonus`
+  // post-effect is ALREADY a fraction (the adapter folded the isPercent /100, her
+  // Stats.js:63-66) — emit it AS-IS, never /100 again. Furina's A4
+  // `dmg_skill_furina` (HP→% post-effect) goes through here; dividing it twice is
+  // the double-divide bug the channel exists to prevent.
   for (const key of collectFeatureBonusKeys(input.char.features)) {
-    if (raw.isSet(key)) out[key] = raw.get(key) / 100;
+    if (!raw.isSet(key)) continue;
+    out[key] = rawDmgKeys.has(key) ? raw.get(key) : raw.get(key) / 100;
   }
 
   // Reaction scaling / bonus keys the reaction factories read inside their

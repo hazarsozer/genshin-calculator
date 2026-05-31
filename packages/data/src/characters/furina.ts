@@ -19,15 +19,14 @@
  *
  * A4 "Unheard Confession" (auto-active at A6) grants dmg_skill_furina =
  * min(0.0007 · hp_total, 28%). Her engine models this as PostEffectStatsHP
- * writing the percent stat `dmg_skill_furina`. We CANNOT route an HP→percent
- * post-effect through `damageBonuses`: buildStats' post-effect adapter writes a
- * FRACTION, but the feature-bonus-key emit (`collectFeatureBonusKeys`) divides
- * referenced keys by 100 — a post-effect-sourced damageBonuses key would be
- * double-divided (engine-layer behaviour we must not change). Under the FIXED
- * canonical build hp_total is the constant 28533.38835, so the A4 value is the
- * constant min(0.0007·28533.38835, 28) = 19.973371845 (raw percent). We fold it
- * as a static `baseStats` percent (same technique as Amber's A1 crit_rate_amber);
- * buildStats emits it as 19.973371845/100 = 0.19973371845, exactly her value.
+ * writing the percent stat `dmg_skill_furina` (Furina.js:503-509). We port it as a
+ * real HP→% post-effect with `toStatIsDamageBonus: true`: the adapter derives
+ * min(0.0007 · getTotal('hp'), 28) and folds the isPercent /100 (her Stats.js:
+ * 63-66), landing dmg_skill_furina in the bag as a FRACTION; buildStats'
+ * `damageBonusesRaw` channel then emits it AS-IS (the salon hits' `damageBonuses`
+ * key is NOT divided again). This recomputes per build — the previous code
+ * hardcoded the fixed build's min(0.0007·28533.38835, 28) = 19.973371845, which
+ * was correct ONLY at that build and desynced on any other HP total.
  *
  * Display-only fixture rows skipped by the harness (empty damageType):
  *   furina_fanfare_dmg_bonus / heal_bonus (0 at 0 fanfare stacks in solo C0),
@@ -46,7 +45,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Furina)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Furina as FurinaStatTable } from "../generated/charTables.js";
 import { Furina as FurinaTalents } from "../generated/charTalentTables.js";
 
@@ -206,11 +205,25 @@ const features: readonly Feature[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
-// A4 "Unheard Confession" (auto-active at A6): dmg_skill_furina =
-// min(0.0007 · hp_total, 28) as a raw percent. hp_total is the constant
-// 28533.38835 under the fixed canonical build → min(19.973371845, 28) =
-// 19.973371845. buildStats emits this /100 = 0.19973371845 (her A4 value).
-const DMG_SKILL_FURINA_A4 = Math.min(0.0007 * 28533.38835, 28);
+// A4 "Unheard Confession": dmg_skill_furina = min(0.0007 · hp_total, 28) (her
+// raw percent + 28% statCap; Furina.js:503-509). `toStatIsDamageBonus` folds the
+// isPercent /100 in the adapter (her Stats.js:63-66) so it lands as a FRACTION,
+// then buildStats' damageBonusesRaw channel emits it AS-IS (the salon hits'
+// `damageBonuses: ['dmg_skill_furina']` key is not divided again). Auto-active at
+// the A6 canonical build (her ConditionAscensionChar asc4 is satisfied; the
+// ascension gate is not threaded into settings, matching Yae Miko / Alhaitham's
+// A4 post-effects), so no `conditions` here. Recomputes per build:
+//   base hp_total 28533.38835 → min(19.973, 28) = 19.973% → 0.19973371845
+//   high-HP hp_total 66420.63 → min(46.49, 28) = 28%      → 0.28 (cap binds)
+const a4PostEffects: readonly CharPostEffect[] = [
+  {
+    fromStat: "hp",
+    toStat: "dmg_skill_furina",
+    ratio: 0.0007,
+    capValue: 28,
+    toStatIsDamageBonus: true,
+  },
+];
 
 export const furina: DbObjectChar = {
   name: "furina",
@@ -223,5 +236,5 @@ export const furina: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  baseStats: { dmg_skill_furina: DMG_SKILL_FURINA_A4 },
+  postEffects: a4PostEffects,
 };
