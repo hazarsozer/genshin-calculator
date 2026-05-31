@@ -27,7 +27,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Cyno)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Cyno as CynoStatTable } from "../generated/charTables.js";
 import { Cyno as CynoTalents } from "../generated/charTalentTables.js";
 
@@ -137,6 +137,29 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// NOTE: Cyno's C3 bumps the BURST talent and C5 bumps the ELEMENTAL SKILL —
+// the reverse of most characters. Raw cons[2]=burst_bonus, cons[4]=elemental_bonus.
+//
+// C1 "Ordinance: Unceasing Vigil": ConditionStatic with atk_speed_normal — display-only
+//   stat key (atk_speed_*), subConditions gated on burst-stance → SKIP.
+// C2 "Ceremony: Homecoming of Spirits": ConditionStacks dmg_electro toggle → SKIP.
+// C4 "Austerity: Forbidding Guard": ConditionStatic no stats → display-only, SKIP.
+// C6 "Raiment: Just Scales": ConditionStatic no stats → display-only, SKIP.
+//
+// Source: raw/genshin_calc_pub/src/js/db/Char/Cyno.js:502-567
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Precept: Lawful Enforcer": +3 levels to Mortuary Rite (Elemental Burst).
+  // Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 "Funerary Rite: The Passing of Starlight": +3 levels to Secret Rite (Elemental Skill).
+  // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus: 3 } }.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -151,4 +174,5 @@ export const cyno: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
