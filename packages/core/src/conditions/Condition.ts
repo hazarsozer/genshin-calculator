@@ -22,6 +22,7 @@
 import type {
   Condition,
   ConditionBoolean,
+  ConditionBooleanRefine,
   ConditionStatic,
   ConditionStaticRefine,
   ConditionConstellation,
@@ -48,6 +49,8 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
   switch (condition.type) {
     case "boolean":
       return evaluateBoolean(condition, ctx);
+    case "boolean-refine":
+      return evaluateBooleanRefine(condition, ctx);
     case "static":
       return evaluateStatic(condition, ctx);
     case "refine":
@@ -95,6 +98,20 @@ function evaluateBoolean(condition: ConditionBoolean, ctx: EvalContext): boolean
   if (!base) return false;
 
   const settingValue = condition.name !== undefined ? ctx[condition.name] : undefined;
+  const active = Boolean(settingValue);
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionBooleanRefine.isActive — same activation logic as ConditionBoolean.
+ * Active when ctx[name] is truthy; stat resolution (using weapon_refine) is P2.2's domain.
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Boolean/Refine.js
+ */
+function evaluateBooleanRefine(condition: ConditionBooleanRefine, ctx: EvalContext): boolean {
+  const base = checkGate(condition, ctx);
+  if (!base) return false;
+
+  const settingValue = ctx[condition.name];
   const active = Boolean(settingValue);
   return condition.invert ? !active : active;
 }

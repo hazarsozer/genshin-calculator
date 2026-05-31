@@ -79,6 +79,7 @@ export type {
   ConditionSettings,
   ConditionBase,
   ConditionBoolean,
+  ConditionBooleanRefine,
   ConditionStatic,
   ConditionConstellation,
   ConditionStaticRefine,

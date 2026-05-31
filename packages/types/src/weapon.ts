@@ -40,6 +40,8 @@ export interface DbObjectWeapon {
   readonly name: string;
   /** Game-internal numeric ID. */
   readonly gameId: number;
+  /** Serialization ID for URL/save state. Mirrors raw DbObjectWeapon.serializeId. */
+  readonly serializeId?: number;
   readonly rarity: 1 | 2 | 3 | 4 | 5;
   readonly weapon: WeaponType;
   /**

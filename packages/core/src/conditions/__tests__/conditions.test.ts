@@ -117,12 +117,12 @@ describe("ConditionConstellation", () => {
 
 describe("ConditionStaticRefine", () => {
   it("is always active (StaticRefine inherits Static semantics)", () => {
-    const c: ConditionStaticRefine = { type: "refine" };
+    const c: ConditionStaticRefine = { type: "refine", refinementStats: [{ atk_percent: 20 }] };
     expect(evaluate(c, emptyCtx)).toBe(true);
   });
 
   it("invert: returns false", () => {
-    const c: ConditionStaticRefine = { type: "refine", invert: true };
+    const c: ConditionStaticRefine = { type: "refine", invert: true, refinementStats: [{ atk_percent: 20 }] };
     expect(evaluate(c, emptyCtx)).toBe(false);
   });
 });
