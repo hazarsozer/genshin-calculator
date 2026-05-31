@@ -23,8 +23,8 @@ export type { CompileContext, TalentLevels } from "./compileFeature.js";
 
 export { compileCharacter, featureKey } from "./loader.js";
 
-// P1.7b — representative character set
-export { huTao, diluc, aratakiItto, ineffa } from "./characters/index.js";
+// P1.9 — full character roster (all 107)
+export * from "./characters/index.js";
 
 // P1.7b — weapon stat tables for the representative set
 export {
