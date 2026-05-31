@@ -17,7 +17,7 @@
  * Source: raw/genshin_calc_pub/src/js/classes/CalcSet.js (getFeaturesHash)
  */
 
-import { compile } from "@genshin/core";
+import { compile, evaluate } from "@genshin/core";
 import type {
   CharMultiplier,
   CompiledFeature,
@@ -69,6 +69,12 @@ export function compileCharacter(
 
   for (const feature of [...char.features, ...reactionFeatures]) {
     if (feature.isChild) continue;
+    // Feature-level gate: a constellation-added (or otherwise conditional) feature is
+    // produced only when its condition holds against the compile settings (absent =
+    // always). Mirrors her getFeaturesHash `feat.checkConditions` filter; the cons
+    // features are declared with `condition: ConditionConstellation(n)`. Inert at the
+    // base build (no base feature sets `.condition`) → the C0 golden suite is untouched.
+    if (feature.condition !== undefined && !evaluate(feature.condition, ctx.settings)) continue;
     const block = compileFeature(feature, featureCtx);
     out[featureKey(feature)] = compile(block);
   }

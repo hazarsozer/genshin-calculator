@@ -183,8 +183,12 @@ function baseDamageTerm(
   // `<leveling>_bonus` settings added on top of the base level — her
   // Feature.getTalentLevel (Feature.js:235-244). Inert when no `_bonus` key is set.
   const talentLevel = baseLevel + skillLevelBonus(ctx.settings, entry.leveling);
-  // her getValue: values.getValue(level)/100 → a fraction.
-  const talentPercent = entry.values.getValue(talentLevel) / 100;
+  // her getValue: values.getValue(level)/100 → a fraction. The optional numeric
+  // `scalingMultiplier` is the flat extra factor on the base term (her
+  // getTreeBonusMultiplier CConst — "bonus hit = X% of a base hit", e.g. Amber C1's
+  // second arrow at 0.20). Absent = ×1.
+  const talentPercent =
+    (entry.values.getValue(talentLevel) / 100) * (entry.scalingMultiplier ?? 1);
 
   // Scaling stat: default 'atk' total. The `*` in her 'atk*' means "use total";
   // buildStats supplies `<stat>_total`. Strip any trailing '*' the data carries.

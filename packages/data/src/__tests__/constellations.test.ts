@@ -1,42 +1,52 @@
 /**
- * P2.C Wave-1 — Constellation calibration harness.
+ * P2.C Wave-1 — Constellation harness over the FULL roster.
  *
- * Validates a character built at C6 against the oracle's `constellations` fixture
- * family (her v5.8 engine at `setCharLevels({constellation: 6})`, skills left at
- * 10/10/10 — build-configs.mjs `constellations`). The build is otherwise the fixed
- * canonical build (Lv90/A6, enemy Lv90 10% res, sampleStats bonus block); the only
- * difference from `base` is `char_constellation: 6`.
+ * Runs our engine on every character at C6 and asserts each PRODUCED damage feature
+ * matches the oracle's `constellations` fixture (her v5.8 engine at
+ * `setCharLevels({constellation: 6})`, skills 10/10/10 — build-configs.mjs). The build
+ * is otherwise the fixed canonical build (Lv90/A6, enemy Lv90 10% res, sampleStats);
+ * the only delta from `base` is `char_constellation: 6`.
  *
- * WHY this exists (the calibration): the `constellations` config leaves the skill
- * levels at 10 — so any C3/C5 "+3 to a talent" must be applied by the engine, not the
- * config. Her engine does it via condition-contributed settings: C3/C5 conditions carry
- * `settings:{char_skill_<slot>_bonus:3}`, and the talent-level resolver adds that
- * `_bonus` (raw Feature.js:235-244 / Multiplier.getLevel). This harness is the
- * end-to-end proof of that chain: `buildStats` propagates condition `.settings` (its
- * returned `settings`), `compileCharacter` reads the merged settings, and
- * `compileFeature.baseDamageTerm` adds the `_bonus` offset to the talent row.
+ * GROUND TRUTH: each `constellations/<slug>.json` is HER engine's C6 output (dumped by
+ * tools/oracle/dump-oracle.mjs). A character passes this suite iff our C6 numbers match
+ * hers within TOLERANCE — there is NO skip, so a char whose constellations affect damage
+ * but are not yet ported FAILS until ported correctly. The coverage gate additionally
+ * requires every fixture damage feature to be produced (catches a constellation that adds
+ * a NEW damage feature), and the mis-key guard rejects any produced key absent from the
+ * fixture. This is the same strength as golden.test.ts (base C0), lifted to C6.
  *
- * CALIBRATION SCOPE: hu_tao only. Hu Tao spans two of the three constellation shapes
- * in one character — multiplier-mod (C2: +10% Max HP → Blood Blossom, a P2.3 targeted
- * multiplier gated by ConditionConstellation) and talent-bump (C3 skill +3, C5 burst
- * +3). The third shape — a flat-stat ConditionConstellation — is already covered by the
- * P2.2 stats-concat path. The Wave-1 fan-out generalizes this harness to all 107 chars
- * (data-driven "cons ported" skip, like artifactSets.test.ts).
+ * THE TALENT-BUMP CHAIN (validated by the hu_tao calibration): C3/C5 "+3 to a talent"
+ * are conditions contributing `settings:{char_skill_<slot>_bonus:3}`; `buildStats`
+ * propagates condition `.settings` into the returned `settings`, which this harness
+ * threads into the compile context, where `compileFeature` adds the `_bonus` to the
+ * talent level (her Feature.getTalentLevel). C2-style always-on cons buffs are
+ * constellation-gated `char.multipliers` / conditions (P2.2/P2.3).
+ *
+ * PORTING A CHARACTER (Wave-1 fan-out): edit ONLY `characters/<slug>.ts` — add the
+ * constellation conditions/multipliers/features the fixture requires, reading the raw
+ * `db/Char/<Name>.js` constellation array + `char.multipliers`/`char.conditions` for the
+ * exact mechanism. Toggle constellations (ConditionBoolean) are OFF in this config →
+ * deferred to Wave 2 (the toggles/cons-mid fixtures). The fixture is the per-char spec.
  *
  * Sources:
  *   tests/golden/fixtures/constellations/<slug>.json — oracle fixture (C6)
  *   tools/oracle/build-configs.mjs (constellations config)
- *   raw/genshin_calc_pub/src/js/db/Char/Hutao.js (C2/C3/C5)
+ *   packages/data/src/__tests__/golden.test.ts (the base-C0 sibling harness)
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
 import { describe, it, expect } from "vitest";
 import { buildStats } from "../buildStats.js";
 import { compileCharacter } from "../loader.js";
-import { huTao } from "../characters/hu-tao.js";
-import { blackcliffPoleStatTable } from "../generated/weaponStatTables.js";
+import {
+  blackcliffPoleStatTable,
+  theBellStatTable,
+  alleyFlashStatTable,
+  alleyHunterStatTable,
+  solarPearlStatTable,
+} from "../generated/weaponStatTables.js";
 import type { DbObjectChar, StatTableEntry } from "@genshin/types";
 
 // ---------------------------------------------------------------------------
@@ -113,7 +123,7 @@ function isDamageTripleEntry(entry: FixtureEntry): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// Calibration reps (Wave-1 fan-out will generalize this to all 107)
+// Auto-discovery of the full roster (identical machinery to golden.test.ts)
 // ---------------------------------------------------------------------------
 
 interface Rep {
@@ -122,21 +132,84 @@ interface Rep {
   readonly slug: string;
 }
 
-const REPS: readonly Rep[] = [
-  { char: huTao, weaponStatTable: blackcliffPoleStatTable, slug: "hu_tao" },
-];
+const WEAPON_TABLE_BY_TYPE: Readonly<Record<string, readonly StatTableEntry[]>> = {
+  sword: alleyFlashStatTable,
+  claymore: theBellStatTable,
+  polearm: blackcliffPoleStatTable,
+  bow: alleyHunterStatTable,
+  catalyst: solarPearlStatTable,
+};
+
+declare global {
+  interface ImportMeta {
+    glob(
+      pattern: string,
+      options: { eager: true }
+    ): Record<string, Record<string, unknown>>;
+  }
+}
+
+function slugFromPath(path: string): string {
+  const base = path.slice(path.lastIndexOf("/") + 1).replace(/\.ts$/, "");
+  return base.replace(/-/g, "_");
+}
+
+function isDbObjectChar(value: unknown): value is DbObjectChar {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "weapon" in value &&
+    "element" in value &&
+    "features" in value
+  );
+}
+
+const CHAR_MODULES = import.meta.glob("../characters/*.ts", { eager: true });
+
+const REPS: readonly Rep[] = Object.entries(CHAR_MODULES)
+  .filter(([path]) => !path.endsWith("/index.ts"))
+  .map(([path, mod]): Rep => {
+    const slug = slugFromPath(path);
+    const chars = Object.values(mod).filter(isDbObjectChar);
+    if (chars.length !== 1) {
+      throw new Error(
+        `characters/${slug}: expected exactly 1 DbObjectChar export, found ${chars.length}`
+      );
+    }
+    const char = chars[0]!;
+    const weaponStatTable = WEAPON_TABLE_BY_TYPE[char.weapon];
+    if (!weaponStatTable) {
+      throw new Error(
+        `characters/${slug}: no default weapon table for weapon type "${char.weapon}"`
+      );
+    }
+    return { char, weaponStatTable, slug };
+  })
+  .sort((a, b) => a.slug.localeCompare(b.slug));
+
+// Belt-and-suspenders: the glob must discover EVERY character file on disk.
+describe("auto-discovery (constellations)", () => {
+  it("every character file is represented in REPS", () => {
+    const charDir = join(dirname(fileURLToPath(import.meta.url)), "../characters");
+    const fileCount = readdirSync(charDir).filter(
+      (f) => f.endsWith(".ts") && f !== "index.ts"
+    ).length;
+    expect(REPS.length).toBe(fileCount);
+    expect(REPS.length).toBeGreaterThan(0);
+  });
+});
 
 // ---------------------------------------------------------------------------
-// Harness
+// Harness — every character at C6 vs her engine
 // ---------------------------------------------------------------------------
 
 for (const { char, weaponStatTable, slug } of REPS) {
   describe(`constellations C${CONSTELLATION}: ${slug}`, () => {
     const fixture = loadFixture(slug);
 
-    // buildStats propagates condition `.settings` (C3/C5 `char_skill_*_bonus`) into
-    // the returned `settings` — thread those into the compile context so the talent
-    // offsets + the constellation-gated C2 multiplier resolve at compile time.
+    // buildStats propagates condition `.settings` (C3/C5 `char_skill_*_bonus`) into the
+    // returned `settings` — thread those into the compile context so the talent offsets
+    // + constellation-gated multipliers resolve at compile time.
     const { context, settings } = buildStats({
       char,
       weaponStatTable,
@@ -198,9 +271,6 @@ for (const { char, weaponStatTable, slug } of REPS) {
     });
 
     it(`${slug}: full coverage — no unmodelled fixture damage feature`, () => {
-      console.info(
-        `[constellations] ${slug}: ${producedKeys.length}/${allDamageKeys.length} fixture damage features modelled`
-      );
       expect(
         unmodelledKeys,
         `${slug}: unmodelled fixture damage features: ${unmodelledKeys.join(", ")}`

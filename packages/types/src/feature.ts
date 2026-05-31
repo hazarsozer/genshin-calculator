@@ -52,8 +52,21 @@ export interface FeatureMultiplierEntry {
    * Provenance label (her `FeatureMultiplier.source`, e.g. `"ascension4"`,
    * `"constellation2"`). Informational only — never affects the computed value.
    * Present on char-level multipliers; absent on plain per-feature talent terms.
+   * (Her `scalingSource` is the same kind of label — fold it into `source`.)
    */
   readonly source?: string;
+  /**
+   * Flat extra multiplier on the base term (her `FeatureMultiplier.scalingMultiplier`
+   * when NUMERIC): the term becomes `talent% × scalingStat × scalingMultiplier`. Used
+   * by "bonus hit = X% of a base hit" constellations — e.g. Amber C1's second arrow
+   * (20% of the aimed shot, `scalingMultiplier: 0.20`). Absent = ×1 (no effect).
+   *
+   * Mirrors her `getTreeBonusMultiplier` → `CConst(value)` for a numeric
+   * `getScalingMultiplier` (Multiplier.js:223-264). The string-stat form
+   * (`(1 + stat)`) and the `scalingMultiplierCondition` gate are not yet modelled
+   * (no v5.8 constellation in scope needs them); add them if a source does.
+   */
+  readonly scalingMultiplier?: number;
   /**
    * CHAR-LEVEL multipliers only: which features this multiplier applies to.
    * When set (only on `char.multipliers` entries), the multiplier is summed into
@@ -178,6 +191,20 @@ export interface Feature {
    * Source: raw/.../Feature2/Reaction/Transformative/Lunar/*.js
    */
   readonly reaction?: FeatureReaction;
+  /**
+   * Optional gate on whether this feature is PRODUCED at all. When present,
+   * `compileCharacter` emits the feature only if `evaluate(condition, settings)` is
+   * true (absent = always produced). This is how a CONSTELLATION-added damage feature
+   * is modelled: declare it with `condition: ConditionConstellation(n)` so it appears
+   * only at C≥n — her `CalcObjectCharacter.getFeatures` concats
+   * `constellation.getFeatures(level)` (cons features unlocked by level) +
+   * `getFeaturesHash`'s `feat.checkConditions` filter. Inert at the base build (no base
+   * feature sets it → all produced), so the C0 golden suite is untouched.
+   *
+   * Source: raw/.../classes/CalcObject/Character.js:82-95 (getFeatures);
+   *         raw/.../classes/CalcSet.js (getFeaturesHash feat.checkConditions filter)
+   */
+  readonly condition?: Condition;
 }
 
 /**
