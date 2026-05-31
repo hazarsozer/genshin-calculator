@@ -65,6 +65,7 @@ import { ningguang } from "../characters/ningguang.js";
 import { fischl } from "../characters/fischl.js";
 import { rosaria } from "../characters/rosaria.js";
 import { collei } from "../characters/collei.js";
+import { bennett } from "../characters/bennett.js";
 import {
   blackcliffPoleStatTable,
   theBellStatTable,
@@ -181,6 +182,7 @@ const REPS: readonly Rep[] = [
   { char: fischl,       weaponStatTable: alleyHunterStatTable,    slug: "fischl"        },
   { char: rosaria,      weaponStatTable: blackcliffPoleStatTable, slug: "rosaria"       },
   { char: collei,       weaponStatTable: alleyHunterStatTable,    slug: "collei"        },
+  { char: bennett,      weaponStatTable: alleyFlashStatTable,     slug: "bennett"       },
 ];
 
 // ---------------------------------------------------------------------------
