@@ -48,7 +48,7 @@
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier.js (getTreeBonusMultiplier, scalingMultiplier)
  */
 
-import type { DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
 import { Heizou as HeizouStatTable } from "../generated/charTables.js";
 import { Heizou as HeizouTalents } from "../generated/charTalentTables.js";
 
@@ -273,6 +273,50 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Named Juvenile Casebook": ConditionBoolean (atk_speed_normal toggle) → SKIP.
+// C2 "Investigative Collection": ConditionStatic no real stats → SKIP.
+// C3 "Tome of Lies": wait — raw has C3=elemental_bonus, C4=ConditionStatic, C5=burst_bonus.
+//   Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } } → C3.
+//   Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } } → C5.
+// C4 "Tome of Lies": ConditionStatic no real stats → SKIP.
+// C6 "Curious Casefiles": ConditionStatic with crit_rate_heizou1/2/3/4 + crit_dmg_heizou4.
+//   These suffixed keys are ALREADY wired into the heizo_skill_*_dmg features above
+//   (critRateBonuses / critDamageBonuses). The C6 stat grant populates the keys so
+//   they contribute. At C<6 the keys read 0 → features remain base-correct.
+//
+// TalentValues: C6CritRate=4, C6CritDmg=32.
+// crit_rate_heizou1 = 4, crit_rate_heizou2 = 8, crit_rate_heizou3 = 12,
+// crit_rate_heizou4 = 16, crit_dmg_heizou4 = 32.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Heizou.js:436-499
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Tome of Lies" — +3 Elemental Skill talent levels (Heartstopper Strike).
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Curious Casefiles" — wait, raw cons[4] = char_skill_burst_bonus.
+  // C5 "Astable Investigation": +3 Elemental Burst talent levels (Windmuster Kick).
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // C6 "Curious Casefiles" — crit_rate_heizou1/2/3/4 and crit_dmg_heizou4.
+  // ConditionStatic always-on at C6. Keys wired into skill features above.
+  // Raw cons[5]: ConditionStatic{ stats:{ crit_rate_heizou1:4, crit_rate_heizou2:8,
+  //   crit_rate_heizou3:12, crit_rate_heizou4:16, crit_dmg_heizou4:32 } }
+  {
+    type: "constellation",
+    constellation: 6,
+    stats: {
+      crit_rate_heizou1: 4,
+      crit_rate_heizou2: 8,
+      crit_rate_heizou3: 12,
+      crit_rate_heizou4: 16,
+      crit_dmg_heizou4: 32,
+    },
+  },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -287,4 +331,5 @@ export const shikanoinHeizou: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
