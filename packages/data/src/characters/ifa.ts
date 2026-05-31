@@ -35,7 +35,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Ifa)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Ifa as IfaStatTable } from "../generated/charTables.js";
 import { Ifa as IfaTalents } from "../generated/charTalentTables.js";
 
@@ -130,6 +130,24 @@ const features: readonly Feature[] = [
     element: "anemo",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.ifa_tonicshot_dmg") }],
   },
+  // --- C6 "Oath on a Feathered Knot": extra Tonic Shot hit (120% ATK anemo).
+  // Raw: FeatureDamageNormal with category:'skill', element:'anemo', ValueTable([120]),
+  // ConditionConstellation(6). Ifa.js:229-240
+  // FeatureDamageNormal → damageType:"normal".
+  {
+    name: "ifa_tonicshot_add_dmg",
+    category: "skill",
+    damageType: "normal",
+    element: "anemo",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "char_skill_elemental",
+        values: { getValue: (_level: number) => 120 },
+        source: "constellation6",
+      },
+    ],
+  },
   // --- Burst: Compound Sedation Field ---
   {
     name: "burst_dmg",
@@ -167,6 +185,26 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Vitiferous Elixirs Concoction": ConditionStatic (display-only) → SKIP.
+// C2 "Guiding Spirit of Ballistic Prayer": ConditionStatic (display-only) → SKIP.
+// C3 "Vivification Voyage": +3 levels to Airborne Disease Prevention (skill).
+//    Raw cons[2] settings char_skill_elemental_bonus:3. Ifa.js:336-342
+// C4 "Decayed Vessels Permutation": ConditionBoolean toggle (mastery +100) → SKIP (toggle OFF).
+// C5 "Elemental Elixirs Emporium": +3 levels to Compound Sedation Field (burst).
+//    Raw cons[4] settings char_skill_burst_bonus:3. Ifa.js:357-363
+// C6 "Oath on a Feathered Knot": ConditionStatic (display-only text_percent_dmg) → SKIP;
+//    the actual damage comes from ifa_tonicshot_add_dmg feature above.
+// Raw: db/Char/Ifa.js constellation array (Ifa.js:317-376).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Airborne Disease Prevention (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Compound Sedation Field (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -181,4 +219,5 @@ export const ifa: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
