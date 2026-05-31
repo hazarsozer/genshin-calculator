@@ -15,7 +15,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Faruzan)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Faruzan as FaruzanStatTable } from "../generated/charTables.js";
 import { Faruzan as FaruzanTalents } from "../generated/charTalentTables.js";
 
@@ -138,6 +138,28 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Truth by Any Means": ConditionStatic with no real stats → SKIP (inert).
+// C2 "Overzealous Intellect": ConditionStatic with no real stats → SKIP (inert).
+// C3 "Spirit-Orchard Stroll": +3 Elemental Skill talent levels.
+//    Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C4 "Divine Comprehension": ConditionStatic with no real stats → SKIP (inert).
+// C5 "Wonderland of Rumination": raw cons[4] = {} (empty object) → SKIP.
+//    The C5 party bonus (faruzan_char_skill_burst_bonus) is in partyData → ignored here.
+// C6 "The Wondrous Path of Truth": crit_dmg_anemo:40 ConditionStatic, but its
+//    subConditions require faruzan_wind_benefit toggle which is OFF → inert at C6 in
+//    the canonical build. SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Faruzan.js:316-371
+
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 Elemental Skill talent levels.
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -152,4 +174,5 @@ export const faruzan: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
