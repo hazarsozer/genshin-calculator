@@ -12,6 +12,7 @@
  */
 
 import type {
+  CharMultiplier,
   CharPostEffect,
   Condition,
   DbObjectChar,
@@ -62,6 +63,65 @@ const talents: TalentResolver = {
 const paramita: Condition = {
   type: "boolean",
   name: "hutao_paramita_papilio",
+};
+
+// ---------------------------------------------------------------------------
+// Constellations (P2.C)
+// ---------------------------------------------------------------------------
+// Only the always-on cons effects the `constellations` (C6, toggles off) config
+// exercises: C2 (Blood Blossom +10% Max HP), C3 (skill talent +3), C5 (burst
+// talent +3). C1 (stamina) is inert; C4 (party CR on-kill) and C6 (revive + CR/RES
+// on low-HP Blood Blossom) are toggles, validated by the toggles/cons-mid configs.
+
+/**
+ * C2 "Ominous Rainfall" — Blood Blossom DMG +10% of Max HP. A constellation-gated
+ * char-level targeted multiplier on `skill`: `0.10 × hp_total` summed into Blood
+ * Blossom's base term (the Albedo-C2 shape, P2.3). Gate false at C0/C1 → inert.
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Hutao.js:416-426
+ *   (FeatureMultiplier{ scaling:'hp*', source:'constellation2', values:ValueTable([10]),
+ *    condition:ConditionConstellation(2), target:{damageTypes:['skill']} }).
+ */
+const C2_SKILL_HP_BONUS = 10;
+const c2SkillHpMultiplier: CharMultiplier = {
+  leveling: "",
+  scaling: "hp*",
+  source: "constellation2",
+  values: { getValue: () => C2_SKILL_HP_BONUS },
+  target: { damageTypes: ["skill"] },
+  condition: { type: "constellation", constellation: 2 },
+};
+
+/**
+ * C3 "Lingering Carmine" — +3 levels to Guide to Afterlife (Elemental Skill).
+ * Modelled as her data does: a constellation-gated condition contributing the
+ * `char_skill_elemental_bonus` settings key (no stats), which the talent-level
+ * resolver adds to the skill level (her Feature.getTalentLevel; compileFeature
+ * `baseDamageTerm`). So Blood Blossom compiles at skill level 10+3=13 from C3.
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Hutao.js:373-378
+ *   (ConditionConstellation{ constellation:3, settings:{char_skill_elemental_bonus:3} }).
+ */
+const c3SkillTalentBonus: Condition = {
+  type: "constellation",
+  constellation: 3,
+  settings: { char_skill_elemental_bonus: 3 },
+};
+
+/**
+ * C5 "Crimson Sky" — +3 levels to Spirit Soother (Elemental Burst). Contributes
+ * `char_skill_burst_bonus`, added to the burst talent level by the resolver, so the
+ * burst features compile at level 13 from C5. (In her data this lives in the
+ * constellation array index 4; modelled here as a constellation-gated char condition
+ * — identical effect via the channel the engine already iterates.)
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Hutao.js:462-470
+ *   (constellation[4] → Condition{ settings:{char_skill_burst_bonus:3} }).
+ */
+const c5BurstTalentBonus: Condition = {
+  type: "constellation",
+  constellation: 5,
+  settings: { char_skill_burst_bonus: 3 },
 };
 
 // ---------------------------------------------------------------------------
@@ -202,7 +262,7 @@ export const huTao: DbObjectChar = {
   statTable: HutaoStatTable,
   talents,
   features,
-  multipliers: [],
+  multipliers: [c2SkillHpMultiplier],
   postEffects: [hpToAtk],
-  conditions: [paramita],
+  conditions: [paramita, c3SkillTalentBonus, c5BurstTalentBonus],
 };
