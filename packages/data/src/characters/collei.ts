@@ -151,10 +151,10 @@ const features: readonly Feature[] = [
   // --- C6 "Forest of Falling Arrows": cons-added dendro ATK hit at 200% ATK.
   // Raw is base FeatureDamage (NOT FeatureDamageSkill) with category:'other' →
   // damageType:"" suppresses dmg_<type>; gets dmg_all+dmg_dendro only.
-  // Fixed ValueTable([200]); source:'constellation6'. Raw Collei.js:241-252.
+  // category omitted → loader defaults to "other" (matches the fixture key
+  // `other.collei_...`). Fixed ValueTable([200]); source:'constellation6'. Raw Collei.js:241-252.
   {
     name: "collei_forest_of_falling_arrows_dmg",
-    category: "other",
     element: "dendro",
     damageType: "",
     condition: { type: "constellation", constellation: 6 },
