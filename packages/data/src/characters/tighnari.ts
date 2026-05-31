@@ -77,11 +77,10 @@ const features: readonly Feature[] = [
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }] },
     ],
   },
-  // raw: FeatureDamageNormal normal_hit_3_1 (Tighnari.js:170-180) — child sub-hit
+  // raw: FeatureDamageNormal normal_hit_3_1 (Tighnari.js:170-180) — sub-hit
   {
     name: "normal_hit_3_1",
     category: "attack",
-    isChild: true,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
   },
   // raw: FeatureDamageNormal normal_hit_4 (Tighnari.js:181-188)
