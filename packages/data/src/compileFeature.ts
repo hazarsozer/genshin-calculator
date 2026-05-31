@@ -45,10 +45,12 @@ import {
   cStat,
   cSum,
   cTransformativeDamage,
+  evaluate,
   type Block,
   type DamageBlock,
 } from "@genshin/core";
 import type {
+  CharMultiplier,
   Element,
   EvalContext,
   Feature,
@@ -89,6 +91,14 @@ export interface CompileContext {
    * instead, so it does not need this field.
    */
   readonly charLevel?: number;
+  /**
+   * Char-level ("targeted") multipliers — her `char.multipliers`. Each is summed
+   * into the base-damage term of EVERY feature whose damage type matches the
+   * entry's `target.damageTypes`, gated by `evaluate(condition)` (absent = always
+   * on). Mirrors her `Feature2.getMultipliers` merging `data.multipliers` into each
+   * feature (Feature2.js:121-125). Absent/empty = no char-level multipliers.
+   */
+  readonly charMultipliers?: readonly CharMultiplier[];
 }
 
 /**
@@ -160,6 +170,30 @@ function baseDamageTerm(
   const scalingKey = `${scaling}_total`;
 
   return cMulti([cConst(talentPercent), cStat(scalingKey)]);
+}
+
+/**
+ * Select the char-level ("targeted") multipliers that apply to this feature:
+ * those whose `target.damageTypes` includes the feature's resolved damage type
+ * AND whose gate is active (`evaluate(condition)`; an absent condition is
+ * always-on, per her `FeatureMultiplier.isActive`).
+ *
+ * Faithful to her `Feature2.getMultipliers` second loop (Feature2.js:121-125):
+ * `for (item of data.multipliers) if (item.isActive(data) && item.isMatchFeature(this, data)) push`.
+ * The matched entries' base terms are summed into the SAME `cBaseDamage` as the
+ * feature's own multipliers (Damage.js:271-276) — a base term, not a separate factor.
+ */
+function activeCharMultipliers(
+  feature: Feature,
+  damageType: string,
+  ctx: CompileContext
+): readonly CharMultiplier[] {
+  const all = ctx.charMultipliers;
+  if (!all || all.length === 0) return [];
+  return all.filter((m) => {
+    if (!m.target.damageTypes.includes(damageType)) return false; // isMatchFeature
+    return m.condition === undefined || evaluate(m.condition, ctx.settings); // isActive
+  });
 }
 
 /**
@@ -302,11 +336,17 @@ export function compileFeature(
   const element = resolveElement(feature, ctx);
   const damageType = damageTypeOf(feature);
 
-  // Base damage = Σ over the feature's multipliers (multihit `items` flatten in).
+  // Base damage = Σ over the feature's own multipliers (multihit `items` flatten
+  // in) PLUS the active char-level multipliers targeting this damage type — her
+  // getMultipliers merges both into one CBaseDamage (e.g. Itto A4's 0.35×DEF on
+  // every charged hit). They are base terms, not separate multiplicative factors.
   const multipliers: readonly FeatureMultiplierEntry[] =
     feature.multipliers ??
     (feature.items ?? []).flatMap((item) => item.multipliers);
-  const baseTerms = multipliers.map((m) => baseDamageTerm(m, ctx));
+  const baseTerms = [
+    ...multipliers,
+    ...activeCharMultipliers(feature, damageType, ctx),
+  ].map((m) => baseDamageTerm(m, ctx));
 
   const items: Block[] = [
     cBaseDamage(baseTerms),
