@@ -36,7 +36,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Arlecchino s1/s2/s3)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Arlecchino as ArlecchinoStatTable } from "../generated/charTables.js";
 import { Arlecchino as ArlecchinoTalents } from "../generated/charTalentTables.js";
 
@@ -164,6 +164,26 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.arlecchino_blooddebt_dmg") }],
   },
+  // --- C2 "All Rewards and Retribution, Mine to Bestow": bonus Balemoon Bloodfire
+  // hit (pyro, fixed 900% ATK, not talent-leveled). Raw class is base FeatureDamage
+  // (NOT FeatureDamageSkill) → damageType:"" to suppress dmg_skill bonus (gets
+  // dmg_all + dmg_pyro only). Raw condition: ConditionAnd([ConditionAscensionChar(1),
+  // ConditionConstellation(2)]); ascension:1 is always satisfied at A6 → gate on C2.
+  // Raw Arlecchino.js:308-322 (FeatureDamage + ConditionAnd + ValueTable([900])).
+  {
+    name: "arlecchino_balemoon_bloodfire_dmg",
+    category: "skill",
+    element: "pyro",
+    damageType: "",
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        source: "constellation2",
+        leveling: "char_skill_elemental",
+        values: { getValue: (_level: number) => 900 },
+      },
+    ],
+  },
   // --- Burst: Balemoon Rising (pyro) ---
   {
     name: "burst_dmg",
@@ -171,6 +191,29 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic with arlecchino_all_reprisals:2 (affects BoL multiplier
+//   bonusValues only — BoL=0 in our build → 0 net effect). SKIP.
+// C2: ConditionStatic display-only (text_percent_dmg:900). The actual damage is
+//   the arlecchino_balemoon_bloodfire_dmg feature above. No flat stat needed.
+// C3: +3 levels to Invitation to a Beheading (attack). Raw cons[2] settings
+//   char_skill_attack_bonus:3. Raw Arlecchino.js:456-463.
+// C4: ConditionStatic display-only. SKIP.
+// C5: +3 levels to Balemoon Rising (burst). Raw cons[4] settings
+//   char_skill_burst_bonus:3. Raw Arlecchino.js:473-480.
+// C6: ConditionStatic (display text_percent_dmg:700) + ConditionBoolean toggle
+//   (crit_rate/crit_dmg for normal+burst). Toggle is OFF in the constellations
+//   config → crit bonuses 0. FeatureMultiplierBondOfLife on burst (BoL=0 → 0).
+//   Effectively inert at the base build. SKIP.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to attack talent (Invitation to a Beheading).
+  { type: "constellation", constellation: 3, settings: { char_skill_attack_bonus: 3 } },
+  // C5: +3 levels to burst talent (Balemoon Rising).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -188,4 +231,5 @@ export const arlecchino: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
