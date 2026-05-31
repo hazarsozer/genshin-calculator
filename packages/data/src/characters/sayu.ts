@@ -1,0 +1,270 @@
+/**
+ * Sayu — anemo claymore ATK scaler.
+ *
+ * 4-hit normal combo (n3: 2-hit multihit → child _3_1), charged spin/final,
+ * plunge/low/high (physical), anemo skill (sayu_windwheel_dmg, sayu_windwheel_kick_dmg,
+ * sayu_windwheel_kick_hold_dmg, plus elemental variants for pyro/hydro/cryo/electro),
+ * anemo burst (sayu_burst_dmg, sayu_mujimuji_dmg).
+ *
+ * Heals (sayu_heal, sayu_mujimuji_heal, sayu_mujimuji_add_heal, sayu_mujimuji_swirl_heal)
+ * have empty damageType → not tested by golden suite.
+ *
+ * sayu_mujimuji_dmg uses a FeatureMultiplierSayuBurst second multiplier conditional on
+ * constellation 6 — inactive at C0; only s3.p4 contributes.
+ *
+ * No always-on active passive stat bonuses: A1 is ConditionAscensionChar heal
+ * (FeatureHeal only, no damage stats), A4 is ConditionAscensionChar text/heal
+ * (ConditionStatic, heal display only). No baseStats needed.
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/db/Char/Sayu.js
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTables.js (Sayu)
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Sayu)
+ */
+
+import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import { Sayu as SayuStatTable } from "../generated/charTables.js";
+import { Sayu as SayuTalents } from "../generated/charTalentTables.js";
+
+// ---------------------------------------------------------------------------
+// TalentResolver
+// ---------------------------------------------------------------------------
+
+const talents: TalentResolver = {
+  get(path: string) {
+    const [talent, name] = path.split(".");
+    if (talent === "attack") {
+      if (name === "normal_hit_1")   return SayuTalents.s1.p1;
+      if (name === "normal_hit_2")   return SayuTalents.s1.p2;
+      if (name === "normal_hit_3")   return SayuTalents.s1.p3;
+      if (name === "normal_hit_4")   return SayuTalents.s1.p5;
+      if (name === "charged_spin")   return SayuTalents.s1.p6;
+      if (name === "charged_final")  return SayuTalents.s1.p7;
+      if (name === "plunge")         return SayuTalents.s1.p10;
+      if (name === "plunge_low")     return SayuTalents.s1.p11;
+      if (name === "plunge_high")    return SayuTalents.s1.p12;
+    }
+    if (talent === "skill") {
+      if (name === "sayu_windwheel_dmg")              return SayuTalents.s2.p1;
+      if (name === "sayu_windwheel_elemental_dmg")    return SayuTalents.s2.p2;
+      if (name === "sayu_windwheel_kick_dmg")         return SayuTalents.s2.p3;
+      if (name === "sayu_windwheel_kick_hold_dmg")    return SayuTalents.s2.p4;
+      if (name === "sayu_windwheel_kick_elemental_dmg") return SayuTalents.s2.p5;
+    }
+    if (talent === "burst") {
+      if (name === "sayu_burst_dmg")    return SayuTalents.s3.p1;
+      if (name === "sayu_mujimuji_dmg") return SayuTalents.s3.p4;
+    }
+    throw new Error(`sayu talents: unknown path '${path}'`);
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Features
+// ---------------------------------------------------------------------------
+
+const features: readonly Feature[] = [
+  // --- Normal attacks (physical claymore) ---
+  // raw/genshin_calc_pub/src/js/db/Char/Sayu.js: FeatureDamageNormal (no name → normal_hit_1)
+  {
+    name: "normal_hit_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
+  },
+  // raw: FeatureDamageNormal normal_hit_2
+  {
+    name: "normal_hit_2",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }],
+  },
+  // raw: FeatureDamageMultihit normal_hit_3 (items:[{hits:2, multipliers:[p3]}]) — parent=2×p3
+  // Sayu.js:178-194
+  {
+    name: "normal_hit_3",
+    category: "attack",
+    items: [
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }] },
+    ],
+  },
+  // raw: FeatureDamageNormal normal_hit_3_1 (isChild:true → drop to emit; single hit of the 2-hit combo)
+  // Sayu.js:195-205
+  {
+    name: "normal_hit_3_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
+  },
+  // raw: FeatureDamageNormal normal_hit_4
+  {
+    name: "normal_hit_4",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }],
+  },
+  // --- Charged attacks (physical) ---
+  // raw: FeatureDamageCharged (no name → charged_spin)
+  {
+    name: "charged_spin",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_spin") }],
+  },
+  // raw: FeatureDamageCharged (no name → charged_final)
+  {
+    name: "charged_final",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_final") }],
+  },
+  // --- Plunge attacks (physical) ---
+  // raw: FeatureDamagePlungeCollision plunge
+  {
+    name: "plunge",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
+  },
+  // raw: FeatureDamagePlungeShockWave plunge_low
+  {
+    name: "plunge_low",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
+  },
+  // raw: FeatureDamagePlungeShockWave plunge_high
+  {
+    name: "plunge_high",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
+  },
+  // --- Skill: Fuuin Dash (anemo windwheel) ---
+  // raw: FeatureDamageSkill (no name → sayu_windwheel_dmg), element='anemo'
+  // Sayu.js:255-263
+  {
+    name: "sayu_windwheel_dmg",
+    category: "skill",
+    element: "anemo",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.sayu_windwheel_dmg") }],
+  },
+  // raw: FeatureDamageSkill (no name → sayu_windwheel_kick_dmg), element='anemo', damageBonuses=['dmg_skill_sayu_press']
+  // Sayu.js:264-273
+  {
+    name: "sayu_windwheel_kick_dmg",
+    category: "skill",
+    element: "anemo",
+    damageBonuses: ["dmg_skill_sayu_press"],
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.sayu_windwheel_kick_dmg") }],
+  },
+  // raw: FeatureDamageSkill (no name → sayu_windwheel_kick_hold_dmg), element='anemo', damageBonuses=['dmg_skill_sayu_hold']
+  // Sayu.js:274-283
+  {
+    name: "sayu_windwheel_kick_hold_dmg",
+    category: "skill",
+    element: "anemo",
+    damageBonuses: ["dmg_skill_sayu_hold"],
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.sayu_windwheel_kick_hold_dmg") }],
+  },
+  // raw: FeatureDamageSkill sayu_windwheel_elemental_pyro_dmg, element='pyro'
+  // Sayu.js:284-293
+  {
+    name: "sayu_windwheel_elemental_pyro_dmg",
+    category: "skill",
+    element: "pyro",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.sayu_windwheel_elemental_dmg") }],
+  },
+  // raw: FeatureDamageSkill sayu_windwheel_kick_elemental_pyro_dmg, element='pyro', damageBonuses=['dmg_skill_sayu_hold']
+  // Sayu.js:294-304
+  {
+    name: "sayu_windwheel_kick_elemental_pyro_dmg",
+    category: "skill",
+    element: "pyro",
+    damageBonuses: ["dmg_skill_sayu_hold"],
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.sayu_windwheel_kick_elemental_dmg") }],
+  },
+  // raw: FeatureDamageSkill sayu_windwheel_elemental_hydro_dmg, element='hydro'
+  // Sayu.js:305-314
+  {
+    name: "sayu_windwheel_elemental_hydro_dmg",
+    category: "skill",
+    element: "hydro",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.sayu_windwheel_elemental_dmg") }],
+  },
+  // raw: FeatureDamageSkill sayu_windwheel_kick_elemental_hydro_dmg, element='hydro', damageBonuses=['dmg_skill_sayu_hold']
+  // Sayu.js:315-325
+  {
+    name: "sayu_windwheel_kick_elemental_hydro_dmg",
+    category: "skill",
+    element: "hydro",
+    damageBonuses: ["dmg_skill_sayu_hold"],
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.sayu_windwheel_kick_elemental_dmg") }],
+  },
+  // raw: FeatureDamageSkill sayu_windwheel_elemental_cryo_dmg, element='cryo'
+  // Sayu.js:326-335
+  {
+    name: "sayu_windwheel_elemental_cryo_dmg",
+    category: "skill",
+    element: "cryo",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.sayu_windwheel_elemental_dmg") }],
+  },
+  // raw: FeatureDamageSkill sayu_windwheel_kick_elemental_cryo_dmg, element='cryo', damageBonuses=['dmg_skill_sayu_hold']
+  // Sayu.js:336-346
+  {
+    name: "sayu_windwheel_kick_elemental_cryo_dmg",
+    category: "skill",
+    element: "cryo",
+    damageBonuses: ["dmg_skill_sayu_hold"],
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.sayu_windwheel_kick_elemental_dmg") }],
+  },
+  // raw: FeatureDamageSkill sayu_windwheel_elemental_electro_dmg, element='electro'
+  // Sayu.js:347-356
+  {
+    name: "sayu_windwheel_elemental_electro_dmg",
+    category: "skill",
+    element: "electro",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.sayu_windwheel_elemental_dmg") }],
+  },
+  // raw: FeatureDamageSkill sayu_windwheel_kick_elemental_electro_dmg, element='electro', damageBonuses=['dmg_skill_sayu_hold']
+  // Sayu.js:357-367
+  {
+    name: "sayu_windwheel_kick_elemental_electro_dmg",
+    category: "skill",
+    element: "electro",
+    damageBonuses: ["dmg_skill_sayu_hold"],
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.sayu_windwheel_kick_elemental_dmg") }],
+  },
+  // --- Burst: Mujina Flurry (anemo) ---
+  // raw: FeatureDamageBurst (no name → sayu_burst_dmg), element='anemo'
+  // Sayu.js:368-376
+  {
+    name: "sayu_burst_dmg",
+    category: "burst",
+    element: "anemo",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.sayu_burst_dmg") }],
+  },
+  // raw: FeatureDamageBurst (no name → sayu_mujimuji_dmg), element='anemo'
+  // Second FeatureMultiplierSayuBurst requires constellation 6 → inactive at C0.
+  // Only s3.p4 contributes. Sayu.js:377-389
+  {
+    name: "sayu_mujimuji_dmg",
+    category: "burst",
+    element: "anemo",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.sayu_mujimuji_dmg") }],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// DbObjectChar
+// ---------------------------------------------------------------------------
+
+export const sayu: DbObjectChar = {
+  name: "sayu",
+  gameId: 10000053,
+  rarity: 4,
+  element: "anemo",
+  weapon: "claymore",
+  origin: "inazuma",
+  statTable: SayuStatTable,
+  talents,
+  features,
+  multipliers: [],
+};
