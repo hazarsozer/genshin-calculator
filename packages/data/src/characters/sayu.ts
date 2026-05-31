@@ -22,7 +22,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Sayu)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Sayu as SayuStatTable } from "../generated/charTables.js";
 import { Sayu as SayuTalents } from "../generated/charTalentTables.js";
 
@@ -253,6 +253,37 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Multi-Task No Jutsu": ConditionStatic, no real stats → SKIP.
+// C2 "Egress Prep" — two conditions in the C2 block:
+//   (a) Condition({ stats: { dmg_skill_sayu_press: 3.3 } }): no gate (plain
+//       Condition, always-on at constellation 2) → ADD as constellation:2 stat.
+//   (b) ConditionStacks({ name: 'sayu_egress_prep', stats:[dmg_skill_sayu_hold] }):
+//       stack-count toggle (0..20) → OFF at baseline → SKIP.
+// C4 "New and Improved": ConditionStatic, no real stats → SKIP.
+// C6 "Sleep O'Clock": ConditionStatic, no real stats → SKIP.
+//   (C6 FeatureMultiplierSayuBurst + mastery FeatureMultiplier in features are
+//   ConditionConstellation-gated intra-feature multipliers — these are on existing
+//   features but require the FeatureMultiplierSayuBurst type which is not supported
+//   by the current engine port. Report as NEEDS CONS-FEATURE TREATMENT.)
+//
+// Always-on: C2 (dmg_skill_sayu_press +3.3), C3 (+3 burst talent), C5 (+3 skill talent).
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Sayu.js:478-547
+
+const constellationConditions: readonly Condition[] = [
+  // C2 "Egress Prep" — sayu_windwheel_kick_dmg gets +3.3% dmg_skill_sayu_press (always-on).
+  // Raw cons[1]: Condition({ stats: { dmg_skill_sayu_press: 3.3 } }) with no boolean gate.
+  { type: "constellation", constellation: 2, stats: { dmg_skill_sayu_press: 3.3 } },
+  // C3 "Eh, Rest When You're Dead?" — +3 Elemental Burst (Mujina Flurry).
+  // Raw cons[2]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 "Speed Comes First" — +3 Elemental Skill (Fuuin Dash).
+  // Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -267,4 +298,5 @@ export const sayu: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
