@@ -10,7 +10,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Kaeya)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Kaeya as KaeyaStatTable } from "../generated/charTables.js";
 import { Kaeya as KaeyaTalents } from "../generated/charTalentTables.js";
 
@@ -132,6 +132,28 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Excellent Blood": ConditionBoolean toggle (crit_rate_kaeya=15) → SKIP.
+// C2 "Never-Ending Performance": ConditionStatic, no real stats → SKIP.
+// C4 "Frozen Kiss": FeatureShield gated by ConditionConstellation(4) —
+//   shield features are not damage triples (no element/damageType multiplier),
+//   not in the golden fixture → SKIP (no cons-feature flag needed).
+// C6 "Glacial Whirlwind": ConditionStatic, no real stats → SKIP.
+//
+// Always-on: C3 (+3 skill talent), C5 (+3 burst talent).
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Kaeya.js:313-370
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Heart of the Abyss" — +3 Elemental Skill (Frostgnaw).
+  // Raw cons[2]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Praise of Ice" — +3 Elemental Burst (Glacial Waltz).
+  // Raw cons[4]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -146,4 +168,5 @@ export const kaeya: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
