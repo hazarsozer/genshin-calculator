@@ -97,11 +97,16 @@ export interface ConditionConstellation extends ConditionBase {
  * A condition with per-refinement-rank stat values.
  * Inherits Static evaluation semantics (always active unless gated/inverted).
  * Used by weapon passives.
+ *
+ * `refinementStats` holds one ConditionStats bag per refinement rank (R1..R5,
+ * 0-indexed). Resolve via: refinementStats[weapon_refine - 1].
+ * `stats` (inherited from ConditionBase) carries stats that do NOT vary by refine
+ * (rare for weapons; more common for character/artifact static passives).
  */
 export interface ConditionStaticRefine extends ConditionBase {
   readonly type: "refine";
-  /** Refinement-indexed stat tables (typed as StatTable[] at P1.3+). */
-  readonly refinementStats?: readonly unknown[];
+  /** Per-refinement stat bags: index 0 = R1, index 4 = R5. */
+  readonly refinementStats?: readonly ConditionStats[];
 }
 
 /**
