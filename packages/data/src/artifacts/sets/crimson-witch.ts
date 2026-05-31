@@ -30,7 +30,7 @@ import type { DbObjectArtifactSet } from "@genshin/types";
 
 export const crimsonWitch: DbObjectArtifactSet = {
   name: "artifact_set.crimson_witch_of_flames",
-  goodId: "CrimsonWitchOfFlames",
+  goodId: "CrimsonWitch",
   bonus: {
     // 2pc — Pyro DMG +15% (CrimsonWitch.js:17-27).
     2: {

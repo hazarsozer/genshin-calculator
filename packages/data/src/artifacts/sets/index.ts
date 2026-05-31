@@ -1,12 +1,16 @@
 /**
  * Artifact-set registry — `setKey → DbObjectArtifactSet`.
  *
- * The registry key is the set's GOOD-style `goodId` (e.g. "NoblesseOblige"),
- * the same key the `buildStats` `setBonuses` input and the oracle's `equipSet`
- * use (CalcObjectArtifacts keys `activeSets` by `art.set` = the registry key).
+ * Each set's `goodId` is Aspirine's oracle `art.set` key — the same string the
+ * `buildStats` `setBonuses` input and `build-configs.mjs equipSet` use. It equals
+ * the GOOD-format key for most sets, but follows her key where they diverge:
+ *   "CrimsonWitch"       (GOOD: "CrimsonWitchOfFlames")
+ *   "HeartofDepth"       (GOOD: "HeartOfDepth")
+ *   "EmblemofSeveredFate" (GOOD: "EmblemOfSeveredFate")
+ * The `set-*pc` golden manifests use the same oracle keys, so `goodId` is the
+ * correct lookup key for the harness.
  *
- * P2.A0 ships 3 exemplars to define the shape; P2.A1 fills the remaining ~52 sets
- * into this same barrel + registry.
+ * P2.A0 ships 7 ported sets; P2.A1+ fills the remaining ~45 sets.
  *
  * Source: raw/genshin_calc_pub/src/js/db/Artifacts/Sets.js (the set registry)
  */

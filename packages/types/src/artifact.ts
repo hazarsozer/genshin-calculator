@@ -71,7 +71,14 @@ export interface ArtifactSetBonusTier {
 export interface DbObjectArtifactSet {
   /** Namespaced slug: "artifact_set.<slug>", e.g. "artifact_set.crimson_witch_of_flames". */
   readonly name: string;
-  /** Registry key (GOOD-style), e.g. "NoblesseOblige" — the `setBonuses` input key. */
+  /**
+   * Registry key — Aspirine's oracle `art.set` key (matches the `set-*pc` manifests /
+   * `build-configs.mjs equipSet`). Equals the GOOD key for most sets but follows
+   * her key where they differ: "CrimsonWitch" (GOOD: "CrimsonWitchOfFlames"),
+   * "HeartofDepth" (GOOD: "HeartOfDepth"), "EmblemofSeveredFate"
+   * (GOOD: "EmblemOfSeveredFate"). The `setBonuses` input and the oracle's `equipSet`
+   * both use this key for lookups, so `goodId` is the set registry key here.
+   */
   readonly goodId: string;
   /** Piece-threshold → tier bonus declaration. */
   readonly bonus: Readonly<Partial<Record<2 | 4, ArtifactSetBonusTier>>>;

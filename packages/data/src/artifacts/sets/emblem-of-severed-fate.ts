@@ -7,11 +7,11 @@
  *      carries only `text_percent: 25, text_percent_max: 75` (UI display markers —
  *      numeric no-ops); the REAL ER→Burst-DMG fold lives in a set-level `postEffect`
  *      (`PostEffectStatsRecharge`), which reads `getTotal('recharge')` × 25%, capped
- *      at 75 (raw percent), gated by ConditionBooleanPiecesCount(EmblemOfSeveredFate, 4).
+ *      at 75 (raw percent), gated by ConditionBooleanPiecesCount(EmblemofSeveredFate, 4).
  *
  * SET-LEVEL POSTEFFECT PATH (the calibration's key test):
  *   `postEffects: [{ fromStat: 'recharge', toStat: 'dmg_burst', ratio: 0.25, capValue: 75,
- *     conditions: [{ type: 'pieces-count', setName: 'EmblemOfSeveredFate', count: 4 }] }]`
+ *     conditions: [{ type: 'pieces-count', setName: 'EmblemofSeveredFate', count: 4 }] }]`
  *   At canonical-build ER 252 (100 base + 132 weapon/char + 20 from 2pc):
  *     bonus = min(0.25 × 252, 75) = min(63, 75) = 63 → dmg_burst += 63 (raw percent).
  *   buildStats emits dmg_burst as a fraction (÷100), so +0.63 to the Burst DMG fraction.
@@ -33,7 +33,7 @@ import type { DbObjectArtifactSet } from "@genshin/types";
 
 export const emblemOfSeveredFate: DbObjectArtifactSet = {
   name: "artifact_set.emblem_of_severed_fate",
-  goodId: "EmblemOfSeveredFate",
+  goodId: "EmblemofSeveredFate",
   bonus: {
     // 2pc — Energy Recharge +20% (EmblemofSeveredFate.js:19-28).
     2: {
@@ -80,7 +80,7 @@ export const emblemOfSeveredFate: DbObjectArtifactSet = {
       conditions: [
         {
           type: "pieces-count",
-          setName: "EmblemOfSeveredFate",
+          setName: "EmblemofSeveredFate",
           count: 4,
         },
       ],
