@@ -278,9 +278,16 @@ export function buildStats(input: BuildInput): BuildResult {
   }
 
   // Enemy resistance (percent) → enemy_res_<element> fractions. Fold any
-  // pre-existing shred (negative res) the same way; the engine reads only these.
+  // char-contributed shred from the stats bag into the base enemy resistance
+  // (the shred is a RAW negative percent, e.g. Escoffier's A4 `enemy_res_cryo`/
+  // `enemy_res_hydro` = -5 at solo → -0.05 each; her `getBuildData` adds the
+  // shredding condition's stats into the same bag the resistance is read from).
+  // `raw.get` is 0 for any element no char shreds, so this is a no-op for every
+  // non-shredder. The engine reads ONLY these emitted fractions; the negative
+  // shred lowers `r` and `cMultiplierResistance` reads it directly.
   for (const el of ELEMENTS) {
-    out[`enemy_res_${el}`] = resistanceFraction(input.enemy.resistance, el);
+    const base = resistanceFraction(input.enemy.resistance, el);
+    out[`enemy_res_${el}`] = base + raw.get(`enemy_res_${el}`) / 100;
   }
 
   // DEF-ignore / DEF-reduce (source-local + team-wide), default 0, as fractions.
