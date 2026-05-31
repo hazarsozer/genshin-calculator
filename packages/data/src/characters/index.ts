@@ -25,3 +25,4 @@ export { collei } from "./collei.js";
 export { bennett } from "./bennett.js";
 export { beidou } from "./beidou.js";
 export { xinyan } from "./xinyan.js";
+export { gorou } from "./gorou.js";
