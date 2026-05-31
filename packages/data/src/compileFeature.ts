@@ -154,13 +154,35 @@ function damageTypeOf(feature: Feature): string {
   }
 }
 
+/**
+ * Resolve the talent-level `_bonus` offset for a leveling key from the settings.
+ *
+ * Her `Feature.getTalentLevel` adds `settings[<key>_bonus] + settings[<key>_bonus_2]`
+ * on top of the base talent level (raw Feature.js:235-244), reached on the damage path
+ * via `FeatureMultiplier.getLevel → settings.getLevel(leveling)` (Multiplier.js:149).
+ * Constellations contribute these through condition `.settings` (Hu Tao C3 →
+ * `char_skill_elemental_bonus: 3`, C5 → `char_skill_burst_bonus: 3`), which `buildStats`
+ * propagates into the compile settings. Returns 0 for a constant multiplier
+ * (`leveling: ""`) or when no `_bonus` key is set — inert for every base build.
+ */
+function skillLevelBonus(settings: EvalContext, leveling: string): number {
+  if (!leveling) return 0;
+  const b1 = settings[`${leveling}_bonus`];
+  const b2 = settings[`${leveling}_bonus_2`];
+  return (typeof b1 === "number" ? b1 : 0) + (typeof b2 === "number" ? b2 : 0);
+}
+
 /** Build the base-damage term for one multiplier: talent% × scalingStatTotal. */
 function baseDamageTerm(
   entry: FeatureMultiplierEntry,
   ctx: CompileContext
 ): Block {
   const slot = LEVELING_TO_SLOT[entry.leveling];
-  const talentLevel = slot !== undefined ? ctx.talentLevels[slot] : 1;
+  const baseLevel = slot !== undefined ? ctx.talentLevels[slot] : 1;
+  // Talent-level bumps (constellation C3/C5) are condition-contributed
+  // `<leveling>_bonus` settings added on top of the base level — her
+  // Feature.getTalentLevel (Feature.js:235-244). Inert when no `_bonus` key is set.
+  const talentLevel = baseLevel + skillLevelBonus(ctx.settings, entry.leveling);
   // her getValue: values.getValue(level)/100 → a fraction.
   const talentPercent = entry.values.getValue(talentLevel) / 100;
 
