@@ -39,7 +39,7 @@
  *   raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/Mastery.js (A4 EM→DMG%)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Traveler as TravelerStatTable } from "../generated/charTables.js";
 import { TravelerDendro as TravelerDendroTalents } from "../generated/charTalentTables.js";
 
@@ -196,6 +196,29 @@ const BASE_STATS: Record<string, number> = {
   dmg_burst_traveler_dendro: 11.0128,
 };
 
+// ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Symbiotic Creeper": ConditionStatic no real stats → SKIP.
+// C2 "Green Resilience": ConditionStatic no real stats → SKIP.
+// C3 "Whirling Weeds": +3 Elemental Skill talent levels.
+//   Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C4 "Treacle Grass": ConditionStatic no real stats → SKIP.
+// C5 "Quad Beasts Unleashed": +3 Elemental Burst talent levels.
+//   Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C6 "Withering Aggregation": ConditionBoolean (dmg_dendro toggle) +
+//   ConditionDropdownElement (party element-specific DMG%) → SKIP (toggles).
+// Sources: raw/genshin_calc_pub/src/js/db/Char/TravelerDendro.js:346-440
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Whirling Weeds" — +3 Elemental Skill talent levels (Razorgrass Blade).
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Quad Beasts Unleashed" — +3 Elemental Burst talent levels.
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
 export const travelerDendro: DbObjectChar = {
   name: "traveler_dendro",
   gameId: 10000005,
@@ -208,4 +231,5 @@ export const travelerDendro: DbObjectChar = {
   features,
   multipliers: [],
   baseStats: BASE_STATS,
+  conditions: constellationConditions,
 };
