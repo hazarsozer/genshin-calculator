@@ -25,6 +25,7 @@
 
 import type {
   CharMultiplier,
+  Condition,
   DbObjectChar,
   Feature,
   TalentResolver,
@@ -233,6 +234,26 @@ const c2BurstDefMultiplier: CharMultiplier = {
 };
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Flower of Eden": ConditionStatic with text_decimal_energy → display-only, SKIP.
+// C2 "Opening of Phanerozoic": ConditionStacks toggle + char-level multiplier
+//    (already ported above as c2BurstDefMultiplier). SKIP (toggle off).
+// C4 "Descent of Divinity": ConditionBoolean dmg_plunge toggle → SKIP.
+// C6 "Dust of Purification": ConditionBoolean dmg_all toggle → SKIP.
+//
+// Source: raw/genshin_calc_pub/src/js/db/Char/Albedo.js:345-415
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Grace of Helios": +3 levels to Rite of Progeniture: Tectonic Tide (Elemental Skill).
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus: 3 } }.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Tide of Hadean Form": +3 levels to Rite of Progeniture: Tectonic Tide (Elemental Burst).
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -247,4 +268,5 @@ export const albedo: DbObjectChar = {
   talents,
   features,
   multipliers: [c2BurstDefMultiplier],
+  conditions: constellationConditions,
 };
