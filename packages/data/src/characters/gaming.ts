@@ -20,7 +20,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Gaming)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Gaming as GamingStatTable } from "../generated/charTables.js";
 import { Gaming as GamingTalents } from "../generated/charTalentTables.js";
 
@@ -148,6 +148,31 @@ const features: readonly Feature[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Bringer of Blessing": text_percent_heal (display-only) → SKIP.
+// C2 "Plum Blossoms Underfoot": ConditionBoolean toggle (atk_percent) → SKIP.
+// C4 "Soar Across Mountains": ConditionStatic no real stats → SKIP.
+//
+// Always-on at C6 build: C3 (+3 skill talent), C5 (+3 burst talent),
+// C6 ConditionStatic with REAL stats crit_rate_gaming=20, crit_dmg_gaming=40
+// (TalentValues: C6CritRate=20, C6CritDmg=40).
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Gaming.js:314-377
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Unleashing the Fearless" — +3 Elemental Skill (Bestial Ascent).
+  // Raw cons[2]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Evolution!" — +3 Elemental Burst (Suanni's Gilded Dance).
+  // Raw cons[4]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // C6 "To Tame All Beasts" — crit_rate_gaming +20%, crit_dmg_gaming +40%.
+  // Raw cons[5]: ConditionStatic({ stats: { crit_rate_gaming: 20, crit_dmg_gaming: 40 } }).
+  // Always active at C6 — no toggle (ConditionStatic, not ConditionBoolean).
+  { type: "constellation", constellation: 6, stats: { crit_rate_gaming: 20, crit_dmg_gaming: 40 } },
+];
+
 // A4 "Air of Prosperity" second subCondition: ConditionStatic + ConditionNot(gaming_air_of_prosperity).
 // At canonical C0 ascension-6 build, gaming_air_of_prosperity is not toggled (ConditionBoolean
 // defaults to false), so ConditionNot evaluates true and dmg_skill_gaming=20 is active unconditionally.
@@ -166,4 +191,5 @@ export const gaming: DbObjectChar = {
   features,
   multipliers: [],
   baseStats: BASE_STATS,
+  conditions: constellationConditions,
 };
