@@ -40,9 +40,15 @@ import { buildStats, type EquippedSet } from "../buildStats.js";
 import { compileCharacter } from "../loader.js";
 import { bennett } from "../characters/bennett.js";
 import { diluc } from "../characters/diluc.js";
+import { fischl } from "../characters/fischl.js";
+import { furina } from "../characters/furina.js";
 import { nahida } from "../characters/nahida.js";
+import { raidenShogun } from "../characters/raiden_shogun.js";
+import { tartaglia } from "../characters/tartaglia.js";
 import {
   alleyFlashStatTable,
+  alleyHunterStatTable,
+  blackcliffPoleStatTable,
   theBellStatTable,
   solarPearlStatTable,
 } from "../generated/weaponStatTables.js";
@@ -338,6 +344,153 @@ describe("Nahida set-4pc (DeepwoodMemories) vs oracle — 2pc dendro + 4pc RES s
       crit: 7177.2520584185795,
       average: 7177.2520584185795,
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// P2.A1 calibration sets — GoldenTroupe / HeartofDepth / MarechausseeHunter /
+// EmblemOfSeveredFate
+// ---------------------------------------------------------------------------
+
+describe("Fischl set-4pc (GoldenTroupe) vs oracle — +70% Skill DMG (2pc+4pc-static+4pc-toggle)", () => {
+  const sets: EquippedSet[] = [{ setKey: "GoldenTroupe", pieces: 4 }];
+  const settings: EvalContext = { "set.golden_troupe_4": true };
+
+  it("skill.fischl_oz_dmg — set boosts Skill DMG (+70% total)", () => {
+    expectFeature(fischl, alleyHunterStatTable, sets, settings, "skill.fischl_oz_dmg", {
+      normal: 4180.050679693339,
+      crit: 8360.101359386677,
+      average: 4598.055747662673,
+    });
+  });
+
+  it("skill.skill_dmg — set boosts Skill DMG (+70% total)", () => {
+    expectFeature(fischl, alleyHunterStatTable, sets, settings, "skill.skill_dmg", {
+      normal: 5434.065883601341,
+      crit: 10868.131767202682,
+      average: 5977.472471961475,
+    });
+  });
+});
+
+describe("Tartaglia set-4pc (HeartofDepth) vs oracle — +15% Hydro (2pc) + +30% Normal/Charged (4pc)", () => {
+  const sets4pc: EquippedSet[] = [{ setKey: "HeartofDepth", pieces: 4 }];
+  const settings4pc: EvalContext = { "set.heart_of_depth_4": true };
+
+  it("attack.normal_hit_1 — boosted by +30% Normal (4pc) on top of 2pc Hydro", () => {
+    expectFeature(tartaglia, alleyHunterStatTable, sets4pc, settings4pc, "attack.normal_hit_1", {
+      normal: 1411.5764304022155,
+      crit: 2823.152860804431,
+      average: 1552.734073442437,
+    });
+  });
+
+  it("skill.activation_dmg — unchanged by 4pc (not a Normal/Charged hit; still gets 2pc Hydro)", () => {
+    expectFeature(tartaglia, alleyHunterStatTable, sets4pc, settings4pc, "skill.activation_dmg", {
+      normal: 2592.550953624499,
+      crit: 5185.101907248998,
+      average: 2851.806048986949,
+    });
+  });
+});
+
+describe("Tartaglia set-2pc (HeartofDepth) vs oracle — 2pc only, no 4pc Normal/Charged boost", () => {
+  const sets2pc: EquippedSet[] = [{ setKey: "HeartofDepth", pieces: 2 }];
+  const settings2pc: EvalContext = {}; // HeartofDepth 2pc is static (no toggle)
+
+  it("attack.normal_hit_1 — lower value (4pc Normal boost gated out at 2 pieces)", () => {
+    expectFeature(tartaglia, alleyHunterStatTable, sets2pc, settings2pc, "attack.normal_hit_1", {
+      normal: 1113.356057782029,
+      crit: 2226.712115564058,
+      average: 1224.691663560232,
+    });
+  });
+
+  it("skill.activation_dmg — same as 4pc (skill DMG unchanged by either tier; 2pc Hydro doesn't affect skill)", () => {
+    expectFeature(tartaglia, alleyHunterStatTable, sets2pc, settings2pc, "skill.activation_dmg", {
+      normal: 2592.550953624499,
+      crit: 5185.101907248998,
+      average: 2851.806048986949,
+    });
+  });
+});
+
+describe("Furina set-4pc (MarechausseeHunter) vs oracle — +15% Normal/Charged (2pc) + +36% CR (4pc, 3 stacks)", () => {
+  const sets: EquippedSet[] = [{ setKey: "MarechausseeHunter", pieces: 4 }];
+  const settings: EvalContext = { "set.marechaussee_hunter_4": 3 };
+
+  it("attack.normal_hit_1 — boosted by 2pc Normal DMG + 3-stack CR (avg higher than no-set)", () => {
+    expectFeature(furina, alleyFlashStatTable, sets, settings, "attack.normal_hit_1", {
+      normal: 1119.098363600243,
+      crit: 2238.196727200486,
+      average: 1848.750496667601,
+    });
+  });
+
+  it("attack.charged_hit — boosted by 2pc Charged DMG + 3-stack CR", () => {
+    expectFeature(furina, alleyFlashStatTable, sets, settings, "attack.charged_hit", {
+      normal: 1824.677927120484,
+      crit: 3649.355854240968,
+      average: 3014.3679356030393,
+    });
+  });
+});
+
+describe("RaidenShogun set-2pc/4pc (EmblemOfSeveredFate) — stat-bag validation", () => {
+  // NOTE: We validate Emblem at the stat-bag level rather than asserting Raiden's burst
+  // damage feature against the oracle fixture. Raiden's A4 passive folds
+  // `dmg_electro: 52.8` as a CONSTANT calibrated at base ER=232 (no Emblem). When
+  // Emblem 2pc adds +20 ER → 252, the A4 electro contribution should update, but the
+  // current raiden_shogun.ts carries it as a fixed constant — that is a separate tracked
+  // bug in the Raiden character file, NOT an Emblem bug. The stat-bag assertions below
+  // prove the SET is correct (recharge and dmg_burst accumulate as expected) without the
+  // Raiden A4 confound. A future fix to raiden_shogun.ts (making A4 ER-dynamic) should
+  // upgrade this describe block to a full feature-level assertion against the fixture.
+
+  function raidenStats(pieces: number): ReturnType<typeof buildStats>["stats"] {
+    return buildStats({
+      char: raidenShogun,
+      weaponStatTable: blackcliffPoleStatTable,
+      statBlock: STAT_BLOCK,
+      levels: LEVELS,
+      enemy: ENEMY,
+      settings: {},
+      setBonuses: [{ setKey: "EmblemOfSeveredFate", pieces }],
+    }).stats;
+  }
+
+  it("pieces=2: recharge_total reflects +20 ER vs base (252 vs 232)", () => {
+    const stats2pc = raidenStats(2);
+    const statsBase = buildStats({
+      char: raidenShogun,
+      weaponStatTable: blackcliffPoleStatTable,
+      statBlock: STAT_BLOCK,
+      levels: LEVELS,
+      enemy: ENEMY,
+      settings: {},
+    }).stats;
+    expect(stats2pc["recharge_total"]! - statsBase["recharge_total"]!).toBeCloseTo(20, 6);
+  });
+
+  it("pieces=2: dmg_burst has NO postEffect contribution (just STAT_BLOCK 64/100=0.64)", () => {
+    const stats2pc = raidenStats(2);
+    // STAT_BLOCK dmg_burst:64 → emitted as 0.64. The 4pc postEffect is gated out.
+    expect(stats2pc["dmg_burst"]).toBeCloseTo(0.64, 6);
+  });
+
+  it("pieces=4: dmg_burst gains the ER→Burst-DMG postEffect (ER=252 → +63 raw → +0.63 fraction)", () => {
+    const stats4pc = raidenStats(4);
+    // min(0.25 × 252, 75) = 63 → 0.63 added on top of 0.64 → 1.27
+    expect(stats4pc["dmg_burst"]).toBeCloseTo(1.27, 6);
+  });
+
+  it("pieces=4 minus pieces=2 dmg_burst ≈ min(0.25×recharge_total, 75)/100 within 1e-6", () => {
+    const stats2pc = raidenStats(2);
+    const stats4pc = raidenStats(4);
+    const rechargeTotal = stats2pc["recharge_total"]!; // 252 at 2pc
+    const expectedDelta = Math.min(0.25 * rechargeTotal, 75) / 100;
+    const actualDelta = stats4pc["dmg_burst"]! - stats2pc["dmg_burst"]!;
+    expect(Math.abs(actualDelta - expectedDelta)).toBeLessThanOrEqual(1e-6);
   });
 });
 
