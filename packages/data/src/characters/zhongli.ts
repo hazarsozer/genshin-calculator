@@ -21,7 +21,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Zhongli)
  */
 
-import type { DbObjectChar, Feature, FeatureMultiplierEntry, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, FeatureMultiplierEntry, TalentResolver } from "@genshin/types";
 import { Zhongli as ZhongliStatTable } from "../generated/charTables.js";
 import { Zhongli as ZhongliTalents } from "../generated/charTalentTables.js";
 
@@ -246,6 +246,25 @@ const features: readonly Feature[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic display-only → SKIP.
+// C2: ConditionStatic display-only → SKIP.
+// C3 "Jade Shrine" — +3 Elemental Skill talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Zhongli.js:406-413 (constellation[2]).
+// C4: ConditionStatic display-only → SKIP.
+// C5 "Lazuli Crown" — +3 Burst talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Zhongli.js:423-430 (constellation[4]).
+// C6: ConditionStatic with text_percent_* (display-only) → SKIP.
+
+const constellationConditions: readonly Condition[] = [
+  // C3 — char_skill_elemental_bonus +3 (skill talent level up).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 — char_skill_burst_bonus +3 (burst talent level up).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
 export const zhongli: DbObjectChar = {
   name: "zhongli",
   gameId: 10000030,
@@ -257,4 +276,5 @@ export const zhongli: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
