@@ -20,7 +20,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Mika)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Mika as MikaStatTable } from "../generated/charTables.js";
 import { Mika as MikaTalents } from "../generated/charTalentTables.js";
 
@@ -151,6 +151,30 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Factor Confluence" (ConditionStatic description-only) → SKIP.
+// C2 "Companion's Ingress" (ConditionStatic description-only) → SKIP.
+// C3 "Reconnaissance Report" → +3 Elemental Burst (Skyfeather Song) levels.
+//   raw: constellation[2]: Condition{ settings:{char_skill_burst_bonus:3} }
+// C4 "Sunfrost Encomium" (ConditionStatic description-only) → SKIP.
+// C5 "Signal Arrow": +3 Elemental Skill (Starfrost Swirl) levels.
+//   raw: top-level conditions array (not in constellation array which is {}):
+//   Condition{ settings:{char_skill_elemental_bonus:3}, subConditions:[ConditionConstellation(5)] }
+//   The constellation array entry [4] is empty {}; the talent bump lives in the char's
+//   conditions array as a sub-conditioned entry. Modelled identically here.
+// C6 "Companion's Counsel" (ConditionBoolean crit_dmg_phys toggle) → SKIP (off).
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Mika.js:305-316, 373-425
+
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 Elemental Burst (Skyfeather Song) levels.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 Elemental Skill (Starfrost Swirl) levels.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -165,4 +189,5 @@ export const mika: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
