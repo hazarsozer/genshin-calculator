@@ -58,7 +58,6 @@ export type {
 } from "./artifact.js";
 
 export type {
-  DamageTriple,
   DamageResult,
   AnyStatKey,
   BuildStats,

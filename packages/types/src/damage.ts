@@ -10,13 +10,6 @@ import type { GoodStatKey, EngineStatKey } from "./stats.js";
 import type { Element } from "./character.js";
 
 /**
- * Legacy tuple form: [normal, crit, avg].
- * Kept for backward-compatibility with the P1.0 scaffold; prefer DamageResult
- * (named fields) in new code. P1.5 will decide the canonical engine form.
- */
-export type DamageTriple = readonly [number, number, number];
-
-/**
  * The damage triple produced for every hit.
  *
  * - `normal`  — non-crit hit value

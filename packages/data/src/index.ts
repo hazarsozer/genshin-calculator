@@ -8,8 +8,6 @@
  * formula-related lives in `core`; this package only wires data into it.
  */
 
-export type { DamageTriple } from "@genshin/types";
-
 export const DATA_VERSION = "0.0.0";
 
 export { buildStats } from "./buildStats.js";
