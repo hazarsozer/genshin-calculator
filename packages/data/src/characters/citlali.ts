@@ -39,7 +39,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Citlali)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Citlali as CitlaliStatTable } from "../generated/charTables.js";
 import { Citlali as CitlaliTalents } from "../generated/charTalentTables.js";
 
@@ -164,6 +164,43 @@ const features: readonly Feature[] = [
     element: "cryo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.citlali_spiritvessel_skull_dmg") }],
   },
+  // C4 "Death Defier's Spirit Skull": EM-scaled extra skull hit. Base FeatureDamage →
+  // category omitted (→ "other" in fixture key), damageType omitted (→ "none" in fixture).
+  // Raw Citlali.js:285-296: FeatureDamage{category:'other', element:'cryo',
+  //   multipliers:[FeatureMultiplier{scaling:'mastery*', source:'constellation4',
+  //     values:StatTable('citlali_obsidian_spiritvessel_skull_dmg',[1800])}],
+  //   condition:ConditionConstellation{constellation:4}}.
+  // C4SkillDmg = 1800. leveling uses the source key 'constellation4' (constant table).
+  {
+    name: "citlali_obsidian_spiritvessel_skull_dmg",
+    element: "cryo",
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      {
+        scaling: "mastery*",
+        leveling: "constellation4",
+        values: { getValue: (_level: number) => 1800 },
+        source: "constellation4",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Radiant Blades of Centzon Mimixcoah": ConditionStatic display-only (text_percent) → SKIP.
+// C2 "Heart Devourer's Travail": ConditionBoolean toggle (mastery:125 + res shred) → SKIP (toggle OFF).
+// C3 "Death Defier's Spirit Skull": +3 levels to Dawnfrost Darkstar (skill). Raw cons[2] settings.
+// C4 "Death Defier's Spirit Skull" damage: cons-added feature above.
+// C5 "Teoiztac's Secret Pact": +3 levels to Edict of Entwined Splendor (burst). Raw cons[4] settings.
+// C6 "Teoiztac's Secret Pact": ConditionNumberCitlali (number/slider toggle) → SKIP (toggle OFF).
+// Raw: Citlali.js constellation array (Citlali.js:328-416).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Dawnfrost Darkstar (elemental skill).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Edict of Entwined Splendor (elemental burst).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -181,4 +218,5 @@ export const citlali: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
