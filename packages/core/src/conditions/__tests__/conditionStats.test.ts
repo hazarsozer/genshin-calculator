@@ -38,6 +38,7 @@ import type {
   ConditionAnd,
   ConditionOr,
   ConditionBooleanPiecesCount,
+  ConditionBooleanWeaponType,
 } from "@genshin/types";
 
 const emptyCtx: EvalContext = {};
@@ -91,6 +92,17 @@ describe("conditionStats — non-refine variants emit cond.stats when active", (
     // active or (one vacuously-true `and` child) reaches the explicit `case "or"` → still {}
     const activeOr: ConditionOr = { type: "or", items: [{ type: "and", items: [] }] };
     expect(conditionStats(activeOr, emptyCtx)).toEqual({});
+  });
+
+  it("weapon-type: pure gate — {} whether active or not (no stats field)", () => {
+    const c: ConditionBooleanWeaponType = {
+      type: "weapon-type",
+      types: ["sword", "claymore", "polearm"],
+    };
+    // inactive (bow)
+    expect(conditionStats(c, { weapon_type: "bow" })).toEqual({});
+    // active (claymore) — still {} because it is a gate-only variant
+    expect(conditionStats(c, { weapon_type: "claymore" })).toEqual({});
   });
 
   it("pieces-count: pure gate — {} whether active or not", () => {

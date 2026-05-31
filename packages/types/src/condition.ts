@@ -16,6 +16,7 @@
  *   raw/genshin_calc_pub/src/js/classes/Condition/Stacks.js
  *   raw/genshin_calc_pub/src/js/classes/Condition/And.js
  *   raw/genshin_calc_pub/src/js/classes/Condition/Or.js
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Boolean/WeaponType.js
  */
 
 import type { AscensionLevel, ConstellationLevel, Refinement } from "./character.js";
@@ -200,6 +201,20 @@ export interface ConditionBooleanPiecesCount extends ConditionBase {
 }
 
 /**
+ * A condition gated by the wearer's weapon type.
+ * Active when ctx["weapon_type"] is in `types` (AND the optional `.condition` gate passes).
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/WeaponType.js
+ * (`this.params.types.includes(settings.weapon_type)`).
+ */
+export interface ConditionBooleanWeaponType extends ConditionBase {
+  readonly type: "weapon-type";
+  /** Allowed weapon types, e.g. ["sword","claymore","polearm"]. */
+  readonly types: readonly string[];
+  /** A pure gate — contributes NO stats (narrowed to `never`, like pieces-count). */
+  readonly stats?: never;
+}
+
+/**
  * Logical AND of all items — all must evaluate to true.
  * Vacuous truth: empty items list → true.
  */
@@ -227,6 +242,7 @@ export type Condition =
   | ConditionNumber
   | ConditionStacks
   | ConditionBooleanPiecesCount
+  | ConditionBooleanWeaponType
   | ConditionAnd
   | ConditionOr;
 

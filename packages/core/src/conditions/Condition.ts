@@ -17,6 +17,7 @@
  *   raw/genshin_calc_pub/src/js/classes/Condition/Stacks.js
  *   raw/genshin_calc_pub/src/js/classes/Condition/And.js
  *   raw/genshin_calc_pub/src/js/classes/Condition/Or.js
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Boolean/WeaponType.js
  */
 
 import type {
@@ -29,6 +30,7 @@ import type {
   ConditionNumber,
   ConditionStacks,
   ConditionBooleanPiecesCount,
+  ConditionBooleanWeaponType,
   ConditionStats,
   EvalContext,
 } from "@genshin/types";
@@ -65,6 +67,8 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return evaluateStacks(condition, ctx);
     case "pieces-count":
       return evaluatePiecesCount(condition, ctx);
+    case "weapon-type":
+      return evaluateWeaponType(condition, ctx);
     case "and":
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
@@ -139,6 +143,7 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "and":
     case "or":
     case "pieces-count":
+    case "weapon-type":
       // Pure gates / logical containers carry no stats of their own.
       return {};
     case "boolean":
@@ -286,6 +291,21 @@ function evaluatePiecesCount(
   if (!enough) return false;
   const base = checkGate(condition, ctx);
   return condition.invert ? !base : base;
+}
+
+/**
+ * Ports ConditionBooleanWeaponType.isActive — active when ctx["weapon_type"] is
+ * in `types`, AND the optional `.condition` gate passes. Mirrors raw:
+ *   `checkSubconditions(settings) && types.includes(settings.weapon_type)`.
+ */
+function evaluateWeaponType(
+  condition: ConditionBooleanWeaponType,
+  ctx: EvalContext
+): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const wt = ctx["weapon_type"];
+  const active = typeof wt === "string" && condition.types.includes(wt);
+  return condition.invert ? !active : active;
 }
 
 // ---------------------------------------------------------------------------

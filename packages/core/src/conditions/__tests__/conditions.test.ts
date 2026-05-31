@@ -26,6 +26,7 @@ import type {
   ConditionNumber,
   ConditionStacks,
   ConditionBooleanPiecesCount,
+  ConditionBooleanWeaponType,
   ConditionAnd,
   ConditionOr,
 } from "@genshin/types";
@@ -295,6 +296,62 @@ describe("ConditionBoolean gate branch", () => {
   it("is inactive when name is absent (no key to look up)", () => {
     const c: ConditionBoolean = { type: "boolean" }; // no name
     expect(evaluate(c, { anything: true })).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 9c. ConditionBooleanWeaponType — gates on the wearer's weapon type
+//
+// Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/WeaponType.js:
+//   result = checkSubconditions(settings) && types.includes(settings.weapon_type)
+// ---------------------------------------------------------------------------
+
+describe("ConditionBooleanWeaponType", () => {
+  const meleeTypes: ConditionBooleanWeaponType = {
+    type: "weapon-type",
+    types: ["sword", "claymore", "polearm"],
+  };
+
+  it("is active when weapon_type is in the allowed list", () => {
+    expect(evaluate(meleeTypes, { weapon_type: "claymore" })).toBe(true);
+    expect(evaluate(meleeTypes, { weapon_type: "sword" })).toBe(true);
+    expect(evaluate(meleeTypes, { weapon_type: "polearm" })).toBe(true);
+  });
+
+  it("is inactive when weapon_type is NOT in the allowed list", () => {
+    expect(evaluate(meleeTypes, { weapon_type: "bow" })).toBe(false);
+    expect(evaluate(meleeTypes, { weapon_type: "catalyst" })).toBe(false);
+  });
+
+  it("is inactive when weapon_type is absent from the context", () => {
+    expect(evaluate(meleeTypes, {})).toBe(false);
+  });
+
+  it("is inactive when weapon_type is not a string", () => {
+    expect(evaluate(meleeTypes, { weapon_type: 1 })).toBe(false);
+  });
+
+  it("invert: flips the result (active when NOT in the list)", () => {
+    const inverted: ConditionBooleanWeaponType = {
+      type: "weapon-type",
+      types: ["sword", "claymore", "polearm"],
+      invert: true,
+    };
+    expect(evaluate(inverted, { weapon_type: "bow" })).toBe(true);
+    expect(evaluate(inverted, { weapon_type: "claymore" })).toBe(false);
+  });
+
+  it("respects the optional .condition gate (inner gate must pass first)", () => {
+    const gate: ConditionBoolean = { type: "boolean", name: "gate" };
+    const gated: ConditionBooleanWeaponType = {
+      type: "weapon-type",
+      types: ["claymore"],
+      condition: gate,
+    };
+    // gate off → false even if weapon_type matches
+    expect(evaluate(gated, { weapon_type: "claymore" })).toBe(false);
+    // gate on + matching weapon_type → true
+    expect(evaluate(gated, { weapon_type: "claymore", gate: true })).toBe(true);
   });
 });
 
