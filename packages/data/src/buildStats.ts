@@ -328,12 +328,11 @@ export function buildStats(input: BuildInput): BuildResult {
   const sets = resolveSetBonuses(input.setBonuses ?? [], input.setRegistry);
 
   // Inject the character's weapon type as `weapon_type` so ConditionBooleanWeaponType
-  // conditions (e.g. GladiatorFinale 4pc) can read it from the EvalContext. This key
-  // is always present; no existing condition reads it, so this is inert for every
+  // conditions (e.g. GladiatorFinale 4pc) can read it from the EvalContext. Like the
+  // `set_pieces.*` keys, this is a SYSTEM-DERIVED canonical fact (the char's actual
+  // equipped weapon), so it is spread AFTER `input.settings` — a caller cannot override
+  // it. It is always present; no existing condition reads it, so this is inert for every
   // current build — the base-107 golden suite and all existing set suites are untouched.
-  // An explicit `input.settings.weapon_type` (none today) would be shadowed by the
-  // char-derived value unless we spread settings last; we spread it first so the char
-  // value always wins (the canonical source of truth).
   // NOTE (P2.C): char-feature weapon-type conditions would also need `weapon_type` in
   // the COMPILE settings (CompileContext). Out of scope here — set conditions are
   // resolved entirely within buildStats, so this injection suffices for set 4pc gates.
@@ -341,8 +340,8 @@ export function buildStats(input: BuildInput): BuildResult {
 
   const settings: EvalContext =
     input.setBonuses && input.setBonuses.length > 0
-      ? { ...baseSettings, ...(input.settings ?? {}), ...sets.pieceSettings }
-      : { ...baseSettings, ...(input.settings ?? {}) };
+      ? { ...(input.settings ?? {}), ...baseSettings, ...sets.pieceSettings }
+      : { ...(input.settings ?? {}), ...baseSettings };
 
   // 1-2. Aggregate base stats (char then weapon), then concat the bonus block.
   const raw = new Stats();
