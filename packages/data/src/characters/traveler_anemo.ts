@@ -46,6 +46,7 @@
  */
 
 import type {
+  Condition,
   DbObjectChar,
   Element,
   Feature,
@@ -243,6 +244,35 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Raging Vortex": ConditionStatic with no real stats → SKIP (inert).
+// C2 "Uprising Whirlwind": recharge +16. ConditionStatic (always-on at C2).
+//    Raw cons[1]: ConditionStatic{ stats:{ recharge:16 } }
+// C3 "Sweeping Gust": +3 Elemental Burst talent levels.
+//    Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C4 "Cherishing Breezes": text_percent_reduce:10 (display-only) → SKIP.
+// C5 "Stirring Breeze": +3 Elemental Skill talent levels.
+//    Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C6 "Intertwined Winds": ConditionBoolean toggle (enemy_res_anemo -20 + element shred) → SKIP.
+//    Flag: C6 has a ConditionDropdownElement (element-shred variant) — a cons-ADDED toggle
+//    feature. Not modelled here; reported below.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/TravelerAnemo.js:405-520
+
+const constellationConditions: readonly Condition[] = [
+  // C2: recharge +16. ConditionStatic{ stats:{ recharge:16 } }
+  // Raw cons[1]: ConditionStatic{ stats:{ recharge:16 } }
+  { type: "constellation", constellation: 2, stats: { recharge: 16 } },
+  // C3: +3 Elemental Burst talent levels.
+  // Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 Elemental Skill talent levels.
+  // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -257,4 +287,5 @@ export const travelerAnemo: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
