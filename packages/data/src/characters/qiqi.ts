@@ -1,0 +1,193 @@
+/**
+ * Qiqi — cryo sword ATK scaler.
+ *
+ * 5-hit normal combo (physical sword), n3 and n4 each a 2-hit multihit with
+ * child _3_1 / _4_1. Charged: 2x same multiplier (charged_hit_total parent +
+ * charged_hit child). Plunge/low/high physical. Cryo skill (skill_dmg +
+ * herald_of_frost dot). Heals (party_heal_on_hit, heal_dot, burst heal) have
+ * no damageType, skipped by the harness. Cryo burst (burst_dmg).
+ *
+ * A1 "Life-Prolonging Methods" is a conditional toggle (ConditionBoolean) →
+ * not active in the fixed solo build; omitted.
+ * A4 "A Glimpse Into Arcanum" is ConditionStatic text_only (description only) → no stats.
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/db/Char/Qiqi.js
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTables.js (Qiqi)
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Qiqi)
+ */
+
+import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import { Qiqi as QiqiStatTable } from "../generated/charTables.js";
+import { Qiqi as QiqiTalents } from "../generated/charTalentTables.js";
+
+// ---------------------------------------------------------------------------
+// TalentResolver
+// ---------------------------------------------------------------------------
+
+const talents: TalentResolver = {
+  get(path: string) {
+    const [talent, name] = path.split(".");
+    if (talent === "attack") {
+      if (name === "normal_hit_1") return QiqiTalents.s1.p1;
+      if (name === "normal_hit_2") return QiqiTalents.s1.p2;
+      if (name === "normal_hit_3") return QiqiTalents.s1.p3;
+      if (name === "normal_hit_4") return QiqiTalents.s1.p4;
+      if (name === "normal_hit_5") return QiqiTalents.s1.p5;
+      // charged_hit and plunge share the same multiplier table (s1.p6).
+      // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:52-54 and :62
+      if (name === "charged_hit") return QiqiTalents.s1.p6;
+      if (name === "plunge") return QiqiTalents.s1.p6;
+      if (name === "plunge_low") return QiqiTalents.s1.p9;
+      if (name === "plunge_high") return QiqiTalents.s1.p10;
+    }
+    if (talent === "skill") {
+      if (name === "skill_dmg") return QiqiTalents.s2.p8;
+      if (name === "qiqi_herald_of_frost") return QiqiTalents.s2.p5;
+    }
+    if (talent === "burst") {
+      if (name === "burst_dmg") return QiqiTalents.s3.p3;
+    }
+    throw new Error(`qiqi talents: unknown path '${path}'`);
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Features
+// ---------------------------------------------------------------------------
+
+const features: readonly Feature[] = [
+  // --- Normal attacks (physical sword, no element override) ---
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:155-163
+  {
+    name: "normal_hit_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
+  },
+  {
+    name: "normal_hit_2",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }],
+  },
+  // normal_hit_3: 2-hit multihit parent (items × 2 of p3).
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:173-189
+  {
+    name: "normal_hit_3",
+    category: "attack",
+    items: [
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }] },
+    ],
+  },
+  // Child: individual hit of normal_hit_3.
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:190-200
+  {
+    name: "normal_hit_3_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
+  },
+  // normal_hit_4: 2-hit multihit parent (items × 2 of p4).
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:201-217
+  {
+    name: "normal_hit_4",
+    category: "attack",
+    items: [
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }] },
+    ],
+  },
+  // Child: individual hit of normal_hit_4.
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:218-228
+  {
+    name: "normal_hit_4_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }],
+  },
+  {
+    name: "normal_hit_5",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5") }],
+  },
+  // charged_hit_total: 2x charged_hit multihit parent.
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:238-254
+  {
+    name: "charged_hit_total",
+    category: "attack",
+    damageType: "charged",
+    items: [
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }] },
+    ],
+  },
+  // Child: individual charged hit.
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:255-265
+  {
+    name: "charged_hit",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }],
+  },
+  // --- Plunge attacks (physical) ---
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:266-292
+  {
+    name: "plunge",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
+  },
+  {
+    name: "plunge_low",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
+  },
+  {
+    name: "plunge_high",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
+  },
+  // --- Skill: Herald of Frost ---
+  // skill_dmg: cryo initial hit on cast.
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:293-302
+  {
+    name: "skill_dmg",
+    category: "skill",
+    element: "cryo",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
+  },
+  // qiqi_herald_of_frost: cryo periodic hit during skill duration.
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:303-312
+  {
+    name: "qiqi_herald_of_frost",
+    category: "skill",
+    element: "cryo",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.qiqi_herald_of_frost") }],
+  },
+  // --- Burst: Preserver of Fortune ---
+  // burst_dmg: cryo burst hit.
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:334-343
+  {
+    name: "burst_dmg",
+    category: "burst",
+    element: "cryo",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// DbObjectChar
+// ---------------------------------------------------------------------------
+
+export const qiqi: DbObjectChar = {
+  name: "qiqi",
+  gameId: 10000035,
+  rarity: 5,
+  element: "cryo",
+  weapon: "sword",
+  origin: "liyue",
+  statTable: QiqiStatTable,
+  talents,
+  features,
+  multipliers: [],
+};
