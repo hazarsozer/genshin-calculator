@@ -50,6 +50,9 @@ export interface BuildSettingsInput {
    * Stack counts keyed by the condition's `name`.
    * Each key is spread into the context as-is. Values of 0 are included
    * (they produce an inactive stacks condition).
+   * Also serves ConditionNumber (numeric sliders): `ctx[name] > 0` is
+   * the active check for both, so slider values go here with the same
+   * `> 0` active semantics as stacks.
    * Example: `{ shenhe_icy_quill: 3 }`
    */
   readonly stacks?: Readonly<Record<string, number>>;
@@ -98,5 +101,5 @@ export function buildSettings(input: BuildSettingsInput = {}): EvalContext {
     bag["attack_infusion"] = input.infusion;
   }
 
-  return Object.freeze(bag) as EvalContext;
+  return Object.freeze(bag);
 }
