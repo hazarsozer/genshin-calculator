@@ -13,7 +13,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Venti)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Venti as VentiStatTable } from "../generated/charTables.js";
 import { Venti as VentiTalents } from "../generated/charTalentTables.js";
 
@@ -143,6 +143,39 @@ const features: readonly Feature[] = [
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
+  // --- C1 "Splitting Gales": two extra aimed shots, each dealing 33% of a normal
+  // aimed shot. Cons-added features gated by ConditionConstellation(1).
+  // Raw Venti.js:223-256 — FeatureDamageChargedAimed with scalingMultiplier:0.33,
+  // scalingSource:'constellation1', condition:ConditionConstellation({constellation:1}).
+  {
+    name: "second_aimed",
+    category: "attack",
+    damageType: "charged",
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: talents.get("attack.aimed"),
+        scalingMultiplier: 0.33,
+        source: "constellation1",
+      },
+    ],
+  },
+  {
+    name: "second_charged_aimed",
+    category: "attack",
+    damageType: "charged",
+    element: "anemo",
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: talents.get("attack.charged_aimed"),
+        scalingMultiplier: 0.33,
+        source: "constellation1",
+      },
+    ],
+  },
   // --- Skill: Skyward Sonnet ---
   // raw: name:'skill_dmg' → fixture key "skill.skill_dmg"
   {
@@ -194,6 +227,24 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: cons-added features second_aimed/second_charged_aimed (above, gated in features array).
+// C2: two ConditionBoolean toggles (enemy_res_anemo/phys -12) → SKIP (toggle OFF).
+// C3: +3 levels to Winds Grand Ode (burst). Raw Venti.js:383-386 cons[2] settings
+//     char_skill_burst_bonus:3.
+// C4: ConditionBoolean toggle (dmg_anemo:25) → SKIP (toggle OFF).
+// C5: +3 levels to Skyward Sonnet (skill). Raw Venti.js:398-401 cons[4] settings
+//     char_skill_elemental_bonus:3.
+// C6: ConditionBoolean + ConditionDropdownElement (enemy_res_anemo/element -20) → SKIP.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Wind's Grand Ode (burst). Raw Venti.js cons[2].
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Skyward Sonnet (skill). Raw Venti.js cons[4].
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -208,4 +259,5 @@ export const venti: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
