@@ -48,6 +48,10 @@ import { compileFeature, type CompileContext } from "../compileFeature.js";
 import { compileCharacter } from "../loader.js";
 import { aratakiItto } from "../characters/arataki-itto.js";
 import { albedo } from "../characters/albedo.js";
+import {
+  theBellStatTable, // claymore (Itto)
+  alleyFlashStatTable, // sword (Albedo)
+} from "../generated/weaponStatTables.js";
 
 // ---------------------------------------------------------------------------
 // Canonical fixed build (verbatim from golden.test.ts / _manifest.json)
@@ -137,7 +141,7 @@ describe("P2.3 char-level targeted multipliers — synthetic", () => {
   ): { context: ReturnType<typeof buildStats>["context"]; compileCtx: CompileContext } {
     const { context } = buildStats({
       char: synthChar,
-      weaponStatTable: aratakiItto.statTable, // reuse a stat table; irrelevant beyond ATK/DEF
+      weaponStatTable: theBellStatTable, // claymore default; only ATK/DEF totals matter here
       statBlock: STAT_BLOCK,
       levels: LEVELS,
       enemy: ENEMY,
@@ -231,7 +235,7 @@ describe("P2.3 Itto A4 — generalized, regression vs base oracle", () => {
 
   const { context } = buildStats({
     char: aratakiItto,
-    weaponStatTable: aratakiItto.statTable,
+    weaponStatTable: theBellStatTable,
     statBlock: STAT_BLOCK,
     levels: LEVELS,
     enemy: ENEMY,
@@ -288,7 +292,7 @@ describe("P2.3 Albedo C2 — gated targeted multiplier", () => {
   function build(settings: EvalContext) {
     const { context } = buildStats({
       char: albedo,
-      weaponStatTable: albedo.statTable,
+      weaponStatTable: alleyFlashStatTable,
       statBlock: STAT_BLOCK,
       levels: LEVELS,
       enemy: ENEMY,

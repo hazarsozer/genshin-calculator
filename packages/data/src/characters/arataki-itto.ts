@@ -15,6 +15,7 @@
  */
 
 import type {
+  CharMultiplier,
   CharPostEffect,
   Condition,
   DbObjectChar,
@@ -87,22 +88,29 @@ const defToAtk: CharPostEffect = {
 
 /**
  * A4 adds `0.35 × DEF` to charged-attack base damage. Her data models it as a
- * char-level FeatureMultiplier `{ scaling:'def*', source:'ascension4',
- * values:[35], target:{damageTypes:['charged']} }` — a base term, not a separate
- * factor. We attach it numerically faithfully as a `scaling:"def"` multiplier on
- * each charged feature (compileFeature's baseDamageTerm sums it into cBaseDamage
- * as `0.35 × def_total`). The general char-level *targeted* multiplier mechanism
- * her data uses is deferred to P1.9; this per-feature DEF term is the same number.
+ * char-level targeted multiplier (P2.3 generalized this from the former per-feature
+ * hack): `{ scaling:'def*', source:'ascension4', values:[35],
+ * target:{damageTypes:['charged']} }`. `compileFeature` sums it into the base term
+ * (cBaseDamage) of EVERY charged feature as `0.35 × def_total` — identical to her
+ * `getMultipliers` merging `char.multipliers` into each feature (Feature2.js:121).
+ *
+ * Always-on (no `condition`): A4 is unlocked at ascension 4 and the canonical build
+ * is ascension 6, so it is unconditionally active — matching her `defToAtk`
+ * post-effect, which likewise does not re-gate on ascension. (Her raw entry gates on
+ * `ConditionAscensionChar({ascension:4})`; we have no ascension condition variant and
+ * the baseline is always ≥ A4, so the gate is vacuously true and omitted.)
  *
  * Source: raw/genshin_calc_pub/src/js/db/Char/Itto.js:124 (A4ChargedDefBonus: 35),
  *         :320-330 (the def* charged-targeted char-level multiplier).
  */
 const A4_CHARGED_DEF_BONUS = 35;
-const a4ChargedDefTerm = {
+const a4ChargedDefMultiplier: CharMultiplier = {
   leveling: "",
-  scaling: "def",
+  scaling: "def*",
+  source: "ascension4",
   values: { getValue: () => A4_CHARGED_DEF_BONUS },
-} as const;
+  target: { damageTypes: ["charged"] },
+};
 
 // ---------------------------------------------------------------------------
 // Features
@@ -137,7 +145,6 @@ const features: readonly Feature[] = [
     damageType: "charged",
     multipliers: [
       { leveling: "char_skill_attack", values: talents.get("attack.itto_kesagiri_combo_slash_dmg") },
-      a4ChargedDefTerm,
     ],
   },
   {
@@ -146,7 +153,6 @@ const features: readonly Feature[] = [
     damageType: "charged",
     multipliers: [
       { leveling: "char_skill_attack", values: talents.get("attack.itto_kesagiri_final_slash_dmg") },
-      a4ChargedDefTerm,
     ],
   },
   {
@@ -155,7 +161,6 @@ const features: readonly Feature[] = [
     damageType: "charged",
     multipliers: [
       { leveling: "char_skill_attack", values: talents.get("attack.itto_saichimonji_slash_dmg") },
-      a4ChargedDefTerm,
     ],
   },
   // --- Plunge attacks (her FeatureDamagePlunge: category="attack", damageType="plunge") ---
@@ -200,7 +205,7 @@ export const aratakiItto: DbObjectChar = {
   statTable: IttoStatTable,
   talents,
   features,
-  multipliers: [],
+  multipliers: [a4ChargedDefMultiplier],
   postEffects: [defToAtk],
   conditions: [royalDescent],
 };
