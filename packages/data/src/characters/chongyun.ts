@@ -10,7 +10,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Chongyun)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Chongyun as ChongyunStatTable } from "../generated/charTables.js";
 import { Chongyun as ChongyunTalents } from "../generated/charTalentTables.js";
 
@@ -100,6 +100,20 @@ const features: readonly Feature[] = [
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
+  // --- C1 "Ice Unleashed": cons-added cryo ATK hit at 50% ATK.
+  // Raw is base FeatureDamage (NOT FeatureDamageNormal) with category:'attack' →
+  // damageType:"" suppresses dmg_normal; gets dmg_all+dmg_cryo only.
+  // Fixed ValueTable([50]); source:'constellation1'. Raw Chongyun.js:165-176.
+  {
+    name: "chongyun_ice_unleashed",
+    category: "attack",
+    element: "cryo",
+    damageType: "",
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      { leveling: "char_skill_attack", values: { getValue: (_level: number) => 50 }, source: "constellation1" },
+    ],
+  },
   // --- Skill: Chonghua's Layered Frost (cryo) ---
   {
     name: "skill_dmg",
@@ -117,6 +131,25 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Ice Unleashed": cons-added feature chongyun_ice_unleashed above.
+//   ConditionStatic in cons array (display-only text_percent_dmg:50) → SKIP.
+// C2 "Atmospheric Revolution": ConditionStatic (display) + Condition(recovery)
+//   behind ConditionBoolean(chongyun_frost_field) toggle → SKIP (toggle-gated).
+// C3: +3 levels to Cloud-Parting Star (burst). Raw cons[2] settings char_skill_burst_bonus:3.
+// C4 "Frozen Skies": ConditionStatic display-only → SKIP.
+// C5: +3 levels to Chonghua's Layered Frost (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
+// C6 "Rally of Four Blades": ConditionBoolean toggle (dmg_burst_chongyun:15) → SKIP.
+// Raw: db/Char/Chongyun.js constellation array (Chongyun.js:309-379).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Cloud-Parting Star (burst). Raw Chongyun.js:340-346.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Chonghua's Layered Frost (skill). Raw Chongyun.js:356-362.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -131,4 +164,5 @@ export const chongyun: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
