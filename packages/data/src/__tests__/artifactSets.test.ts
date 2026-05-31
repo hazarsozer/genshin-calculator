@@ -84,39 +84,6 @@ interface Triple {
   readonly average: number;
 }
 
-/** Compile every feature for a character built with the given sets + settings. */
-function compileWithSets(
-  char: DbObjectChar,
-  weaponStatTable: readonly StatTableEntry[],
-  setBonuses: readonly EquippedSet[],
-  settings: EvalContext
-): Readonly<Record<string, (ctx: ReturnType<typeof buildStats>["context"]) => Triple>> {
-  const { context } = buildStats({
-    char,
-    weaponStatTable,
-    statBlock: STAT_BLOCK,
-    levels: LEVELS,
-    enemy: ENEMY,
-    settings,
-    setBonuses,
-  });
-  const compiled = compileCharacter(char, {
-    charElement: char.element,
-    talentLevels: TALENTS,
-    settings,
-    charLevel: LEVELS.charLevel,
-  });
-  return Object.fromEntries(
-    Object.entries(compiled).map(([k, fn]) => [
-      k,
-      (ctx: ReturnType<typeof buildStats>["context"]) => {
-        const r = fn(ctx);
-        return { normal: r.normal, crit: r.crit, average: r.avg };
-      },
-    ])
-  ) as Readonly<Record<string, (ctx: ReturnType<typeof buildStats>["context"]) => Triple>>;
-}
-
 /** Assert a compiled feature's triple matches the oracle triple within tolerance. */
 function expectFeature(
   char: DbObjectChar,

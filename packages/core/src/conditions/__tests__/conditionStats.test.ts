@@ -37,6 +37,7 @@ import type {
   ConditionBooleanRefine,
   ConditionAnd,
   ConditionOr,
+  ConditionBooleanPiecesCount,
 } from "@genshin/types";
 
 const emptyCtx: EvalContext = {};
@@ -90,6 +91,18 @@ describe("conditionStats — non-refine variants emit cond.stats when active", (
     // active or (one vacuously-true `and` child) reaches the explicit `case "or"` → still {}
     const activeOr: ConditionOr = { type: "or", items: [{ type: "and", items: [] }] };
     expect(conditionStats(activeOr, emptyCtx)).toEqual({});
+  });
+
+  it("pieces-count: pure gate — {} whether active or not", () => {
+    // Active when set_pieces.<setname-lowercased> >= count; like and/or it carries
+    // no stats of its own, so conditionStats returns {} even when active.
+    const c: ConditionBooleanPiecesCount = {
+      type: "pieces-count",
+      setName: "NoblesseOblige",
+      count: 4,
+    };
+    expect(conditionStats(c, { "set_pieces.noblesseoblige": 2 })).toEqual({}); // < count
+    expect(conditionStats(c, { "set_pieces.noblesseoblige": 4 })).toEqual({}); // >= count, still {}
   });
 });
 

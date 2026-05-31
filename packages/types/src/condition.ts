@@ -191,6 +191,12 @@ export interface ConditionBooleanPiecesCount extends ConditionBase {
   readonly setName: string;
   /** Minimum equipped pieces for activation (2 or 4). */
   readonly count: number;
+  /**
+   * A pure gate — it contributes NO stats of its own (`conditionStats` returns `{}`
+   * for this variant even when active, like `and`/`or`). Narrowed to `never` so
+   * attaching a `stats` bag is a compile error, not a silently-discarded value.
+   */
+  readonly stats?: never;
 }
 
 /**
