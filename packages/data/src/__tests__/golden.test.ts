@@ -55,9 +55,11 @@ import { huTao } from "../characters/hu-tao.js";
 import { diluc } from "../characters/diluc.js";
 import { aratakiItto } from "../characters/arataki-itto.js";
 import { ineffa } from "../characters/ineffa.js";
+import { kaeya } from "../characters/kaeya.js";
 import {
   blackcliffPoleStatTable,
   theBellStatTable,
+  alleyFlashStatTable,
 } from "../generated/weaponStatTables.js";
 import type { DbObjectChar } from "@genshin/types";
 import type { StatTableEntry } from "@genshin/types";
@@ -158,6 +160,7 @@ const REPS: readonly Rep[] = [
   { char: diluc,        weaponStatTable: theBellStatTable,        slug: "diluc"         },
   { char: aratakiItto,  weaponStatTable: theBellStatTable,        slug: "arataki_itto"  },
   { char: ineffa,       weaponStatTable: blackcliffPoleStatTable, slug: "ineffa"        },
+  { char: kaeya,        weaponStatTable: alleyFlashStatTable,     slug: "kaeya"         },
 ];
 
 // ---------------------------------------------------------------------------

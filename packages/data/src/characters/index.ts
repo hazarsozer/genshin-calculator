@@ -12,3 +12,4 @@ export { huTao } from "./hu-tao.js";
 export { diluc } from "./diluc.js";
 export { aratakiItto } from "./arataki-itto.js";
 export { ineffa } from "./ineffa.js";
+export { kaeya } from "./kaeya.js";
