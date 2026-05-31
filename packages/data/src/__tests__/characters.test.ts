@@ -129,6 +129,11 @@ describe("Hu Tao (HP scaler)", () => {
     // Non-child damage features
     expect(Object.keys(compiled)).toContain("attack.normal_hit_1");
     expect(Object.keys(compiled)).toContain("attack.charged_hit");
+    // Plunge features key as attack.plunge* (her FeatureDamagePlunge category="attack"),
+    // matching the oracle fixtures — NOT plunge.plunge*.
+    expect(Object.keys(compiled)).toContain("attack.plunge");
+    expect(Object.keys(compiled)).toContain("attack.plunge_low");
+    expect(Object.keys(compiled)).toContain("attack.plunge_high");
     expect(Object.keys(compiled)).toContain("skill.hutao_blood_blossom");
     expect(Object.keys(compiled)).toContain("burst.burst_dmg");
     // Child hits should be excluded
@@ -310,6 +315,41 @@ describe("Arataki Itto (DEF scaler)", () => {
     // skill_hit uses geo element + dmg_skill bonus
     expect(result.normal).toBeCloseTo(6231.621390629439, TOLERANCE);
     expect(result.crit).toBeCloseTo(12463.242781258878, TOLERANCE);
+  });
+
+  it("charged attacks include A4 (0.35×DEF) base term and match oracle — through the engine", () => {
+    // A4 "Bloodline of the Crimson Oni" adds 0.35×DEF to charged-attack base
+    // damage (Itto.js:124 A4ChargedDefBonus:35, :320-330 def* charged multiplier).
+    // These exercise the DEF→base-damage path — Itto's whole reason as the DEF rep.
+    // End-to-end through the production path: buildStats → compileCharacter → compile.
+    const { context } = buildStats({
+      char: aratakiItto,
+      weaponStatTable: theBellStatTable,
+      statBlock: STAT_BLOCK,
+      levels: LEVELS,
+      enemy: ENEMY,
+      settings: {},
+    });
+    const compiled = compileCharacter(aratakiItto, {
+      charElement: aratakiItto.element,
+      talentLevels: TALENTS,
+      settings: {},
+    });
+
+    // Oracle: arataki_itto.json attack.itto_kesagiri_combo_slash_dmg (damageType charged)
+    const combo = compiled["attack.itto_kesagiri_combo_slash_dmg"]!(context);
+    expect(combo.normal).toBeCloseTo(2193.004846732248, TOLERANCE);
+    expect(combo.crit).toBeCloseTo(4386.009693464496, TOLERANCE);
+
+    // Oracle: arataki_itto.json attack.itto_kesagiri_final_slash_dmg
+    const final = compiled["attack.itto_kesagiri_final_slash_dmg"]!(context);
+    expect(final.normal).toBeCloseTo(4213.331383966776, TOLERANCE);
+    expect(final.crit).toBeCloseTo(8426.662767933552, TOLERANCE);
+
+    // Oracle: arataki_itto.json attack.itto_saichimonji_slash_dmg
+    const saichimonji = compiled["attack.itto_saichimonji_slash_dmg"]!(context);
+    expect(saichimonji.normal).toBeCloseTo(2179.071560268562, TOLERANCE);
+    expect(saichimonji.crit).toBeCloseTo(4358.143120537124, TOLERANCE);
   });
 });
 

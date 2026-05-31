@@ -82,6 +82,29 @@ const defToAtk: CharPostEffect = {
 };
 
 // ---------------------------------------------------------------------------
+// A4 "Bloodline of the Crimson Oni" — charged-attack DEF base term
+// ---------------------------------------------------------------------------
+
+/**
+ * A4 adds `0.35 × DEF` to charged-attack base damage. Her data models it as a
+ * char-level FeatureMultiplier `{ scaling:'def*', source:'ascension4',
+ * values:[35], target:{damageTypes:['charged']} }` — a base term, not a separate
+ * factor. We attach it numerically faithfully as a `scaling:"def"` multiplier on
+ * each charged feature (compileFeature's baseDamageTerm sums it into cBaseDamage
+ * as `0.35 × def_total`). The general char-level *targeted* multiplier mechanism
+ * her data uses is deferred to P1.9; this per-feature DEF term is the same number.
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Itto.js:124 (A4ChargedDefBonus: 35),
+ *         :320-330 (the def* charged-targeted char-level multiplier).
+ */
+const A4_CHARGED_DEF_BONUS = 35;
+const a4ChargedDefTerm = {
+  leveling: "",
+  scaling: "def",
+  values: { getValue: () => A4_CHARGED_DEF_BONUS },
+} as const;
+
+// ---------------------------------------------------------------------------
 // Features
 // ---------------------------------------------------------------------------
 
@@ -112,34 +135,46 @@ const features: readonly Feature[] = [
     name: "itto_kesagiri_combo_slash_dmg",
     category: "attack",
     damageType: "charged",
-    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.itto_kesagiri_combo_slash_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_attack", values: talents.get("attack.itto_kesagiri_combo_slash_dmg") },
+      a4ChargedDefTerm,
+    ],
   },
   {
     name: "itto_kesagiri_final_slash_dmg",
     category: "attack",
     damageType: "charged",
-    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.itto_kesagiri_final_slash_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_attack", values: talents.get("attack.itto_kesagiri_final_slash_dmg") },
+      a4ChargedDefTerm,
+    ],
   },
   {
     name: "itto_saichimonji_slash_dmg",
     category: "attack",
     damageType: "charged",
-    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.itto_saichimonji_slash_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_attack", values: talents.get("attack.itto_saichimonji_slash_dmg") },
+      a4ChargedDefTerm,
+    ],
   },
-  // --- Plunge attacks ---
+  // --- Plunge attacks (her FeatureDamagePlunge: category="attack", damageType="plunge") ---
   {
     name: "plunge",
-    category: "plunge",
+    category: "attack",
+    damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
   },
   {
     name: "plunge_low",
-    category: "plunge",
+    category: "attack",
+    damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
-    category: "plunge",
+    category: "attack",
+    damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
   // --- Skill: Akaushi Burst (geo) ---

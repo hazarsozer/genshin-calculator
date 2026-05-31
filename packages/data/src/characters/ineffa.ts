@@ -156,20 +156,23 @@ const features: readonly Feature[] = [
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }],
   },
-  // --- Plunge attacks ---
+  // --- Plunge attacks (her FeatureDamagePlunge: category="attack", damageType="plunge") ---
   {
     name: "plunge",
-    category: "plunge",
+    category: "attack",
+    damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
   },
   {
     name: "plunge_low",
-    category: "plunge",
+    category: "attack",
+    damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
-    category: "plunge",
+    category: "attack",
+    damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
   // --- Skill: Carrier Frequency ---
