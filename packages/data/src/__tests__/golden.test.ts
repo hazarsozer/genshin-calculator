@@ -45,30 +45,17 @@
  *   packages/data/src/__tests__/characters.test.ts — STAT_BLOCK / LEVELS / ENEMY / TALENTS
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
 import { describe, it, expect } from "vitest";
 import { buildStats } from "../buildStats.js";
 import { compileCharacter } from "../loader.js";
-import { huTao } from "../characters/hu-tao.js";
-import { diluc } from "../characters/diluc.js";
-import { aratakiItto } from "../characters/arataki-itto.js";
-import { ineffa } from "../characters/ineffa.js";
-import { kaeya } from "../characters/kaeya.js";
-import { chongyun } from "../characters/chongyun.js";
-import { razor } from "../characters/razor.js";
-import { xiangling } from "../characters/xiangling.js";
-import { amber } from "../characters/amber.js";
-import { lisa } from "../characters/lisa.js";
-import { ningguang } from "../characters/ningguang.js";
-import { fischl } from "../characters/fischl.js";
-import { rosaria } from "../characters/rosaria.js";
-import { collei } from "../characters/collei.js";
-import { bennett } from "../characters/bennett.js";
-import { beidou } from "../characters/beidou.js";
-import { xinyan } from "../characters/xinyan.js";
-import { gorou } from "../characters/gorou.js";
+// Characters are AUTO-DISCOVERED from ../characters/*.ts (import.meta.glob, below) —
+// no per-character import is listed here. Adding a character = dropping its file in
+// that directory; it is picked up automatically. This keeps this shared gate file
+// untouched by character ports (so parallel ports merge without conflict) and makes
+// it structurally impossible to add a character file that is silently never tested.
 import {
   blackcliffPoleStatTable,
   theBellStatTable,
@@ -170,26 +157,73 @@ interface Rep {
   readonly slug: string;
 }
 
-const REPS: readonly Rep[] = [
-  { char: huTao,        weaponStatTable: blackcliffPoleStatTable, slug: "hu_tao"       },
-  { char: diluc,        weaponStatTable: theBellStatTable,        slug: "diluc"         },
-  { char: aratakiItto,  weaponStatTable: theBellStatTable,        slug: "arataki_itto"  },
-  { char: ineffa,       weaponStatTable: blackcliffPoleStatTable, slug: "ineffa"        },
-  { char: kaeya,        weaponStatTable: alleyFlashStatTable,     slug: "kaeya"         },
-  { char: chongyun,     weaponStatTable: theBellStatTable,        slug: "chongyun"      },
-  { char: razor,        weaponStatTable: theBellStatTable,        slug: "razor"         },
-  { char: xiangling,    weaponStatTable: blackcliffPoleStatTable, slug: "xiangling"    },
-  { char: amber,        weaponStatTable: alleyHunterStatTable,    slug: "amber"         },
-  { char: lisa,         weaponStatTable: solarPearlStatTable,     slug: "lisa"          },
-  { char: ningguang,    weaponStatTable: solarPearlStatTable,     slug: "ningguang"     },
-  { char: fischl,       weaponStatTable: alleyHunterStatTable,    slug: "fischl"        },
-  { char: rosaria,      weaponStatTable: blackcliffPoleStatTable, slug: "rosaria"       },
-  { char: collei,       weaponStatTable: alleyHunterStatTable,    slug: "collei"        },
-  { char: bennett,      weaponStatTable: alleyFlashStatTable,     slug: "bennett"       },
-  { char: beidou,       weaponStatTable: theBellStatTable,        slug: "beidou"        },
-  { char: xinyan,       weaponStatTable: theBellStatTable,        slug: "xinyan"        },
-  { char: gorou,        weaponStatTable: alleyHunterStatTable,    slug: "gorou"         },
-];
+/**
+ * Default weapon stat table by weapon type — the canonical fixed-build weapon for
+ * each weapon class. Verbatim from the original hand-listed REPS: every character of
+ * a given type used its type's default table, so the table is fully determined by
+ * `char.weapon`. Deriving it here removes the last per-character datum from this file.
+ */
+const WEAPON_TABLE_BY_TYPE: Readonly<Record<string, readonly StatTableEntry[]>> = {
+  sword: alleyFlashStatTable,
+  claymore: theBellStatTable,
+  polearm: blackcliffPoleStatTable,
+  bow: alleyHunterStatTable,
+  catalyst: solarPearlStatTable,
+};
+
+// Minimal local type for Vite's `import.meta.glob` so the typecheck gate passes
+// without a vite/client dependency. Vitest supplies the real implementation (it
+// transforms the call into eager static imports) at runtime.
+declare global {
+  interface ImportMeta {
+    glob(
+      pattern: string,
+      options: { eager: true }
+    ): Record<string, Record<string, unknown>>;
+  }
+}
+
+/** Fixture slug from a module path: `../characters/arataki-itto.ts` → `arataki_itto`. */
+function slugFromPath(path: string): string {
+  const base = path.slice(path.lastIndexOf("/") + 1).replace(/\.ts$/, "");
+  return base.replace(/-/g, "_");
+}
+
+/** A character module's single data export is the DbObjectChar (has weapon/element/features). */
+function isDbObjectChar(value: unknown): value is DbObjectChar {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "weapon" in value &&
+    "element" in value &&
+    "features" in value
+  );
+}
+
+// Eager-glob every character module. Each file has exactly one DbObjectChar export;
+// the slug comes from the filename and the weapon table from the character's type.
+const CHAR_MODULES = import.meta.glob("../characters/*.ts", { eager: true });
+
+const REPS: readonly Rep[] = Object.entries(CHAR_MODULES)
+  .filter(([path]) => !path.endsWith("/index.ts"))
+  .map(([path, mod]): Rep => {
+    const slug = slugFromPath(path);
+    const chars = Object.values(mod).filter(isDbObjectChar);
+    if (chars.length !== 1) {
+      throw new Error(
+        `characters/${slug}: expected exactly 1 DbObjectChar export, found ${chars.length}`
+      );
+    }
+    const char = chars[0]!;
+    const weaponStatTable = WEAPON_TABLE_BY_TYPE[char.weapon];
+    if (!weaponStatTable) {
+      throw new Error(
+        `characters/${slug}: no default weapon table for weapon type "${char.weapon}"`
+      );
+    }
+    return { char, weaponStatTable, slug };
+  })
+  .sort((a, b) => a.slug.localeCompare(b.slug));
 
 // ---------------------------------------------------------------------------
 // Golden harness
@@ -211,6 +245,20 @@ function isDamageTripleEntry(entry: FixtureEntry): boolean {
   if (!entry.damageType) return false;
   return true;
 }
+
+// Belt-and-suspenders guard: the glob must discover EVERY character file on disk.
+// If import.meta.glob ever under-matches, this fails loudly rather than silently
+// leaving a character untested — the precise failure mode auto-discovery prevents.
+describe("auto-discovery", () => {
+  it("every character file is represented in REPS", () => {
+    const charDir = join(dirname(fileURLToPath(import.meta.url)), "../characters");
+    const fileCount = readdirSync(charDir).filter(
+      (f) => f.endsWith(".ts") && f !== "index.ts"
+    ).length;
+    expect(REPS.length).toBe(fileCount);
+    expect(REPS.length).toBeGreaterThan(0);
+  });
+});
 
 for (const { char, weaponStatTable, slug } of REPS) {
   describe(`golden: ${slug}`, () => {
