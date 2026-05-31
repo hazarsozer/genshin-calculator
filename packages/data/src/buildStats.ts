@@ -30,7 +30,7 @@
  *   wiki/concepts/stat-keys-and-good-format.md
  */
 
-import { Stats, applyPostEffects, type PostEffect } from "@genshin/core";
+import { Stats, applyPostEffects, conditionStats, type PostEffect } from "@genshin/core";
 import type {
   BuildStats,
   CharPostEffect,
@@ -133,6 +133,14 @@ export interface BuildInput {
   readonly enemy: BuildEnemy;
   /** The immutable EvalContext for condition-gated post-effects/buffs. */
   readonly settings?: EvalContext;
+  /**
+   * Generic condition channel for equipped-object (weapon / artifact-set)
+   * conditions. Applied identically to `char.conditions` in the condition loop —
+   * later tasks (weapon passives, set shapes) pass the equipped objects'
+   * conditions in here. Her CalcSet.getBaseStats iterates every equipped object's
+   * `getConditions()`; this is that same set, minus the character's own.
+   */
+  readonly extraConditions?: readonly Condition[];
 }
 
 /** The assembled bag + the context the engine evaluates against. */
@@ -212,6 +220,19 @@ export function buildStats(input: BuildInput): BuildResult {
   // getBuildData applies these via the baseline-active conditions.
   if (input.char.baseStats) raw.concat(input.char.baseStats);
   raw.concat(input.statBlock);
+
+  // 2b. Apply the conditional layer — every active condition's contributed stats,
+  // RAW, concatenated like the bonus block. Mirrors her CalcSet.getBaseStats loop
+  // (`cond.getData(settings).stats` over each equipped object's conditions). This
+  // is ADDITIVE on top of `baseStats` (always-on passives): each condition here is
+  // gated/toggleable, so at the base C0 build with no toggles `conditionStats`
+  // returns {} and the loop is a no-op (the 107/107 base golden suite is untouched).
+  // Runs BEFORE applyPostEffects so post-effects (HP→ATK) read condition-contributed
+  // stats — exactly her order. Stacks scale by getStackCount, refine resolves by
+  // weapon_refine: all handled inside the pure `conditionStats` resolver.
+  for (const cond of [...(input.char.conditions ?? []), ...(input.extraConditions ?? [])]) {
+    raw.concat(conditionStats(cond, settings));
+  }
 
   // 3. Derive — condition-gated post-effects (reads RAW percents via getTotal).
   const effects = (input.char.postEffects ?? []).map(toPostEffect);
