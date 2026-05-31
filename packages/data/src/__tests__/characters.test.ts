@@ -231,6 +231,48 @@ describe("Diluc (ATK scaler)", () => {
     expect(result.normal).toBeGreaterThan(0);
     expect(result.crit).toBeGreaterThan(result.normal);
   });
+
+  // -------------------------------------------------------------------------
+  // Transformative reaction contributions — generic, emitted by element (pyro).
+  // End-to-end through the PRODUCTION path: buildStats → compileCharacter →
+  // compileReaction → cTransformativeDamage. Pyro emits overloaded, burning,
+  // burgeon (+ universal electrocharged, shatter). Cannot crit → normal=crit=avg.
+  // -------------------------------------------------------------------------
+  it("pyro transformative reactions match oracle (overloaded/burning/burgeon/electrocharged/shatter)", () => {
+    const { context } = buildStats({
+      char: diluc,
+      weaponStatTable: theBellStatTable,
+      statBlock: STAT_BLOCK,
+      levels: LEVELS,
+      enemy: ENEMY,
+      settings: {},
+    });
+    const compiled = compileCharacter(diluc, {
+      charElement: diluc.element,
+      talentLevels: TALENTS,
+      settings: {},
+      charLevel: LEVELS.charLevel,
+    });
+
+    // Oracle values: diluc.json reaction.*
+    const expected: Record<string, number> = {
+      "reaction.overloaded": 5114.415903010949,
+      "reaction.burning": 464.9469002737226,
+      "reaction.burgeon": 5579.362803284671,
+      "reaction.electrocharged": 3719.5752021897806,
+      "reaction.shatter": 5579.362803284671,
+    };
+    for (const [key, normal] of Object.entries(expected)) {
+      const result = compiled[key]!(context);
+      expect(result.normal, `${key} normal`).toBeCloseTo(normal, TOLERANCE);
+      // Transformative reactions cannot crit → normal == crit == avg.
+      expect(result.crit, `${key} crit`).toBeCloseTo(normal, TOLERANCE);
+      expect(result.avg, `${key} avg`).toBeCloseTo(normal, TOLERANCE);
+    }
+    // Pyro does NOT emit superconduct or swirl.
+    expect(compiled["reaction.superconduct"]).toBeUndefined();
+    expect(compiled["reaction.swirl_pyro"]).toBeUndefined();
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -350,6 +392,39 @@ describe("Arataki Itto (DEF scaler)", () => {
     const saichimonji = compiled["attack.itto_saichimonji_slash_dmg"]!(context);
     expect(saichimonji.normal).toBeCloseTo(2179.071560268562, TOLERANCE);
     expect(saichimonji.crit).toBeCloseTo(4358.143120537124, TOLERANCE);
+  });
+
+  // -------------------------------------------------------------------------
+  // Transformative reactions — geo emits only the universals (electrocharged,
+  // shatter); no element-specific reaction. Cannot crit → normal=crit=avg.
+  // -------------------------------------------------------------------------
+  it("geo transformative reactions match oracle (electrocharged/shatter only)", () => {
+    const { context } = buildStats({
+      char: aratakiItto,
+      weaponStatTable: theBellStatTable,
+      statBlock: STAT_BLOCK,
+      levels: LEVELS,
+      enemy: ENEMY,
+      settings: {},
+    });
+    const compiled = compileCharacter(aratakiItto, {
+      charElement: aratakiItto.element,
+      talentLevels: TALENTS,
+      settings: {},
+      charLevel: LEVELS.charLevel,
+    });
+
+    // Oracle values: arataki_itto.json reaction.*
+    const electrocharged = compiled["reaction.electrocharged"]!(context);
+    expect(electrocharged.normal).toBeCloseTo(3719.5752021897806, TOLERANCE);
+    expect(electrocharged.crit).toBeCloseTo(3719.5752021897806, TOLERANCE);
+    const shatter = compiled["reaction.shatter"]!(context);
+    expect(shatter.normal).toBeCloseTo(5579.362803284671, TOLERANCE);
+    expect(shatter.avg).toBeCloseTo(5579.362803284671, TOLERANCE);
+
+    // Geo emits no element-specific reaction.
+    expect(compiled["reaction.overloaded"]).toBeUndefined();
+    expect(compiled["reaction.superconduct"]).toBeUndefined();
   });
 });
 
@@ -483,6 +558,36 @@ describe("Ineffa (Lunar-Charged / electro polearm)", () => {
     expect(result.normal).toBeCloseTo(4687.133337500846, TOLERANCE);
     expect(result.crit).toBeCloseTo(11958.189541299158, TOLERANCE);
     expect(result.avg).toBeCloseTo(6810.281749009953, TOLERANCE);
+  });
+
+  // -------------------------------------------------------------------------
+  // Standard transformative reactions — electro emits overloaded, superconduct,
+  // hyperbloom (+ universal shatter). electrocharged is SUPPRESSED because Ineffa
+  // is Lunar-Charged-active (lunarChargedActive=true → her electrocharged is gated
+  // by ConditionNot([lunarchargedCond])). Cannot crit → normal=crit=avg.
+  // -------------------------------------------------------------------------
+  it("electro transformative reactions match oracle (overloaded/superconduct/hyperbloom/shatter)", () => {
+    // Oracle values: ineffa.json reaction.*
+    const expected: Record<string, number> = {
+      "reaction.overloaded": 5114.415903010949,
+      "reaction.superconduct": 2789.6814016423355,
+      "reaction.hyperbloom": 5579.362803284671,
+      "reaction.shatter": 5579.362803284671,
+    };
+    for (const [key, normal] of Object.entries(expected)) {
+      const result = ineffaCompiled[key]!(lunarContext);
+      expect(result.normal, `${key} normal`).toBeCloseTo(normal, TOLERANCE);
+      expect(result.crit, `${key} crit`).toBeCloseTo(normal, TOLERANCE);
+      expect(result.avg, `${key} avg`).toBeCloseTo(normal, TOLERANCE);
+    }
+  });
+
+  it("electrocharged is suppressed for a Lunar-Charged-active character", () => {
+    // Her electrocharged is gated by ConditionNot([lunarchargedCond]); Ineffa's
+    // allowed_lunarcharged:1 default makes it false → no electrocharged contribution.
+    expect(ineffaCompiled["reaction.electrocharged"]).toBeUndefined();
+    // The Lunar-Charged contribution is present instead.
+    expect(ineffaCompiled["reaction.lunarcharged_contrubution"]).toBeDefined();
   });
 });
 
