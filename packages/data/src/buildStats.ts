@@ -42,6 +42,7 @@ import type {
   Feature,
   StatTableEntry,
 } from "@genshin/types";
+import { getArtifactSet } from "./artifacts/sets/index.js";
 
 /** The seven elements + physical, in the order the engine keys resistance. */
 const ELEMENTS: readonly Element[] = [
@@ -103,6 +104,35 @@ const REACTION_DERIVED_KEYS = [
 ] as const;
 
 /**
+ * Per-reaction DMG bonus keys CONDITIONS contribute (e.g. CrimsonWitch 4pc's
+ * `dmg_reaction_overloaded`/`_burgeon`/…). The reaction factories read each via
+ * `cStat(key)` inside `(1 + emBonus + Σ dmg_reaction_*)` (core's
+ * cTransformativeDamage / cAmplifyingDamage). Unlike `dmg_reaction_lunarcharged`
+ * (a post-effect output that ALREADY folded its isPercent /100 — see
+ * REACTION_DERIVED_KEYS), these arrive as RAW percents from `conditionStats`, so
+ * they are emitted as FRACTIONS (÷100) at emit time, exactly like every dmg_* key.
+ * `dmg_reaction_lunarcharged` is deliberately NOT in this list (it stays in the
+ * pre-divided REACTION_DERIVED_KEYS path). Absent keys are left unset → engine reads 0.
+ *
+ * Source: packages/data/src/reactions.ts (reactionBonusKeys per reaction);
+ *         raw/.../db/Artifacts/Set/CrimsonWitch.js (the 4pc reaction bonuses).
+ */
+const REACTION_BONUS_PERCENT_KEYS = [
+  "dmg_reaction_overloaded",
+  "dmg_reaction_superconduct",
+  "dmg_reaction_electrocharged",
+  "dmg_reaction_shatter",
+  "dmg_reaction_swirl",
+  "dmg_reaction_bloom",
+  "dmg_reaction_hyperbloom",
+  "dmg_reaction_burgeon",
+  "dmg_reaction_rupture",
+  "dmg_reaction_aggravate",
+  "dmg_reaction_vaporize",
+  "dmg_reaction_melt",
+] as const;
+
+/**
  * Level/ascension parameters for base-stat assembly. (Talent levels are a
  * compileFeature concern — they pick the talent-table row, not a base stat — so
  * they live on CompileContext, not here.)
@@ -140,6 +170,25 @@ export interface BuildInput {
    * `getConditions()`; this is that same set, minus the character's own.
    */
   readonly extraConditions?: readonly Condition[];
+  /**
+   * Equipped artifact sets + their piece counts (e.g. `[{ setKey: "NoblesseOblige",
+   * pieces: 4 }]`). Each is resolved against the set registry; conditions from every
+   * bonus tier `t <= pieces` enter the condition loop (the PIECE-COUNT gate), each
+   * then independently subject to its own gate (the CONDITION gate). Mirrors her
+   * `CalcObjectArtifacts`: `activeSets()` counts pieces per set, `getConditions(pieces)`
+   * collects the unlocked tiers' conditions, and `getSettings()` injects
+   * `set_pieces.<setKey-lowercased> = pieces` (read by `ConditionBooleanPiecesCount`).
+   * Absent / empty → the whole set path is a no-op (the base golden suite is untouched).
+   */
+  readonly setBonuses?: readonly EquippedSet[];
+}
+
+/** One equipped artifact set: its registry key + how many pieces are worn. */
+export interface EquippedSet {
+  /** Registry key (GOOD `goodId`), e.g. "NoblesseOblige". */
+  readonly setKey: string;
+  /** Equipped piece count (1–5; bonus tiers exist at 2 and 4). */
+  readonly pieces: number;
 }
 
 /** The assembled bag + the context the engine evaluates against. */
@@ -200,6 +249,48 @@ function collectFeatureBonusKeys(features: readonly Feature[]): readonly string[
   return [...keys];
 }
 
+/** What an equipped-set's `setBonuses` resolve to: gated conditions + piece-count settings + post-effects. */
+interface ResolvedSetBonuses {
+  /** Piece-count-gated conditions (tiers `t <= pieces`), still subject to their own gate. */
+  readonly conditions: readonly Condition[];
+  /** `set_pieces.<setKey-lowercased> → pieces`, the settings ConditionBooleanPiecesCount reads. */
+  readonly pieceSettings: Readonly<Record<string, number>>;
+  /** Set-level post-effects (HP→ATK-style folds), in equip order. */
+  readonly postEffects: readonly CharPostEffect[];
+}
+
+/**
+ * Resolve equipped sets into their piece-count-gated conditions, the
+ * `set_pieces.*` settings, and any set-level post-effects.
+ *
+ * The PIECE-COUNT gate lives here (which tiers enter): a set's tier-`t` conditions
+ * are included only when `pieces >= t`. The CONDITION gate stays in `conditionStats`
+ * (whether an entered condition fires). Mirrors her `ArtifactSet.getConditions(pieces)`
+ * (concats `bonus[i].conditions` for `i <= pieces`) + `CalcObjectArtifacts.getSettings`
+ * (injects `set_pieces.<name> = count`). Unknown set keys are skipped (a set not yet
+ * ported contributes nothing) — P2.A1 fills the registry.
+ */
+function resolveSetBonuses(setBonuses: readonly EquippedSet[]): ResolvedSetBonuses {
+  const conditions: Condition[] = [];
+  const pieceSettings: Record<string, number> = {};
+  const postEffects: CharPostEffect[] = [];
+
+  for (const { setKey, pieces } of setBonuses) {
+    const set = getArtifactSet(setKey);
+    if (set === undefined) continue;
+    pieceSettings[`set_pieces.${setKey.toLowerCase()}`] = pieces;
+    // Piece-count gate: include each bonus tier unlocked at this piece count.
+    for (const tier of [2, 4] as const) {
+      if (pieces < tier) continue;
+      const bonus = set.bonus[tier];
+      if (bonus?.conditions) conditions.push(...bonus.conditions);
+    }
+    if (set.postEffects) postEffects.push(...set.postEffects);
+  }
+
+  return { conditions, pieceSettings, postEffects };
+}
+
 /** Resolve the enemy resistance input into a per-element fraction lookup. */
 function resistanceFraction(
   resistance: BuildEnemy["resistance"],
@@ -213,7 +304,16 @@ function resistanceFraction(
  * Assemble the BuildStats bag + DamageContext for a character under a build.
  */
 export function buildStats(input: BuildInput): BuildResult {
-  const settings = input.settings ?? {};
+  // Resolve equipped sets up front: their piece-count settings (`set_pieces.*`)
+  // must be visible to every condition's evaluate() — the global set buffs gate on
+  // them via ConditionBooleanPiecesCount. Merge them into the build settings (they
+  // add only `set_pieces.*` keys, which char/weapon conditions never read, so this
+  // is inert for the no-set path → the base golden suite is untouched).
+  const sets = resolveSetBonuses(input.setBonuses ?? []);
+  const settings: EvalContext =
+    input.setBonuses && input.setBonuses.length > 0
+      ? { ...(input.settings ?? {}), ...sets.pieceSettings }
+      : input.settings ?? {};
 
   // 1-2. Aggregate base stats (char then weapon), then concat the bonus block.
   const raw = new Stats();
@@ -241,10 +341,15 @@ export function buildStats(input: BuildInput): BuildResult {
   // weapon_refine: all handled inside the pure `conditionStats` resolver.
   for (const cond of input.char.conditions ?? []) raw.concat(conditionStats(cond, settings));
   for (const cond of input.extraConditions ?? []) raw.concat(conditionStats(cond, settings));
+  // Equipped artifact-set conditions (piece-count gated in resolveSetBonuses, then
+  // each subject to its own gate here) — the same loop as char/weapon conditions.
+  // Mirrors her CalcSet.getBaseStats iterating the artifacts' (+ buffs') getConditions.
+  for (const cond of sets.conditions) raw.concat(conditionStats(cond, settings));
 
   // 3. Derive — condition-gated post-effects (reads RAW percents via getTotal).
-  const charEffects = input.char.postEffects ?? [];
-  const effects = charEffects.map(toPostEffect);
+  // Char post-effects then any set-level post-effects (HP→ATK-style folds), both
+  // through the same path — her getPostEffects concats every equipped object's.
+  const effects = [...(input.char.postEffects ?? []), ...sets.postEffects].map(toPostEffect);
   applyPostEffects(raw, effects, settings);
 
   // 4. Read — emit the engine-facing bag.
@@ -306,6 +411,14 @@ export function buildStats(input: BuildInput): BuildResult {
   // lunarPost2, PostEffect/Stats.js getTree isPercent fold.)
   for (const key of REACTION_DERIVED_KEYS) {
     if (raw.isSet(key)) out[key] = raw.get(key);
+  }
+
+  // Condition-contributed per-reaction DMG bonuses (e.g. CrimsonWitch 4pc) → fractions.
+  // These arrive RAW (percent) from the condition loop, so divide by 100 here (unlike the
+  // pre-divided REACTION_DERIVED_KEYS above). Absent → unset (engine reads 0). No-op for
+  // every build that contributes no `dmg_reaction_*` (the base suite is untouched).
+  for (const key of REACTION_BONUS_PERCENT_KEYS) {
+    if (raw.isSet(key)) out[key] = raw.get(key) / 100;
   }
 
   // Enemy resistance (percent) → enemy_res_<element> fractions. Fold any

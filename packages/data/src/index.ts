@@ -16,7 +16,17 @@ export type {
   BuildLevels,
   BuildEnemy,
   BuildResult,
+  EquippedSet,
 } from "./buildStats.js";
+
+// P2.A0 — artifact-set registry (shape + 3 exemplars; P2.A1 fills the rest)
+export {
+  ARTIFACT_SETS,
+  getArtifactSet,
+  noblesseOblige,
+  crimsonWitch,
+  deepwoodMemories,
+} from "./artifacts/sets/index.js";
 
 export { buildSettings } from "./buildSettings.js";
 export type { BuildSettingsInput } from "./buildSettings.js";
