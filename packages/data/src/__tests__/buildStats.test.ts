@@ -246,9 +246,7 @@ describe("buildStats — setRegistry DI seam", () => {
     // NoblesseOblige is in the barrel — resolves without setRegistry.
     const { stats } = buildStats({
       ...SEAM_BUILD,
-      // NoblesseOblige 2pc is a burst DMG bonus; 4pc is conditional — but even at
-      // 2pc we get no burst bonus in the stat bag from Noblesse (its 2pc is ATK-conditional).
-      // Use CrimsonWitch which has an unconditional 2pc dmg_pyro:15 → 0.15 fraction.
+      // CrimsonWitch's 2pc is an unconditional dmg_pyro:15 → 0.15 fraction in the bag.
       setBonuses: [{ setKey: "CrimsonWitch", pieces: 2 }],
     });
     expect(stats["dmg_pyro"]).toBeCloseTo(0.15, 10);

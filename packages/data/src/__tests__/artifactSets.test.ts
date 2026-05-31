@@ -321,13 +321,19 @@ const FEATURE_VALIDATION_SKIP = new Set(["raiden_shogun"]);
 
 const MANIFEST_IDS = ["set-4pc", "set-2pc"] as const;
 
-const unported: Array<{ configId: string; slug: string; oracleKey: string }> = [];
-
-for (const configId of MANIFEST_IDS) {
-  const manifest = JSON.parse(
+/** Load + parse a config's oracle manifest once; shared by the harness + coverage report. */
+function loadManifest(configId: string): Manifest {
+  return JSON.parse(
     readFileSync(join(FIXTURES_DIR, configId, "_manifest.json"), "utf-8")
   ) as Manifest;
+}
 
+const MANIFESTS: ReadonlyArray<{ readonly configId: string; readonly manifest: Manifest }> =
+  MANIFEST_IDS.map((configId) => ({ configId, manifest: loadManifest(configId) }));
+
+const unported: Array<{ configId: string; slug: string; oracleKey: string }> = [];
+
+for (const { configId, manifest } of MANIFESTS) {
   for (const entry of manifest.characters) {
     const { slug } = entry;
     const oracleKey = Object.keys(entry.artifactSets)[0]!;
@@ -356,34 +362,27 @@ for (const configId of MANIFEST_IDS) {
       throw new Error(`artifact-sets harness: no weapon table for type "${char.weapon}" (char: ${slug})`);
     }
 
-    // Capture for closure (vitest loop hoisting)
-    const capturedSet = set;
-    const capturedChar = char;
-    const capturedWeaponStatTable = weaponStatTable;
-    const capturedPieces = pieces;
-    const capturedSettings = settings;
-    const capturedSlug = slug;
-    const capturedOracleKey = oracleKey;
-    const capturedConfigId = configId;
-
-    describe(`${capturedConfigId}/${capturedSlug} (${capturedOracleKey})`, () => {
-      const fixture = loadFixture(capturedConfigId, capturedSlug);
+    // The loop's `const` bindings are per-iteration (a fresh binding each pass), so
+    // the describe callback closes over them directly — same pattern as golden.test.ts.
+    describe(`${configId}/${slug} (${oracleKey})`, () => {
+      const fixture = loadFixture(configId, slug);
 
       const { context } = buildStats({
-        char: capturedChar,
-        weaponStatTable: capturedWeaponStatTable,
+        char,
+        weaponStatTable,
         statBlock: STAT_BLOCK,
         levels: LEVELS,
         enemy: ENEMY,
-        settings: capturedSettings,
-        setBonuses: [{ setKey: capturedSet.goodId, pieces: capturedPieces }],
+        settings,
+        // setKey === oracleKey: SET_REGISTRY is keyed by goodId, standardized to the manifest key.
+        setBonuses: [{ setKey: oracleKey, pieces }],
         setRegistry: SET_REGISTRY,
       });
 
-      const compiled = compileCharacter(capturedChar, {
-        charElement: capturedChar.element,
+      const compiled = compileCharacter(char, {
+        charElement: char.element,
         talentLevels: TALENTS,
-        settings: capturedSettings,
+        settings,
         charLevel: LEVELS.charLevel,
       });
 
@@ -404,7 +403,7 @@ for (const configId of MANIFEST_IDS) {
           const result = compiled[key]!(context);
           expect(
             Math.abs(result.normal - oracle.normal),
-            `${capturedSlug}/${key} normal: ours=${result.normal.toFixed(4)}, oracle=${oracle.normal.toFixed(4)}`
+            `${slug}/${key} normal: ours=${result.normal.toFixed(4)}, oracle=${oracle.normal.toFixed(4)}`
           ).toBeLessThanOrEqual(TOLERANCE);
         });
 
@@ -412,7 +411,7 @@ for (const configId of MANIFEST_IDS) {
           const result = compiled[key]!(context);
           expect(
             Math.abs(result.crit - oracle.crit),
-            `${capturedSlug}/${key} crit: ours=${result.crit.toFixed(4)}, oracle=${oracle.crit.toFixed(4)}`
+            `${slug}/${key} crit: ours=${result.crit.toFixed(4)}, oracle=${oracle.crit.toFixed(4)}`
           ).toBeLessThanOrEqual(TOLERANCE);
         });
 
@@ -420,13 +419,13 @@ for (const configId of MANIFEST_IDS) {
           const result = compiled[key]!(context);
           expect(
             Math.abs(result.avg - oracle.average),
-            `${capturedSlug}/${key} avg: ours=${result.avg.toFixed(4)}, oracle=${oracle.average.toFixed(4)}`
+            `${slug}/${key} avg: ours=${result.avg.toFixed(4)}, oracle=${oracle.average.toFixed(4)}`
           ).toBeLessThanOrEqual(TOLERANCE);
         });
       }
 
       // --- Mis-key guard ---
-      it(`${capturedSlug}: no produced key is absent from the fixture (mis-key guard)`, () => {
+      it(`${slug}: no produced key is absent from the fixture (mis-key guard)`, () => {
         expect(
           orphanKeys,
           `produced but absent from fixture (mis-keyed?): ${orphanKeys.join(", ")}`
@@ -434,19 +433,19 @@ for (const configId of MANIFEST_IDS) {
       });
 
       // --- Full-coverage gate ---
-      it(`${capturedSlug}: full coverage — no unmodelled fixture damage feature`, () => {
+      it(`${slug}: full coverage — no unmodelled fixture damage feature`, () => {
         const total = allDamageKeys.length;
         const modelled = producedKeys.filter((k) => {
           const oracle = fixture.features[k];
           return oracle !== undefined && isDamageTripleEntry(oracle);
         }).length;
         console.info(
-          `[artifact-sets] ${capturedConfigId}/${capturedSlug} (${capturedOracleKey}): ` +
+          `[artifact-sets] ${configId}/${slug} (${oracleKey}): ` +
           `${modelled}/${total} fixture damage features modelled`
         );
         expect(
           unmodelledKeys,
-          `${capturedSlug}: unmodelled fixture damage features: ${unmodelledKeys.join(", ")}`
+          `${slug}: unmodelled fixture damage features: ${unmodelledKeys.join(", ")}`
         ).toEqual([]);
       });
     });
@@ -456,13 +455,10 @@ for (const configId of MANIFEST_IDS) {
 // Coverage report (fires once after all describe blocks are registered)
 describe("artifact-sets: coverage report", () => {
   it("reports ported vs unported manifest entries", () => {
-    const totalManifestEntries =
-      MANIFEST_IDS.reduce((acc, configId) => {
-        const m = JSON.parse(
-          readFileSync(join(FIXTURES_DIR, configId, "_manifest.json"), "utf-8")
-        ) as Manifest;
-        return acc + m.characters.length;
-      }, 0);
+    const totalManifestEntries = MANIFESTS.reduce(
+      (acc, { manifest }) => acc + manifest.characters.length,
+      0
+    );
     const portedCount = totalManifestEntries - unported.length;
     const unportedKeys = [...new Set(unported.map((u) => u.oracleKey))];
     console.info(
