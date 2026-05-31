@@ -176,6 +176,10 @@ const constellationConditions: readonly Condition[] = [
   // C3 "Seclusion" — +3 levels to Spring Spirit Summoning (Elemental Skill).
   // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Divine Maiden's Deliverance" — +3 levels to the Elemental Burst. In raw this is a
+  // char-level Condition gated by subConditions:[ConditionConstellation(5)] (Shenhe.js:311-318),
+  // NOT the cons array (whose C5 slot is empty). Modelled as the equivalent constellation condition.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
