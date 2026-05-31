@@ -26,6 +26,7 @@
 
 import type {
   CharPostEffect,
+  Condition,
   DbObjectChar,
   Feature,
   TalentResolver,
@@ -260,6 +261,79 @@ const features: readonly Feature[] = [
       critDmgKeys: LUNAR_CRIT_DMG_KEYS,
     },
   },
+  // --- C2 "Support Cleaning Module": Punishment Edict burst lunardirect (300% ATK) ---
+  // FeatureReactionLunarChargedLike, category:'burst', cons-added at C≥2.
+  // (300% × ATK) × (1+lunarcharged_multi) × (1 + emBonus + dmg_reaction) × 3 × res.
+  // Raw Ineffa.js:307-319 (FeatureReactionLunarChargedLike, C2Dmg=300, ConditionConstellation(2)).
+  {
+    name: "ineffa_punishment_edict_dmg",
+    category: "burst",
+    damageType: "lunardirect",
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        leveling: "",
+        scaling: "atk",
+        values: { getValue: (_level: number) => 300 },
+        source: "constellation2",
+      },
+    ],
+    reaction: {
+      variant: "lunardirect",
+      element: "electro",
+      scalingStatKeys: LUNAR_SCALING_KEYS,
+      reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
+      amplifyingMultiplier: LUNAR_DIRECT_AMPLIFY,
+      critRateKeys: LUNAR_CRIT_RATE_KEYS,
+      critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+    },
+  },
+  // --- C6 "A Dawning Morn for You": Carrier Flow composite lunardirect (135% ATK) ---
+  // FeatureReactionLunarChargedLike, category:'other' → omit category, cons-added at C≥6.
+  // (135% × ATK) × (1+lunarcharged_multi) × (1 + emBonus + dmg_reaction) × 3 × res.
+  // Raw Ineffa.js:338-350 (FeatureReactionLunarChargedLike, C6Dmg=135, ConditionConstellation(6)).
+  {
+    name: "ineffa_carrier_flow_composite_dmg",
+    damageType: "lunardirect",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "",
+        scaling: "atk",
+        values: { getValue: (_level: number) => 135 },
+        source: "constellation6",
+      },
+    ],
+    reaction: {
+      variant: "lunardirect",
+      element: "electro",
+      scalingStatKeys: LUNAR_SCALING_KEYS,
+      reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
+      amplifyingMultiplier: LUNAR_DIRECT_AMPLIFY,
+      critRateKeys: LUNAR_CRIT_RATE_KEYS,
+      critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+    },
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: ConditionBoolean toggle (ineffa_rectifying_processor → dmg_reaction_lunarcharged
+//     via lunarPost2 PostEffect) → SKIP (toggle OFF). ineffa_lunar_bonus_2 display
+//     value also skipped (damageType:"" → not in coverage gate).
+// C2: ineffa_punishment_edict_dmg feature (cons-added, gated above).
+// C3: +3 levels to Carrier Frequency (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
+// C4: ConditionStatic display-only → SKIP.
+// C5: +3 levels to Cyclonic Exterminator (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+// C6: ineffa_carrier_flow_composite_dmg feature (cons-added, gated above).
+//     Raw cons[5] ConditionStatic with text_percent_dmg → display-only, SKIP.
+// Raw: raw/genshin_calc_pub/src/js/db/Char/Ineffa.js constellation array (Ineffa.js:392-455).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Carrier Frequency (elemental skill). Raw cons[2].
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Cyclonic Exterminator (elemental burst). Raw cons[4].
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -277,6 +351,7 @@ export const ineffa: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
   postEffects: [lunarMultiFromAtk],
   // Her `allowed_lunarcharged: 1` default (Char/Ineffa.js:355) — suppresses the
   // generic `electrocharged` contribution; the Lunar-Charged variants are declared
