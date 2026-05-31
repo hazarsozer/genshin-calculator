@@ -4,12 +4,13 @@
  * Verifies:
  *   1. DbObjectWeapon typechecks and is self-consistent (statTable reference, not re-port).
  *   2. ConditionStaticRefine (refine passive) resolves R1 vs R5 correctly via weapon_refine.
- *   3. ConditionBoolean (toggle passive) activates only when its settings key is truthy.
+ *   3. ConditionBooleanRefine (toggle passive) activates only when its settings key is truthy.
  *   4. ConditionStacks (stack passive) returns correct stack count and per-rank stats.
+ *   5. Barrel export (weapons/index.ts) re-exports all three exemplars correctly.
  *
  * Weapons under test:
  *   - WolfsGravestone (claymore, 5★): ConditionStaticRefine (always-on refine passive) +
- *                                      ConditionBoolean (toggleable refine passive).
+ *                                      ConditionBooleanRefine (toggleable refine-scaled passive).
  *   - TheCatch     (polearm, 4★):     ConditionStaticRefine only (pure refine passive).
  *   - LostPrayer  (catalyst, 5★):     ConditionStacks with per-rank refine-indexed stats.
  *
@@ -21,11 +22,35 @@
 
 import { describe, it, expect } from "vitest";
 import { evaluate, getStackCount } from "@genshin/core";
-import type { ConditionStaticRefine, ConditionBoolean, ConditionStacks } from "@genshin/types";
+import type { ConditionStaticRefine, ConditionBooleanRefine, ConditionStacks } from "@genshin/types";
+
+// Barrel import smoke test — verifies weapons/index.ts re-exports all exemplars.
+import * as weaponBarrel from "../weapons/index.js";
 
 import { wolfsGravestone } from "../weapons/wolfs-gravestone.js";
 import { theCatch } from "../weapons/the-catch.js";
 import { lostPrayer } from "../weapons/lost-prayer.js";
+
+// ---------------------------------------------------------------------------
+// Barrel export smoke test
+// ---------------------------------------------------------------------------
+
+describe("weapons barrel (weapons/index.ts)", () => {
+  it("exports wolfsGravestone", () => {
+    expect(weaponBarrel.wolfsGravestone).toBeDefined();
+    expect(weaponBarrel.wolfsGravestone.name).toBe("wolfs_gravestone");
+  });
+
+  it("exports theCatch", () => {
+    expect(weaponBarrel.theCatch).toBeDefined();
+    expect(weaponBarrel.theCatch.name).toBe("the_catch");
+  });
+
+  it("exports lostPrayer", () => {
+    expect(weaponBarrel.lostPrayer).toBeDefined();
+    expect(weaponBarrel.lostPrayer.name).toBe("lost_prayer_to_the_sacred_winds");
+  });
+});
 
 // ---------------------------------------------------------------------------
 // WolfsGravestone
@@ -34,7 +59,7 @@ import { lostPrayer } from "../weapons/lost-prayer.js";
 describe("WolfsGravestone", () => {
   const conds = wolfsGravestone.conditions!;
   const cond0 = conds[0] as ConditionStaticRefine;
-  const cond1 = conds[1] as ConditionBoolean;
+  const cond1 = conds[1] as ConditionBooleanRefine;
 
   it("has expected metadata", () => {
     expect(wolfsGravestone.name).toBe("wolfs_gravestone");
@@ -83,9 +108,9 @@ describe("WolfsGravestone", () => {
     });
   });
 
-  describe("condition[1] — ConditionBoolean (toggle passive)", () => {
-    it("is type 'boolean'", () => {
-      expect(cond1.type).toBe("boolean");
+  describe("condition[1] — ConditionBooleanRefine (toggle passive, refine-scaled)", () => {
+    it("is type 'boolean-refine'", () => {
+      expect(cond1.type).toBe("boolean-refine");
     });
 
     it("name is 'weapon_wolfs_gravestone'", () => {

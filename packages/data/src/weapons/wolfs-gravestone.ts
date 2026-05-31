@@ -5,12 +5,13 @@
  *
  * Passive: "Wolfish Tracker"
  *   Always-on: ATK +20/25/30/35/40% (R1..R5) — ConditionStaticRefine
- *   Toggle:    ATK +40/50/60/70/80% when attacker's ATK ≤ 30K — ConditionBoolean (refine-scaled)
+ *   Toggle:    ATK +40/50/60/70/80% when attacker's ATK ≤ 30K — ConditionBooleanRefine (refine-scaled toggle)
  *
  * Settings key: `weapon_wolfs_gravestone` (0 = off, 1 = on)
+ * serializeId: 63 (from raw DbObjectWeapon.serializeId)
  */
 
-import type { DbObjectWeapon, ConditionStaticRefine, ConditionBoolean } from "@genshin/types";
+import type { DbObjectWeapon, ConditionStaticRefine, ConditionBooleanRefine } from "@genshin/types";
 import { WolfsGravestoneStatTable } from "../generated/weaponStatTables.js";
 
 const alwaysOnPassive: ConditionStaticRefine = {
@@ -26,8 +27,8 @@ const alwaysOnPassive: ConditionStaticRefine = {
   ],
 };
 
-const togglePassive: ConditionBoolean = {
-  type: "boolean",
+const togglePassive: ConditionBooleanRefine = {
+  type: "boolean-refine",
   name: "weapon_wolfs_gravestone",
   serializeId: 1,
   title: "talent_name.weapon_wolfish_tracker",
@@ -43,6 +44,7 @@ const togglePassive: ConditionBoolean = {
 
 export const wolfsGravestone: DbObjectWeapon = {
   name: "wolfs_gravestone",
+  serializeId: 63,
   gameId: 12502,
   rarity: 5,
   weapon: "claymore",

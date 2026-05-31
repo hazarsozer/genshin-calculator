@@ -9,12 +9,14 @@
  *   `levelSetting: "weapon_refine"` — the per-rank value is indexed by weapon_refine,
  *   and per-stack stats multiply by stack count in her engine's getData.
  *
- * Note: In our typed system, `refinementStats` carries all 7 elemental DMG keys
- * per refinement rank (one bag per R1..R5). Stack count × per-rank stat is
+ * Note: In our typed system, `refinementStats` on ConditionStacks carries all 7 elemental
+ * DMG keys per refinement rank (one bag per R1..R5). Stack count × per-rank stat is
  * resolved by P2.2's conditionStats when it handles ConditionStacks.
+ *
+ * serializeId: 45 (from raw DbObjectWeapon.serializeId)
  */
 
-import type { DbObjectWeapon, ConditionStacks } from "@genshin/types";
+import type { DbObjectWeapon, ConditionStacks, ConditionStats } from "@genshin/types";
 import { LostPrayerStatTable } from "../generated/weaponStatTables.js";
 
 /**
@@ -22,7 +24,7 @@ import { LostPrayerStatTable } from "../generated/weaponStatTables.js";
  * Source: LostPrayer.js — each of dmg_anemo/geo/pyro/electro/hydro/cryo/dendro
  * has the same value per rank.
  */
-function allElementDmg(value: number): Record<string, number> {
+function allElementDmg(value: number): ConditionStats {
   return {
     dmg_anemo: value,
     dmg_geo: value,
@@ -52,6 +54,7 @@ const stackPassive: ConditionStacks = {
 
 export const lostPrayer: DbObjectWeapon = {
   name: "lost_prayer_to_the_sacred_winds",
+  serializeId: 45,
   gameId: 14502,
   rarity: 5,
   weapon: "catalyst",

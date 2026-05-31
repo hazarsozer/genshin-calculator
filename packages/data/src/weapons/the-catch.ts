@@ -7,6 +7,7 @@
  *   Always-on: Elemental Burst DMG +16/20/24/28/32% + Burst Crit Rate +6/7.5/9/10.5/12%
  *   No toggle, no stacks — pure ConditionStaticRefine.
  *
+ * serializeId: 109 (from raw DbObjectWeapon.serializeId)
  * Pure stat weapon — no features flagged.
  */
 
@@ -28,6 +29,7 @@ const burstPassive: ConditionStaticRefine = {
 
 export const theCatch: DbObjectWeapon = {
   name: "the_catch",
+  serializeId: 109,
   gameId: 13415,
   rarity: 4,
   weapon: "polearm",

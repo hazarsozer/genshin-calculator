@@ -255,6 +255,7 @@ describe("round-trip — StaticRefine condition", () => {
   const refineCond: ConditionStaticRefine = {
     type: "refine",
     name: "some_weapon_passive",
+    refinementStats: [{ atk_percent: 20 }],
   };
 
   it("evaluate → true (static semantics, always active)", () => {
@@ -372,6 +373,7 @@ describe("acceptance criterion from brief", () => {
     const refineCond: ConditionStaticRefine = {
       type: "refine",
       name: "some_weapon",
+      refinementStats: [{ atk_percent: 20 }],
     };
     expect(evaluate(refineCond, ctx)).toBe(true);
     expect(ctx["weapon_refine"]).toBe(3);
