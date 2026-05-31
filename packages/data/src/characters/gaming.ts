@@ -1,0 +1,169 @@
+/**
+ * Gaming — pyro claymore ATK scaler.
+ *
+ * 4-hit normal combo, charged spin/final, plunge/low/high (physical on normals,
+ * pyro on skill plunge), pyro skill "Bestial Ascent" (gaming_charmed_cloudstrider_dmg
+ * typed as PlungeShockWave with element=pyro, damageBonuses including A4 key),
+ * and pyro burst "Suanni's Gilded Dance" (gaming_suanni_man_dmg).
+ *
+ * A4 "Air of Prosperity" (second subCondition): unconditional in fixed solo C0 build
+ * — adds dmg_skill_gaming +20% (ConditionStatic + ConditionNot(gaming_air_of_prosperity)).
+ * This is applied via damageBonuses on the skill plunge feature.
+ *
+ * Heals (gaming_dance_of_amity_heal, burst.heal) have empty damageType → not tested.
+ * C6 crit bonuses (crit_rate_gaming, crit_dmg_gaming) need constellation 6 → not active
+ * in the C0 build; A4SkillBonus=20 is unconditional via static conditions.
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/db/Char/Gaming.js
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTables.js (Gaming)
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Gaming)
+ */
+
+import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import { Gaming as GamingStatTable } from "../generated/charTables.js";
+import { Gaming as GamingTalents } from "../generated/charTalentTables.js";
+
+// ---------------------------------------------------------------------------
+// TalentResolver
+// ---------------------------------------------------------------------------
+
+const talents: TalentResolver = {
+  get(path: string) {
+    const [talent, name] = path.split(".");
+    if (talent === "attack") {
+      if (name === "normal_hit_1") return GamingTalents.s1.p1;
+      if (name === "normal_hit_2") return GamingTalents.s1.p2;
+      if (name === "normal_hit_3") return GamingTalents.s1.p3;
+      if (name === "normal_hit_4") return GamingTalents.s1.p4;
+      if (name === "charged_spin") return GamingTalents.s1.p5;
+      if (name === "charged_final") return GamingTalents.s1.p6;
+      if (name === "plunge") return GamingTalents.s1.p9;
+      if (name === "plunge_low") return GamingTalents.s1.p10;
+      if (name === "plunge_high") return GamingTalents.s1.p11;
+    }
+    if (talent === "skill") {
+      if (name === "gaming_charmed_cloudstrider_dmg") return GamingTalents.s2.p1;
+    }
+    if (talent === "burst") {
+      if (name === "gaming_suanni_man_dmg") return GamingTalents.s3.p1;
+    }
+    throw new Error(`gaming talents: unknown path '${path}'`);
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Features
+// ---------------------------------------------------------------------------
+
+const features: readonly Feature[] = [
+  // --- Normal attacks (physical claymore) ---
+  // raw/genshin_calc_pub/src/js/db/Char/Gaming.js: FeatureDamageNormal normal_hit_1
+  {
+    name: "normal_hit_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
+  },
+  // raw: FeatureDamageNormal normal_hit_2
+  {
+    name: "normal_hit_2",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }],
+  },
+  // raw: FeatureDamageNormal normal_hit_3
+  {
+    name: "normal_hit_3",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
+  },
+  // raw: FeatureDamageNormal normal_hit_4
+  {
+    name: "normal_hit_4",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }],
+  },
+  // --- Charged attacks (physical) ---
+  // raw: FeatureDamageCharged charged_spin
+  {
+    name: "charged_spin",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_spin") }],
+  },
+  // raw: FeatureDamageCharged charged_final
+  {
+    name: "charged_final",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_final") }],
+  },
+  // --- Plunge attacks (physical) ---
+  // raw: FeatureDamagePlungeCollision plunge
+  {
+    name: "plunge",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
+  },
+  // raw: FeatureDamagePlungeShockWave plunge_low
+  {
+    name: "plunge_low",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
+  },
+  // raw: FeatureDamagePlungeShockWave plunge_high
+  {
+    name: "plunge_high",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
+  },
+  // --- Skill: Bestial Ascent (pyro plunge) ---
+  // raw: FeatureDamagePlungeShockWave gaming_charmed_cloudstrider_dmg
+  // category='skill', element='pyro', damageBonuses=['dmg_skill_gaming']
+  // A4 "Air of Prosperity" (second ConditionStatic): adds dmg_skill_gaming=20
+  // unconditional in fixed solo C0 build → damageBonuses picks it up.
+  // Gaming.js:214-227
+  {
+    name: "gaming_charmed_cloudstrider_dmg",
+    category: "skill",
+    element: "pyro",
+    damageType: "plunge",
+    damageBonuses: ["dmg_skill_gaming"],
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.gaming_charmed_cloudstrider_dmg") }],
+  },
+  // --- Burst: Suanni's Gilded Dance (pyro) ---
+  // raw: FeatureDamageBurst gaming_suanni_man_dmg, element='pyro'
+  // Gaming.js:240-249
+  {
+    name: "gaming_suanni_man_dmg",
+    category: "burst",
+    element: "pyro",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.gaming_suanni_man_dmg") }],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// DbObjectChar
+// ---------------------------------------------------------------------------
+
+// A4 "Air of Prosperity" second subCondition: ConditionStatic + ConditionNot(gaming_air_of_prosperity).
+// At canonical C0 ascension-6 build, gaming_air_of_prosperity is not toggled (ConditionBoolean
+// defaults to false), so ConditionNot evaluates true and dmg_skill_gaming=20 is active unconditionally.
+// raw/genshin_calc_pub/src/js/db/Char/Gaming.js:299-313
+const BASE_STATS: Record<string, number> = { dmg_skill_gaming: 20 };
+
+export const gaming: DbObjectChar = {
+  name: "gaming",
+  gameId: 10000092,
+  rarity: 4,
+  element: "pyro",
+  weapon: "claymore",
+  origin: "liyue",
+  statTable: GamingStatTable,
+  talents,
+  features,
+  multipliers: [],
+  baseStats: BASE_STATS,
+};
