@@ -145,6 +145,9 @@ const features: readonly Feature[] = [
     name: "layla_shooting_star_dmg",
     category: "skill",
     element: "cryo",
+    // C6 "Shadowy Dream-Veil": +40% skill DMG (dmg_skill_layla, from the C6 condition).
+    // Constellation-gated → 0 at C0..C5, base-safe. Raw Layla.js:254.
+    damageBonuses: ["dmg_skill_layla"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.layla_shooting_star_dmg") },
       { scaling: "hp", leveling: "char_skill_elemental", values: a4HpScale },

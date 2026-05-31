@@ -131,6 +131,11 @@ const features: readonly Feature[] = [
     element: "pyro",
     damageType: "plunge",
     damageBonuses: ["dmg_skill_gaming"],
+    // C6 "Adroit Spirit": +20% CR / +40% CD to this hit (crit_rate_gaming / crit_dmg_gaming,
+    // contributed by the C6 condition). Constellation-gated → 0 at C0..C5, base-safe.
+    // Raw Gaming.js:218-220.
+    critRateBonuses: ["crit_rate_gaming"],
+    critDamageBonuses: ["crit_dmg_gaming"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.gaming_charmed_cloudstrider_dmg") }],
   },
   // --- Burst: Suanni's Gilded Dance (pyro) ---

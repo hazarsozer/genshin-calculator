@@ -157,6 +157,10 @@ const constellationConditions: readonly Condition[] = [
   // C3: +3 Elemental Skill talent levels.
   // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 Elemental Burst talent levels. In raw this is a char-level Condition gated by
+  // subConditions:[ConditionConstellation(5)] (NOT the cons array, whose index 4 is {}) —
+  // Faruzan.js:251-258. Modelled as the equivalent constellation condition.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------

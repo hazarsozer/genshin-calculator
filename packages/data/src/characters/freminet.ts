@@ -163,10 +163,15 @@ const features: readonly Feature[] = [
   // `params.element || 'phys'`) when none is given, so the raw phys hits (no element
   // override) are physical, NOT the char's cryo. Set explicitly here since this
   // port defaults an element-less skill to the char element instead.
+  // Pressurized Floe hits carry C1 "Snowmedley" +15% crit rate (crit_rate_freminet),
+  // constellation-gated → 0 at C0..C5 (base-safe). Raw Freminet.js:280-339 each pressure
+  // hit lists critRateBonuses:['crit_rate_freminet']. (dmg_skill_freminet from A4 is a
+  // conditional passive, OFF in this config → not wired here.)
   {
     name: "freminet_pressure_0_dmg",
     category: "skill",
     element: "cryo",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_0_dmg") },
     ],
@@ -175,6 +180,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_1_cryo_dmg",
     category: "skill",
     element: "cryo",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_1_cryo_dmg") },
     ],
@@ -183,6 +189,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_1_phys_dmg",
     category: "skill",
     element: "physical",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_1_phys_dmg") },
     ],
@@ -191,6 +198,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_2_cryo_dmg",
     category: "skill",
     element: "cryo",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_2_cryo_dmg") },
     ],
@@ -199,6 +207,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_2_phys_dmg",
     category: "skill",
     element: "physical",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_2_phys_dmg") },
     ],
@@ -207,6 +216,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_3_cryo_dmg",
     category: "skill",
     element: "cryo",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_3_cryo_dmg") },
     ],
@@ -215,6 +225,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_3_phys_dmg",
     category: "skill",
     element: "physical",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_3_phys_dmg") },
     ],
@@ -224,6 +235,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_4_dmg",
     category: "skill",
     element: "physical",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_4_dmg") },
     ],
