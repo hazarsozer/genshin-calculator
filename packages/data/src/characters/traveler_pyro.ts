@@ -22,7 +22,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (TravelerPyro)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Traveler as TravelerStatTable } from "../generated/charTables.js";
 import { TravelerPyro as TravelerPyroTalents } from "../generated/charTalentTables.js";
 
@@ -160,6 +160,24 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Starfire's Flowing Light": ConditionBoolean toggle (dmg_all) — SKIP.
+// C2 "Ever-Lit Candle": ConditionStatic, no real stats — SKIP.
+// C3 "Hearth's Illumination": +3 skill talent (char_skill_elemental_bonus).
+// C4 "Ravaging Flame": ConditionBoolean toggle (dmg_pyro) — SKIP.
+// C5 "Radiant Flames": +3 burst talent (char_skill_burst_bonus).
+// C6 "The Sacred Flame Imperishable": ConditionBoolean toggle (crit_dmg + infusion) — SKIP.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/TravelerPyro.js:323-400
+
+const constellationConditions: readonly Condition[] = [
+  // C3 — +3 Elemental Skill (Flowfire Blade).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 — +3 Elemental Burst (Plains Scorcher).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -174,4 +192,5 @@ export const travelerPyro: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
