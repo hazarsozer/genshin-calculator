@@ -29,7 +29,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Kachina)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Kachina as KachinaStatTable } from "../generated/charTables.js";
 import { Kachina as KachinaTalents } from "../generated/charTalentTables.js";
 
@@ -183,6 +183,43 @@ const features: readonly Feature[] = [
       { scaling: "def", leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") },
     ],
   },
+  // --- C6 "This Time I've Gotta Win!": Shield hit (geo, DEF-scaled) ---
+  // FeatureDamage (base class), category:'other' → omit category (loader derives "other." prefix).
+  // 200% of DEF, fixed value (ValueTable([C6DefDmg=200])). damageType:"none" matches
+  // fixture "none" output — base FeatureDamage carries no damage-type bonus.
+  // Raw Kachina.js:295-307 (FeatureDamage, scaling:'def*', ConditionConstellation(6)).
+  {
+    name: "kachina_shield_dmg",
+    damageType: "none",
+    element: "geo",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        scaling: "def",
+        leveling: "",
+        values: { getValue: (_level: number) => 200 },
+        source: "constellation6",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Shards Are Gems Too": ConditionStatic display-only → SKIP.
+// C2 "Never Leave Home Without Turbo Twirly": ConditionStatic display-only → SKIP.
+// C3: +3 levels to Go! Go! Turbo Twirly (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
+// C4 "More Foes, More Caution": ConditionDropdown (def_percent stacks) → SKIP (toggle-like).
+// C5: +3 levels to Time to Get Serious! (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+// C6: kachina_shield_dmg feature (cons-added, gated above). Raw cons[5] ConditionStatic
+//     with text_percent_dmg → display-only, SKIP.
+// Raw: raw/genshin_calc_pub/src/js/db/Char/Kachina.js constellation array (Kachina.js:346-403).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Go! Go! Turbo Twirly (elemental skill). Raw cons[2].
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Time to Get Serious! (elemental burst). Raw cons[4].
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -200,4 +237,5 @@ export const kachina: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
