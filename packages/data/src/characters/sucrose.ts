@@ -17,7 +17,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Sucrose)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Sucrose as SucroseStatTable } from "../generated/charTables.js";
 import { Sucrose as SucroseTalents } from "../generated/charTalentTables.js";
 
@@ -158,6 +158,28 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Clustered Vacuum Field": ConditionStatic no real stats → SKIP.
+// C2 "Unbound Form": ConditionStatic no real stats → SKIP.
+// C3 "Flawless Alchemistress": +3 Elemental Skill talent levels.
+//   Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C4 "Alchemania": ConditionStatic no real stats → SKIP.
+// C5 "Carefree Wishes": +3 Elemental Burst talent levels.
+//   Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C6 "Chaotic Entropy": ConditionDropdownElement (element toggle for DMG%) → SKIP.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Sucrose.js:277-363
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Flawless Alchemistress" — +3 Elemental Skill talent levels.
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Carefree Wishes" — +3 Elemental Burst talent levels.
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -172,4 +194,5 @@ export const sucrose: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
