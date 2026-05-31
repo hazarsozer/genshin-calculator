@@ -18,7 +18,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Nahida)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Nahida as NahidaStatTable } from "../generated/charTables.js";
 import { Nahida as NahidaTalents } from "../generated/charTalentTables.js";
 
@@ -139,6 +139,44 @@ const features: readonly Feature[] = [
   },
   // Burst: Illusory Heart — party buff, no damage hit in fixture. Not declared.
   // other.nahida_mastery_bonus: damageType="" → display-only, not asserted.
+  // --- C6 "The Fruit of Reason's Culmination": cons-added FeatureDamageSkill.
+  // Fixed multipliers: 200% ATK + 400% mastery-scaled (no leveling → level 1).
+  // Same critRateBonuses/damageBonuses as trikarma.
+  // Raw Nahida.js:303-320 (ConditionConstellation(6)).
+  {
+    name: "nahida_trikarma_purification_karmic_dmg",
+    category: "skill",
+    element: "dendro",
+    critRateBonuses: ["crit_rate_nahida"],
+    damageBonuses: ["dmg_skill_nahida"],
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      { leveling: "", values: { getValue: (_level: number) => 200 }, source: "constellation6" },
+      { scaling: "mastery*", leveling: "", values: { getValue: (_level: number) => 400 }, source: "constellation6" },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "The Seed of Stored Knowledge": ConditionStatic display-only → SKIP.
+// C2 "The Root of All Fullness": ConditionStatic (crit_rate_bloom/crit_dmg_bloom
+//   for reactions) + ConditionBoolean toggle (enemy_def_reduce:30) → SKIP (toggles).
+// C3 "The Shoot of Awakening Moment": +3 levels to All Schemes to Know (skill).
+//   Raw: constellation array index 2 → Condition({ settings:{ char_skill_elemental_bonus:3 } }).
+// C4 "The Stem of Manifest Inference": ConditionLevelSelect mastery stacks → SKIP (toggle).
+// C5 "The Leaves of Awakening Moment": +3 levels to Illusory Heart (burst).
+//   Raw: char-level conditions array → Condition({ settings:{ char_skill_burst_bonus:3 },
+//   subConditions:[ ConditionConstellation({constellation:5}) ] }).
+// C6 "The Fruit of Reason's Culmination": ConditionStatic (display-only text) in cons array → SKIP.
+//   The actual C6 damage comes from nahida_trikarma_purification_karmic_dmg feature above.
+// Raw: db/Char/Nahida.js conditions + constellation arrays.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to All Schemes to Know (skill). Raw Nahida.js:472-478 (cons[2]).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Illusory Heart (burst). Raw Nahida.js:328-334 (char conditions).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -156,4 +194,5 @@ export const nahida: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
