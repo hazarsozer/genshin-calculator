@@ -13,7 +13,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Diona)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Diona as DionaStatTable } from "../generated/charTables.js";
 import { Diona as DionaTalents } from "../generated/charTalentTables.js";
 
@@ -141,6 +141,36 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "A Lingering Flavor": ConditionStatic with no real stats → SKIP (inert).
+// C2 "Shaken, Not Purred": dmg_skill_diona +50% (real); diona_shield (shield absorb
+//   bonus, display/calc-internal in her engine) + text_percent (display-only) → only
+//   dmg_skill_diona is an engine stat; diona_shield is char-specific, not in the
+//   damage-feature damageBonuses path. Given the fixture already has dmg_skill_diona
+//   in diona_claw_dmg.damageBonuses, portng as a constellation stat is correct.
+// C3 "A-Another Round?": +3 Elemental Burst talent levels.
+// C4 "Wine Industry Slayer": text_percent:60 (display-only) → SKIP.
+// C5 "Like Father, Like Daughter": +3 Elemental Skill talent levels.
+// C6 "Cat's Tail Closing Time": ConditionStatic mastery + ConditionBoolean healing → SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Diona.js:395-470
+
+const constellationConditions: readonly Condition[] = [
+  // C2: dmg_skill_diona +50. ConditionStatic { stats: { dmg_skill_diona:50, ... } }
+  // diona_shield is a char-specific shield-absorb key, not a standard engine stat;
+  // text_percent is display-only. Only dmg_skill_diona affects damage features.
+  // Raw cons[1]: ConditionStatic{ stats:{ dmg_skill_diona:50, diona_shield:..., text_percent:... } }
+  { type: "constellation", constellation: 2, stats: { dmg_skill_diona: 50 } },
+  // C3: +3 Elemental Burst talent levels.
+  // Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 Elemental Skill talent levels.
+  // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -155,4 +185,5 @@ export const diona: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
