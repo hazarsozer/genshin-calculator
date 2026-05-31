@@ -402,45 +402,33 @@ describe("Ineffa (Lunar-Charged / electro polearm)", () => {
   // Lunar-Charged — the crit-bearing reaction family (the reason Ineffa is in
   // the representative set). Routes through P1.6's cLunarChargedDamage factory.
   //
-  // Two keys the P1.6 reaction factory reads that buildStats does not yet emit
-  // (both land in buildStats during P1.9; the harness threads them here):
-  //   - `lunarcharged_multi`: set in her engine by Ineffa's passive post-effect
-  //     `min(0.00007 × atk_total, 0.14)`. Derived from the emitted atk_total via
-  //     her exact formula — derived, never hardcoded.
-  //   - `mastery`: the reaction factory's EM bonus reads `mastery`, whereas
-  //     buildStats folds base+flat EM into `mastery_total`. Alias it through.
+  // End-to-end through the PRODUCTION path: buildStats → compileCharacter →
+  // compileReaction → compile, with NO manually-injected stat keys. The two
+  // keys the reaction factory reads now come straight from buildStats:
+  //   - `lunarcharged_multi`: emitted by Ineffa's `lunarMultiFromAtk` post-effect
+  //     (`min(0.00007 × atk_total, 0.14)`), modelled in ineffa.ts.
+  //   - `mastery`: emitted by buildStats as getTotal('mastery') for the EM bonus.
   // `dmg_reaction_lunarcharged` is absent (no constellation) → reads 0.
   // -------------------------------------------------------------------------
-  function lunarContext() {
-    const { context } = buildStats({
-      char: ineffa,
-      weaponStatTable: blackcliffPoleStatTable,
-      statBlock: STAT_BLOCK,
-      levels: LEVELS,
-      enemy: ENEMY,
-      settings: {},
-    });
-    const atkTotal = context.stats["atk_total"] as number;
-    const lunarchargedMulti = Math.min(0.00007 * atkTotal, 0.14);
-    return {
-      ...context,
-      stats: {
-        ...context.stats,
-        lunarcharged_multi: lunarchargedMulti,
-        mastery: context.stats["mastery_total"] as number,
-      },
-    };
-  }
+  const { context: lunarContext } = buildStats({
+    char: ineffa,
+    weaponStatTable: blackcliffPoleStatTable,
+    statBlock: STAT_BLOCK,
+    levels: LEVELS,
+    enemy: ENEMY,
+    settings: {},
+  });
+  const ineffaCompiled = compileCharacter(ineffa, {
+    charElement: ineffa.element,
+    talentLevels: TALENTS,
+    settings: {},
+    charLevel: LEVELS.charLevel,
+  });
 
   it("lunarcharged_contrubution (rate-based reaction) matches oracle — crit-bearing", () => {
-    const feature = ineffa.features.find((f) => f.name === "lunarcharged_contrubution")!;
-    const block = compileFeature(feature, {
-      charElement: ineffa.element,
-      talentLevels: TALENTS,
-      settings: {},
-      charLevel: LEVELS.charLevel,
-    });
-    const result = compile(block)(lunarContext());
+    // Production path: the compiled closure off compileCharacter, fed the plain
+    // buildStats context (no hand-injected keys).
+    const result = ineffaCompiled["reaction.lunarcharged_contrubution"]!(lunarContext);
 
     // Oracle: ineffa.json reaction.lunarcharged_contrubution (damageType lunarreaction)
     expect(result.normal).toBeCloseTo(3101.1372114175188, TOLERANCE);
@@ -449,14 +437,7 @@ describe("Ineffa (Lunar-Charged / electro polearm)", () => {
   });
 
   it("ineffa_birgitta_coordinated_dmg (A1 lunardirect) matches oracle — crit-bearing", () => {
-    const feature = ineffa.features.find((f) => f.name === "ineffa_birgitta_coordinated_dmg")!;
-    const block = compileFeature(feature, {
-      charElement: ineffa.element,
-      talentLevels: TALENTS,
-      settings: {},
-      charLevel: LEVELS.charLevel,
-    });
-    const result = compile(block)(lunarContext());
+    const result = ineffaCompiled["skill.ineffa_birgitta_coordinated_dmg"]!(lunarContext);
 
     // Oracle: ineffa.json skill.ineffa_birgitta_coordinated_dmg (damageType lunardirect)
     expect(result.normal).toBeCloseTo(4687.133337500846, TOLERANCE);
