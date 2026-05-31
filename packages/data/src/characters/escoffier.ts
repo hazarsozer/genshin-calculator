@@ -15,7 +15,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Escoffier)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Escoffier as EscoffierStatTable } from "../generated/charTables.js";
 import { Escoffier as EscoffierTalents } from "../generated/charTalentTables.js";
 
@@ -141,6 +141,47 @@ const features: readonly Feature[] = [
   },
   // burst.heal (FeatureMultiplierList, HP-based heal, damageType="") — SKIP: not asserted.
   // other.escoffier_rehab_diet_heal (FeatureHeal, constant heal, damageType="") — SKIP.
+  // --- C6 "Tea Parties Bursting with Color": cons-added cryo damage hit (500% ATK,
+  // fixed, not talent-leveled). Raw class is FeatureDamageSkill → damageType:"skill".
+  // Raw category:'other' → OMIT category (loader derives "other." prefix from absent
+  // category; LESSON 5: never write category:"other" — tsc rejects it).
+  // Raw Escoffier.js:298-309 (FeatureDamageSkill + ConditionConstellation(6) + ValueTable([500])).
+  {
+    name: "escoffier_special_grade_frozen_parfait_dmg",
+    // category intentionally OMITTED — raw has category:'other', loader derives "other." prefix.
+    element: "cryo",
+    damageType: "skill",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        source: "constellation6",
+        leveling: "char_skill_elemental",
+        values: { getValue: (_level: number) => 500 },
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic with crit_dmg_cryo:60, gated by ConditionAnd([ConditionBoolean,
+//   ConditionBooleanValue(escoffier_chars_count>=4)]) — party toggle condition. SKIP.
+// C2: ConditionBoolean toggle escoffier_fresh_fragrant_stew_is_an_art — SKIP (toggle OFF).
+//   (The multiplier in raw multipliers[] is also commented out in source.)
+// C3: +3 levels to Low Temperature Cooking (elemental skill). Raw cons[2] settings
+//   char_skill_elemental_bonus:3. Raw Escoffier.js:379-386.
+// C4: ConditionStatic with crit_dmg_escofier_heal:100, gated by ConditionAscensionChar(1)
+//   — affects escoffier_rehab_diet_heal (damageType="" in fixture, not tested). SKIP.
+// C5: +3 levels to Scoring Cuts (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+//   Raw Escoffier.js:399-406.
+// C6: ConditionStatic display-only (text_percent_dmg:500). Actual damage is the
+//   escoffier_special_grade_frozen_parfait_dmg feature above. No flat stat needed.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to elemental skill (Low Temperature Cooking).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to burst (Scoring Cuts).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -167,4 +208,5 @@ export const escoffier: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
