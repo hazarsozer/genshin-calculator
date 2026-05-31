@@ -139,10 +139,15 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }],
   },
   // --- Charged attacks (Kesagiri) ---
+  // C6 "Arataki Itto, Present!" adds +70% Crit DMG to Kesagiri and Saichimonji hits.
+  // Modelled via critDamageBonuses:['crit_dmg_charged'] on all charged features; the
+  // C6 constellation condition contributes crit_dmg_charged:70 to the stats bag.
+  // (buildStats collectFeatureBonusKeys emits the key as a fraction; absent at C0-C5 → 0.)
   {
     name: "itto_kesagiri_combo_slash_dmg",
     category: "attack",
     damageType: "charged",
+    critDamageBonuses: ["crit_dmg_charged"],
     multipliers: [
       { leveling: "char_skill_attack", values: talents.get("attack.itto_kesagiri_combo_slash_dmg") },
     ],
@@ -151,6 +156,7 @@ const features: readonly Feature[] = [
     name: "itto_kesagiri_final_slash_dmg",
     category: "attack",
     damageType: "charged",
+    critDamageBonuses: ["crit_dmg_charged"],
     multipliers: [
       { leveling: "char_skill_attack", values: talents.get("attack.itto_kesagiri_final_slash_dmg") },
     ],
@@ -159,6 +165,7 @@ const features: readonly Feature[] = [
     name: "itto_saichimonji_slash_dmg",
     category: "attack",
     damageType: "charged",
+    critDamageBonuses: ["crit_dmg_charged"],
     multipliers: [
       { leveling: "char_skill_attack", values: talents.get("attack.itto_saichimonji_slash_dmg") },
     ],
@@ -192,6 +199,29 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Stay a While and Listen Up": ConditionStatic no real stats → SKIP.
+// C2 "Gather 'Round, It's a Brawl!": ConditionStatic no real stats → SKIP.
+// C4 "Jailhouse Bread and Butter": ConditionBoolean def_percent/atk_percent toggle → SKIP.
+//
+// Source: raw/genshin_calc_pub/src/js/db/Char/Itto.js:334-394
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Horns Lowered, Coming Through": +3 levels to Masatsu Zetsugi: Akaushi Burst (Elemental Skill).
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus: 3 } }.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "10 Years of Hanamizaka Fame": +3 levels to Royal Descent: Behold, Itto the Evil! (Elemental Burst).
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // C6 "Arataki Itto, Present!": ConditionStatic crit_dmg_charged:70 — ALWAYS-ON at C6
+  // (no toggle — a plain ConditionStatic with a real stat). Provides +70% Crit DMG on
+  // Arataki Kesagiri and Saichimonji Slash hits.
+  // Raw cons[5]: ConditionStatic{ stats:{ crit_dmg_charged: 70 } }.
+  { type: "constellation", constellation: 6, stats: { crit_dmg_charged: 70 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -207,5 +237,5 @@ export const aratakiItto: DbObjectChar = {
   features,
   multipliers: [a4ChargedDefMultiplier],
   postEffects: [defToAtk],
-  conditions: [royalDescent],
+  conditions: [royalDescent, ...constellationConditions],
 };
