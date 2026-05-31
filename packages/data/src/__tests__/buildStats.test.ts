@@ -14,6 +14,7 @@ import {
   minimalHuTao,
   blackcliffPoleStatTable,
 } from "./fixtures/hu-tao.js";
+import type { DbObjectArtifactSet } from "@genshin/types";
 
 // The fixed canonical build (tests/golden/fixtures/_manifest.json).
 const FIXED = {
@@ -185,5 +186,82 @@ describe("buildStats — condition-gated HP→ATK post-effect (Paramita)", () =>
     const atkBase = atkTotal / 1.18; // char+weapon+bonus atk_base = 1487.0403291
     const cap = atkBase * 4;
     expect(stats.atk_total).toBeCloseTo(atkTotal + cap, 2);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// setRegistry DI seam (P2.A1 pre-step)
+// ---------------------------------------------------------------------------
+
+/**
+ * A minimal throwaway DbObjectArtifactSet not present in the barrel registry.
+ * Gives +10% normal DMG (2pc static) — a stat easy to verify in the bag.
+ */
+const THROWAWAY_SET: DbObjectArtifactSet = {
+  name: "artifact_set.throwaway",
+  goodId: "ThrowawaySetNotInBarrel",
+  bonus: {
+    2: {
+      conditions: [
+        {
+          type: "static",
+          title: "test_bonus",
+          stats: { dmg_normal: 10 },
+        },
+      ],
+    },
+  },
+};
+
+const SEAM_BUILD = {
+  char: minimalHuTao,
+  weaponStatTable: blackcliffPoleStatTable,
+  statBlock: {
+    atk_base: 871,
+    atk_percent: 18,
+    crit_dmg_base: 50,
+    crit_rate_base: 5,
+    def_base: 876,
+    hp_base: 13226,
+    mastery_base: 55,
+    recharge_base: 100,
+  } as const,
+  levels: { charLevel: 90, ascension: 6, weaponLevel: 90, weaponAscension: 6 },
+  enemy: { level: 90, resistance: 10 },
+  settings: {},
+} as const;
+
+describe("buildStats — setRegistry DI seam", () => {
+  it("a set NOT in the barrel resolves when passed via setRegistry (bonus lands in bag)", () => {
+    const { stats } = buildStats({
+      ...SEAM_BUILD,
+      setBonuses: [{ setKey: "ThrowawaySetNotInBarrel", pieces: 2 }],
+      setRegistry: { ThrowawaySetNotInBarrel: THROWAWAY_SET },
+    });
+    // The +10% dmg_normal lands as fraction 0.10 in the bag.
+    expect(stats["dmg_normal"]).toBeCloseTo(0.10, 10);
+  });
+
+  it("omitting setRegistry still uses the barrel (barrel sets still resolve)", () => {
+    // NoblesseOblige is in the barrel — resolves without setRegistry.
+    const { stats } = buildStats({
+      ...SEAM_BUILD,
+      // NoblesseOblige 2pc is a burst DMG bonus; 4pc is conditional — but even at
+      // 2pc we get no burst bonus in the stat bag from Noblesse (its 2pc is ATK-conditional).
+      // Use CrimsonWitch which has an unconditional 2pc dmg_pyro:15 → 0.15 fraction.
+      setBonuses: [{ setKey: "CrimsonWitch", pieces: 2 }],
+    });
+    expect(stats["dmg_pyro"]).toBeCloseTo(0.15, 10);
+  });
+
+  it("barrel set is NOT resolved when ThrowawaySet is in setRegistry but barrel set is not (override semantics)", () => {
+    // With setRegistry present, lookups ONLY use it (override, not augment).
+    // CrimsonWitch is not in this one-set registry → no dmg_pyro contribution.
+    const { stats } = buildStats({
+      ...SEAM_BUILD,
+      setBonuses: [{ setKey: "CrimsonWitch", pieces: 2 }],
+      setRegistry: { ThrowawaySetNotInBarrel: THROWAWAY_SET },
+    });
+    expect(stats["dmg_pyro"]).toBeUndefined();
   });
 });

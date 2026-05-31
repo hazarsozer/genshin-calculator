@@ -36,6 +36,7 @@ import type {
   CharPostEffect,
   Condition,
   DamageContext,
+  DbObjectArtifactSet,
   DbObjectChar,
   Element,
   EvalContext,
@@ -181,6 +182,14 @@ export interface BuildInput {
    * Absent / empty → the whole set path is a no-op (the base golden suite is untouched).
    */
   readonly setBonuses?: readonly EquippedSet[];
+  /**
+   * Optional set-registry override (DI seam). When provided, set lookups resolve
+   * against this map instead of the module barrel `getArtifactSet`. Production callers
+   * omit it (→ barrel); the golden harness injects a glob-built registry so a set file
+   * validates without a barrel edit. The override is complete: if `setRegistry` is
+   * present and a key is absent from it, that set is treated as unported (no-op).
+   */
+  readonly setRegistry?: Readonly<Record<string, DbObjectArtifactSet>>;
 }
 
 /** One equipped artifact set: its registry key + how many pieces are worn. */
@@ -269,14 +278,21 @@ interface ResolvedSetBonuses {
  * (concats `bonus[i].conditions` for `i <= pieces`) + `CalcObjectArtifacts.getSettings`
  * (injects `set_pieces.<name> = count`). Unknown set keys are skipped (a set not yet
  * ported contributes nothing) — P2.A1 fills the registry.
+ *
+ * When `setRegistry` is provided it replaces the barrel lookup entirely (DI seam):
+ * the golden harness injects a glob-built registry so a set file validates without
+ * a barrel edit.
  */
-function resolveSetBonuses(setBonuses: readonly EquippedSet[]): ResolvedSetBonuses {
+function resolveSetBonuses(
+  setBonuses: readonly EquippedSet[],
+  setRegistry?: Readonly<Record<string, DbObjectArtifactSet>>
+): ResolvedSetBonuses {
   const conditions: Condition[] = [];
   const pieceSettings: Record<string, number> = {};
   const postEffects: CharPostEffect[] = [];
 
   for (const { setKey, pieces } of setBonuses) {
-    const set = getArtifactSet(setKey);
+    const set = setRegistry ? setRegistry[setKey] : getArtifactSet(setKey);
     if (set === undefined) continue;
     pieceSettings[`set_pieces.${setKey.toLowerCase()}`] = pieces;
     // Piece-count gate: include each bonus tier unlocked at this piece count.
@@ -309,7 +325,7 @@ export function buildStats(input: BuildInput): BuildResult {
   // them via ConditionBooleanPiecesCount. Merge them into the build settings (they
   // add only `set_pieces.*` keys, which char/weapon conditions never read, so this
   // is inert for the no-set path → the base golden suite is untouched).
-  const sets = resolveSetBonuses(input.setBonuses ?? []);
+  const sets = resolveSetBonuses(input.setBonuses ?? [], input.setRegistry);
   const settings: EvalContext =
     input.setBonuses && input.setBonuses.length > 0
       ? { ...(input.settings ?? {}), ...sets.pieceSettings }
