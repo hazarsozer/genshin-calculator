@@ -1,0 +1,305 @@
+/**
+ * Kaedehara Kazuha — anemo sword.
+ *
+ * 5-hit normal combo (n3 is a 2-table multihit → children _3_1/_3_2; n5 is a
+ * 3-hit multihit of one table → child _5_1), charged (2-table multihit
+ * charged_hit_total → children _1/_2), and TWO plunge families:
+ *   - physical plunge / plunge_low / plunge_high (her plain FeatureDamagePlunge*),
+ *   - the burst-state ANEMO plunge: kazuha_plunge (collision) + kazuha_plunge_low/
+ *     high (shockwave), plus the A1 "Soumon Swordsmanship" absorbed-element
+ *     variants kazuha_plunge_{cryo,electro,hydro,pyro} — each a FLAT 200% ATK
+ *     plunge shockwave (ValueTable([200]), source 'ascension1', auto-active at A6).
+ * Anemo skill (press_dmg / hold_dmg), anemo burst (kazuha_slashing_dmg + dot_dmg
+ * + absorbed-element anemoskill_{cryo,electro,hydro,pyro}_dmg, all on s3.p3).
+ *
+ * ELEMENTS: normals + charged are PHYSICAL (her FeatureDamageNormal/Charged carry
+ * no element; no infusion in the solo C0 build). Confirmed against the oracle:
+ * normal_hit_1 implied talent% = 0.8891 (= s1.p1 L10 / 100) only when treated as
+ * physical (dmg_phys 4% + dmg_normal 8%); the anemo reading gives a non-table
+ * 0.9220. The kazuha_plunge family + skill + burst are explicitly anemo. The
+ * physical-vs-anemo split is exactly the 25/26 (≈0.9615) ratio between plunge and
+ * kazuha_plunge in the fixture (physical RES/dmg_phys vs anemo). The engine derives
+ * all of this from `element` — no manual fudge.
+ *
+ * NOT MODELLED (faithfully — engine/harness handle or filter these):
+ *   - reaction.* (swirl_cryo/electro/hydro/pyro, overloaded, superconduct,
+ *     electrocharged, hyperbloom, burgeon, burning, shatter, rupture): emitted
+ *     generically from element='anemo' by the loader's transformative-reaction
+ *     catalog, not declared per-character.
+ *   - other.kazuha_elemental_bonus (A4 EM-scaled cryo dmg% display): a
+ *     FeaturePostEffectValue stat-readout (format 'percent', empty damageType) —
+ *     the golden harness filters non-damage-triple entries, and the engine has no
+ *     post-effect-value output channel. Its value (9.0131) is a display only.
+ *   - A4 "Poetics of Fuubutsu" elemental-dmg buffs: gated on the
+ *     poetics_of_fuubutsu dropdown (OFF in solo) → contribute nothing here.
+ *   - C0 build: all constellations skipped.
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/db/Char/Kazuha.js:161-502
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Kazuha)
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTables.js (Kazuha)
+ */
+
+import type { DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
+import { Kazuha as KazuhaStatTable } from "../generated/charTables.js";
+import { Kazuha as KazuhaTalents } from "../generated/charTalentTables.js";
+
+// ---------------------------------------------------------------------------
+// TalentResolver
+// ---------------------------------------------------------------------------
+
+const talents: TalentResolver = {
+  get(path: string) {
+    const [talent, name] = path.split(".");
+    if (talent === "attack") {
+      if (name === "normal_hit_1") return KazuhaTalents.s1.p1;
+      if (name === "normal_hit_2") return KazuhaTalents.s1.p2;
+      if (name === "normal_hit_3_1") return KazuhaTalents.s1.p3;
+      if (name === "normal_hit_3_2") return KazuhaTalents.s1.p4;
+      if (name === "normal_hit_4") return KazuhaTalents.s1.p5;
+      if (name === "normal_hit_5") return KazuhaTalents.s1.p6;
+      if (name === "charged_hit_1") return KazuhaTalents.s1.p7;
+      if (name === "charged_hit_2") return KazuhaTalents.s1.p8;
+      if (name === "plunge") return KazuhaTalents.s1.p10;
+      if (name === "plunge_low") return KazuhaTalents.s1.p11;
+      if (name === "plunge_high") return KazuhaTalents.s1.p12;
+    }
+    if (talent === "skill") {
+      if (name === "press_dmg") return KazuhaTalents.s2.p1;
+      if (name === "hold_dmg") return KazuhaTalents.s2.p3;
+    }
+    if (talent === "burst") {
+      if (name === "kazuha_slashing_dmg") return KazuhaTalents.s3.p1;
+      if (name === "dot_dmg") return KazuhaTalents.s3.p2;
+      if (name === "anemoskill_elemental_dmg") return KazuhaTalents.s3.p3;
+    }
+    throw new Error(`kazuha talents: unknown path '${path}'`);
+  },
+};
+
+// A1 absorbed-element plunge: a flat 200% ATK shockwave (her ValueTable([200]),
+// source 'ascension1'). Constant table — the talent level is irrelevant.
+// raw/genshin_calc_pub/src/js/db/Char/Kazuha.js:131 (A1PlungeDmg = 200), :363-406.
+const a1PlungeValue: TalentTable = { getValue: () => 200 };
+
+// ---------------------------------------------------------------------------
+// Features
+// ---------------------------------------------------------------------------
+
+const features: readonly Feature[] = [
+  // --- Normal attacks (PHYSICAL — no element on her FeatureDamageNormal) ---
+  {
+    name: "normal_hit_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
+  },
+  {
+    name: "normal_hit_2",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }],
+  },
+  // normal_hit_3: 2-sub-hit multihit with two DIFFERENT tables (_3_1=p3, _3_2=p4).
+  // raw: FeatureDamageMultihit({ items: [{ [p3] }, { [p4] }] }) → parent = sum.
+  {
+    name: "normal_hit_3",
+    category: "attack",
+    items: [
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3_1") }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3_2") }] },
+    ],
+  },
+  // Sub-hits of normal_hit_3 (raw marks them isChild; de-childed so they emit).
+  {
+    name: "normal_hit_3_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3_1") }],
+  },
+  {
+    name: "normal_hit_3_2",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3_2") }],
+  },
+  {
+    name: "normal_hit_4",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }],
+  },
+  // normal_hit_5: 3-hit multihit of one table (p6 × 3). raw: items:[{ hits:3, [p6] }].
+  // Modelled as three item entries so the parent total = 3 × (p6% × ATK).
+  {
+    name: "normal_hit_5",
+    category: "attack",
+    items: [
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5") }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5") }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5") }] },
+    ],
+  },
+  // normal_hit_5_1: one sub-hit of normal_hit_5 (single p6). raw isChild → de-childed.
+  {
+    name: "normal_hit_5_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5") }],
+  },
+  // --- Charged attack: 2-table multihit (charged_hit_total = c1 + c2) ---
+  // raw damageType 'charged'; children charged_hit_1/_2 de-childed.
+  {
+    name: "charged_hit_total",
+    category: "attack",
+    damageType: "charged",
+    items: [
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit_1") }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit_2") }] },
+    ],
+  },
+  {
+    name: "charged_hit_1",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit_1") }],
+  },
+  {
+    name: "charged_hit_2",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit_2") }],
+  },
+  // --- Plunge attacks: PHYSICAL family (collision + low/high shockwave) ---
+  {
+    name: "plunge",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
+  },
+  {
+    name: "plunge_low",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
+  },
+  {
+    name: "plunge_high",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
+  },
+  // --- Plunge attacks: burst-state ANEMO family (same plunge tables, anemo) ---
+  {
+    name: "kazuha_plunge",
+    category: "attack",
+    damageType: "plunge",
+    element: "anemo",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
+  },
+  {
+    name: "kazuha_plunge_low",
+    category: "attack",
+    damageType: "plunge",
+    element: "anemo",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
+  },
+  {
+    name: "kazuha_plunge_high",
+    category: "attack",
+    damageType: "plunge",
+    element: "anemo",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
+  },
+  // A1 absorbed-element plunge shockwaves: flat 200% ATK, one per element.
+  {
+    name: "kazuha_plunge_hydro",
+    category: "attack",
+    damageType: "plunge",
+    element: "hydro",
+    multipliers: [{ leveling: "ascension1", values: a1PlungeValue }],
+  },
+  {
+    name: "kazuha_plunge_pyro",
+    category: "attack",
+    damageType: "plunge",
+    element: "pyro",
+    multipliers: [{ leveling: "ascension1", values: a1PlungeValue }],
+  },
+  {
+    name: "kazuha_plunge_cryo",
+    category: "attack",
+    damageType: "plunge",
+    element: "cryo",
+    multipliers: [{ leveling: "ascension1", values: a1PlungeValue }],
+  },
+  {
+    name: "kazuha_plunge_electro",
+    category: "attack",
+    damageType: "plunge",
+    element: "electro",
+    multipliers: [{ leveling: "ascension1", values: a1PlungeValue }],
+  },
+  // --- Skill: Chihayaburu (anemo) ---
+  {
+    name: "press_dmg",
+    category: "skill",
+    element: "anemo",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.press_dmg") }],
+  },
+  {
+    name: "hold_dmg",
+    category: "skill",
+    element: "anemo",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.hold_dmg") }],
+  },
+  // --- Burst: Kazuha Slash (anemo) ---
+  {
+    name: "kazuha_slashing_dmg",
+    category: "burst",
+    element: "anemo",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.kazuha_slashing_dmg") }],
+  },
+  {
+    name: "dot_dmg",
+    category: "burst",
+    element: "anemo",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.dot_dmg") }],
+  },
+  // Burst absorbed-element variants: pyro/hydro/cryo/electro, all share s3.p3.
+  {
+    name: "anemoskill_pyro_dmg",
+    category: "burst",
+    element: "pyro",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.anemoskill_elemental_dmg") }],
+  },
+  {
+    name: "anemoskill_hydro_dmg",
+    category: "burst",
+    element: "hydro",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.anemoskill_elemental_dmg") }],
+  },
+  {
+    name: "anemoskill_cryo_dmg",
+    category: "burst",
+    element: "cryo",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.anemoskill_elemental_dmg") }],
+  },
+  {
+    name: "anemoskill_electro_dmg",
+    category: "burst",
+    element: "electro",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.anemoskill_elemental_dmg") }],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// DbObjectChar
+// ---------------------------------------------------------------------------
+
+export const kaedeharaKazuha: DbObjectChar = {
+  name: "kaedehara_kazuha",
+  gameId: 10000047,
+  rarity: 5,
+  element: "anemo",
+  weapon: "sword",
+  origin: "inazuma",
+  statTable: KazuhaStatTable,
+  talents,
+  features,
+  multipliers: [],
+};
