@@ -34,7 +34,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Mizuki)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Mizuki as MizukiStatTable } from "../generated/charTables.js";
 import { Mizuki as MizukiTalents } from "../generated/charTalentTables.js";
 
@@ -157,6 +157,28 @@ const features: readonly Feature[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1: ConditionBoolean toggle ("mizuki_in_mist_like_waters", Swirl DMG bonus gated
+//   by dreamdrifter toggle) → SKIP.
+// C2: ConditionStatic with text_percent_dmg only (display-only, no real stat) → SKIP.
+//   Raw: (C2ElemBonus/100 = 0.04 is a fractional dmg multiplier but text_percent_dmg only)
+// C3 "Boundless Blossoming" — +3 Elemental Skill talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Mizuki.js:376-383 (constellation[2]).
+// C4: ConditionStatic display-only → SKIP.
+// C5 "Sleep Awaits" — +3 Burst talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Mizuki.js:393-400 (constellation[4]).
+// C6: ConditionStatic{crit_rate_swirl, crit_dmg_swirl} gated by ConditionBoolean
+//   (dreamdrifter) subCondition — toggle OFF in fixed build → SKIP.
+
+const constellationConditions: readonly Condition[] = [
+  // C3 — char_skill_elemental_bonus +3 (skill talent level up).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 — char_skill_burst_bonus +3 (burst talent level up).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
 export const yumemizukiMizuki: DbObjectChar = {
   name: "yumemizuki_mizuki",
   gameId: 10000109,
@@ -168,4 +190,5 @@ export const yumemizukiMizuki: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
