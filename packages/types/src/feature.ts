@@ -14,6 +14,7 @@
  */
 
 import type { Element, TalentTable } from "./character.js";
+import type { Condition } from "./condition.js";
 import type { DamageContext, DamageResult } from "./damage.js";
 
 /** High-level category of a feature declaration. */
@@ -47,6 +48,68 @@ export interface FeatureMultiplierEntry {
    * multiplier (e.g. constellation flat %) this is a 1-entry table.
    */
   readonly values: TalentTable;
+  /**
+   * Provenance label (her `FeatureMultiplier.source`, e.g. `"ascension4"`,
+   * `"constellation2"`). Informational only — never affects the computed value.
+   * Present on char-level multipliers; absent on plain per-feature talent terms.
+   */
+  readonly source?: string;
+  /**
+   * CHAR-LEVEL multipliers only: which features this multiplier applies to.
+   * When set (only on `char.multipliers` entries), the multiplier is summed into
+   * a feature's base-damage term iff `target.damageTypes` includes the feature's
+   * resolved damage type. Per-feature entries leave this absent (they apply only
+   * to their own feature). Ports `FeatureMultiplier.target` /
+   * `FeatureMultiplierTarget.isMatchFeature`.
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Target.js
+   */
+  readonly target?: FeatureMultiplierTarget;
+  /**
+   * CHAR-LEVEL multipliers only: optional gate. The multiplier contributes iff
+   * `evaluate(condition)` is true (an absent condition is always-active, per her
+   * `FeatureMultiplier.isActive`: `if (!this.condition) return true`). Routes
+   * always-on (Itto A4) and constellation-/ascension-granted multipliers through
+   * the same channel.
+   */
+  readonly condition?: Condition;
+}
+
+/**
+ * Targeting predicate for a char-level multiplier — which features it applies to.
+ *
+ * A faithful subset of her `FeatureMultiplierTarget` (Multiplier/Target.js). Only
+ * `damageTypes` is modelled here: it is the field every v5.8 char-level targeted
+ * multiplier uses (Itto A4 → charged, Albedo C2 → burst, …). `isMatchFeature`
+ * keeps an entry iff `damageTypes` includes the feature's resolved damage type
+ * (`damageTypeOf`). The remaining raw fields (`damageTypesExclude`,
+ * `damageElements`, `tags`, `options`) are unused by any v5.8 character's
+ * char-level multipliers and are deferred until a source needs them.
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Target.js
+ */
+export interface FeatureMultiplierTarget {
+  /** Feature damage types this multiplier applies to (e.g. `["charged"]`, `["burst"]`). */
+  readonly damageTypes: readonly string[];
+}
+
+/**
+ * A char-level ("targeted") multiplier: a `FeatureMultiplierEntry` carried on
+ * `DbObjectChar.multipliers` (rather than on a single feature) that injects into
+ * EVERY feature matching its `target`, gated by its optional `condition`. This is
+ * her general mechanism for ascension/constellation damage-type bonuses (Itto A4's
+ * `0.35×DEF` on charged, Albedo C2's `def*` on burst, etc.).
+ *
+ * It is the same structural shape as `FeatureMultiplierEntry`; this alias names the
+ * char-level role (where `target` is meaningful) for readability. `target` is
+ * required here (a char-level multiplier without a target would apply to nothing
+ * useful); `condition` stays optional (absent = always-on, e.g. Itto A4).
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Feature2.js:121-125 (getMultipliers
+ *         merges active+matching char.multipliers into each feature's base term).
+ */
+export interface CharMultiplier extends FeatureMultiplierEntry {
+  readonly target: FeatureMultiplierTarget;
 }
 
 /**

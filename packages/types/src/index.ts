@@ -68,6 +68,8 @@ export type {
 export type {
   FeatureCategory,
   FeatureMultiplierEntry,
+  FeatureMultiplierTarget,
+  CharMultiplier,
   Feature,
   FeatureReaction,
   CompiledFeature,
