@@ -44,3 +44,6 @@ export {
   blackcliffPoleStatTable,
   theBellStatTable,
 } from "./generated/weaponStatTables.js";
+
+// P2.W1 — weapon barrel (5 default weapons + P2.W0 exemplars)
+export * from "./weapons/index.js";
