@@ -19,14 +19,15 @@
  *
  * A4 "Unheard Confession" (auto-active at A6) grants dmg_skill_furina =
  * min(0.0007 · hp_total, 28%). Her engine models this as PostEffectStatsHP
- * writing the percent stat `dmg_skill_furina` (Furina.js:503-509). We port it as a
- * real HP→% post-effect with `toStatIsDamageBonus: true`: the adapter derives
- * min(0.0007 · getTotal('hp'), 28) and folds the isPercent /100 (her Stats.js:
- * 63-66), landing dmg_skill_furina in the bag as a FRACTION; buildStats'
- * `damageBonusesRaw` channel then emits it AS-IS (the salon hits' `damageBonuses`
- * key is NOT divided again). This recomputes per build — the previous code
- * hardcoded the fixed build's min(0.0007·28533.38835, 28) = 19.973371845, which
- * was correct ONLY at that build and desynced on any other HP total.
+ * writing the percent stat `dmg_skill_furina` (Furina.js:503-509). We port it as
+ * a plain HP→% post-effect: the adapter derives min(0.0007 · getTotal('hp'), 28),
+ * landing dmg_skill_furina in the bag as a RAW PERCENT; buildStats'
+ * `collectFeatureBonusKeys` emit loop then divides it by 100 to produce the
+ * FRACTION the engine reads. This is numerically identical to the
+ * `toStatIsDamageBonus` channel (the absolute 28% cap commutes through /100), and
+ * matches the plain pattern that every other dmg_* post-effect uses (e.g. kirara).
+ * Recomputes per build — the previous code hardcoded the fixed build's
+ * min(0.0007·28533.38835, 28) = 19.973371845, correct ONLY at that build.
  *
  * Display-only fixture rows skipped by the harness (empty damageType):
  *   furina_fanfare_dmg_bonus / heal_bonus (0 at 0 fanfare stacks in solo C0),
@@ -205,23 +206,20 @@ const features: readonly Feature[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
-// A4 "Unheard Confession": dmg_skill_furina = min(0.0007 · hp_total, 28) (her
-// raw percent + 28% statCap; Furina.js:503-509). `toStatIsDamageBonus` folds the
-// isPercent /100 in the adapter (her Stats.js:63-66) so it lands as a FRACTION,
-// then buildStats' damageBonusesRaw channel emits it AS-IS (the salon hits'
-// `damageBonuses: ['dmg_skill_furina']` key is not divided again). Auto-active at
-// the A6 canonical build (her ConditionAscensionChar asc4 is satisfied; the
-// ascension gate is not threaded into settings, matching Yae Miko / Alhaitham's
-// A4 post-effects), so no `conditions` here. Recomputes per build:
-//   base hp_total 28533.38835 → min(19.973, 28) = 19.973% → 0.19973371845
-//   high-HP hp_total 66420.63 → min(46.49, 28) = 28%      → 0.28 (cap binds)
+// A4 "Unheard Confession": dmg_skill_furina = min(0.0007 · hp_total, 28%) (her
+// raw percent + 28% statCap; Furina.js:503-509). Plain post-effect: lands in the
+// bag as a RAW PERCENT; buildStats' collectFeatureBonusKeys emit /100 produces
+// the FRACTION the engine reads. Auto-active at the A6 canonical build (her
+// ConditionAscensionChar asc4 is satisfied; ascension gate not threaded into
+// settings, matching Yae Miko / Alhaitham's A4 post-effects), so no `conditions`.
+//   base hp_total 28533.38835 → min(19.973, 28) = 19.973% → /100 → 0.19973371845
+//   high-HP hp_total 66420.63 → min(46.49, 28) = 28%      → /100 → 0.28 (cap)
 const a4PostEffects: readonly CharPostEffect[] = [
   {
     fromStat: "hp",
     toStat: "dmg_skill_furina",
     ratio: 0.0007,
     capValue: 28,
-    toStatIsDamageBonus: true,
   },
 ];
 
