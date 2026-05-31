@@ -30,7 +30,7 @@
  *   wiki/concepts/stat-keys-and-good-format.md
  */
 
-import { Stats, applyPostEffects, conditionStats, evaluate, type PostEffect } from "@genshin/core";
+import { Stats, applyPostEffects, conditionStats, conditionSettings, evaluate, type PostEffect } from "@genshin/core";
 import type {
   BuildStats,
   CharPostEffect,
@@ -204,6 +204,17 @@ export interface EquippedSet {
 export interface BuildResult {
   readonly stats: BuildStats;
   readonly context: DamageContext;
+  /**
+   * The settings AFTER condition-`.settings` propagation — the input settings
+   * extended with every active condition's contributed settings, exactly as her
+   * `CalcSet.getBaseStats` merges `condData.settings` into the running settings
+   * (CalcSet.js:360-363). The caller threads these into the `CompileContext` so
+   * condition-driven settings resolve at compile time: talent-level `_bonus`
+   * offsets (Hu Tao C3/C5), constellation-gated multiplier gates, infusions.
+   * Equals the input settings (+ system-canonical `weapon_type`/`set_pieces.*`)
+   * when no active condition carries `.settings` — i.e. the base-107 build.
+   */
+  readonly settings: EvalContext;
 }
 
 /**
@@ -367,18 +378,34 @@ export function buildStats(input: BuildInput): BuildResult {
   // Runs BEFORE applyPostEffects so post-effects (HP→ATK) read condition-contributed
   // stats — exactly her order. Stacks scale by getStackCount, refine resolves by
   // weapon_refine: all handled inside the pure `conditionStats` resolver.
-  for (const cond of input.char.conditions ?? []) raw.concat(conditionStats(cond, settings));
-  for (const cond of input.extraConditions ?? []) raw.concat(conditionStats(cond, settings));
+  //
+  // Settings PROPAGATION (her CalcSet.getBaseStats:360-363): each active condition's
+  // `.settings` are merged into the running settings that subsequent conditions, the
+  // post-effects, AND the compile context read. `getData` returns `{stats, settings}`
+  // and she does `result.settings.concat(result.settings, condData.settings)`; here
+  // `conditionStats` is the stats half and `conditionSettings` the settings half. The
+  // stats for a condition are computed against the PRE-merge settings (its own settings
+  // don't gate itself), then merged in for the rest — exactly her order. Inert for the
+  // base build: every condition is a gated-off toggle → both halves return {} → no merge.
+  let merged: EvalContext = settings;
+  const applyCondition = (cond: Condition): void => {
+    raw.concat(conditionStats(cond, merged));
+    merged = { ...merged, ...conditionSettings(cond, merged) };
+  };
+  for (const cond of input.char.conditions ?? []) applyCondition(cond);
+  for (const cond of input.extraConditions ?? []) applyCondition(cond);
   // Equipped artifact-set conditions (piece-count gated in resolveSetBonuses, then
   // each subject to its own gate here) — the same loop as char/weapon conditions.
   // Mirrors her CalcSet.getBaseStats iterating the artifacts' (+ buffs') getConditions.
-  for (const cond of sets.conditions) raw.concat(conditionStats(cond, settings));
+  for (const cond of sets.conditions) applyCondition(cond);
 
   // 3. Derive — condition-gated post-effects (reads RAW percents via getTotal).
   // Char post-effects then any set-level post-effects (HP→ATK-style folds), both
-  // through the same path — her getPostEffects concats every equipped object's.
+  // through the same path — her getPostEffects concats every equipped object's. Reads
+  // the MERGED settings so a condition-contributed level bonus / infusion is visible
+  // to a post-effect's `levelSetting` (her PostEffect.getLevel adds `_bonus`).
   const effects = [...(input.char.postEffects ?? []), ...sets.postEffects].map(toPostEffect);
-  applyPostEffects(raw, effects, settings);
+  applyPostEffects(raw, effects, merged);
 
   // 4. Read — emit the engine-facing bag.
   const out: Record<string, number> = {};
@@ -473,5 +500,5 @@ export function buildStats(input: BuildInput): BuildResult {
     characterLevel: input.levels.charLevel,
   };
 
-  return { stats, context };
+  return { stats, context, settings: merged };
 }

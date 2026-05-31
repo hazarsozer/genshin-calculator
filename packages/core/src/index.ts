@@ -10,7 +10,7 @@ export {
 export { applyPostEffects } from "./stats/index.js";
 export type { PostEffect, StatTableAscensionScaleParams } from "./stats/index.js";
 
-export { evaluate, getStackCount, conditionStats } from "./conditions/index.js";
+export { evaluate, getStackCount, conditionStats, conditionSettings } from "./conditions/index.js";
 
 export {
   AmplifyingVariant,

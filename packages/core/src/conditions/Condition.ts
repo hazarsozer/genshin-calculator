@@ -161,6 +161,43 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
   }
 }
 
+/**
+ * Resolve the SETTINGS a condition contributes when active under `ctx`.
+ *
+ * The settings half of her `CalcSet.getBaseStats` loop: each condition's
+ * `getData(settings)` returns `{ stats, settings }`, and the running settings are
+ * extended with the active condition's `params.settings`
+ * (`result.settings.concat(result.settings, condData.settings)`,
+ * raw CalcSet.js:360-363; `getData` returns `params.settings` only when active,
+ * Condition.js:118-125). `conditionStats` is the `stats` half; this is the `settings`
+ * half — kept a separate pure function so callers can thread the merged settings.
+ *
+ * Returns `{}` when the condition is inactive, when it carries no `.settings`, or for
+ * the logical containers (`and`/`or`) — whose operands contribute their own settings
+ * where they are declared, exactly like `conditionStats`.
+ *
+ * The propagated keys feed downstream resolution as her settings object does:
+ *   - talent-level bumps `char_skill_<slot>_bonus` (Hu Tao C3/C5) read by the
+ *     talent-level resolver (compileFeature `baseDamageTerm`, her Feature.getTalentLevel),
+ *   - infusions `attack_infusion` (Paramita), level/enemy selectors, etc.
+ *
+ * Reads only `Condition` + `EvalContext` — no `@genshin/data` import (engine purity).
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/classes/Condition.js (getData)
+ *   raw/genshin_calc_pub/src/js/classes/CalcSet.js (getBaseStats settings merge)
+ */
+export function conditionSettings(
+  condition: Condition,
+  ctx: EvalContext
+): Record<string, unknown> {
+  if (!evaluate(condition, ctx)) return {};
+  // Logical containers carry no settings of their own (their operands do).
+  if (condition.type === "and" || condition.type === "or") return {};
+  // Every other variant extends ConditionBase, which may carry `.settings`.
+  return condition.settings ? { ...condition.settings } : {};
+}
+
 // ---------------------------------------------------------------------------
 // Stat-resolution helpers (internal)
 // ---------------------------------------------------------------------------
