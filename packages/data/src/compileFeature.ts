@@ -223,6 +223,25 @@ function activeCharMultipliers(
 }
 
 /**
+ * Filter a feature's OWN multipliers to the active ones: those with no `condition`,
+ * plus those whose `condition` evaluates true. Faithful to her
+ * `FeatureMultiplier.isActive` (Multiplier.js), which honours the condition at the
+ * per-feature level just as it does for char-level multipliers — e.g. Fischl C2:
+ * `skill_dmg` carries a SECOND multiplier (`ValueTable([C2SkillDmg])`) gated by
+ * `ConditionConstellation(2)` (Fischl.js:256-260), so the +200% ATK applies only at
+ * C≥2. Inert for every base feature (none set a per-feature multiplier condition) →
+ * the base golden is untouched.
+ */
+function activeOwnMultipliers(
+  multipliers: readonly FeatureMultiplierEntry[],
+  ctx: CompileContext
+): readonly FeatureMultiplierEntry[] {
+  return multipliers.filter(
+    (m) => m.condition === undefined || evaluate(m.condition, ctx.settings)
+  );
+}
+
+/**
  * Collect the DMG% bonus stat keys for a hit (additive inside cMultiplierBonus):
  * `dmg_all`, `dmg_<element>`, `dmg_<damageType>`, plus any feature-declared
  * `damageBonuses`. Absent keys read as 0. Mirrors her getStatsDmgBonus
@@ -317,7 +336,7 @@ function compileReaction(
   // ChargedLike amplifying factor, then the shared (1 + emBonus + Σ) × res tail.
   const multipliers: readonly FeatureMultiplierEntry[] =
     feature.multipliers ?? (feature.items ?? []).flatMap((item) => item.multipliers);
-  const baseTerms = multipliers.map((m) => baseDamageTerm(m, ctx));
+  const baseTerms = activeOwnMultipliers(multipliers, ctx).map((m) => baseDamageTerm(m, ctx));
   const base: Block = cBaseDamage(baseTerms);
 
   const factors: Block[] = [base];
@@ -370,7 +389,7 @@ export function compileFeature(
     feature.multipliers ??
     (feature.items ?? []).flatMap((item) => item.multipliers);
   const baseTerms = [
-    ...multipliers,
+    ...activeOwnMultipliers(multipliers, ctx),
     ...activeCharMultipliers(feature, damageType, ctx),
   ].map((m) => baseDamageTerm(m, ctx));
 

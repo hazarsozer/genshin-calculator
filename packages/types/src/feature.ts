@@ -79,11 +79,14 @@ export interface FeatureMultiplierEntry {
    */
   readonly target?: FeatureMultiplierTarget;
   /**
-   * CHAR-LEVEL multipliers only: optional gate. The multiplier contributes iff
-   * `evaluate(condition)` is true (an absent condition is always-active, per her
-   * `FeatureMultiplier.isActive`: `if (!this.condition) return true`). Routes
-   * always-on (Itto A4) and constellation-/ascension-granted multipliers through
-   * the same channel.
+   * Optional gate: the multiplier contributes iff `evaluate(condition)` is true
+   * (an absent condition is always-active, per her `FeatureMultiplier.isActive`:
+   * `if (!this.condition) return true`). Honoured at BOTH levels, exactly as her
+   * `isActive` is — on a CHAR-LEVEL multiplier (`char.multipliers`: Itto A4,
+   * Albedo C2, …) AND on a PER-FEATURE multiplier (a feature's own `multipliers`:
+   * e.g. Fischl C2's second `skill_dmg` term gated by `ConditionConstellation(2)`).
+   * `compileFeature` filters both via `evaluate`. Inert for every base feature
+   * (none set a per-feature multiplier condition).
    */
   readonly condition?: Condition;
 }
