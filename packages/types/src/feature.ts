@@ -79,6 +79,26 @@ export interface Feature {
   /** Sub-items for multihit features. */
   readonly items?: readonly { readonly multipliers: readonly FeatureMultiplierEntry[] }[];
   /**
+   * Extra DMG% bonus stat keys this feature picks up beyond the generic
+   * `dmg_all`/`dmg_<element>`/`dmg_<type>` set — her `FeatureDamage.damageBonuses`,
+   * concatenated into the DMG-bonus sum (Damage.js:61-64). E.g. Amber C2's
+   * `dmg_skill_amber`. Each is a fraction at execution time. Absent keys read 0.
+   */
+  readonly damageBonuses?: readonly string[];
+  /**
+   * Extra crit-rate stat keys this feature picks up beyond the generic crit-rate
+   * set — her `FeatureDamage.critRateBonuses`, summed into the crit-rate term
+   * (Damage.js:81-83). E.g. Amber's A1 `crit_rate_amber` (auto-active at A6) or
+   * Kaeya's conditional `crit_rate_kaeya`. Each is a fraction; absent keys read 0.
+   */
+  readonly critRateBonuses?: readonly string[];
+  /**
+   * Extra crit-DMG stat keys this feature picks up beyond the generic crit-DMG
+   * set — her `FeatureDamage.critDamageBonuses`, summed into the crit-DMG term
+   * (Damage.js:109-111). Each is a fraction at execution time; absent keys read 0.
+   */
+  readonly critDamageBonuses?: readonly string[];
+  /**
    * Marks a standalone reaction feature (a separate damage instance keyed by its
    * reaction nature, NOT a `settings.reaction` toggle on a normal hit). When set,
    * `compileFeature` routes the feature to the matching `@genshin/core` reaction

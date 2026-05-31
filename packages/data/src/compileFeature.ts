@@ -164,11 +164,18 @@ function baseDamageTerm(
 
 /**
  * Collect the DMG% bonus stat keys for a hit (additive inside cMultiplierBonus):
- * `dmg_all`, `dmg_<element>`, `dmg_<damageType>`. Absent keys read as 0.
+ * `dmg_all`, `dmg_<element>`, `dmg_<damageType>`, plus any feature-declared
+ * `damageBonuses`. Absent keys read as 0. Mirrors her getStatsDmgBonus
+ * (Damage.js:51-66): the generic set, then `this.damageBonuses` concatenated.
  */
-function dmgBonusKeys(element: Element, damageType: string): readonly string[] {
+function dmgBonusKeys(
+  feature: Feature,
+  element: Element,
+  damageType: string
+): readonly string[] {
   const keys = ["dmg_all", `dmg_${dmgElementKey(element)}`];
   if (damageType) keys.push(`dmg_${damageType}`);
+  if (feature.damageBonuses) keys.push(...feature.damageBonuses);
   return keys;
 }
 
@@ -302,14 +309,24 @@ export function compileFeature(
 
   const items: Block[] = [
     cBaseDamage(baseTerms),
-    cMultiplierBonus(dmgBonusKeys(element, damageType).map((k) => cStat(k))),
+    cMultiplierBonus(dmgBonusKeys(feature, element, damageType).map((k) => cStat(k))),
     cMultiplierResistance(element),
     cMultiplierDefence(),
   ];
 
-  // Crit: the aggregated totals (buildStats folds per-element/-type crit in).
-  const critRate = cCritRate([cStat("crit_rate_total")]);
-  const critDmg = cCritDmg([cStat("crit_dmg_total")]);
+  // Crit: the aggregated totals (buildStats folds per-element/-type crit in),
+  // PLUS any feature-declared crit bonus keys. Mirrors her getDefaultStatsCritRate
+  // / getDefaultStatsCritDamage (Damage.js:72-122): the generic crit set, then
+  // `this.critRateBonuses` / `this.critDamageBonuses` concatenated. E.g. Amber's
+  // A1 `crit_rate_amber` (auto-active at A6) lifts her burst crit rate by 10%.
+  const critRate = cCritRate([
+    cStat("crit_rate_total"),
+    ...(feature.critRateBonuses ?? []).map((k) => cStat(k)),
+  ]);
+  const critDmg = cCritDmg([
+    cStat("crit_dmg_total"),
+    ...(feature.critDamageBonuses ?? []).map((k) => cStat(k)),
+  ]);
 
   return cDamage({ items, critRate, critDmg });
 }

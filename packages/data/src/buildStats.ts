@@ -39,6 +39,7 @@ import type {
   DbObjectChar,
   Element,
   EvalContext,
+  Feature,
   StatTableEntry,
 } from "@genshin/types";
 import { evaluate } from "@genshin/core";
@@ -61,14 +62,18 @@ const SCALING_TOTAL_STATS = ["atk", "hp", "def"] as const;
 const FLAT_TOTAL_STATS = ["mastery", "recharge"] as const;
 /** Flat-summed PERCENT stats whose total is `base+flat` but emitted as a FRACTION. */
 const FRACTION_TOTAL_STATS = ["crit_rate", "crit_dmg"] as const;
-/** DMG% bonus keys carried in the bonus block; emitted as fractions. */
-const DMG_BONUS_KEYS = [
-  "dmg_all",
-  "dmg_normal",
-  "dmg_charged",
-  "dmg_plunge",
-  "dmg_skill",
-  "dmg_burst",
+/**
+ * DMG% bonus keys carried in the bonus block; emitted as fractions.
+ *
+ * Split by her aggregation rule in getStatsDmgBonus (Damage.js:51-66):
+ *   - ELEMENT keys are read as `dmg_<element>*` (the `*` → makeStatTotalItem →
+ *     `dmg_<elem>_base + dmg_<elem>`, since dmg_* is not a REAL_TOTAL stat). The
+ *     `_base` carries a char/weapon ASCENDARY-SECONDARY elemental DMG bonus
+ *     (e.g. Razor's A6 Physical DMG +30 lands as `dmg_phys_base`).
+ *   - TYPE keys (`dmg_normal`, `dmg_skill`, …) and `dmg_all` are read WITHOUT the
+ *     `*`, so only their flat bonus value counts (no `_base` fold).
+ */
+const DMG_BONUS_ELEMENT_KEYS = [
   "dmg_phys",
   "dmg_pyro",
   "dmg_hydro",
@@ -77,6 +82,14 @@ const DMG_BONUS_KEYS = [
   "dmg_anemo",
   "dmg_geo",
   "dmg_dendro",
+] as const;
+const DMG_BONUS_TYPE_KEYS = [
+  "dmg_all",
+  "dmg_normal",
+  "dmg_charged",
+  "dmg_plunge",
+  "dmg_skill",
+  "dmg_burst",
 ] as const;
 
 /**
@@ -154,6 +167,22 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
   };
 }
 
+/**
+ * The set of feature-declared bonus stat keys referenced across a character's
+ * features (`critRateBonuses` ∪ `critDamageBonuses` ∪ `damageBonuses`). These are
+ * the char-specific percent keys `compileFeature` reads; buildStats must emit each
+ * present one as a fraction. (De-duped — keys are shared across hits.)
+ */
+function collectFeatureBonusKeys(features: readonly Feature[]): readonly string[] {
+  const keys = new Set<string>();
+  for (const f of features) {
+    for (const k of f.critRateBonuses ?? []) keys.add(k);
+    for (const k of f.critDamageBonuses ?? []) keys.add(k);
+    for (const k of f.damageBonuses ?? []) keys.add(k);
+  }
+  return [...keys];
+}
+
 /** Resolve the enemy resistance input into a per-element fraction lookup. */
 function resistanceFraction(
   resistance: BuildEnemy["resistance"],
@@ -178,6 +207,10 @@ export function buildStats(input: BuildInput): BuildResult {
   };
   addEntries(input.char.statTable, input.levels.charLevel, input.levels.ascension);
   addEntries(input.weaponStatTable, input.levels.weaponLevel, input.levels.weaponAscension);
+  // Always-active passive stat bonuses (auto-active ascension/passive conditions
+  // under the canonical build) — RAW, concatenated like the bonus block. Her
+  // getBuildData applies these via the baseline-active conditions.
+  if (input.char.baseStats) raw.concat(input.char.baseStats);
   raw.concat(input.statBlock);
 
   // 3. Derive — condition-gated post-effects (reads RAW percents via getTotal).
@@ -208,8 +241,27 @@ export function buildStats(input: BuildInput): BuildResult {
     out[`${stat}_total`] = raw.getTotal(stat) / 100;
   }
 
-  // DMG% bonuses → fractions (additive among themselves inside cMultiplierBonus).
-  for (const key of DMG_BONUS_KEYS) {
+  // Element DMG% bonuses → fractions, folding the `_base` ascension/passive
+  // secondary into the total (her `dmg_<element>*`). Emit when either the flat
+  // bonus OR its `_base` is present so the +30% phys DMG (`dmg_phys_base`) lands.
+  for (const key of DMG_BONUS_ELEMENT_KEYS) {
+    const baseKey = `${key}_base`;
+    if (raw.isSet(key) || raw.isSet(baseKey)) {
+      out[key] = (raw.get(key) + raw.get(baseKey)) / 100;
+    }
+  }
+  // Type DMG% bonuses + dmg_all → fractions, flat only (no `*` in her getStatsDmgBonus).
+  for (const key of DMG_BONUS_TYPE_KEYS) {
+    if (raw.isSet(key)) out[key] = raw.get(key) / 100;
+  }
+
+  // Feature-declared bonus keys (her FeatureDamage critRateBonuses /
+  // critDamageBonuses / damageBonuses) — char-specific percent stats like Amber's
+  // `crit_rate_amber` or C2's `dmg_skill_amber`. compileFeature sums each into the
+  // matching term, so emit every referenced key present in the bag as a FRACTION
+  // (all are percent stats). Absent → unset (engine reads 0). This stays in the
+  // explicit-emit spirit: only keys the character's features actually reference.
+  for (const key of collectFeatureBonusKeys(input.char.features)) {
     if (raw.isSet(key)) out[key] = raw.get(key) / 100;
   }
 

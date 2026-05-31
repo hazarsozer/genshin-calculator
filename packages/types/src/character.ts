@@ -217,6 +217,19 @@ export interface DbObjectChar {
   readonly origin: string;
   /** Base-stat providers (per-stat StatTable entries) for each level/ascension. */
   readonly statTable: CharStatTable;
+  /**
+   * Always-active passive stat bonuses, RAW (un-percent-processed) — the stats
+   * contributed by ascension/passive conditions that are auto-active under the
+   * canonical build (ascension 6, constellation 0, no toggles). `buildStats`
+   * concats these into the stat bag exactly like the bonus block.
+   *
+   * Faithful to her `getBuildData`, which applies the stats of every condition
+   * active under the baseline settings (a `ConditionStatic` gated ONLY by
+   * `ConditionAscensionChar` with no boolean toggle is auto-active). E.g. Amber's
+   * A1 `crit_rate_amber: 10` (Amber.js:289-300). Conditions that require a boolean
+   * toggle (A4 atk%, etc.) are OFF at baseline and are NOT listed here.
+   */
+  readonly baseStats?: Readonly<Record<string, number>>;
   /** Talent-path → multiplier-table resolver (her DbObjectTalents). */
   readonly talents: TalentResolver;
   /** Ordered list of combat feature declarations. */
