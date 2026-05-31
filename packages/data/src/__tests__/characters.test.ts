@@ -18,6 +18,7 @@
 
 import { describe, it, expect } from "vitest";
 import { compile } from "@genshin/core";
+import type { Feature } from "@genshin/types";
 import { buildStats } from "../buildStats.js";
 import { compileFeature } from "../compileFeature.js";
 import { compileCharacter } from "../loader.js";
@@ -396,17 +397,22 @@ describe("Ineffa (Lunar-Charged / electro polearm)", () => {
     expect(result.normal).toBeCloseTo(1893.0075179309508, TOLERANCE);
     expect(result.crit).toBeCloseTo(4829.592220346875, TOLERANCE);
   });
-});
 
-// ---------------------------------------------------------------------------
-// resolveElement — innate-element branch (P1.7a carried item)
-// ---------------------------------------------------------------------------
-
-describe("resolveElement — innate-element branch for skill/burst with no explicit element", () => {
-  it("a skill Feature with no element field resolves to ctx.charElement", () => {
-    // Verify by checking Ineffa burst_dmg (no explicit element on the feature)
-    // resolves to electro (= ineffa.element) and uses enemy_res_electro
-    const { context: contextElectro } = buildStats({
+  // -------------------------------------------------------------------------
+  // Lunar-Charged — the crit-bearing reaction family (the reason Ineffa is in
+  // the representative set). Routes through P1.6's cLunarChargedDamage factory.
+  //
+  // Two keys the P1.6 reaction factory reads that buildStats does not yet emit
+  // (both land in buildStats during P1.9; the harness threads them here):
+  //   - `lunarcharged_multi`: set in her engine by Ineffa's passive post-effect
+  //     `min(0.00007 × atk_total, 0.14)`. Derived from the emitted atk_total via
+  //     her exact formula — derived, never hardcoded.
+  //   - `mastery`: the reaction factory's EM bonus reads `mastery`, whereas
+  //     buildStats folds base+flat EM into `mastery_total`. Alias it through.
+  // `dmg_reaction_lunarcharged` is absent (no constellation) → reads 0.
+  // -------------------------------------------------------------------------
+  function lunarContext() {
+    const { context } = buildStats({
       char: ineffa,
       weaponStatTable: blackcliffPoleStatTable,
       statBlock: STAT_BLOCK,
@@ -414,7 +420,89 @@ describe("resolveElement — innate-element branch for skill/burst with no expli
       enemy: ENEMY,
       settings: {},
     });
-    const { context: contextHighRes } = buildStats({
+    const atkTotal = context.stats["atk_total"] as number;
+    const lunarchargedMulti = Math.min(0.00007 * atkTotal, 0.14);
+    return {
+      ...context,
+      stats: {
+        ...context.stats,
+        lunarcharged_multi: lunarchargedMulti,
+        mastery: context.stats["mastery_total"] as number,
+      },
+    };
+  }
+
+  it("lunarcharged_contrubution (rate-based reaction) matches oracle — crit-bearing", () => {
+    const feature = ineffa.features.find((f) => f.name === "lunarcharged_contrubution")!;
+    const block = compileFeature(feature, {
+      charElement: ineffa.element,
+      talentLevels: TALENTS,
+      settings: {},
+      charLevel: LEVELS.charLevel,
+    });
+    const result = compile(block)(lunarContext());
+
+    // Oracle: ineffa.json reaction.lunarcharged_contrubution (damageType lunarreaction)
+    expect(result.normal).toBeCloseTo(3101.1372114175188, TOLERANCE);
+    expect(result.crit).toBeCloseTo(7911.869344745287, TOLERANCE);
+    expect(result.avg).toBeCloseTo(4505.870994349227, TOLERANCE);
+  });
+
+  it("ineffa_birgitta_coordinated_dmg (A1 lunardirect) matches oracle — crit-bearing", () => {
+    const feature = ineffa.features.find((f) => f.name === "ineffa_birgitta_coordinated_dmg")!;
+    const block = compileFeature(feature, {
+      charElement: ineffa.element,
+      talentLevels: TALENTS,
+      settings: {},
+      charLevel: LEVELS.charLevel,
+    });
+    const result = compile(block)(lunarContext());
+
+    // Oracle: ineffa.json skill.ineffa_birgitta_coordinated_dmg (damageType lunardirect)
+    expect(result.normal).toBeCloseTo(4687.133337500846, TOLERANCE);
+    expect(result.crit).toBeCloseTo(11958.189541299158, TOLERANCE);
+    expect(result.avg).toBeCloseTo(6810.281749009953, TOLERANCE);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// resolveElement — innate-element branch (P1.7a carried item)
+// ---------------------------------------------------------------------------
+
+describe("resolveElement — innate-element branch for skill/burst with no explicit element", () => {
+  // A skill feature with NO `element` field: must hit the ctx.charElement
+  // fallback in resolveElement (compileFeature.ts), not the early `feature.element`
+  // guard. We use a hand-built feature so `element` is genuinely absent (Ineffa's
+  // real skill_dmg/burst_dmg carry explicit element="electro" and would short-
+  // circuit at the guard — the bug this test previously had).
+  const innateSkillFeature: Feature = {
+    name: "innate_element_probe",
+    category: "skill",
+    // NOTE: no `element` field — forces the ctx.charElement resolution path.
+    multipliers: [
+      { leveling: "char_skill_elemental", values: { getValue: () => 100 } },
+    ],
+  };
+
+  it("resolves to ctx.charElement and reads enemy_res_<charElement>", () => {
+    // charElement = electro → the hit must read enemy_res_electro. Prove it by
+    // raising electro resistance and confirming the damage drops.
+    const ctx = {
+      charElement: ineffa.element, // "electro"
+      talentLevels: TALENTS,
+      settings: {},
+    };
+    const block = compileFeature(innateSkillFeature, ctx);
+
+    const { context: lowRes } = buildStats({
+      char: ineffa,
+      weaponStatTable: blackcliffPoleStatTable,
+      statBlock: STAT_BLOCK,
+      levels: LEVELS,
+      enemy: { level: 90, resistance: { electro: 10 } },
+      settings: {},
+    });
+    const { context: highRes } = buildStats({
       char: ineffa,
       weaponStatTable: blackcliffPoleStatTable,
       statBlock: STAT_BLOCK,
@@ -423,14 +511,40 @@ describe("resolveElement — innate-element branch for skill/burst with no expli
       settings: {},
     });
 
-    const feature = ineffa.features.find((f) => f.name === "burst_dmg")!;
-    const ctx = { charElement: ineffa.element, talentLevels: TALENTS, settings: {} };
-    const block = compileFeature(feature, ctx);
+    // Higher electro RES → lower damage ⇒ the charElement-derived electro RES
+    // key is genuinely read (the ctx.charElement branch executed).
+    expect(compile(block)(highRes).normal).toBeLessThan(
+      compile(block)(lowRes).normal
+    );
+  });
 
-    const normal10Res = compile(block)(contextElectro);
-    const normal75Res = compile(block)(contextHighRes);
+  it("differs from the physical resolution (charElement actually changes the element key)", () => {
+    // Same feature, same build, but a non-electro charElement reads a DIFFERENT
+    // RES key. With electro RES shredded high but physical RES low, an electro
+    // resolution must produce LESS damage than a physical resolution — only
+    // possible if resolveElement honoured ctx.charElement.
+    const { context } = buildStats({
+      char: ineffa,
+      weaponStatTable: blackcliffPoleStatTable,
+      statBlock: STAT_BLOCK,
+      levels: LEVELS,
+      enemy: { level: 90, resistance: { electro: 75, physical: 0 } },
+      settings: {},
+    });
 
-    // Higher electro resistance → lower damage — proves electro RES key is read
-    expect(normal75Res.normal).toBeLessThan(normal10Res.normal);
+    const electroBlock = compileFeature(innateSkillFeature, {
+      charElement: "electro",
+      talentLevels: TALENTS,
+      settings: {},
+    });
+    const physBlock = compileFeature(innateSkillFeature, {
+      charElement: "physical",
+      talentLevels: TALENTS,
+      settings: {},
+    });
+
+    expect(compile(electroBlock)(context).normal).toBeLessThan(
+      compile(physBlock)(context).normal
+    );
   });
 });
