@@ -89,6 +89,7 @@ export type {
   ConditionNumber,
   ConditionStacks,
   ConditionBooleanPiecesCount,
+  ConditionBooleanWeaponType,
   ConditionAnd,
   ConditionOr,
   Condition,

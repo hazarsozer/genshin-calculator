@@ -11,11 +11,11 @@
  * The `set-*pc` golden manifests use the same oracle keys, so `goodId` is the
  * correct lookup key for the harness.
  *
- * 10 sets ported (P2.A0: Noblesse/CrimsonWitch/Deepwood; P2.A1: GoldenTroupe/
+ * 11 sets ported (P2.A0: Noblesse/CrimsonWitch/Deepwood; P2.A1: GoldenTroupe/
  * HeartofDepth/Marechaussee/Emblem + ShimenawasReminiscence/HuskofOpulentDreams/
- * ThunderingFury). The remaining ~42 sets follow; five with oracle fixtures
- * (ViridescentVenerer/GladiatorFinale/ObsidianCodex/BlizzardStrayer/GildedDreams)
- * need new leaf condition variants first — see wiki/tasks/harness-guide.md § P2.A1.
+ * ThunderingFury + GladiatorFinale). The remaining ~41 sets follow; four with
+ * oracle fixtures (ViridescentVenerer/ObsidianCodex/BlizzardStrayer/GildedDreams)
+ * may need new condition variants — see wiki/tasks/harness-guide.md § P2.A1.
  *
  * NOTE: this barrel is HAND-MAINTAINED (controller-regenerated after each port wave).
  * The golden harness auto-discovers set files via `import.meta.glob` independently, so a
@@ -29,6 +29,7 @@ import type { DbObjectArtifactSet } from "@genshin/types";
 import { crimsonWitch } from "./crimson-witch.js";
 import { deepwoodMemories } from "./deepwood-memories.js";
 import { emblemOfSeveredFate } from "./emblem-of-severed-fate.js";
+import { gladiatorFinale } from "./gladiator-finale.js";
 import { goldenTroupe } from "./golden-troupe.js";
 import { heartOfDepth } from "./heart-of-depth.js";
 import { huskOfOpulentDreams } from "./husk-of-opulent-dreams.js";
@@ -40,6 +41,7 @@ import { thunderingFury } from "./thundering-fury.js";
 export { crimsonWitch } from "./crimson-witch.js";
 export { deepwoodMemories } from "./deepwood-memories.js";
 export { emblemOfSeveredFate } from "./emblem-of-severed-fate.js";
+export { gladiatorFinale } from "./gladiator-finale.js";
 export { goldenTroupe } from "./golden-troupe.js";
 export { heartOfDepth } from "./heart-of-depth.js";
 export { huskOfOpulentDreams } from "./husk-of-opulent-dreams.js";
@@ -53,6 +55,7 @@ export const ARTIFACT_SETS: Readonly<Record<string, DbObjectArtifactSet>> = {
   [noblesseOblige.goodId]: noblesseOblige,
   [crimsonWitch.goodId]: crimsonWitch,
   [deepwoodMemories.goodId]: deepwoodMemories,
+  [gladiatorFinale.goodId]: gladiatorFinale,
   [goldenTroupe.goodId]: goldenTroupe,
   [heartOfDepth.goodId]: heartOfDepth,
   [marechausseeHunter.goodId]: marechausseeHunter,
