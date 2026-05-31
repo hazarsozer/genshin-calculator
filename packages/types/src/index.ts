@@ -54,6 +54,7 @@ export type {
   ArtifactSlot,
   Artifact,
   ArtifactSubStat,
+  ArtifactSetBonusTier,
   DbObjectArtifactSet,
 } from "./artifact.js";
 
@@ -87,6 +88,7 @@ export type {
   ConditionStaticRefine,
   ConditionNumber,
   ConditionStacks,
+  ConditionBooleanPiecesCount,
   ConditionAnd,
   ConditionOr,
   Condition,

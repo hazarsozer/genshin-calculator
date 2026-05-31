@@ -25,6 +25,7 @@ import type {
   ConditionStaticRefine,
   ConditionNumber,
   ConditionStacks,
+  ConditionBooleanPiecesCount,
   ConditionAnd,
   ConditionOr,
 } from "@genshin/types";
@@ -356,5 +357,89 @@ describe("Stacks scaling (Shenhe Quill-style)", () => {
     const ctx3: EvalContext = { shenhe_icy_quill: 3 };
     const stackedBonus = getStackCount(quill, ctx3) * perStackValue;
     expect(stackedBonus).toBe(300);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 11. PiecesCount gate (artifact-set equipped-count condition)
+//
+//   Active when ctx["set_pieces.<setName lowercased>"] >= count, AND the optional
+//   `.condition` gate passes. Ports Condition/Boolean/PiecesCount.js. Used by the
+//   global set buffs (db/Buffs/Artifacts.js) in the self-set OR team pattern.
+// ---------------------------------------------------------------------------
+
+describe("ConditionBooleanPiecesCount", () => {
+  const noblesse4: ConditionBooleanPiecesCount = {
+    type: "pieces-count",
+    setName: "NoblesseOblige",
+    count: 4,
+  };
+
+  it("is inactive when the set_pieces setting is absent", () => {
+    expect(evaluate(noblesse4, emptyCtx)).toBe(false);
+  });
+
+  it("is inactive when equipped count is below the threshold", () => {
+    expect(evaluate(noblesse4, { "set_pieces.noblesseoblige": 2 })).toBe(false);
+  });
+
+  it("is active when equipped count meets the threshold", () => {
+    expect(evaluate(noblesse4, { "set_pieces.noblesseoblige": 4 })).toBe(true);
+  });
+
+  it("is active when equipped count exceeds the threshold (e.g. 5-piece counted set)", () => {
+    expect(evaluate(noblesse4, { "set_pieces.noblesseoblige": 5 })).toBe(true);
+  });
+
+  it("lowercases the setName for the setting key (registry-key case-insensitivity)", () => {
+    // The setting key is 'set_pieces.' + setName.toLowerCase() — a mixed-case
+    // registry key must still match the lowercased injected key.
+    expect(evaluate(noblesse4, { "set_pieces.NoblesseOblige": 4 })).toBe(false);
+    expect(evaluate(noblesse4, { "set_pieces.noblesseoblige": 4 })).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 12. Self-set OR team-toggle gate — the real Noblesse 4pc ATK buff gate
+//
+//   raw/.../db/Buffs/Artifacts.js: the +20% ATK Condition is gated by
+//     Or( And(boolean set.noblesse_oblige_4, piecesCount NoblesseOblige>=4),
+//         boolean set_other.noblesse_oblige_4 )
+//   i.e. active if the holder wears 4pc and toggles it, OR a teammate has it.
+// ---------------------------------------------------------------------------
+
+describe("Noblesse 4pc ATK gate (self-set OR team)", () => {
+  const gate: ConditionOr = {
+    type: "or",
+    items: [
+      {
+        type: "and",
+        items: [
+          { type: "boolean", name: "set.noblesse_oblige_4" } as ConditionBoolean,
+          { type: "pieces-count", setName: "NoblesseOblige", count: 4 } as ConditionBooleanPiecesCount,
+        ],
+      } as ConditionAnd,
+      { type: "boolean", name: "set_other.noblesse_oblige_4" } as ConditionBoolean,
+    ],
+  };
+
+  it("is inactive with neither self-4pc nor team toggle", () => {
+    expect(evaluate(gate, {})).toBe(false);
+  });
+
+  it("self toggle ON but only 2 pieces equipped → inactive", () => {
+    expect(evaluate(gate, { "set.noblesse_oblige_4": true, "set_pieces.noblesseoblige": 2 })).toBe(false);
+  });
+
+  it("4 pieces equipped but toggle OFF → inactive (toggle still required)", () => {
+    expect(evaluate(gate, { "set_pieces.noblesseoblige": 4 })).toBe(false);
+  });
+
+  it("self 4pc + toggle ON → active", () => {
+    expect(evaluate(gate, { "set.noblesse_oblige_4": true, "set_pieces.noblesseoblige": 4 })).toBe(true);
+  });
+
+  it("teammate has it (set_other) → active even with no self pieces", () => {
+    expect(evaluate(gate, { "set_other.noblesse_oblige_4": true })).toBe(true);
   });
 });

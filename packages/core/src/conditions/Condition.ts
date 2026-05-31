@@ -28,6 +28,7 @@ import type {
   ConditionConstellation,
   ConditionNumber,
   ConditionStacks,
+  ConditionBooleanPiecesCount,
   ConditionStats,
   EvalContext,
 } from "@genshin/types";
@@ -62,6 +63,8 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return evaluateNumber(condition, ctx);
     case "stacks":
       return evaluateStacks(condition, ctx);
+    case "pieces-count":
+      return evaluatePiecesCount(condition, ctx);
     case "and":
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
@@ -135,7 +138,8 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
       return { ...toNumberBag(condition.stats), ...(refineBag(condition.refinementStats, ctx) ?? {}) };
     case "and":
     case "or":
-      // Logical containers carry no stats of their own.
+    case "pieces-count":
+      // Pure gates / logical containers carry no stats of their own.
       return {};
     case "boolean":
     case "static":
@@ -264,6 +268,24 @@ function evaluateStacks(
 
   const raw = condition.name !== undefined ? ctx[condition.name] : undefined;
   return typeof raw === "number" ? raw > 0 : false;
+}
+
+/**
+ * Ports ConditionBooleanPiecesCount.isActive — active when the equipped count of
+ * the named set (read from `ctx['set_pieces.' + setName.toLowerCase()]`) is at
+ * least `count`, AND the optional `.condition` gate passes. Mirrors raw
+ * `settings[Artifact.settingName(setName)] >= count` then `super.isActive`.
+ */
+function evaluatePiecesCount(
+  condition: ConditionBooleanPiecesCount,
+  ctx: EvalContext
+): boolean {
+  const settingKey = `set_pieces.${condition.setName.toLowerCase()}`;
+  const equipped = ctx[settingKey];
+  const enough = typeof equipped === "number" && equipped >= condition.count;
+  if (!enough) return false;
+  const base = checkGate(condition, ctx);
+  return condition.invert ? !base : base;
 }
 
 // ---------------------------------------------------------------------------

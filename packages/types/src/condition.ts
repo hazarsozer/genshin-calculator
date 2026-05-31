@@ -173,6 +173,27 @@ export interface ConditionStacks extends ConditionBase {
 }
 
 /**
+ * A condition gated by equipped piece-count of a named artifact set.
+ * Active when ctx["set_pieces.<setName-lowercased>"] >= count.
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/PiecesCount.js
+ * (`settings[Artifact.settingName(setName)] >= count`, where
+ * `Artifact.settingName(name) = 'set_pieces.' + name.toLowerCase()`).
+ *
+ * This is the piece-count half of the global artifact-set buffs in
+ * raw/.../db/Buffs/Artifacts.js (e.g. Noblesse +20% ATK, Deepwood -30% dendro res),
+ * which gate on `(set.<x>_4 AND ConditionBooleanPiecesCount(<X>, 4)) OR set_other.<x>_4`.
+ * `buildStats` injects the `set_pieces.<name>` count from its `setBonuses` input.
+ */
+export interface ConditionBooleanPiecesCount extends ConditionBase {
+  readonly type: "pieces-count";
+  /** Registry key of the set, e.g. "NoblesseOblige" (lowercased for the setting key). */
+  readonly setName: string;
+  /** Minimum equipped pieces for activation (2 or 4). */
+  readonly count: number;
+}
+
+/**
  * Logical AND of all items — all must evaluate to true.
  * Vacuous truth: empty items list → true.
  */
@@ -199,6 +220,7 @@ export type Condition =
   | ConditionStaticRefine
   | ConditionNumber
   | ConditionStacks
+  | ConditionBooleanPiecesCount
   | ConditionAnd
   | ConditionOr;
 
