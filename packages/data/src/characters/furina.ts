@@ -46,7 +46,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Furina)
  */
 
-import type { CharPostEffect, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Furina as FurinaStatTable } from "../generated/charTables.js";
 import { Furina as FurinaTalents } from "../generated/charTalentTables.js";
 
@@ -206,6 +206,30 @@ const features: readonly Feature[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Love Is a Rebellious Bird That None Can Tame": text-only (fanfare gain/limit)
+//   → ConditionStatic, display-only → SKIP.
+// C2 "A Woman Adapts Like Duckweed in Water": text-only (HP% bonus text_percent)
+//   → ConditionStatic, display-only → SKIP.
+// C4 "They Know Not Life, Who Dwelt in the Netherworld Not": display-only
+//   → ConditionStatic, no real stats → SKIP.
+// C6 "Hear Me, Let Us Raise the Chalice of Love": ConditionBoolean toggles
+//   (furina_pneuma, furina_chalice_of_love) → OFF at baseline → SKIP.
+//
+// Always-on: C3 (+3 burst talent), C5 (+3 skill talent).
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Furina.js:514-577
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Rejoice, O Youth! Neath Flourishing Heavens" — +3 Elemental Burst.
+  // Raw cons[2]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 "The Water That Suits Me Best" — +3 Elemental Skill.
+  // Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
 // A4 "Unheard Confession": dmg_skill_furina = min(0.0007 · hp_total, 28%) (her
 // raw percent + 28% statCap; Furina.js:503-509). Plain post-effect: lands in the
 // bag as a RAW PERCENT; buildStats' collectFeatureBonusKeys emit /100 produces
@@ -235,4 +259,5 @@ export const furina: DbObjectChar = {
   features,
   multipliers: [],
   postEffects: a4PostEffects,
+  conditions: constellationConditions,
 };
