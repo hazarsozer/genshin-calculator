@@ -61,6 +61,10 @@ import { razor } from "../characters/razor.js";
 import { xiangling } from "../characters/xiangling.js";
 import { amber } from "../characters/amber.js";
 import { lisa } from "../characters/lisa.js";
+import { ningguang } from "../characters/ningguang.js";
+import { fischl } from "../characters/fischl.js";
+import { rosaria } from "../characters/rosaria.js";
+import { collei } from "../characters/collei.js";
 import {
   blackcliffPoleStatTable,
   theBellStatTable,
@@ -173,6 +177,10 @@ const REPS: readonly Rep[] = [
   { char: xiangling,    weaponStatTable: blackcliffPoleStatTable, slug: "xiangling"    },
   { char: amber,        weaponStatTable: alleyHunterStatTable,    slug: "amber"         },
   { char: lisa,         weaponStatTable: solarPearlStatTable,     slug: "lisa"          },
+  { char: ningguang,    weaponStatTable: solarPearlStatTable,     slug: "ningguang"     },
+  { char: fischl,       weaponStatTable: alleyHunterStatTable,    slug: "fischl"        },
+  { char: rosaria,      weaponStatTable: blackcliffPoleStatTable, slug: "rosaria"       },
+  { char: collei,       weaponStatTable: alleyHunterStatTable,    slug: "collei"        },
 ];
 
 // ---------------------------------------------------------------------------

@@ -18,3 +18,7 @@ export { razor } from "./razor.js";
 export { xiangling } from "./xiangling.js";
 export { amber } from "./amber.js";
 export { lisa } from "./lisa.js";
+export { ningguang } from "./ningguang.js";
+export { fischl } from "./fischl.js";
+export { rosaria } from "./rosaria.js";
+export { collei } from "./collei.js";
