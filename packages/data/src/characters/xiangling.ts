@@ -73,7 +73,6 @@ const features: readonly Feature[] = [
   {
     name: "normal_hit_3_1",
     category: "attack",
-    isChild: true,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
   },
   // normal_hit_4: 4-hit combo (same multiplier four times)
@@ -90,7 +89,6 @@ const features: readonly Feature[] = [
   {
     name: "normal_hit_4_1",
     category: "attack",
-    isChild: true,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }],
   },
   {
