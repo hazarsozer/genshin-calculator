@@ -12,8 +12,9 @@
  *     (`A1 65% × ATK × (1+lunarcharged_multi) × (1+emBonus+…) × 3 × res`, crits).
  *
  * Post-effects:
- *   - A4 EM→ATK bonus (gated by ineffa_panoramic_permutation_protocol)
- *   - Lunar-Charged ATK bonus (passive, 0.7% of lunarcharged_multi per ATK)
+ *   - "Assemblage Hub" passive sets the Lunar-Charged scaling stat from ATK:
+ *     lunarcharged_multi = min(0.00007 × atk_total, 0.14). Flows through
+ *     buildStats; the reaction features read it via scalingStatKeys.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Ineffa.js
@@ -24,6 +25,7 @@
  */
 
 import type {
+  CharPostEffect,
   DbObjectChar,
   Feature,
   TalentResolver,
@@ -79,6 +81,37 @@ const LUNAR_REACTION_BONUS_KEYS = ["dmg_reaction_lunarcharged"] as const;
  */
 const LUNAR_CRIT_RATE_KEYS = ["crit_rate_total"] as const;
 const LUNAR_CRIT_DMG_KEYS = ["crit_dmg_total"] as const;
+
+// ---------------------------------------------------------------------------
+// Post-effects
+// ---------------------------------------------------------------------------
+
+/**
+ * "Assemblage Hub" passive — sets the Lunar-Charged scaling stat from ATK:
+ *   lunarcharged_multi = min(0.00007 × atk_total, 0.14)
+ *
+ * Her `lunarPost` (Ineffa.js:139-142) is a `PostEffectStatsAtk` writing the
+ * percent stat `lunarcharged_multi` at `PassiveLunarScale/100 = 0.7/100 = 0.007`
+ * of ATK, capped at `PassiveLunarScaleCap = 14`. Because `isPercent('…_multi')`
+ * is true (Stats.js:332), `PostEffectStats.getTree` (Stats.js:58-65) divides
+ * both by a further 100 — yielding ratio 0.00007 and an ABSOLUTE cap of 0.14.
+ * Unconditional (no `condition` on lunarPost).
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Ineffa.js:125-142
+ *         raw/genshin_calc_pub/src/js/classes/PostEffect/Stats.js:58-65
+ *         raw/genshin_calc_pub/src/js/classes/Stats.js:327-337 (isPercent)
+ */
+const PASSIVE_LUNAR_SCALE = 0.7; // raw PassiveLunarScale
+const PASSIVE_LUNAR_SCALE_CAP = 14; // raw PassiveLunarScaleCap
+const lunarMultiFromAtk: CharPostEffect = {
+  priority: 1,
+  fromStat: "atk",
+  toStat: "lunarcharged_multi",
+  // /100 (her `percent`) then /100 again (isPercent fold) → 0.00007.
+  ratio: PASSIVE_LUNAR_SCALE / 100 / 100,
+  // statCap 14, isPercent-folded /100 → absolute 0.14.
+  capValue: PASSIVE_LUNAR_SCALE_CAP / 100,
+};
 
 // ---------------------------------------------------------------------------
 // Features (normal damage + the crit-bearing Lunar-Charged family)
@@ -212,4 +245,5 @@ export const ineffa: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  postEffects: [lunarMultiFromAtk],
 };

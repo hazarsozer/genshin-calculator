@@ -167,6 +167,13 @@ export interface CharPostEffect {
   readonly ratio: number;
   /** Optional cap on the bonus, as `capRatio × getTotal(capStat)`. */
   readonly cap?: { readonly capStat: string; readonly capRatio: number };
+  /**
+   * Optional ABSOLUTE cap on the bonus (a constant ceiling, not stat-derived).
+   * Mirrors her `statCap: new ValueTable([…])` (a fixed `Math.min` ceiling) as
+   * opposed to the stat-relative `statCapPost` modelled by `cap`. Used by
+   * Ineffa's `lunarcharged_multi` passive (`min(0.00007 × atk_total, 0.14)`).
+   */
+  readonly capValue?: number;
   /** Conditions gating the effect; ALL must evaluate true (settings-driven). */
   readonly conditions?: readonly Condition[];
 }

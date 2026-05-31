@@ -80,6 +80,17 @@ const DMG_BONUS_KEYS = [
 ] as const;
 
 /**
+ * Reaction scaling / bonus keys derived by post-effects (Ineffa's Lunar-Charged
+ * passives today; extended in P1.9 as more reaction-driving post-effects land).
+ * Already fraction-valued in `raw` (the post-effect folded the isPercent /100),
+ * so emitted as-is. Read by the reaction factories' `(1 + Σ)` terms.
+ */
+const REACTION_DERIVED_KEYS = [
+  "lunarcharged_multi",
+  "dmg_reaction_lunarcharged",
+] as const;
+
+/**
  * Level/ascension parameters for base-stat assembly. (Talent levels are a
  * compileFeature concern — they pick the talent-table row, not a base stat — so
  * they live on CompileContext, not here.)
@@ -135,6 +146,9 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
         const capValue = readStats.getTotal(effect.cap.capStat) * effect.cap.capRatio;
         bonus = Math.min(bonus, capValue);
       }
+      if (effect.capValue !== undefined) {
+        bonus = Math.min(bonus, effect.capValue);
+      }
       return { [effect.toStat]: bonus };
     },
   };
@@ -181,6 +195,14 @@ export function buildStats(input: BuildInput): BuildResult {
   for (const stat of FLAT_TOTAL_STATS) {
     out[`${stat}_total`] = raw.getTotal(stat);
   }
+  // Reaction EM key: the reaction factories (`@genshin/core`'s cLunarChargedDamage,
+  // the transformative EM bonuses, compileFeature's lunarEmBonusTerm) read the bare
+  // `mastery` key for the EM-watershed term. Her engine's `makeStatTotalItem('mastery')`
+  // sums `mastery_base + mastery` (flat) — exactly getTotal('mastery'), since mastery
+  // is not a REAL_TOTAL stat. Emit it so every EM-scaling reaction reads the true total
+  // EM with no per-feature aliasing. (Raw: Feature2/Multiplier/Reaction/LunarCharged.js,
+  // Feature2/Compile/Helpers.js makeStatTotalItem, db/Constants.js REAL_TOTAL.)
+  out["mastery"] = raw.getTotal("mastery");
   // Flat percent totals → fractions for the engine (crit_rate, crit_dmg).
   for (const stat of FRACTION_TOTAL_STATS) {
     out[`${stat}_total`] = raw.getTotal(stat) / 100;
@@ -189,6 +211,18 @@ export function buildStats(input: BuildInput): BuildResult {
   // DMG% bonuses → fractions (additive among themselves inside cMultiplierBonus).
   for (const key of DMG_BONUS_KEYS) {
     if (raw.isSet(key)) out[key] = raw.get(key) / 100;
+  }
+
+  // Reaction scaling / bonus keys the reaction factories read inside their
+  // `(1 + Σ scaling)` / `(1 + emBonus + Σ reactionBonus)` terms — e.g. Ineffa's
+  // `lunarcharged_multi` and `dmg_reaction_lunarcharged`. In her engine these are
+  // ONLY ever produced by post-effects (PostEffectStatsAtk on a percent stat),
+  // which already fold the isPercent /100 — so they land in the bag as FRACTIONS
+  // and are read out as-is (no further /100). Absent keys are left unset so the
+  // engine reads them as 0 (cStat default). (Raw: db/Char/Ineffa.js lunarPost /
+  // lunarPost2, PostEffect/Stats.js getTree isPercent fold.)
+  for (const key of REACTION_DERIVED_KEYS) {
+    if (raw.isSet(key)) out[key] = raw.get(key);
   }
 
   // Enemy resistance (percent) → enemy_res_<element> fractions. Fold any
