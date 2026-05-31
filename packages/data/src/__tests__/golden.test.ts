@@ -108,9 +108,12 @@ const TALENTS = { attack: 10, elemental: 10, burst: 10 } as const;
 /**
  * Absolute tolerance for [normal, crit, avg] triple comparison.
  * abs(ours - oracle) <= TOLERANCE  for each value in the triple.
- * Matches the per-rep suite's toBeCloseTo(value, 0) = ±0.5 bound.
+ * P1.9-complete: tightened 0.5 → 0.1. Empirically every one of the 107 chars'
+ * features matches the oracle within ~0.08 (her engine's display-rounding level on
+ * damage values of 100s–10000s); 0.1 is a clean bound above that max with margin,
+ * 5× tighter than the original 0.5, catching any systematic formula drift.
  */
-const TOLERANCE = 0.5;
+const TOLERANCE = 0.1;
 
 // ---------------------------------------------------------------------------
 // Fixture types
@@ -337,25 +340,20 @@ for (const { char, weaponStatTable, slug } of REPS) {
       ).toEqual([]);
     });
 
-    // --- Coverage report: gap features are visible but do NOT fail the suite ---
-    it(`coverage report (informational, not a gate)`, () => {
+    // --- Coverage GATE (P1.9 complete): every fixture damage feature must be modelled ---
+    it(`${slug}: full coverage — no unmodelled fixture damage feature`, () => {
       const total = allDamageKeys.length;
       const modelled = producedKeys.filter((k) => {
         const oracle = fixture.features[k];
         return oracle !== undefined && isDamageTripleEntry(oracle);
       }).length;
-
-      if (unmodelledKeys.length > 0) {
-        console.info(
-          `[golden] ${slug}: ${modelled}/${total} fixture damage features modelled, all matching; ` +
-          `unmodelled (P1.9 targets): ${unmodelledKeys.join(", ")}`
-        );
-      } else {
-        console.info(`[golden] ${slug}: ${modelled}/${total} fixture damage features modelled — full coverage`);
-      }
-
-      // This test always passes — it exists only for the coverage report.
-      expect(modelled).toBeGreaterThanOrEqual(0);
+      console.info(`[golden] ${slug}: ${modelled}/${total} fixture damage features modelled — full coverage`);
+      // Hard gate (locks in 107/107): no fixture damage feature may be left unmodelled.
+      // A regression that drops a feature, or a new fixture feature, fails here.
+      expect(
+        unmodelledKeys,
+        `${slug}: unmodelled fixture damage features: ${unmodelledKeys.join(", ")}`
+      ).toEqual([]);
     });
   });
 }
