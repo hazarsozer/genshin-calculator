@@ -1,0 +1,134 @@
+/**
+ * Chongyun — cryo claymore ATK scaler.
+ *
+ * Standard 4-hit normal combo, charged spin/final, plunge, cryo skill,
+ * cryo burst (3 swords). No post-effects at C0.
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/db/Char/Chongyun.js
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTables.js (Chongyun)
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Chongyun)
+ */
+
+import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import { Chongyun as ChongyunStatTable } from "../generated/charTables.js";
+import { Chongyun as ChongyunTalents } from "../generated/charTalentTables.js";
+
+// ---------------------------------------------------------------------------
+// TalentResolver
+// ---------------------------------------------------------------------------
+
+const talents: TalentResolver = {
+  get(path: string) {
+    const [talent, name] = path.split(".");
+    if (talent === "attack") {
+      if (name === "normal_hit_1") return ChongyunTalents.s1.p1;
+      if (name === "normal_hit_2") return ChongyunTalents.s1.p2;
+      if (name === "normal_hit_3") return ChongyunTalents.s1.p3;
+      if (name === "normal_hit_4") return ChongyunTalents.s1.p4;
+      if (name === "charged_spin") return ChongyunTalents.s1.p5;
+      if (name === "charged_final") return ChongyunTalents.s1.p6;
+      if (name === "plunge") return ChongyunTalents.s1.p9;
+      if (name === "plunge_low") return ChongyunTalents.s1.p10;
+      if (name === "plunge_high") return ChongyunTalents.s1.p11;
+    }
+    if (talent === "skill") {
+      if (name === "skill_dmg") return ChongyunTalents.s2.p1;
+    }
+    if (talent === "burst") {
+      if (name === "burst_dmg") return ChongyunTalents.s3.p1;
+    }
+    throw new Error(`chongyun talents: unknown path '${path}'`);
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Features
+// ---------------------------------------------------------------------------
+
+const features: readonly Feature[] = [
+  // --- Normal attacks ---
+  {
+    name: "normal_hit_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
+  },
+  {
+    name: "normal_hit_2",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }],
+  },
+  {
+    name: "normal_hit_3",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
+  },
+  {
+    name: "normal_hit_4",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }],
+  },
+  // --- Charged attacks ---
+  {
+    name: "charged_spin",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_spin") }],
+  },
+  {
+    name: "charged_final",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_final") }],
+  },
+  // --- Plunge attacks ---
+  {
+    name: "plunge",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
+  },
+  {
+    name: "plunge_low",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
+  },
+  {
+    name: "plunge_high",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
+  },
+  // --- Skill: Chonghua's Layered Frost (cryo) ---
+  {
+    name: "skill_dmg",
+    category: "skill",
+    element: "cryo",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
+  },
+  // --- Burst: Cloud-Parting Star (cryo) ---
+  {
+    name: "burst_dmg",
+    category: "burst",
+    element: "cryo",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// DbObjectChar
+// ---------------------------------------------------------------------------
+
+export const chongyun: DbObjectChar = {
+  name: "chongyun",
+  gameId: 10000036,
+  rarity: 4,
+  element: "cryo",
+  weapon: "claymore",
+  origin: "liyue",
+  statTable: ChongyunStatTable,
+  talents,
+  features,
+  multipliers: [],
+};

@@ -56,6 +56,7 @@ import { diluc } from "../characters/diluc.js";
 import { aratakiItto } from "../characters/arataki-itto.js";
 import { ineffa } from "../characters/ineffa.js";
 import { kaeya } from "../characters/kaeya.js";
+import { chongyun } from "../characters/chongyun.js";
 import {
   blackcliffPoleStatTable,
   theBellStatTable,
@@ -161,6 +162,7 @@ const REPS: readonly Rep[] = [
   { char: aratakiItto,  weaponStatTable: theBellStatTable,        slug: "arataki_itto"  },
   { char: ineffa,       weaponStatTable: blackcliffPoleStatTable, slug: "ineffa"        },
   { char: kaeya,        weaponStatTable: alleyFlashStatTable,     slug: "kaeya"         },
+  { char: chongyun,     weaponStatTable: theBellStatTable,        slug: "chongyun"      },
 ];
 
 // ---------------------------------------------------------------------------
