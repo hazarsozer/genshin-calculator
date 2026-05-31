@@ -57,6 +57,7 @@ import { aratakiItto } from "../characters/arataki-itto.js";
 import { ineffa } from "../characters/ineffa.js";
 import { kaeya } from "../characters/kaeya.js";
 import { chongyun } from "../characters/chongyun.js";
+// import { razor } from "../characters/razor.js"; // SKIPPED: dmg_phys_base infra gap
 import {
   blackcliffPoleStatTable,
   theBellStatTable,
@@ -163,6 +164,7 @@ const REPS: readonly Rep[] = [
   { char: ineffa,       weaponStatTable: blackcliffPoleStatTable, slug: "ineffa"        },
   { char: kaeya,        weaponStatTable: alleyFlashStatTable,     slug: "kaeya"         },
   { char: chongyun,     weaponStatTable: theBellStatTable,        slug: "chongyun"      },
+  // razor skipped: buildStats doesn't fold dmg_phys_base (char ascension physical DMG bonus) into dmg_phys
 ];
 
 // ---------------------------------------------------------------------------
