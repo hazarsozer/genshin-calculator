@@ -28,6 +28,7 @@ import type {
   ConditionConstellation,
   ConditionNumber,
   ConditionStacks,
+  ConditionStats,
   EvalContext,
 } from "@genshin/types";
 
@@ -86,6 +87,105 @@ export function getStackCount(condition: ConditionStacks, ctx: EvalContext): num
   const raw = condition.name !== undefined ? ctx[condition.name] : 0;
   const value = typeof raw === "number" ? raw : 0;
   return Math.min(value, condition.maxStacks);
+}
+
+/**
+ * Resolve the RAW stat bag a condition contributes when active under `ctx`.
+ *
+ * The per-condition half of the loop her `CalcSet.getBaseStats` runs
+ * (`cond.getData(settings).stats`), pure and modernised. Returns `{}` when the
+ * condition is inactive (so the caller can `concat` unconditionally).
+ *
+ * Resolution by variant:
+ *   - inactive (`evaluate` → false)                    → `{}`
+ *   - `stacks`   → `getStackCount × per-stack bag`, where the per-stack bag is
+ *     `refinementStats[weapon_refine - 1]` when present (her `levelSetting:
+ *     "weapon_refine"` path) else `cond.stats`. Mirrors `ConditionStacks.getStats`
+ *     (`stat.getValue(level) * stacksCnt`).
+ *   - `refine`/`boolean-refine` → `refinementStats[weapon_refine - 1]` folded with
+ *     any non-refine `cond.stats`. Refine is **1-indexed**; an absent or ≤0
+ *     `weapon_refine` resolves the refine bag to nothing (her
+ *     `StatTable.getValue(level)` returns 0 for `level <= 0`).
+ *   - every other active variant → `cond.stats` (`{}` if absent).
+ *
+ * Percent stats stay RAW (e.g. `atk_percent: 20`) — `buildStats`'s emit-time
+ * `/100` converts them; this resolver never pre-divides.
+ *
+ * Reads only `Condition` + `EvalContext` (+ types) — no `@genshin/data` import
+ * (engine purity).
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/classes/CalcSet.js (getBaseStats loop)
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Static/Refine.js (getStats via getValue(weapon_refine))
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Stacks.js (getStats × stacksCnt)
+ *   raw/genshin_calc_pub/src/js/classes/StatTable.js (getValue(level<=0) === 0)
+ */
+export function conditionStats(condition: Condition, ctx: EvalContext): Record<string, number> {
+  if (!evaluate(condition, ctx)) return {};
+
+  switch (condition.type) {
+    case "stacks": {
+      const count = getStackCount(condition, ctx);
+      if (count === 0) return {};
+      const perStack = refineBag(condition.refinementStats, ctx) ?? condition.stats ?? {};
+      return scaleBag(perStack, count);
+    }
+    case "refine":
+    case "boolean-refine":
+      return { ...toNumberBag(condition.stats), ...(refineBag(condition.refinementStats, ctx) ?? {}) };
+    case "and":
+    case "or":
+      // Logical containers carry no stats of their own.
+      return {};
+    default:
+      // boolean | static | constellation | number — plain cond.stats.
+      return toNumberBag(condition.stats);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Stat-resolution helpers (internal)
+// ---------------------------------------------------------------------------
+
+/** Coerce a possibly-undefined ConditionStats bag into a plain number record. */
+function toNumberBag(stats: ConditionStats | undefined): Record<string, number> {
+  if (stats === undefined) return {};
+  const out: Record<string, number> = {};
+  for (const key of Object.keys(stats)) {
+    const v = stats[key];
+    if (v !== undefined) out[key] = v;
+  }
+  return out;
+}
+
+/** Multiply every stat in a bag by a scalar (per-stack → total). */
+function scaleBag(stats: ConditionStats, factor: number): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const key of Object.keys(stats)) {
+    const v = stats[key];
+    if (v !== undefined) out[key] = v * factor;
+  }
+  return out;
+}
+
+/**
+ * Resolve the `weapon_refine`-indexed per-rank bag (1-indexed, R1..R5).
+ *
+ * Returns `undefined` when there is no refinement table, OR when `weapon_refine`
+ * is absent / ≤ 0 — faithful to her `StatTable.getValue(level)` returning 0 for
+ * `level <= 0` (no refine → no refine-scaled contribution). Out-of-range ranks
+ * clamp to the last entry, matching `getValue`'s `level > length` clamp.
+ */
+function refineBag(
+  refinementStats: readonly ConditionStats[] | undefined,
+  ctx: EvalContext
+): Record<string, number> | undefined {
+  if (refinementStats === undefined || refinementStats.length === 0) return undefined;
+  const refineRaw = ctx["weapon_refine"];
+  const refine = typeof refineRaw === "number" ? refineRaw : 0;
+  if (refine <= 0) return undefined;
+  const index = Math.min(refine, refinementStats.length) - 1;
+  return toNumberBag(refinementStats[index]);
 }
 
 // ---------------------------------------------------------------------------
