@@ -25,7 +25,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Chiori)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Chiori as ChioriStatTable } from "../generated/charTables.js";
 import { Chiori as ChioriTalents } from "../generated/charTalentTables.js";
 
@@ -188,6 +188,50 @@ const features: readonly Feature[] = [
       { scaling: "def", leveling: "char_skill_burst", values: talents.get("burst.burst_dmg_def") },
     ],
   },
+  // --- C2 "In Five Colors Dyed": cons-added FeatureDamageSkill (geo, 170% of chiori_sode_dmg ATK+DEF).
+  // Raw Chiori.js:313-332: FeatureDamageSkill name:'chiori_kinu_dmg', element:'geo',
+  //   two multipliers with scalingMultiplier: TalentValues.C2DamageRatio/100 = 170/100 = 1.7
+  //   (1) leveling:'char_skill_elemental', values:Talents.get('skill.chiori_sode_dmg') s2.p1, scalingSource:'constellation2'
+  //   (2) scaling:'def*', leveling:'char_skill_elemental', values:Talents.get('skill.chiori_sode_dmg_def') s2.p2, scalingSource:'constellation2'
+  //   condition: ConditionConstellation({constellation:2}).
+  {
+    name: "chiori_kinu_dmg",
+    category: "skill",
+    element: "geo",
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.chiori_sode_dmg"),
+        scalingMultiplier: 1.7,
+        source: "constellation2",
+      },
+      {
+        scaling: "def",
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.chiori_sode_dmg_def"),
+        scalingMultiplier: 1.7,
+        source: "constellation2",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic (display-only) → SKIP.
+// C2: Cons-added chiori_kinu_dmg feature above (C2 slot is ConditionStatic display-only).
+// C3: +3 levels to Fluttering Hasode (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
+//   NOTE: C3=skill, C5=burst — REVERSED from amber's pattern. Raw Chiori.js:432-436.
+// C4: ConditionStatic (display-only) → SKIP.
+// C5: +3 levels to Twin Blades (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+// C6: ConditionBoolean toggle (DEF-scale on normal) → SKIP (toggle OFF).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to skill (Fluttering Hasode). Raw cons[2] char_skill_elemental_bonus:3.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to burst (Twin Blades). Raw cons[4] char_skill_burst_bonus:3.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -205,4 +249,5 @@ export const chiori: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
