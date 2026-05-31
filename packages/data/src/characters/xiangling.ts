@@ -161,6 +161,10 @@ const features: readonly Feature[] = [
     name: "xiangling_oil_meets_fire",
     category: "attack",
     element: "pyro",
+    // Raw is base FeatureDamage (NOT FeatureDamageNormal) → it carries no damage
+    // TYPE, so it gets dmg_all + dmg_pyro but NOT dmg_normal. Empty damageType
+    // suppresses the dmg_<type> bonus (without it, ours is +8% = dmg_normal too high).
+    damageType: "",
     condition: { type: "constellation", constellation: 2 },
     multipliers: [
       {
