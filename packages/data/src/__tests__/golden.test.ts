@@ -57,9 +57,9 @@ import { aratakiItto } from "../characters/arataki-itto.js";
 import { ineffa } from "../characters/ineffa.js";
 import { kaeya } from "../characters/kaeya.js";
 import { chongyun } from "../characters/chongyun.js";
-// import { razor } from "../characters/razor.js"; // SKIPPED: dmg_phys_base infra gap
+import { razor } from "../characters/razor.js";
 import { xiangling } from "../characters/xiangling.js";
-// import { amber } from "../characters/amber.js"; // SKIPPED: critRateBonuses infra gap
+import { amber } from "../characters/amber.js";
 import { lisa } from "../characters/lisa.js";
 import {
   blackcliffPoleStatTable,
@@ -169,10 +169,9 @@ const REPS: readonly Rep[] = [
   { char: ineffa,       weaponStatTable: blackcliffPoleStatTable, slug: "ineffa"        },
   { char: kaeya,        weaponStatTable: alleyFlashStatTable,     slug: "kaeya"         },
   { char: chongyun,     weaponStatTable: theBellStatTable,        slug: "chongyun"      },
-  // razor skipped: buildStats doesn't fold dmg_phys_base (char ascension physical DMG bonus) into dmg_phys
+  { char: razor,        weaponStatTable: theBellStatTable,        slug: "razor"         },
   { char: xiangling,    weaponStatTable: blackcliffPoleStatTable, slug: "xiangling"    },
-  // amber skipped: burst.wave_dmg avg fails — critRateBonuses (crit_rate_amber A1 passive)
-  // not folded into crit_rate_total; compileFeature reads only crit_rate_total, not char-specific keys
+  { char: amber,        weaponStatTable: alleyHunterStatTable,    slug: "amber"         },
   { char: lisa,         weaponStatTable: solarPearlStatTable,     slug: "lisa"          },
 ];
 

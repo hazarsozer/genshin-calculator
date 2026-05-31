@@ -117,10 +117,14 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.explosion_dmg") }],
   },
   // --- Burst: Fiery Rain (pyro) ---
+  // A1 "Every Arrow Finds Its Target" gives +10% crit rate to the burst; it is
+  // auto-active at A6 (ConditionStatic gated only by ConditionAscensionChar, no
+  // toggle), so it folds in via critRateBonuses + the char's baseStats.
   {
     name: "wave_dmg",
     category: "burst",
     element: "pyro",
+    critRateBonuses: ["crit_rate_amber"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.wave_dmg") }],
   },
 ];
@@ -140,4 +144,8 @@ export const amber: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  // A1 "Every Arrow Finds Its Target": +10% crit rate to Fiery Rain (burst).
+  // Auto-active at A6 (ConditionStatic gated only by ConditionAscensionChar),
+  // so it is part of the baseline build. Raw: db/Char/Amber.js:289-300.
+  baseStats: { crit_rate_amber: 10 },
 };
