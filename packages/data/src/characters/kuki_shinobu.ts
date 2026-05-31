@@ -96,20 +96,18 @@ const features: readonly Feature[] = [
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit_2") }] },
     ],
   },
-  // raw: FeatureDamageCharged charged_hit_1, isChild:true (Kuki.js:218-227)
+  // raw: FeatureDamageCharged charged_hit_1 (Kuki.js:218-227)
   {
     name: "charged_hit_1",
     category: "attack",
     damageType: "charged",
-    isChild: true,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit_1") }],
   },
-  // raw: FeatureDamageCharged charged_hit_2, isChild:true (Kuki.js:228-237)
+  // raw: FeatureDamageCharged charged_hit_2 (Kuki.js:228-237)
   {
     name: "charged_hit_2",
     category: "attack",
     damageType: "charged",
-    isChild: true,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit_2") }],
   },
   // --- Plunge attacks ---
