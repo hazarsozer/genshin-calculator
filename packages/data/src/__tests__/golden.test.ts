@@ -168,8 +168,10 @@ const REPS: readonly Rep[] = [
  * Returns true if a fixture entry should be asserted as a damage triple.
  * Filters out:
  *  - category "stats"  — stat readouts, not damage hits
- *  - entries with no meaningful triple (empty damageType + zero normal), e.g.
- *    heal displays, ATK-bonus displays, shield absorptions, etc.
+ *  - entries with no `damageType` — display-only rows (heal / ATK-bonus / shield
+ *    magnitudes, etc.); her engine sets a non-empty damageType for real damage hits.
+ *    (Filter is on `damageType` alone — some display rows carry a large non-zero
+ *    `normal`, e.g. `skill.hutao_max_hp_bonus`, so we do NOT also test for zero.)
  */
 function isDamageTripleEntry(entry: FixtureEntry): boolean {
   if (entry.category === "stats") return false;
@@ -210,6 +212,13 @@ for (const { char, weaponStatTable, slug } of REPS) {
     const producedKeys = Object.keys(compiled).filter((k) => k in fixture.features);
     const unmodelledKeys = allDamageKeys.filter((k) => !(k in compiled));
 
+    // Mis-key guard: keys our engine PRODUCES that are absent from the fixture.
+    // A feature computed under the wrong key (e.g. `plunge.plunge` vs `attack.plunge`)
+    // would otherwise silently vanish from the produced-key assertions AND inflate the
+    // gap list. Must be empty — a produced key absent from the fixture is a key bug,
+    // not a coverage gap. (P1.9 relies on this guard across 103 hand-ported characters.)
+    const orphanKeys = Object.keys(compiled).filter((k) => !(k in fixture.features));
+
     // --- Assertions: every produced key must match within TOLERANCE ---
     for (const key of producedKeys) {
       const oracle = fixture.features[key]!;
@@ -240,6 +249,14 @@ for (const { char, weaponStatTable, slug } of REPS) {
         ).toBeLessThanOrEqual(TOLERANCE);
       });
     }
+
+    // --- Mis-key guard (hard gate): every produced key must exist in the fixture ---
+    it(`${slug}: no produced key is absent from the fixture (mis-key guard)`, () => {
+      expect(
+        orphanKeys,
+        `produced but absent from fixture (mis-keyed?): ${orphanKeys.join(", ")}`
+      ).toEqual([]);
+    });
 
     // --- Coverage report: gap features are visible but do NOT fail the suite ---
     it(`coverage report (informational, not a gate)`, () => {
