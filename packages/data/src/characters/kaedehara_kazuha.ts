@@ -40,7 +40,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTables.js (Kazuha)
  */
 
-import type { DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
 import { Kazuha as KazuhaStatTable } from "../generated/charTables.js";
 import { Kazuha as KazuhaTalents } from "../generated/charTalentTables.js";
 
@@ -288,6 +288,37 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Scarlet Hills": ConditionStatic text_percent_cd → display-only, SKIP.
+// C2 "Yamaarashi Tailwind": ConditionBoolean mastery toggle → SKIP.
+// C4 "Oozora Genpou": ConditionStatic no stats → display-only, SKIP.
+// C6 "Crimson Momiji": TWO conditions in raw cons[5]:
+//   1. Condition{ settings:{ allowed_infusion_anemo: 1 } } — ALWAYS-ON settings at C6.
+//      Enables the infusion option for the character.
+//   2. ConditionBoolean kaedehara_kazuha_crimson_momiji — TOGGLE for dmg% bonus
+//      + attack_infusion_anemo:1 settings; the DMG bonus is via a PostEffectStatsMastery
+//      (damageBonusPost) gated on both this toggle AND ConditionConstellation(6).
+//      The toggle is OFF in the constellations fixture → SKIP the boolean part.
+// The always-on C6 settings (`allowed_infusion_anemo`) is ported below.
+//
+// Source: raw/genshin_calc_pub/src/js/db/Char/Kazuha.js:612-684, :130-148
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Maple Monogatari": +3 levels to Chihayaburu (Elemental Skill).
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus: 3 } }.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Wisdom of Bansei": +3 levels to Kazuha Slash (Elemental Burst).
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // C6 "Crimson Momiji" (always-on part): unlocks anemo infusion option.
+  // Raw cons[5]: standalone Condition{ settings:{ allowed_infusion_anemo: 1 } }.
+  // No stats contributed; the crimson_momiji ConditionBoolean toggle (off in the
+  // constellations fixture) carries the actual DMG bonus and attack_infusion_anemo.
+  { type: "constellation", constellation: 6, settings: { allowed_infusion_anemo: 1 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -302,4 +333,5 @@ export const kaedeharaKazuha: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
