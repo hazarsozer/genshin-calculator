@@ -29,7 +29,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Ganyu)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Ganyu as GanyuStatTable } from "../generated/charTables.js";
 import { Ganyu as GanyuTalents } from "../generated/charTalentTables.js";
 
@@ -169,6 +169,27 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Dew Drinker": ConditionBoolean toggle — OFF in constellations config. Skip.
+// C2 "The Auspicious": ConditionStatic, no stats/settings, display only. Skip.
+// C3 "Preserved for the Hunt": +3 levels to Celestial Shower (burst).
+//    Raw cons[2]: new Condition({ settings: { char_skill_burst_bonus: 3 } })
+//    Burst features compile at talent level 10+3=13 from C3.
+// C4 "Westward Sojourn": ConditionStacks (toggle, default 0 stacks) — OFF. Skip.
+// C5 "The Merciful": +3 levels to Trail of the Qilin (skill).
+//    Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } })
+//    Skill features compile at talent level 10+3=13 from C5.
+// C6 "The Clement": ConditionStatic, no stats/settings, display only. Skip.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Ganyu.js:317-380
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Celestial Shower (elemental burst).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Trail of the Qilin (elemental skill).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -183,6 +204,7 @@ export const ganyu: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
   // No baseStats: Ganyu's A1 (+20% Frostflake crit) and A4 (+20% Cryo DMG) are both
   // ConditionBoolean toggles (default OFF), not auto-active passives — OFF in the fixed
   // canonical build (oracle-verified). Raw: db/Char/Ganyu.js:290-315.
