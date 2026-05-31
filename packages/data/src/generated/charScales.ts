@@ -1,18 +1,14 @@
+// GENERATED — do not edit by hand; regenerate via: node tools/port/gen-tables.mjs
 /**
  * Character stat growth scale tables.
  *
- * Ported from raw/genshin_calc_pub/src/js/db/generated/CharScale.js (immutable).
- * These are the per-level growth multipliers used by StatTableAscensionScale:
- * stat_value = base * scale.getValue(level) + ascension.getValue(ascensionPhase)
- *
- * Source: raw/genshin_calc_pub/src/js/db/generated/CharScale.js:4-8
+ * Source: raw/genshin_calc_pub/src/js/db/generated/CharScale.js
  */
 
 import { StatTable } from "@genshin/core";
 
-/** 4-star HP/DEF scale curve (100 entries, levels 1–90, indices 0–89). */
 export const s4hp = new StatTable([
-  1.0, 1.083, 1.165, 1.248, 1.33, 1.413, 1.495, 1.578, 1.661, 1.743, 1.826,
+  1, 1.083, 1.165, 1.248, 1.33, 1.413, 1.495, 1.578, 1.661, 1.743, 1.826,
   1.908, 1.991, 2.073, 2.156, 2.239, 2.321, 2.404, 2.486, 2.569, 2.651, 2.734,
   2.817, 2.899, 2.982, 3.064, 3.147, 3.229, 3.312, 3.394, 3.477, 3.56, 3.642,
   3.725, 3.807, 3.89, 3.972, 4.055, 4.138, 4.22, 4.303, 4.385, 4.468, 4.55,
@@ -24,9 +20,8 @@ export const s4hp = new StatTable([
   9.174,
 ]);
 
-/** 4-star ATK scale curve. */
 export const s4atk = new StatTable([
-  1.0, 1.083, 1.165, 1.248, 1.33, 1.413, 1.495, 1.578, 1.661, 1.743, 1.826,
+  1, 1.083, 1.165, 1.248, 1.33, 1.413, 1.495, 1.578, 1.661, 1.743, 1.826,
   1.908, 1.991, 2.073, 2.156, 2.239, 2.321, 2.404, 2.486, 2.569, 2.651, 2.734,
   2.817, 2.899, 2.982, 3.064, 3.147, 3.229, 3.312, 3.394, 3.477, 3.56, 3.642,
   3.725, 3.807, 3.89, 3.972, 4.055, 4.138, 4.22, 4.303, 4.385, 4.468, 4.55,
@@ -38,9 +33,8 @@ export const s4atk = new StatTable([
   9.174,
 ]);
 
-/** 5-star HP/DEF scale curve (100 entries, levels 1–90, indices 0–89). */
 export const s5hp = new StatTable([
-  1.0, 1.083, 1.166, 1.25, 1.333, 1.417, 1.5, 1.584, 1.668, 1.751, 1.835,
+  1, 1.083, 1.166, 1.25, 1.333, 1.417, 1.5, 1.584, 1.668, 1.751, 1.835,
   1.919, 2.003, 2.088, 2.172, 2.256, 2.341, 2.425, 2.51, 2.594, 2.679, 2.764,
   2.849, 2.934, 3.019, 3.105, 3.19, 3.275, 3.361, 3.446, 3.532, 3.618, 3.704,
   3.789, 3.875, 3.962, 4.048, 4.134, 4.22, 4.307, 4.393, 4.48, 4.567, 4.653,
@@ -52,9 +46,8 @@ export const s5hp = new StatTable([
   9.652,
 ]);
 
-/** 5-star ATK scale curve. */
 export const s5atk = new StatTable([
-  1.0, 1.083, 1.166, 1.25, 1.333, 1.417, 1.5, 1.584, 1.668, 1.751, 1.835,
+  1, 1.083, 1.166, 1.25, 1.333, 1.417, 1.5, 1.584, 1.668, 1.751, 1.835,
   1.919, 2.003, 2.088, 2.172, 2.256, 2.341, 2.425, 2.51, 2.594, 2.679, 2.764,
   2.849, 2.934, 3.019, 3.105, 3.19, 3.275, 3.361, 3.446, 3.532, 3.618, 3.704,
   3.789, 3.875, 3.962, 4.048, 4.134, 4.22, 4.307, 4.393, 4.48, 4.567, 4.653,
