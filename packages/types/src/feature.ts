@@ -134,6 +134,13 @@ export interface Feature {
   readonly damageType?: string;
   /** Overrides the character's innate element for this hit (e.g. Hu Tao Blood Blossom). */
   readonly element?: Element;
+  /**
+   * Per-feature multiplier entries (talent scaling terms). Entries here apply
+   * ONLY to this feature and must NOT set `target` or `condition` — those fields
+   * are ignored on per-feature entries and are meaningful ONLY on char-level
+   * entries (`char.multipliers` / `CharMultiplier`). Use `CharMultiplier` for
+   * cross-feature targeted multipliers (Itto A4, Albedo C2, etc.).
+   */
   readonly multipliers?: readonly FeatureMultiplierEntry[];
   /** True for child hits within a multihit (displayed but not counted in rotation by default). */
   readonly isChild?: boolean;

@@ -338,4 +338,18 @@ describe("P2.3 Albedo C2 — gated targeted multiplier", () => {
     const onNormal = compile(compileFeature(burst, on.compileCtx))(on.context).normal;
     expect(onNormal).toBeGreaterThan(offNormal); // the def* burst multiplier now contributes
   });
+
+  it("is ON for albedo_fatal_blossom too (same category:'burst', same target)", () => {
+    // Both burst_dmg and albedo_fatal_blossom are category:'burst' and therefore
+    // match target.damageTypes:['burst'] — the C2 def* bonus applies to BOTH.
+    // Raw: Albedo.js getMultipliers merges the char-level multiplier into every
+    // matching feature, so fatal_blossom gets the same boost as burst_dmg.
+    const fatalBlossom: Feature = albedo.features.find((f) => f.name === "albedo_fatal_blossom")!;
+    const off = build({});
+    const on = build({ char_constellation: 2, albedo_opening_of_hanerozoic: true });
+
+    const offNormal = compile(compileFeature(fatalBlossom, off.compileCtx))(off.context).normal;
+    const onNormal = compile(compileFeature(fatalBlossom, on.compileCtx))(on.context).normal;
+    expect(onNormal).toBeGreaterThan(offNormal); // def* burst mult applies to fatal_blossom too
+  });
 });

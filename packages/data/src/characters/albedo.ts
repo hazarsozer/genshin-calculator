@@ -214,11 +214,14 @@ const C2_BURST_DEF_VALUES = [
   TalentValues.C2DefBonus * 3,
   TalentValues.C2DefBonus * 4,
 ] as const;
+// TODO(P2.C/stacks): leveling:"" reads stack level 1 = 30% (base entry); full
+// 60/90/120% stack-scaling (raw key albedo_opening_of_hanerozoic) is deferred
+// to the stacks/P2.C wiring.
 const c2BurstDefMultiplier: CharMultiplier = {
   leveling: "",
   scaling: "def*",
   source: "constellation2",
-  values: { getValue: (level: number) => C2_BURST_DEF_VALUES[Math.min(Math.max(level, 1), 4) - 1]! },
+  values: { getValue: (level: number) => C2_BURST_DEF_VALUES[Math.min(Math.max(level, 1), 4) - 1]! }, // stack level is 1-indexed [1-4]
   target: { damageTypes: ["burst"] },
   condition: {
     type: "and",
