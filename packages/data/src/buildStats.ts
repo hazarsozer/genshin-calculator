@@ -154,6 +154,11 @@ export interface BuildResult {
  * Mirrors her PostEffectStatsHP: derive `ratio × getTotal(fromStat)`, optionally
  * capped at `capRatio × getTotal(capStat)`, gated by ALL `conditions` evaluating
  * true against the settings. Reads the PRE-GROUP snapshot (never mutates).
+ *
+ * `capUsesBase` is a faithful variant of her `getTree` (Stats.js:58-66): the
+ * stat-relative `cap` reads the BASE stat (`capStat_base`) × capRatio, not
+ * `getTotal(capStat)` — her `statCapPost` whose base is a `from: '<stat>_base'`
+ * term (Hu Tao's `atk_base × 4`, Hutao.js:155-158).
  */
 function toPostEffect(effect: CharPostEffect): PostEffect {
   const conditions: readonly Condition[] = effect.conditions ?? [];
@@ -163,8 +168,10 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       if (!conditions.every((c) => evaluate(c, settings))) return {};
       let bonus = readStats.getTotal(effect.fromStat) * effect.ratio;
       if (effect.cap !== undefined) {
-        const capValue = readStats.getTotal(effect.cap.capStat) * effect.cap.capRatio;
-        bonus = Math.min(bonus, capValue);
+        const capBase = effect.capUsesBase
+          ? readStats.get(`${effect.cap.capStat}_base`)
+          : readStats.getTotal(effect.cap.capStat);
+        bonus = Math.min(bonus, capBase * effect.cap.capRatio);
       }
       if (effect.capValue !== undefined) {
         bonus = Math.min(bonus, effect.capValue);

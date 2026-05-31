@@ -174,14 +174,16 @@ describe("buildStats — condition-gated HP→ATK post-effect (Paramita)", () =>
     expect(stats.atk_total).toBeCloseTo(1754.7075883379998 + 1800.370862122176, 3);
   });
 
-  it("caps the HP→ATK bonus at capRatio × atk_total", () => {
-    // Inflate HP so HP×0.06256 exceeds the 400%-of-ATK cap and the clamp bites.
-    // atk_total = 1754.7075883379998 → cap = 4 × that = 7018.830353…
-    // HP bonus uncapped at hp_base 200000 ≈ (200000+charHP)×0.06256 ≫ cap.
+  it("caps the HP→ATK bonus at capRatio × atk_BASE (capUsesBase)", () => {
+    // Inflate HP so HP×0.06256 exceeds the 400%-of-atk_base cap and the clamp bites.
+    // Her statCapPost base is `from: 'atk_base'` × atk_percent[400] = 4 × atk_base
+    // (Hutao.js:155-158) — NOT getTotal('atk'). atk_base 1487.0403291 → cap =
+    // 4 × 1487.0403291 = 5948.1613164. HP bonus uncapped at hp_base 200000 ≫ cap.
     const bigHp = { ...FIXED.statBlock, hp_base: 200000 };
     const { stats } = build({ hutao_paramita_papilio: true }, bigHp);
     const atkTotal = 1754.7075883379998;
-    const cap = atkTotal * 4;
+    const atkBase = atkTotal / 1.18; // char+weapon+bonus atk_base = 1487.0403291
+    const cap = atkBase * 4;
     expect(stats.atk_total).toBeCloseTo(atkTotal + cap, 2);
   });
 });

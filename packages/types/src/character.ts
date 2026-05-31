@@ -174,6 +174,18 @@ export interface CharPostEffect {
    * Ineffa's `lunarcharged_multi` passive (`min(0.00007 × atk_total, 0.14)`).
    */
   readonly capValue?: number;
+  /**
+   * When true, the stat-relative `cap` reads the BASE stat (`capStat + '_base'`)
+   * × `capRatio` rather than `getTotal(capStat)` × `capRatio`.
+   *
+   * Mirrors her `statCapPost` whose base is a `from: '<stat>_base'` term — a plain
+   * `makeStatItem('<stat>_base')` (the base value), NOT a `getTotal`. Hu Tao's
+   * Paramita HP→ATK cap is `atk_base × 4` (Hutao.js:155-158, `from: 'atk_base'`,
+   * `atk_percent[SkillMaxBonus=400]`), so the build's `atk_percent`/flat ATK do not
+   * loosen the cap. Only set on characters whose cap base is the BASE stat; the
+   * default (`getTotal(capStat)`) is preserved for any `getTotal`-cap effect.
+   */
+  readonly capUsesBase?: boolean;
   /** Conditions gating the effect; ALL must evaluate true (settings-driven). */
   readonly conditions?: readonly Condition[];
 }

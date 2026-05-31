@@ -71,7 +71,11 @@ const paramita: Condition = {
 /**
  * HP→ATK conversion during Paramita Papilio (Guide to Afterlife skill).
  * ratio = hutao_atk_bonus @ skill level 10 × 0.01 = 6.256 × 0.01 = 0.06256
- * cap = 400% of atk_base (cap.capRatio = 4 on atk_base, but getTotal reads "atk")
+ * cap = 400% of atk_BASE. Her `statCapPost` base is a `from: 'atk_base'` term
+ * (a plain makeStatItem('atk_base'), NOT getTotal) × an atk_percent[SkillMaxBonus=
+ * 400] table → 4 × atk_base (Hutao.js:155-158). `capUsesBase: true` reads
+ * `atk_base × 4`, not `getTotal('atk') × 4`, so the build's atk_percent / flat ATK
+ * do not loosen the cap.
  *
  * Source: Hutao.js:145-159
  */
@@ -81,6 +85,7 @@ const hpToAtk: CharPostEffect = {
   toStat: "atk",
   ratio: HutaoTalents.s2.p2.getValue(10) * 0.01,
   cap: { capStat: "atk", capRatio: 4 },
+  capUsesBase: true,
   conditions: [paramita],
 };
 
