@@ -38,7 +38,7 @@
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier.js (getStackMultiplier, scalingMultiplier)
  */
 
-import type { DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
 import { Eula as EulaStatTable } from "../generated/charTables.js";
 import { Eula as EulaTalents } from "../generated/charTalentTables.js";
 
@@ -215,6 +215,32 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Tidal Illusion": dmg_phys toggle → SKIP (ConditionBoolean).
+// C2 "Lady of Seafoam": ConditionStatic with no real stats → SKIP (inert).
+// C3 "Lawrence Pedigree": +3 Elemental Burst talent levels.
+//    Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C4 "The Obstinacy of One's Inferiors": dmg_burst_eula toggle → SKIP.
+// C5 "Chivalric Quality": +3 Elemental Skill talent levels.
+//    In her raw, C5 lives in char-level conditions (not the constellation array),
+//    gated by ConditionConstellation(5) via subConditions. Modelled as the same
+//    ConditionConstellation shape the engine already evaluates.
+//    Raw Eula.js:369-372: Condition{ settings:{ char_skill_elemental_bonus:3 },
+//      subConditions:[ConditionConstellation({constellation:5})] }
+// C6 "Noble Obligation": ConditionStatic with no real stats → SKIP (inert).
+//    The partyData C5 bonus (eula_char_skill_elemental_bonus) is party-only → ignored here.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Eula.js:431-541
+
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 Elemental Burst talent levels.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 Elemental Skill talent levels.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -229,4 +255,5 @@ export const eula: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
