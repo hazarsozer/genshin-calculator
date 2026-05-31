@@ -87,6 +87,9 @@ describe("conditionStats — non-refine variants emit cond.stats when active", (
     const o: ConditionOr = { type: "or", items: [] };
     expect(conditionStats(a, emptyCtx)).toEqual({});
     expect(conditionStats(o, emptyCtx)).toEqual({}); // empty or → inactive
+    // active or (one vacuously-true `and` child) reaches the explicit `case "or"` → still {}
+    const activeOr: ConditionOr = { type: "or", items: [{ type: "and", items: [] }] };
+    expect(conditionStats(activeOr, emptyCtx)).toEqual({});
   });
 });
 

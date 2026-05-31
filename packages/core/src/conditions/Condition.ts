@@ -137,9 +137,18 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "or":
       // Logical containers carry no stats of their own.
       return {};
-    default:
-      // boolean | static | constellation | number — plain cond.stats.
+    case "boolean":
+    case "static":
+    case "constellation":
+    case "number":
+      // Plain stat-bearing variants — `cond.stats` as-is.
       return toNumberBag(condition.stats);
+    default: {
+      // Exhaustiveness tripwire: a new Condition variant must be handled above,
+      // not silently fall through to `cond.stats`.
+      const _exhaustive: never = condition;
+      return _exhaustive;
+    }
   }
 }
 

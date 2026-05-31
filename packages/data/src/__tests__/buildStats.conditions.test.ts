@@ -226,10 +226,11 @@ describe("buildStats — Hu Tao paramita end-to-end vs oracle fixtures", () => {
   // enriching it with the infusion setting + A4 dmg_pyro is P2.C's character-
   // content job, NOT this keystone's. So here we drive the EQUIVALENT context the
   // oracle used — the toggle plus the pyro infusion it activates — to validate the
-  // loop integrates without regression. (The A4 dmg_pyro is already baked into
-  // Hu Tao's canonical build via baseStats, which is why his always-pyro skill /
-  // burst match at Δ=0 even at base.) With this context, every produced feature
-  // matches the toggle oracle to Δ=0.
+  // loop integrates without regression. (His A4 `hu_tao_sanguine_rouge` +33% pyro
+  // is a SEPARATE un-toggled condition — OFF in this fixture and at base alike — so
+  // it contributes no delta; the only damage-relevant changes are the Paramita
+  // HP→ATK post-effect and the phys→pyro infusion swap.) With this context, every
+  // produced feature matches the toggle oracle to Δ=0.
   it("paramita ON (with the pyro infusion it activates) matches the toggle-ON oracle", () => {
     assertHuTaoMatches(
       buildSettings({ toggles: { hutao_paramita_papilio: true }, infusion: "pyro" }),

@@ -30,7 +30,7 @@
  *   wiki/concepts/stat-keys-and-good-format.md
  */
 
-import { Stats, applyPostEffects, conditionStats, type PostEffect } from "@genshin/core";
+import { Stats, applyPostEffects, conditionStats, evaluate, type PostEffect } from "@genshin/core";
 import type {
   BuildStats,
   CharPostEffect,
@@ -42,7 +42,6 @@ import type {
   Feature,
   StatTableEntry,
 } from "@genshin/types";
-import { evaluate } from "@genshin/core";
 
 /** The seven elements + physical, in the order the engine keys resistance. */
 const ELEMENTS: readonly Element[] = [
@@ -230,9 +229,8 @@ export function buildStats(input: BuildInput): BuildResult {
   // Runs BEFORE applyPostEffects so post-effects (HP→ATK) read condition-contributed
   // stats — exactly her order. Stacks scale by getStackCount, refine resolves by
   // weapon_refine: all handled inside the pure `conditionStats` resolver.
-  for (const cond of [...(input.char.conditions ?? []), ...(input.extraConditions ?? [])]) {
-    raw.concat(conditionStats(cond, settings));
-  }
+  for (const cond of input.char.conditions ?? []) raw.concat(conditionStats(cond, settings));
+  for (const cond of input.extraConditions ?? []) raw.concat(conditionStats(cond, settings));
 
   // 3. Derive — condition-gated post-effects (reads RAW percents via getTotal).
   const effects = (input.char.postEffects ?? []).map(toPostEffect);
