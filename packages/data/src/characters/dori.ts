@@ -1,0 +1,177 @@
+/**
+ * Dori — electro claymore ATK scaler.
+ *
+ * 3-hit normal combo: n1, n2 (multihit parent: 2-hit _2_1 + _2_2), n3.
+ * Charged: charged_spin + charged_final. Plunge/low/high.
+ * Electro skill: dori_troubleshooter_shot_dmg + dori_aftersales_service_round_dmg.
+ * Electro burst: dori_connector_dmg.
+ *
+ * normal_hit_2 is a FeatureDamageMultihit (parent: sum of _2_1 + _2_2).
+ * normal_hit_2_1 and normal_hit_2_2 are FeatureDamageNormal with isChild:true
+ * but the fixture tests them as independent damage triples → drop isChild to emit.
+ *
+ * Non-damage features (damageType: "" in fixture, not tested):
+ *   - burst.heal_dot         — HP-scaled heal (FeatureHeal)
+ *   - skill.dori_compound_interest — A4 recharge display (FeaturePostEffectValue)
+ *   - weapon.bell_shield     — weapon passive shield (not a damage feature)
+ *
+ * Reactions (5 auto-generated from electro element):
+ *   electrocharged, hyperbloom, overloaded, shatter, superconduct
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/db/Char/Dori.js
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTables.js (Dori)
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js:1799 (Dori)
+ */
+
+import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import { Dori as DoriStatTable } from "../generated/charTables.js";
+import { Dori as DoriTalents } from "../generated/charTalentTables.js";
+
+// ---------------------------------------------------------------------------
+// TalentResolver
+// ---------------------------------------------------------------------------
+
+const talents: TalentResolver = {
+  get(path: string) {
+    const [talent, name] = path.split(".");
+    if (talent === "attack") {
+      if (name === "normal_hit_1")   return DoriTalents.s1.p1;
+      if (name === "normal_hit_2_1") return DoriTalents.s1.p2;
+      if (name === "normal_hit_2_2") return DoriTalents.s1.p3;
+      if (name === "normal_hit_3")   return DoriTalents.s1.p4;
+      if (name === "charged_spin")   return DoriTalents.s1.p5;
+      if (name === "charged_final")  return DoriTalents.s1.p6;
+      if (name === "plunge")         return DoriTalents.s1.p9;
+      if (name === "plunge_low")     return DoriTalents.s1.p10;
+      if (name === "plunge_high")    return DoriTalents.s1.p11;
+    }
+    if (talent === "skill") {
+      if (name === "dori_troubleshooter_shot_dmg")       return DoriTalents.s2.p1;
+      if (name === "dori_aftersales_service_round_dmg")  return DoriTalents.s2.p2;
+    }
+    if (talent === "burst") {
+      if (name === "dori_connector_dmg") return DoriTalents.s3.p1;
+    }
+    throw new Error(`dori talents: unknown path '${path}'`);
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Features
+// ---------------------------------------------------------------------------
+
+const features: readonly Feature[] = [
+  // --- Normal attacks (physical claymore) ---
+  // raw: FeatureDamageNormal normal_hit_1 (s1.p1)
+  {
+    name: "normal_hit_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
+  },
+  // raw: FeatureDamageMultihit normal_hit_2 (parent: _2_1 + _2_2)
+  // raw/genshin_calc_pub/src/js/db/Char/Dori.js: FeatureDamageMultihit normal_hit_2
+  {
+    name: "normal_hit_2",
+    category: "attack",
+    items: [
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2_1") }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2_2") }] },
+    ],
+  },
+  // raw: FeatureDamageNormal normal_hit_2_1 (isChild:true, but fixture tests it → emit)
+  {
+    name: "normal_hit_2_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2_1") }],
+  },
+  // raw: FeatureDamageNormal normal_hit_2_2 (isChild:true, but fixture tests it → emit)
+  {
+    name: "normal_hit_2_2",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2_2") }],
+  },
+  // raw: FeatureDamageNormal normal_hit_3 (s1.p4)
+  {
+    name: "normal_hit_3",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
+  },
+  // --- Charged attacks ---
+  // raw: FeatureDamageCharged charged_spin (s1.p5)
+  {
+    name: "charged_spin",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_spin") }],
+  },
+  // raw: FeatureDamageCharged charged_final (s1.p6)
+  {
+    name: "charged_final",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_final") }],
+  },
+  // --- Plunge attacks ---
+  // raw: FeatureDamagePlungeCollision plunge (s1.p9)
+  {
+    name: "plunge",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
+  },
+  // raw: FeatureDamagePlungeShockWave plunge_low (s1.p10)
+  {
+    name: "plunge_low",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
+  },
+  // raw: FeatureDamagePlungeShockWave plunge_high (s1.p11)
+  {
+    name: "plunge_high",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
+  },
+  // --- Skill: Troubleshooter Cannon (electro ATK-scaled) ---
+  // raw: FeatureDamageSkill dori_troubleshooter_shot_dmg, element:'electro' (s2.p1)
+  {
+    name: "dori_troubleshooter_shot_dmg",
+    category: "skill",
+    element: "electro",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.dori_troubleshooter_shot_dmg") }],
+  },
+  // raw: FeatureDamageSkill dori_aftersales_service_round_dmg, element:'electro' (s2.p2)
+  {
+    name: "dori_aftersales_service_round_dmg",
+    category: "skill",
+    element: "electro",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.dori_aftersales_service_round_dmg") }],
+  },
+  // --- Burst: Alcazarzaray's Exactitude (electro ATK-scaled) ---
+  // raw: FeatureDamageBurst dori_connector_dmg, element:'electro' (s3.p1)
+  {
+    name: "dori_connector_dmg",
+    category: "burst",
+    element: "electro",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.dori_connector_dmg") }],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// DbObjectChar
+// ---------------------------------------------------------------------------
+
+export const dori: DbObjectChar = {
+  name: "dori",
+  gameId: 10000068,
+  rarity: 4,
+  element: "electro",
+  weapon: "claymore",
+  origin: "sumeru",
+  statTable: DoriStatTable,
+  talents,
+  features,
+  multipliers: [],
+};
