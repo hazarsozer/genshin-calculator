@@ -15,3 +15,4 @@ export { ineffa } from "./ineffa.js";
 export { kaeya } from "./kaeya.js";
 export { chongyun } from "./chongyun.js";
 // razor.ts exists but is excluded from index pending infra fix (dmg_phys_base)
+export { xiangling } from "./xiangling.js";
