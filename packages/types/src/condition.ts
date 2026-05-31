@@ -48,9 +48,16 @@ export interface ConditionBase {
   readonly serializeId?: number;
   readonly title?: string;
   readonly description?: string;
-  /** Stats contributed when this condition is active. */
+  /** Stats contributed when this condition is active (non-refine-scaled). */
   readonly stats?: ConditionStats;
-  /** Settings applied when this condition is active. */
+  /**
+   * Per-refinement stat bags shared by any condition variant that has
+   * refine-indexed stats (e.g. ConditionBooleanRefine, ConditionStacks with
+   * levelSetting=weapon_refine). Index 0 = R1, index 4 = R5.
+   * Resolve via: refinementStats[weapon_refine - 1].
+   */
+  readonly refinementStats?: readonly ConditionStats[];
+  /** Settings applied when this condition is active (e.g. attack_infusion, level bonuses). */
   readonly settings?: ConditionSettings;
   /**
    * Optional gating condition. If present, this condition is only active
@@ -98,15 +105,12 @@ export interface ConditionConstellation extends ConditionBase {
  * Inherits Static evaluation semantics (always active unless gated/inverted).
  * Used by weapon passives.
  *
- * `refinementStats` holds one ConditionStats bag per refinement rank (R1..R5,
- * 0-indexed). Resolve via: refinementStats[weapon_refine - 1].
- * `stats` (inherited from ConditionBase) carries stats that do NOT vary by refine
- * (rare for weapons; more common for character/artifact static passives).
+ * `refinementStats` (inherited from ConditionBase) holds one ConditionStats bag
+ * per refinement rank (R1..R5, 0-indexed). Resolve via: refinementStats[weapon_refine - 1].
+ * `stats` (inherited from ConditionBase) carries stats that do NOT vary by refine.
  */
 export interface ConditionStaticRefine extends ConditionBase {
   readonly type: "refine";
-  /** Per-refinement stat bags: index 0 = R1, index 4 = R5. */
-  readonly refinementStats?: readonly ConditionStats[];
 }
 
 /**
