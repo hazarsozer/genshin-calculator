@@ -1,0 +1,154 @@
+/**
+ * Kaveh — dendro claymore ATK scaler.
+ *
+ * 4-hit normal combo (physical), 2 charged attacks (spin/final), plunge/low/high.
+ * Dendro skill: skill_dmg. Dendro burst: burst_dmg.
+ *
+ * In the fixed solo C0 build with `settings = {}`:
+ *   - kaveh_painted_dome (burst toggle) is inactive → no dendro infusion on attacks.
+ *   - kaveh_bloom_heal (A1, damageType:"") → not tested by golden harness.
+ *   - No constellations modelled (C0 build).
+ *   - A4 stacks condition (kaveh_a_craftsmans_curious_conceptions) is toggle-gated → inactive.
+ *
+ * Reactions (4 auto-generated from dendro element):
+ *   burning, rupture, electrocharged, shatter
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/db/Char/Kaveh.js
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTables.js (Kaveh)
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js:3118 (Kaveh)
+ */
+
+import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import { Kaveh as KavehStatTable } from "../generated/charTables.js";
+import { Kaveh as KavehTalents } from "../generated/charTalentTables.js";
+
+// ---------------------------------------------------------------------------
+// TalentResolver
+// ---------------------------------------------------------------------------
+
+const talents: TalentResolver = {
+  get(path: string) {
+    const [talent, name] = path.split(".");
+    if (talent === "attack") {
+      if (name === "normal_hit_1") return KavehTalents.s1.p1;
+      if (name === "normal_hit_2") return KavehTalents.s1.p2;
+      if (name === "normal_hit_3") return KavehTalents.s1.p3;
+      if (name === "normal_hit_4") return KavehTalents.s1.p4;
+      if (name === "charged_spin") return KavehTalents.s1.p5;
+      if (name === "charged_final") return KavehTalents.s1.p6;
+      if (name === "plunge")        return KavehTalents.s1.p9;
+      if (name === "plunge_low")    return KavehTalents.s1.p10;
+      if (name === "plunge_high")   return KavehTalents.s1.p11;
+    }
+    if (talent === "skill") {
+      if (name === "skill_dmg") return KavehTalents.s2.p1;
+    }
+    if (talent === "burst") {
+      if (name === "burst_dmg") return KavehTalents.s3.p1;
+    }
+    throw new Error(`kaveh talents: unknown path '${path}'`);
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Features
+// ---------------------------------------------------------------------------
+
+const features: readonly Feature[] = [
+  // --- Normal attacks (physical claymore, infusion inactive in fixed build) ---
+  // raw: FeatureDamageNormal normal_hit_1 (s1.p1)
+  {
+    name: "normal_hit_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
+  },
+  // raw: FeatureDamageNormal normal_hit_2 (s1.p2)
+  {
+    name: "normal_hit_2",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }],
+  },
+  // raw: FeatureDamageNormal normal_hit_3 (s1.p3)
+  {
+    name: "normal_hit_3",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
+  },
+  // raw: FeatureDamageNormal normal_hit_4 (s1.p4)
+  {
+    name: "normal_hit_4",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }],
+  },
+  // --- Charged attacks ---
+  // raw: FeatureDamageCharged charged_spin (s1.p5)
+  {
+    name: "charged_spin",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_spin") }],
+  },
+  // raw: FeatureDamageCharged charged_final (s1.p6)
+  {
+    name: "charged_final",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_final") }],
+  },
+  // --- Plunge attacks ---
+  // raw: FeatureDamagePlungeCollision plunge (s1.p9)
+  {
+    name: "plunge",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
+  },
+  // raw: FeatureDamagePlungeShockWave plunge_low (s1.p10)
+  {
+    name: "plunge_low",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
+  },
+  // raw: FeatureDamagePlungeShockWave plunge_high (s1.p11)
+  {
+    name: "plunge_high",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
+  },
+  // --- Skill: Artistic Ingenuity (dendro ATK-scaled) ---
+  // raw: FeatureDamageSkill skill_dmg, element:'dendro' (s2.p1)
+  {
+    name: "skill_dmg",
+    category: "skill",
+    element: "dendro",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
+  },
+  // --- Burst: Painted Dome (dendro ATK-scaled) ---
+  // raw: FeatureDamageBurst burst_dmg, element:'dendro' (s3.p1)
+  {
+    name: "burst_dmg",
+    category: "burst",
+    element: "dendro",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// DbObjectChar
+// ---------------------------------------------------------------------------
+
+export const kaveh: DbObjectChar = {
+  name: "kaveh",
+  gameId: 10000081,
+  rarity: 4,
+  element: "dendro",
+  weapon: "claymore",
+  origin: "sumeru",
+  statTable: KavehStatTable,
+  talents,
+  features,
+  multipliers: [],
+};
