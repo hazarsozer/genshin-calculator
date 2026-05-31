@@ -14,10 +14,18 @@
 import type { DbObjectArtifactSet } from "@genshin/types";
 import { crimsonWitch } from "./crimson-witch.js";
 import { deepwoodMemories } from "./deepwood-memories.js";
+import { emblemOfSeveredFate } from "./emblem-of-severed-fate.js";
+import { goldenTroupe } from "./golden-troupe.js";
+import { heartOfDepth } from "./heart-of-depth.js";
+import { marechausseeHunter } from "./marechaussee-hunter.js";
 import { noblesseOblige } from "./noblesse-oblige.js";
 
 export { crimsonWitch } from "./crimson-witch.js";
 export { deepwoodMemories } from "./deepwood-memories.js";
+export { emblemOfSeveredFate } from "./emblem-of-severed-fate.js";
+export { goldenTroupe } from "./golden-troupe.js";
+export { heartOfDepth } from "./heart-of-depth.js";
+export { marechausseeHunter } from "./marechaussee-hunter.js";
 export { noblesseOblige } from "./noblesse-oblige.js";
 
 /** All ported sets, keyed by `goodId` (the registry / build-config key). */
@@ -25,6 +33,10 @@ export const ARTIFACT_SETS: Readonly<Record<string, DbObjectArtifactSet>> = {
   [noblesseOblige.goodId]: noblesseOblige,
   [crimsonWitch.goodId]: crimsonWitch,
   [deepwoodMemories.goodId]: deepwoodMemories,
+  [goldenTroupe.goodId]: goldenTroupe,
+  [heartOfDepth.goodId]: heartOfDepth,
+  [marechausseeHunter.goodId]: marechausseeHunter,
+  [emblemOfSeveredFate.goodId]: emblemOfSeveredFate,
 };
 
 /** Resolve a set by its registry key; `undefined` if not ported. */
