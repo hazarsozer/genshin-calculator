@@ -35,11 +35,15 @@ import {
   cCritDmg,
   cCritRate,
   cDamage,
+  cDivide,
+  cLunarChargedDamage,
   cMulti,
   cMultiplierBonus,
   cMultiplierDefence,
+  cMultiplierReaction,
   cMultiplierResistance,
   cStat,
+  cSum,
   type Block,
   type DamageBlock,
 } from "@genshin/core";
@@ -48,6 +52,7 @@ import type {
   EvalContext,
   Feature,
   FeatureMultiplierEntry,
+  FeatureReaction,
 } from "@genshin/types";
 
 /** Maps a multiplier's `leveling` key to the talent-level slot it reads. */
@@ -76,6 +81,13 @@ export interface CompileContext {
   readonly talentLevels: TalentLevels;
   /** Immutable settings (attack_infusion, etc.). */
   readonly settings: EvalContext;
+  /**
+   * Triggering character level (1–90). REQUIRED for standalone reaction features
+   * (Lunar-Charged), whose level multiplier is baked at compile time. The
+   * normal-hit path reads attacker level from the eval-time `DamageContext`
+   * instead, so it does not need this field.
+   */
+  readonly charLevel?: number;
 }
 
 /**
@@ -160,17 +172,107 @@ function dmgBonusKeys(element: Element, damageType: string): readonly string[] {
 }
 
 /**
+ * Lunar-Charged EM bonus term: `6 × mastery / (mastery + 2000)`.
+ *
+ * The watershed coefficient is 6 (vs transformative's 16). Ported from
+ * `LunarCharged.js:7-18`; mirrors `cLunarChargedEmBonus` in `@genshin/core`
+ * but returned as a plain `Block` term so it composes inside `cMultiplierReaction`.
+ */
+function lunarEmBonusTerm(): Block {
+  const em = cStat("mastery");
+  return cDivide([cMulti([cConst(6), em]), cSum([em, cConst(2000)])]);
+}
+
+/**
+ * Compile a standalone reaction feature (currently the crit-bearing Lunar-Charged
+ * family) into a `DamageBlock`.
+ *
+ * Two shapes, both faithful to her `Reaction/Transformative/Lunar/*`:
+ *   - `lunarcharged` (rate-based): routes to `@genshin/core`'s `cLunarChargedDamage`
+ *     factory — `1.8 × (1 + Σ scaling) × levelMult × (1 + emBonus + Σ reactionBonus)
+ *     × res`, crit via the supplied crit keys. (Her `Lunar/Charged.js`.)
+ *   - `lunardirect` (base-scaled): the base is the feature's own multipliers
+ *     (`Σ talent% × scalingStat`, e.g. A1 65% × ATK) scaled by `(1 + Σ scaling)`,
+ *     then her `ChargedLike` flat amplifying factor (`amplifyingMultiplier`, ×3).
+ *     Shares the same `(1 + emBonus + Σ reactionBonus) × res × crit` tail.
+ *     (Her `Lunar/ChargedLike.js`.)
+ */
+function compileReaction(
+  feature: Feature,
+  reaction: FeatureReaction,
+  ctx: CompileContext
+): DamageBlock {
+  // Crit hook is generic (Lunar-Charged is crit-bearing): omit keys → non-crit.
+  const critRate = reaction.critRateKeys ?? [];
+  const critDmg = reaction.critDmgKeys ?? [];
+  const critOpts = {
+    ...(critRate.length > 0 ? { critRate: cCritRate(critRate.map((k) => cStat(k))) } : {}),
+    ...(critDmg.length > 0 ? { critDmg: cCritDmg(critDmg.map((k) => cStat(k))) } : {}),
+  };
+
+  if (ctx.charLevel === undefined) {
+    throw new Error(
+      `compileReaction: feature '${feature.name}' is a reaction but ctx.charLevel is unset (the level multiplier needs it)`
+    );
+  }
+
+  if (reaction.variant === "lunarcharged") {
+    return cLunarChargedDamage({
+      element: reaction.element,
+      characterLevel: ctx.charLevel,
+      ...(reaction.scalingStatKeys ? { scalingStatKeys: reaction.scalingStatKeys } : {}),
+      ...(reaction.reactionBonusKeys ? { reactionBonusKeys: reaction.reactionBonusKeys } : {}),
+      ...(critRate.length > 0 ? { critRateKeys: critRate } : {}),
+      ...(critDmg.length > 0 ? { critDmgKeys: critDmg } : {}),
+    });
+  }
+
+  // lunardirect: base = (Σ talent% × scalingStat) × (1 + Σ scaling), then the
+  // ChargedLike amplifying factor, then the shared (1 + emBonus + Σ) × res tail.
+  const multipliers: readonly FeatureMultiplierEntry[] =
+    feature.multipliers ?? (feature.items ?? []).flatMap((item) => item.multipliers);
+  const baseTerms = multipliers.map((m) => baseDamageTerm(m, ctx));
+  const base: Block = cBaseDamage(baseTerms);
+
+  const factors: Block[] = [base];
+  if (reaction.scalingStatKeys && reaction.scalingStatKeys.length > 0) {
+    // (1 + Σ scaling) — her FeatureMultiplier.getTreeBonusMultiplier (CSumPlusOne).
+    factors.push(cMultiplierReaction(reaction.scalingStatKeys.map((k) => cStat(k))));
+  }
+
+  // (1 + emBonus + Σ reactionBonus) — the shared lunar reaction factor.
+  const reactionBonusTerms: Block[] = reaction.reactionBonusKeys?.map((k) => cStat(k)) ?? [];
+  factors.push(cMultiplierReaction([lunarEmBonusTerm(), ...reactionBonusTerms]));
+
+  // ChargedLike flat amplifying factor (×3); CMultiplierAmplifying([3%]) → bare 3.
+  if (reaction.amplifyingMultiplier !== undefined && reaction.amplifyingMultiplier !== 1) {
+    factors.push(cConst(reaction.amplifyingMultiplier));
+  }
+
+  // resMultiplier(element).
+  factors.push(cMultiplierResistance(reaction.element));
+
+  return cDamage({ items: factors, ...critOpts });
+}
+
+/**
  * Compile a `Feature` into an executable `DamageBlock`.
  *
  * The returned block is a CDamage root; pass it to `compile(block)` for the
- * `(ctx) => DamageResult` closure. (Reaction features — `settings.reaction` set
- * — route to the P1.6 factories; this task compiles the non-reacted hit, which
- * is what the Hu Tao oracle baseline exercises.)
+ * `(ctx) => DamageResult` closure. A feature carrying a `reaction` descriptor is
+ * a standalone reaction instance (Lunar-Charged) and routes to the P1.6 reaction
+ * factory via `compileReaction`; everything else compiles the normal-hit tree.
+ * (Amplifying vaporize/melt — a `settings.reaction` toggle on a normal hit — is a
+ * separate mechanism handled at the normal-hit level and is out of scope here.)
  */
 export function compileFeature(
   feature: Feature,
   ctx: CompileContext
 ): DamageBlock {
+  if (feature.reaction !== undefined) {
+    return compileReaction(feature, feature.reaction, ctx);
+  }
+
   const element = resolveElement(feature, ctx);
   const damageType = damageTypeOf(feature);
 

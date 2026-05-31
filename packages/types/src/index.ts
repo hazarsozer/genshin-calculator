@@ -70,6 +70,7 @@ export type {
   FeatureCategory,
   FeatureMultiplierEntry,
   Feature,
+  FeatureReaction,
   CompiledFeature,
 } from "./feature.js";
 

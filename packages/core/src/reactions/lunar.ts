@@ -70,6 +70,20 @@ export interface LunarChargedDamageParams {
    */
   readonly reactionBonusKeys?: readonly string[];
   /**
+   * Optional stat keys for the rate-scaling term `(1 + Σ scalingStat)` that
+   * MULTIPLIES the reaction rate. Lunar-Charged always scales the rate by
+   * `(1 + lunarcharged_multi)` — her `getScalingStat()` returns `lunarcharged_multi`
+   * and `getBaseMultiplier()` builds `reactionRate × CSumPlusOne([scalingStat])`.
+   *
+   * Omit for a rate with no scaling stat (the simple `1.8 × levelMult` form the
+   * P1.6 unit tests exercise). Present → base becomes
+   * `rate × (1 + Σ scalingStat) × levelMult`.
+   *
+   * Source: raw/.../Reaction/Transformative/Lunar/Charged.js:6 (getScalingStat),
+   *         raw/.../Multiplier/Reaction.js:24-50 (reactionRate × CSumPlusOne).
+   */
+  readonly scalingStatKeys?: readonly string[];
+  /**
    * Crit rate stat keys. Summed inside `cCritRate` (clamped to [0,1]).
    * Omit for non-crit path (normal = crit = avg).
    *
@@ -120,8 +134,19 @@ export function cLunarChargedDamage(params: LunarChargedDamageParams): DamageBlo
   // resMultiplier(element)
   const resMult = cMultiplierResistance(params.element);
 
-  // Full base: 1.8 × levelMult × reactionFactor × resMult
-  const full: Block = cMulti([cConst(LUNAR_CHARGED_RATE), cConst(levelMult), reactionFactor, resMult]);
+  // Rate, optionally scaled by (1 + Σ scalingStat). Lunar-Charged always scales
+  // the rate by (1 + lunarcharged_multi); when no scalingStatKeys are supplied
+  // the rate is the bare constant (the simple 1.8 × levelMult form).
+  const hasScaling = params.scalingStatKeys && params.scalingStatKeys.length > 0;
+  const rate: Block = hasScaling
+    ? cMulti([
+        cConst(LUNAR_CHARGED_RATE),
+        cMultiplierReaction(params.scalingStatKeys!.map((k) => cStat(k))),
+      ])
+    : cConst(LUNAR_CHARGED_RATE);
+
+  // Full base: rate × levelMult × reactionFactor × resMult
+  const full: Block = cMulti([rate, cConst(levelMult), reactionFactor, resMult]);
 
   // Crit hook — generic: same cCritRate/cCritDmg machinery as normal hits.
   // When keys are absent, the optional fields are omitted entirely (not set to

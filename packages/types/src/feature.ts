@@ -22,7 +22,8 @@ export type FeatureCategory =
   | "skill"
   | "burst"
   | "weapon"
-  | "plunge";
+  | "plunge"
+  | "reaction";
 
 /**
  * A multiplier entry within a Feature: scaling stat, talent level progression,
@@ -77,6 +78,51 @@ export interface Feature {
   readonly allowInfusion?: boolean;
   /** Sub-items for multihit features. */
   readonly items?: readonly { readonly multipliers: readonly FeatureMultiplierEntry[] }[];
+  /**
+   * Marks a standalone reaction feature (a separate damage instance keyed by its
+   * reaction nature, NOT a `settings.reaction` toggle on a normal hit). When set,
+   * `compileFeature` routes the feature to the matching `@genshin/core` reaction
+   * factory instead of building the normal-hit tree. Currently models the
+   * crit-bearing Lunar-Charged family (`lunarreaction` / `lunardirect`).
+   *
+   * Source: raw/.../Feature2/Reaction/Transformative/Lunar/*.js
+   */
+  readonly reaction?: FeatureReaction;
+}
+
+/**
+ * Declarative descriptor for a standalone reaction feature. Faithfully captures
+ * the inputs `@genshin/core`'s Lunar-Charged factory needs.
+ *
+ * Two Lunar-Charged shapes (her `Lunar/Charged.js` vs `Lunar/ChargedLike.js`):
+ *   - `variant: "lunarcharged"` — rate-based reaction: `1.8 × (1+scaling) × levelMult`.
+ *   - `variant: "lunardirect"`  — base-scaled direct hit: `(Σ base%×scalingStat)
+ *     × (1+scaling)`, then an extra flat amplifying factor (×3).
+ *
+ * Both apply `(1 + lunarEmBonus + Σ reactionBonus) × resMultiplier`, crit via the
+ * supplied crit-stat keys.
+ */
+export interface FeatureReaction {
+  /** Which Lunar-Charged shape this feature is. */
+  readonly variant: "lunarcharged" | "lunardirect";
+  /** Reaction output element for the resistance lookup (`enemy_res_<element>`). */
+  readonly element: Element;
+  /**
+   * Rate-scaling stat keys: the `(1 + Σ)` term that scales the rate (reaction) or
+   * the base (direct). For Lunar-Charged this is `["lunarcharged_multi"]`.
+   */
+  readonly scalingStatKeys?: readonly string[];
+  /** Reaction-DMG-bonus stat keys, summed inside `(1 + emBonus + Σ)`. */
+  readonly reactionBonusKeys?: readonly string[];
+  /** Crit-rate stat keys (Lunar-Charged is crit-bearing). */
+  readonly critRateKeys?: readonly string[];
+  /** Crit-DMG stat keys. */
+  readonly critDmgKeys?: readonly string[];
+  /**
+   * `lunardirect` only: the flat amplifying multiplier her `ChargedLike` appends
+   * (`CMultiplierAmplifying([3%])` → a bare ×3). Defaults to 1.
+   */
+  readonly amplifyingMultiplier?: number;
 }
 
 /**
