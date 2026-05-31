@@ -38,7 +38,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Xilonen)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Xilonen as XilonenStatTable } from "../generated/charTables.js";
 import { Xilonen as XilonenTalents } from "../generated/charTalentTables.js";
 
@@ -164,6 +164,25 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic, no real stats → SKIP.
+// C2: Condition{stats:{dmg_all:50}} gated by ConditionAnd[2×ConditionBoolean] (toggles) → SKIP.
+// C3 "Tonalpohuallis Loop" — +3 Elemental Skill talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Xilonen.js:417-424 (char-level conditions).
+// C4: ConditionBoolean toggle (normal_base_def_percent/plunge_base_def_percent) → SKIP.
+// C5 "Ocelotlicue Points (Improved)" — +3 Burst talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Xilonen.js:598-605 (constellation[4]).
+// C6: ConditionStatic gated by ConditionBoolean(nightsoul_blessing_state) subCondition (OFF) → SKIP.
+
+const constellationConditions: readonly Condition[] = [
+  // C3 — char_skill_elemental_bonus +3 (skill talent level up).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 — char_skill_burst_bonus +3 (burst talent level up).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -178,4 +197,5 @@ export const xilonen: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
