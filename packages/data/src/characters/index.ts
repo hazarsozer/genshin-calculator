@@ -23,3 +23,4 @@ export { fischl } from "./fischl.js";
 export { rosaria } from "./rosaria.js";
 export { collei } from "./collei.js";
 export { bennett } from "./bennett.js";
+export { beidou } from "./beidou.js";
