@@ -31,7 +31,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Ayato)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Ayato as AyatoStatTable } from "../generated/charTables.js";
 import { Ayato as AyatoTalents } from "../generated/charTalentTables.js";
 
@@ -142,6 +142,30 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Kyouka Fuushi" (ConditionBoolean dmg_normal_ayato toggle) → SKIP (off).
+// C2 "World Source" (ConditionStatic + ConditionBooleanValue namisen≥3 sub) → SKIP (toggle sub).
+// C3 "Famed Throughout the Land" → +3 Elemental Skill levels.
+//   raw: Condition{ settings:{char_skill_elemental_bonus:3}, subConditions:[ConditionConstellation(3)] }
+// C4 "Endless Flow" (ConditionBoolean atk_speed_normal toggle) → SKIP (off).
+// C5 "Bansui Ichiro" → +3 Elemental Burst levels.
+//   raw: Condition{ settings:{char_skill_burst_bonus:3}, subConditions:[ConditionConstellation(5)] }
+// C6 "Boundless Origin" — adds new feature `ayato_boundless_origin_dmg` gated by
+//   ConditionAnd(condStance, ConditionConstellation(6)). ConditionStatic text-only.
+//   ⚠️ FLAG: C6 is a cons-ADDED feature (new damage entry). Not ported here;
+//   requires Feature.condition support for cons-gated new features (P2.C cons-feature wave).
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Ayato.js:339-358, 446-458
+
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 Elemental Skill (Kyouka) levels.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 Elemental Burst (Suiyuu) levels.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -156,4 +180,5 @@ export const kamisatoAyato: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
