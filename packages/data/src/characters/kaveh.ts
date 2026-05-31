@@ -4,11 +4,13 @@
  * 4-hit normal combo (physical), 2 charged attacks (spin/final), plunge/low/high.
  * Dendro skill: skill_dmg. Dendro burst: burst_dmg.
  *
- * In the fixed solo C0 build with `settings = {}`:
+ * In the fixed solo build with `settings = {}`:
  *   - kaveh_painted_dome (burst toggle) is inactive → no dendro infusion on attacks.
  *   - kaveh_bloom_heal (A1, damageType:"") → not tested by golden harness.
- *   - No constellations modelled (C0 build).
  *   - A4 stacks condition (kaveh_a_craftsmans_curious_conceptions) is toggle-gated → inactive.
+ *   - C6 adds kaveh_pairidaezas_light_dmg (FeatureDamage, fixed 61.8% ATK, dendro).
+ *   - C3/C5 talent bumps (+3 burst/skill). C4 always-on dmg_reaction_rupture:60.
+ *   - C1/C2 are toggle/subgated → SKIP.
  *
  * Reactions (4 auto-generated from dendro element):
  *   burning, rupture, electrocharged, shatter
@@ -19,7 +21,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js:3118 (Kaveh)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Kaveh as KavehStatTable } from "../generated/charTables.js";
 import { Kaveh as KavehTalents } from "../generated/charTalentTables.js";
 
@@ -134,6 +136,44 @@ const features: readonly Feature[] = [
     element: "dendro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
+  // --- C6 "Pairidaeza's Dreams": cons-added dendro ATK hit (61.8% fixed).
+  // Raw FeatureDamage (base class, NOT FeatureDamageNormal) → damageType:"" (no dmg_<type>).
+  // Fixed value, not talent-leveled (ValueTable([61.8])). Raw Kaveh.js:234-245.
+  {
+    name: "kaveh_pairidaezas_light_dmg",
+    category: "attack",
+    element: "dendro",
+    damageType: "",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: { getValue: (_level: number) => 61.8 },
+        source: "constellation6",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Sublime Salutations": ConditionBoolean toggle (res_dendro/healing_recv) — SKIP (toggle OFF).
+// C2 "Grace of Royal Roads": ConditionStatic subgated by kaveh_painted_dome boolean →
+//   atk_speed_normal:15 (non-damage, toggle-gated) — SKIP.
+// C3: +3 levels to Painted Dome (burst). Raw cons[2] char_skill_burst_bonus:3.
+// C4 "Feast of Apadana": ConditionStatic (always-on at C≥4) dmg_reaction_rupture:60.
+//   Raw: no toggle, auto-active at constellation≥4. Kaveh.js:341-349.
+// C5: +3 levels to Artistic Ingenuity (skill). Raw cons[4] char_skill_elemental_bonus:3.
+// C6 "Pairidaeza's Dreams": ConditionStatic display-only; actual damage is the feature above.
+// Raw: db/Char/Kaveh.js constellation array (Kaveh.js:301-367).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Painted Dome (burst).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C4: +60% Bloom (rupture) reaction DMG. Always-on ConditionStatic at C≥4. Raw Kaveh.js:341-349.
+  { type: "constellation", constellation: 4, stats: { dmg_reaction_rupture: 60 } },
+  // C5: +3 levels to Artistic Ingenuity (skill).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -151,4 +191,5 @@ export const kaveh: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
