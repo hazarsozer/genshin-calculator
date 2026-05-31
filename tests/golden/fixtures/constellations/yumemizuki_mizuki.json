@@ -1,0 +1,326 @@
+{
+  "defaultWeapon": "weapon_name.solar_pearl",
+  "element": "anemo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3164.2422451801403,
+      "category": "attack",
+      "crit": 4600.39290102082,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2300.19645051041
+    },
+    "attack.normal_hit_1": {
+      "average": 1184.6797067721882,
+      "category": "attack",
+      "crit": 1722.368798191661,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 861.1843990958305
+    },
+    "attack.normal_hit_2": {
+      "average": 1063.1589557516882,
+      "category": "attack",
+      "crit": 1545.693576446873,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 772.8467882234365
+    },
+    "attack.normal_hit_3": {
+      "average": 1617.336536882119,
+      "category": "attack",
+      "crit": 2351.3950406823283,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1175.6975203411641
+    },
+    "attack.plunge": {
+      "average": 1309.5281345953294,
+      "category": "attack",
+      "crit": 1903.8820252323712,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 951.9410126161856
+    },
+    "attack.plunge_high": {
+      "average": 3270.64956618664,
+      "category": "attack",
+      "crit": 4755.095179242593,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2377.5475896212965
+    },
+    "attack.plunge_low": {
+      "average": 2618.501384387864,
+      "category": "attack",
+      "crit": 3806.957320793034,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1903.478660396517
+    },
+    "burst.burst_dmg": {
+      "average": 3822.04652164942,
+      "category": "burst",
+      "crit": 5556.753978729057,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2778.3769893645285
+    },
+    "burst.mizuki_munen_shockwave_dmg": {
+      "average": 2866.5348912370655,
+      "category": "burst",
+      "crit": 4167.565484046793,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2083.7827420233966
+    },
+    "burst.mizuki_snack_other_heal": {
+      "average": 1337.34688,
+      "category": "burst",
+      "crit": 1337.34688,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1337.34688
+    },
+    "burst.mizuki_snack_self_heal": {
+      "average": 2674.69376,
+      "category": "burst",
+      "crit": 2674.69376,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2674.69376
+    },
+    "other.mizuki_elemental_bonus": {
+      "average": 6.808,
+      "category": "other",
+      "crit": 6.808,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 6.808
+    },
+    "reaction.burgeon": {
+      "average": 8808.445708059164,
+      "category": "reaction",
+      "crit": 8808.445708059164,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8808.445708059164
+    },
+    "reaction.burning": {
+      "average": 734.0371423382637,
+      "category": "reaction",
+      "crit": 734.0371423382637,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 734.0371423382637
+    },
+    "reaction.electrocharged": {
+      "average": 5872.29713870611,
+      "category": "reaction",
+      "crit": 5872.29713870611,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5872.29713870611
+    },
+    "reaction.hyperbloom": {
+      "average": 8808.445708059164,
+      "category": "reaction",
+      "crit": 8808.445708059164,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8808.445708059164
+    },
+    "reaction.overloaded": {
+      "average": 8074.408565720901,
+      "category": "reaction",
+      "crit": 8074.408565720901,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8074.408565720901
+    },
+    "reaction.rupture": {
+      "average": 5872.29713870611,
+      "category": "reaction",
+      "crit": 5872.29713870611,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5872.29713870611
+    },
+    "reaction.shatter": {
+      "average": 8808.445708059164,
+      "category": "reaction",
+      "crit": 8808.445708059164,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8808.445708059164
+    },
+    "reaction.superconduct": {
+      "average": 4404.222854029582,
+      "category": "reaction",
+      "crit": 4404.222854029582,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4404.222854029582
+    },
+    "reaction.swirl_cryo": {
+      "average": 1761.6891416118328,
+      "category": "reaction",
+      "crit": 1761.6891416118328,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1761.6891416118328
+    },
+    "reaction.swirl_electro": {
+      "average": 1761.6891416118328,
+      "category": "reaction",
+      "crit": 1761.6891416118328,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1761.6891416118328
+    },
+    "reaction.swirl_hydro": {
+      "average": 1761.6891416118328,
+      "category": "reaction",
+      "crit": 1761.6891416118328,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1761.6891416118328
+    },
+    "reaction.swirl_pyro": {
+      "average": 1761.6891416118328,
+      "category": "reaction",
+      "crit": 1761.6891416118328,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1761.6891416118328
+    },
+    "skill.mizuki_continuous_attack_dmg": {
+      "average": 1468.558119076271,
+      "category": "skill",
+      "crit": 2135.0907491440653,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1067.5453745720326
+    },
+    "skill.mizuki_swirl_bonus": {
+      "average": 91.908,
+      "category": "skill",
+      "crit": 91.908,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 91.908
+    },
+    "skill.skill_dmg": {
+      "average": 1888.1461530980628,
+      "category": "skill",
+      "crit": 2745.1166774709413,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1372.5583387354707
+    },
+    "stats.atk": {
+      "average": 1883.1224829799999,
+      "category": "stats",
+      "crit": 1883.1224829799999,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1883.1224829799999
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 37.564,
+      "category": "stats",
+      "crit": 37.564,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 37.564
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1633.0256175,
+      "category": "stats",
+      "crit": 1633.0256175,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1633.0256175
+    },
+    "stats.hp": {
+      "average": 25961.747219200002,
+      "category": "stats",
+      "crit": 25961.747219200002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 25961.747219200002
+    },
+    "stats.mastery": {
+      "average": 170.2,
+      "category": "stats",
+      "crit": 170.2,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 170.2
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 101,
+  "key": "Mizuki",
+  "schema": 1,
+  "slug": "yumemizuki_mizuki",
+  "weaponType": "catalyst"
+}

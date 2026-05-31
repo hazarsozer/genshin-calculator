@@ -1,0 +1,191 @@
+{
+  "defaultWeapon": "weapon_name.solar_pearl",
+  "element": "hydro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3879.9834874538565,
+      "category": "attack",
+      "crit": 4950.095031325887,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2475.0475156629436
+    },
+    "attack.normal_hit_1": {
+      "average": 1299.4318950244763,
+      "category": "attack",
+      "crit": 1657.8192633825065,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 828.9096316912533
+    },
+    "attack.normal_hit_2": {
+      "average": 1128.2578880211775,
+      "category": "attack",
+      "crit": 1439.4349315163909,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 719.7174657581954
+    },
+    "attack.normal_hit_3": {
+      "average": 1770.6615042176436,
+      "category": "attack",
+      "crit": 2259.0154681146737,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1129.5077340573368
+    },
+    "attack.plunge": {
+      "average": 1460.9888353334322,
+      "category": "attack",
+      "crit": 1863.9341115733616,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 931.9670557866808
+    },
+    "attack.plunge_high": {
+      "average": 3648.9345851003277,
+      "category": "attack",
+      "crit": 4655.322121278263,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2327.6610606391314
+    },
+    "attack.plunge_low": {
+      "average": 2921.358607601045,
+      "category": "attack",
+      "crit": 3727.0784205570735,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1863.5392102785368
+    },
+    "burst.burst_dmg": {
+      "average": 40817.96362551072,
+      "category": "burst",
+      "crit": 52075.68526640137,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 26037.842633200686
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.mualani_shark_bite_dmg": {
+      "average": 3992.516364422733,
+      "category": "skill",
+      "crit": 5093.664826647359,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2546.8324133236797
+    },
+    "stats.atk": {
+      "average": 1843.610153244,
+      "category": "stats",
+      "crit": 1843.610153244,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1843.610153244
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 56.763999999999996,
+      "category": "stats",
+      "crit": 56.763999999999996,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 56.763999999999996
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1446.2676921000002,
+      "category": "stats",
+      "crit": 1446.2676921000002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1446.2676921000002
+    },
+    "stats.hp": {
+      "average": 28410.929315200003,
+      "category": "stats",
+      "crit": 28410.929315200003,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 28410.929315200003
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 92,
+  "key": "Mualani",
+  "schema": 1,
+  "slug": "mualani",
+  "weaponType": "catalyst"
+}

@@ -1,0 +1,209 @@
+{
+  "defaultWeapon": "weapon_name.the_alley_flash",
+  "element": "hydro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3657.1054942692795,
+      "category": "attack",
+      "crit": 7658.590564246278,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3212.4960420496127
+    },
+    "attack.normal_hit_1": {
+      "average": 1192.4999179990177,
+      "category": "attack",
+      "crit": 2497.2942766247875,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1047.5227670405986
+    },
+    "attack.normal_hit_2": {
+      "average": 1250.7323980711567,
+      "category": "attack",
+      "crit": 2619.2428294111364,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1098.6756834778255
+    },
+    "attack.normal_hit_3": {
+      "average": 1554.554033230142,
+      "category": "attack",
+      "crit": 3255.4961482964327,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1365.560464889443
+    },
+    "attack.normal_hit_4": {
+      "average": 781.0513067568402,
+      "category": "attack",
+      "crit": 1635.6520689637273,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 686.0956665116305
+    },
+    "attack.normal_hit_5": {
+      "average": 2005.2227920493035,
+      "category": "attack",
+      "crit": 4199.271904642955,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1761.4395573166755
+    },
+    "attack.plunge": {
+      "average": 1586.256200653517,
+      "category": "attack",
+      "crit": 3321.885789140886,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1393.4084685993648
+    },
+    "attack.plunge_high": {
+      "average": 3961.7996875886265,
+      "category": "attack",
+      "crit": 8296.671165856716,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3480.147301114394
+    },
+    "attack.plunge_low": {
+      "average": 3171.840886433124,
+      "category": "attack",
+      "crit": 6642.3653138234085,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2786.2270611675367
+    },
+    "burst.ayato_bloomwater_blade_dmg": {
+      "average": 2278.0499148405643,
+      "category": "burst",
+      "crit": 4770.617530727254,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2001.0979575198212
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.rupture": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "skill.ayato_water_illusion_dmg": {
+      "average": 3125.627981583284,
+      "category": "skill",
+      "crit": 6545.587761853962,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2745.6324504420977
+    },
+    "stats.atk": {
+      "average": 2112.20693663,
+      "category": "stats",
+      "crit": 2112.20693663,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2112.20693663
+    },
+    "stats.crit_dmg": {
+      "average": 138.4,
+      "category": "stats",
+      "crit": 138.4,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 138.4
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1644.55437,
+      "category": "stats",
+      "crit": 1644.55437,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1644.55437
+    },
+    "stats.hp": {
+      "average": 26941.4200976,
+      "category": "stats",
+      "crit": 26941.4200976,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26941.4200976
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 50,
+  "key": "Ayato",
+  "schema": 1,
+  "slug": "kamisato_ayato",
+  "weaponType": "sword"
+}

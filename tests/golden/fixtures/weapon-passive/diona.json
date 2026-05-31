@@ -1,0 +1,254 @@
+{
+  "defaultWeapon": "weapon_name.alley_hunter",
+  "element": "cryo",
+  "features": {
+    "attack.aimed": {
+      "average": 1441.48854184456,
+      "category": "attack",
+      "crit": 2620.8882578991997,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1310.4441289495999
+    },
+    "attack.charged_aimed": {
+      "average": 4241.097281788838,
+      "category": "attack",
+      "crit": 7711.085966888796,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3855.542983444398
+    },
+    "attack.normal_hit_1": {
+      "average": 1119.2734560204822,
+      "category": "attack",
+      "crit": 2035.0426473099674,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1017.5213236549837
+    },
+    "attack.normal_hit_2": {
+      "average": 1039.3253520190187,
+      "category": "attack",
+      "crit": 1889.682458216398,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 944.841229108199
+    },
+    "attack.normal_hit_3": {
+      "average": 1412.4165040258463,
+      "category": "attack",
+      "crit": 2568.0300073197204,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1284.0150036598602
+    },
+    "attack.normal_hit_4": {
+      "average": 1332.4684000243835,
+      "category": "attack",
+      "crit": 2422.6698182261516,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1211.3349091130758
+    },
+    "attack.normal_hit_5": {
+      "average": 1665.5855000304794,
+      "category": "attack",
+      "crit": 3028.3372727826895,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1514.1686363913448
+    },
+    "attack.plunge": {
+      "average": 1654.2635564133022,
+      "category": "attack",
+      "crit": 3007.7519207514583,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1503.8759603757292
+    },
+    "attack.plunge_high": {
+      "average": 4131.653410267121,
+      "category": "attack",
+      "crit": 7512.0971095765835,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3756.0485547882918
+    },
+    "attack.plunge_low": {
+      "average": 3307.82615369253,
+      "category": "attack",
+      "crit": 6014.229370350055,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3007.1146851750277
+    },
+    "burst.burst_dmg": {
+      "average": 3557.0493331132197,
+      "category": "burst",
+      "crit": 6467.362423842217,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3233.6812119211086
+    },
+    "burst.field_dmg": {
+      "average": 2340.538461188499,
+      "category": "burst",
+      "crit": 4255.52447488818,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2127.76223744409
+    },
+    "burst.heal_dot": {
+      "average": 3318.606829266827,
+      "category": "burst",
+      "crit": 3318.606829266827,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3318.606829266827
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.diona_claw_dmg": {
+      "average": 1577.1409504665078,
+      "category": "skill",
+      "crit": 2867.5290008481957,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1433.7645004240978
+    },
+    "skill.shield_hold": {
+      "average": 7837.623348718519,
+      "category": "skill",
+      "crit": 7837.623348718519,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 7837.623348718519
+    },
+    "skill.shield_press": {
+      "average": 4478.64191355344,
+      "category": "skill",
+      "crit": 4478.64191355344,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 4478.64191355344
+    },
+    "stats.atk": {
+      "average": 2399.158069148496,
+      "category": "stats",
+      "crit": 2399.158069148496,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2399.158069148496
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1476.618942,
+      "category": "stats",
+      "crit": 1476.618942,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1476.618942
+    },
+    "stats.hp": {
+      "average": 22795.9252589,
+      "category": "stats",
+      "crit": 22795.9252589,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 22795.9252589
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 8,
+  "key": "Diona",
+  "schema": 1,
+  "slug": "diona",
+  "weaponType": "bow"
+}

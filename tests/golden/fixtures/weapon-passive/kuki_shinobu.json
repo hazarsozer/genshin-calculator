@@ -1,0 +1,254 @@
+{
+  "defaultWeapon": "weapon_name.the_alley_flash",
+  "element": "electro",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 1444.3469831039683,
+      "category": "attack",
+      "crit": 2626.085423825397,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1313.0427119126985
+    },
+    "attack.charged_hit_2": {
+      "average": 1733.3503429632628,
+      "category": "attack",
+      "crit": 3151.5460781150236,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1575.7730390575118
+    },
+    "attack.charged_hit_total": {
+      "average": 3177.6973260672316,
+      "category": "attack",
+      "crit": 5777.631501940421,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2888.8157509702105
+    },
+    "attack.normal_hit_1": {
+      "average": 1189.2282036012523,
+      "category": "attack",
+      "crit": 2162.233097456822,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1081.116548728411
+    },
+    "attack.normal_hit_2": {
+      "average": 1086.4553958826257,
+      "category": "attack",
+      "crit": 1975.3734470593192,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 987.6867235296596
+    },
+    "attack.normal_hit_3": {
+      "average": 1447.208925017397,
+      "category": "attack",
+      "crit": 2631.2889545770854,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1315.6444772885427
+    },
+    "attack.normal_hit_4": {
+      "average": 1856.2027516527482,
+      "category": "attack",
+      "crit": 3374.9140939140875,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1687.4570469570438
+    },
+    "attack.plunge": {
+      "average": 1458.6160977503528,
+      "category": "attack",
+      "crit": 2652.0292686370053,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1326.0146343185027
+    },
+    "attack.plunge_high": {
+      "average": 3643.0084862699496,
+      "category": "attack",
+      "crit": 6623.65179321809,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3311.825896609045
+    },
+    "attack.plunge_low": {
+      "average": 2916.6147149168255,
+      "category": "attack",
+      "crit": 5302.935845303319,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2651.4679226516596
+    },
+    "burst.kuki_shinobu_burst_dmg": {
+      "average": 1808.7876306688033,
+      "category": "burst",
+      "crit": 3288.7047830341876,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1644.3523915170938
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.hyperbloom": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "reaction.overloaded": {
+      "average": 6571.2206608246515,
+      "category": "reaction",
+      "crit": 6571.2206608246515,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 6571.2206608246515
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "reaction.superconduct": {
+      "average": 3584.3021786316276,
+      "category": "reaction",
+      "crit": 3584.3021786316276,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3584.3021786316276
+    },
+    "skill.kuki_shinobu_ring_dmg": {
+      "average": 679.8704945890242,
+      "category": "skill",
+      "crit": 1236.128171980044,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 618.064085990022
+    },
+    "skill.kuki_shinobu_ring_healing": {
+      "average": 2426.6652613760557,
+      "category": "skill",
+      "crit": 2426.6652613760557,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2426.6652613760557
+    },
+    "skill.skill_dmg": {
+      "average": 1999.6075477283441,
+      "category": "skill",
+      "crit": 3635.6500867788072,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1817.8250433894036
+    },
+    "stats.atk": {
+      "average": 2010.0475716899998,
+      "category": "stats",
+      "crit": 2010.0475716899998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2010.0475716899998
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1626.7736774999998,
+      "category": "stats",
+      "crit": 1626.7736774999998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1626.7736774999998
+    },
+    "stats.hp": {
+      "average": 31638.171506963998,
+      "category": "stats",
+      "crit": 31638.171506963998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 31638.171506963998
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 52,
+  "key": "KukiShinobu",
+  "schema": 1,
+  "slug": "kuki_shinobu",
+  "weaponType": "sword"
+}

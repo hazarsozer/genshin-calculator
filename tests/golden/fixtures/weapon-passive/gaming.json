@@ -1,0 +1,254 @@
+{
+  "defaultWeapon": "weapon_name.the_bell",
+  "element": "pyro",
+  "features": {
+    "attack.charged_final": {
+      "average": 3489.172364260269,
+      "category": "attack",
+      "crit": 6343.949753200489,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3171.9748766002444
+    },
+    "attack.charged_spin": {
+      "average": 1928.994911648073,
+      "category": "attack",
+      "crit": 3507.263475723769,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1753.6317378618844
+    },
+    "attack.normal_hit_1": {
+      "average": 2430.4137853162133,
+      "category": "attack",
+      "crit": 4418.934155120388,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2209.467077560194
+    },
+    "attack.normal_hit_2": {
+      "average": 2290.9554374145837,
+      "category": "attack",
+      "crit": 4165.37352257197,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2082.686761285985
+    },
+    "attack.normal_hit_3": {
+      "average": 3090.94036608354,
+      "category": "attack",
+      "crit": 5619.891574697345,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2809.9457873486726
+    },
+    "attack.normal_hit_4": {
+      "average": 3708.370703147217,
+      "category": "attack",
+      "crit": 6742.492187540394,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3371.246093770197
+    },
+    "attack.plunge": {
+      "average": 1739.2006592598004,
+      "category": "attack",
+      "crit": 3162.1830168360007,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1581.0915084180003
+    },
+    "attack.plunge_high": {
+      "average": 4343.781192857417,
+      "category": "attack",
+      "crit": 7897.783987013485,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3948.8919935067424
+    },
+    "attack.plunge_low": {
+      "average": 3477.6551606779067,
+      "category": "attack",
+      "crit": 6323.009383050739,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3161.5046915253697
+    },
+    "burst.gaming_suanni_man_dmg": {
+      "average": 13874.903444119032,
+      "category": "burst",
+      "crit": 25227.09717112551,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 12613.548585562756
+    },
+    "burst.heal": {
+      "average": 10450.272461959192,
+      "category": "burst",
+      "crit": 10450.272461959192,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 10450.272461959192
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.gaming_charmed_cloudstrider_dmg": {
+      "average": 6472.957114319031,
+      "category": "skill",
+      "crit": 11769.01293512551,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 5884.506467562755
+    },
+    "skill.gaming_dance_of_amity_heal": {
+      "average": 522.5136230979596,
+      "category": "skill",
+      "crit": 522.5136230979596,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 522.5136230979596
+    },
+    "stats.atk": {
+      "average": 2388.738557272,
+      "category": "stats",
+      "crit": 2388.738557272,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2388.738557272
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1578.9967533,
+      "category": "stats",
+      "crit": 1578.9967533,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1578.9967533
+    },
+    "stats.hp": {
+      "average": 34834.24153986397,
+      "category": "stats",
+      "crit": 34834.24153986397,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 34834.24153986397
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.bell_shield": {
+      "average": 6966.848307972795,
+      "category": "weapon",
+      "crit": 6966.848307972795,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 6966.848307972795
+    }
+  },
+  "id": 82,
+  "key": "Gaming",
+  "schema": 1,
+  "slug": "gaming",
+  "weaponType": "claymore"
+}

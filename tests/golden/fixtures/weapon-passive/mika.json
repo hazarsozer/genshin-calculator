@@ -1,0 +1,245 @@
+{
+  "defaultWeapon": "weapon_name.blackcliff_pole",
+  "element": "cryo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3433.195059210718,
+      "category": "attack",
+      "crit": 7582.745713603271,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2972.133875389323
+    },
+    "attack.normal_hit_1": {
+      "average": 1229.5674289759277,
+      "category": "attack",
+      "crit": 2715.6910664425973,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1064.4425803685199
+    },
+    "attack.normal_hit_2": {
+      "average": 1179.5106943012827,
+      "category": "attack",
+      "crit": 2605.1329758753805,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1021.1082185708274
+    },
+    "attack.normal_hit_3": {
+      "average": 1549.0212972364805,
+      "category": "attack",
+      "crit": 3421.2546620058447,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1340.995367817662
+    },
+    "attack.normal_hit_4": {
+      "average": 1569.6501468777901,
+      "category": "attack",
+      "crit": 3466.8166876106957,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1358.8538645741337
+    },
+    "attack.normal_hit_4_1": {
+      "average": 784.8250734388951,
+      "category": "attack",
+      "crit": 1733.4083438053478,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 679.4269322870668
+    },
+    "attack.normal_hit_5": {
+      "average": 2014.2947353549112,
+      "category": "attack",
+      "crit": 4448.8834764773055,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1743.7848752302007
+    },
+    "attack.plunge": {
+      "average": 1687.2150364212675,
+      "category": "attack",
+      "crit": 3726.477046804208,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1460.6303686009408
+    },
+    "attack.plunge_high": {
+      "average": 4213.952324621156,
+      "category": "attack",
+      "crit": 9307.169670165958,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3648.0392862272893
+    },
+    "attack.plunge_low": {
+      "average": 3373.7158187441282,
+      "category": "attack",
+      "crit": 7451.376552248337,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2920.6424039103267
+    },
+    "burst.heal": {
+      "average": 9567.262704186542,
+      "category": "burst",
+      "crit": 9567.262704186542,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 9567.262704186542
+    },
+    "burst.mika_heal_dot": {
+      "average": 1911.537374209539,
+      "category": "burst",
+      "crit": 1911.537374209539,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1911.537374209539
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.mika_flowfrost_arrow_dmg": {
+      "average": 2049.6576560252224,
+      "category": "skill",
+      "crit": 4526.987991516117,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1774.3987298595675
+    },
+    "skill.mika_rimestar_flare_dmg": {
+      "average": 2562.0720700315283,
+      "category": "skill",
+      "crit": 5658.734989395146,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2217.9984123244594
+    },
+    "skill.mika_rimestar_shard_dmg": {
+      "average": 768.6216210094584,
+      "category": "skill",
+      "crit": 1697.6204968185439,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 665.3995236973378
+    },
+    "stats.atk": {
+      "average": 2469.5794055240003,
+      "category": "stats",
+      "crit": 2469.5794055240003,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2469.5794055240003
+    },
+    "stats.crit_dmg": {
+      "average": 155.128,
+      "category": "stats",
+      "crit": 155.128,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 155.128
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1589.2348349,
+      "category": "stats",
+      "crit": 1589.2348349,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1589.2348349
+    },
+    "stats.hp": {
+      "average": 31907.869019772,
+      "category": "stats",
+      "crit": 31907.869019772,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 31907.869019772
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 68,
+  "key": "Mika",
+  "schema": 1,
+  "slug": "mika",
+  "weaponType": "polearm"
+}

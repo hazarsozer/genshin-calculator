@@ -1,0 +1,299 @@
+{
+  "defaultWeapon": "weapon_name.the_alley_flash",
+  "element": "hydro",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 1589.084933495472,
+      "category": "attack",
+      "crit": 2654.982507061931,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1088.5004605911718
+    },
+    "attack.charged_hit_2": {
+      "average": 1722.41568990177,
+      "category": "attack",
+      "crit": 2877.746450291442,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1179.8301225243351
+    },
+    "attack.charged_hit_total": {
+      "average": 3311.5006233972417,
+      "category": "attack",
+      "crit": 5532.728957353373,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2268.3305831155067
+    },
+    "attack.normal_hit_1": {
+      "average": 1485.6093823808046,
+      "category": "attack",
+      "crit": 2482.0995023041382,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1017.6211874484303
+    },
+    "attack.normal_hit_2": {
+      "average": 1341.8407324729847,
+      "category": "attack",
+      "crit": 2241.8963246618023,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 919.1417176953564
+    },
+    "attack.normal_hit_3": {
+      "average": 2077.5979408247686,
+      "category": "attack",
+      "crit": 3471.171410243169,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1423.1248864316758
+    },
+    "attack.plunge": {
+      "average": 1753.1089742336687,
+      "category": "attack",
+      "crit": 2929.02761926346,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1200.8545834754796
+    },
+    "attack.plunge_high": {
+      "average": 4378.527619665931,
+      "category": "attack",
+      "crit": 7315.476971598691,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2999.2288204720517
+    },
+    "attack.plunge_low": {
+      "average": 3505.4757992790173,
+      "category": "attack",
+      "crit": 5856.8152839649665,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2401.20080536733
+    },
+    "burst.burst_dmg": {
+      "average": 15442.142417519994,
+      "category": "burst",
+      "crit": 25800.14266442697,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 10577.646782548694
+    },
+    "burst.nilou_lingering_aeon": {
+      "average": 18873.729621413324,
+      "category": "burst",
+      "crit": 31533.507700966293,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 12928.234956448403
+    },
+    "other.crit_dmg_bonus": {
+      "average": 43.91193234957312,
+      "category": "other",
+      "crit": 43.91193234957312,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 43.91193234957312
+    },
+    "other.crit_rate_bonus": {
+      "average": 21.95596617478656,
+      "category": "other",
+      "crit": 21.95596617478656,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 21.95596617478656
+    },
+    "other.nilou_bloom_bonus": {
+      "average": 59.33949262179845,
+      "category": "other",
+      "crit": 59.33949262179845,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 59.33949262179845
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.rupture": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "skill.nilou_sword_dance_1_dmg": {
+      "average": 3069.8158462196106,
+      "category": "skill",
+      "crit": 5128.931248304362,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2102.779966071364
+    },
+    "skill.nilou_sword_dance_2_dmg": {
+      "average": 3469.012490270083,
+      "category": "skill",
+      "crit": 5795.893777802697,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2376.223960005391
+    },
+    "skill.nilou_water_wheel_dmg": {
+      "average": 3413.131306631539,
+      "category": "skill",
+      "crit": 5702.529627210759,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2337.9461481359294
+    },
+    "skill.nilou_watery_moon_dmg": {
+      "average": 7214.461733059459,
+      "category": "skill",
+      "crit": 12053.647539787176,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4941.803143321402
+    },
+    "skill.nilou_whirling_steps_1_dmg": {
+      "average": 2199.579855246626,
+      "category": "skill",
+      "crit": 3674.974141073653,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1506.6807538577907
+    },
+    "skill.nilou_whirling_steps_2_dmg": {
+      "average": 2670.6192021691377,
+      "category": "skill",
+      "crit": 4461.968718806027,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1829.3359721373367
+    },
+    "skill.skill_dmg": {
+      "average": 2251.462725916142,
+      "category": "skill",
+      "crit": 3761.658062832776,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1542.2197785066087
+    },
+    "stats.atk": {
+      "average": 2030.3601870339999,
+      "category": "stats",
+      "crit": 2030.3601870339999,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2030.3601870339999
+    },
+    "stats.crit_dmg": {
+      "average": 143.91193234957314,
+      "category": "stats",
+      "crit": 143.91193234957314,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 143.91193234957314
+    },
+    "stats.crit_rate": {
+      "average": 31.955966174786564,
+      "category": "stats",
+      "crit": 31.955966174786564,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 31.955966174786564
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1604.5891932,
+      "category": "stats",
+      "crit": 1604.5891932,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1604.5891932
+    },
+    "stats.hp": {
+      "average": 36593.27695797761,
+      "category": "stats",
+      "crit": 36593.27695797761,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 36593.27695797761
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 60,
+  "key": "Nilou",
+  "schema": 1,
+  "slug": "nilou",
+  "weaponType": "sword"
+}

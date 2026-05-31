@@ -1,0 +1,254 @@
+{
+  "defaultWeapon": "weapon_name.the_bell",
+  "element": "pyro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 5318.13094328481,
+      "category": "attack",
+      "crit": 11137.055664784777,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 4671.583752007036
+    },
+    "attack.normal_hit_1": {
+      "average": 2062.692947390711,
+      "category": "attack",
+      "crit": 4319.6240219426,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1811.9228279960566
+    },
+    "attack.normal_hit_2": {
+      "average": 1880.3464308745217,
+      "category": "attack",
+      "crit": 3937.7599184863498,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1651.7449322509854
+    },
+    "attack.normal_hit_2_1": {
+      "average": 940.1732154372609,
+      "category": "attack",
+      "crit": 1968.8799592431749,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 825.8724661254927
+    },
+    "attack.normal_hit_3": {
+      "average": 2568.7234355171413,
+      "category": "attack",
+      "crit": 5379.336498834211,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2256.433095148578
+    },
+    "attack.normal_hit_3_1": {
+      "average": 856.2411451723804,
+      "category": "attack",
+      "crit": 1793.1121662780702,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 752.144365049526
+    },
+    "attack.normal_hit_4": {
+      "average": 2994.5663063704997,
+      "category": "attack",
+      "crit": 6271.122693593879,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2630.504485567902
+    },
+    "attack.plunge": {
+      "average": 1798.2849889249626,
+      "category": "attack",
+      "crit": 3765.909534080386,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1579.660039463249
+    },
+    "attack.plunge_high": {
+      "average": 4491.3582713707,
+      "category": "attack",
+      "crit": 9405.65541017898,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3945.325255947558
+    },
+    "attack.plunge_low": {
+      "average": 3595.8076877690946,
+      "category": "attack",
+      "crit": 7530.222705236754,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3158.650463606021
+    },
+    "burst.burst_dmg": {
+      "average": 14816.042446305653,
+      "category": "burst",
+      "crit": 31027.270899501655,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 13014.794840394987
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.mavuika_rings_of_searing_radiance_dmg": {
+      "average": 3488.4076394179447,
+      "category": "skill",
+      "crit": 7305.309041086068,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3064.3074836770415
+    },
+    "skill.skill_dmg": {
+      "average": 2027.6369404116801,
+      "category": "skill",
+      "crit": 4246.210880131277,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1781.1287248872804
+    },
+    "stats.atk": {
+      "average": 2052.46075242,
+      "category": "stats",
+      "crit": 2052.46075242,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2052.46075242
+    },
+    "stats.crit_dmg": {
+      "average": 138.4,
+      "category": "stats",
+      "crit": 138.4,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 138.4
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1667.6110011,
+      "category": "stats",
+      "crit": 1667.6110011,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1667.6110011
+    },
+    "stats.hp": {
+      "average": 36436.25466211182,
+      "category": "stats",
+      "crit": 36436.25466211182,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 36436.25466211182
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.bell_shield": {
+      "average": 7287.250932422365,
+      "category": "weapon",
+      "crit": 7287.250932422365,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 7287.250932422365
+    }
+  },
+  "id": 96,
+  "key": "Mavuika",
+  "schema": 1,
+  "slug": "mavuika",
+  "weaponType": "claymore"
+}

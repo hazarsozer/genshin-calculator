@@ -1,0 +1,347 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "characterCount": 10,
+  "characters": [
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 1,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "id": 5,
+      "key": "Bennet",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "bennett",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 3,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "id": 10,
+      "key": "Ganyu",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {},
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 2,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "id": 11,
+      "key": "Hutao",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "hu_tao",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 5,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 27,
+      "key": "Xiangling",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "xiangling",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 2,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 40,
+      "key": "RaidenShogun",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "raiden_shogun",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 4,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 46,
+      "key": "Itto",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "arataki_itto",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 2,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 51,
+      "key": "Yelan",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "yelan",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {},
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 4,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "id": 61,
+      "key": "Nahida",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "nahida",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {},
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 5,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "id": 77,
+      "key": "Neuvillette",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "neuvillette",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {},
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 3,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "id": 79,
+      "key": "Furina",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "furina",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1
+      }
+    }
+  ],
+  "config": {
+    "description": "Mid constellations C1..C5 on 10 signature reps (cycled), to catch per-Cn gating between C0 and C6.",
+    "id": "cons-mid"
+  },
+  "featureTotal": 282
+}

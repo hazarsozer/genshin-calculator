@@ -1,0 +1,245 @@
+{
+  "defaultWeapon": "weapon_name.the_alley_flash",
+  "element": "cryo",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 1307.1361717512555,
+      "category": "attack",
+      "crit": 2376.611221365919,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1188.3056106829595
+    },
+    "attack.charged_hit_2": {
+      "average": 1736.040228107136,
+      "category": "attack",
+      "crit": 3156.436778376611,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1578.2183891883055
+    },
+    "attack.charged_hit_total": {
+      "average": 3043.1763998583915,
+      "category": "attack",
+      "crit": 5533.04799974253,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2766.523999871265
+    },
+    "attack.normal_hit_1": {
+      "average": 1191.4001565441133,
+      "category": "attack",
+      "crit": 2166.1821028074787,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1083.0910514037394
+    },
+    "attack.normal_hit_2": {
+      "average": 1145.6503905328195,
+      "category": "attack",
+      "crit": 2083.0007100596717,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1041.5003550298359
+    },
+    "attack.normal_hit_3": {
+      "average": 1446.8363501071713,
+      "category": "attack",
+      "crit": 2630.611545649402,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1315.305772824701
+    },
+    "attack.normal_hit_4": {
+      "average": 1570.7419663877586,
+      "category": "attack",
+      "crit": 2855.894484341379,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1427.9472421706896
+    },
+    "attack.normal_hit_5": {
+      "average": 1955.8024969828161,
+      "category": "attack",
+      "crit": 3556.0045399687565,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1778.0022699843782
+    },
+    "attack.plunge": {
+      "average": 1315.877644899842,
+      "category": "attack",
+      "crit": 2392.504808908803,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1196.2524044544016
+    },
+    "attack.plunge_high": {
+      "average": 3286.507967830961,
+      "category": "attack",
+      "crit": 5975.46903241993,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2987.734516209965
+    },
+    "attack.plunge_low": {
+      "average": 2631.198235138255,
+      "category": "attack",
+      "crit": 4783.9967911604635,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2391.9983955802318
+    },
+    "burst.burst_dmg": {
+      "average": 2707.541955757679,
+      "category": "burst",
+      "crit": 4922.803555923052,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2461.401777961526
+    },
+    "other.kaeya_shield": {
+      "average": 7458.64773708,
+      "category": "other",
+      "crit": 7458.64773708,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 7458.64773708
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "reaction.superconduct": {
+      "average": 3584.3021786316276,
+      "category": "reaction",
+      "crit": 3584.3021786316276,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3584.3021786316276
+    },
+    "skill.kaeya_coldblooded_strike": {
+      "average": 303.38684913270004,
+      "category": "skill",
+      "crit": 303.38684913270004,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 303.38684913270004
+    },
+    "skill.skill_dmg": {
+      "average": 5369.470305521954,
+      "category": "skill",
+      "crit": 9762.67328276719,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4881.336641383595
+    },
+    "stats.atk": {
+      "average": 2022.5789942180002,
+      "category": "stats",
+      "crit": 2022.5789942180002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2022.5789942180002
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1667.7249689999999,
+      "category": "stats",
+      "crit": 1667.7249689999999,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1667.7249689999999
+    },
+    "stats.hp": {
+      "average": 24862.159123600002,
+      "category": "stats",
+      "crit": 24862.159123600002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 24862.159123600002
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 226.67000000000002,
+      "category": "stats",
+      "crit": 226.67000000000002,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 226.67000000000002
+    }
+  },
+  "id": 13,
+  "key": "Kaeya",
+  "schema": 1,
+  "slug": "kaeya",
+  "weaponType": "sword"
+}

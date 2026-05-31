@@ -1,0 +1,218 @@
+{
+  "defaultWeapon": "weapon_name.solar_pearl",
+  "element": "electro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2741.8569880712203,
+      "category": "attack",
+      "crit": 3498.0696946635967,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1749.0348473317983
+    },
+    "attack.normal_hit_1": {
+      "average": 1582.6949703601229,
+      "category": "attack",
+      "crit": 2019.207178127788,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1009.603589063894
+    },
+    "attack.normal_hit_2": {
+      "average": 1354.3030398941935,
+      "category": "attack",
+      "crit": 1727.8240410989686,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 863.9120205494843
+    },
+    "attack.normal_hit_3": {
+      "average": 1905.2804569134264,
+      "category": "attack",
+      "crit": 2430.762747714305,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1215.3813738571525
+    },
+    "attack.plunge": {
+      "average": 2174.4756276924595,
+      "category": "attack",
+      "crit": 2774.2027859616487,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1387.1013929808244
+    },
+    "attack.plunge_high": {
+      "average": 5430.923995072087,
+      "category": "attack",
+      "crit": 6928.789766875158,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3464.394883437579
+    },
+    "attack.plunge_low": {
+      "average": 4348.029498704411,
+      "category": "attack",
+      "crit": 5547.22959187621,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2773.614795938105
+    },
+    "burst.varesa_flying_kick_dmg": {
+      "average": 16706.738766298367,
+      "category": "burst",
+      "crit": 21314.509410704457,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 10657.254705352228
+    },
+    "burst.varesa_volcanic_collapse_dmg": {
+      "average": 10688.71996338444,
+      "category": "burst",
+      "crit": 13636.702257386187,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 6818.351128693093
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.hyperbloom": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.varesa_rush_dmg": {
+      "average": 2985.169520440155,
+      "category": "skill",
+      "crit": 3808.488582123645,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1904.2442910618224
+    },
+    "stats.atk": {
+      "average": 2049.638426296,
+      "category": "stats",
+      "crit": 2049.638426296,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2049.638426296
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 56.763999999999996,
+      "category": "stats",
+      "crit": 56.763999999999996,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 56.763999999999996
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1657.6197069,
+      "category": "stats",
+      "crit": 1657.6197069,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1657.6197069
+    },
+    "stats.hp": {
+      "average": 25925.0089792,
+      "category": "stats",
+      "crit": 25925.0089792,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 25925.0089792
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 103,
+  "key": "Varesa",
+  "schema": 1,
+  "slug": "varesa",
+  "weaponType": "catalyst"
+}

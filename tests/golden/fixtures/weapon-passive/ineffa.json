@@ -1,0 +1,290 @@
+{
+  "defaultWeapon": "weapon_name.blackcliff_pole",
+  "element": "electro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3879.332620698434,
+      "category": "attack",
+      "crit": 6811.729159193832,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2669.9261387201063
+    },
+    "attack.normal_hit_1": {
+      "average": 1328.4465337416373,
+      "category": "attack",
+      "crit": 2332.6223541740796,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 914.2949241847542
+    },
+    "attack.normal_hit_2": {
+      "average": 1305.029982487711,
+      "category": "attack",
+      "crit": 2291.505177437786,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 898.178630898132
+    },
+    "attack.normal_hit_3": {
+      "average": 1735.579681173343,
+      "category": "attack",
+      "crit": 3047.5083933958495,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1194.5017377143433
+    },
+    "attack.normal_hit_3_1": {
+      "average": 867.7898405866715,
+      "category": "attack",
+      "crit": 1523.7541966979247,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 597.2508688571717
+    },
+    "attack.normal_hit_4": {
+      "average": 2138.154144257296,
+      "category": "attack",
+      "crit": 3754.3898281829634,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1471.5710655760888
+    },
+    "attack.plunge": {
+      "average": 2263.927917448901,
+      "category": "attack",
+      "crit": 3975.2362886643136,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1558.1340694335056
+    },
+    "attack.plunge_high": {
+      "average": 5654.338127962571,
+      "category": "attack",
+      "crit": 9928.465452196706,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3891.5624518660075
+    },
+    "attack.plunge_low": {
+      "average": 4526.897439104361,
+      "category": "attack",
+      "crit": 7948.789727928863,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3115.608529024201
+    },
+    "burst.burst_dmg": {
+      "average": 34833.62889516658,
+      "category": "burst",
+      "crit": 61164.449884945345,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 23974.02475813919
+    },
+    "other.ineffa_lunar_bonus": {
+      "average": 14.000000000000002,
+      "category": "other",
+      "crit": 14.000000000000002,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 14.000000000000002
+    },
+    "other.mastery_bonus": {
+      "average": 158.06610179976,
+      "category": "other",
+      "crit": 158.06610179976,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 158.06610179976
+    },
+    "reaction.hyperbloom": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.lunarcharged_contrubution": {
+      "average": 4505.870994349227,
+      "category": "reaction",
+      "crit": 7911.869344745287,
+      "damageType": "lunarreaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3101.1372114175188
+    },
+    "reaction.lunarcharged_contrubution_12": {
+      "average": 375.48924952910227,
+      "category": "reaction",
+      "crit": 659.3224453954406,
+      "damageType": "lunarreaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 258.4281009514599
+    },
+    "reaction.lunarcharged_contrubution_2": {
+      "average": 2252.9354971746134,
+      "category": "reaction",
+      "crit": 3955.9346723726435,
+      "damageType": "lunarreaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1550.5686057087594
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.ineffa_base_shield_dmg_absorption": {
+      "average": 13539.425998143435,
+      "category": "skill",
+      "crit": 13539.425998143435,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 13539.425998143435
+    },
+    "skill.ineffa_birgitta_coordinated_dmg": {
+      "average": 8887.994824979094,
+      "category": "skill",
+      "crit": 15606.450757288736,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 6117.106220128225
+    },
+    "skill.ineffa_birgitta_dmg": {
+      "average": 3988.469855551843,
+      "category": "skill",
+      "crit": 7003.363483365526,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2745.0391502953526
+    },
+    "skill.skill_dmg": {
+      "average": 3589.6228699966587,
+      "category": "skill",
+      "crit": 6303.027135028974,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2470.5352352658174
+    },
+    "stats.atk": {
+      "average": 2634.435029996,
+      "category": "stats",
+      "crit": 2634.435029996,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2634.435029996
+    },
+    "stats.crit_dmg": {
+      "average": 155.128,
+      "category": "stats",
+      "crit": 155.128,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 155.128
+    },
+    "stats.crit_rate": {
+      "average": 29.2,
+      "category": "stats",
+      "crit": 29.2,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 29.2
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1703.7329691,
+      "category": "stats",
+      "crit": 1703.7329691,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1703.7329691
+    },
+    "stats.hp": {
+      "average": 25839.288084400003,
+      "category": "stats",
+      "crit": 25839.288084400003,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 25839.288084400003
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 108,
+  "key": "Ineffa",
+  "schema": 1,
+  "slug": "ineffa",
+  "weaponType": "polearm"
+}

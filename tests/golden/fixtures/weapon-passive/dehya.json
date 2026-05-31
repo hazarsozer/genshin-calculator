@@ -1,0 +1,281 @@
+{
+  "defaultWeapon": "weapon_name.the_bell",
+  "element": "pyro",
+  "features": {
+    "attack.charged_final": {
+      "average": 2554.561600106319,
+      "category": "attack",
+      "crit": 4644.657454738762,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2322.328727369381
+    },
+    "attack.charged_spin": {
+      "average": 1413.2076419507086,
+      "category": "attack",
+      "crit": 2569.4684399103794,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1284.7342199551897
+    },
+    "attack.normal_hit_1": {
+      "average": 1463.962816248481,
+      "category": "attack",
+      "crit": 2661.750574997238,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1330.875287498619
+    },
+    "attack.normal_hit_2": {
+      "average": 1454.355750280022,
+      "category": "attack",
+      "crit": 2644.2831823273127,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1322.1415911636564
+    },
+    "attack.normal_hit_3": {
+      "average": 1806.006793640276,
+      "category": "attack",
+      "crit": 3283.6487157095926,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1641.8243578547963
+    },
+    "attack.normal_hit_4": {
+      "average": 2245.7834125930594,
+      "category": "attack",
+      "crit": 4083.242568351017,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2041.6212841755084
+    },
+    "attack.plunge": {
+      "average": 1644.440187279743,
+      "category": "attack",
+      "crit": 2989.891249599533,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1494.9456247997664
+    },
+    "attack.plunge_high": {
+      "average": 4107.118772830641,
+      "category": "attack",
+      "crit": 7467.488677873894,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3733.744338936947
+    },
+    "attack.plunge_low": {
+      "average": 3288.1832990397534,
+      "category": "attack",
+      "crit": 5978.515089163187,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2989.2575445815937
+    },
+    "burst.dehya_flame_manes_fist_dmg": {
+      "average": 4311.115442814814,
+      "category": "burst",
+      "crit": 7838.391714208752,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3919.195857104376
+    },
+    "burst.dehya_incineration_drive_dmg": {
+      "average": 6084.482078866299,
+      "category": "burst",
+      "crit": 11062.694688847816,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 5531.347344423908
+    },
+    "other.dehya_stalwart_and_true_dot_heal": {
+      "average": 2950.4098038201255,
+      "category": "other",
+      "crit": 2950.4098038201255,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2950.4098038201255
+    },
+    "other.dehya_stalwart_and_true_heal": {
+      "average": 9834.699346067086,
+      "category": "other",
+      "crit": 9834.699346067086,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 9834.699346067086
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.dehya_field_dmg": {
+      "average": 2151.388364112615,
+      "category": "skill",
+      "crit": 3911.615207477482,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1955.807603738741
+    },
+    "skill.dehya_indomitable_flame_dmg": {
+      "average": 2813.1560421809645,
+      "category": "skill",
+      "crit": 5114.829167601753,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2557.4145838008767
+    },
+    "skill.dehya_ranging_flame_dmg": {
+      "average": 3309.595343742311,
+      "category": "skill",
+      "crit": 6017.446079531474,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3008.723039765737
+    },
+    "stats.atk": {
+      "average": 1942.390859584,
+      "category": "stats",
+      "crit": 1942.390859584,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1942.390859584
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1503.9088329,
+      "category": "stats",
+      "crit": 1503.9088329,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1503.9088329
+    },
+    "stats.hp": {
+      "average": 49173.49673033543,
+      "category": "stats",
+      "crit": 49173.49673033543,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 49173.49673033543
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.bell_shield": {
+      "average": 9834.699346067086,
+      "category": "weapon",
+      "crit": 9834.699346067086,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 9834.699346067086
+    }
+  },
+  "id": 67,
+  "key": "Dehya",
+  "schema": 1,
+  "slug": "dehya",
+  "weaponType": "claymore"
+}

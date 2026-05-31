@@ -1,0 +1,236 @@
+{
+  "defaultWeapon": "weapon_name.the_alley_flash",
+  "element": "geo",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 1587.6742313346053,
+      "category": "attack",
+      "crit": 2886.6804206083734,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1443.3402103041867
+    },
+    "attack.charged_hit_2": {
+      "average": 2051.7636220324134,
+      "category": "attack",
+      "crit": 3730.4793127862063,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1865.2396563931031
+    },
+    "attack.charged_hit_total": {
+      "average": 3639.4378533670188,
+      "category": "attack",
+      "crit": 6617.159733394579,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3308.5798666972896
+    },
+    "attack.normal_hit_1": {
+      "average": 1178.6242139897308,
+      "category": "attack",
+      "crit": 2142.953116344965,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1071.4765581724826
+    },
+    "attack.normal_hit_2": {
+      "average": 1151.2673656959655,
+      "category": "attack",
+      "crit": 2093.2133921744826,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1046.6066960872413
+    },
+    "attack.normal_hit_3": {
+      "average": 1404.3182124132964,
+      "category": "attack",
+      "crit": 2553.3058407514477,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1276.6529203757239
+    },
+    "attack.normal_hit_4": {
+      "average": 1545.661928597752,
+      "category": "attack",
+      "crit": 2810.294415632276,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1405.147207816138
+    },
+    "attack.normal_hit_5": {
+      "average": 1876.2238454807518,
+      "category": "attack",
+      "crit": 3411.316082692276,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1705.658041346138
+    },
+    "attack.plunge": {
+      "average": 1573.7026980988612,
+      "category": "attack",
+      "crit": 2861.2776329070202,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1430.6388164535101
+    },
+    "attack.plunge_high": {
+      "average": 3930.4463270919496,
+      "category": "attack",
+      "crit": 7146.26604925809,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3573.133024629045
+    },
+    "attack.plunge_low": {
+      "average": 3146.7391956379074,
+      "category": "attack",
+      "crit": 5721.3439920689225,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2860.6719960344612
+    },
+    "attack.traveler_frenzied_rockslide": {
+      "average": 775.8769999282237,
+      "category": "attack",
+      "crit": 1410.6854544149521,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 705.3427272074761
+    },
+    "burst.traveler_shockwave": {
+      "average": 6175.645663934864,
+      "category": "burst",
+      "crit": 11228.446661699752,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 5614.223330849876
+    },
+    "reaction.crystalize": {
+      "average": 2450.4199868011824,
+      "category": "reaction",
+      "crit": 2450.4199868011824,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2450.4199868011824
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "skill.skill_dmg": {
+      "average": 8329.183275155392,
+      "category": "skill",
+      "crit": 15143.969591191622,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 7571.984795595811
+    },
+    "stats.atk": {
+      "average": 2418.87080661,
+      "category": "stats",
+      "crit": 2418.87080661,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2418.87080661
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1558.521525,
+      "category": "stats",
+      "crit": 1558.521525,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1558.521525
+    },
+    "stats.hp": {
+      "average": 24100.914859,
+      "category": "stats",
+      "crit": 24100.914859,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 24100.914859
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 25,
+  "key": "TravelerGeo",
+  "schema": 1,
+  "slug": "traveler_geo",
+  "weaponType": "sword"
+}

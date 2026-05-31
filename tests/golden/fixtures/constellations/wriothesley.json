@@ -1,0 +1,227 @@
+{
+  "defaultWeapon": "weapon_name.solar_pearl",
+  "element": "cryo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 5147.329787212404,
+      "category": "attack",
+      "crit": 8073.787211950965,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3386.655709710975
+    },
+    "attack.normal_hit_1": {
+      "average": 1884.4824442549348,
+      "category": "attack",
+      "crit": 2955.8840969098655,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1239.8842688380307
+    },
+    "attack.normal_hit_2": {
+      "average": 1829.3566574851334,
+      "category": "attack",
+      "crit": 2869.4171537238158,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1203.614577904285
+    },
+    "attack.normal_hit_3": {
+      "average": 2374.0844733068325,
+      "category": "attack",
+      "crit": 3723.8439449314196,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1562.015077571904
+    },
+    "attack.normal_hit_4": {
+      "average": 2677.291781584925,
+      "category": "attack",
+      "crit": 4199.436415075342,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1761.508563370529
+    },
+    "attack.normal_hit_4_1": {
+      "average": 1338.6458907924625,
+      "category": "attack",
+      "crit": 2099.718207537671,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 880.7542816852645
+    },
+    "attack.normal_hit_5": {
+      "average": 3204.7058924656567,
+      "category": "attack",
+      "crit": 5026.705985874969,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2108.517611524735
+    },
+    "attack.plunge": {
+      "average": 1858.3368991676653,
+      "category": "attack",
+      "crit": 2914.873791314233,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1222.6819594438896
+    },
+    "attack.plunge_high": {
+      "average": 4641.342642836432,
+      "category": "attack",
+      "crit": 7280.126672495474,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3053.7444096038057
+    },
+    "attack.plunge_low": {
+      "average": 3715.886094411563,
+      "category": "attack",
+      "crit": 5828.512038350282,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2444.84565367042
+    },
+    "attack.wriothesley_vaulting_fist_dmg": {
+      "average": 18809.371721142958,
+      "category": "attack",
+      "crit": 29374.683813719308,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 9225.717278178174
+    },
+    "attack.wriothesley_vaulting_fist_heal": {
+      "average": 13409.4804814,
+      "category": "attack",
+      "crit": 13409.4804814,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 13409.4804814
+    },
+    "burst.burst_dmg": {
+      "average": 6051.69580198342,
+      "category": "burst",
+      "crit": 9492.320522779604,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3981.6780716357393
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "stats.atk": {
+      "average": 1996.01470194,
+      "category": "stats",
+      "crit": 1996.01470194,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1996.01470194
+    },
+    "stats.crit_dmg": {
+      "average": 138.4,
+      "category": "stats",
+      "crit": 138.4,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 138.4
+    },
+    "stats.crit_rate": {
+      "average": 37.564,
+      "category": "stats",
+      "crit": 37.564,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 37.564
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1639.1745768,
+      "category": "stats",
+      "crit": 1639.1745768,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1639.1745768
+    },
+    "stats.hp": {
+      "average": 26818.9609628,
+      "category": "stats",
+      "crit": 26818.9609628,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26818.9609628
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 76,
+  "key": "Wriothesley",
+  "schema": 1,
+  "slug": "wriothesley",
+  "weaponType": "catalyst"
+}

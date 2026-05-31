@@ -1,0 +1,236 @@
+{
+  "defaultWeapon": "weapon_name.the_bell",
+  "element": "dendro",
+  "features": {
+    "attack.charged_final": {
+      "average": 2365.487901706162,
+      "category": "attack",
+      "crit": 4300.887094011204,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2150.443547005602
+    },
+    "attack.charged_spin": {
+      "average": 1307.5773911041215,
+      "category": "attack",
+      "crit": 2377.4134383711303,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1188.7067191855651
+    },
+    "attack.normal_hit_1": {
+      "average": 1760.7704134747542,
+      "category": "attack",
+      "crit": 3201.4007517722803,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1600.7003758861401
+    },
+    "attack.normal_hit_2": {
+      "average": 1609.4797816662326,
+      "category": "attack",
+      "crit": 2926.3268757567866,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1463.1634378783933
+    },
+    "attack.normal_hit_3": {
+      "average": 1947.3699871736721,
+      "category": "attack",
+      "crit": 3540.672703952131,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1770.3363519760655
+    },
+    "attack.normal_hit_4": {
+      "average": 2373.2987133548495,
+      "category": "attack",
+      "crit": 4315.08856973609,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2157.544284868045
+    },
+    "attack.plunge": {
+      "average": 1612.6101407528627,
+      "category": "attack",
+      "crit": 2932.0184377324777,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1466.0092188662388
+    },
+    "attack.plunge_high": {
+      "average": 4027.697262155735,
+      "category": "attack",
+      "crit": 7323.085931192246,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3661.542965596123
+    },
+    "attack.plunge_low": {
+      "average": 3224.5640375526245,
+      "category": "attack",
+      "crit": 5862.843704641135,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2931.4218523205677
+    },
+    "burst.burst_dmg": {
+      "average": 4779.2663067198055,
+      "category": "burst",
+      "crit": 8689.57510312692,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4344.78755156346
+    },
+    "other.kaveh_bloom_heal": {
+      "average": 453,
+      "category": "other",
+      "crit": 453,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 453
+    },
+    "reaction.burning": {
+      "average": 691.1903697175732,
+      "category": "reaction",
+      "crit": 691.1903697175732,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 691.1903697175732
+    },
+    "reaction.electrocharged": {
+      "average": 5529.522957740585,
+      "category": "reaction",
+      "crit": 5529.522957740585,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5529.522957740585
+    },
+    "reaction.rupture": {
+      "average": 5529.522957740585,
+      "category": "reaction",
+      "crit": 5529.522957740585,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5529.522957740585
+    },
+    "reaction.shatter": {
+      "average": 8294.284436610877,
+      "category": "reaction",
+      "crit": 8294.284436610877,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8294.284436610877
+    },
+    "skill.skill_dmg": {
+      "average": 4985.643715419069,
+      "category": "skill",
+      "crit": 9064.806755307398,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4532.403377653699
+    },
+    "stats.atk": {
+      "average": 1904.806551436,
+      "category": "stats",
+      "crit": 1904.806551436,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1904.806551436
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1626.7736774999998,
+      "category": "stats",
+      "crit": 1626.7736774999998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1626.7736774999998
+    },
+    "stats.hp": {
+      "average": 35602.805001877554,
+      "category": "stats",
+      "crit": 35602.805001877554,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 35602.805001877554
+    },
+    "stats.mastery": {
+      "average": 151,
+      "category": "stats",
+      "crit": 151,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 151
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.bell_shield": {
+      "average": 7120.561000375511,
+      "category": "weapon",
+      "crit": 7120.561000375511,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 7120.561000375511
+    }
+  },
+  "id": 69,
+  "key": "Kaveh",
+  "schema": 1,
+  "slug": "kaveh",
+  "weaponType": "claymore"
+}

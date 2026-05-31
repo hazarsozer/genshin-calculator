@@ -1,0 +1,308 @@
+{
+  "defaultWeapon": "weapon_name.blackcliff_pole",
+  "element": "pyro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2786.66621892438,
+      "category": "attack",
+      "crit": 6154.786128478741,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2412.4306734183397
+    },
+    "attack.normal_hit_1": {
+      "average": 1135.5497445206172,
+      "category": "attack",
+      "crit": 2508.0383751415948,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 983.051007784953
+    },
+    "attack.normal_hit_2": {
+      "average": 1053.9204462895668,
+      "category": "attack",
+      "crit": 2327.747363244286,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 912.3841221834869
+    },
+    "attack.normal_hit_3": {
+      "average": 1284.4712879270505,
+      "category": "attack",
+      "crit": 2836.9547854978196,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1111.9731215302984
+    },
+    "attack.normal_hit_3_1": {
+      "average": 590.8563383316406,
+      "category": "attack",
+      "crit": 1304.9981983457658,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 511.50724277451553
+    },
+    "attack.normal_hit_3_2": {
+      "average": 693.6149495954099,
+      "category": "attack",
+      "crit": 1531.9565871520538,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 600.4658787557829
+    },
+    "attack.normal_hit_4": {
+      "average": 1651.3160377796296,
+      "category": "attack",
+      "crit": 3647.1885201176083,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1429.552428630965
+    },
+    "attack.plunge": {
+      "average": 1268.829195426572,
+      "category": "attack",
+      "crit": 2802.4067892977264,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1098.4316849964437
+    },
+    "attack.plunge_high": {
+      "average": 3169.0007629116444,
+      "category": "attack",
+      "crit": 6999.231484650376,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2743.419571607341
+    },
+    "attack.plunge_low": {
+      "average": 2537.1212533612124,
+      "category": "attack",
+      "crit": 5603.62722683148,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2196.3983674200717
+    },
+    "burst.chevreuse_explosive_grenade_dmg": {
+      "average": 12386.189764878443,
+      "category": "burst",
+      "crit": 27356.828181239718,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 10722.785496393857
+    },
+    "burst.chevreuse_secondary_explosive_dmg": {
+      "average": 1651.491968650459,
+      "category": "burst",
+      "crit": 3647.5770908319623,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1429.7047328525143
+    },
+    "other.atk_bonus": {
+      "average": 31.233624016476004,
+      "category": "other",
+      "crit": 31.233624016476004,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 31.233624016476004
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.chevreuse_chain_explosion_dmg": {
+      "average": 1529.1620906174107,
+      "category": "skill",
+      "crit": 3377.3925128214255,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1323.8031548169647
+    },
+    "skill.chevreuse_heal_dot": {
+      "average": 3123.3624016476,
+      "category": "skill",
+      "crit": 3123.3624016476,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3123.3624016476
+    },
+    "skill.chevreuse_overcharge_dmg": {
+      "average": 7647.084754829235,
+      "category": "skill",
+      "crit": 16889.77705786781,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6620.118943380504
+    },
+    "skill.heal_dot": {
+      "average": 2476.1557721416452,
+      "category": "skill",
+      "crit": 2476.1557721416452,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2476.1557721416452
+    },
+    "skill.hold_dmg": {
+      "average": 4679.235997289277,
+      "category": "skill",
+      "crit": 10334.821089233563,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4050.837653739912
+    },
+    "skill.press_dmg": {
+      "average": 3119.490664859518,
+      "category": "skill",
+      "crit": 6889.880726155708,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2700.558435826608
+    },
+    "skill.surging_blade_dmg": {
+      "average": 779.8726662148795,
+      "category": "skill",
+      "crit": 1722.470181538927,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 675.139608956652
+    },
+    "stats.atk": {
+      "average": 1857.1873664659997,
+      "category": "stats",
+      "crit": 1857.1873664659997,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1857.1873664659997
+    },
+    "stats.crit_dmg": {
+      "average": 155.128,
+      "category": "stats",
+      "crit": 155.128,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 155.128
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1480.7136537000001,
+      "category": "stats",
+      "crit": 1480.7136537000001,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1480.7136537000001
+    },
+    "stats.hp": {
+      "average": 31233.624016476,
+      "category": "stats",
+      "crit": 31233.624016476,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 31233.624016476
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 80,
+  "key": "Chevreuse",
+  "schema": 1,
+  "slug": "chevreuse",
+  "weaponType": "polearm"
+}

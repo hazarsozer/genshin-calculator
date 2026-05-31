@@ -1,0 +1,227 @@
+{
+  "defaultWeapon": "weapon_name.solar_pearl",
+  "element": "hydro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3904.44158635337,
+      "category": "attack",
+      "crit": 5676.545588022113,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2838.2727940110567
+    },
+    "attack.normal_hit_1": {
+      "average": 980.6781695105475,
+      "category": "attack",
+      "crit": 1425.777339290145,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 712.8886696450725
+    },
+    "attack.normal_hit_2": {
+      "average": 920.5520238111694,
+      "category": "attack",
+      "crit": 1338.3618153167536,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 669.1809076583768
+    },
+    "attack.normal_hit_3": {
+      "average": 1063.6107842683107,
+      "category": "attack",
+      "crit": 1546.3504758051681,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 773.1752379025841
+    },
+    "attack.normal_hit_4": {
+      "average": 1430.587604571412,
+      "category": "attack",
+      "crit": 2079.886604884144,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1039.943302442072
+    },
+    "attack.plunge": {
+      "average": 1263.606528242739,
+      "category": "attack",
+      "crit": 1837.1180370485574,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 918.5590185242787
+    },
+    "attack.plunge_high": {
+      "average": 3155.9567406353144,
+      "category": "attack",
+      "crit": 4588.3468649287815,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2294.1734324643908
+    },
+    "attack.plunge_low": {
+      "average": 2526.6776299904595,
+      "category": "attack",
+      "crit": 3673.457634250908,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1836.728817125454
+    },
+    "burst.heal": {
+      "average": 12768.111801211378,
+      "category": "burst",
+      "crit": 12768.111801211378,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 12768.111801211378
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.barbara_droplet_dmg": {
+      "average": 1797.3052604533957,
+      "category": "skill",
+      "crit": 2613.0459429115112,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1306.5229714557556
+    },
+    "skill.heal_charged_atk": {
+      "average": 2176.586841115576,
+      "category": "skill",
+      "crit": 2176.586841115576,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2176.586841115576
+    },
+    "skill.heal_dot": {
+      "average": 2902.1157548207684,
+      "category": "skill",
+      "crit": 2902.1157548207684,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2902.1157548207684
+    },
+    "skill.heal_normal_atk": {
+      "average": 544.146710278894,
+      "category": "skill",
+      "crit": 544.146710278894,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 544.146710278894
+    },
+    "stats.atk": {
+      "average": 1817.0864757399997,
+      "category": "stats",
+      "crit": 1817.0864757399997,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1817.0864757399997
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 37.564,
+      "category": "stats",
+      "crit": 37.564,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 37.564
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1544.8710945,
+      "category": "stats",
+      "crit": 1544.8710945,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1544.8710945
+    },
+    "stats.hp": {
+      "average": 28536.645205844,
+      "category": "stats",
+      "crit": 28536.645205844,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 28536.645205844
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 3,
+  "key": "Barbara",
+  "schema": 1,
+  "slug": "barbara",
+  "weaponType": "catalyst"
+}

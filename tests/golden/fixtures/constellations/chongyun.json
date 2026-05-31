@@ -1,0 +1,227 @@
+{
+  "defaultWeapon": "weapon_name.the_bell",
+  "element": "cryo",
+  "features": {
+    "attack.charged_final": {
+      "average": 2721.4116960679066,
+      "category": "attack",
+      "crit": 4948.0212655780115,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2474.0106327890057
+    },
+    "attack.charged_spin": {
+      "average": 1504.9510154985412,
+      "category": "attack",
+      "crit": 2736.274573633711,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1368.1372868168555
+    },
+    "attack.chongyun_ice_unleashed": {
+      "average": 563.59330004637,
+      "category": "attack",
+      "crit": 1024.7150909934,
+      "damageType": "none",
+      "format": "",
+      "isReacted": false,
+      "normal": 512.3575454967
+    },
+    "attack.normal_hit_1": {
+      "average": 1746.9769152733338,
+      "category": "attack",
+      "crit": 3176.3216641333343,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1588.1608320666671
+    },
+    "attack.normal_hit_2": {
+      "average": 1575.2838523472078,
+      "category": "attack",
+      "crit": 2864.152458813105,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1432.0762294065526
+    },
+    "attack.normal_hit_3": {
+      "average": 2004.5165096625235,
+      "category": "attack",
+      "crit": 3644.575472113679,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1822.2877360568395
+    },
+    "attack.normal_hit_4": {
+      "average": 2526.034188300632,
+      "category": "attack",
+      "crit": 4592.789433273876,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2296.394716636938
+    },
+    "attack.plunge": {
+      "average": 1728.4126028444466,
+      "category": "attack",
+      "crit": 3142.5683688080844,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1571.2841844040422
+    },
+    "attack.plunge_high": {
+      "average": 4316.846488702292,
+      "category": "attack",
+      "crit": 7848.81179764053,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3924.405898820265
+    },
+    "attack.plunge_low": {
+      "average": 3456.092534398833,
+      "category": "attack",
+      "crit": 6283.804607997878,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3141.902303998939
+    },
+    "burst.burst_dmg": {
+      "average": 5593.821309084236,
+      "category": "burst",
+      "crit": 10170.584198334975,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 5085.292099167487
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.skill_dmg": {
+      "average": 5439.489174172737,
+      "category": "skill",
+      "crit": 9889.980316677704,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4944.990158338852
+    },
+    "stats.atk": {
+      "average": 2277.144646652,
+      "category": "stats",
+      "crit": 2277.144646652,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2277.144646652
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1524.3958662,
+      "category": "stats",
+      "crit": 1524.3958662,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1524.3958662
+    },
+    "stats.hp": {
+      "average": 34219.39168606211,
+      "category": "stats",
+      "crit": 34219.39168606211,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 34219.39168606211
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.bell_shield": {
+      "average": 6843.878337212423,
+      "category": "weapon",
+      "crit": 6843.878337212423,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 6843.878337212423
+    }
+  },
+  "id": 6,
+  "key": "Chongyun",
+  "schema": 1,
+  "slug": "chongyun",
+  "weaponType": "claymore"
+}
