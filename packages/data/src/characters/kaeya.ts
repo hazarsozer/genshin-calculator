@@ -88,14 +88,12 @@ const features: readonly Feature[] = [
     name: "charged_hit_1",
     category: "attack",
     damageType: "charged",
-    isChild: true,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit_1") }],
   },
   {
     name: "charged_hit_2",
     category: "attack",
     damageType: "charged",
-    isChild: true,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit_2") }],
   },
   // --- Plunge attacks ---
