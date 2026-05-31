@@ -119,17 +119,15 @@ const features: readonly Feature[] = [
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5_2") }] },
     ],
   },
-  // Child hits (isChild = true — excluded from compileCharacter rotation by default)
+  // Sub-hits of normal_hit_5 (individual components of the 2-part combo).
   {
     name: "normal_hit_5_1",
     category: "attack",
-    isChild: true,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5_1") }],
   },
   {
     name: "normal_hit_5_2",
     category: "attack",
-    isChild: true,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5_2") }],
   },
   {
