@@ -14,7 +14,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Ningguang)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Ningguang as NingguangStatTable } from "../generated/charTables.js";
 import { Ningguang as NingguangTalents } from "../generated/charTalentTables.js";
 
@@ -111,6 +111,30 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Piercing Fragments": ConditionStatic with no real stats (description only) → SKIP.
+// C2 "Shock Effect": ConditionStatic with no real stats (description only) → SKIP.
+// C3 "Majesty Be the Array of Stars": +3 Elemental Burst talent levels.
+//    Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C4 "Exquisite be the Jade, Outshining All Beneath": ConditionBoolean toggle
+//    (all element RES) → SKIP.
+// C5 "Invincible be the Jade Screen": +3 Elemental Skill talent levels.
+//    Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C6 "Grandeur be the Seven Stars": ConditionStatic with no real stats → SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Ningguang.js:220-282
+
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 Elemental Burst (Starshatter).
+  // Raw cons[2]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 Elemental Skill (Jade Screen).
+  // Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -125,4 +149,5 @@ export const ningguang: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
