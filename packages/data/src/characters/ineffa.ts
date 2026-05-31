@@ -141,7 +141,6 @@ const features: readonly Feature[] = [
   {
     name: "normal_hit_3_1",
     category: "attack",
-    isChild: true,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3_1") }],
   },
   {
@@ -209,6 +208,36 @@ const features: readonly Feature[] = [
       reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
       critRateKeys: LUNAR_CRIT_RATE_KEYS,
       critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+    },
+  },
+  // Penalized variants: same formula but rate × 1/2 and rate × 1/12.
+  // Source: raw/.../db/Features/Reactions.js:99-112 (penalty: 1/2, 1/12).
+  {
+    name: "lunarcharged_contrubution_2",
+    category: "reaction",
+    damageType: "lunarreaction",
+    reaction: {
+      variant: "lunarcharged",
+      element: "electro",
+      scalingStatKeys: LUNAR_SCALING_KEYS,
+      reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
+      critRateKeys: LUNAR_CRIT_RATE_KEYS,
+      critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+      penalty: 1 / 2,
+    },
+  },
+  {
+    name: "lunarcharged_contrubution_12",
+    category: "reaction",
+    damageType: "lunarreaction",
+    reaction: {
+      variant: "lunarcharged",
+      element: "electro",
+      scalingStatKeys: LUNAR_SCALING_KEYS,
+      reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
+      critRateKeys: LUNAR_CRIT_RATE_KEYS,
+      critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+      penalty: 1 / 12,
     },
   },
   // --- A1 lunardirect: Birgitta coordinated attack (base-scaled, crit-bearing) ---

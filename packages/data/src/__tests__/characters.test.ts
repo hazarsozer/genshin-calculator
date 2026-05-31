@@ -136,9 +136,9 @@ describe("Hu Tao (HP scaler)", () => {
     expect(Object.keys(compiled)).toContain("attack.plunge_high");
     expect(Object.keys(compiled)).toContain("skill.hutao_blood_blossom");
     expect(Object.keys(compiled)).toContain("burst.burst_dmg");
-    // Child hits should be excluded
-    expect(Object.keys(compiled)).not.toContain("attack.normal_hit_5_1");
-    expect(Object.keys(compiled)).not.toContain("attack.normal_hit_5_2");
+    // Sub-hits of normal_hit_5 are now included as independent features (P1.9 golden coverage).
+    expect(Object.keys(compiled)).toContain("attack.normal_hit_5_1");
+    expect(Object.keys(compiled)).toContain("attack.normal_hit_5_2");
 
     // charged_hit oracle: attack.charged_hit normal=2298.4054892921176
     const chargedResult = compiled["attack.charged_hit"]!(context);

@@ -97,6 +97,13 @@ export interface LunarChargedDamageParams {
    * Mirrors `getStatsCritDamage` → `getDefaultStatsCritDamage` in Lunar.js:28-30.
    */
   readonly critDmgKeys?: readonly string[];
+  /**
+   * Optional fractional penalty applied to the reaction rate before levelMult.
+   * Her `FeatureReactionLunarCharged({ penalty: 1/2 })` etc. Defaults to 1.
+   *
+   * Source: raw/genshin_calc_pub/src/js/db/Features/Reactions.js:99-112
+   */
+  readonly penalty?: number;
 }
 
 /**
@@ -134,16 +141,19 @@ export function cLunarChargedDamage(params: LunarChargedDamageParams): DamageBlo
   // resMultiplier(element)
   const resMult = cMultiplierResistance(params.element);
 
+  // Effective rate = LUNAR_CHARGED_RATE × penalty (default 1 → no change).
+  const effectiveRate = LUNAR_CHARGED_RATE * (params.penalty ?? 1);
+
   // Rate, optionally scaled by (1 + Σ scalingStat). Lunar-Charged always scales
   // the rate by (1 + lunarcharged_multi); when no scalingStatKeys are supplied
   // the rate is the bare constant (the simple 1.8 × levelMult form).
   const hasScaling = params.scalingStatKeys && params.scalingStatKeys.length > 0;
   const rate: Block = hasScaling
     ? cMulti([
-        cConst(LUNAR_CHARGED_RATE),
+        cConst(effectiveRate),
         cMultiplierReaction(params.scalingStatKeys!.map((k) => cStat(k))),
       ])
-    : cConst(LUNAR_CHARGED_RATE);
+    : cConst(effectiveRate);
 
   // Full base: rate × levelMult × reactionFactor × resMult
   const full: Block = cMulti([rate, cConst(levelMult), reactionFactor, resMult]);

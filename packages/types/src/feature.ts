@@ -157,6 +157,14 @@ export interface FeatureReaction {
    * (`CMultiplierAmplifying([3%])` → a bare ×3). Defaults to 1.
    */
   readonly amplifyingMultiplier?: number;
+  /**
+   * `lunarcharged` only: fractional penalty applied to the reaction rate.
+   * Her `FeatureReactionLunarCharged({ penalty: 1/2 })` etc. Multiplied into
+   * the base rate before levelMult. Defaults to 1 (no penalty).
+   *
+   * Source: raw/genshin_calc_pub/src/js/db/Features/Reactions.js:99-112
+   */
+  readonly penalty?: number;
 }
 
 /**
