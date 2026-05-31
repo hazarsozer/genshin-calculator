@@ -44,6 +44,7 @@ import {
   cMultiplierResistance,
   cStat,
   cSum,
+  cTransformativeDamage,
   type Block,
   type DamageBlock,
 } from "@genshin/core";
@@ -214,6 +215,23 @@ function compileReaction(
     throw new Error(
       `compileReaction: feature '${feature.name}' is a reaction but ctx.charLevel is unset (the level multiplier needs it)`
     );
+  }
+
+  // Standard transformative reaction (Overload, Superconduct, …): route to the
+  // P1.6 core factory. reactionMultiplier is her getReactionRate(); levelMult is
+  // baked from charLevel; EM + reaction-DMG bonuses read at eval time. Non-crit.
+  if (reaction.variant === "transformative") {
+    if (reaction.reactionMultiplier === undefined) {
+      throw new Error(
+        `compileReaction: transformative feature '${feature.name}' is missing reactionMultiplier`
+      );
+    }
+    return cTransformativeDamage({
+      reactionMultiplier: reaction.reactionMultiplier,
+      element: reaction.element,
+      characterLevel: ctx.charLevel,
+      ...(reaction.reactionBonusKeys ? { reactionBonusKeys: reaction.reactionBonusKeys } : {}),
+    });
   }
 
   if (reaction.variant === "lunarcharged") {

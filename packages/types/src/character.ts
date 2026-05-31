@@ -231,6 +231,16 @@ export interface DbObjectChar {
   readonly constellation?: CharConstellation;
   /** Party (external) conditions the character provides. */
   readonly partyData?: { readonly conditions: readonly Condition[] };
+  /**
+   * True for a character whose data enables Lunar-Charged by default (her
+   * `allowed_lunarcharged: 1` — Ineffa only, as of v5.8). Suppresses the generic
+   * `electrocharged` transformative-reaction contribution (her `electrocharged`
+   * is gated by `ConditionNot([lunarchargedCond])`); the Lunar-Charged variants
+   * are declared explicitly on the character instead.
+   *
+   * Source: raw/genshin_calc_pub/src/js/db/Char/Ineffa.js:355
+   */
+  readonly lunarChargedActive?: boolean;
 }
 
 /**

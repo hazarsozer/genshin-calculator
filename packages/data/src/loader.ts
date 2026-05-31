@@ -7,9 +7,12 @@
  * `(ctx) => DamageResult`, keyed by `"<category>.<name>"` — the same key shape
  * the oracle fixtures use (e.g. `attack.normal_hit_1`).
  *
- * Non-damage features (heals, post-effect-value displays) and reaction features
- * are out of P1.7a scope (the Hu Tao baseline proof exercises the damage path);
- * P1.7b extends this as it models the full representative set.
+ * Non-damage features (heals, post-effect-value displays) are out of scope.
+ * Standard transformative-reaction contribution features (Overload, Superconduct,
+ * …) are NOT declared per-character: they are emitted generically from the
+ * character's element via `transformativeReactionFeatures` and appended here (only
+ * when `ctx.charLevel` is set, since their level multiplier needs it). This matches
+ * her `db/Features/Reactions.js`, which registers the reaction catalog globally.
  *
  * Source: raw/genshin_calc_pub/src/js/classes/CalcSet.js (getFeaturesHash)
  */
@@ -21,6 +24,7 @@ import type {
   Feature,
 } from "@genshin/types";
 import { compileFeature, type CompileContext } from "./compileFeature.js";
+import { transformativeReactionFeatures } from "./reactions.js";
 
 /** The "<category>.<name>" key for a feature (matches the oracle fixtures). */
 export function featureKey(feature: Feature): string {
@@ -38,7 +42,20 @@ export function compileCharacter(
   ctx: CompileContext
 ): Readonly<Record<string, CompiledFeature>> {
   const out: Record<string, CompiledFeature> = {};
-  for (const feature of char.features) {
+
+  // The standard transformative-reaction contributions are generic (computed from
+  // the char's element + EM + level), appended to the declared features. They need
+  // a charLevel for the level multiplier, so they are only emitted when one is set.
+  const reactionFeatures: readonly Feature[] =
+    ctx.charLevel !== undefined
+      ? transformativeReactionFeatures(char.element, {
+          ...(char.lunarChargedActive !== undefined
+            ? { lunarChargedActive: char.lunarChargedActive }
+            : {}),
+        })
+      : [];
+
+  for (const feature of [...char.features, ...reactionFeatures]) {
     if (feature.isChild) continue;
     const block = compileFeature(feature, ctx);
     out[featureKey(feature)] = compile(block);

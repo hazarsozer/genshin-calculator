@@ -94,19 +94,33 @@ export interface Feature {
  * Declarative descriptor for a standalone reaction feature. Faithfully captures
  * the inputs `@genshin/core`'s Lunar-Charged factory needs.
  *
- * Two Lunar-Charged shapes (her `Lunar/Charged.js` vs `Lunar/ChargedLike.js`):
+ * Shapes (her `Reaction/Transformative/*`):
+ *   - `variant: "transformative"` — standard non-crit reaction (Overload,
+ *     Superconduct, Electro-Charged, Shatter, Swirl, Hyperbloom, Burgeon,
+ *     Burning, …): `reactionMultiplier × levelMult × (1 + emBonus + Σ reactionBonus)
+ *     × resMultiplier`. Cannot crit (crit keys omitted).
  *   - `variant: "lunarcharged"` — rate-based reaction: `1.8 × (1+scaling) × levelMult`.
  *   - `variant: "lunardirect"`  — base-scaled direct hit: `(Σ base%×scalingStat)
  *     × (1+scaling)`, then an extra flat amplifying factor (×3).
  *
- * Both apply `(1 + lunarEmBonus + Σ reactionBonus) × resMultiplier`, crit via the
- * supplied crit-stat keys.
+ * All apply `(1 + emBonus + Σ reactionBonus) × resMultiplier`. The two Lunar
+ * variants are crit-bearing via the supplied crit-stat keys; `transformative`
+ * is not.
  */
 export interface FeatureReaction {
-  /** Which Lunar-Charged shape this feature is. */
-  readonly variant: "lunarcharged" | "lunardirect";
+  /** Which reaction shape this feature is. */
+  readonly variant: "transformative" | "lunarcharged" | "lunardirect";
   /** Reaction output element for the resistance lookup (`enemy_res_<element>`). */
   readonly element: Element;
+  /**
+   * `transformative` only: the per-reaction coefficient (her `getReactionRate()`,
+   * NOT the canonical game value) multiplied by the level table. E.g. Overload
+   * 2.75, Superconduct 1.5, Electro-Charged 2, Shatter 3, Swirl 0.6, Bloom 2,
+   * Hyperbloom/Burgeon 3, Burning 0.25.
+   *
+   * Source: raw/.../Feature2/Reaction/Transformative/<Reaction>.js getReactionRate()
+   */
+  readonly reactionMultiplier?: number;
   /**
    * Rate-scaling stat keys: the `(1 + Σ)` term that scales the rate (reaction) or
    * the base (direct). For Lunar-Charged this is `["lunarcharged_multi"]`.

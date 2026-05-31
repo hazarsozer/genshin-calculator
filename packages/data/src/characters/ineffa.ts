@@ -249,4 +249,8 @@ export const ineffa: DbObjectChar = {
   features,
   multipliers: [],
   postEffects: [lunarMultiFromAtk],
+  // Her `allowed_lunarcharged: 1` default (Char/Ineffa.js:355) — suppresses the
+  // generic `electrocharged` contribution; the Lunar-Charged variants are declared
+  // explicitly in `features` above.
+  lunarChargedActive: true,
 };
