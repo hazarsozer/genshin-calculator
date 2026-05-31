@@ -49,7 +49,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (RaidenShogun)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { RaidenShogun as RaidenShogunStatTable } from "../generated/charTables.js";
 import { RaidenShogun as RaidenShogunTalents } from "../generated/charTalentTables.js";
 
@@ -192,6 +192,34 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Ominous Inscription": ConditionStatic with no real stats (description only) → SKIP.
+// C2 "Steelbreaker": ConditionStatic — enemy_def_ignore_burst: 60 (always-on).
+//    Raw cons[1]: ConditionStatic{ stats:{ enemy_def_ignore_burst:60 } }
+//    Applies to burst features via the engine's standard def-ignore path.
+// C3 "Shinkage Bygones": +3 Elemental Burst talent levels.
+//    Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C4 "Pledge of Propriety": ConditionStatic with ONLY text_percent: 30 (display) → SKIP.
+// C5 "Shogun's Descent": +3 Elemental Skill talent levels.
+//    Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C6 "Wishbearer": ConditionStatic with no real stats → SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/RaidenShogun.js:687-744
+
+const constellationConditions: readonly Condition[] = [
+  // C2: enemy_def_ignore_burst +60 (always-on ConditionStatic).
+  // Raw cons[1]: ConditionStatic{ stats:{ enemy_def_ignore_burst: 60 } }.
+  { type: "constellation", constellation: 2, stats: { enemy_def_ignore_burst: 60 } },
+  // C3: +3 Elemental Burst (Secret Art: Musou Shinsetsu).
+  // Raw cons[2]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 Elemental Skill (Transcendence: Baleful Omen).
+  // Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -209,4 +237,5 @@ export const raidenShogun: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
