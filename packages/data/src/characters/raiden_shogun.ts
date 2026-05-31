@@ -1,0 +1,212 @@
+/**
+ * Raiden Shogun (Baal) — electro polearm (5-star).
+ *
+ * FIXED SOLO C0 BUILD MODELLING
+ * The oracle fixture is computed with `baal_musou_isshin` (burst stance) OFF: the
+ * fixture asserts the *normal* attack/charged/plunge features (gated on
+ * `NOT baal_musou_isshin`), NOT the burst-infused versions (gated ON it). With the
+ * stance OFF:
+ *   - Normal/charged/plunge hits are PHYSICAL (no electro infusion) — default element.
+ *   - The burst-version normal/charged/plunge features and the per-stack Resolve
+ *     buff (char-level `multipliers` with `stacksLeveling: 'baal_resolve_stacks'`,
+ *     `target.tags: ['raiden_attacks']`) are OFF. Those char-level targeted/stacked
+ *     multipliers are also not engine-supported, but they are inactive here anyway.
+ *
+ * Burst Musou no Hitotachi (`baal_musou_no_hitotachi_dmg`): two raw multipliers —
+ *   1. base burst % (s3.p1), electro, ATK
+ *   2. per-Resolve-stack burst % (s3.p2) gated on `baal_musou_isshin`
+ * Only multiplier #1 is active in the fixed solo build (stance OFF), so the modelled
+ * burst is the base multiplier alone. Oracle confirms: 14398.81 normal matches the
+ * base 721.44% × ATK_total path without the stack term.
+ *
+ * Multihit `normal_hit_4`: a 2-sub-hit attack. The combined row is modelled as a
+ * Multihit (both items summed → matches fixture `attack.normal_hit_4`); the two
+ * sub-hits `normal_hit_4_1`/`normal_hit_4_2` (raw `isChild`) are modelled as
+ * independent single-hit rows so they emit and match the fixture's per-sub-hit keys.
+ *
+ * SKIPPED (display-only / not damage triples — harness filters `damageType: ""`):
+ *   other.burst_dmg_bonus, other.electro_dmg_bonus  (FeaturePostEffectValue)
+ *   burst.baal_energy_recharge                       (FeatureStatic, format decimal)
+ * Constellations (C0 build) skipped. Reactions emitted generically from element.
+ *
+ * ALWAYS-ON PASSIVE FOLDED (A4 Enlightened One → +52.8% Electro DMG):
+ *   A4 grants Electro DMG = 0.4% per 1% of Energy Recharge above 100%, capped 80%.
+ *   In the FIXED canonical build, total Energy Recharge = 232% (fixture `stats.recharge`),
+ *   so the bonus is a CONSTANT 0.4 × (232 − 100) = 52.8% (< 80% cap) — unconditional in
+ *   the fixed solo build. Her engine derives this via PostEffectStatsExceedRecharge (its
+ *   `other.electro_dmg_bonus` display row = 52.8, not a damage triple), and the oracle
+ *   FOLDS it into the Electro hits' DMG bonus. Since it is a fixed constant here, it is
+ *   folded faithfully via `baseStats: { dmg_electro: 52.8 }` (concatenated into the
+ *   `dmg_electro` total alongside the base 2% → 54.8% on every electro hit).
+ *   Verified: with the fold, skill_dmg / baal_coordinated_atk_dmg / burst all match the
+ *   oracle within tolerance; without it they were short by exactly this 52.8% factor.
+ *
+ *   A1 (Wishes Unnumbered): party energy/burst-DMG support — not a solo self damage stat.
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/db/Char/RaidenShogun.js
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTables.js (RaidenShogun)
+ *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (RaidenShogun)
+ */
+
+import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import { RaidenShogun as RaidenShogunStatTable } from "../generated/charTables.js";
+import { RaidenShogun as RaidenShogunTalents } from "../generated/charTalentTables.js";
+
+// ---------------------------------------------------------------------------
+// TalentResolver
+// ---------------------------------------------------------------------------
+
+const talents: TalentResolver = {
+  get(path: string) {
+    const [talent, name] = path.split(".");
+    if (talent === "attack") {
+      if (name === "normal_hit_1")   return RaidenShogunTalents.s1.p1;
+      if (name === "normal_hit_2")   return RaidenShogunTalents.s1.p2;
+      if (name === "normal_hit_3")   return RaidenShogunTalents.s1.p3;
+      if (name === "normal_hit_4_1") return RaidenShogunTalents.s1.p4;
+      if (name === "normal_hit_4_2") return RaidenShogunTalents.s1.p5;
+      if (name === "normal_hit_5")   return RaidenShogunTalents.s1.p6;
+      if (name === "charged_hit")    return RaidenShogunTalents.s1.p7;
+      if (name === "plunge")         return RaidenShogunTalents.s1.p9;
+      if (name === "plunge_low")     return RaidenShogunTalents.s1.p10;
+      if (name === "plunge_high")    return RaidenShogunTalents.s1.p11;
+    }
+    if (talent === "skill") {
+      if (name === "skill_dmg")                return RaidenShogunTalents.s2.p1;
+      if (name === "baal_coordinated_atk_dmg") return RaidenShogunTalents.s2.p2;
+    }
+    if (talent === "burst") {
+      if (name === "baal_musou_no_hitotachi_dmg") return RaidenShogunTalents.s3.p1;
+    }
+    throw new Error(`raiden_shogun talents: unknown path '${path}'`);
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Features
+// ---------------------------------------------------------------------------
+
+const features: readonly Feature[] = [
+  // --- Normal attacks (physical polearm — stance OFF → no electro infusion) ---
+  // raw: FeatureDamageNormal normal_hit_1, condition NOT baal_musou_isshin
+  {
+    name: "normal_hit_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
+  },
+  {
+    name: "normal_hit_2",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }],
+  },
+  {
+    name: "normal_hit_3",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
+  },
+  // raw: FeatureDamageMultihit normal_hit_4 — combined 2-sub-hit (s1.p4 + s1.p5)
+  {
+    name: "normal_hit_4",
+    category: "attack",
+    damageType: "normal",
+    items: [
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4_1") }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4_2") }] },
+    ],
+  },
+  // raw: FeatureDamageNormal normal_hit_4_1 (isChild) — emitted as independent sub-hit row
+  {
+    name: "normal_hit_4_1",
+    category: "attack",
+    damageType: "normal",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4_1") }],
+  },
+  // raw: FeatureDamageNormal normal_hit_4_2 (isChild) — emitted as independent sub-hit row
+  {
+    name: "normal_hit_4_2",
+    category: "attack",
+    damageType: "normal",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4_2") }],
+  },
+  {
+    name: "normal_hit_5",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5") }],
+  },
+  // --- Charged attack (physical) ---
+  // raw: FeatureDamageCharged charged_hit
+  {
+    name: "charged_hit",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }],
+  },
+  // --- Plunge attacks (physical) ---
+  // raw: FeatureDamagePlungeCollision plunge
+  {
+    name: "plunge",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
+  },
+  // raw: FeatureDamagePlungeShockWave plunge_low
+  {
+    name: "plunge_low",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
+  },
+  // raw: FeatureDamagePlungeShockWave plunge_high
+  {
+    name: "plunge_high",
+    category: "attack",
+    damageType: "plunge",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
+  },
+  // --- Skill: Transcendence: Baleful Omen (electro) ---
+  // raw: FeatureDamageSkill skill_dmg, element='electro'
+  {
+    name: "skill_dmg",
+    category: "skill",
+    element: "electro",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
+  },
+  // raw: FeatureDamageSkill baal_coordinated_atk_dmg, element='electro'
+  {
+    name: "baal_coordinated_atk_dmg",
+    category: "skill",
+    element: "electro",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.baal_coordinated_atk_dmg") }],
+  },
+  // --- Burst: Secret Art: Musou Shinsetsu (electro) ---
+  // raw: FeatureDamageBurst baal_musou_no_hitotachi_dmg, element='electro'.
+  // Base multiplier only (s3.p1); the per-Resolve-stack multiplier is gated on
+  // baal_musou_isshin (OFF in fixed solo build) → excluded.
+  {
+    name: "baal_musou_no_hitotachi_dmg",
+    category: "burst",
+    element: "electro",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.baal_musou_no_hitotachi_dmg") }],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// DbObjectChar
+// ---------------------------------------------------------------------------
+
+export const raidenShogun: DbObjectChar = {
+  name: "raiden_shogun",
+  gameId: 10000052,
+  rarity: 5,
+  element: "electro",
+  weapon: "polearm",
+  origin: "inazuma",
+  statTable: RaidenShogunStatTable,
+  // A4 (Enlightened One): +52.8% Electro DMG, a fixed constant in the canonical
+  // build (Energy Recharge 232% → 0.4×(232−100)). Folded into the electro hits.
+  baseStats: { dmg_electro: 52.8 },
+  talents,
+  features,
+  multipliers: [],
+};
