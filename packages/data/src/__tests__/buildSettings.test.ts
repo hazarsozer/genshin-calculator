@@ -13,6 +13,7 @@
  *   raw/genshin_calc_pub/src/js/classes/Condition/Number.js        → settings[params.name]
  */
 
+import { describe, it, expect } from "vitest";
 import { evaluate, getStackCount } from "@genshin/core";
 import type {
   ConditionBoolean,

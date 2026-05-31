@@ -18,6 +18,9 @@ export type {
   BuildResult,
 } from "./buildStats.js";
 
+export { buildSettings } from "./buildSettings.js";
+export type { BuildSettingsInput } from "./buildSettings.js";
+
 export { compileFeature } from "./compileFeature.js";
 export type { CompileContext, TalentLevels } from "./compileFeature.js";
 
