@@ -38,6 +38,7 @@
  */
 
 import type {
+  Condition,
   DbObjectChar,
   Feature,
   TalentResolver,
@@ -242,6 +243,41 @@ const features: readonly Feature[] = [
     element: elem,
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.chasca_radiant_soulreaping_shell_dmg") }],
   })),
+  // C2 "Muzzle — The Searing Smoke": cons-added element-infused charged hits at 400% ATK.
+  // Raw: Chasca.js features FeatureDamageCharged per elem, category:'other' (→ "other" fixture key),
+  // values:StatTable([400]), source:'constellation2', condition:ConditionConstellation({constellation:2}).
+  // category omitted = engine maps undefined → "other" (per collei.ts precedent).
+  // Raw: Chasca.js:332-344.
+  ...ABSORB_ELEMENTS.map((elem): Feature => ({
+    name: `chasca_c2_${elem}_dmg`,
+    damageType: "charged",
+    element: elem,
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: { getValue: (_level: number) => 400 },
+        source: "constellation2",
+      },
+    ],
+  })),
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Cylinder — The Restless Roulette": ConditionStatic display-only → SKIP.
+// C2 "Muzzle — The Searing Smoke": ConditionStatic display-only (real damage = features above) → SKIP.
+// C3: +3 levels to Spirit Reins, Shadow Hunt (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
+// C4 "Sparks — The Sudden Shot": ConditionStatic display-only → SKIP.
+// C5: +3 levels to Soul Reaper's Fatal Round (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+// C6 "Showdown — The Glory of Battle": ConditionBoolean toggle (crit_dmg_chasca:120) → SKIP (toggle OFF).
+// Raw: Chasca.js constellation array (Chasca.js:376-443).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to elemental skill.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to elemental burst.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -259,4 +295,5 @@ export const chasca: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
