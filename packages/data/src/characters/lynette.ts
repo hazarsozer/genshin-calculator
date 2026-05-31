@@ -22,7 +22,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Lynette)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Lynette as LynetteStatTable } from "../generated/charTables.js";
 import { Lynette as LynetteTalents } from "../generated/charTalentTables.js";
 
@@ -227,6 +227,33 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "A Cold Blade Like a Shadow" (ConditionStatic description-only) → SKIP.
+// C2 "Endless Mysteries" (ConditionStatic description-only) → SKIP.
+// C3 "Cognition-Inverting Gaze" → +3 Elemental Burst (Astonishing Shift) levels.
+//   raw: constellation[2]: Condition{ settings:{char_skill_burst_bonus:3} }
+// C4 "Tacit Coordination" (ConditionStatic description-only) → SKIP.
+// C5 "Obscuring Ambiguity" → +3 Elemental Skill (Enigmatic Feint) levels.
+//   raw: constellation[4]: Condition{ settings:{char_skill_elemental_bonus:3} }
+// C6 "Watchful Eye": two entries in constellation[5]:
+//   (a) Condition{ settings:{allowed_infusion_anemo:1} } — always-on at C6, enables
+//       anemo infusion on normal attacks. PORT as constellation settings condition.
+//   (b) ConditionBoolean "lynette_watchful_eye" (dmg_anemo toggle + attack_infusion_anemo
+//       settings) → SKIP (ConditionBoolean toggle, off in fixed build).
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Lynette.js:413-477
+
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 Elemental Burst (Astonishing Shift) levels.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 Elemental Skill (Enigmatic Feint) levels.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // C6 (a): always-on anemo infusion enablement.
+  { type: "constellation", constellation: 6, settings: { allowed_infusion_anemo: 1 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -241,4 +268,5 @@ export const lynette: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
