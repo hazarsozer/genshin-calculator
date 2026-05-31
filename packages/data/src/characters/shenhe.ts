@@ -21,7 +21,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Shenhe)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Shenhe as ShenheStatTable } from "../generated/charTables.js";
 import { Shenhe as ShenheTalents } from "../generated/charTalentTables.js";
 
@@ -160,6 +160,25 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Clarity of Heart": ConditionStatic no real stats → SKIP.
+// C2 "Centered Spirit": ConditionStatic with crit_dmg_cryo:15 BUT gated on
+//   subConditions:[ConditionBoolean(shenhe_spirit_field)] — toggle → SKIP.
+// C3 "Seclusion": +3 Elemental Skill talent levels.
+//   Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C4 "Insight": ConditionNumberShenhe (stacks toggle) → SKIP.
+// C5 "Divine Attainment": slot {} in raw cons[4] — no conditions → no effect.
+// C6 "Mystical Abandon": ConditionStatic no real stats → SKIP.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Shenhe.js:393-453
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Seclusion" — +3 levels to Spring Spirit Summoning (Elemental Skill).
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -174,4 +193,5 @@ export const shenhe: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
