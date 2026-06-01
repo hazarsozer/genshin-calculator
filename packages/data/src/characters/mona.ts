@@ -13,7 +13,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Mona)
  */
 
-import type { CharPostEffect, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
 import { Mona as MonaStatTable } from "../generated/charTables.js";
 import { Mona as MonaTalents } from "../generated/charTalentTables.js";
 
@@ -150,6 +150,36 @@ const features: readonly Feature[] = [
     element: "hydro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
+  // --- C2 "Lunar Chain": on charged hit, 20% chance of another free charged hit.
+  // raw: FeatureDamageCharged name:'mona_charged_hit', element:'hydro',
+  //   same charged_hit talent, condition:ConditionConstellation({constellation:2}).
+  //   rotationHitCount:0.20 (display-only hit-count weighting — not part of our engine).
+  //   FeatureDamageCharged → damageType:"charged". Mona.js:201-213.
+  {
+    name: "mona_charged_hit",
+    category: "attack",
+    damageType: "charged",
+    element: "hydro",
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Prophecy of Submersion": ConditionBoolean toggle (reaction bonuses) → SKIP.
+// C2 "Lunar Chain": ConditionStatic (display-only text_percent_chance) → no stat entry;
+//   actual hit modeled as mona_charged_hit feature above. Mona.js:356-365.
+// C3 "Restless Revolution": +3 levels to Stellaris Phantasm (burst). Mona.js:295-301.
+// C4 "Prophecy of Oblivion": ConditionBoolean toggle (+15% crit_rate) → SKIP.
+// C5 "Mockery of Fortuna": +3 levels to Mirror Reflection of Doom (skill). Mona.js:381-389.
+// C6 "Rhetoric of Calamitas": ConditionStacks toggle (charged DMG stacks) → SKIP.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Stellaris Phantasm (elemental burst). Mona.js:295-301.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Mirror Reflection of Doom (elemental skill). Mona.js:381-389.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -167,5 +197,6 @@ export const mona: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
   postEffects: [monaA4PostEffect],
 };
