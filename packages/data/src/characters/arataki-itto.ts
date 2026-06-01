@@ -140,14 +140,13 @@ const features: readonly Feature[] = [
   },
   // --- Charged attacks (Kesagiri) ---
   // C6 "Arataki Itto, Present!" adds +70% Crit DMG to Kesagiri and Saichimonji hits.
-  // Modelled via critDamageBonuses:['crit_dmg_charged'] on all charged features; the
-  // C6 constellation condition contributes crit_dmg_charged:70 to the stats bag.
-  // (buildStats collectFeatureBonusKeys emits the key as a fraction; absent at C0-C5 → 0.)
+  // The C6 condition contributes crit_dmg_charged:70 to the stats bag; the engine now
+  // folds crit_dmg_<type> GENERICALLY (critBonusTypeKeys), so every charged hit picks it
+  // up without a per-feature critDamageBonuses declaration. Absent at C0-C5 → 0.
   {
     name: "itto_kesagiri_combo_slash_dmg",
     category: "attack",
     damageType: "charged",
-    critDamageBonuses: ["crit_dmg_charged"],
     multipliers: [
       { leveling: "char_skill_attack", values: talents.get("attack.itto_kesagiri_combo_slash_dmg") },
     ],
@@ -156,7 +155,6 @@ const features: readonly Feature[] = [
     name: "itto_kesagiri_final_slash_dmg",
     category: "attack",
     damageType: "charged",
-    critDamageBonuses: ["crit_dmg_charged"],
     multipliers: [
       { leveling: "char_skill_attack", values: talents.get("attack.itto_kesagiri_final_slash_dmg") },
     ],
@@ -165,7 +163,6 @@ const features: readonly Feature[] = [
     name: "itto_saichimonji_slash_dmg",
     category: "attack",
     damageType: "charged",
-    critDamageBonuses: ["crit_dmg_charged"],
     multipliers: [
       { leveling: "char_skill_attack", values: talents.get("attack.itto_saichimonji_slash_dmg") },
     ],

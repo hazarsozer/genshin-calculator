@@ -97,8 +97,8 @@ const features: readonly Feature[] = [
     damageType: "charged",
     damageBonuses: ["dmg_charged_tighnari"],
     // C1 "Beginnings Determined at the Roots": +15% Charged crit rate (ConditionStatic,
-    // auto-active, NOT display-only). crit_rate_charged is type-specific → wired per charged hit.
-    critRateBonuses: ["crit_rate_charged"],
+    // auto-active, NOT display-only). The engine folds crit_rate_<type> generically now,
+    // so every charged hit picks up crit_rate_charged from the bag — no declaration needed.
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
   },
   // raw: FeatureDamageChargedAimed tighnari_charged_dmg — dendro charged (Tighnari.js:198-207)
@@ -109,8 +109,8 @@ const features: readonly Feature[] = [
     element: "dendro",
     damageBonuses: ["dmg_charged_tighnari"],
     // C1 "Beginnings Determined at the Roots": +15% Charged crit rate (ConditionStatic,
-    // auto-active, NOT display-only). crit_rate_charged is type-specific → wired per charged hit.
-    critRateBonuses: ["crit_rate_charged"],
+    // auto-active, NOT display-only). The engine folds crit_rate_<type> generically now,
+    // so every charged hit picks up crit_rate_charged from the bag — no declaration needed.
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.tighnari_charged_dmg") }],
   },
   // raw: FeatureDamageChargedAimed tighnari_wreath_arrow_dmg — dendro wreath arrow (Tighnari.js:208-217)
@@ -121,8 +121,8 @@ const features: readonly Feature[] = [
     element: "dendro",
     damageBonuses: ["dmg_charged_tighnari"],
     // C1 "Beginnings Determined at the Roots": +15% Charged crit rate (ConditionStatic,
-    // auto-active, NOT display-only). crit_rate_charged is type-specific → wired per charged hit.
-    critRateBonuses: ["crit_rate_charged"],
+    // auto-active, NOT display-only). The engine folds crit_rate_<type> generically now,
+    // so every charged hit picks up crit_rate_charged from the bag — no declaration needed.
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.tighnari_wreath_arrow_dmg") }],
   },
   // raw: FeatureDamageCharged tighnari_clusterbloom_arrow_dmg — dendro charged (Tighnari.js:218-227)
@@ -133,8 +133,8 @@ const features: readonly Feature[] = [
     element: "dendro",
     damageBonuses: ["dmg_charged_tighnari"],
     // C1 "Beginnings Determined at the Roots": +15% Charged crit rate (ConditionStatic,
-    // auto-active, NOT display-only). crit_rate_charged is type-specific → wired per charged hit.
-    critRateBonuses: ["crit_rate_charged"],
+    // auto-active, NOT display-only). The engine folds crit_rate_<type> generically now,
+    // so every charged hit picks up crit_rate_charged from the bag — no declaration needed.
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.tighnari_clusterbloom_arrow_dmg") }],
   },
   // --- C6 "Karma Adjudged from the Leaden Fruit": extra clusterbloom arrow, fixed 150% ATK.
@@ -146,7 +146,7 @@ const features: readonly Feature[] = [
     damageType: "charged",
     element: "dendro",
     damageBonuses: ["dmg_charged_tighnari"],
-    critRateBonuses: ["crit_rate_charged"],
+    // crit_rate_charged (C1) is folded generically by the engine — no declaration needed.
     condition: { type: "constellation", constellation: 6 },
     multipliers: [
       {
@@ -214,8 +214,8 @@ const features: readonly Feature[] = [
 // Raw: db/Char/Tighnari.js constellation array (Tighnari.js:327-408).
 const constellationConditions: readonly Condition[] = [
   // C1 "Beginnings Determined at the Roots": +15% Charged Attack crit rate.
-  // ConditionStatic (auto-active, NOT display-only). Consumed by the charged hits
-  // via critRateBonuses:["crit_rate_charged"]. Raw Tighnari.js C1 crit_rate_charged:15.
+  // ConditionStatic (auto-active, NOT display-only). Consumed by every charged hit via
+  // the engine's generic crit_rate_<type> fold. Raw Tighnari.js C1 crit_rate_charged:15.
   { type: "constellation", constellation: 1, stats: { crit_rate_charged: 15 } },
   // C3: +3 levels to burst talent.
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
