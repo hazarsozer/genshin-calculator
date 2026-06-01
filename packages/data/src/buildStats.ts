@@ -44,6 +44,7 @@ import type {
   StatTableEntry,
 } from "@genshin/types";
 import { getArtifactSet } from "./artifacts/sets/index.js";
+import { CHARACTER_CONDITIONS } from "./characterConditions.js";
 
 /** The seven elements + physical, in the order the engine keys resistance. */
 const ELEMENTS: readonly Element[] = [
@@ -398,6 +399,14 @@ export function buildStats(input: BuildInput): BuildResult {
   // each subject to its own gate here) — the same loop as char/weapon conditions.
   // Mirrors her CalcSet.getBaseStats iterating the artifacts' (+ buffs') getConditions.
   for (const cond of sets.conditions) applyCondition(cond);
+  // Global character conditions (DB.Conditions.Character). In her engine,
+  // CalcObjectCharacter.getConditions() does `result.concat(DB.Conditions.Character)`,
+  // appending these onto EVERY character's condition list. Each is gated by its own
+  // boolean `name` — contributes nothing unless that toggle is set in settings. Inert
+  // for the base build and all constellation/set configs where no global toggle is set.
+  // Source: raw/genshin_calc_pub/src/js/db/Conditions/Character.js
+  //         raw/genshin_calc_pub/src/js/classes/Objects/Character.js (getConditions concat)
+  for (const cond of CHARACTER_CONDITIONS) applyCondition(cond);
 
   // 3. Derive — condition-gated post-effects (reads RAW percents via getTotal).
   // Char post-effects then any set-level post-effects (HP→ATK-style folds), both
