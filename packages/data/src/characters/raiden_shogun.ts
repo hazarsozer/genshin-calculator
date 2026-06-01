@@ -192,6 +192,19 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Toggle conditions
+// ---------------------------------------------------------------------------
+
+// "Eye of Stormy Judgment" skill bonus: dmg_burst += energy_cost × baal_burst_bonus@L9.
+// Raw RaidenShogun.js:185-192 — PostEffectStats{ from:'burst_energy_cost'(=90),
+// percent:skill.'baal_burst_bonus'@L9 = 0.3% per energy → dmg_burst = 90 × 0.3 = 27 }.
+// BUILD-COUPLED at skill level 9 (the oracle's fixed talent level).
+// s2.p4 = baal_burst_bonus table (9 values); getValue(9) = 0.3; 90 × 0.3 = 27.
+const toggleConditions: readonly Condition[] = [
+  { type: "boolean", name: "baal_eye_of_stormy_judgment", stats: { dmg_burst: 27 } },
+];
+
+// ---------------------------------------------------------------------------
 // Constellation conditions (P2.C Wave-1)
 // ---------------------------------------------------------------------------
 // C1 "Ominous Inscription": ConditionStatic with no real stats (description only) → SKIP.
@@ -237,5 +250,5 @@ export const raidenShogun: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: constellationConditions,
+  conditions: [...toggleConditions, ...constellationConditions],
 };
