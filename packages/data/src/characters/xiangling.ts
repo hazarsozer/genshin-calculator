@@ -190,6 +190,11 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 levels to Guoba Attack (elemental skill).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // A4 "Beware, It's Super Hot!" — +10% ATK while Pyronado is active.
+  // Raw: raw/genshin_calc_pub/src/js/db/Char/Xiangling.js:305-317
+  // (ConditionBoolean { name:'xiangling_beware', stats:{ atk_percent:10 } }; asc-4 gate
+  // always true at oracle asc 6 → no gate needed here).
+  { type: "boolean", name: "xiangling_beware", stats: { atk_percent: 10 } },
 ];
 
 // ---------------------------------------------------------------------------
