@@ -29,7 +29,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Ororon)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Ororon as OroronStatTable } from "../generated/charTables.js";
 import { Ororon as OroronTalents } from "../generated/charTalentTables.js";
 
@@ -151,6 +151,41 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "ascension1", values: hypersenseValues }],
   },
+  // --- C6 "Ode to Deep Springs": cons-added "Hypersense" variant that hits for
+  // 200% × base Hypersense (scalingMultiplier: 2.0). Raw FeatureDamage with
+  // scalingMultiplier: C6Dmg/100 = 200/100 = 2 on the same A1Dmg=160% table.
+  // damageBonuses includes dmg_skill_ororon (C1 key; 0 unless C1 toggle active —
+  // toggle is OFF → 0 here, but we mirror raw faithfully). Raw Ororon.js:219-232.
+  {
+    name: "ororon_hypersense_c6_dmg",
+    element: "electro",
+    damageBonuses: ["dmg_skill_ororon"],
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "ascension1",
+        values: hypersenseValues,
+        scalingMultiplier: 2.0,
+        source: "constellation6",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Trails Amidst the Forest Fog": ConditionBoolean toggle (dmg_skill_ororon) → SKIP.
+// C2 "King Bee of the Hidden Honeyed Wine": ConditionStacks toggle → SKIP.
+// C3: +3 levels to burst. Raw cons[2] settings char_skill_burst_bonus:3. Raw Ororon.js:297-303.
+// C5: +3 levels to skill. Raw cons[4] settings char_skill_elemental_bonus:3. Raw Ororon.js:313-317.
+// C6 "Ode to Deep Springs": ConditionStacks toggle (atk_percent) → SKIP; actual C6 damage
+//   is the ororon_hypersense_c6_dmg feature above (ConditionConstellation gate on feature itself).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Dark Voices Echo (burst).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Night's Sling (elemental skill).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -168,4 +203,5 @@ export const ororon: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
