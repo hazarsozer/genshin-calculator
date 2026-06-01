@@ -173,6 +173,14 @@ const features: readonly Feature[] = [
 //   The actual C6 damage comes from nahida_trikarma_purification_karmic_dmg feature above.
 // Raw: db/Char/Nahida.js conditions + constellation arrays.
 const constellationConditions: readonly Condition[] = [
+  // C2 "The Root of All Fullness": makes Bloom/Rupture + Burning reactions crit
+  // (ConditionStatic, auto-active — the accompanying enemy_def_reduce is a toggle, skipped).
+  // crit_rate_bloom/burning:20, crit_dmg_bloom/burning:100. Raw Nahida.js:453-457.
+  {
+    type: "constellation",
+    constellation: 2,
+    stats: { crit_rate_bloom: 20, crit_dmg_bloom: 100, crit_rate_burning: 20, crit_dmg_burning: 100 },
+  },
   // C3: +3 levels to All Schemes to Know (skill). Raw Nahida.js:472-478 (cons[2]).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Illusory Heart (burst). Raw Nahida.js:328-334 (char conditions).

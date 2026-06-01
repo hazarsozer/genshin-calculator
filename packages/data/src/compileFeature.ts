@@ -317,6 +317,10 @@ function compileReaction(
       element: reaction.element,
       characterLevel: ctx.charLevel,
       ...(reaction.reactionBonusKeys ? { reactionBonusKeys: reaction.reactionBonusKeys } : {}),
+      // Reaction-specific crit (Nahida C2 makes burning/bloom crittable); 0/absent
+      // for every other char → crit === normal === avg, unchanged.
+      ...(critRate.length > 0 ? { critRateKeys: critRate } : {}),
+      ...(critDmg.length > 0 ? { critDmgKeys: critDmg } : {}),
     });
   }
 

@@ -476,6 +476,14 @@ export function buildStats(input: BuildInput): BuildResult {
     if (raw.isSet(key)) out[key] = raw.get(key) / 100;
   }
 
+  // Condition-contributed reaction CRIT (Nahida C2 makes burning/bloom crittable) →
+  // fractions. Read by cTransformativeDamage's reaction-specific crit keys; absent →
+  // unset (engine reads 0) so every non-crit reaction and every char without the grant
+  // is unchanged (crit === normal === avg).
+  for (const key of ["crit_rate_burning", "crit_dmg_burning", "crit_rate_bloom", "crit_dmg_bloom"]) {
+    if (raw.isSet(key)) out[key] = raw.get(key) / 100;
+  }
+
   // Enemy resistance (percent) → enemy_res_<element> fractions. Fold any
   // char-contributed shred from the stats bag into the base enemy resistance
   // (the shred is a RAW negative percent, e.g. Escoffier's A4 `enemy_res_cryo`/

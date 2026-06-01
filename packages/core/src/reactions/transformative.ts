@@ -24,7 +24,7 @@
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Reaction/Transformative.js:6-23 (composition)
  */
 
-import { cConst, cStat, cSum, cMulti, cDivide, cMultiplierResistance, cMultiplierReaction } from "../compile/blocks.js";
+import { cConst, cStat, cSum, cMulti, cDivide, cMultiplierResistance, cMultiplierReaction, cCritRate, cCritDmg } from "../compile/blocks.js";
 import { cDamage } from "../compile/damage.js";
 import type { Block } from "../compile/blocks.js";
 import type { DamageBlock } from "../compile/damage.js";
@@ -90,6 +90,17 @@ export interface TransformativeDamageParams {
    * EM bonus inside `(1 + emBonus + Σ reactionBonus)`.
    */
   readonly reactionBonusKeys?: readonly string[];
+  /**
+   * Optional reaction-specific crit-rate stat keys (e.g. `crit_rate_burning`,
+   * `crit_dmg_bloom`). Most transformative reactions cannot crit, but the
+   * dendro-core family (Bloom/Rupture/Hyperbloom/Burgeon) and Burning gain crit
+   * from their own keys when a source grants them (Nahida C2). Omitted/0 →
+   * crit === normal === avg. Independent of the character's own crit. Faithful to
+   * her per-reaction `getStatsCritRate`/`getStatsCritDamage` overrides.
+   */
+  readonly critRateKeys?: readonly string[];
+  /** Reaction-specific crit-DMG stat keys (see `critRateKeys`). */
+  readonly critDmgKeys?: readonly string[];
 }
 
 /**
@@ -130,6 +141,22 @@ export function cTransformativeDamage(params: TransformativeDamageParams): Damag
   const base: Block = cMulti([cConst(params.reactionMultiplier), cConst(levelMult)]);
   const full: Block = cMulti([base, reactionFactor, resMult]);
 
-  // No crit — critRate and critDmg omitted → crit === normal === avg.
-  return cDamage({ items: [full] });
+  // Reaction-specific crit (crit_rate_burning / crit_dmg_bloom — Nahida C2).
+  // Independent of the char's own crit (no crit_*_total here). Omitted/0 keys →
+  // crit === normal === avg, so every non-crit reaction and every char without the
+  // grant is unchanged.
+  const critRate =
+    params.critRateKeys && params.critRateKeys.length > 0
+      ? cCritRate(params.critRateKeys.map((k) => cStat(k)))
+      : undefined;
+  const critDmg =
+    params.critDmgKeys && params.critDmgKeys.length > 0
+      ? cCritDmg(params.critDmgKeys.map((k) => cStat(k)))
+      : undefined;
+
+  return cDamage({
+    items: [full],
+    ...(critRate ? { critRate } : {}),
+    ...(critDmg ? { critDmg } : {}),
+  });
 }
