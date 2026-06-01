@@ -27,7 +27,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (YanFei)
  */
 
-import type { DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
 import { YanFei as YanFeiStatTable } from "../generated/charTables.js";
 import { YanFei as YanFeiTalents } from "../generated/charTalentTables.js";
 
@@ -46,6 +46,7 @@ const talents: TalentResolver = {
       if (name === "yanfei_charged_1") return YanFeiTalents.s1.p5;
       if (name === "yanfei_charged_2") return YanFeiTalents.s1.p6;
       if (name === "yanfei_charged_3") return YanFeiTalents.s1.p7;
+      if (name === "yanfei_charged_4") return YanFeiTalents.s1.p8;
       if (name === "plunge") return YanFeiTalents.s1.p16;
       if (name === "plunge_low") return YanFeiTalents.s1.p17;
       if (name === "plunge_high") return YanFeiTalents.s1.p18;
@@ -118,6 +119,17 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.yanfei_charged_3") }],
   },
+  // --- C6 "Extra Clause": unlocks a 4th Scarlet Seal slot → yanfei_charged_4 (4-seal consume).
+  // Raw FeatureDamageCharged with element 'pyro', Talents.get('attack.yanfei_charged_4'),
+  // ConditionConstellation({constellation:6}). YanFei.js:212-222.
+  {
+    name: "yanfei_charged_4",
+    category: "attack",
+    damageType: "charged",
+    element: "pyro",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.yanfei_charged_4") }],
+  },
   // --- A4 Blazing Eye: flat 80% ATK charged follow-up ---
   {
     name: "yanfei_blazing_eye",
@@ -165,6 +177,26 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic stats:{text_percent:10} — display-only, SKIP.
+// C2: ConditionBoolean toggle stats:{crit_rate_charged:20} — toggle OFF, SKIP.
+// C3: +3 levels to Signed Edict (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
+// C4: ConditionStatic stats:{text_percent_hp:45} — display-only; shield feature has damageType:""
+//     → skipped per brief (no damage triple, category 'other' in fixture).
+// C5: +3 levels to Done Deal (burst). Raw char-level condition with
+//     subConditions:[ConditionConstellation({constellation:5})].
+// C6: cons-ADDED feature yanfei_charged_4 handled above in features array.
+//     Raw cons[5] has ConditionStatic — display only, SKIP.
+// Raw: db/Char/YanFei.js constellation array + conditions array (YanFei.js:365-420, 292-364).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to elemental skill talent.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to burst talent (raw: char conditions entry gated by ConditionConstellation(5)).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -179,4 +211,5 @@ export const yanfei: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
