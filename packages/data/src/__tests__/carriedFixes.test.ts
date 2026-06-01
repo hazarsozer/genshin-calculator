@@ -194,6 +194,7 @@ describe("Hu Tao HP→ATK cap — binds at atk_base × 4 (capUsesBase)", () => {
       levels: LEVELS,
       enemy: ENEMY,
       settings,
+      talentLevels: TALENTS,
     });
   }
 

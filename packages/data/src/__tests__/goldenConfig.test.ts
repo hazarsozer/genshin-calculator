@@ -366,6 +366,9 @@ for (const family of FAMILIES) {
       }));
 
       // --- buildStats: propagates condition .settings (C3/C5 talent bumps, infusions) ---
+      // Pass talentLevels so talent-scaled post-effects (e.g. hu_tao's HP→ATK ratio)
+      // can read char_skill_<slot> from the merged settings and resolve the effective
+      // level (base + constellation _bonus) at runtime.
       const { context, settings } = buildStats({
         char,
         weaponStatTable,
@@ -376,6 +379,7 @@ for (const family of FAMILIES) {
         extraConditions,
         setBonuses,
         setRegistry: SET_REGISTRY,
+        talentLevels: TALENTS,
       });
 
       // --- compileCharacter: thread the propagated settings so talent _bonus offsets resolve ---
