@@ -29,7 +29,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (TravelerElectro)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Traveler as TravelerStatTable } from "../generated/charTables.js";
 import { TravelerElectro as TravelerElectroTalents } from "../generated/charTalentTables.js";
 
@@ -157,6 +157,42 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.traveler_falling_thunder_dmg") }],
   },
+  // --- C6 "World Shaker": extra Falling Thunder hit at 200% of the base hit.
+  // Raw FeatureDamageBurst traveler_falling_thunder_bonus_dmg, scalingMultiplier:2 on
+  // traveler_falling_thunder_dmg talent, ConditionConstellation({constellation:6}).
+  // TravelerElectro.js:307-319.
+  {
+    name: "traveler_falling_thunder_bonus_dmg",
+    category: "burst",
+    element: "electro",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "char_skill_burst",
+        values: talents.get("burst.traveler_falling_thunder_dmg"),
+        scalingMultiplier: 2,
+        source: "constellation6",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic — display-only, SKIP.
+// C2: ConditionBoolean toggle stats:{enemy_res_electro:-15} — toggle OFF, SKIP.
+// C3: +3 levels to Bellowing Thunder (burst). Raw cons[2] settings char_skill_burst_bonus:3.
+// C4: ConditionStatic (text_percent1/text_percent2) — display-only, SKIP.
+// C5: +3 levels to Lightning Blade (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
+// C6: cons-ADDED feature traveler_falling_thunder_bonus_dmg handled above in features array.
+//     Raw cons[5] has ConditionStatic({stats:{text_percent_dmg:100}}) — display only, SKIP.
+// Raw: db/Char/TravelerElectro.js constellation array (TravelerElectro.js:388-451).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to burst talent.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to elemental skill talent.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -174,4 +210,5 @@ export const travelerElectro: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
