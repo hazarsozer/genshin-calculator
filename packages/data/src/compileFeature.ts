@@ -100,6 +100,28 @@ export interface CompileContext {
    * feature (Feature2.js:121-125). Absent/empty = no char-level multipliers.
    */
   readonly charMultipliers?: readonly CharMultiplier[];
+  /**
+   * WEAPON/SET-sourced features folded into the compile loop alongside `char.features`
+   * — a weapon's `DbObjectWeapon.features` (Aquila's ATK%-physical proc) + an equipped
+   * set's `DbObjectArtifactSet.features` (Ocean-Hued Clam's Foam), concatenated by the
+   * caller (the armory harness). Each compiles through the SAME `compileFeature` path as
+   * a char feature (its scaling reads the wielder's `*_total` stats, already in the
+   * build) and is subject to the same `feature.condition` produce-gate. Mirrors her
+   * `CalcSet.getFeaturesHash`, which concats features from every equipped object.
+   * Absent/empty = char features only (the base build → C0 golden untouched).
+   */
+  readonly extraFeatures?: readonly Feature[];
+  /**
+   * WEAPON/SET-sourced CHAR-LEVEL ("targeted") multipliers merged into the active
+   * char-level multiplier list — a weapon's `DbObjectWeapon.multipliers` (Redhorn's
+   * `def*` into normal/charged) + an equipped set's `DbObjectArtifactSet.multipliers`
+   * (Echoes' normal-DMG variant), concatenated by the caller. Each injects into every
+   * matching feature's base term gated by its own `target` + `condition`, exactly as
+   * `char.multipliers` do — her `Feature2.getMultipliers` iterates `data.multipliers`,
+   * which she populates from every equipped object's contributions. Absent/empty = char
+   * multipliers only.
+   */
+  readonly extraMultipliers?: readonly CharMultiplier[];
 }
 
 /**

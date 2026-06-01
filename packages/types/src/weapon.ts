@@ -11,6 +11,7 @@
 
 import type { WeaponType, Refinement, StatTableEntry, CharPostEffect } from "./character.js";
 import type { Condition } from "./condition.js";
+import type { Feature, CharMultiplier } from "./feature.js";
 
 export type { WeaponType, Refinement };
 
@@ -71,9 +72,37 @@ export interface DbObjectWeapon {
    */
   readonly postEffects?: readonly CharPostEffect[];
   /**
-   * Weapon proc features (on-hit damage instances, heals, shields, etc.).
-   * Left as unknown[] for this task — feature-granting weapons are flagged
-   * for P2.W1 and must not be forced into the stat-only shape.
+   * Weapon-sourced damage/heal features (on-hit damage instances the weapon itself
+   * deals — Aquila Favonia's "Falcon's Defiance" ATK%-physical proc, the Skyward
+   * series, etc.). These are the SAME declarative `Feature` shape char features use
+   * (`FeatureDamage` → `cDamage`). The wielder's stats are already in the build, so a
+   * weapon feature compiles through the SAME machinery as a char feature: the armory
+   * harness concats `weapon.features` into `compileCharacter`'s `extraFeatures`, which
+   * folds them into the compile loop. A weapon FeatureDamage with no `element` is
+   * PHYSICAL (her `FeatureDamage` defaults `element = 'phys'`, Damage.js:26), so the
+   * wrapper must set `element: "physical"` to match — `category: "weapon"` would
+   * otherwise resolve to the wielder's innate element.
+   *
+   * Base-inert: no base-build weapon (the 5 P2 defaults) carries a feature → the
+   * Phase-2 golden surface (goldenConfig 1773 / constellations 107) is untouched.
+   *
+   * Source: raw/genshin_calc_pub/src/js/db/Weapon/Sword/AquilaFavonia.js:34-53,
+   *         raw/genshin_calc_pub/src/js/classes/Feature2/Damage.js (getTree, element default),
+   *         raw/genshin_calc_pub/src/js/classes/CalcSet.js (getFeaturesHash concats all objects).
    */
-  readonly features?: readonly unknown[];
+  readonly features?: readonly Feature[];
+  /**
+   * Weapon-sourced CHAR-LEVEL ("targeted") multipliers — a `FeatureMultiplier` the
+   * weapon contributes that modifies the WIELDER's existing hits rather than adding a
+   * standalone feature (Redhorn Stonethresher's `def*` into normal/charged, Light of
+   * Foliar Incision, etc.). Same shape as `DbObjectChar.multipliers` (a `CharMultiplier`
+   * with a `target.damageTypes` + optional `condition`); the armory harness concats
+   * `weapon.multipliers` into `compileCharacter`'s `extraMultipliers`, which merges them
+   * into the active char-level multiplier list (`Feature2.getMultipliers`, Feature2.js:121).
+   *
+   * Base-inert: no base-build weapon carries one → the Phase-2 golden surface is untouched.
+   *
+   * Source: raw/genshin_calc_pub/src/js/db/Weapon/Claymore/RedhornStonethresher.js:28-38.
+   */
+  readonly multipliers?: readonly CharMultiplier[];
 }

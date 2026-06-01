@@ -9,6 +9,7 @@
 
 import type { CharPostEffect } from "./character.js";
 import type { Condition } from "./condition.js";
+import type { Feature, CharMultiplier } from "./feature.js";
 import type { GoodStatKey } from "./stats.js";
 
 /** The five artifact slots. */
@@ -98,4 +99,35 @@ export interface DbObjectArtifactSet {
   readonly bonus: Readonly<Partial<Record<2 | 4, ArtifactSetBonusTier>>>;
   /** Set-level post-effects (HP→ATK-style derivations); empty for most sets. */
   readonly postEffects?: readonly CharPostEffect[];
+  /**
+   * Set-sourced damage features (a damage instance the SET itself deals — Ocean-Hued
+   * Clam's HP/heal-scaled "Sea-Dyed Foam" proc, etc.). Same declarative `Feature`
+   * shape as char/weapon features; the armory harness concats an equipped set's
+   * `features` into `compileCharacter`'s `extraFeatures`. Mirrors her `getFeaturesHash`,
+   * which concats features from every equipped object (char + weapon + sets); each is
+   * gated by its own condition + the piece-count tier (which is what makes the set's
+   * conditions enter the settings in the first place).
+   *
+   * Base-inert: a set's features only enter the compile when that set is equipped at
+   * sufficient pieces, so the Phase-2 golden surface (no feature-bearing set in the base
+   * build) is untouched.
+   *
+   * Source: raw/genshin_calc_pub/src/js/db/Artifacts/Set/OceanHuedClam.js:54-68,
+   *         raw/genshin_calc_pub/src/js/db/Artifacts/Set/EchoesofanOffering.js:58-83.
+   */
+  readonly features?: readonly Feature[];
+  /**
+   * Set-sourced CHAR-LEVEL ("targeted") multipliers — a `FeatureMultiplier` the set
+   * contributes that modifies the wielder's existing hits (Echoes of an Offering's
+   * normal-DMG variant, Song of Days Past, etc.). Same shape as `DbObjectChar.multipliers`
+   * (a `CharMultiplier` with `target.damageTypes` + optional `condition`); the armory
+   * harness concats an equipped set's `multipliers` into `compileCharacter`'s
+   * `extraMultipliers`. Each entry is gated by its own `condition` (Echoes 4pc gates on
+   * the on/avg toggle) AND by the piece-count tier.
+   *
+   * Base-inert: only enters the compile when the set is equipped at sufficient pieces.
+   *
+   * Source: raw/genshin_calc_pub/src/js/db/Artifacts/Set/EchoesofanOffering.js:58-83.
+   */
+  readonly multipliers?: readonly CharMultiplier[];
 }

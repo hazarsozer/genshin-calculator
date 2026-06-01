@@ -448,6 +448,12 @@ for (const family of WEAPON_FAMILIES) {
         talentLevels: TALENTS,
         settings,
         charLevel: LEVELS.charLevel,
+        // Weapon-sourced FeatureDamage procs (Aquila's Falcon's Defiance) + char-level
+        // FeatureMultipliers (Redhorn's def→normal/charged) compile through the SAME path
+        // as char features/multipliers — her getFeaturesHash/getMultipliers concat every
+        // equipped object's contributions. Most weapons carry none (→ no-op).
+        extraFeatures: weapon.features ?? [],
+        extraMultipliers: weapon.multipliers ?? [],
       });
 
       assertItemAgainstFixture(slug, fixture, context, compiled);
@@ -532,6 +538,13 @@ for (const family of SET_FAMILIES) {
         talentLevels: TALENTS,
         settings: propagated,
         charLevel: LEVELS.charLevel,
+        // Set-sourced FeatureDamage procs (Ocean-Hued Clam's Foam) + char-level
+        // FeatureMultipliers (Echoes' normal-DMG variant) compile through the SAME path
+        // as char features/multipliers. Gated by their own condition + the piece-count
+        // tier; only the equipped set's features/multipliers enter (this family isolates
+        // one set). Most sets carry none (→ no-op).
+        extraFeatures: set.features ?? [],
+        extraMultipliers: set.multipliers ?? [],
       });
 
       assertItemAgainstFixture(slug, fixture, context, compiled);
