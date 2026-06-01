@@ -26,7 +26,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Kokomi)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Kokomi as KokomiStatTable } from "../generated/charTables.js";
 import { Kokomi as KokomiTalents } from "../generated/charTalentTables.js";
 
@@ -133,6 +133,44 @@ const features: readonly Feature[] = [
     multipliers: [{ scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
   // kokomi_burst_heal: FeatureHeal (category:'burst', damageType:"" → skipped). Omit.
+  // --- C1 "At Water's Edge": cons-added HP-scaling "other" hit (30% Max HP, fixed).
+  // Raw FeatureDamage (base class → damageType:""), category:'other', element:'hydro',
+  // scaling:'hp*', leveling:'char_skill_attack', values: ValueTable([30]) (C1AttackDmg=30).
+  // condition: ConditionConstellation(1). Raw Kokomi.js:285-297.
+  {
+    name: "kokomi_swimming_fish_dmg",
+    element: "hydro",
+    damageType: "",
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_attack",
+        values: { getValue: (_level: number) => 30 },
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "At Water's Edge": ConditionStatic display-only (text_percent_dmg:30) in the cons array;
+//   actual damage is the kokomi_swimming_fish_dmg feature above (gated by constellation:1).
+// C2 "The Clouds Like Waves Rippling": ConditionBoolean toggle → SKIP (heal-only anyway).
+// C3: +3 levels to Nereid's Ascension (burst). Raw cons[2] settings char_skill_burst_bonus:3.
+//   Raw Kokomi.js:401-408.
+// C4 "The Moon Overlooks the Waters": ConditionStatic with ConditionBooleanLevels gate
+//   (burst toggle dependent) → SKIP.
+// C5: +3 levels to Kurage's Oath (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
+//   Raw Kokomi.js:424-430.
+// C6 "Sango Isshin": ConditionBoolean toggle nested in kokomi_ceremonial_garment
+//   (burst toggle) → SKIP (double-toggle, toggle OFF).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Nereid's Ascension (burst).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Kurage's Oath (elemental skill).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -150,6 +188,7 @@ export const sangonomiyaKokomi: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
   // "Flawless Strategy" (ConditionStatic, always active):
   //   crit_rate: -100 → crit_rate_total becomes negative, clamped to 0 by engine.
   //   healing: 25 — heal bonus, does not affect damage features.
