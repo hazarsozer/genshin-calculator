@@ -176,6 +176,9 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Tenko Kenshin (elemental burst).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // C6 "Daisesshou": Sesshou Sakura attacks ignore 60% enemy DEF (ConditionStatic,
+  // auto-active). Per-type def-ignore now read by cMultiplierDefence. Raw YaeMiko.js:334.
+  { type: "constellation", constellation: 6, stats: { enemy_def_ignore_skill: 60 } },
 ];
 
 // ---------------------------------------------------------------------------

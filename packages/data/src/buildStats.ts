@@ -491,6 +491,13 @@ export function buildStats(input: BuildInput): BuildResult {
 
   // DEF-ignore / DEF-reduce (source-local + team-wide), default 0, as fractions.
   out["enemy_def_ignore"] = raw.get("enemy_def_ignore") / 100;
+  // Per-damage-type DEF-ignore — her getStatsDefIgnore sums the base key plus a
+  // per-type `enemy_def_ignore_<type>` (Damage.js:128-137). 0 for every base build;
+  // constellation-gated sources (Raiden C2 burst, Yae Miko C6 skill) land here as
+  // fractions and compileFeature passes the matching key to cMultiplierDefence.
+  for (const t of ["normal", "charged", "plunge", "skill", "burst"]) {
+    out[`enemy_def_ignore_${t}`] = raw.get(`enemy_def_ignore_${t}`) / 100;
+  }
   out["enemy_def_reduce"] = raw.get("enemy_def_reduce") / 100;
 
   const stats = out as BuildStats;

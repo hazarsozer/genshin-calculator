@@ -393,11 +393,19 @@ export function compileFeature(
     ...activeCharMultipliers(feature, damageType, ctx),
   ].map((m) => baseDamageTerm(m, ctx));
 
+  // DEF-ignore: the generic key plus this feature's per-type key
+  // (`enemy_def_ignore_<type>`), summed inside cMultiplierDefence — her
+  // getStatsDefIgnore. Per-type is 0 for every base build (Raiden C2 burst /
+  // Yae Miko C6 skill are the constellation-gated sources).
+  const defIgnoreKeys =
+    damageType !== ""
+      ? ["enemy_def_ignore", `enemy_def_ignore_${damageType}`]
+      : ["enemy_def_ignore"];
   const items: Block[] = [
     cBaseDamage(baseTerms),
     cMultiplierBonus(dmgBonusKeys(feature, element, damageType).map((k) => cStat(k))),
     cMultiplierResistance(element),
-    cMultiplierDefence(),
+    cMultiplierDefence("enemy_def_reduce", defIgnoreKeys),
   ];
 
   // Crit: the aggregated totals (buildStats folds per-element/-type crit in),
