@@ -214,6 +214,15 @@ export interface BuildInput {
    */
   readonly extraConditions?: readonly Condition[];
   /**
+   * Equipped weapon's post-effects (HP→ATK / crit-from-HP folds). Applied in the
+   * SAME post-effect path as char + set post-effects — her `getPostEffects()`
+   * concats every equipped object's. The weapon path passes `weapon.postEffects`
+   * here (mirroring how it passes `weapon.conditions` via `extraConditions`).
+   * Absent / empty → no-op: no base-build weapon carries a post-effect, so the
+   * base golden suite is untouched.
+   */
+  readonly weaponPostEffects?: readonly CharPostEffect[];
+  /**
    * Equipped artifact sets + their piece counts (e.g. `[{ setKey: "NoblesseOblige",
    * pieces: 4 }]`). Each is resolved against the set registry; conditions from every
    * bonus tier `t <= pieces` enter the condition loop (the PIECE-COUNT gate), each
@@ -505,11 +514,19 @@ export function buildStats(input: BuildInput): BuildResult {
   for (const cond of CHARACTER_CONDITIONS) applyCondition(cond);
 
   // 3. Derive — condition-gated post-effects (reads RAW percents via getTotal).
-  // Char post-effects then any set-level post-effects (HP→ATK-style folds), both
-  // through the same path — her getPostEffects concats every equipped object's. Reads
-  // the MERGED settings so a condition-contributed level bonus / infusion is visible
-  // to a post-effect's `levelSetting` (her PostEffect.getLevel adds `_bonus`).
-  const effects = [...(input.char.postEffects ?? []), ...sets.postEffects].map(toPostEffect);
+  // Char post-effects, then the equipped WEAPON's post-effects (Staff of Homa /
+  // Primordial Jade Cutter HP→ATK folds), then any set-level post-effects — all
+  // through the same path. Her getPostEffects concats EVERY equipped object's
+  // (char + weapon + artifact sets). Reads the MERGED settings so a condition-
+  // contributed level bonus / infusion is visible to a post-effect's `levelSetting`
+  // (her PostEffect.getLevel adds `_bonus`); refine-scaled weapon folds read
+  // `weapon_refine` from the merged settings. No base-build weapon carries a
+  // post-effect → the weapon channel is a no-op for the base golden suite.
+  const effects = [
+    ...(input.char.postEffects ?? []),
+    ...(input.weaponPostEffects ?? []),
+    ...sets.postEffects,
+  ].map(toPostEffect);
   applyPostEffects(raw, effects, merged);
 
   // 4. Read — emit the engine-facing bag.

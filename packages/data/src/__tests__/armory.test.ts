@@ -436,6 +436,10 @@ for (const family of WEAPON_FAMILIES) {
           char_constellation: 0,
         },
         extraConditions: weapon.conditions ?? [],
+        // Weapon-level post-effects (HP→ATK folds — Staff of Homa, Primordial Jade
+        // Cutter) route through buildStats's post-effect path, exactly as the weapon's
+        // conditions route through extraConditions. Most weapons carry none (→ no-op).
+        weaponPostEffects: weapon.postEffects ?? [],
         talentLevels: TALENTS,
       });
 

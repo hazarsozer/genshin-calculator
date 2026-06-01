@@ -9,7 +9,7 @@
  *   raw/genshin_calc_pub/src/js/db/Weapon/Catalyst/LostPrayer.js
  */
 
-import type { WeaponType, Refinement, StatTableEntry } from "./character.js";
+import type { WeaponType, Refinement, StatTableEntry, CharPostEffect } from "./character.js";
 import type { Condition } from "./condition.js";
 
 export type { WeaponType, Refinement };
@@ -51,6 +51,25 @@ export interface DbObjectWeapon {
   readonly statTable: WeaponStatTable;
   /** Weapon passive conditions (refinement-scaled buffs, boolean/stack passives). */
   readonly conditions?: readonly Condition[];
+  /**
+   * Weapon-level post-effects (HP→ATK / DEF→ATK / crit-from-HP derivations).
+   *
+   * Mirrors her `getPostEffects()`, which concats EVERY equipped object's
+   * post-effects (artifact sets already carry `DbObjectArtifactSet.postEffects`;
+   * weapons like Staff of Homa / Primordial Jade Cutter add HP→ATK folds). Routes
+   * through the SAME post-effect path as char/set ones in `buildStats`. Base-inert:
+   * no base-build weapon (the 5 P2 defaults) carries a post-effect → no-op for the
+   * Phase-2 golden surface.
+   *
+   * Refine-scaled folds key their `ratioFromTalent` table off the `weapon_refine`
+   * setting (`getValue(refine)`), mirroring her `PostEffectStats.getLevel` reading
+   * `levelSetting: 'weapon_refine'`.
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/HP.js,
+   *         raw/genshin_calc_pub/src/js/db/Weapon/Polearm/StaffofHoma.js,
+   *         raw/genshin_calc_pub/src/js/db/Weapon/Sword/PrimordialJadeCutter.js
+   */
+  readonly postEffects?: readonly CharPostEffect[];
   /**
    * Weapon proc features (on-hit damage instances, heals, shields, etc.).
    * Left as unknown[] for this task — feature-granting weapons are flagged
