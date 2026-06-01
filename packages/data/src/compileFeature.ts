@@ -302,6 +302,12 @@ function dmgBonusKeys(
 ): readonly string[] {
   const keys = ["dmg_all", `dmg_${dmgElementKey(element)}`];
   if (damageType) keys.push(`dmg_${damageType}`);
+  // Charged attacks additionally pick up the enemy-vulnerability key
+  // `dmg_charged_enemy` — her FeatureDamageCharged.getStatsDmgBonus override
+  // (Charged.js:14-18) is the ONLY damage subclass that adds a `dmg_<type>_enemy`
+  // key. The v5.8 source is an enemy debuff (Scion of the Blazing Sun's Sunfire
+  // Fan); the key reads 0 for every build that contributes none → base-safe.
+  if (damageType === "charged") keys.push("dmg_charged_enemy");
   if (feature.damageBonuses) keys.push(...feature.damageBonuses);
   return keys;
 }
@@ -453,12 +459,26 @@ export function compileFeature(
   // in) PLUS the active char-level multipliers targeting this damage type — her
   // getMultipliers merges both into one CBaseDamage (e.g. Itto A4's 0.35×DEF on
   // every charged hit). They are base terms, not separate multiplicative factors.
-  const multipliers: readonly FeatureMultiplierEntry[] =
+  const ownMultipliers: readonly FeatureMultiplierEntry[] =
     feature.multipliers ??
     (feature.items ?? []).flatMap((item) => item.multipliers);
+  // Char-level ("targeted") multipliers apply PER ITEM, not once to the aggregate:
+  // her FeatureDamageMultihit.getTree calls getMultipliers() FRESH inside the per-hit
+  // loop (Multihit.js:23-27), so an N-instance hit (e.g. Keqing's 2-slash normal_hit_4,
+  // Hu Tao's normal_hit_5) sums each matched char-multiplier's base term N times. Our
+  // model computes ONE shared CBaseDamage over the summed item bases, so we replicate
+  // the matched char-multiplier terms once per item to reproduce that sum. itemCount = 1
+  // for a single-hit feature → IDENTICAL to before. Base-safe: a currently-green feature
+  // is either single-item (itemCount 1, no change) or has no active char-multiplier
+  // targeting it (nothing to replicate) — a base multihit feature targeted by an active
+  // char-multiplier would already be RED (short by the per-item amount), and none are.
+  const charMultipliers = activeCharMultipliers(feature, damageType, ctx);
+  const itemCount = feature.items?.length ?? 1;
+  const replicatedCharMultipliers: FeatureMultiplierEntry[] = [];
+  for (let i = 0; i < itemCount; i++) replicatedCharMultipliers.push(...charMultipliers);
   const baseTerms = [
-    ...activeOwnMultipliers(multipliers, ctx),
-    ...activeCharMultipliers(feature, damageType, ctx),
+    ...activeOwnMultipliers(ownMultipliers, ctx),
+    ...replicatedCharMultipliers,
   ].map((m) => baseDamageTerm(m, ctx));
 
   // DEF-ignore: the generic key plus this feature's per-type key

@@ -92,6 +92,12 @@ const DMG_BONUS_TYPE_KEYS = [
   "dmg_plunge",
   "dmg_skill",
   "dmg_burst",
+  // Charged-only enemy-vulnerability key — her FeatureDamageCharged.getStatsDmgBonus
+  // (Charged.js:14-18) is the sole subclass that adds a `dmg_<type>_enemy` key, so
+  // compileFeature requests it only for charged hits. Emitted as a fraction like the
+  // rest; Scion of the Blazing Sun's Sunfire Fan is the v5.8 source. 0 (unset) for
+  // every build that contributes none → base golden untouched.
+  "dmg_charged_enemy",
 ] as const;
 
 /**
