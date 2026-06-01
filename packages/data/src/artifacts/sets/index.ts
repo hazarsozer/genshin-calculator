@@ -40,6 +40,7 @@ import { heartOfDepth } from "./heart-of-depth.js";
 import { huskOfOpulentDreams } from "./husk-of-opulent-dreams.js";
 import { marechausseeHunter } from "./marechaussee-hunter.js";
 import { noblesseOblige } from "./noblesse-oblige.js";
+import { oceanHuedClam } from "./ocean-hued-clam.js";
 import { shimenawasReminiscence } from "./shimenawas-reminiscence.js";
 import { thunderingFury } from "./thundering-fury.js";
 import { viridescentVenerer } from "./viridescent-venerer.js";
@@ -55,6 +56,7 @@ export { heartOfDepth } from "./heart-of-depth.js";
 export { huskOfOpulentDreams } from "./husk-of-opulent-dreams.js";
 export { marechausseeHunter } from "./marechaussee-hunter.js";
 export { noblesseOblige } from "./noblesse-oblige.js";
+export { oceanHuedClam } from "./ocean-hued-clam.js";
 export { shimenawasReminiscence } from "./shimenawas-reminiscence.js";
 export { thunderingFury } from "./thundering-fury.js";
 export { viridescentVenerer } from "./viridescent-venerer.js";
@@ -75,6 +77,7 @@ export const ARTIFACT_SETS: Readonly<Record<string, DbObjectArtifactSet>> = {
   [viridescentVenerer.goodId]: viridescentVenerer,
   [blizzardStrayer.goodId]: blizzardStrayer,
   [gildedDreams.goodId]: gildedDreams,
+  [oceanHuedClam.goodId]: oceanHuedClam,
 };
 
 /** Resolve a set by its registry key; `undefined` if not ported. */
