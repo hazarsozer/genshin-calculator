@@ -343,6 +343,13 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       if (effect.capValue !== undefined) {
         bonus = Math.min(bonus, effect.capValue);
       }
+      // Refine/talent-scaled absolute cap (her statCap StatTable keyed off a
+      // levelSetting) — e.g. Ring of Yaxche's [16,20,24,28,32] over weapon_refine.
+      if (effect.capValueFromTalent !== undefined) {
+        const { table, levelSetting } = effect.capValueFromTalent;
+        const level = (settings[levelSetting] as number | undefined) ?? 1;
+        bonus = Math.min(bonus, table.getValue(level));
+      }
       return { [effect.toStat]: bonus };
     },
   };

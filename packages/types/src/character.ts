@@ -248,6 +248,20 @@ export interface CharPostEffect {
    */
   readonly capValue?: number;
   /**
+   * Optional ABSOLUTE cap resolved from a level-indexed table — the refine-scaled
+   * analogue of `capValue`. Mirrors her `statCap: new StatTable('', [...])` with a
+   * `levelSetting` (e.g. Ring of Yaxche / Engulfing Lightning whose ATK%/DMG caps
+   * scale with refine: [16,20,24,28,32] keyed off `weapon_refine`). The cap is
+   * `table.getValue(settings[levelSetting])`; the bonus is `Math.min(bonus, cap)`.
+   * Use this (not `capValue`) when the ceiling itself is refine/talent-scaled.
+   *
+   * Source: raw/.../classes/PostEffect/Stats.js (statCap via getLevel(levelSetting)).
+   */
+  readonly capValueFromTalent?: {
+    readonly table: TalentTable;
+    readonly levelSetting: string;
+  };
+  /**
    * When true, the stat-relative `cap` reads the BASE stat (`capStat + '_base'`)
    * × `capRatio` rather than `getTotal(capStat)` × `capRatio`.
    *
