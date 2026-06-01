@@ -29,17 +29,16 @@
  *   burst.baal_energy_recharge                       (FeatureStatic, format decimal)
  * Constellations (C0 build) skipped. Reactions emitted generically from element.
  *
- * ALWAYS-ON PASSIVE FOLDED (A4 Enlightened One → +52.8% Electro DMG):
+ * ALWAYS-ON PASSIVE (A4 Enlightened One → dynamic Electro DMG%):
  *   A4 grants Electro DMG = 0.4% per 1% of Energy Recharge above 100%, capped 80%.
- *   In the FIXED canonical build, total Energy Recharge = 232% (fixture `stats.recharge`),
- *   so the bonus is a CONSTANT 0.4 × (232 − 100) = 52.8% (< 80% cap) — unconditional in
- *   the fixed solo build. Her engine derives this via PostEffectStatsExceedRecharge (its
- *   `other.electro_dmg_bonus` display row = 52.8, not a damage triple), and the oracle
- *   FOLDS it into the Electro hits' DMG bonus. Since it is a fixed constant here, it is
- *   folded faithfully via `baseStats: { dmg_electro: 52.8 }` (concatenated into the
- *   `dmg_electro` total alongside the base 2% → 54.8% on every electro hit).
- *   Verified: with the fold, skill_dmg / baal_coordinated_atk_dmg / burst all match the
- *   oracle within tolerance; without it they were short by exactly this 52.8% factor.
+ *   Her engine derives this via PostEffectStatsExceedRecharge (ExceedRecharge.js:
+ *   max(0, recharge_decimal − 1) × (40/100), where recharge is stored as a decimal
+ *   post processPercent). In our engine recharge is raw percent, so the equivalent is
+ *   max(0, recharge − 100) × 0.4, capped at 80 — modelled as a dynamic `postEffect`:
+ *     `{ fromStat:"recharge", toStat:"dmg_electro", offset:100, ratio:0.4, capValue:80 }`
+ *   At base ER=232: (232−100)×0.4 = 52.8 (matches the former constant). At full-build
+ *   ER=252 (Emblem 2pc): (252−100)×0.4 = 60.8 (correct; the old constant 52.8 was wrong).
+ *   `dmg_electro` is emitted as a raw-percent stat; the emit loop divides by 100.
  *
  *   A1 (Wishes Unnumbered): party energy/burst-DMG support — not a solo self damage stat.
  *
@@ -244,9 +243,29 @@ export const raidenShogun: DbObjectChar = {
   weapon: "polearm",
   origin: "inazuma",
   statTable: RaidenShogunStatTable,
-  // A4 (Enlightened One): +52.8% Electro DMG, a fixed constant in the canonical
-  // build (Energy Recharge 232% → 0.4×(232−100)). Folded into the electro hits.
-  baseStats: { dmg_electro: 52.8 },
+  // A4 (Enlightened One): Electro DMG = 0.4% per 1% Energy Recharge above 100%,
+  // capped at +80%. Modelled as a dynamic post-effect so builds with ER > 232%
+  // (e.g. full-build with Emblem 2pc) correctly compute a higher bonus.
+  //
+  // Formula: max(0, recharge_total − 100) × 0.4, capped at 80.
+  // At base build ER=232: (232−100)×0.4 = 52.8 ✓ (matches the old constant).
+  //
+  // Our engine stores `recharge` as raw percent (e.g. 232); `offset:100` mirrors
+  // her PostEffectStatsExceedRecharge which subtracts 1 from the decimal (2.32−1).
+  // `ratio:0.4` mirrors the StatTable('dmg_electro',[40]) value / 100 = 0.4.
+  // `dmg_electro` is a raw-percent stat; the emit loop divides by 100 at output.
+  //
+  // Source: raw/genshin_calc_pub/src/js/db/Char/RaidenShogun.js:194-198
+  //         raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/ExceedRecharge.js
+  postEffects: [
+    {
+      fromStat: "recharge",
+      toStat: "dmg_electro",
+      offset: 100,
+      ratio: 0.4,
+      capValue: 80,
+    },
+  ],
   talents,
   features,
   multipliers: [],
