@@ -157,17 +157,20 @@ const features: readonly Feature[] = [
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Diona.js:395-470
 
 const constellationConditions: readonly Condition[] = [
-  // C2: dmg_skill_diona +50. ConditionStatic { stats: { dmg_skill_diona:50, ... } }
-  // diona_shield is a char-specific shield-absorb key, not a standard engine stat;
-  // text_percent is display-only. Only dmg_skill_diona affects damage features.
-  // Raw cons[1]: ConditionStatic{ stats:{ dmg_skill_diona:50, diona_shield:..., text_percent:... } }
-  { type: "constellation", constellation: 2, stats: { dmg_skill_diona: 50 } },
+  // C2: dmg_skill_diona +15 (C2SkillDmg=15 — NOT the C2PartyShield=50 sibling value).
+  // ConditionStatic; consumed by diona_claw_dmg (raw Diona.js:245 damageBonuses).
+  // diona_shield / text_percent are shield-absorb / display-only. Raw cons[1].
+  { type: "constellation", constellation: 2, stats: { dmg_skill_diona: 15 } },
   // C3: +3 Elemental Burst talent levels.
   // Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 Elemental Skill talent levels.
   // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // C6 "Cat's Tail Closing Time": +200 EM (ConditionStatic, always-on — the
+  // accompanying diona_cats_tail boolean carries the separate healing buff, skipped).
+  // Lifts reaction EM (emBonus). Raw cons[5] ConditionStatic{ mastery: C6Mastery=200 }.
+  { type: "constellation", constellation: 6, stats: { mastery: 200 } },
 ];
 
 // ---------------------------------------------------------------------------
