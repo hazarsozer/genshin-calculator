@@ -6,7 +6,7 @@
  *   HIGH_ATK_HP_BLOCK — the "high-atk-hp" build that exercises percent-cap post-effects
  *
  * Sources:
- *   tools/oracle/build-configs.mjs (FIXED_BUILD / HIGH_ATK_HP_BLOCK)
+ *   tools/oracle/build-configs.mjs (`sampleStats` base block / the `HIGH_ATK_HP_BLOCK` const)
  *   tests/golden/fixtures/_manifest.json (base.statBlock)
  *   packages/data/src/__tests__/carriedFixes.test.ts (original inline literals)
  */

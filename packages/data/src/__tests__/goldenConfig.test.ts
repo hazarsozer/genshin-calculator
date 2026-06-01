@@ -143,6 +143,9 @@ interface ManifestEntry {
   readonly key: string;
   readonly id: number;
   readonly char: ManifestChar;
+  // `enemy` and `skills` mirror the JSON but are NOT consumed — all three families
+  // share the canonical enemy (90/10) and talents (10/10/10), so the harness uses the
+  // shared ENEMY/TALENTS constants. Typed here to document the full manifest shape.
   readonly enemy: ManifestEnemy;
   readonly skills: ManifestSkills;
   readonly weapon: ManifestWeapon;
