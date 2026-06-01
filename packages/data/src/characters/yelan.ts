@@ -23,7 +23,8 @@
  * baseStats so our hp_total matches.
  * A4 crit_rate ascension bonus IS folded in via charTables (asc6 = +19.2).
  *
- * C6 yelan_breakthrough_barb_c6_dmg and C2 burst feature — constellation-gated, omit.
+ * C6 yelan_breakthrough_barb_c6_dmg (FeatureDamageCharged, ×1.56 scalingMultiplier).
+ * C2 yelan_taking_all_comers_dmg (FeatureDamageBurst, fixed 14% HP).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Yelan.js
@@ -31,7 +32,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Yelan)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Yelan as YelanStatTable } from "../generated/charTables.js";
 import { Yelan as YelanTalents } from "../generated/charTalentTables.js";
 
@@ -164,6 +165,64 @@ const features: readonly Feature[] = [
     element: "hydro",
     multipliers: [{ scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.yelan_exquisite_throw_dmg") }],
   },
+  // --- C2 "Taking All Comers": cons-added burst hit (14% HP, fixed, not talent-leveled).
+  // Raw: FeatureDamageBurst, StatTable('yelan_taking_all_comers_dmg', [14]),
+  // source:'constellation2', scaling:'hp*', ConditionConstellation(2). Yelan.js:257-268.
+  {
+    name: "yelan_taking_all_comers_dmg",
+    category: "burst",
+    element: "hydro",
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_burst",
+        values: { getValue: (_level: number) => 14 },
+        source: "constellation2",
+      },
+    ],
+  },
+  // --- C6 "Winner Takes All": cons-added charged hit (breakthrough barb × 1.56).
+  // Raw: FeatureDamageCharged (NOT FeatureDamageChargedAimed) → damageType:"charged",
+  // name:'yelan_breakthrough_barb_c6_dmg', hydro, hp-scaled, scalingMultiplier:1.56,
+  // scalingSource:'constellation6', same talent as yelan_breakthrough_barb_dmg (s1.p7).
+  // ConditionConstellation(6). Yelan.js:190-202.
+  {
+    name: "yelan_breakthrough_barb_c6_dmg",
+    category: "attack",
+    damageType: "charged",
+    element: "hydro",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_attack",
+        values: talents.get("attack.yelan_breakthrough_barb_dmg"),
+        scalingMultiplier: 1.56,
+        source: "constellation6",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Enter the Plotters": ConditionStatic (display-only) → SKIP.
+// C2 "Taking All Comers": ConditionStatic (display-only, text_percent:14) → SKIP.
+//   The actual C2 damage comes from the yelan_taking_all_comers_dmg feature above.
+// C3: +3 levels to Depth-Clarion Dice (burst). Raw cons[2] settings char_skill_burst_bonus:3.
+//   Yelan.js:347-355.
+// C4 "Bait-and-Switch": ConditionStacks (hp_percent per stack, toggle) → SKIP (toggle/stacks OFF).
+// C5: +3 levels to Lingering Lifeline (elemental skill).
+//   Raw cons[4] settings char_skill_elemental_bonus:3. Yelan.js:371-379.
+// C6 "Winner Takes All": ConditionStatic (display-only text_percent:156) → SKIP.
+//   The actual C6 damage comes from the yelan_breakthrough_barb_c6_dmg feature above.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Depth-Clarion Dice (burst).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Lingering Lifeline (elemental skill).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -181,6 +240,7 @@ export const yelan: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
   // A1 "Turn Control": oracle runs with a single-char party (Yelan = 1 unique element)
   // → ConditionCalcElements sets party_elements_count_level=1 → hp_percent[0]=6.
   // Source: raw/genshin_calc_pub/src/js/db/Char/Yelan.js ConditionStaticLevel hp_percent:[6,12,18,30]
