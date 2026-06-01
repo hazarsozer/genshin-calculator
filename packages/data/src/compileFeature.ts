@@ -400,9 +400,10 @@ export function compileFeature(
   // DEF-ignore: the generic key plus this feature's per-type key
   // (`enemy_def_ignore_<type>`), summed inside cMultiplierDefence — her
   // getStatsDefIgnore. Per-type is 0 for every base build (Raiden C2 burst /
-  // Yae Miko C6 skill are the constellation-gated sources).
+  // Yae Miko C6 skill are the constellation-gated sources). Exclude the no-type
+  // hits (`""`/`"none"`) exactly as her guard does (`damageType && damageType != 'none'`).
   const defIgnoreKeys =
-    damageType !== ""
+    damageType !== "" && damageType !== "none"
       ? ["enemy_def_ignore", `enemy_def_ignore_${damageType}`]
       : ["enemy_def_ignore"];
   const items: Block[] = [

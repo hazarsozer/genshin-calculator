@@ -230,10 +230,10 @@ const features: readonly Feature[] = [
   // Raw: FeatureDamageBurst kirara_cat_grass_explosion_extra_dmg, FeatureMultiplierKiraraBurst
   // (floor(HP/8000) capped at 4), damageBonuses:['dmg_burst_kirara'], cannotReact:true.
   // Raw: Kirara.js:427-439. ConditionConstellation(1).
-  // UNCERTAIN: FeatureMultiplierKiraraBurst computes floor(HP/8000) capped at 4 (dynamic).
-  // At fixture HP=31503.32 → floor(31503.32/8000)=3, so scalingMultiplier=3 matches the
-  // oracle. Engine gap: dynamic HP-floor multiplier not natively supported; hardcoded for
-  // the fixture build.
+  // BUILD-COUPLED CARRY: FeatureMultiplierKiraraBurst is dynamic — floor(HP/8000) capped at 4.
+  // Baked at the fixed build (HP=31503.32 → floor(/8000)=3) → scalingMultiplier=3 matches the
+  // oracle. Parity-correct at the validated build, desyncs off-build (same class as sayu C6 /
+  // xilonen res / furina A4); the real calc needs an HP-bucket / runtime-coefficient primitive.
   {
     name: "kirara_cat_grass_explosion_extra_dmg",
     category: "burst",
@@ -244,7 +244,7 @@ const features: readonly Feature[] = [
       {
         leveling: "char_skill_burst",
         values: talents.get("burst.kirara_cat_grass_explosion_dmg"),
-        // UNCERTAIN: floor(HP/8000) capped at 4; fixture HP=31503 → 3.
+        // BUILD-COUPLED: floor(HP/8000) capped at 4; fixture HP=31503 → 3 (see note above).
         scalingMultiplier: 3,
         source: "constellation1",
       },

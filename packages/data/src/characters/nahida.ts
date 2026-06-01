@@ -161,8 +161,9 @@ const features: readonly Feature[] = [
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
 // C1 "The Seed of Stored Knowledge": ConditionStatic display-only → SKIP.
-// C2 "The Root of All Fullness": ConditionStatic (crit_rate_bloom/crit_dmg_bloom
-//   for reactions) + ConditionBoolean toggle (enemy_def_reduce:30) → SKIP (toggles).
+// C2 "The Root of All Fullness": ConditionStatic crit_rate_bloom/burning + crit_dmg_bloom/burning
+//   (makes Bloom/Rupture + Burning crittable) → PORTED below (engine: crittable transformative
+//   reactions). The accompanying enemy_def_reduce ConditionBoolean is a toggle → SKIP.
 // C3 "The Shoot of Awakening Moment": +3 levels to All Schemes to Know (skill).
 //   Raw: constellation array index 2 → Condition({ settings:{ char_skill_elemental_bonus:3 } }).
 // C4 "The Stem of Manifest Inference": ConditionLevelSelect mastery stacks → SKIP (toggle).

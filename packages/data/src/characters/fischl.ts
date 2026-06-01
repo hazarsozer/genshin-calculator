@@ -174,9 +174,11 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") },
-      // C2: +200% ATK added to the re-summon, gated by ConditionConstellation(2).
-      // UNCERTAIN: per-feature multiplier with condition — engine may ignore condition on
-      // per-feature entries; if so, this always applies and will break C0 golden.
+      // C2 "Devourer of All Sins": +200% ATK on the re-summon, gated by
+      // ConditionConstellation(2). Per-feature multiplier conditions ARE honoured —
+      // compileFeature.activeOwnMultipliers filters them via evaluate (her
+      // FeatureMultiplier.isActive checks the gate at both char- and per-feature level),
+      // so this contributes 0 at C<2 and the C0 golden is unaffected.
       // Raw: Fischl.js:257-260 new ValueTable([200]) + condition: ConditionConstellation(2).
       {
         leveling: "char_skill_elemental",
