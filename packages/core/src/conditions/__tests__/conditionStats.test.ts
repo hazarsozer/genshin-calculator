@@ -7,7 +7,11 @@
  *
  *   - inactive (evaluate → false)          → {}
  *   - active boolean/static/constellation/
- *     number/and/or                        → cond.stats
+ *     and/or                               → cond.stats
+ *   - number                               → cond.stats + the clamped value emitted
+ *                                            as a stat keyed by `name` (her
+ *                                            ConditionNumber.getStats: super.getStats()
+ *                                            + stats.add(name, getValue))
  *   - stacks                               → getStackCount × per-stack bag
  *                                            (refinementStats[refine-1] ?? cond.stats)
  *   - refine / boolean-refine              → refinementStats[weapon_refine-1]
@@ -78,10 +82,18 @@ describe("conditionStats — non-refine variants emit cond.stats when active", (
     expect(conditionStats(c, { char_constellation: 4 })).toEqual({ crit_dmg: 30 });
   });
 
-  it("number: {} when 0/absent, cond.stats when > 0", () => {
+  it("number: {} when 0/absent; cond.stats + emitted value when > 0", () => {
     const c: ConditionNumber = { type: "number", name: "n", stats: { mastery: 50 } };
     expect(conditionStats(c, { n: 0 })).toEqual({});
-    expect(conditionStats(c, { n: 5 })).toEqual({ mastery: 50 });
+    // Active: cond.stats PLUS the clamped numeric value emitted as a stat keyed by
+    // `name` — her ConditionNumber.getStats does super.getStats() + stats.add(name, getValue).
+    expect(conditionStats(c, { n: 5 })).toEqual({ mastery: 50, n: 5 });
+  });
+
+  it("number: emitted value is clamped to [min, max] (party_max_mastery pattern)", () => {
+    const capped: ConditionNumber = { type: "number", name: "party_max_mastery", max: 1000 };
+    expect(conditionStats(capped, { party_max_mastery: 2000 })).toEqual({ party_max_mastery: 1000 });
+    expect(conditionStats(capped, { party_max_mastery: 600 })).toEqual({ party_max_mastery: 600 });
   });
 
   it("and/or: cond-less containers contribute nothing (no stats field)", () => {

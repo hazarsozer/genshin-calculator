@@ -185,6 +185,9 @@ function assertHuTaoMatches(settings: Record<string, unknown>, fixture: Fixture)
     levels: LEVELS,
     enemy: ENEMY,
     settings,
+    // Pass talentLevels so hu_tao's talent-scaled HP→ATK ratio resolves at the
+    // effective skill level (here C0 → level 10 → 0.06256), mirroring the oracle.
+    talentLevels: TALENTS,
   });
   const compiled = compileCharacter(huTao, {
     charElement: huTao.element,
