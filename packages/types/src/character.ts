@@ -163,8 +163,35 @@ export interface CharPostEffect {
   readonly fromStat: string;
   /** Stat the bonus is written TO (e.g. `atk`). */
   readonly toStat: string;
-  /** Multiplier applied to `getTotal(fromStat)` (fraction, e.g. 0.0626). */
-  readonly ratio: number;
+  /**
+   * Fixed multiplier applied to `getTotal(fromStat)` (fraction, e.g. 0.0626).
+   * Ignored when `ratioFromTalent` is set — in that case the ratio is resolved
+   * at runtime from the talent table at the effective (bumped) talent level.
+   */
+  readonly ratio?: number;
+  /**
+   * Talent-scaled ratio — when present, supersedes `ratio`. The effective
+   * talent level is resolved at runtime as:
+   *   `effectiveLevel = settings[levelSetting] + (settings[levelSetting + '_bonus'] ?? 0)`
+   *   `ratio = table.getValue(effectiveLevel) * multi`
+   *
+   * Mirrors her `PostEffect.getLevel` (PostEffect.js) + `Talents.getMulti`
+   * (DbObjectTalents.js). The `levelSetting` key must be present in the merged
+   * settings when the post-effect fires (inject the base talent levels via
+   * `BuildInput.talentLevels`). The constellation `_bonus` offset is already
+   * propagated into the merged settings by the keystone (P2.C).
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/PostEffect.js (getLevel),
+   *         raw/genshin_calc_pub/src/js/db/Char/Hutao.js:145-158 (atkBuffPost).
+   */
+  readonly ratioFromTalent?: {
+    /** Talent multiplier table; `getValue(level)` returns the raw percent value. */
+    readonly table: TalentTable;
+    /** Settings key whose value is the BASE talent level (e.g. `char_skill_elemental`). */
+    readonly levelSetting: string;
+    /** Divisor/multiplier applied to the table value (e.g. `0.01` for a percent→fraction fold). */
+    readonly multi: number;
+  };
   /** Optional cap on the bonus, as `capRatio × getTotal(capStat)`. */
   readonly cap?: { readonly capStat: string; readonly capRatio: number };
   /**

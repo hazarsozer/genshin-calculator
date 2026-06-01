@@ -153,6 +153,26 @@ export interface BuildEnemy {
   readonly resistance: number | Readonly<Partial<Record<Element, number>>>;
 }
 
+/**
+ * Optional base talent levels — the 1-indexed game talent level for each slot
+ * (attack / elemental / burst). When provided, `buildStats` injects these as
+ * `char_skill_attack`, `char_skill_elemental`, `char_skill_burst` into the
+ * merged settings so that talent-scaled post-effects (`ratioFromTalent`) can
+ * resolve the effective level (base + constellation `_bonus`).
+ *
+ * The `_bonus` keys are already propagated by the condition loop (C3/C5
+ * constellation keystone); the base keys are NOT in `input.settings` by
+ * default (they are a compileFeature concern), so they must be injected here
+ * for post-effects that need them. Only the keys present in the `talentLevels`
+ * object are injected — missing slots default to `undefined` (→ 0 in
+ * `settings[key] || 1` fallback, which mirrors her PostEffect.getLevel).
+ */
+export interface TalentLevels {
+  readonly attack?: number;
+  readonly elemental?: number;
+  readonly burst?: number;
+}
+
 /** Everything `buildStats` needs to assemble the bag. */
 export interface BuildInput {
   readonly char: DbObjectChar;
@@ -164,6 +184,13 @@ export interface BuildInput {
   readonly enemy: BuildEnemy;
   /** The immutable EvalContext for condition-gated post-effects/buffs. */
   readonly settings?: EvalContext;
+  /**
+   * Base talent levels (attack / elemental / burst). When provided, their
+   * values are injected into the merged settings as `char_skill_attack`,
+   * `char_skill_elemental`, `char_skill_burst` — required for talent-scaled
+   * post-effects (`CharPostEffect.ratioFromTalent`).
+   */
+  readonly talentLevels?: TalentLevels;
   /**
    * Generic condition channel for equipped-object (weapon / artifact-set)
    * conditions. Applied identically to `char.conditions` in the condition loop —
@@ -239,7 +266,20 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
     priority: effect.priority ?? 1,
     contribute(readStats: Stats, settings: EvalContext): Record<string, number> {
       if (!conditions.every((c) => evaluate(c, settings))) return {};
-      let bonus = readStats.getTotal(effect.fromStat) * effect.ratio;
+      // Resolve ratio: talent-scaled (dynamic) or fixed constant.
+      let ratio: number;
+      if (effect.ratioFromTalent !== undefined) {
+        const { table, levelSetting, multi } = effect.ratioFromTalent;
+        // Mirror her PostEffect.getLevel: base || 1, then add _bonus and _bonus_2.
+        const base = (settings[levelSetting] as number | undefined) ?? 1;
+        const bonus1 = (settings[`${levelSetting}_bonus`] as number | undefined) ?? 0;
+        const bonus2 = (settings[`${levelSetting}_bonus_2`] as number | undefined) ?? 0;
+        const effectiveLevel = base + bonus1 + bonus2;
+        ratio = table.getValue(effectiveLevel) * multi;
+      } else {
+        ratio = effect.ratio ?? 0;
+      }
+      let bonus = readStats.getTotal(effect.fromStat) * ratio;
       if (effect.cap !== undefined) {
         const capBase = effect.capUsesBase
           ? readStats.get(`${effect.cap.capStat}_base`)
@@ -348,12 +388,29 @@ export function buildStats(input: BuildInput): BuildResult {
   // NOTE (P2.C): char-feature weapon-type conditions would also need `weapon_type` in
   // the COMPILE settings (CompileContext). Out of scope here — set conditions are
   // resolved entirely within buildStats, so this injection suffices for set 4pc gates.
+  //
+  // Inject base talent levels (when provided) as `char_skill_<slot>` keys so that
+  // talent-scaled post-effects (`CharPostEffect.ratioFromTalent`) can read the base
+  // level from settings and combine it with the constellation `_bonus` offset (already
+  // propagated by the condition loop). Mirrors her `PostEffect.getLevel` which reads
+  // `settings[levelSetting] || 1` + `settings[levelSetting + '_bonus']`. These keys
+  // are NOT normally in the caller's settings (they are a compileFeature concern); this
+  // injection is opt-in (only when `input.talentLevels` is provided) and base-safe —
+  // no existing condition reads `char_skill_*`, so the 107/base + all other tests are
+  // untouched. Injected BEFORE `input.settings` so callers can override if needed.
+  const talentSettings: Record<string, number> = {};
+  if (input.talentLevels) {
+    if (input.talentLevels.attack !== undefined) talentSettings["char_skill_attack"] = input.talentLevels.attack;
+    if (input.talentLevels.elemental !== undefined) talentSettings["char_skill_elemental"] = input.talentLevels.elemental;
+    if (input.talentLevels.burst !== undefined) talentSettings["char_skill_burst"] = input.talentLevels.burst;
+  }
+
   const baseSettings: EvalContext = { weapon_type: input.char.weapon };
 
   const settings: EvalContext =
     input.setBonuses && input.setBonuses.length > 0
-      ? { ...(input.settings ?? {}), ...baseSettings, ...sets.pieceSettings }
-      : { ...(input.settings ?? {}), ...baseSettings };
+      ? { ...talentSettings, ...(input.settings ?? {}), ...baseSettings, ...sets.pieceSettings }
+      : { ...talentSettings, ...(input.settings ?? {}), ...baseSettings };
 
   // 1-2. Aggregate base stats (char then weapon), then concat the bonus block.
   const raw = new Stats();
