@@ -18,7 +18,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Kuki)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Kuki as KukiStatTable } from "../generated/charTables.js";
 import { Kuki as KukiTalents } from "../generated/charTalentTables.js";
 
@@ -160,6 +160,42 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.kuki_shinobu_burst_dmg") }],
   },
+  // --- C4 "To Sever Sealing": cons-added electro skill-category hit, HP-scaled (9.7%).
+  // raw: FeatureDamageSkill name:'kuki_shinobu_to_sever_sealing_dmg', category:'other',
+  //   scaling:'hp*', source:'constellation4', ValueTable([9.7]),
+  //   condition:ConditionConstellation({constellation:4}). Kuki.js:313-325.
+  // category omitted → loader infers "other." prefix; FeatureDamageSkill → damageType:"skill".
+  {
+    name: "kuki_shinobu_to_sever_sealing_dmg",
+    element: "electro",
+    damageType: "skill",
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: { getValue: (_level: number) => 9.7 },
+        source: "constellation4",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "To Cloister Compassion": ConditionStatic (display-only) → SKIP.
+// C2 "To Forsake Fortune": ConditionStatic (display-only) → SKIP.
+// C3 "To Sever Sealing": +3 levels to skill (elemental). Kuki.js:382-390.
+// C4 "To Sever Sealing" damage: cons-added feature above; cons array slot is
+//   ConditionStatic (display-only text_percent:9.7) → no stat entry needed here.
+// C5 "To Ward Weakness": +3 levels to burst. Kuki.js:401-409.
+// C6 "To Ward Weakness" mastery: ConditionBoolean toggle (+150 mastery) → SKIP.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Sanctifying Ring (elemental skill). Kuki.js:382-390.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Gyoei Narukami Kariyama Rite (burst). Kuki.js:401-409.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -177,4 +213,5 @@ export const kukiShinobu: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
