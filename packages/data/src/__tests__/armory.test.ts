@@ -57,6 +57,7 @@ import { describe, it, expect } from "vitest";
 import { buildStats } from "../buildStats.js";
 import { compileCharacter } from "../loader.js";
 import type {
+  CompiledFeature,
   DbObjectArtifactSet,
   DbObjectChar,
   DbObjectWeapon,
@@ -311,7 +312,7 @@ function assertItemAgainstFixture(
   slug: string,
   fixture: Fixture,
   context: ReturnType<typeof buildStats>["context"],
-  compiled: Readonly<Record<string, (ctx: typeof context) => { normal: number; crit: number; avg: number }>>
+  compiled: Readonly<Record<string, CompiledFeature>>
 ): void {
   const allDamageKeys = Object.entries(fixture.features)
     .filter(([, e]) => isDamageTripleEntry(e))
