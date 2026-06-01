@@ -16,7 +16,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Bennett)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Bennett as BennettStatTable } from "../generated/charTables.js";
 import { Bennett as BennettTalents } from "../generated/charTalentTables.js";
 
@@ -251,6 +251,22 @@ const constellationConditions: readonly Condition[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Post-effects
+// ---------------------------------------------------------------------------
+
+// "Fantastic Voyage" burst: +ATK = base ATK × (burst atk_ratio @L10 × 0.01).
+// Raw Bennet.js:156-175 — PostEffectStats{ from:'atk_base', percent:burst.atk_ratio × 0.01,
+// conditions:[ConditionBoolean({name:'bennet_fantastic_voyage'})] }.
+// BUILD-COUPLED at burst level 10 (the oracle's fixed talent level), like itto/sayu carries.
+// BennettTalents.s3.p4 = atk_ratio table; getValue(10) = 100.8; ratio = 1.008.
+const fantasticVoyageAtk: CharPostEffect = {
+  fromStat: "atk_base",
+  toStat: "atk",
+  ratio: BennettTalents.s3.p4.getValue(10) * 0.01,  // 100.8 × 0.01 = 1.008
+  conditions: [{ type: "boolean", name: "bennet_fantastic_voyage" }],
+};
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -265,5 +281,6 @@ export const bennett: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  postEffects: [fantasticVoyageAtk],
   conditions: constellationConditions,
 };
