@@ -1,0 +1,245 @@
+{
+  "defaultWeapon": "weapon_name.alley_hunter",
+  "element": "hydro",
+  "features": {
+    "attack.aimed": {
+      "average": 1424.1203829140127,
+      "category": "attack",
+      "crit": 2589.3097871163864,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1294.6548935581932
+    },
+    "attack.charged_aimed": {
+      "average": 3561.4976971026063,
+      "category": "attack",
+      "crit": 6475.4503583683745,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3237.7251791841873
+    },
+    "attack.normal_hit_1": {
+      "average": 1610.7375965869924,
+      "category": "attack",
+      "crit": 2928.6138119763496,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1464.3069059881748
+    },
+    "attack.normal_hit_2": {
+      "average": 1563.50466946695,
+      "category": "attack",
+      "crit": 2842.7357626671815,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1421.3678813335907
+    },
+    "attack.normal_hit_3": {
+      "average": 2396.8209327202703,
+      "category": "attack",
+      "crit": 4357.856241309582,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2178.928120654791
+    },
+    "attack.plunge": {
+      "average": 1634.3317210037517,
+      "category": "attack",
+      "crit": 2971.5122200068213,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1485.7561100034106
+    },
+    "attack.plunge_high": {
+      "average": 4081.872082845932,
+      "category": "attack",
+      "crit": 7421.585605174421,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3710.7928025872106
+    },
+    "attack.plunge_low": {
+      "average": 3267.9709285664007,
+      "category": "attack",
+      "crit": 5941.765324666183,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2970.8826623330915
+    },
+    "attack.sigewinnne_mini_stration_bubble_dmg": {
+      "average": 712.2995394205213,
+      "category": "attack",
+      "crit": 1295.0900716736753,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 647.5450358368377
+    },
+    "burst.burst_dmg": {
+      "average": 6605.020665766257,
+      "category": "burst",
+      "crit": 12009.128483211374,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 6004.564241605687
+    },
+    "other.sigewinne_hp_buff": {
+      "average": 338.18936941132824,
+      "category": "other",
+      "crit": 338.18936941132824,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 338.18936941132824
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.sigewinne_bolstering_bubblebalm_dmg": {
+      "average": 1056.8896186326276,
+      "category": "skill",
+      "crit": 1921.6174884229595,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 960.8087442114797
+    },
+    "skill.sigewinne_bolstering_bubblebalm_heal": {
+      "average": 2318.2934027291367,
+      "category": "skill",
+      "crit": 2318.2934027291367,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2318.2934027291367
+    },
+    "skill.sigewinne_bounce_end_heal": {
+      "average": 17113.6835588208,
+      "category": "skill",
+      "crit": 17113.6835588208,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 17113.6835588208
+    },
+    "skill.surging_blade_dmg": {
+      "average": 317.0668855897884,
+      "category": "skill",
+      "crit": 576.485246526888,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 288.242623263444
+    },
+    "stats.atk": {
+      "average": 2370.2511736478523,
+      "category": "stats",
+      "crit": 2370.2511736478523,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2370.2511736478523
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1375.5603405000002,
+      "category": "stats",
+      "crit": 1375.5603405000002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1375.5603405000002
+    },
+    "stats.hp": {
+      "average": 34227.3671176416,
+      "category": "stats",
+      "crit": 34227.3671176416,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 34227.3671176416
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 87,
+  "key": "Sigewinne",
+  "schema": 1,
+  "slug": "sigewinne",
+  "weaponType": "bow"
+}

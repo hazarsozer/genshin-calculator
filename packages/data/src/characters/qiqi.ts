@@ -17,7 +17,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Qiqi)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Qiqi as QiqiStatTable } from "../generated/charTables.js";
 import { Qiqi as QiqiTalents } from "../generated/charTalentTables.js";
 
@@ -176,6 +176,31 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Ascetics of Frost": ConditionStatic with no real stats (description only) → SKIP.
+// C2 "Frozen to the Bone": ConditionStatic with dmg_normal/dmg_charged +15, BUT gated by
+//    subCondition ConditionEnemyStatus({status:['cryo']}) → SKIP (enemy-status conditional;
+//    ALL TOGGLES OFF config means no active enemy status in the fixture).
+// C3 "Canticle of Cultivar": +3 Elemental Burst talent levels.
+//    Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C4 "Divine Suppression": ConditionStatic with no real stats → SKIP.
+// C5 "Crimson Lotus Flower": +3 Elemental Skill talent levels.
+//    Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C6 "Rite of Resurrection": ConditionStatic with no real stats → SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:378-438
+
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 Elemental Burst (Preserver of Fortune).
+  // Raw cons[2]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 Elemental Skill (Herald of Frost).
+  // Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -190,4 +215,5 @@ export const qiqi: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

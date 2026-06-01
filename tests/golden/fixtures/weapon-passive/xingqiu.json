@@ -1,0 +1,281 @@
+{
+  "defaultWeapon": "weapon_name.the_alley_flash",
+  "element": "hydro",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 1468.5453997947257,
+      "category": "attack",
+      "crit": 2670.082545081319,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1335.0412725406595
+    },
+    "attack.charged_hit_2": {
+      "average": 1743.563901938101,
+      "category": "attack",
+      "crit": 3170.116185342002,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1585.058092671001
+    },
+    "attack.charged_hit_total": {
+      "average": 3212.1093017328267,
+      "category": "attack",
+      "crit": 5840.198730423321,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2920.0993652116604
+    },
+    "attack.normal_hit_1": {
+      "average": 1359.4765734077675,
+      "category": "attack",
+      "crit": 2471.7755880141226,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1235.8877940070613
+    },
+    "attack.normal_hit_2": {
+      "average": 1389.5756857341387,
+      "category": "attack",
+      "crit": 2526.501246789343,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1263.2506233946715
+    },
+    "attack.normal_hit_3": {
+      "average": 1665.4842153925415,
+      "category": "attack",
+      "crit": 3028.15311889553,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1514.076559447765
+    },
+    "attack.normal_hit_3_1": {
+      "average": 832.7421076962708,
+      "category": "attack",
+      "crit": 1514.076559447765,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 757.0382797238825
+    },
+    "attack.normal_hit_4": {
+      "average": 1632.8768437056394,
+      "category": "attack",
+      "crit": 2968.866988555708,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1484.433494277854
+    },
+    "attack.normal_hit_5": {
+      "average": 2091.8883066828002,
+      "category": "attack",
+      "crit": 3803.433284877819,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1901.7166424389095
+    },
+    "attack.normal_hit_5_1": {
+      "average": 1045.9441533414001,
+      "category": "attack",
+      "crit": 1901.7166424389095,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 950.8583212194548
+    },
+    "attack.plunge": {
+      "average": 1744.3406532239433,
+      "category": "attack",
+      "crit": 3171.5284604071694,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1585.7642302035847
+    },
+    "attack.plunge_high": {
+      "average": 4356.6280479430925,
+      "category": "attack",
+      "crit": 7921.141905351077,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3960.5709526755386
+    },
+    "attack.plunge_low": {
+      "average": 3487.9428691807398,
+      "category": "attack",
+      "crit": 6341.714307601344,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3170.857153800672
+    },
+    "burst.xingqiu_rain_sword": {
+      "average": 2278.2754891270624,
+      "category": "burst",
+      "crit": 4142.319071140114,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2071.159535570057
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.rupture": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "skill.dmg_reduction": {
+      "average": 32.99999999999999,
+      "category": "skill",
+      "crit": 32.99999999999999,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 32.99999999999999
+    },
+    "skill.skill_dmg": {
+      "average": 12616.953900937411,
+      "category": "skill",
+      "crit": 22939.916183522564,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 11469.958091761282
+    },
+    "skill.xingqiu_hydropathic": {
+      "average": 1406.905234584,
+      "category": "skill",
+      "crit": 1406.905234584,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1406.905234584
+    },
+    "skill.xingqiu_skill_1_dmg": {
+      "average": 5901.025209792552,
+      "category": "skill",
+      "crit": 10729.136745077367,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5364.568372538683
+    },
+    "skill.xingqiu_skill_2_dmg": {
+      "average": 6715.928691144859,
+      "category": "skill",
+      "crit": 12210.779438445197,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6105.389719222599
+    },
+    "stats.atk": {
+      "average": 2403.7906201779997,
+      "category": "stats",
+      "crit": 2403.7906201779997,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2403.7906201779997
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1633.5993102,
+      "category": "stats",
+      "crit": 1633.5993102,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1633.5993102
+    },
+    "stats.hp": {
+      "average": 23448.4205764,
+      "category": "stats",
+      "crit": 23448.4205764,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23448.4205764
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 29,
+  "key": "Xingqiu",
+  "schema": 1,
+  "slug": "xingqiu",
+  "weaponType": "sword"
+}

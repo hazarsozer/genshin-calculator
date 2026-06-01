@@ -30,7 +30,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Tartaglia)
  */
 
-import type { DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
 import { Tartaglia as TartagliaStatTable } from "../generated/charTables.js";
 import { Tartaglia as TartagliaTalents } from "../generated/charTalentTables.js";
 
@@ -207,6 +207,29 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Foul Legacy: Tide Withholder": ConditionStatic with text_percent_cd:20
+//   (display-only stat) → SKIP.
+// C2 "Foul Legacy: Understream": ConditionStatic no real stats → SKIP.
+// C3 "Abyssal Mayhem: Vortex of Turmoil": +3 Elemental Skill talent levels.
+//   Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C4 "Abyssal Mayhem: Hydrospout": ConditionStatic no real stats → SKIP.
+// C5 "Havoc: Formless Blade": +3 Elemental Burst talent levels.
+//   Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C6 "Havoc: Annihilation": ConditionStatic no real stats → SKIP.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Tartaglia.js:551-608
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Abyssal Mayhem: Vortex of Turmoil" — +3 Elemental Skill talent levels.
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Havoc: Formless Blade" — +3 Elemental Burst talent levels.
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -221,4 +244,5 @@ export const tartaglia: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

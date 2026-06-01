@@ -38,7 +38,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Xilonen)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Xilonen as XilonenStatTable } from "../generated/charTables.js";
 import { Xilonen as XilonenTalents } from "../generated/charTalentTables.js";
 
@@ -164,6 +164,42 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic, no real stats → SKIP.
+// C2: Condition{stats:{dmg_all:50}} gated by ConditionAnd[2×ConditionBoolean] (toggles) → SKIP.
+// C3 "Tonalpohuallis Loop" — +3 Elemental Skill talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Xilonen.js:417-424 (char-level conditions).
+// C4: ConditionBoolean toggle (normal_base_def_percent/plunge_base_def_percent) → SKIP.
+// C5 "Ocelotlicue Points (Improved)" — +3 Burst talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Xilonen.js:598-605 (constellation[4]).
+// C6: ConditionStatic gated by ConditionBoolean(nightsoul_blessing_state) subCondition (OFF) → SKIP.
+
+const constellationConditions: readonly Condition[] = [
+  // C2 "Yoalli's..." — the Source Sample (geo) goes ACTIVE: C2 sets
+  // xilonen_active_sampler_geo:1 (Xilonen.js:409-415), and xilonen_sampler_geo is always on
+  // for geo Xilonen (ConditionBooleanXilonen pads samplers to 'geo'). With BOTH gates true the
+  // sampler grants:
+  //   • dmg_all:50 (C2GeoBonus) — Xilonen.js cons[1], gated ConditionAnd([sampler_geo, active_sampler_geo]).
+  //   • geo res-shred — her skill Yohual's Scratch lowers enemy_res_geo by skill.xilonen_res_decrease
+  //     (Xilonen.js:478-491, gated by the same samplers). At skill lvl 13 (10 + C3's +3) = 45%.
+  // Modelled as constellation:2-gated (active_sampler_geo turns on at C2 in this nightsoul-off
+  // config; sampler_geo is always on). The res-shred value is BUILD-COUPLED (skill lvl 13 of the
+  // constellations config — res_decrease is talent-scaled; a static condition can't be).
+  // This is the entire C6 discrepancy: physical hits get +50% dmg_all (normal 1.12→1.62=1.446×,
+  // charged 1.20→1.70, plunge 1.04→1.54); geo skill/burst additionally ride the res-shred.
+  {
+    type: "constellation",
+    constellation: 2,
+    stats: { dmg_all: 50, enemy_res_geo: -45 },
+  },
+  // C3 — char_skill_elemental_bonus +3 (skill talent level up).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 — char_skill_burst_bonus +3 (burst talent level up).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -178,4 +214,5 @@ export const xilonen: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

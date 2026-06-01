@@ -17,8 +17,9 @@
  * Source: raw/genshin_calc_pub/src/js/classes/CalcSet.js (getFeaturesHash)
  */
 
-import { compile } from "@genshin/core";
+import { compile, evaluate } from "@genshin/core";
 import type {
+  CharMultiplier,
   CompiledFeature,
   DbObjectChar,
   Feature,
@@ -43,6 +44,17 @@ export function compileCharacter(
 ): Readonly<Record<string, CompiledFeature>> {
   const out: Record<string, CompiledFeature> = {};
 
+  // Char-level ("targeted") multipliers — her `char.getMultipliers()`. Only the
+  // entries carrying a `target` are char-level multipliers that match-by-damage-type
+  // (e.g. Itto A4 def→charged, Albedo C2 def→burst); compileFeature injects the
+  // active ones into each matching feature's base term. An explicit `ctx.charMultipliers`
+  // (e.g. from tests) takes precedence so callers can override. Mirrors
+  // Feature2.getMultipliers reading `data.multipliers` (Feature2.js:121).
+  const charMultipliers: readonly CharMultiplier[] =
+    ctx.charMultipliers ??
+    char.multipliers.filter((m): m is CharMultiplier => m.target !== undefined);
+  const featureCtx: CompileContext = { ...ctx, charMultipliers };
+
   // The standard transformative-reaction contributions are generic (computed from
   // the char's element + EM + level), appended to the declared features. They need
   // a charLevel for the level multiplier, so they are only emitted when one is set.
@@ -57,7 +69,13 @@ export function compileCharacter(
 
   for (const feature of [...char.features, ...reactionFeatures]) {
     if (feature.isChild) continue;
-    const block = compileFeature(feature, ctx);
+    // Feature-level gate: a constellation-added (or otherwise conditional) feature is
+    // produced only when its condition holds against the compile settings (absent =
+    // always). Mirrors her getFeaturesHash `feat.checkConditions` filter; the cons
+    // features are declared with `condition: ConditionConstellation(n)`. Inert at the
+    // base build (no base feature sets `.condition`) → the C0 golden suite is untouched.
+    if (feature.condition !== undefined && !evaluate(feature.condition, ctx.settings)) continue;
+    const block = compileFeature(feature, featureCtx);
     out[featureKey(feature)] = compile(block);
   }
   return out;

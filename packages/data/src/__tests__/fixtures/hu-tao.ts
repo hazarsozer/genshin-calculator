@@ -144,7 +144,10 @@ const paramita: Condition = {
 /**
  * Hu Tao's skill HP→ATK conversion. Ratio = skill.hutao_atk_bonus @ L10 × 0.01
  * (her Talents.getMulti). At skill level 10 the bonus table value is 6.256, so
- * ratio = 0.06256; cap = 400% of atk_base. Active only when Paramita is on.
+ * ratio = 0.06256; cap = 400% of atk_BASE (her `statCapPost` reads
+ * `from: 'atk_base'` × atk_percent[400], Hutao.js:155-158 — `capUsesBase: true`
+ * makes the adapter read atk_base × 4, not getTotal('atk') × 4). Active only when
+ * Paramita is on.
  */
 const hpToAtk: CharPostEffect = {
   priority: 1,
@@ -152,6 +155,7 @@ const hpToAtk: CharPostEffect = {
   toStat: "atk",
   ratio: 6.256 * 0.01,
   cap: { capStat: "atk", capRatio: 4 },
+  capUsesBase: true,
   conditions: [paramita],
 };
 

@@ -19,15 +19,15 @@
  *
  * A4 "Unheard Confession" (auto-active at A6) grants dmg_skill_furina =
  * min(0.0007 · hp_total, 28%). Her engine models this as PostEffectStatsHP
- * writing the percent stat `dmg_skill_furina`. We CANNOT route an HP→percent
- * post-effect through `damageBonuses`: buildStats' post-effect adapter writes a
- * FRACTION, but the feature-bonus-key emit (`collectFeatureBonusKeys`) divides
- * referenced keys by 100 — a post-effect-sourced damageBonuses key would be
- * double-divided (engine-layer behaviour we must not change). Under the FIXED
- * canonical build hp_total is the constant 28533.38835, so the A4 value is the
- * constant min(0.0007·28533.38835, 28) = 19.973371845 (raw percent). We fold it
- * as a static `baseStats` percent (same technique as Amber's A1 crit_rate_amber);
- * buildStats emits it as 19.973371845/100 = 0.19973371845, exactly her value.
+ * writing the percent stat `dmg_skill_furina` (Furina.js:503-509). We port it as
+ * a plain HP→% post-effect: the adapter derives min(0.0007 · getTotal('hp'), 28),
+ * landing dmg_skill_furina in the bag as a RAW PERCENT; buildStats'
+ * `collectFeatureBonusKeys` emit loop then divides it by 100 to produce the
+ * FRACTION the engine reads. This is numerically identical to the
+ * `toStatIsDamageBonus` channel (the absolute 28% cap commutes through /100), and
+ * matches the plain pattern that every other dmg_* post-effect uses (e.g. kirara).
+ * Recomputes per build — the previous code hardcoded the fixed build's
+ * min(0.0007·28533.38835, 28) = 19.973371845, correct ONLY at that build.
  *
  * Display-only fixture rows skipped by the harness (empty damageType):
  *   furina_fanfare_dmg_bonus / heal_bonus (0 at 0 fanfare stacks in solo C0),
@@ -46,7 +46,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Furina)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Furina as FurinaStatTable } from "../generated/charTables.js";
 import { Furina as FurinaTalents } from "../generated/charTalentTables.js";
 
@@ -162,6 +162,10 @@ const features: readonly Feature[] = [
     ],
   },
   // The three salon-member hits carry damageBonuses: ['dmg_skill_furina'] (A4).
+  // Their HP multiplier gets an additive offset from furina_hp_offers (ConditionStacks,
+  // max 4): +0.1 × min(4, stacks) — ports FeatureMultiplierFurinaSkill.getScalingMultiplier
+  // (raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/FurinaSkill.js:12-13).
+  // Base (offers absent / 0) → offset 0 → no change.
   // raw: FeatureDamageSkill furina_gentilhomme_usher_dmg / _surintendante_chevalmarin_dmg / _mademoiselle_crabaletta_dmg
   {
     name: "furina_gentilhomme_usher_dmg",
@@ -169,7 +173,12 @@ const features: readonly Feature[] = [
     element: "hydro",
     damageBonuses: ["dmg_skill_furina"],
     multipliers: [
-      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.furina_gentilhomme_usher_dmg") },
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.furina_gentilhomme_usher_dmg"),
+        scalingOffset: { setting: "furina_hp_offers", perStack: 0.1, maxStacks: 4 },
+      },
     ],
   },
   {
@@ -178,7 +187,12 @@ const features: readonly Feature[] = [
     element: "hydro",
     damageBonuses: ["dmg_skill_furina"],
     multipliers: [
-      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.furina_surintendante_chevalmarin_dmg") },
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.furina_surintendante_chevalmarin_dmg"),
+        scalingOffset: { setting: "furina_hp_offers", perStack: 0.1, maxStacks: 4 },
+      },
     ],
   },
   {
@@ -187,7 +201,12 @@ const features: readonly Feature[] = [
     element: "hydro",
     damageBonuses: ["dmg_skill_furina"],
     multipliers: [
-      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.furina_mademoiselle_crabaletta_dmg") },
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.furina_mademoiselle_crabaletta_dmg"),
+        scalingOffset: { setting: "furina_hp_offers", perStack: 0.1, maxStacks: 4 },
+      },
     ],
   },
   // --- Burst: Let the People Rejoice (hydro, HP-scaling) ---
@@ -206,11 +225,46 @@ const features: readonly Feature[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
-// A4 "Unheard Confession" (auto-active at A6): dmg_skill_furina =
-// min(0.0007 · hp_total, 28) as a raw percent. hp_total is the constant
-// 28533.38835 under the fixed canonical build → min(19.973371845, 28) =
-// 19.973371845. buildStats emits this /100 = 0.19973371845 (her A4 value).
-const DMG_SKILL_FURINA_A4 = Math.min(0.0007 * 28533.38835, 28);
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Love Is a Rebellious Bird That None Can Tame": text-only (fanfare gain/limit)
+//   → ConditionStatic, display-only → SKIP.
+// C2 "A Woman Adapts Like Duckweed in Water": text-only (HP% bonus text_percent)
+//   → ConditionStatic, display-only → SKIP.
+// C4 "They Know Not Life, Who Dwelt in the Netherworld Not": display-only
+//   → ConditionStatic, no real stats → SKIP.
+// C6 "Hear Me, Let Us Raise the Chalice of Love": ConditionBoolean toggles
+//   (furina_pneuma, furina_chalice_of_love) → OFF at baseline → SKIP.
+//
+// Always-on: C3 (+3 burst talent), C5 (+3 skill talent).
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Furina.js:514-577
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Rejoice, O Youth! Neath Flourishing Heavens" — +3 Elemental Burst.
+  // Raw cons[2]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 "The Water That Suits Me Best" — +3 Elemental Skill.
+  // Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// A4 "Unheard Confession": dmg_skill_furina = min(0.0007 · hp_total, 28%) (her
+// raw percent + 28% statCap; Furina.js:503-509). Plain post-effect: lands in the
+// bag as a RAW PERCENT; buildStats' collectFeatureBonusKeys emit /100 produces
+// the FRACTION the engine reads. Auto-active at the A6 canonical build (her
+// ConditionAscensionChar asc4 is satisfied; ascension gate not threaded into
+// settings, matching Yae Miko / Alhaitham's A4 post-effects), so no `conditions`.
+//   base hp_total 28533.38835 → min(19.973, 28) = 19.973% → /100 → 0.19973371845
+//   high-HP hp_total 66420.63 → min(46.49, 28) = 28%      → /100 → 0.28 (cap)
+const a4PostEffects: readonly CharPostEffect[] = [
+  {
+    fromStat: "hp",
+    toStat: "dmg_skill_furina",
+    ratio: 0.0007,
+    capValue: 28,
+  },
+];
 
 export const furina: DbObjectChar = {
   name: "furina",
@@ -223,5 +277,6 @@ export const furina: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  baseStats: { dmg_skill_furina: DMG_SKILL_FURINA_A4 },
+  postEffects: a4PostEffects,
+  conditions: constellationConditions,
 };

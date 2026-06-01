@@ -1,0 +1,272 @@
+{
+  "defaultWeapon": "weapon_name.the_bell",
+  "element": "electro",
+  "features": {
+    "attack.charged_final": {
+      "average": 2764.0002985102833,
+      "category": "attack",
+      "crit": 5025.455088200515,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2512.7275441002575
+    },
+    "attack.charged_spin": {
+      "average": 1528.6559897416093,
+      "category": "attack",
+      "crit": 2779.374526802926,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1389.687263401463
+    },
+    "attack.normal_hit_1": {
+      "average": 2071.264562904849,
+      "category": "attack",
+      "crit": 3765.935568917907,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1882.9677844589535
+    },
+    "attack.normal_hit_2": {
+      "average": 1933.048624484125,
+      "category": "attack",
+      "crit": 3514.633862698409,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1757.3169313492044
+    },
+    "attack.normal_hit_2_1": {
+      "average": 943.0276027105393,
+      "category": "attack",
+      "crit": 1714.5956412918897,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 857.2978206459449
+    },
+    "attack.normal_hit_2_2": {
+      "average": 990.0210217735855,
+      "category": "attack",
+      "crit": 1800.0382214065191,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 900.0191107032596
+    },
+    "attack.normal_hit_3": {
+      "average": 2947.9485151734407,
+      "category": "attack",
+      "crit": 5359.906391224437,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2679.9531956122187
+    },
+    "attack.plunge": {
+      "average": 1602.0118978693654,
+      "category": "attack",
+      "crit": 2912.7489052170276,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1456.3744526085138
+    },
+    "attack.plunge_high": {
+      "average": 4001.150781240315,
+      "category": "attack",
+      "crit": 7274.819602255118,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3637.409801127559
+    },
+    "attack.plunge_low": {
+      "average": 3203.3447055018437,
+      "category": "attack",
+      "crit": 5824.2631009124425,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2912.1315504562212
+    },
+    "burst.dori_connector_dmg": {
+      "average": 476.64804201603846,
+      "category": "burst",
+      "crit": 866.6328036655244,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 433.3164018327622
+    },
+    "burst.heal_dot": {
+      "average": 6499.076984007237,
+      "category": "burst",
+      "crit": 6499.076984007237,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 6499.076984007237
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.hyperbloom": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.dori_aftersales_service_round_dmg": {
+      "average": 776.8762336347622,
+      "category": "skill",
+      "crit": 1412.5022429722949,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 706.2511214861474
+    },
+    "skill.dori_compound_interest": {
+      "average": 10,
+      "category": "skill",
+      "crit": 10,
+      "damageType": "",
+      "format": "decimal",
+      "isReacted": false,
+      "normal": 10
+    },
+    "skill.dori_troubleshooter_shot_dmg": {
+      "average": 3625.4224236288896,
+      "category": "skill",
+      "crit": 6591.6771338707085,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3295.8385669353543
+    },
+    "stats.atk": {
+      "average": 1892.275128908,
+      "category": "stats",
+      "crit": 1892.275128908,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1892.275128908
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1599.4728165000001,
+      "category": "stats",
+      "crit": 1599.4728165000001,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1599.4728165000001
+    },
+    "stats.hp": {
+      "average": 42367.27289694517,
+      "category": "stats",
+      "crit": 42367.27289694517,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 42367.27289694517
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.bell_shield": {
+      "average": 8473.454579389034,
+      "category": "weapon",
+      "crit": 8473.454579389034,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 8473.454579389034
+    }
+  },
+  "id": 56,
+  "key": "Dori",
+  "schema": 1,
+  "slug": "dori",
+  "weaponType": "claymore"
+}

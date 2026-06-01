@@ -32,7 +32,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Clorinde)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Clorinde as ClorindeStatTable } from "../generated/charTables.js";
 import { Clorinde as ClorindeTalents } from "../generated/charTalentTables.js";
 
@@ -162,6 +162,45 @@ const features: readonly Feature[] = [
     damageBonuses: ["dmg_burst_clorinde"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
+  // C6 "And So Shall I Never Despair": cons-added 200% ATK electro normal hit.
+  // FeatureDamageNormal with category:'other' → category omitted here (LESSON 5).
+  // damageType:"normal" (FeatureDamageNormal → "normal"). Fixture: other.clorinde_glimbright_shade_dmg.
+  // Raw Clorinde.js:439-452: FeatureDamageNormal{name:'clorinde_glimbright_shade_dmg',
+  //   element:'electro', category:'other', multipliers:[{source:'constellation6',
+  //   values:ValueTable([200])}], condition:ConditionAnd([ConditionConstellation({constellation:6})])}.
+  {
+    name: "clorinde_glimbright_shade_dmg",
+    damageType: "normal",
+    element: "electro",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "constellation6",
+        values: { getValue: (_level: number) => 200 },
+        source: "constellation6",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "From This Day...": ConditionStatic display-only (text_percent_dmg:30) → SKIP.
+//    clorinde_nightwatch_shade_dmg feature is night-watch gated (ConditionBoolean toggle) → SKIP.
+// C2 "Now As We Face...": ConditionStatic (clorinde_electro_dmg_max cap +900) → display/cap only → SKIP.
+// C3 "+3 to Hunter's Vigil (skill)". Raw cons[2] settings char_skill_elemental_bonus:3.
+// C4 "To Enshrine Tears...": ConditionStatic display-only (bond-of-life burst bonus shown) → SKIP.
+//    C4 PostEffectStats already in postEffects (dmg_burst_clorinde). No extra cond needed.
+// C5 "+3 to Last Lightfall (burst)". Raw cons[4] settings char_skill_burst_bonus:3.
+// C6 "And So Shall I Never Despair": ConditionBoolean toggle (crit_rate:10, crit_dmg:70) → SKIP (toggle).
+//    clorinde_glimbright_shade_dmg feature is cons-gated (ConditionConstellation 6) → ported above.
+// Raw: Clorinde.js constellation array (Clorinde.js:531-607).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Hunter's Vigil (elemental skill).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Last Lightfall (elemental burst).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -179,4 +218,5 @@ export const clorinde: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

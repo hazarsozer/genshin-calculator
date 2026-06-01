@@ -54,6 +54,7 @@ export type {
   ArtifactSlot,
   Artifact,
   ArtifactSubStat,
+  ArtifactSetBonusTier,
   DbObjectArtifactSet,
 } from "./artifact.js";
 
@@ -68,6 +69,8 @@ export type {
 export type {
   FeatureCategory,
   FeatureMultiplierEntry,
+  FeatureMultiplierTarget,
+  CharMultiplier,
   Feature,
   FeatureReaction,
   CompiledFeature,
@@ -79,11 +82,14 @@ export type {
   ConditionSettings,
   ConditionBase,
   ConditionBoolean,
+  ConditionBooleanRefine,
   ConditionStatic,
   ConditionConstellation,
   ConditionStaticRefine,
   ConditionNumber,
   ConditionStacks,
+  ConditionBooleanPiecesCount,
+  ConditionBooleanWeaponType,
   ConditionAnd,
   ConditionOr,
   Condition,

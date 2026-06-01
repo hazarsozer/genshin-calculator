@@ -1,0 +1,263 @@
+{
+  "defaultWeapon": "weapon_name.alley_hunter",
+  "element": "dendro",
+  "features": {
+    "attack.aimed": {
+      "average": 1525.1350207361036,
+      "category": "attack",
+      "crit": 2772.9727649747338,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1386.4863824873669
+    },
+    "attack.normal_hit_1": {
+      "average": 1429.6614807901838,
+      "category": "attack",
+      "crit": 2599.384510527607,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1299.6922552638034
+    },
+    "attack.normal_hit_2": {
+      "average": 1344.267442438554,
+      "category": "attack",
+      "crit": 2444.1226226155527,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1222.0613113077764
+    },
+    "attack.normal_hit_3": {
+      "average": 1694.107535040391,
+      "category": "attack",
+      "crit": 3080.195518255256,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1540.097759127628
+    },
+    "attack.normal_hit_3_1": {
+      "average": 847.0537675201955,
+      "category": "attack",
+      "crit": 1540.097759127628,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 770.048879563814
+    },
+    "attack.normal_hit_4": {
+      "average": 2198.207825954849,
+      "category": "attack",
+      "crit": 3996.741501736089,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1998.3707508680445
+    },
+    "attack.plunge": {
+      "average": 1709.950925538083,
+      "category": "attack",
+      "crit": 3109.0016827965146,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1554.5008413982573
+    },
+    "attack.plunge_high": {
+      "average": 4270.736996834219,
+      "category": "attack",
+      "crit": 7764.976357880399,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3882.4881789401993
+    },
+    "attack.plunge_low": {
+      "average": 3419.1772955992437,
+      "category": "attack",
+      "crit": 6216.685991998625,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3108.3429959993123
+    },
+    "attack.tighnari_charged_dmg": {
+      "average": 4605.798239649918,
+      "category": "attack",
+      "crit": 8374.178617545305,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 4187.089308772653
+    },
+    "attack.tighnari_clusterbloom_arrow_dmg": {
+      "average": 1433.7404197619906,
+      "category": "attack",
+      "crit": 2606.800763203619,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1303.4003816018096
+    },
+    "attack.tighnari_wreath_arrow_dmg": {
+      "average": 3238.916181431233,
+      "category": "attack",
+      "crit": 5888.938511693151,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2944.4692558465754
+    },
+    "burst.tighnari_primary_dmg": {
+      "average": 2655.8360536692776,
+      "category": "burst",
+      "crit": 4828.792824853232,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2414.396412426616
+    },
+    "burst.tighnari_secondary_dmg": {
+      "average": 3246.021843373561,
+      "category": "burst",
+      "crit": 5901.857897042838,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2950.928948521419
+    },
+    "other.tighnari_charged_bonus": {
+      "average": 3.2999999999999994,
+      "category": "other",
+      "crit": 3.2999999999999994,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 3.2999999999999994
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.skill_dmg": {
+      "average": 5976.480826054685,
+      "category": "skill",
+      "crit": 10866.328774644882,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5433.164387322441
+    },
+    "stats.atk": {
+      "average": 2479.92077498664,
+      "category": "stats",
+      "crit": 2479.92077498664,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2479.92077498664
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1506.2145834,
+      "category": "stats",
+      "crit": 1506.2145834,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1506.2145834
+    },
+    "stats.hp": {
+      "average": 24075.8767685,
+      "category": "stats",
+      "crit": 24075.8767685,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 24075.8767685
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 54,
+  "key": "Tighnari",
+  "schema": 1,
+  "slug": "tighnari",
+  "weaponType": "bow"
+}

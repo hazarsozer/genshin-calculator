@@ -18,9 +18,11 @@
  * baseStats. The ascension crit-DMG secondary is already folded into the stat
  * table via the generated charTables (oracle stats.crit_dmg = 138.4 ✓).
  *
- * SKIPPED: C2 features `ayaka_add_slashing_dmg` / `ayaka_add_bladestorm_dmg`
- * (constellation, off at C0). Reactions (superconduct/electrocharged/shatter) are
- * auto-emitted by the loader from element=cryo — not declared here.
+ * C2 adds `ayaka_add_slashing_dmg` / `ayaka_add_bladestorm_dmg` (20% scalingMultiplier
+ * on the burst talent, FeatureDamageBurst, gated at constellation≥2). C3/C5 are
+ * talent-bump conditions (+3 burst/skill). C4/C6 are toggle booleans — SKIP.
+ * Reactions (superconduct/electrocharged/shatter) are auto-emitted by the loader
+ * from element=cryo — not declared here.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Ayaka.js
@@ -28,7 +30,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Ayaka)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Ayaka as AyakaStatTable } from "../generated/charTables.js";
 import { Ayaka as AyakaTalents } from "../generated/charTalentTables.js";
 
@@ -167,6 +169,55 @@ const features: readonly Feature[] = [
     element: "cryo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.ayaka_bladestorm_dmg") }],
   },
+  // --- C2 "Blizzard Blade Seki no To": two additional burst hits dealing 20% of the
+  // base slashing/bladestorm DMG each. FeatureDamageBurst gated by ConditionConstellation(2).
+  // C2BurstDamage = 20; scalingMultiplier = 20/100 = 0.20. Raw Ayaka.js:294-319.
+  {
+    name: "ayaka_add_slashing_dmg",
+    category: "burst",
+    element: "cryo",
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        leveling: "char_skill_burst",
+        values: talents.get("burst.ayaka_slashing_dmg"),
+        scalingMultiplier: 0.2,
+        source: "constellation2",
+      },
+    ],
+  },
+  {
+    name: "ayaka_add_bladestorm_dmg",
+    category: "burst",
+    element: "cryo",
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        leveling: "char_skill_burst",
+        values: talents.get("burst.ayaka_bladestorm_dmg"),
+        scalingMultiplier: 0.2,
+        source: "constellation2",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Snowswept Sakura": ConditionStatic text_percent_chance:50 — display-only, SKIP.
+// C2 "Blizzard Blade Seki no To": ConditionStatic text_percent_dmg:20 — display-only
+//   (the actual C2 damage comes from ayaka_add_slashing_dmg / ayaka_add_bladestorm_dmg above).
+// C3: +3 levels to Kamisato Art: Soumetsu (burst). Raw cons[2] char_skill_burst_bonus:3.
+// C4 "Ebb and Flow": ConditionBoolean toggle (enemy_def_reduce:30) — SKIP (toggle OFF).
+// C5: +3 levels to Kamisato Art: Hyouka (skill). Raw cons[4] char_skill_elemental_bonus:3.
+// C6 "Dance of Suigetsu": ConditionBoolean toggle (dmg_charged:298) — SKIP (toggle OFF).
+// Raw: db/Char/Ayaka.js constellation array (Ayaka.js:364-431).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Kamisato Art: Soumetsu (burst).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Kamisato Art: Hyouka (skill).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -184,4 +235,5 @@ export const kamisatoAyaka: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

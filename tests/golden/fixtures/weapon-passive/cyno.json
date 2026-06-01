@@ -1,0 +1,227 @@
+{
+  "defaultWeapon": "weapon_name.blackcliff_pole",
+  "element": "electro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 4078.692578173881,
+      "category": "attack",
+      "crit": 10030.853696655822,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3417.3413427869987
+    },
+    "attack.normal_hit_1": {
+      "average": 1532.235533148195,
+      "category": "attack",
+      "crit": 3768.27381991812,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1283.7868346182033
+    },
+    "attack.normal_hit_2": {
+      "average": 1490.663251241073,
+      "category": "attack",
+      "crit": 3666.0338325559997,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1248.955408872748
+    },
+    "attack.normal_hit_3": {
+      "average": 1823.2415064980455,
+      "category": "attack",
+      "crit": 4483.953731452955,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1527.6068148363888
+    },
+    "attack.normal_hit_3_1": {
+      "average": 911.6207532490228,
+      "category": "attack",
+      "crit": 2241.9768657264776,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 763.8034074181944
+    },
+    "attack.normal_hit_4": {
+      "average": 2360.7117225829747,
+      "category": "attack",
+      "crit": 5805.770710920358,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1977.9273905454875
+    },
+    "attack.plunge": {
+      "average": 1846.6760746773493,
+      "category": "attack",
+      "crit": 4541.587083402258,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1547.2415181523595
+    },
+    "attack.plunge_high": {
+      "average": 4612.218816052509,
+      "category": "attack",
+      "crit": 11342.971129611211,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3864.3574478793203
+    },
+    "attack.plunge_low": {
+      "average": 3692.5703901086654,
+      "category": "attack",
+      "crit": 9081.251562324607,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3093.8280376402276
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.hyperbloom": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.cyno_mortuary_rite_dmg": {
+      "average": 5313.849706411087,
+      "category": "skill",
+      "crit": 13068.513487940236,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4452.220397352292
+    },
+    "skill.skill_dmg": {
+      "average": 4419.170929311261,
+      "category": "skill",
+      "crit": 10868.202543542135,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3702.6118610633853
+    },
+    "stats.atk": {
+      "average": 2616.0183101360003,
+      "category": "stats",
+      "crit": 2616.0183101360003,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2616.0183101360003
+    },
+    "stats.crit_dmg": {
+      "average": 193.52800000000002,
+      "category": "stats",
+      "crit": 193.52800000000002,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 193.52800000000002
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1735.2434361,
+      "category": "stats",
+      "crit": 1735.2434361,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1735.2434361
+    },
+    "stats.hp": {
+      "average": 25716.8290496,
+      "category": "stats",
+      "crit": 25716.8290496,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 25716.8290496
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 59,
+  "key": "Cyno",
+  "schema": 1,
+  "slug": "cyno",
+  "weaponType": "polearm"
+}

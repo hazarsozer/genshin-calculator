@@ -18,7 +18,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Sara)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Sara as SaraStatTable } from "../generated/charTables.js";
 import { Sara as SaraTalents } from "../generated/charTalentTables.js";
 
@@ -100,6 +100,9 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "charged",
     element: "electro",
+    // C6 "Sin of Pride": crit_dmg_electro:60 applies to every electro hit (her engine
+    // folds crit_dmg_<element> by element); our per-feature model needs it declared.
+    critDamageBonuses: ["crit_dmg_electro"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_aimed") }],
   },
   // --- Plunge attacks (physical) ---
@@ -124,30 +127,78 @@ const features: readonly Feature[] = [
   },
   // --- Skill: Tengu Stormcall ---
   // sara_ambush_dmg: electro skill ambush hit.
-  // raw/genshin_calc_pub/src/js/db/Char/Sara.js:213-221
+  // C6 "Sin of Pride" contributes crit_dmg_electro:60 (auto-active ConditionStatic
+  // at C6); this feature picks it up via critDamageBonuses. Raw Sara.js:213-221.
   {
     name: "sara_ambush_dmg",
     category: "skill",
     element: "electro",
+    // C6: +60% crit DMG to electro features. Raw Sara.js:344-351 crit_dmg_electro:60.
+    critDamageBonuses: ["crit_dmg_electro"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.sara_ambush_dmg") }],
+  },
+  // --- C2 "Dark Wings": cons-added electro skill hit = 30% of sara_ambush_dmg.
+  // Raw: FeatureDamageSkill sara_dark_wings_dmg, scalingMultiplier:0.3,
+  // leveling:'char_skill_elemental', same talent values. Raw Sara.js:222-234.
+  // ConditionConstellation(2).
+  {
+    name: "sara_dark_wings_dmg",
+    category: "skill",
+    element: "electro",
+    // C6: also picks up crit_dmg_electro:60 (electro feature).
+    critDamageBonuses: ["crit_dmg_electro"],
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.sara_ambush_dmg"),
+        scalingMultiplier: 0.3,
+        source: "constellation2",
+      },
+    ],
   },
   // --- Burst: Koukou Sendou ---
   // sara_titanbreaker_dmg: main electro burst hit.
-  // raw/genshin_calc_pub/src/js/db/Char/Sara.js:250-258
+  // C6: +60% crit DMG to electro features. Raw Sara.js:250-258.
   {
     name: "sara_titanbreaker_dmg",
     category: "burst",
     element: "electro",
+    critDamageBonuses: ["crit_dmg_electro"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.sara_titanbreaker_dmg") }],
   },
   // sara_stormcluster_dmg: secondary electro cluster hits.
-  // raw/genshin_calc_pub/src/js/db/Char/Sara.js:259-267
+  // C6: +60% crit DMG to electro features. Raw Sara.js:259-267.
   {
     name: "sara_stormcluster_dmg",
     category: "burst",
     element: "electro",
+    critDamageBonuses: ["crit_dmg_electro"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.sara_stormcluster_dmg") }],
   },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Crow's Eye": ConditionStatic, no damage stats → display-only, SKIP.
+// C2 "Dark Wings": ConditionStatic text_percent_dmg:30 → display-only;
+//   actual damage from sara_dark_wings_dmg feature above. Raw Sara.js:308-317.
+// C3: +3 levels to Koukou Sendou (burst). Raw cons[2] settings char_skill_burst_bonus:3.
+// C4 "Conclusive Proof": ConditionStatic, no damage stats → display-only, SKIP.
+// C5: +3 levels to Tengu Stormcall (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
+//   NOTE: C3=burst, C5=skill (reversed from the typical pattern). Raw Sara.js:318-345.
+// C6 "Sin of Pride": ConditionStatic (auto-active), crit_dmg_electro:60.
+//   Consumed by electro features via critDamageBonuses:['crit_dmg_electro']. Raw Sara.js:344-351.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Koukou Sendou (elemental burst). Raw cons[2] settings.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Tengu Stormcall (elemental skill). Raw cons[4] settings.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // C6: +60% crit DMG to electro features (ConditionStatic, auto-active).
+  // Consumed by sara_ambush_dmg / sara_dark_wings_dmg / sara_titanbreaker_dmg / sara_stormcluster_dmg
+  // via critDamageBonuses:['crit_dmg_electro']. Raw Sara.js:344-351.
+  { type: "constellation", constellation: 6, stats: { crit_dmg_electro: 60 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -165,4 +216,5 @@ export const kujouSara: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

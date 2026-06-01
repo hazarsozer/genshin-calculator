@@ -34,7 +34,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Lyney)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Lyney as LyneyStatTable } from "../generated/charTables.js";
 import { Lyney as LyneyTalents } from "../generated/charTalentTables.js";
 
@@ -56,8 +56,9 @@ const talents: TalentResolver = {
       if (name === "aimed")                        return LyneyTalents.s1.p9;
       if (name === "lyney_charged_dmg")            return LyneyTalents.s1.p10;
       if (name === "lyney_prop_arrow_dmg")         return LyneyTalents.s1.p11;
-      if (name === "lyney_pyrotechnic_strike_dmg") return LyneyTalents.s1.p15;
-      if (name === "spiritbreath_thorn_dmg")       return LyneyTalents.s1.p16;
+      if (name === "lyney_pyrotechnic_strike_dmg")          return LyneyTalents.s1.p15;
+      if (name === "lyney_pyrotechnic_strike_reprised_dmg") return LyneyTalents.s1.p15;
+      if (name === "spiritbreath_thorn_dmg")                return LyneyTalents.s1.p16;
     }
     if (talent === "skill") {
       if (name === "skill_dmg") return LyneyTalents.s2.p1;
@@ -153,6 +154,24 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.spiritbreath_thorn_dmg") }],
   },
+  // --- C6 "Guarded Smile": reprised pyrotechnic strike, 80% of lyney_pyrotechnic_strike_dmg.
+  // Raw: FeatureDamageCharged with scalingMultiplier: C6Dmg/100 (= 0.80) and
+  // condition: new ConditionConstellation({constellation:6}). Lyney.js:303-314
+  {
+    name: "lyney_pyrotechnic_strike_reprised_dmg",
+    category: "attack",
+    damageType: "charged",
+    element: "pyro",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: talents.get("attack.lyney_pyrotechnic_strike_reprised_dmg"),
+        scalingMultiplier: 0.8,
+        source: "constellation6",
+      },
+    ],
+  },
   // --- Plunge attacks (physical bow) ---
   // raw: FeatureDamagePlungeCollision plunge — Lyney.js:216-224
   {
@@ -202,6 +221,23 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Whimsical Wonders": ConditionStatic (display-only) → SKIP.
+// C2 "Loquacious Cajoling": ConditionStacks with crit_dmg — stacks toggle → SKIP.
+// C3 "Opportunistic Impresario": +3 levels to Normal Attack. Raw cons[2] settings char_skill_attack_bonus:3.
+// C4 "Well-Versed, Well-Rehearsed": ConditionBoolean toggle (enemy_res_pyro) → SKIP.
+// C5 "Beguiling Shadowstep": +3 levels to Miracle Parade (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+// C6 "Guarded Smile": cons-added lyney_pyrotechnic_strike_reprised_dmg feature (above) — no stat here.
+// Raw: db/Char/Lyney.js constellation array (Lyney.js:418-483).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Normal Attack (attack). Raw cons[2] settings char_skill_attack_bonus:3.
+  { type: "constellation", constellation: 3, settings: { char_skill_attack_bonus: 3 } },
+  // C5: +3 levels to Miracle Parade (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -216,4 +252,5 @@ export const lyney: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

@@ -23,9 +23,21 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Albedo)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type {
+  CharMultiplier,
+  Condition,
+  DbObjectChar,
+  Feature,
+  TalentResolver,
+} from "@genshin/types";
 import { Albedo as AlbedoStatTable } from "../generated/charTables.js";
 import { Albedo as AlbedoTalents } from "../generated/charTalentTables.js";
+
+const TalentValues = {
+  /** C2 "Opening of Phanerozoic": Transient Blossoms deal DEF%-based bonus DMG,
+   *  stacking up to 4× (30/60/90/120%). Per-stack base is C2DefBonus. */
+  C2DefBonus: 30,
+} as const;
 
 // ---------------------------------------------------------------------------
 // TalentResolver
@@ -175,6 +187,73 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Char-level targeted multipliers (P2.3)
+// ---------------------------------------------------------------------------
+
+/**
+ * C2 "Opening of Phanerozoic" — Transient Blossoms (Albedo's burst hits) deal
+ * `def*`-scaled bonus DMG, gated by constellation 2 AND the in-combat stack toggle.
+ * Modelled as a char-level targeted multiplier on `burst`, summed into each burst
+ * feature's base term when active — the same channel as Itto A4 (P2.3), but GATED:
+ * under the canonical base build (constellation 0) the gate is false, so it
+ * contributes nothing and Albedo's `base` oracle stays exact. This is precisely the
+ * constellation-granted-multiplier shape P2.C will rely on.
+ *
+ * Per-stack base = C2DefBonus (30%); the value table mirrors her 4-stack
+ * progression (30/60/90/120). `leveling:""` reads the base (first) entry — the
+ * full stack-scaled value will be wired with the stacks layer in a later task.
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Albedo.js:325-345
+ *   (FeatureMultiplier{ scaling:'def*', source:'constellation2',
+ *    values:ValueTable([C2,C2*2,C2*3,C2*4]),
+ *    condition:ConditionAnd([ConditionConstellation(2), ConditionBoolean(...)]),
+ *    target:{damageTypes:['burst']} })
+ */
+const C2_BURST_DEF_VALUES = [
+  TalentValues.C2DefBonus,
+  TalentValues.C2DefBonus * 2,
+  TalentValues.C2DefBonus * 3,
+  TalentValues.C2DefBonus * 4,
+] as const;
+// TODO(P2.C/stacks): leveling:"" reads stack level 1 = 30% (base entry); full
+// 60/90/120% stack-scaling (raw key albedo_opening_of_hanerozoic) is deferred
+// to the stacks/P2.C wiring.
+const c2BurstDefMultiplier: CharMultiplier = {
+  leveling: "",
+  scaling: "def*",
+  source: "constellation2",
+  values: { getValue: (level: number) => C2_BURST_DEF_VALUES[Math.min(Math.max(level, 1), 4) - 1]! }, // stack level is 1-indexed [1-4]
+  target: { damageTypes: ["burst"] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "constellation", constellation: 2 },
+      { type: "boolean", name: "albedo_opening_of_hanerozoic" },
+    ],
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Flower of Eden": ConditionStatic with text_decimal_energy → display-only, SKIP.
+// C2 "Opening of Phanerozoic": ConditionStacks toggle + char-level multiplier
+//    (already ported above as c2BurstDefMultiplier). SKIP (toggle off).
+// C4 "Descent of Divinity": ConditionBoolean dmg_plunge toggle → SKIP.
+// C6 "Dust of Purification": ConditionBoolean dmg_all toggle → SKIP.
+//
+// Source: raw/genshin_calc_pub/src/js/db/Char/Albedo.js:345-415
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Grace of Helios": +3 levels to Rite of Progeniture: Tectonic Tide (Elemental Skill).
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus: 3 } }.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Tide of Hadean Form": +3 levels to Rite of Progeniture: Tectonic Tide (Elemental Burst).
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -188,5 +267,6 @@ export const albedo: DbObjectChar = {
   statTable: AlbedoStatTable,
   talents,
   features,
-  multipliers: [],
+  multipliers: [c2BurstDefMultiplier],
+  conditions: constellationConditions,
 };

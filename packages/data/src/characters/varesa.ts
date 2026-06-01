@@ -50,7 +50,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Varesa)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Varesa as VaresaStatTable } from "../generated/charTables.js";
 import { Varesa as VaresaTalents } from "../generated/charTalentTables.js";
 
@@ -164,6 +164,24 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Undying Passion": ConditionStatic text_percent (display-only) — SKIP.
+// C2 "Beyond the Edge of Light": ConditionStatic, no real stats — SKIP.
+// C3 "The Hero's Call": +3 burst talent (char_skill_burst_bonus).
+// C4 "The Courage to Press On": ConditionBoolean toggle (dmg_burst_varesa) — SKIP.
+// C5 "Blazing Justice": +3 attack talent (char_skill_attack_bonus).
+// C6 "A Hero of Justice's Triumph": ConditionBoolean toggle (crit_rate/dmg_plunge/burst) — SKIP.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Varesa.js:401-480
+
+const constellationConditions: readonly Condition[] = [
+  // C3 — +3 Elemental Burst (Guardian Vent).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 — +3 Normal Attack (standard attacks).
+  { type: "constellation", constellation: 5, settings: { char_skill_attack_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -178,4 +196,5 @@ export const varesa: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

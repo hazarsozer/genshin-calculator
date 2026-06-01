@@ -14,7 +14,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Lisa)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Lisa as LisaStatTable } from "../generated/charTables.js";
 import { Lisa as LisaTalents } from "../generated/charTalentTables.js";
 
@@ -161,6 +161,27 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Infinite Circuit" (ConditionStatic description-only) → SKIP.
+// C2 "Electromagnetic Field" (ConditionBoolean def_percent toggle) → SKIP (off).
+// C3 "Resonant Thunder" → +3 Elemental Burst (Lightning Rose) levels.
+//   raw: constellation[2]: Condition{ settings:{char_skill_burst_bonus:3} }
+// C4 "Plasma Eruption" (ConditionStatic description-only) → SKIP.
+// C5 "Electrocute" → +3 Elemental Skill (Violet Arc) levels.
+//   raw: constellation[4]: Condition{ settings:{char_skill_elemental_bonus:3} }
+// C6 "Pulsating Witch" (ConditionStatic description-only) → SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Lisa.js:302-358
+
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 Elemental Burst (Lightning Rose) levels.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 Elemental Skill (Violet Arc) levels.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -175,4 +196,5 @@ export const lisa: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

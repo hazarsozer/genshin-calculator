@@ -18,6 +18,7 @@
 
 import type {
   CharPostEffect,
+  Condition,
   DbObjectChar,
   Feature,
   TalentResolver,
@@ -225,6 +226,67 @@ const features: readonly Feature[] = [
     damageBonuses: ["dmg_burst_kirara"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.kirara_cat_grass_explosion_dmg") }],
   },
+  // --- C1 "Material Circulation": extra burst explosion that scales with HP.
+  // Raw: FeatureDamageBurst kirara_cat_grass_explosion_extra_dmg, FeatureMultiplierKiraraBurst
+  // (floor(HP/8000) capped at 4), damageBonuses:['dmg_burst_kirara'], cannotReact:true.
+  // Raw: Kirara.js:427-439. ConditionConstellation(1).
+  // BUILD-COUPLED CARRY: FeatureMultiplierKiraraBurst is dynamic — floor(HP/8000) capped at 4.
+  // Baked at the fixed build (HP=31503.32 → floor(/8000)=3) → scalingMultiplier=3 matches the
+  // oracle. Parity-correct at the validated build, desyncs off-build (same class as sayu C6 /
+  // xilonen res / furina A4); the real calc needs an HP-bucket / runtime-coefficient primitive.
+  {
+    name: "kirara_cat_grass_explosion_extra_dmg",
+    category: "burst",
+    element: "dendro",
+    damageBonuses: ["dmg_burst_kirara"],
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      {
+        leveling: "char_skill_burst",
+        values: talents.get("burst.kirara_cat_grass_explosion_dmg"),
+        // BUILD-COUPLED: floor(HP/8000) capped at 4; fixture HP=31503 → 3 (see note above).
+        scalingMultiplier: 3,
+        source: "constellation1",
+      },
+    ],
+  },
+  // --- C4 "Steed of Skanda": coordinated attack (200% ATK, fixed value).
+  // Raw: FeatureDamageBurst kirara_coordinated_dmg, ValueTable([200]), damageBonuses:['dmg_burst_kirara'].
+  // Raw: Kirara.js:440-451. ConditionConstellation(4).
+  {
+    name: "kirara_coordinated_dmg",
+    category: "burst",
+    element: "dendro",
+    damageBonuses: ["dmg_burst_kirara"],
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      {
+        leveling: "char_skill_burst",
+        values: { getValue: (_level: number) => 200 },
+        source: "constellation4",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Material Circulation": ConditionStatic text_value_hp → display-only; actual damage
+//   is kirara_cat_grass_explosion_extra_dmg feature above. Raw Kirara.js:493-503.
+// C2 "Perfectly Packaged": ConditionStatic text_percent_shield → display-only; the
+//   kirara_party_shield feature (damageType:"") is gated by constellation:2 in raw
+//   but is not in the coverage gate. Raw Kirara.js:504-512.
+// C3: +3 levels to Meow-teor Kick (skill). Raw Kirara.js:513-521 char_skill_elemental_bonus:3.
+// C4: ConditionStatic text_percent_atk → display-only; actual damage is kirara_coordinated_dmg
+//   above. Raw Kirara.js:522-530.
+// C5: +3 levels to Surprise Dispatch (burst). Raw Kirara.js:531-539 char_skill_burst_bonus:3.
+// C6 "Countless Sights to See": ConditionBoolean toggle (dmg_<element>:12 for all) → SKIP.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Meow-teor Kick (elemental skill). Raw cons[2] settings.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Surprise Dispatch (elemental burst). Raw cons[4] settings.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -242,5 +304,6 @@ export const kirara: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
   postEffects: [hpToSkillDmg, hpToBurstDmg],
 };

@@ -12,7 +12,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Barbara)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Barbara as BarbaraStatTable } from "../generated/charTables.js";
 import { Barbara as BarbaraTalents } from "../generated/charTalentTables.js";
 
@@ -113,6 +113,28 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// NOTE: Barbara's C3 bumps the BURST talent and C5 bumps the ELEMENTAL SKILL —
+// the reverse of most characters. Raw cons[2]=burst_bonus, cons[4]=elemental_bonus.
+//
+// C1 "Gleeful Songs": ConditionStatic no stats → display-only, SKIP.
+// C2 "Vitality Burst": ConditionBoolean dmg_hydro toggle → SKIP.
+// C4 "Attentiveness Be My Power": ConditionStatic no stats → display-only, SKIP.
+// C6 "Dedicating Everything to You": ConditionStatic no stats → display-only, SKIP.
+//
+// Source: raw/genshin_calc_pub/src/js/db/Char/Barbara.js:297-354
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Banshin's Instant Recharge": +3 levels to Shining Miracle (Elemental Burst).
+  // Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 "Ethereal Dance": +3 levels to Let the Show Begin (Elemental Skill).
+  // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus: 3 } }.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -127,4 +149,5 @@ export const barbara: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

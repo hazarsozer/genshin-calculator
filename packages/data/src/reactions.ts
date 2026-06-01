@@ -56,6 +56,15 @@ interface TransformativeReactionDef {
   readonly element: Element;
   readonly rate: number;
   readonly reactionBonusKeys: readonly string[];
+  /**
+   * Reaction-specific crit keys — her per-reaction `getStatsCritRate`/
+   * `getStatsCritDamage` overrides. Only Burning (`crit_rate_burning`) and the
+   * Bloom family (Bloom/Rupture/Hyperbloom/Burgeon all inherit `crit_rate_bloom`)
+   * declare them; every other reaction is non-crit. Keys read 0 unless a source
+   * grants them (Nahida C2) → crit === normal === avg.
+   */
+  readonly critRateKeys?: readonly string[];
+  readonly critDmgKeys?: readonly string[];
 }
 
 /**
@@ -85,15 +94,15 @@ const REACTION_DEFS: Readonly<Record<string, TransformativeReactionDef>> = {
   // getReactionRate 3 — Reaction/Transformative/Shattered.js:4, key :11. Her element 'phys' → enemy_res_physical.
   shatter: { name: "shatter", element: "physical", rate: 3, reactionBonusKeys: ["dmg_reaction_shatter"] },
   // getReactionRate 0.25 — Reaction/Transformative/Burning.js:4, key :11 (her `_bloom`)
-  burning: { name: "burning", element: "pyro", rate: 0.25, reactionBonusKeys: ["dmg_reaction_bloom"] },
-  // getReactionRate 2 — Reaction/Transformative/Bloom.js:4, key :11
-  bloom: { name: "bloom", element: "dendro", rate: 2, reactionBonusKeys: ["dmg_reaction_bloom"] },
-  // getReactionRate 3 — Reaction/Transformative/HyperBloom.js:4 (+ Bloom parent key)
-  hyperbloom: { name: "hyperbloom", element: "dendro", rate: 3, reactionBonusKeys: ["dmg_reaction_bloom", "dmg_reaction_hyperbloom"] },
-  // getReactionRate 3 — Reaction/Transformative/Burgeon.js:4 (+ Bloom parent key)
-  burgeon: { name: "burgeon", element: "dendro", rate: 3, reactionBonusKeys: ["dmg_reaction_bloom", "dmg_reaction_burgeon"] },
-  // getReactionRate 2 (Bloom default) — Reaction/Transformative/Rupture.js (+ Bloom parent key)
-  rupture: { name: "rupture", element: "dendro", rate: 2, reactionBonusKeys: ["dmg_reaction_bloom", "dmg_reaction_rupture"] },
+  burning: { name: "burning", element: "pyro", rate: 0.25, reactionBonusKeys: ["dmg_reaction_bloom"], critRateKeys: ["crit_rate_burning"], critDmgKeys: ["crit_dmg_burning"] },
+  // getReactionRate 2 — Reaction/Transformative/Bloom.js:4, key :11. Bloom-family crit = `_bloom` (Bloom.js:20,29).
+  bloom: { name: "bloom", element: "dendro", rate: 2, reactionBonusKeys: ["dmg_reaction_bloom"], critRateKeys: ["crit_rate_bloom"], critDmgKeys: ["crit_dmg_bloom"] },
+  // getReactionRate 3 — Reaction/Transformative/HyperBloom.js:4 (+ Bloom parent key + inherited `_bloom` crit)
+  hyperbloom: { name: "hyperbloom", element: "dendro", rate: 3, reactionBonusKeys: ["dmg_reaction_bloom", "dmg_reaction_hyperbloom"], critRateKeys: ["crit_rate_bloom"], critDmgKeys: ["crit_dmg_bloom"] },
+  // getReactionRate 3 — Reaction/Transformative/Burgeon.js:4 (+ Bloom parent key + inherited `_bloom` crit)
+  burgeon: { name: "burgeon", element: "dendro", rate: 3, reactionBonusKeys: ["dmg_reaction_bloom", "dmg_reaction_burgeon"], critRateKeys: ["crit_rate_bloom"], critDmgKeys: ["crit_dmg_bloom"] },
+  // getReactionRate 2 (Bloom default) — Reaction/Transformative/Rupture.js (+ Bloom parent key + inherited `_bloom` crit)
+  rupture: { name: "rupture", element: "dendro", rate: 2, reactionBonusKeys: ["dmg_reaction_bloom", "dmg_reaction_rupture"], critRateKeys: ["crit_rate_bloom"], critDmgKeys: ["crit_dmg_bloom"] },
   // getReactionRate 0.6 — Reaction/Transformative/Swirl.js:4, key :29. Element-specific instances.
   swirl_pyro: { name: "swirl_pyro", element: "pyro", rate: 0.6, reactionBonusKeys: ["dmg_reaction_swirl"] },
   swirl_hydro: { name: "swirl_hydro", element: "hydro", rate: 0.6, reactionBonusKeys: ["dmg_reaction_swirl"] },
@@ -171,6 +180,8 @@ export function transformativeReactionFeatures(
         element: def.element,
         reactionMultiplier: def.rate,
         reactionBonusKeys: def.reactionBonusKeys,
+        ...(def.critRateKeys ? { critRateKeys: def.critRateKeys } : {}),
+        ...(def.critDmgKeys ? { critDmgKeys: def.critDmgKeys } : {}),
       },
     } satisfies Feature;
   });

@@ -14,6 +14,7 @@
  */
 
 import type { Element, TalentTable } from "./character.js";
+import type { Condition } from "./condition.js";
 import type { DamageContext, DamageResult } from "./damage.js";
 
 /** High-level category of a feature declaration. */
@@ -47,6 +48,105 @@ export interface FeatureMultiplierEntry {
    * multiplier (e.g. constellation flat %) this is a 1-entry table.
    */
   readonly values: TalentTable;
+  /**
+   * Provenance label (her `FeatureMultiplier.source`, e.g. `"ascension4"`,
+   * `"constellation2"`). Informational only — never affects the computed value.
+   * Present on char-level multipliers; absent on plain per-feature talent terms.
+   * (Her `scalingSource` is the same kind of label — fold it into `source`.)
+   */
+  readonly source?: string;
+  /**
+   * Flat extra multiplier on the base term (her `FeatureMultiplier.scalingMultiplier`
+   * when NUMERIC): the term becomes `talent% × scalingStat × scalingMultiplier`. Used
+   * by "bonus hit = X% of a base hit" constellations — e.g. Amber C1's second arrow
+   * (20% of the aimed shot, `scalingMultiplier: 0.20`). Absent = ×1 (no effect).
+   *
+   * Mirrors her `getTreeBonusMultiplier` → `CConst(value)` for a numeric
+   * `getScalingMultiplier` (Multiplier.js:223-264). The string-stat form
+   * (`(1 + stat)`) and the `scalingMultiplierCondition` gate are not yet modelled
+   * (no v5.8 constellation in scope needs them); add them if a source does.
+   */
+  readonly scalingMultiplier?: number;
+  /**
+   * Settings-driven additive offset to the scaling fraction.
+   *
+   * When present, `compileFeature` reads `settings[setting]`, clamps it to
+   * `[0, maxStacks]`, and adds `perStack × clamped` to the `scalingMultiplier`
+   * before the talent% × scalingStat multiplication. The total scaling factor
+   * becomes `(scalingMultiplier ?? 1) + perStack × min(maxStacks, settings[setting])`.
+   *
+   * When `settings[setting]` is absent or 0 the offset is 0 — base-safe by design.
+   *
+   * Ports Furina's `FeatureMultiplierFurinaSkill.getScalingMultiplier`:
+   *   `result += 0.1 × Math.min(4, data.settings.furina_hp_offers)`
+   * (raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/FurinaSkill.js:12-13).
+   * Only furina's three Salon Member hits use this; every other multiplier leaves it
+   * absent → offset 0 → existing behaviour unchanged.
+   */
+  readonly scalingOffset?: {
+    readonly setting: string;
+    readonly perStack: number;
+    readonly maxStacks: number;
+  };
+  /**
+   * CHAR-LEVEL multipliers only: which features this multiplier applies to.
+   * When set (only on `char.multipliers` entries), the multiplier is summed into
+   * a feature's base-damage term iff `target.damageTypes` includes the feature's
+   * resolved damage type. Per-feature entries leave this absent (they apply only
+   * to their own feature). Ports `FeatureMultiplier.target` /
+   * `FeatureMultiplierTarget.isMatchFeature`.
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Target.js
+   */
+  readonly target?: FeatureMultiplierTarget;
+  /**
+   * Optional gate: the multiplier contributes iff `evaluate(condition)` is true
+   * (an absent condition is always-active, per her `FeatureMultiplier.isActive`:
+   * `if (!this.condition) return true`). Honoured at BOTH levels, exactly as her
+   * `isActive` is — on a CHAR-LEVEL multiplier (`char.multipliers`: Itto A4,
+   * Albedo C2, …) AND on a PER-FEATURE multiplier (a feature's own `multipliers`:
+   * e.g. Fischl C2's second `skill_dmg` term gated by `ConditionConstellation(2)`).
+   * `compileFeature` filters both via `evaluate`. Inert for every base feature
+   * (none set a per-feature multiplier condition).
+   */
+  readonly condition?: Condition;
+}
+
+/**
+ * Targeting predicate for a char-level multiplier — which features it applies to.
+ *
+ * A faithful subset of her `FeatureMultiplierTarget` (Multiplier/Target.js). Only
+ * `damageTypes` is modelled here: it is the field every v5.8 char-level targeted
+ * multiplier uses (Itto A4 → charged, Albedo C2 → burst, …). `isMatchFeature`
+ * keeps an entry iff `damageTypes` includes the feature's resolved damage type
+ * (`damageTypeOf`). The remaining raw fields (`damageTypesExclude`,
+ * `damageElements`, `tags`, `options`) are unused by any v5.8 character's
+ * char-level multipliers and are deferred until a source needs them.
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Target.js
+ */
+export interface FeatureMultiplierTarget {
+  /** Feature damage types this multiplier applies to (e.g. `["charged"]`, `["burst"]`). */
+  readonly damageTypes: readonly string[];
+}
+
+/**
+ * A char-level ("targeted") multiplier: a `FeatureMultiplierEntry` carried on
+ * `DbObjectChar.multipliers` (rather than on a single feature) that injects into
+ * EVERY feature matching its `target`, gated by its optional `condition`. This is
+ * her general mechanism for ascension/constellation damage-type bonuses (Itto A4's
+ * `0.35×DEF` on charged, Albedo C2's `def*` on burst, etc.).
+ *
+ * It is the same structural shape as `FeatureMultiplierEntry`; this alias names the
+ * char-level role (where `target` is meaningful) for readability. `target` is
+ * required here (a char-level multiplier without a target would apply to nothing
+ * useful); `condition` stays optional (absent = always-on, e.g. Itto A4).
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Feature2.js:121-125 (getMultipliers
+ *         merges active+matching char.multipliers into each feature's base term).
+ */
+export interface CharMultiplier extends FeatureMultiplierEntry {
+  readonly target: FeatureMultiplierTarget;
 }
 
 /**
@@ -71,6 +171,13 @@ export interface Feature {
   readonly damageType?: string;
   /** Overrides the character's innate element for this hit (e.g. Hu Tao Blood Blossom). */
   readonly element?: Element;
+  /**
+   * Per-feature multiplier entries (talent scaling terms). Entries here apply
+   * ONLY to this feature and must NOT set `target` or `condition` — those fields
+   * are ignored on per-feature entries and are meaningful ONLY on char-level
+   * entries (`char.multipliers` / `CharMultiplier`). Use `CharMultiplier` for
+   * cross-feature targeted multipliers (Itto A4, Albedo C2, etc.).
+   */
   readonly multipliers?: readonly FeatureMultiplierEntry[];
   /** True for child hits within a multihit (displayed but not counted in rotation by default). */
   readonly isChild?: boolean;
@@ -108,6 +215,20 @@ export interface Feature {
    * Source: raw/.../Feature2/Reaction/Transformative/Lunar/*.js
    */
   readonly reaction?: FeatureReaction;
+  /**
+   * Optional gate on whether this feature is PRODUCED at all. When present,
+   * `compileCharacter` emits the feature only if `evaluate(condition, settings)` is
+   * true (absent = always produced). This is how a CONSTELLATION-added damage feature
+   * is modelled: declare it with `condition: ConditionConstellation(n)` so it appears
+   * only at C≥n — her `CalcObjectCharacter.getFeatures` concats
+   * `constellation.getFeatures(level)` (cons features unlocked by level) +
+   * `getFeaturesHash`'s `feat.checkConditions` filter. Inert at the base build (no base
+   * feature sets it → all produced), so the C0 golden suite is untouched.
+   *
+   * Source: raw/.../classes/CalcObject/Character.js:82-95 (getFeatures);
+   *         raw/.../classes/CalcSet.js (getFeaturesHash feat.checkConditions filter)
+   */
+  readonly condition?: Condition;
 }
 
 /**

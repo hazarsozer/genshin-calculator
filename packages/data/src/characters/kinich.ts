@@ -22,8 +22,9 @@
  * No always-on C0 passive stat folds: A1 (The Price of Desolation) is ConditionStatic
  * description-only (no stats); A4 (Flame-Spirit Pact) is the stack toggle above.
  * The ascension secondary stat is already folded into the generated stat table.
- * The C6 bounce feature, C1/C2/C4 stat bonuses, and the Nightsoul cannon stack are
- * all constellation/stack-gated and skipped (C0).
+ * C6 adds kinich_scalespiker_cannon_bounce_dmg (FeatureDamageSkill, fixed 700%, dendro,
+ * ConditionConstellation(6)). C3 skill bump / C5 burst bump. C1/C2/C4 are boolean
+ * toggles (SKIP). The Nightsoul cannon stack (A4) and NightSoul features remain OFF.
  *
  * Fixture features NOT modelled here (engine/weapon-generated, not char features):
  *   reaction.{burning,electrocharged,rupture,shatter} (transformative reactions),
@@ -36,7 +37,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Kinich)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Kinich as KinichStatTable } from "../generated/charTables.js";
 import { Kinich as KinichTalents } from "../generated/charTalentTables.js";
 
@@ -148,6 +149,44 @@ const features: readonly Feature[] = [
     element: "dendro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.kinich_laser_dmg") }],
   },
+  // --- C6 "Auspicious Beast's Shape": cons-added skill bounce hit (700% fixed, dendro).
+  // FeatureDamageSkill gated by ConditionConstellation(6). Fixed value (ValueTable([700])).
+  // damageBonuses/critDamageBonuses mirror the raw feature spec (gated by C1/C2 toggles,
+  // evaluate to 0 with toggles off — base-safe). Raw Kinich.js:230-244.
+  {
+    name: "kinich_scalespiker_cannon_bounce_dmg",
+    category: "skill",
+    element: "dendro",
+    damageBonuses: ["dmg_skill_kinich"],
+    critDamageBonuses: ["crit_dmg_skill_kinich"],
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "char_skill_elemental",
+        values: { getValue: (_level: number) => 700 },
+        source: "constellation6",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Parrot's Beak": ConditionBoolean toggle (move_speed/crit_dmg_skill_kinich) — SKIP.
+// C2 "Tiger Beetle's Palm": two ConditionBoolean toggles (enemy_res_dendro/dmg_skill_kinich) — SKIP.
+// C3: +3 levels to Riding High (skill). Raw cons[2] char_skill_elemental_bonus:3.
+//   NOTE: reversed order — C3=elemental, C5=burst (not the usual C3=elemental/C5=burst alias,
+//   but here it IS C3=elemental actually). Raw Kinich.js:328-335.
+// C4 "Hummingbird's Feather": ConditionBoolean toggle (dmg_burst_kinich:70) — SKIP (toggle OFF).
+// C5: +3 levels to Hail to the Almighty Dragonlord (burst). Raw cons[4] char_skill_burst_bonus:3.
+// C6 "Auspicious Beast's Shape": ConditionStatic display-only; actual damage is the feature above.
+// Raw: db/Char/Kinich.js constellation array (Kinich.js:290-369).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Riding High (elemental skill).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Hail to the Almighty Dragonlord (burst).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -165,4 +204,5 @@ export const kinich: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

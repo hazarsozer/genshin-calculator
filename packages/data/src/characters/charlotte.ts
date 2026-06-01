@@ -17,7 +17,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Charlotte)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Charlotte as CharlotteStatTable } from "../generated/charTables.js";
 import { Charlotte as CharlotteTalents } from "../generated/charTalentTables.js";
 
@@ -161,6 +161,42 @@ const features: readonly Feature[] = [
     element: "cryo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.charlotte_kamera_dmg") }],
   },
+  // C6 "A Summation of Interest": cons-added burst coordinate hit at 180% ATK.
+  // Raw: Charlotte.js features FeatureDamageBurst charlotte_coordinate_dmg,
+  // ValueTable([180]), source:'constellation6', condition:ConditionConstellation({constellation:6}).
+  // scalingMultiplierCondition (C4 boolean toggle) is OFF in fixed build → omit scalingMultiplier.
+  // Charlotte.js:356-372.
+  {
+    name: "charlotte_coordinate_dmg",
+    category: "burst",
+    element: "cryo",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "char_skill_burst",
+        values: { getValue: (_level: number) => 180 },
+        source: "constellation6",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "A Need to Verify Facts": ConditionStatic display-only (charlotte_verification_heal is
+//    a FeatureHeal with damageType:"" — outside coverage gate; no flat-stat condition).
+// C2 "A Duty to Pursue Truth": ConditionStacks (atk_percent buff with a toggle name) → SKIP.
+// C3: +3 levels to Comprehensive Confirmation (burst). Raw cons[2] settings char_skill_burst_bonus:3.
+// C4 "A Responsibility to Oversee": ConditionBoolean toggle → SKIP (toggle OFF).
+// C5: +3 levels to Freezing Point Composition (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
+// C6 "A Summation of Interest": cons-added feature above; ConditionStatic display wrapper → no condition here.
+// Raw: Charlotte.js constellation array (Charlotte.js:424-493).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to elemental burst.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to elemental skill.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -178,4 +214,5 @@ export const charlotte: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

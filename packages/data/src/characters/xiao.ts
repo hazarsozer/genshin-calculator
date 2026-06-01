@@ -28,7 +28,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Xiao)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Xiao as XiaoStatTable } from "../generated/charTables.js";
 import { Xiao as XiaoTalents } from "../generated/charTalentTables.js";
 
@@ -157,6 +157,32 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// Xiao's talent bumps live in the char-level conditions array in raw (using
+// ConditionConstellation), not the constellation entry array (which has {} empty entries
+// for C3/C5). All other constellation entries are toggles or ConditionStatic with no
+// real stats.
+//
+// C1 "Destroyer of Worlds": ConditionStatic, no real stats — SKIP.
+// C2 "Blossom of Kaleidos": ConditionBoolean toggle (recharge:25) — toggle, SKIP.
+// C3 "Evil Conqueror's Transience": +3 skill talent (char_skill_elemental_bonus).
+//   Source: raw/genshin_calc_pub/src/js/db/Char/Xiao.js conditions[0] (ConditionConstellation 3).
+// C4 "Transcension: Extinction of Suffering": ConditionBoolean toggle (def_percent) — SKIP.
+// C5 "Evil Conqueror's Grudge": +3 burst talent (char_skill_burst_bonus).
+//   Source: raw/genshin_calc_pub/src/js/db/Char/Xiao.js conditions[1] (ConditionConstellation 5).
+// C6 "Guardian Yaksha": ConditionStatic, no real stats — SKIP.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Xiao.js:257-270 (char conditions),
+//          raw/genshin_calc_pub/src/js/db/Char/Xiao.js:314-400 (constellation array).
+
+const constellationConditions: readonly Condition[] = [
+  // C3 — +3 Elemental Skill (Lemniscatic Wind Cycling).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 — +3 Elemental Burst (Bane of All Evil).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -171,4 +197,5 @@ export const xiao: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

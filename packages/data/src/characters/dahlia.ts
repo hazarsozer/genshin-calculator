@@ -26,7 +26,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Dahlia)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Dahlia as DahliaStatTable } from "../generated/charTables.js";
 import { Dahlia as DahliaTalents } from "../generated/charTalentTables.js";
 
@@ -178,6 +178,25 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Infallible Procession": ConditionStatic no stats → display-only, SKIP.
+// C2 "Revelation of Mercy": ConditionBoolean shield toggle → SKIP.
+// C4 "Collect of the Assembly": ConditionStatic no stats → display-only, SKIP.
+// C6 "You Shall Go Out with Joy": ConditionBoolean atk_speed toggle → SKIP.
+//
+// Source: raw/genshin_calc_pub/src/js/db/Char/Dahlia.js:341-402
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Unity of Heart": +3 levels to Immersive Ordinance (Elemental Skill).
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus: 3 } }.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Everlasting Dedication": +3 levels to Radiant Psalter (Elemental Burst).
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -192,4 +211,5 @@ export const dahlia: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

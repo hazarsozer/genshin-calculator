@@ -25,6 +25,8 @@ import type {
   ConditionStaticRefine,
   ConditionNumber,
   ConditionStacks,
+  ConditionBooleanPiecesCount,
+  ConditionBooleanWeaponType,
   ConditionAnd,
   ConditionOr,
 } from "@genshin/types";
@@ -117,12 +119,12 @@ describe("ConditionConstellation", () => {
 
 describe("ConditionStaticRefine", () => {
   it("is always active (StaticRefine inherits Static semantics)", () => {
-    const c: ConditionStaticRefine = { type: "refine" };
+    const c: ConditionStaticRefine = { type: "refine", refinementStats: [{ atk_percent: 20 }] };
     expect(evaluate(c, emptyCtx)).toBe(true);
   });
 
   it("invert: returns false", () => {
-    const c: ConditionStaticRefine = { type: "refine", invert: true };
+    const c: ConditionStaticRefine = { type: "refine", invert: true, refinementStats: [{ atk_percent: 20 }] };
     expect(evaluate(c, emptyCtx)).toBe(false);
   });
 });
@@ -297,6 +299,62 @@ describe("ConditionBoolean gate branch", () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// 9c. ConditionBooleanWeaponType — gates on the wearer's weapon type
+//
+// Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/WeaponType.js:
+//   result = checkSubconditions(settings) && types.includes(settings.weapon_type)
+// ---------------------------------------------------------------------------
+
+describe("ConditionBooleanWeaponType", () => {
+  const meleeTypes: ConditionBooleanWeaponType = {
+    type: "weapon-type",
+    types: ["sword", "claymore", "polearm"],
+  };
+
+  it("is active when weapon_type is in the allowed list", () => {
+    expect(evaluate(meleeTypes, { weapon_type: "claymore" })).toBe(true);
+    expect(evaluate(meleeTypes, { weapon_type: "sword" })).toBe(true);
+    expect(evaluate(meleeTypes, { weapon_type: "polearm" })).toBe(true);
+  });
+
+  it("is inactive when weapon_type is NOT in the allowed list", () => {
+    expect(evaluate(meleeTypes, { weapon_type: "bow" })).toBe(false);
+    expect(evaluate(meleeTypes, { weapon_type: "catalyst" })).toBe(false);
+  });
+
+  it("is inactive when weapon_type is absent from the context", () => {
+    expect(evaluate(meleeTypes, {})).toBe(false);
+  });
+
+  it("is inactive when weapon_type is not a string", () => {
+    expect(evaluate(meleeTypes, { weapon_type: 1 })).toBe(false);
+  });
+
+  it("invert: flips the result (active when NOT in the list)", () => {
+    const inverted: ConditionBooleanWeaponType = {
+      type: "weapon-type",
+      types: ["sword", "claymore", "polearm"],
+      invert: true,
+    };
+    expect(evaluate(inverted, { weapon_type: "bow" })).toBe(true);
+    expect(evaluate(inverted, { weapon_type: "claymore" })).toBe(false);
+  });
+
+  it("respects the optional .condition gate (inner gate must pass first)", () => {
+    const gate: ConditionBoolean = { type: "boolean", name: "gate" };
+    const gated: ConditionBooleanWeaponType = {
+      type: "weapon-type",
+      types: ["claymore"],
+      condition: gate,
+    };
+    // gate off → false even if weapon_type matches
+    expect(evaluate(gated, { weapon_type: "claymore" })).toBe(false);
+    // gate on + matching weapon_type → true
+    expect(evaluate(gated, { weapon_type: "claymore", gate: true })).toBe(true);
+  });
+});
+
 describe("ConditionConstellation missing ctx key", () => {
   it("treats missing char_constellation as 0", () => {
     const c: ConditionConstellation = { type: "constellation", constellation: 1 };
@@ -356,5 +414,89 @@ describe("Stacks scaling (Shenhe Quill-style)", () => {
     const ctx3: EvalContext = { shenhe_icy_quill: 3 };
     const stackedBonus = getStackCount(quill, ctx3) * perStackValue;
     expect(stackedBonus).toBe(300);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 11. PiecesCount gate (artifact-set equipped-count condition)
+//
+//   Active when ctx["set_pieces.<setName lowercased>"] >= count, AND the optional
+//   `.condition` gate passes. Ports Condition/Boolean/PiecesCount.js. Used by the
+//   global set buffs (db/Buffs/Artifacts.js) in the self-set OR team pattern.
+// ---------------------------------------------------------------------------
+
+describe("ConditionBooleanPiecesCount", () => {
+  const noblesse4: ConditionBooleanPiecesCount = {
+    type: "pieces-count",
+    setName: "NoblesseOblige",
+    count: 4,
+  };
+
+  it("is inactive when the set_pieces setting is absent", () => {
+    expect(evaluate(noblesse4, emptyCtx)).toBe(false);
+  });
+
+  it("is inactive when equipped count is below the threshold", () => {
+    expect(evaluate(noblesse4, { "set_pieces.noblesseoblige": 2 })).toBe(false);
+  });
+
+  it("is active when equipped count meets the threshold", () => {
+    expect(evaluate(noblesse4, { "set_pieces.noblesseoblige": 4 })).toBe(true);
+  });
+
+  it("is active when equipped count exceeds the threshold (e.g. 5-piece counted set)", () => {
+    expect(evaluate(noblesse4, { "set_pieces.noblesseoblige": 5 })).toBe(true);
+  });
+
+  it("lowercases the setName for the setting key (registry-key case-insensitivity)", () => {
+    // The setting key is 'set_pieces.' + setName.toLowerCase() — a mixed-case
+    // registry key must still match the lowercased injected key.
+    expect(evaluate(noblesse4, { "set_pieces.NoblesseOblige": 4 })).toBe(false);
+    expect(evaluate(noblesse4, { "set_pieces.noblesseoblige": 4 })).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 12. Self-set OR team-toggle gate — the real Noblesse 4pc ATK buff gate
+//
+//   raw/.../db/Buffs/Artifacts.js: the +20% ATK Condition is gated by
+//     Or( And(boolean set.noblesse_oblige_4, piecesCount NoblesseOblige>=4),
+//         boolean set_other.noblesse_oblige_4 )
+//   i.e. active if the holder wears 4pc and toggles it, OR a teammate has it.
+// ---------------------------------------------------------------------------
+
+describe("Noblesse 4pc ATK gate (self-set OR team)", () => {
+  const gate: ConditionOr = {
+    type: "or",
+    items: [
+      {
+        type: "and",
+        items: [
+          { type: "boolean", name: "set.noblesse_oblige_4" } as ConditionBoolean,
+          { type: "pieces-count", setName: "NoblesseOblige", count: 4 } as ConditionBooleanPiecesCount,
+        ],
+      } as ConditionAnd,
+      { type: "boolean", name: "set_other.noblesse_oblige_4" } as ConditionBoolean,
+    ],
+  };
+
+  it("is inactive with neither self-4pc nor team toggle", () => {
+    expect(evaluate(gate, {})).toBe(false);
+  });
+
+  it("self toggle ON but only 2 pieces equipped → inactive", () => {
+    expect(evaluate(gate, { "set.noblesse_oblige_4": true, "set_pieces.noblesseoblige": 2 })).toBe(false);
+  });
+
+  it("4 pieces equipped but toggle OFF → inactive (toggle still required)", () => {
+    expect(evaluate(gate, { "set_pieces.noblesseoblige": 4 })).toBe(false);
+  });
+
+  it("self 4pc + toggle ON → active", () => {
+    expect(evaluate(gate, { "set.noblesse_oblige_4": true, "set_pieces.noblesseoblige": 4 })).toBe(true);
+  });
+
+  it("teammate has it (set_other) → active even with no self pieces", () => {
+    expect(evaluate(gate, { "set_other.noblesse_oblige_4": true })).toBe(true);
   });
 });

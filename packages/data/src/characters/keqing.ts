@@ -26,7 +26,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Keqing)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Keqing as KeqingStatTable } from "../generated/charTables.js";
 import { Keqing as KeqingTalents } from "../generated/charTalentTables.js";
 
@@ -198,6 +198,24 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.keqing_skill_clap_dmg") }],
   },
+  // --- C1 "Thundering Might": cons-added electro hit on re-cast (fixed 50% ATK).
+  // Raw: base FeatureDamage (NOT FeatureDamageSkill) → damageType:"" (no dmg_type bonus,
+  // only dmg_all + dmg_electro). Fixed ValueTable([50]), no talent leveling.
+  // Raw Keqing.js:341-352. TalentValues.C1Dmg = 50.
+  {
+    name: "keqing_thundering_might",
+    category: "skill",
+    element: "electro",
+    damageType: "",
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: { getValue: (_level: number) => 50 },
+        source: "constellation1",
+      },
+    ],
+  },
   // --- Burst: Starward Sword (electro) ---
   // raw: FeatureDamageBurst burst_dmg (electro)
   {
@@ -223,6 +241,23 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Thundering Might": cons-added feature keqing_thundering_might above.
+// C2 "Keen Extraction": ConditionStatic display-only → SKIP.
+// C3: +3 levels to Starward Sword (burst). Raw cons[2] settings char_skill_burst_bonus:3.
+// C4 "Attunement": ConditionBoolean (atk_percent:25 toggle) → SKIP.
+// C5: +3 levels to Stellar Restoration (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
+// C6 "Tenacious Star": ConditionStacks (dmg_electro per stack, toggle) → SKIP.
+// Raw: Keqing.js:418-484 (constellation array).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Starward Sword (burst).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Stellar Restoration (skill).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -237,4 +272,5 @@ export const keqing: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

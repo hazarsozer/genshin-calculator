@@ -10,7 +10,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Amber)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Amber as AmberStatTable } from "../generated/charTables.js";
 import { Amber as AmberTalents } from "../generated/charTalentTables.js";
 
@@ -109,11 +109,54 @@ const features: readonly Feature[] = [
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
+  // --- C1 "One Arrow to Rule Them All": a SECOND arrow per aimed shot, dealing 20%
+  // of the first. Cons-added features gated by ConditionConstellation(1); the 20% is a
+  // numeric scalingMultiplier on the same aimed/charged-aimed talent. Raw Amber.js:180-214.
+  {
+    name: "second_aimed",
+    category: "attack",
+    damageType: "charged",
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: talents.get("attack.aimed"),
+        scalingMultiplier: 0.2,
+        source: "constellation1",
+      },
+    ],
+  },
+  {
+    name: "second_charged_aimed",
+    category: "attack",
+    damageType: "charged",
+    element: "pyro",
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: talents.get("attack.charged_aimed"),
+        scalingMultiplier: 0.2,
+        source: "constellation1",
+      },
+    ],
+  },
   // --- Skill: Explosive Puppet — Baron Bunny explosion (pyro) ---
   {
     name: "explosion_dmg",
     category: "skill",
     element: "pyro",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.explosion_dmg") }],
+  },
+  // --- C2 "Bunny Triggered": manual Baron Bunny detonation deals +200% skill DMG
+  // (dmg_skill_amber, from the C2 condition). Cons-added feature gated at C≥2.
+  // Raw Amber.js:252-263 + cons[1] dmg_skill_amber:200 (Amber.js:328-338).
+  {
+    name: "amber_explosion_dmg",
+    category: "skill",
+    element: "pyro",
+    damageBonuses: ["dmg_skill_amber"],
+    condition: { type: "constellation", constellation: 2 },
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.explosion_dmg") }],
   },
   // --- Burst: Fiery Rain (pyro) ---
@@ -127,6 +170,22 @@ const features: readonly Feature[] = [
     critRateBonuses: ["crit_rate_amber"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.wave_dmg") }],
   },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C2 contributes the dmg_skill_amber stat consumed by amber_explosion_dmg; C3/C5
+// bump the burst/skill talent levels (+3). C1 is the second-arrow features above;
+// C4 (CD) + C6 (atk toggle) are inert in the constellations config (toggle off).
+// Raw: db/Char/Amber.js constellation array (Amber.js:315-382).
+const constellationConditions: readonly Condition[] = [
+  // C2 "Bunny Triggered": +200% skill DMG on the manual detonation (amber_explosion_dmg).
+  { type: "constellation", constellation: 2, stats: { dmg_skill_amber: 200 } },
+  // C3: +3 levels to Fiery Rain (burst). Raw cons[2] settings char_skill_burst_bonus:3.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Explosive Puppet (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -144,6 +203,7 @@ export const amber: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
   // A1 "Every Arrow Finds Its Target": +10% crit rate to Fiery Rain (burst).
   // Auto-active at A6 (ConditionStatic gated only by ConditionAscensionChar),
   // so it is part of the baseline build. Raw: db/Char/Amber.js:289-300.

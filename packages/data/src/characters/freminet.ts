@@ -40,7 +40,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Freminet)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Freminet as FreminetStatTable } from "../generated/charTables.js";
 import { Freminet as FreminetTalents } from "../generated/charTalentTables.js";
 
@@ -163,10 +163,15 @@ const features: readonly Feature[] = [
   // `params.element || 'phys'`) when none is given, so the raw phys hits (no element
   // override) are physical, NOT the char's cryo. Set explicitly here since this
   // port defaults an element-less skill to the char element instead.
+  // Pressurized Floe hits carry C1 "Snowmedley" +15% crit rate (crit_rate_freminet),
+  // constellation-gated → 0 at C0..C5 (base-safe). Raw Freminet.js:280-339 each pressure
+  // hit lists critRateBonuses:['crit_rate_freminet']. (dmg_skill_freminet from A4 is a
+  // conditional passive, OFF in this config → not wired here.)
   {
     name: "freminet_pressure_0_dmg",
     category: "skill",
     element: "cryo",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_0_dmg") },
     ],
@@ -175,6 +180,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_1_cryo_dmg",
     category: "skill",
     element: "cryo",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_1_cryo_dmg") },
     ],
@@ -183,6 +189,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_1_phys_dmg",
     category: "skill",
     element: "physical",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_1_phys_dmg") },
     ],
@@ -191,6 +198,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_2_cryo_dmg",
     category: "skill",
     element: "cryo",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_2_cryo_dmg") },
     ],
@@ -199,6 +207,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_2_phys_dmg",
     category: "skill",
     element: "physical",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_2_phys_dmg") },
     ],
@@ -207,6 +216,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_3_cryo_dmg",
     category: "skill",
     element: "cryo",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_3_cryo_dmg") },
     ],
@@ -215,6 +225,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_3_phys_dmg",
     category: "skill",
     element: "physical",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_3_phys_dmg") },
     ],
@@ -224,6 +235,7 @@ const features: readonly Feature[] = [
     name: "freminet_pressure_4_dmg",
     category: "skill",
     element: "physical",
+    critRateBonuses: ["crit_rate_freminet"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_pressure_4_dmg") },
     ],
@@ -247,6 +259,34 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Dreams of the Foamy Deep": crit_rate_freminet +15. ConditionStatic (always-on
+//   at C1). crit_rate_freminet is a critRateBonuses key used by pressure-stage features.
+// C2 "Penguins and the Land of Plenty": ConditionStatic with no real stats → SKIP (inert).
+// C3 "Song of the Eddies": +3 Normal Attack talent levels.
+//    Raw cons[2]: Condition{ settings:{ char_skill_attack_bonus:3 } }
+// C4 "Dance of the Snowy Moon and Flute": ConditionStacks toggle (atk_percent) → SKIP.
+// C5 "Nights of Nightmares": +3 Elemental Skill talent levels.
+//    Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C6 "Moment of Waking and Resolve": ConditionStacks toggle (crit_dmg per stack) → SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Freminet.js:423-490
+
+const constellationConditions: readonly Condition[] = [
+  // C1: crit_rate_freminet +15. ConditionStatic{ stats:{ crit_rate_freminet:15 } }
+  // This is a char-specific critRateBonuses key applied to Pressurized Floe features.
+  // Raw cons[0]: ConditionStatic{ stats:{ crit_rate_freminet: TalentValues.C1CritRateSkill=15 } }
+  { type: "constellation", constellation: 1, stats: { crit_rate_freminet: 15 } },
+  // C3: +3 Normal Attack talent levels.
+  // Raw cons[2]: Condition{ settings:{ char_skill_attack_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_attack_bonus: 3 } },
+  // C5: +3 Elemental Skill talent levels.
+  // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -261,4 +301,5 @@ export const freminet: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

@@ -24,7 +24,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Dehya)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Dehya as DehyaStatTable } from "../generated/charTables.js";
 import { Dehya as DehyaTalents } from "../generated/charTalentTables.js";
 
@@ -165,6 +165,9 @@ const features: readonly Feature[] = [
     name: "dehya_flame_manes_fist_dmg",
     category: "burst",
     element: "pyro",
+    // C6 "The Burning Claws Cleaving": +10% burst crit rate (crit_rate_burst, always-on
+    // ConditionStatic). Type-specific → wired per burst hit. Raw Dehya.js cons[5].
+    critRateBonuses: ["crit_rate_burst"],
     multipliers: [
       { leveling: "char_skill_burst", values: talents.get("burst.dehya_flame_manes_fist_dmg") },
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.dehya_flame_manes_fist_hp") },
@@ -176,11 +179,71 @@ const features: readonly Feature[] = [
     name: "dehya_incineration_drive_dmg",
     category: "burst",
     element: "pyro",
+    // C6: +10% burst crit rate (crit_rate_burst). Raw Dehya.js cons[5].
+    critRateBonuses: ["crit_rate_burst"],
     multipliers: [
       { leveling: "char_skill_burst", values: talents.get("burst.dehya_incineration_drive_dmg") },
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.dehya_incineration_drive_hp") },
     ],
   },
+];
+
+// ---------------------------------------------------------------------------
+// Constellations (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "The Flame Incandescent": hp_percent +20%, skill_base_hp_percent +3.6%,
+//   burst_base_hp_percent +6%. ConditionStatic (always-on at C1). Also adds
+//   two HP-scaling char multipliers targeting skill and burst.
+// C2 "The Sand Blades Glittering": dmg_skill_dehya toggle → SKIP.
+// C3 "A Rage Swift as Fire": +3 Elemental Burst talent levels.
+// C4 "An Oath Abiding": heal on burst (text_percent_heal, display-only) → SKIP.
+// C5 "The Alpha Lumine": +3 Elemental Skill talent levels.
+// C6 "The Burning Claws Cleaving": crit_rate_burst +10% (static) + ConditionStacks toggle.
+//   The static part is always-on at C6 (ConditionStatic with no subCondition in raw).
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Dehya.js:381-480
+
+const C1_SKILL_HP_BONUS = 3.6;
+const C1_BURST_HP_BONUS = 6;
+
+// C1 always-on HP multipliers targeting skill and burst hits.
+const c1SkillHpMultiplier: CharMultiplier = {
+  leveling: "",
+  scaling: "hp*",
+  source: "constellation1",
+  values: { getValue: () => C1_SKILL_HP_BONUS },
+  target: { damageTypes: ["skill"] },
+  condition: { type: "constellation", constellation: 1 },
+};
+const c1BurstHpMultiplier: CharMultiplier = {
+  leveling: "",
+  scaling: "hp*",
+  source: "constellation1",
+  values: { getValue: () => C1_BURST_HP_BONUS },
+  target: { damageTypes: ["burst"] },
+  condition: { type: "constellation", constellation: 1 },
+};
+
+const constellationConditions: readonly Condition[] = [
+  // C1: always-on HP% + named HP-scaling bonuses (skill_base_hp_percent /
+  // burst_base_hp_percent used internally by her engine — carried here for fidelity).
+  // Raw Dehya.js:401-414 ConditionStatic { stats: { hp_percent:20,
+  //   skill_base_hp_percent:3.6, burst_base_hp_percent:6 } }
+  {
+    type: "constellation",
+    constellation: 1,
+    stats: { hp_percent: 20, skill_base_hp_percent: 3.6, burst_base_hp_percent: 6 },
+  },
+  // C3: +3 Elemental Burst talent levels.
+  // Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 Elemental Skill talent levels.
+  // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // C6: crit_rate_burst +10%. ConditionStatic (no subCondition → always-on at C6).
+  // The ConditionStacks part (crit_dmg_burst per stack) is a toggle → SKIP.
+  // Raw cons[5]: ConditionStatic{ stats:{ crit_rate_burst:10 } }
+  { type: "constellation", constellation: 6, stats: { crit_rate_burst: 10 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -197,5 +260,6 @@ export const dehya: DbObjectChar = {
   statTable: DehyaStatTable,
   talents,
   features,
-  multipliers: [],
+  multipliers: [c1SkillHpMultiplier, c1BurstHpMultiplier],
+  conditions: constellationConditions,
 };

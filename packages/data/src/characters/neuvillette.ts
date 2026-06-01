@@ -43,7 +43,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Neuvillette)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Neuvillette as NeuvilletteStatTable } from "../generated/charTables.js";
 import { Neuvillette as NeuvilletteTalents } from "../generated/charTalentTables.js";
 
@@ -118,6 +118,28 @@ const features: readonly Feature[] = [
     element: "hydro",
     multipliers: [{ scaling: "hp", leveling: "char_skill_attack", values: talents.get("attack.neuvillette_equitable_judgment_dmg") }],
   },
+  // C6 "Wrathful Recompense": cons-added charged hit at 10% HP per interval.
+  // Raw: Neuvillette.js features FeatureDamageCharged neuvillette_equitable_judgment_current_dmg,
+  // FeatureMultiplierNeuvilleteCharged scaling:'hp*', values: ValueTable([10]),
+  // source:'constellation6', condition:ConditionConstellation({constellation:6}).
+  // At 0 droplet stacks the NeuvilleteCharged scalingMultiplier = 1 → plain HP%.
+  // critDamageBonuses:['crit_dmg_neuvillette'] wired (0 at 0 stacks, safe at C0).
+  {
+    name: "neuvillette_equitable_judgment_current_dmg",
+    category: "attack",
+    damageType: "charged",
+    element: "hydro",
+    critDamageBonuses: ["crit_dmg_neuvillette"],
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_attack",
+        values: { getValue: (_level: number) => 10 },
+        source: "constellation6",
+      },
+    ],
+  },
   // --- Plunge attacks (hydro) ---
   {
     name: "plunge",
@@ -173,6 +195,25 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Venerable Institution": ConditionStatic display-only → SKIP.
+// C2 "Juridical Exhortation": ConditionStaticLevel stacks-dependent
+//    (crit_dmg_neuvillette: [0,14,28,42] keyed by neuvillette_ancient_seas_legacy level);
+//    0 stacks in the fixed build → 0 crit_dmg → SKIP (no plain constellation condition).
+// C3: +3 levels to As Water Seeks Equilibrium (attack). Raw cons[2] settings char_skill_attack_bonus:3.
+// C4 "Crown of Commiseration": ConditionStatic display-only → SKIP.
+// C5: +3 levels to O Tides, I Have Returned (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+// C6 "Wrathful Recompense": cons-added feature above; ConditionStatic display wrapper → no condition here.
+// Raw: Neuvillette.js constellation array (Neuvillette.js:337-398).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to normal attack talent.
+  { type: "constellation", constellation: 3, settings: { char_skill_attack_bonus: 3 } },
+  // C5: +3 levels to elemental burst.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -187,4 +228,5 @@ export const neuvillette: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

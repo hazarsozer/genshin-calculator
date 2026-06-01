@@ -1,0 +1,443 @@
+{
+  "defaultWeapon": "weapon_name.alley_hunter",
+  "element": "anemo",
+  "features": {
+    "attack.aimed": {
+      "average": 1831.1679935423256,
+      "category": "attack",
+      "crit": 2834.625377000504,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1417.312688500252
+    },
+    "attack.charged_aimed": {
+      "average": 4579.458780489042,
+      "category": "attack",
+      "crit": 7088.945480633191,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3544.4727403165957
+    },
+    "attack.normal_hit_1": {
+      "average": 1889.8053780481441,
+      "category": "attack",
+      "crit": 2925.3953220559506,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1462.6976610279753
+    },
+    "attack.normal_hit_2": {
+      "average": 1755.20375894635,
+      "category": "attack",
+      "crit": 2717.0336825794893,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1358.5168412897447
+    },
+    "attack.normal_hit_3": {
+      "average": 2338.0599149009727,
+      "category": "attack",
+      "crit": 3619.287793964354,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1809.643896982177
+    },
+    "attack.normal_hit_3_1": {
+      "average": 1169.0299574504863,
+      "category": "attack",
+      "crit": 1809.643896982177,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 904.8219484910885
+    },
+    "attack.normal_hit_4": {
+      "average": 1002.5044633957273,
+      "category": "attack",
+      "crit": 1551.8644944206305,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 775.9322472103153
+    },
+    "attack.plunge": {
+      "average": 2101.4627514910826,
+      "category": "attack",
+      "crit": 3253.038315001676,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1626.519157500838
+    },
+    "attack.plunge_high": {
+      "average": 5248.568591193831,
+      "category": "attack",
+      "crit": 8124.719181414598,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4062.359590707299
+    },
+    "attack.plunge_low": {
+      "average": 4202.035052663737,
+      "category": "attack",
+      "crit": 6504.698223937674,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3252.349111968837
+    },
+    "burst.chasca_galesplitting_soulreaper_shell_dmg": {
+      "average": 4396.975603277904,
+      "category": "burst",
+      "crit": 6806.463782163938,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3403.231891081969
+    },
+    "burst.chasca_radiant_soulreaping_shell_cryo_dmg": {
+      "average": 10332.892667703072,
+      "category": "burst",
+      "crit": 15995.189888085253,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 7997.594944042627
+    },
+    "burst.chasca_radiant_soulreaping_shell_electro_dmg": {
+      "average": 10445.206718438976,
+      "category": "burst",
+      "crit": 16169.050647738355,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 8084.525323869178
+    },
+    "burst.chasca_radiant_soulreaping_shell_hydro_dmg": {
+      "average": 10332.892667703072,
+      "category": "burst",
+      "crit": 15995.189888085253,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 7997.594944042627
+    },
+    "burst.chasca_radiant_soulreaping_shell_pyro_dmg": {
+      "average": 10332.892667703072,
+      "category": "burst",
+      "crit": 15995.189888085253,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 7997.594944042627
+    },
+    "burst.chasca_soulreaping_shell_dmg": {
+      "average": 5166.446333851536,
+      "category": "burst",
+      "crit": 7997.594944042627,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3998.7974720213133
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.hyperbloom": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "reaction.swirl_cryo": {
+      "average": 1115.8725606569342,
+      "category": "reaction",
+      "crit": 1115.8725606569342,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1115.8725606569342
+    },
+    "reaction.swirl_electro": {
+      "average": 1115.8725606569342,
+      "category": "reaction",
+      "crit": 1115.8725606569342,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1115.8725606569342
+    },
+    "reaction.swirl_hydro": {
+      "average": 1115.8725606569342,
+      "category": "reaction",
+      "crit": 1115.8725606569342,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1115.8725606569342
+    },
+    "reaction.swirl_pyro": {
+      "average": 1115.8725606569342,
+      "category": "reaction",
+      "crit": 1115.8725606569342,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1115.8725606569342
+    },
+    "skill.chasca_activation_dmg": {
+      "average": 2476.557405008306,
+      "category": "skill",
+      "crit": 3833.68019351131,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1916.840096755655
+    },
+    "skill.chasca_burning_shadowhunt_shot_cryo_dmg": {
+      "average": 9227.535580447024,
+      "category": "skill",
+      "crit": 14284.110805645549,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 7142.055402822774
+    },
+    "skill.chasca_burning_shadowhunt_shot_dmg": {
+      "average": 2703.357925256435,
+      "category": "skill",
+      "crit": 4184.76459018024,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2092.38229509012
+    },
+    "skill.chasca_burning_shadowhunt_shot_electro_dmg": {
+      "average": 9363.234633100657,
+      "category": "skill",
+      "crit": 14494.171258669749,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 7247.085629334874
+    },
+    "skill.chasca_burning_shadowhunt_shot_hydro_dmg": {
+      "average": 9227.535580447024,
+      "category": "skill",
+      "crit": 14284.110805645549,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 7142.055402822774
+    },
+    "skill.chasca_burning_shadowhunt_shot_pyro_dmg": {
+      "average": 9227.535580447024,
+      "category": "skill",
+      "crit": 14284.110805645549,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 7142.055402822774
+    },
+    "skill.chasca_multi_aim_press_dmg": {
+      "average": 1251.3132151620912,
+      "category": "skill",
+      "crit": 1937.0173609320298,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 968.5086804660149
+    },
+    "skill.chasca_shadowhunt_shell_dmg": {
+      "average": 1802.2386168376229,
+      "category": "skill",
+      "crit": 2789.8430601201594,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1394.9215300600797
+    },
+    "skill.chasca_shining_shadowhunt_shell_cryo_dmg": {
+      "average": 6151.690386964683,
+      "category": "skill",
+      "crit": 9522.740537097034,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 4761.370268548517
+    },
+    "skill.chasca_shining_shadowhunt_shell_electro_dmg": {
+      "average": 6242.156422067104,
+      "category": "skill",
+      "crit": 9662.780839113166,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 4831.390419556583
+    },
+    "skill.chasca_shining_shadowhunt_shell_hydro_dmg": {
+      "average": 6151.690386964683,
+      "category": "skill",
+      "crit": 9522.740537097034,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 4761.370268548517
+    },
+    "skill.chasca_shining_shadowhunt_shell_pyro_dmg": {
+      "average": 6151.690386964683,
+      "category": "skill",
+      "crit": 9522.740537097034,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 4761.370268548517
+    },
+    "stats.atk": {
+      "average": 2594.8127798836563,
+      "category": "stats",
+      "crit": 2594.8127798836563,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2594.8127798836563
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 29.2,
+      "category": "stats",
+      "crit": 29.2,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 29.2
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1490.843496,
+      "category": "stats",
+      "crit": 1490.843496,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1490.843496
+    },
+    "stats.hp": {
+      "average": 23022.728784,
+      "category": "stats",
+      "crit": 23022.728784,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23022.728784
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 94,
+  "key": "Chasca",
+  "schema": 1,
+  "slug": "chasca",
+  "weaponType": "bow"
+}

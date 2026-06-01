@@ -1,0 +1,245 @@
+{
+  "defaultWeapon": "weapon_name.alley_hunter",
+  "element": "cryo",
+  "features": {
+    "attack.aimed": {
+      "average": 1251.6938069781454,
+      "category": "attack",
+      "crit": 2275.806921778446,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1137.903460889223
+    },
+    "attack.charged_aimed": {
+      "average": 3888.3066856494793,
+      "category": "attack",
+      "crit": 7069.6485193626895,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3534.8242596813448
+    },
+    "attack.normal_hit_1": {
+      "average": 1078.9109755835152,
+      "category": "attack",
+      "crit": 1961.6563192427548,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 980.8281596213774
+    },
+    "attack.normal_hit_1_1": {
+      "average": 507.7228120393013,
+      "category": "attack",
+      "crit": 923.1323855260023,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 461.56619276300114
+    },
+    "attack.normal_hit_1_2": {
+      "average": 571.1881635442139,
+      "category": "attack",
+      "crit": 1038.5239337167525,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 519.2619668583762
+    },
+    "attack.normal_hit_2": {
+      "average": 1036.6007412469066,
+      "category": "attack",
+      "crit": 1884.7286204489212,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 942.3643102244606
+    },
+    "attack.normal_hit_3": {
+      "average": 1269.307030098253,
+      "category": "attack",
+      "crit": 2307.8309638150054,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1153.9154819075027
+    },
+    "attack.normal_hit_4": {
+      "average": 1578.1717407554945,
+      "category": "attack",
+      "crit": 2869.40316500999,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1434.701582504995
+    },
+    "attack.plunge": {
+      "average": 1405.5621541784392,
+      "category": "attack",
+      "crit": 2555.5675530517074,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1277.7837765258537
+    },
+    "attack.plunge_high": {
+      "average": 3510.502087251961,
+      "category": "attack",
+      "crit": 6382.731067730838,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3191.365533865419
+    },
+    "attack.plunge_low": {
+      "average": 2810.5287311729044,
+      "category": "attack",
+      "crit": 5110.05223849619,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2555.026119248095
+    },
+    "burst.burst_dmg": {
+      "average": 14997.318771963804,
+      "category": "burst",
+      "crit": 27267.85231266146,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 13633.92615633073
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.aloy_atk_decrease": {
+      "average": 15,
+      "category": "skill",
+      "crit": 15,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 15
+    },
+    "skill.aloy_chillwater_bomblets": {
+      "average": 1392.8883333016315,
+      "category": "skill",
+      "crit": 2532.5242423666027,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1266.2621211833014
+    },
+    "skill.aloy_freeze_bomb_dmg": {
+      "average": 6184.424199859243,
+      "category": "skill",
+      "crit": 11244.407636107715,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5622.2038180538575
+    },
+    "stats.atk": {
+      "average": 2430.4828503763997,
+      "category": "stats",
+      "crit": 2430.4828503763997,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2430.4828503763997
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1552.3278456,
+      "category": "stats",
+      "crit": 1552.3278456,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1552.3278456
+    },
+    "stats.hp": {
+      "average": 24124.8604972,
+      "category": "stats",
+      "crit": 24124.8604972,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 24124.8604972
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 43,
+  "key": "Aloy",
+  "schema": 1,
+  "slug": "aloy",
+  "weaponType": "bow"
+}

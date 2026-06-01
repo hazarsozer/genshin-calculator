@@ -1,0 +1,326 @@
+{
+  "defaultWeapon": "weapon_name.solar_pearl",
+  "element": "anemo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3429.558362133538,
+      "category": "attack",
+      "crit": 4986.127710932422,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2493.063855466211
+    },
+    "attack.normal_hit_1": {
+      "average": 900.5379622418711,
+      "category": "attack",
+      "crit": 1309.2639967460543,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 654.6319983730272
+    },
+    "attack.normal_hit_2": {
+      "average": 823.8964335404352,
+      "category": "attack",
+      "crit": 1197.8372736187305,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 598.9186368093652
+    },
+    "attack.normal_hit_3": {
+      "average": 1034.6606374693838,
+      "category": "attack",
+      "crit": 1504.260762218871,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 752.1303811094355
+    },
+    "attack.normal_hit_4": {
+      "average": 1289.4940194088704,
+      "category": "attack",
+      "crit": 1874.7550513344631,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 937.3775256672316
+    },
+    "attack.plunge": {
+      "average": 1577.6780315700266,
+      "category": "attack",
+      "crit": 2293.7367793463795,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1146.8683896731898
+    },
+    "attack.plunge_high": {
+      "average": 3940.3750352650904,
+      "category": "attack",
+      "crit": 5728.788106285207,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2864.3940531426033
+    },
+    "attack.plunge_low": {
+      "average": 3154.6875554995577,
+      "category": "attack",
+      "crit": 4586.5016363286295,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2293.2508181643148
+    },
+    "burst.anemoskill_cryo_dmg": {
+      "average": 1736.733559122086,
+      "category": "burst",
+      "crit": 2524.9826395308164,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1262.4913197654082
+    },
+    "burst.anemoskill_electro_dmg": {
+      "average": 1757.9132366723557,
+      "category": "burst",
+      "crit": 2555.775110744607,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1277.8875553723035
+    },
+    "burst.anemoskill_hydro_dmg": {
+      "average": 1736.733559122086,
+      "category": "burst",
+      "crit": 2524.9826395308164,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1262.4913197654082
+    },
+    "burst.anemoskill_pyro_dmg": {
+      "average": 1736.733559122086,
+      "category": "burst",
+      "crit": 2524.9826395308164,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1262.4913197654082
+    },
+    "burst.dot_dmg": {
+      "average": 6696.628956348797,
+      "category": "burst",
+      "crit": 9736.019534687559,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4868.0097673437795
+    },
+    "other.sucrose_mastery_bonus": {
+      "average": 11,
+      "category": "other",
+      "crit": 11,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 11
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.hyperbloom": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "reaction.swirl_cryo": {
+      "average": 1115.8725606569342,
+      "category": "reaction",
+      "crit": 1115.8725606569342,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1115.8725606569342
+    },
+    "reaction.swirl_electro": {
+      "average": 1115.8725606569342,
+      "category": "reaction",
+      "crit": 1115.8725606569342,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1115.8725606569342
+    },
+    "reaction.swirl_hydro": {
+      "average": 1115.8725606569342,
+      "category": "reaction",
+      "crit": 1115.8725606569342,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1115.8725606569342
+    },
+    "reaction.swirl_pyro": {
+      "average": 1115.8725606569342,
+      "category": "reaction",
+      "crit": 1115.8725606569342,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1115.8725606569342
+    },
+    "skill.skill_dmg": {
+      "average": 7929.671274820841,
+      "category": "skill",
+      "crit": 11528.701222443142,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5764.350611221571
+    },
+    "stats.atk": {
+      "average": 1829.618016268,
+      "category": "stats",
+      "crit": 1829.618016268,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1829.618016268
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 37.564,
+      "category": "stats",
+      "crit": 37.564,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 37.564
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1578.9967533,
+      "category": "stats",
+      "crit": 1578.9967533,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1578.9967533
+    },
+    "stats.hp": {
+      "average": 22469.677182699998,
+      "category": "stats",
+      "crit": 22469.677182699998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 22469.677182699998
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 22,
+  "key": "Sucrose",
+  "schema": 1,
+  "slug": "sucrose",
+  "weaponType": "catalyst"
+}

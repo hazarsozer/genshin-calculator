@@ -23,7 +23,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Layla)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Layla as LaylaStatTable } from "../generated/charTables.js";
 import { Layla as LaylaTalents } from "../generated/charTalentTables.js";
 
@@ -145,6 +145,9 @@ const features: readonly Feature[] = [
     name: "layla_shooting_star_dmg",
     category: "skill",
     element: "cryo",
+    // C6 "Shadowy Dream-Veil": +40% skill DMG (dmg_skill_layla, from the C6 condition).
+    // Constellation-gated → 0 at C0..C5, base-safe. Raw Layla.js:254.
+    damageBonuses: ["dmg_skill_layla"],
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.layla_shooting_star_dmg") },
       { scaling: "hp", leveling: "char_skill_elemental", values: a4HpScale },
@@ -165,6 +168,35 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Fortress of Fantasy" (ConditionStatic text: shield bonus / party shield) → SKIP
+//   (the +20% shield buff is baked into the feature-level ConditionConstellation(1)
+//   multiplier in raw; the party shield feature is similarly gated by ConditionConstellation(1)
+//   in the feature list — both are feature-level, not a char condition stat).
+// C2 "Light's Remit" (ConditionStatic description-only) → SKIP.
+// C3 "Starstream Calculations" → +3 Elemental Skill (Night's Formal Focus) levels.
+//   raw: constellation[2]: Condition{ settings:{char_skill_elemental_bonus:3} }
+// C4 "Starry Illumination" (ConditionBoolean HP→normal/charged multiplier toggle) → SKIP (off).
+// C5 "Parallax Zenith" → +3 Elemental Burst (Dream of the Star-Stream Shaker) levels.
+//   raw: constellation[4]: Condition{ settings:{char_skill_burst_bonus:3} }
+// C6 "Radiant Soulfire" (ConditionStatic — always-on at C6, REAL stats):
+//   dmg_skill_layla: +40, dmg_burst_layla: +40.
+//   raw: constellation[5]: ConditionStatic{ stats:{dmg_skill_layla:40, dmg_burst_layla:40} }
+//   No subConditions → unconditional at C6. Port as constellation stat condition.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Layla.js:360-424
+
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 Elemental Skill (Night's Formal Focus) levels.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 Elemental Burst (Dream of the Star-Stream Shaker) levels.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // C6: Shooting Star DMG +40% and Starlight Slug DMG +40%.
+  { type: "constellation", constellation: 6, stats: { dmg_skill_layla: 40, dmg_burst_layla: 40 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -179,4 +211,5 @@ export const layla: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

@@ -31,7 +31,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Yoimiya)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Yoimiya as YoimiyaStatTable } from "../generated/charTables.js";
 import { Yoimiya as YoimiyaTalents } from "../generated/charTalentTables.js";
 
@@ -178,6 +178,26 @@ const features: readonly Feature[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1: ConditionBoolean toggle (atk_percent:20) → SKIP.
+// C2: ConditionBoolean toggle (dmg_pyro:25) → SKIP.
+// C3 "Summer Festival" — +3 Elemental Skill talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Yoimiya.js:480-487 (constellation[2]).
+// C4: ConditionStatic display-only → SKIP.
+// C5 "Summer War" — +3 Burst talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Yoimiya.js:496-503 (constellation[4]).
+// C6: ConditionStatic with text_percent_* (display-only) → SKIP.
+//   yoimiya_normal_hit_* features are gated by ConditionAnd[toggle, constellation 6] → cons-feature wave.
+
+const constellationConditions: readonly Condition[] = [
+  // C3 — char_skill_elemental_bonus +3 (skill talent level up).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 — char_skill_burst_bonus +3 (burst talent level up).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
 export const yoimiya: DbObjectChar = {
   name: "yoimiya",
   gameId: 10000049,
@@ -189,4 +209,5 @@ export const yoimiya: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

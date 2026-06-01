@@ -50,7 +50,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Sigewinne)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Sigewinne as SigewinneStatTable } from "../generated/charTables.js";
 import { Sigewinne as SigewinneTalents } from "../generated/charTalentTables.js";
 
@@ -173,6 +173,38 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Can the Happiest of Spirits Understand Anxiety": ConditionStatic with
+//   text_value_hp/dmg/max (display-only stats) + settings:{sigewinne_buff_level:2}.
+//   The buff_level setting controls the PostEffectStatsHP tier (A1DmgBonus vs C1DmgBonus)
+//   but the PostEffect is a partyData multiplier gated on party.sigewinne_requires_
+//   appropriate_rest toggle → OFF in canonical fixture. Inert for the damage triple.
+//   Ported for correctness (setting is real, display stats skipped).
+// C2 "Can the Most Merciful of Spirits Defeat Its Foes": ConditionStatic text_percent
+//   (display) + ConditionBoolean enemy_res_hydro (toggle) → SKIP.
+// C3 "Can the Loveliest of Spirits Keep Decay at Bay": +3 Elemental Skill levels.
+//   Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C4: ConditionStatic no real stats → SKIP.
+// C5 "Can the Most Radiant of Spirits Pray for Me": +3 Elemental Burst levels.
+//   Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C6: ConditionBoolean (crit_rate/crit_dmg toggle) → SKIP.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Sigewinne.js:388-460
+
+const constellationConditions: readonly Condition[] = [
+  // C1 "Can the Happiest of Spirits Understand Anxiety" — sigewinne_buff_level→2.
+  // Upgrades PostEffectStatsHP from A1 tier to C1 tier; inert in damage fixture
+  // (partyData toggle OFF). Ported for engine fidelity.
+  { type: "constellation", constellation: 1, settings: { sigewinne_buff_level: 2 } },
+  // C3 "Can the Loveliest of Spirits Keep Decay at Bay" — +3 Elemental Skill.
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Can the Most Radiant of Spirits Pray for Me" — +3 Elemental Burst.
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -187,4 +219,5 @@ export const sigewinne: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

@@ -14,7 +14,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Collei)
  */
 
-import type { DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
 import { Collei as ColleiStatTable } from "../generated/charTables.js";
 import { Collei as ColleiTalents } from "../generated/charTalentTables.js";
 
@@ -148,6 +148,38 @@ const features: readonly Feature[] = [
     element: "dendro",
     multipliers: [{ leveling: "char_skill_elemental", values: floralSidewinderTable }],
   },
+  // --- C6 "Forest of Falling Arrows": cons-added dendro ATK hit at 200% ATK.
+  // Raw is base FeatureDamage (NOT FeatureDamageSkill) with category:'other' →
+  // damageType:"" suppresses dmg_<type>; gets dmg_all+dmg_dendro only.
+  // category omitted → loader defaults to "other" (matches the fixture key
+  // `other.collei_...`). Fixed ValueTable([200]); source:'constellation6'. Raw Collei.js:241-252.
+  {
+    name: "collei_forest_of_falling_arrows_dmg",
+    element: "dendro",
+    damageType: "",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      { leveling: "char_skill_elemental", values: { getValue: (_level: number) => 200 }, source: "constellation6" },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Deepwood Patrol": ConditionBoolean toggle (recharge:20) → SKIP.
+// C2 "Through Hill and Copse": ConditionStatic display-only (text_percent:40) → SKIP.
+// C3: +3 levels to Floral Brush (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
+// C4 "Gift of the Woods": ConditionStatic display-only (text_value:60) → SKIP.
+// C5: +3 levels to Trump-Card Kitty (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+// C6 "Forest of Falling Arrows": ConditionStatic display-only in cons array → SKIP.
+//   The actual C6 damage comes from collei_forest_of_falling_arrows_dmg feature above.
+// Raw: db/Char/Collei.js constellation array (Collei.js:276-341).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Floral Brush (skill). Raw Collei.js:301-307.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Trump-Card Kitty (burst). Raw Collei.js:321-327.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -165,4 +197,5 @@ export const collei: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

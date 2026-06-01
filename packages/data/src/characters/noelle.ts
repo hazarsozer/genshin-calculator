@@ -21,7 +21,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js:4665 (Noelle)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Noelle as NoelleStatTable } from "../generated/charTables.js";
 import { Noelle as NoelleTalents } from "../generated/charTalentTables.js";
 
@@ -149,6 +149,47 @@ const features: readonly Feature[] = [
     element: "geo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.noelle_skill_dmg") }],
   },
+  // --- C4 "To Be Cleaned": cons-added geo hit, 400% ATK (shield-damage proc).
+  // raw: FeatureDamage (base class) name:'noelle_to_be_cleaned', category:'skill',
+  //   element:'geo', source:'constellation4', ValueTable([400]),
+  //   condition:ConditionConstellation({constellation:4}). Noelle.js:272-283.
+  // Base FeatureDamage → damageType:"" (fixture shows "none" for this class).
+  {
+    name: "noelle_to_be_cleaned",
+    category: "skill",
+    element: "geo",
+    damageType: "",
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      {
+        leveling: "char_skill_elemental",
+        values: { getValue: (_level: number) => 400 },
+        source: "constellation4",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "I Got Your Back": ConditionStatic (display-only) → SKIP. Noelle.js:363-371.
+// C2 "Combat Maid": ConditionStatic (text: stamina/dmg_charged display) → SKIP. Noelle.js:372-382.
+// C3 "Invulnerable Maid": +3 levels to Breastplate (skill). Noelle.js:383-390.
+// C4 "To Be Cleaned": ConditionStatic (display-only text_percent_dmg:400) → no stat entry;
+//   actual damage modeled as noelle_to_be_cleaned feature above. Noelle.js:391-398.
+// C5 "Favonius Sweeper Master": +3 levels to Sweeping Time (burst). Noelle.js:399-406.
+// C6 "Must Be Spotless": ConditionStatic gated by noelle_sweeping_time boolean → SKIP. Noelle.js:407-427.
+const constellationConditions: readonly Condition[] = [
+  // C2 "Combat Maid": +15% Charged Attack DMG. ConditionStatic (auto-active, NOT
+  // display-only) → dmg_charged:15, picked up generically by the charged hits. NB the
+  // raw constant is named `C1ChargedBonus` but lives in cons index 1 = C2; C1 "I Got
+  // Your Back" is display-only. Raw Noelle.js C2 stats { dmg_charged: 15 }.
+  { type: "constellation", constellation: 2, stats: { dmg_charged: 15 } },
+  // C3: +3 levels to Breastplate (elemental skill). Noelle.js:383-390.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Sweeping Time (elemental burst). Noelle.js:399-406.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -166,4 +207,5 @@ export const noelle: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

@@ -16,7 +16,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Bennett)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Bennett as BennettStatTable } from "../generated/charTables.js";
 import { Bennett as BennettTalents } from "../generated/charTalentTables.js";
 
@@ -47,6 +47,8 @@ const talents: TalentResolver = {
       // charge_level_2: two sub-hits
       if (name === "charge_level_2_1") return BennettTalents.s2.p4;
       if (name === "charge_level_2_2") return BennettTalents.s2.p5;
+      // C4 explosion_dmg (FeatureDamageSkill gated by constellation 4)
+      if (name === "explosion_dmg") return BennettTalents.s2.p6;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return BennettTalents.s3.p1;
@@ -209,6 +211,16 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_elemental", values: unexpectedOdysseyValues }],
   },
+  // --- C4 "Unexpected Odyssey": hitting the explosion also deals 135% ATK as pyro skill DMG.
+  // Cons-added FeatureDamageSkill gated by ConditionConstellation(4).
+  // Raw Bennet.js:407-417 — explosion_dmg, element:'pyro', condition:ConditionConstellation(4).
+  {
+    name: "explosion_dmg",
+    category: "skill",
+    element: "pyro",
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.explosion_dmg") }],
+  },
   // --- Burst: Fantastic Voyage ---
   // raw/genshin_calc_pub/src/js/db/Char/Bennet.js:431-440
   {
@@ -218,6 +230,58 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic with bonus_bennet_atk (party buff display) — no damage stat → SKIP.
+// C2: ConditionBoolean toggle (recharge) → SKIP (toggle OFF).
+// C3: +3 levels to Passion Overload (skill). Raw Bennet.js cons[2] settings
+//     char_skill_elemental_bonus:3.
+// C4: cons-added explosion_dmg feature (above, gated in features array).
+//     ConditionStatic with text_percent_dmg:135 (display-only) → SKIP here.
+// C5: +3 levels to Fantastic Voyage (burst). Raw Bennet.js cons[4] settings
+//     char_skill_burst_bonus:3.
+// C6: ConditionStatic gated by bennet_fantastic_voyage (toggle) → SKIP.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Passion Overload (elemental skill). Raw Bennet.js cons[2].
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Fantastic Voyage (burst). Raw Bennet.js cons[4].
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
+// Post-effects
+// ---------------------------------------------------------------------------
+
+// "Fantastic Voyage" burst: +ATK = base ATK × (burst atk_ratio @L10 × 0.01).
+// Raw Bennet.js:156-175 — PostEffectStats{ from:'atk_base', percent:burst.atk_ratio × 0.01,
+// conditions:[ConditionBoolean({name:'bennet_fantastic_voyage'})] }.
+// BUILD-COUPLED at burst level 10 (the oracle's fixed talent level), like itto/sayu carries.
+// BennettTalents.s3.p4 = atk_ratio table; getValue(10) = 100.8; ratio = 1.008.
+const fantasticVoyageAtk: CharPostEffect = {
+  fromStat: "atk_base",
+  toStat: "atk",
+  ratio: BennettTalents.s3.p4.getValue(10) * 0.01,  // 100.8 × 0.01 = 1.008
+  conditions: [{ type: "boolean", name: "bennet_fantastic_voyage" }],
+};
+
+// C1 "Grand Expectation": adds +20% of base ATK to the buff (the in-game C1 also lifts
+// the ATK-bonus cap, which this base post-effect never modelled — only the additive
+// +20% is relevant here). Raw Bennet.js:150,164,171 — percentBonus ValueTable([C1BuffBonus=20 / 100])
+// on the same post-effect, gated by `setting:'char_constellation'` ≥ 1. Modelled as a
+// second base-ATK post-effect gated by the toggle AND constellation ≥ 1 (additive with
+// the base buff → base_atk × (1.008 + 0.20) at C1). Base-safe: the C1 gate is off at
+// C0, so the toggles-family (C0) bennett is unaffected.
+const fantasticVoyageC1Atk: CharPostEffect = {
+  fromStat: "atk_base",
+  toStat: "atk",
+  ratio: 0.2,
+  conditions: [
+    { type: "boolean", name: "bennet_fantastic_voyage" },
+    { type: "constellation", constellation: 1 },
+  ],
+};
 
 // ---------------------------------------------------------------------------
 // DbObjectChar
@@ -234,4 +298,6 @@ export const bennett: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  postEffects: [fantasticVoyageAtk, fantasticVoyageC1Atk],
+  conditions: constellationConditions,
 };

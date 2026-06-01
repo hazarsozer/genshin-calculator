@@ -15,7 +15,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Beidou)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Beidou as BeidouStatTable } from "../generated/charTables.js";
 import { Beidou as BeidouTalents } from "../generated/charTalentTables.js";
 
@@ -94,6 +94,24 @@ const features: readonly Feature[] = [
     name: "normal_hit_5",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5") }],
+  },
+  // --- C4 "Stunning Revenge": cons-added electro counter hit (fixed 20% ATK).
+  // Raw: base FeatureDamage (NOT FeatureDamageNormal) → damageType:"" (no dmg_type bonus,
+  // only dmg_all + dmg_electro). Fixed ValueTable([20]), category:'attack', element:'electro'.
+  // Raw Beidou.js:193-204. TalentValues.C4Damage = 20.
+  {
+    name: "beidou_stunning_revenge",
+    category: "attack",
+    element: "electro",
+    damageType: "",
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: { getValue: (_level: number) => 20 },
+        source: "constellation4",
+      },
+    ],
   },
   // --- Charged attacks ---
   // raw/genshin_calc_pub/src/js/db/Char/Beidou.js:205-222
@@ -177,6 +195,26 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Sea Beast's Scourge": ConditionStatic (text_percent_shield:16) display-only → SKIP.
+//   The C1 shield (beidou_stormbreaker_shield) is in the features list above as a
+//   FeatureShield — already emitted from raw features, not from the cons array.
+// C2 "Upon the Turbulent Sea, the Thunder Arises": ConditionStatic display-only → SKIP.
+// C3: +3 levels to Tidecaller (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
+// C4 "Stunning Revenge": ConditionStatic (text_percent_dmg:20) display-only → SKIP.
+//   The actual C4 damage comes from the beidou_stunning_revenge feature above.
+// C5: +3 levels to Stormbreaker (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+// C6 "Bane of Evil": ConditionBoolean (enemy_res_electro:-15 toggle) → SKIP (toggle OFF).
+// Raw: Beidou.js:374-437 (constellation array).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Tidecaller (skill).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Stormbreaker (burst).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -191,4 +229,5 @@ export const beidou: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

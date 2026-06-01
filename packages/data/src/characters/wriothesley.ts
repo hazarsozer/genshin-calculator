@@ -57,7 +57,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Wriothesley)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Wriothesley as WriothesleyStatTable } from "../generated/charTables.js";
 import { Wriothesley as WriothesleyTalents } from "../generated/charTalentTables.js";
 
@@ -202,6 +202,36 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Terror for the Evildoers": ConditionStatic with dmg_charged_wriothesley:150
+//   + text_percent_dmg (display), subConditions:[ConditionAscensionChar(1)] → always-on
+//   at canonical A6. Key already in wriothesley_vaulting_fist_dmg damageBonuses.
+// C2 "Shackles for the Arrogant": ConditionStaticLevel keyed on wriothesley_reckoning_for_sin
+//   stacks (manual setting); dmg_burst_wriothesley at level 0 is 0 — not always-on. SKIP.
+// C3 "Punishment for the Innocent": +3 attack talent (char_skill_attack_bonus).
+// C4 "Redemption for the Suffering": ConditionStatic (heal level) + ConditionBoolean toggles
+//   (atk_speed_normal) — speed stat, SKIP.
+// C5 "Mercy for the Wronged": +3 burst talent (char_skill_burst_bonus).
+// C6 "Esteem for the Innocent": ConditionStatic crit_rate_charged_wriothesley:10 +
+//   crit_dmg_charged_wriothesley:80, subConditions:[ConditionAscensionChar(1)] → always-on.
+//   Keys already in wriothesley_vaulting_fist_dmg critRateBonuses/critDamageBonuses.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Wriothesley.js:312-430
+
+const constellationConditions: readonly Condition[] = [
+  // C1 — dmg_charged_wriothesley +150% (charged attack DMG on Vaulting Fist).
+  // Wired via damageBonuses:['dmg_charged_wriothesley'] on wriothesley_vaulting_fist_dmg.
+  { type: "constellation", constellation: 1, stats: { dmg_charged_wriothesley: 150 } },
+  // C3 — +3 Normal Attack (standard attacks/fists).
+  { type: "constellation", constellation: 3, settings: { char_skill_attack_bonus: 3 } },
+  // C5 — +3 Elemental Burst (Darkgold Wolfbite).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // C6 — crit_rate_charged_wriothesley +10%, crit_dmg_charged_wriothesley +80%.
+  // Wired via critRateBonuses/critDamageBonuses on wriothesley_vaulting_fist_dmg.
+  { type: "constellation", constellation: 6, stats: { crit_rate_charged_wriothesley: 10, crit_dmg_charged_wriothesley: 80 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -217,4 +247,5 @@ export const wriothesley: DbObjectChar = {
   features,
   multipliers: [],
   baseStats,
+  conditions: constellationConditions,
 };

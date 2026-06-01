@@ -22,7 +22,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Sayu)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Sayu as SayuStatTable } from "../generated/charTables.js";
 import { Sayu as SayuTalents } from "../generated/charTalentTables.js";
 
@@ -242,14 +242,58 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.sayu_burst_dmg") }],
   },
   // raw: FeatureDamageBurst (no name → sayu_mujimuji_dmg), element='anemo'
-  // Second FeatureMultiplierSayuBurst requires constellation 6 → inactive at C0.
-  // Only s3.p4 contributes. Sayu.js:377-389
+  // Sayu.js:377-389. The 2nd multiplier (FeatureMultiplierSayuBurst, Multiplier/SayuBurst.js)
+  // is a C6 ATK term whose coefficient = min(mastery_total × 0.002, 4) — a product of EM and
+  // ATK our single-scaling-stat term can't express faithfully. BUILD-COUPLED CARRY: baked at
+  // the fixed build's mastery_total=151 → 0.302×ATK (values 30.2; /100×ATK). Parity-correct
+  // at the validated build (cap 4 unbound); desyncs at other EM — needs a runtime-coefficient
+  // primitive for the real calculator (same class as the kirara/furina/raiden A4 carries).
   {
     name: "sayu_mujimuji_dmg",
     category: "burst",
     element: "anemo",
-    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.sayu_mujimuji_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.sayu_mujimuji_dmg") },
+      {
+        leveling: "char_skill_burst",
+        scaling: "atk",
+        values: { getValue: (_level: number) => 30.2 },
+        source: "constellation6",
+        condition: { type: "constellation", constellation: 6 },
+      },
+    ],
   },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Multi-Task No Jutsu": ConditionStatic, no real stats → SKIP.
+// C2 "Egress Prep" — two conditions in the C2 block:
+//   (a) Condition({ stats: { dmg_skill_sayu_press: 3.3 } }): no gate (plain
+//       Condition, always-on at constellation 2) → ADD as constellation:2 stat.
+//   (b) ConditionStacks({ name: 'sayu_egress_prep', stats:[dmg_skill_sayu_hold] }):
+//       stack-count toggle (0..20) → OFF at baseline → SKIP.
+// C4 "New and Improved": ConditionStatic, no real stats → SKIP.
+// C6 "Sleep O'Clock": ConditionStatic, no real stats → SKIP.
+//   (C6 FeatureMultiplierSayuBurst + mastery FeatureMultiplier in features are
+//   ConditionConstellation-gated intra-feature multipliers — these are on existing
+//   features but require the FeatureMultiplierSayuBurst type which is not supported
+//   by the current engine port. Report as NEEDS CONS-FEATURE TREATMENT.)
+//
+// Always-on: C2 (dmg_skill_sayu_press +3.3), C3 (+3 burst talent), C5 (+3 skill talent).
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Sayu.js:478-547
+
+const constellationConditions: readonly Condition[] = [
+  // C2 "Egress Prep" — sayu_windwheel_kick_dmg gets +3.3% dmg_skill_sayu_press (always-on).
+  // Raw cons[1]: Condition({ stats: { dmg_skill_sayu_press: 3.3 } }) with no boolean gate.
+  { type: "constellation", constellation: 2, stats: { dmg_skill_sayu_press: 3.3 } },
+  // C3 "Eh, Rest When You're Dead?" — +3 Elemental Burst (Mujina Flurry).
+  // Raw cons[2]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 "Speed Comes First" — +3 Elemental Skill (Fuuin Dash).
+  // Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -267,4 +311,5 @@ export const sayu: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

@@ -12,7 +12,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Jean)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Jean as JeanStatTable } from "../generated/charTables.js";
 import { Jean as JeanTalents } from "../generated/charTalentTables.js";
 
@@ -128,6 +128,28 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Spiraling Tempest": ConditionBoolean toggle (dmg_skill_jean=40) → SKIP.
+// C2 "People's Aegis": ConditionBoolean toggle (atk_speed_normal, move_speed) → SKIP.
+// C4 "Land's of Dandelion": ConditionBoolean toggle (enemy_res_anemo=-40) → SKIP.
+// C6 "Lion's Fang, Fair Protector of Mondstadt": ConditionStatic with
+//   dmg_reduction=35 — dmg_reduction is a damage-mitigation display stat, NOT a
+//   damage-bonus key (doesn't appear in any feature's damageBonuses) → SKIP.
+//
+// Always-on: C3 (+3 burst talent), C5 (+3 skill talent).
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Jean.js:314-382
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "When the West Wind Arises" — +3 Elemental Burst (Dandelion Breeze).
+  // Raw cons[2]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 "Outbursting Gust" — +3 Elemental Skill (Gale Blade).
+  // Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -142,4 +164,5 @@ export const jean: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

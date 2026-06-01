@@ -21,7 +21,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Klee)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Klee as KleeStatTable } from "../generated/charTables.js";
 import { Klee as KleeTalents } from "../generated/charTalentTables.js";
 
@@ -126,6 +126,60 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
+  // --- C1 "Chained Reactions": bonus burst hit = 120% of burst_dmg.
+  // Raw: FeatureDamageBurst klee_chained_reactions, scalingMultiplier: 120/100=1.2,
+  // leveling:'char_skill_burst', values: burst_dmg talent. Raw Klee.js:221-231.
+  // ConditionConstellation(1).
+  {
+    name: "klee_chained_reactions",
+    category: "burst",
+    element: "pyro",
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      {
+        leveling: "char_skill_burst",
+        values: talents.get("burst.burst_dmg"),
+        scalingMultiplier: 1.2,
+        source: "constellation1",
+      },
+    ],
+  },
+  // --- C4 "Sparkly Explosion": fixed 555% ATK burst hit (FeatureDamage base class).
+  // Raw: FeatureDamage klee_sparkly_explosion, category:'burst', ValueTable([555]),
+  // no leveling (→ ''), source:'constellation4'. Base FeatureDamage → damageType:"".
+  // Raw Klee.js:233-244. ConditionConstellation(4).
+  {
+    name: "klee_sparkly_explosion",
+    category: "burst",
+    element: "pyro",
+    damageType: "",
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      {
+        leveling: "",
+        values: { getValue: (_level: number) => 555 },
+        source: "constellation4",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Chained Reactions": ConditionStatic text_percent_dmg:120 → display-only;
+//   actual damage from klee_chained_reactions feature above. Raw Klee.js:269-280.
+// C2 "Explosive Frags": ConditionBoolean toggle (enemy_def_reduce:23) → SKIP (toggle OFF).
+// C3: +3 levels to Jumpy Dumpty (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
+// C4 "Sparkly Explosion": ConditionStatic text_percent_dmg:555 → display-only;
+//   actual damage from klee_sparkly_explosion feature above. Raw Klee.js:300-311.
+// C5: +3 levels to Sparks 'n' Splash (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+// C6 "Blazing Delight": ConditionBoolean toggle (dmg_pyro:10) → SKIP (toggle OFF).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Jumpy Dumpty (elemental skill). Raw cons[2] settings.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Sparks 'n' Splash (elemental burst). Raw cons[4] settings.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -143,4 +197,5 @@ export const klee: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

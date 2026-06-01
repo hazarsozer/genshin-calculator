@@ -31,7 +31,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (TravelerGeo)
  */
 
-import type { DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
 import { Traveler as TravelerStatTable } from "../generated/charTables.js";
 import { TravelerGeo as TravelerGeoTalents } from "../generated/charTalentTables.js";
 
@@ -177,6 +177,24 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Invincible Stonewall": ConditionBoolean (crit_rate: 10) — toggle, SKIP.
+// C2 "Rockcore Meltdown": ConditionStatic, no real stats — SKIP.
+// C3 "Awakening Belladona": +3 burst talent (char_skill_burst_bonus).
+// C4 "Reaction Force": ConditionStatic, no real stats — SKIP.
+// C5 "Liverock Tattoo": +3 skill talent (char_skill_elemental_bonus).
+// C6 "Everlasting Boulder": ConditionStatic, no real stats — SKIP.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/TravelerGeo.js:305-370
+
+const constellationConditions: readonly Condition[] = [
+  // C3 — +3 Elemental Burst (Wake of Earth).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 — +3 Elemental Skill (Starfell Sword).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -191,4 +209,5 @@ export const travelerGeo: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

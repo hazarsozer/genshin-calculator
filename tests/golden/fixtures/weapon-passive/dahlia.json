@@ -1,0 +1,254 @@
+{
+  "defaultWeapon": "weapon_name.the_alley_flash",
+  "element": "hydro",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 1021.0684106243241,
+      "category": "attack",
+      "crit": 1856.488019316953,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 928.2440096584764
+    },
+    "attack.charged_hit_2": {
+      "average": 1410.0468527669238,
+      "category": "attack",
+      "crit": 2563.721550485316,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1281.860775242658
+    },
+    "attack.charged_hit_total": {
+      "average": 2431.1152633912484,
+      "category": "attack",
+      "crit": 4420.2095698022695,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2210.1047849011347
+    },
+    "attack.normal_hit_1": {
+      "average": 1047.474892070009,
+      "category": "attack",
+      "crit": 1904.4998037636526,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 952.2499018818263
+    },
+    "attack.normal_hit_2": {
+      "average": 964.5639321320875,
+      "category": "attack",
+      "crit": 1753.7526038765227,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 876.8763019382613
+    },
+    "attack.normal_hit_3": {
+      "average": 1269.1086307862993,
+      "category": "attack",
+      "crit": 2307.4702377932713,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1153.7351188966356
+    },
+    "attack.normal_hit_3_1": {
+      "average": 571.1505997719596,
+      "category": "attack",
+      "crit": 1038.4556359490175,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 519.2278179745088
+    },
+    "attack.normal_hit_3_2": {
+      "average": 697.9580310143397,
+      "category": "attack",
+      "crit": 1269.0146018442538,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 634.5073009221269
+    },
+    "attack.normal_hit_4": {
+      "average": 1579.3213940670057,
+      "category": "attack",
+      "crit": 2871.493443758192,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1435.746721879096
+    },
+    "attack.plunge": {
+      "average": 1438.6100548239615,
+      "category": "attack",
+      "crit": 2615.6546451344752,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1307.8273225672376
+    },
+    "attack.plunge_high": {
+      "average": 3593.0418197358745,
+      "category": "attack",
+      "crit": 6532.803308610681,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3266.4016543053403
+    },
+    "attack.plunge_low": {
+      "average": 2876.611098285716,
+      "category": "attack",
+      "crit": 5230.201996883119,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2615.1009984415596
+    },
+    "burst.burst_dmg": {
+      "average": 12634.338146319735,
+      "category": "burst",
+      "crit": 22971.523902399516,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 11485.761951199758
+    },
+    "burst.dahlia_atk_speed_bonus": {
+      "average": 15.953934509886,
+      "category": "burst",
+      "crit": 15.953934509886,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 15.953934509886
+    },
+    "burst.dahlia_base_shield_dmg_absorption": {
+      "average": 2641.6688183158103,
+      "category": "burst",
+      "crit": 2641.6688183158103,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2641.6688183158103
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.rupture": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "skill.skill_dmg": {
+      "average": 5921.498139801608,
+      "category": "skill",
+      "crit": 10766.360254184741,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5383.180127092371
+    },
+    "stats.atk": {
+      "average": 1982.478221492,
+      "category": "stats",
+      "crit": 1982.478221492,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1982.478221492
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1435.6676505,
+      "category": "stats",
+      "crit": 1435.6676505,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1435.6676505
+    },
+    "stats.hp": {
+      "average": 31907.869019772,
+      "category": "stats",
+      "crit": 31907.869019772,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 31907.869019772
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 107,
+  "key": "Dahlia",
+  "schema": 1,
+  "slug": "dahlia",
+  "weaponType": "sword"
+}

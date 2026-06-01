@@ -38,7 +38,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (TravelerHydro)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Traveler as TravelerStatTable } from "../generated/charTables.js";
 import { TravelerHydro as TravelerHydroTalents } from "../generated/charTalentTables.js";
 
@@ -186,6 +186,24 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Swelling Lake": ConditionStatic, no real stats — SKIP.
+// C2 "Trickling Purity": ConditionStatic, no real stats — SKIP.
+// C3 "Pouring Descent": +3 skill talent (char_skill_elemental_bonus).
+// C4 "Pouring Descent II": ConditionStatic with text_percent_hp (display-only) — SKIP.
+// C5 "Tides of Justice": +3 burst talent (char_skill_burst_bonus).
+// C6 "Tides of Justice II": ConditionStatic with text_percent_hp (display-only) — SKIP.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/TravelerHydro.js:400-462
+
+const constellationConditions: readonly Condition[] = [
+  // C3 — +3 Elemental Skill (Aquacrest Saber).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 — +3 Elemental Burst (Rising Waters).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -200,4 +218,5 @@ export const travelerHydro: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

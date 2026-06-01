@@ -16,7 +16,20 @@ export type {
   BuildLevels,
   BuildEnemy,
   BuildResult,
+  EquippedSet,
 } from "./buildStats.js";
+
+// P2.A0 — artifact-set registry (shape + 3 exemplars; P2.A1 fills the rest)
+export {
+  ARTIFACT_SETS,
+  getArtifactSet,
+  noblesseOblige,
+  crimsonWitch,
+  deepwoodMemories,
+} from "./artifacts/sets/index.js";
+
+export { buildSettings } from "./buildSettings.js";
+export type { BuildSettingsInput } from "./buildSettings.js";
 
 export { compileFeature } from "./compileFeature.js";
 export type { CompileContext, TalentLevels } from "./compileFeature.js";
@@ -31,3 +44,9 @@ export {
   blackcliffPoleStatTable,
   theBellStatTable,
 } from "./generated/weaponStatTables.js";
+
+// P2.W1 — weapon barrel (5 default weapons + P2.W0 exemplars)
+export * from "./weapons/index.js";
+
+// P2.B0 — artifact build assembly (GOOD artifacts → raw stat bag + set detection)
+export { assembleArtifactStats, detectSets } from "./assembleBuild.js";

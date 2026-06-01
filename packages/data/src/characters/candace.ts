@@ -15,8 +15,8 @@
  * and skill.shield (FeatureShield, HP-scaling) — both have empty damageType →
  * not tested by the golden suite.
  *
- * Burst infusion of PARTY normals is a party buff, NOT Candace's own damage;
- * candace_the_overflow_dmg is C6-gated and omitted.
+ * Burst infusion of PARTY normals is a party buff, NOT Candace's own damage.
+ * candace_the_overflow_dmg is C6-gated (constellation 6, fixed 15% HP per hit).
  *
  * A4 "Celestial Dome of Sand" adds HP%-based dmg_normal_* bonuses active when
  * prayer_of_the_crimson_crown condition is toggled ON (ConditionBoolean). In the
@@ -29,7 +29,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Candace)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Candace as CandaceStatTable } from "../generated/charTables.js";
 import { Candace as CandaceTalents } from "../generated/charTalentTables.js";
 
@@ -176,6 +176,43 @@ const features: readonly Feature[] = [
     element: "hydro",
     multipliers: [{ scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.candace_wave_dmg") }],
   },
+  // --- C6 "The Overflow": each normal attack infused by Candace's prayer deals extra
+  // hydro burst DMG equal to 15% of Candace's Max HP. Cons-added FeatureDamageBurst,
+  // gated by ConditionConstellation(6). Fixed HP% value (ValueTable([15])).
+  // Raw Candace.js:320-332 — scaling:'hp*', source:'constellation6', values:ValueTable([15]).
+  {
+    name: "candace_the_overflow_dmg",
+    category: "burst",
+    element: "hydro",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_burst",
+        values: { getValue: (_level: number) => 15 },
+        source: "constellation6",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic (display-only, no damage stats) → SKIP.
+// C2: ConditionBoolean toggle (hp_percent:20) → SKIP (toggle OFF).
+// C3: +3 levels to Wagtail's Tide (burst). Raw Candace.js cons[2] settings
+//     char_skill_burst_bonus:3.
+// C4: ConditionStatic (display-only) → SKIP.
+// C5: +3 levels to Heron's Sanctum (skill). Raw Candace.js cons[4] settings
+//     char_skill_elemental_bonus:3.
+// C6: cons-added candace_the_overflow_dmg feature (above, gated in features array).
+//     ConditionStatic with text_percent_dmg:15 (display-only) → SKIP here.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Wagtail's Tide (burst). Raw Candace.js cons[2].
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Heron's Sanctum (skill). Raw Candace.js cons[4].
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -193,4 +230,5 @@ export const candace: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

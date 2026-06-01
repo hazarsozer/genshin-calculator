@@ -1,0 +1,245 @@
+{
+  "defaultWeapon": "weapon_name.the_alley_flash",
+  "element": "geo",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 1255.9239424147333,
+      "category": "attack",
+      "crit": 2283.498077117697,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1141.7490385588485
+    },
+    "attack.charged_hit_2": {
+      "average": 1598.448653982388,
+      "category": "attack",
+      "crit": 2906.270279967978,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1453.135139983989
+    },
+    "attack.charged_hit_total": {
+      "average": 2854.3725963971215,
+      "category": "attack",
+      "crit": 5189.768357085675,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2594.8841785428376
+    },
+    "attack.normal_hit_1": {
+      "average": 916.3885374207604,
+      "category": "attack",
+      "crit": 1666.160977128655,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 833.0804885643275
+    },
+    "attack.normal_hit_2": {
+      "average": 916.3885374207604,
+      "category": "attack",
+      "crit": 1666.160977128655,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 833.0804885643275
+    },
+    "attack.normal_hit_3": {
+      "average": 1183.6685275018153,
+      "category": "attack",
+      "crit": 2152.1245954578458,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1076.0622977289229
+    },
+    "attack.normal_hit_4": {
+      "average": 1240.9428110906128,
+      "category": "attack",
+      "crit": 2256.259656528387,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1128.1298282641935
+    },
+    "attack.normal_hit_5": {
+      "average": 1548.314799683826,
+      "category": "attack",
+      "crit": 2815.1178176069566,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1407.5589088034783
+    },
+    "attack.plunge": {
+      "average": 1491.7885347075633,
+      "category": "attack",
+      "crit": 2712.3427903773877,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1356.1713951886939
+    },
+    "attack.plunge_high": {
+      "average": 3725.859257992377,
+      "category": "attack",
+      "crit": 6774.2895599861395,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3387.1447799930697
+    },
+    "attack.plunge_low": {
+      "average": 2982.9455458381835,
+      "category": "attack",
+      "crit": 5423.537356069425,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2711.7686780347126
+    },
+    "burst.albedo_fatal_blossom": {
+      "average": 2700.9264101026774,
+      "category": "burst",
+      "crit": 4910.775291095777,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2455.3876455478885
+    },
+    "burst.burst_dmg": {
+      "average": 13774.724691523656,
+      "category": "burst",
+      "crit": 25044.953984588465,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 12522.476992294232
+    },
+    "reaction.crystalize": {
+      "average": 2450.4199868011824,
+      "category": "reaction",
+      "crit": 2450.4199868011824,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2450.4199868011824
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "skill.albedo_blossom": {
+      "average": 3604.1235854178067,
+      "category": "skill",
+      "crit": 6552.951973486922,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3276.475986743461
+    },
+    "skill.skill_dmg": {
+      "average": 4127.353170438154,
+      "category": "skill",
+      "crit": 7504.278491705734,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3752.139245852867
+    },
+    "stats.atk": {
+      "average": 2055.76088615,
+      "category": "stats",
+      "crit": 2055.76088615,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2055.76088615
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1752.1519818,
+      "category": "stats",
+      "crit": 1752.1519818,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1752.1519818
+    },
+    "stats.hp": {
+      "average": 26451.5835584,
+      "category": "stats",
+      "crit": 26451.5835584,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26451.5835584
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 1,
+  "key": "Albedo",
+  "schema": 1,
+  "slug": "albedo",
+  "weaponType": "sword"
+}

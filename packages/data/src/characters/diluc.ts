@@ -10,7 +10,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js:1311
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Diluc as DilucStatTable } from "../generated/charTables.js";
 import { Diluc as DilucTalents } from "../generated/charTalentTables.js";
 
@@ -145,6 +145,34 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Conviction" (dmg_all toggle), C2 "Searing Ember" (stacks toggle),
+// C4 "Flowing Flame" (dmg_skill toggle), C6 "Flaming Sword Nemesis of the Dark"
+// (dmg_normal/atk_speed toggle): all ConditionBoolean/Stacks → SKIPPED (toggles
+// are off in the constellations config; validated in a later wave).
+// No cons-gated features or char multipliers in raw data.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Diluc.js:321-395
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "The Flames Consume": +3 levels to Searing Onslaught (Elemental Skill).
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus: 3 } }.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Phoenix, Harbinger of Dawn": +3 levels to Dawn (Elemental Burst).
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // Dawn pyro infusion on normals/charged/plunge. Raw Diluc.js:286-294
+  // (ConditionBoolean { name:'diluc_dawn', settings:{ attack_infusion_pyro:1 } }
+  //  → canonical key: attack_infusion:"pyro").
+  { type: "boolean", name: "diluc_dawn", settings: { attack_infusion: "pyro" } },
+  // A4 "Blessing of Phoenix" +20% Pyro DMG while Dawn active. Raw Diluc.js:306-319
+  // (ConditionStatic gated by asc-4 + ConditionBoolean{name:'diluc_dawn'}; asc-4 always
+  // true at oracle asc 6). Faithful to her two-condition design.
+  { type: "boolean", name: "diluc_dawn", stats: { dmg_pyro: 20 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -159,4 +187,5 @@ export const diluc: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

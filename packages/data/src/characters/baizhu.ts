@@ -23,7 +23,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Baizhu)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Baizhu as BaizhuStatTable } from "../generated/charTables.js";
 import { Baizhu as BaizhuTalents } from "../generated/charTalentTables.js";
 
@@ -143,6 +143,23 @@ const features: readonly Feature[] = [
     element: "dendro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
   },
+  // --- C2 "Incisive Discernment": cons-added FeatureDamageSkill hit (dendro, fixed 250% ATK).
+  // Raw Baizhu.js:284-294: FeatureDamageSkill name:'baizhu_gossamer_splice_dmg',
+  //   multipliers:[FeatureMultiplier({ leveling:'char_skill_elemental',
+  //   values: new ValueTable([C2Damage]) })], condition: ConditionConstellation({constellation:2}).
+  //   C2Damage = 250.
+  {
+    name: "baizhu_gossamer_splice_dmg",
+    category: "skill",
+    element: "dendro",
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        leveling: "char_skill_elemental",
+        values: { getValue: (_level: number) => 250 },
+      },
+    ],
+  },
   // --- Burst: Holistic Revivification (dendro) ---
   // raw: FeatureDamageBurst baizu_spiritvein_dmg (element: 'dendro')
   // NOTE: raw and fixture both use "baizu" (typo), not "baizhu".
@@ -152,6 +169,40 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "dendro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.baizu_spiritvein_dmg") }],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic (display-only, text only) → SKIP.
+// C2: Cons-added baizhu_gossamer_splice_dmg feature above (ConditionStatic in cons[1] is display-only).
+// C3: +3 levels to Holistic Revivification (burst). Raw cons[2] settings char_skill_burst_bonus:3.
+// C4: ConditionBoolean toggle (mastery:80) → SKIP (toggle OFF).
+// C5: +3 levels to Universal Diagnosis (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
+// C6: ConditionStatic (display-only text_percent) → hp-scale is a per-feature multiplier on
+//   baizu_spiritvein_dmg (Baizhu.js:329-336). Modelled as a CharMultiplier targeting burst.
+// Raw Baizhu.js:426-485.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to burst.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to skill.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// C6 "Elimination of Malicious Qi": +8% HP-scaling added to baizu_spiritvein_dmg (the only burst
+// damage feature). Raw Baizhu.js:329-336: FeatureMultiplier({ scaling:'hp*', source:'constellation6',
+// values: new ValueTable([C6HpScale]) = [8], condition: ConditionConstellation({constellation:6}) })
+// inside baizu_spiritvein_dmg's multipliers array. Modelled as a char-level multiplier targeting all
+// burst features (only one: baizu_spiritvein_dmg) gated at C6.
+const charMultipliers: readonly CharMultiplier[] = [
+  {
+    scaling: "hp*",
+    leveling: "char_skill_burst",
+    values: { getValue: (_level: number) => 8 },
+    source: "constellation6",
+    target: { damageTypes: ["burst"] },
+    condition: { type: "constellation", constellation: 6 },
   },
 ];
 
@@ -169,7 +220,8 @@ export const baizhu: DbObjectChar = {
   statTable: BaizhuStatTable,
   talents,
   features,
-  multipliers: [],
+  multipliers: charMultipliers,
+  conditions: constellationConditions,
   // A1 "Five Fortunes Forever" — auto-active at A6 under canonical solo C0 build:
   // ConditionStatic with subConditions [ConditionAscensionChar(1), ConditionNot([bool toggle])].
   // Since the boolean 'baizhu_five_fortunes_forever' is OFF by default, the NOT fires → +25% dendro DMG.

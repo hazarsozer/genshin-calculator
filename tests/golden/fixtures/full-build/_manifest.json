@@ -1,0 +1,414 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "characterCount": 10,
+  "characters": [
+    {
+      "artifactSets": {
+        "NoblesseOblige": 4
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 1,
+        "level": 90
+      },
+      "charToggles": {
+        "bennet_fantastic_voyage": true
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "id": 5,
+      "key": "Bennet",
+      "setToggles": {
+        "set.noblesse_oblige_4": true
+      },
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "bennett",
+      "statBlock": "high-atk-hp",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 5
+      }
+    },
+    {
+      "artifactSets": {
+        "CrimsonWitch": 4
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 6,
+        "level": 90
+      },
+      "charToggles": {
+        "hutao_paramita_papilio": true
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "id": 11,
+      "key": "Hutao",
+      "setToggles": {
+        "set.crimson_witch_of_flames_4": 3
+      },
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "hu_tao",
+      "statBlock": "high-atk-hp",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 5
+      }
+    },
+    {
+      "artifactSets": {
+        "HeartofDepth": 4
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 6,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 23,
+      "key": "Tartaglia",
+      "setToggles": {
+        "set.heart_of_depth_4": true
+      },
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "tartaglia",
+      "statBlock": "high-atk-hp",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 5
+      }
+    },
+    {
+      "artifactSets": {
+        "ViridescentVenerer": 4
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 2,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 50,
+      "id": 35,
+      "key": "Kazuha",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "kaedehara_kazuha",
+      "statBlock": "high-atk-hp",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 5
+      }
+    },
+    {
+      "artifactSets": {
+        "BlizzardStrayer": 4
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 36,
+      "key": "Ayaka",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "kamisato_ayaka",
+      "statBlock": "high-atk-hp",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 5
+      }
+    },
+    {
+      "artifactSets": {
+        "EmblemofSeveredFate": 4
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 2,
+        "level": 90
+      },
+      "charToggles": {
+        "baal_eye_of_stormy_judgment": true
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 40,
+      "key": "RaidenShogun",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "raiden_shogun",
+      "statBlock": "high-atk-hp",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 5
+      }
+    },
+    {
+      "artifactSets": {
+        "HuskofOpulentDreams": 4
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 6,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 46,
+      "key": "Itto",
+      "setToggles": {
+        "set.husk_of_opulent_dreams_4_def": 4,
+        "set.husk_of_opulent_dreams_4_geo": 4
+      },
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "arataki_itto",
+      "statBlock": "high-atk-hp",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 5
+      }
+    },
+    {
+      "artifactSets": {
+        "DeepwoodMemories": 4
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 6,
+        "level": 90
+      },
+      "charToggles": {
+        "nahida_illusory_heart": true
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 61,
+      "key": "Nahida",
+      "setToggles": {
+        "set.deepwood_memories_4": true
+      },
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "nahida",
+      "statBlock": "high-atk-hp",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 5
+      }
+    },
+    {
+      "artifactSets": {
+        "MarechausseeHunter": 4
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "id": 77,
+      "key": "Neuvillette",
+      "setToggles": {
+        "set.marechaussee_hunter_4": 3
+      },
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "neuvillette",
+      "statBlock": "high-atk-hp",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 5
+      }
+    },
+    {
+      "artifactSets": {
+        "MarechausseeHunter": 4
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {
+        "furina_hp_offers": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 79,
+      "key": "Furina",
+      "setToggles": {
+        "set.marechaussee_hunter_4": 3
+      },
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "furina",
+      "statBlock": "high-atk-hp",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 5
+      }
+    }
+  ],
+  "config": {
+    "description": "Everything at once on 10 reps: constellation + default weapon passive ON @R5 + signature 4pc (named conditionals max) + the high-ATK/HP stat block + (where listed) a char toggle. The realistic cross-product rep set.",
+    "id": "full-build"
+  },
+  "featureTotal": 303
+}

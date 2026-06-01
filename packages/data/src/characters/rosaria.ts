@@ -17,7 +17,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Rosaria)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Rosaria as RosariaStatTable } from "../generated/charTables.js";
 import { Rosaria as RosariaTalents } from "../generated/charTalentTables.js";
 
@@ -202,6 +202,29 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Unholy Revelation": ConditionBoolean toggle (atk_speed_normal + dmg_normal) → SKIP.
+// C2 "Land Without Promise": ConditionStatic with no real stats (description only) → SKIP.
+// C3 "The Wages of Sin": +3 Elemental Skill talent levels.
+//    Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C4 "Painful Grace": ConditionStatic with no real stats (description only) → SKIP.
+// C5 "Last Rites": +3 Elemental Burst talent levels.
+//    Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C6 "Divine Retribution": ConditionBoolean toggle (enemy_res_phys -20) → SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Rosaria.js:407-469
+
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 Elemental Skill (Ravaging Confession).
+  // Raw cons[2]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 Elemental Burst (Rites of Termination).
+  // Raw cons[4]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -216,4 +239,5 @@ export const rosaria: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

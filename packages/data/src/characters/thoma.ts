@@ -27,7 +27,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js:5729 (Thoma)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Thoma as ThomaStatTable } from "../generated/charTables.js";
 import { Thoma as ThomaTalents } from "../generated/charTalentTables.js";
 
@@ -173,6 +173,28 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "A Comrade's Duty": ConditionStatic no real stats → SKIP.
+// C2 "A Subordinate's Skills": ConditionStatic no real stats → SKIP.
+// C3 "Fortified Resolve": +3 Elemental Skill talent levels.
+//   Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C4 "Long-term Planning": ConditionStatic no real stats → SKIP.
+// C5 "Raging Wildfire": +3 Elemental Burst talent levels.
+//   Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C6 "Burning Heart": ConditionBoolean (dmg_normal/charged/plunge toggle) → SKIP.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Thoma.js:325-410
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Fortified Resolve" — +3 Elemental Skill talent levels (Blazing Blessing).
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Raging Wildfire" — +3 Elemental Burst talent levels (Crimson Ooyoroi).
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -187,4 +209,5 @@ export const thoma: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

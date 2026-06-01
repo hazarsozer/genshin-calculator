@@ -1,0 +1,281 @@
+{
+  "defaultWeapon": "weapon_name.solar_pearl",
+  "element": "cryo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2866.3147122808514,
+      "category": "attack",
+      "crit": 4167.245372744106,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2083.622686372053
+    },
+    "attack.normal_hit_1": {
+      "average": 1323.4229121727808,
+      "category": "attack",
+      "crit": 1924.0832080671992,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 962.0416040335996
+    },
+    "attack.normal_hit_2": {
+      "average": 1151.631239539141,
+      "category": "attack",
+      "crit": 1674.3206646203091,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 837.1603323101546
+    },
+    "attack.normal_hit_3": {
+      "average": 1715.1790809569552,
+      "category": "attack",
+      "crit": 2493.6452574175732,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1246.8226287087866
+    },
+    "attack.plunge": {
+      "average": 1534.2439502790814,
+      "category": "attack",
+      "crit": 2230.589326101424,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1115.294663050712
+    },
+    "attack.plunge_high": {
+      "average": 3831.894999304775,
+      "category": "attack",
+      "crit": 5571.072372575347,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2785.5361862876734
+    },
+    "attack.plunge_low": {
+      "average": 3067.8377971894006,
+      "category": "attack",
+      "crit": 4460.233487234161,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2230.1167436170804
+    },
+    "attack.spiritbreath_thorn_dmg": {
+      "average": 318.47941247565007,
+      "category": "attack",
+      "crit": 463.02726363823393,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 231.51363181911697
+    },
+    "burst.burst_dmg": {
+      "average": 3694.277403328774,
+      "category": "burst",
+      "crit": 5370.994451060996,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2685.497225530498
+    },
+    "burst.charlotte_coordinate_dmg": {
+      "average": 4031.7334970302027,
+      "category": "burst",
+      "crit": 5861.611318412089,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2930.8056592060443
+    },
+    "burst.charlotte_coordinate_heal": {
+      "average": 926.6323222422,
+      "category": "burst",
+      "crit": 926.6323222422,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 926.6323222422
+    },
+    "burst.charlotte_kamera_dmg": {
+      "average": 307.85645027739787,
+      "category": "burst",
+      "crit": 447.5828709217497,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 223.79143546087485
+    },
+    "burst.charlotte_kamera_heal": {
+      "average": 590.0689142569344,
+      "category": "burst",
+      "crit": 590.0689142569344,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 590.0689142569344
+    },
+    "burst.charlotte_verification_heal": {
+      "average": 1765.013947128,
+      "category": "burst",
+      "crit": 1765.013947128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1765.013947128
+    },
+    "burst.heal": {
+      "average": 16452.708915420026,
+      "category": "burst",
+      "crit": 16452.708915420026,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 16452.708915420026
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.charlotte_focused_impression_mark_dmg": {
+      "average": 1555.3723097638572,
+      "category": "skill",
+      "crit": 2261.307187583753,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1130.6535937918766
+    },
+    "skill.charlotte_photo_hold_dmg": {
+      "average": 5332.705062047509,
+      "category": "skill",
+      "crit": 7753.053214572867,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3876.5266072864333
+    },
+    "skill.charlotte_photo_press_dmg": {
+      "average": 2574.409340298798,
+      "category": "skill",
+      "crit": 3742.8532760006947,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1871.4266380003473
+    },
+    "skill.charlotte_snappy_silhouette_mark_dmg": {
+      "average": 1501.738781840965,
+      "category": "skill",
+      "crit": 2183.3310776670714,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1091.6655388335357
+    },
+    "stats.atk": {
+      "average": 2206.26743391,
+      "category": "stats",
+      "crit": 2206.26743391,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2206.26743391
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 37.564,
+      "category": "stats",
+      "crit": 37.564,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 37.564
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1422.01722,
+      "category": "stats",
+      "crit": 1422.01722,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1422.01722
+    },
+    "stats.hp": {
+      "average": 23992.1657119,
+      "category": "stats",
+      "crit": 23992.1657119,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23992.1657119
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 78,
+  "key": "Charlotte",
+  "schema": 1,
+  "slug": "charlotte",
+  "weaponType": "catalyst"
+}

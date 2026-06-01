@@ -1,0 +1,3494 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "characterCount": 107,
+  "characters": [
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "id": 1,
+      "key": "Albedo",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "albedo",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "id": 2,
+      "key": "Amber",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "amber",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "id": 3,
+      "key": "Barbara",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "barbara",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "id": 4,
+      "key": "Beidou",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "beidou",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "id": 5,
+      "key": "Bennet",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "bennett",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "id": 6,
+      "key": "Chongyun",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "chongyun",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "id": 7,
+      "key": "Diluc",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "diluc",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "id": 8,
+      "key": "Diona",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "diona",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 9,
+      "key": "Fischl",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "fischl",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "id": 10,
+      "key": "Ganyu",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "id": 11,
+      "key": "Hutao",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "hu_tao",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "id": 12,
+      "key": "Jean",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "jean",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 13,
+      "key": "Kaeya",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "kaeya",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "id": 14,
+      "key": "Keqing",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "keqing",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "id": 15,
+      "key": "Klee",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "klee",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 16,
+      "key": "Lisa",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "lisa",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "id": 17,
+      "key": "Mona",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "mona",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 20,
+      "id": 18,
+      "key": "Ningguang",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "ningguang",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "id": 19,
+      "key": "Noelle",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "noelle",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "id": 20,
+      "key": "Qiqi",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "qiqi",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "id": 21,
+      "key": "Razor",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "razor",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "id": 22,
+      "key": "Sucrose",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "sucrose",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 23,
+      "key": "Tartaglia",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "tartaglia",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 58,
+      "id": 24,
+      "key": "TravelerAnemo",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "traveler_anemo",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 25,
+      "key": "TravelerGeo",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "traveler_geo",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 40,
+      "id": 26,
+      "key": "Venti",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "venti",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "id": 27,
+      "key": "Xiangling",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "xiangling",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "id": 28,
+      "key": "Xiao",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "xiao",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 29,
+      "key": "Xingqiu",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "xingqiu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 30,
+      "key": "Xinyan",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "xinyan",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 31,
+      "key": "Zhongli",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "zhongli",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "id": 32,
+      "key": "Rosaria",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "rosaria",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 33,
+      "key": "Eula",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "eula",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "id": 34,
+      "key": "YanFei",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "yanfei",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 50,
+      "id": 35,
+      "key": "Kazuha",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "kaedehara_kazuha",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 36,
+      "key": "Ayaka",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "kamisato_ayaka",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 37,
+      "key": "Yoimiya",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "yoimiya",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 48,
+      "id": 38,
+      "key": "Sayu",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "sayu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 39,
+      "key": "TravelerElectro",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "traveler_electro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 40,
+      "key": "RaidenShogun",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "raiden_shogun",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 22,
+      "id": 41,
+      "key": "Kokomi",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "sangonomiya_kokomi",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 42,
+      "key": "Sara",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "kujou_sara",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "id": 43,
+      "key": "Aloy",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "aloy",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 44,
+      "key": "Thoma",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "thoma",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "id": 45,
+      "key": "Gorou",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "gorou",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 46,
+      "key": "Itto",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "arataki_itto",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 47,
+      "key": "YunJin",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "yun_jin",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "id": 48,
+      "key": "Shenhe",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "shenhe",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "id": 49,
+      "key": "YaeMiko",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "yae_miko",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 22,
+      "id": 50,
+      "key": "Ayato",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "kamisato_ayato",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "id": 51,
+      "key": "Yelan",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "yelan",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "id": 52,
+      "key": "KukiShinobu",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "kuki_shinobu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 42,
+      "id": 53,
+      "key": "Heizou",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "shikanoin_heizou",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 54,
+      "key": "Tighnari",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "tighnari",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 55,
+      "key": "Collei",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "collei",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "id": 56,
+      "key": "Dori",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "dori",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 57,
+      "key": "TravelerDendro",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "traveler_dendro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "id": 58,
+      "key": "Candace",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "candace",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "id": 59,
+      "key": "Cyno",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "cyno",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 60,
+      "key": "Nilou",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "nilou",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "id": 61,
+      "key": "Nahida",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "nahida",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "id": 62,
+      "key": "Layla",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "layla",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "id": 63,
+      "key": "Wanderer",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "wanderer",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "id": 64,
+      "key": "Faruzan",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "faruzan",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "id": 65,
+      "key": "Yaoyao",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "yaoyao",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 66,
+      "key": "Alhaitham",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 67,
+      "key": "Dehya",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "dehya",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "id": 68,
+      "key": "Mika",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "mika",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 69,
+      "key": "Kaveh",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "kaveh",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 70,
+      "key": "Baizhu",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "baizhu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "id": 71,
+      "key": "Kirara",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "kirara",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 40,
+      "id": 72,
+      "key": "Lynette",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "lynette",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "id": 73,
+      "key": "Lyney",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "lyney",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "id": 74,
+      "key": "Freminet",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "freminet",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "id": 75,
+      "key": "TravelerHydro",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "traveler_hydro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "id": 76,
+      "key": "Wriothesley",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "wriothesley",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "id": 77,
+      "key": "Neuvillette",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "neuvillette",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "id": 78,
+      "key": "Charlotte",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "charlotte",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "id": 79,
+      "key": "Furina",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "furina",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "id": 80,
+      "key": "Chevreuse",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "chevreuse",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "id": 81,
+      "key": "Navia",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "navia",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "id": 82,
+      "key": "Gaming",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "gaming",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "id": 83,
+      "key": "Xianyun",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "xianyun",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 84,
+      "key": "Chiori",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "chiori",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "id": 85,
+      "key": "Arlecchino",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "arlecchino",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 86,
+      "key": "Clorinde",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "clorinde",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "id": 87,
+      "key": "Sigewinne",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "sigewinne",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 88,
+      "key": "Sethos",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "sethos",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "id": 89,
+      "key": "Emilie",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "emilie",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "id": 90,
+      "key": "Kachina",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "kachina",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 91,
+      "key": "Kinich",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "kinich",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 20,
+      "id": 92,
+      "key": "Mualani",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "mualani",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "id": 93,
+      "key": "Xilonen",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "xilonen",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 48,
+      "id": 94,
+      "key": "Chasca",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "chasca",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 95,
+      "key": "Ororon",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "ororon",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "id": 96,
+      "key": "Mavuika",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "mavuika",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 40,
+      "id": 98,
+      "key": "LanYan",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "lan_yan",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "id": 99,
+      "key": "Citlali",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "citlali",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 100,
+      "key": "TravelerPyro",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "traveler_pyro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 34,
+      "id": 101,
+      "key": "Mizuki",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "yumemizuki_mizuki",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 102,
+      "key": "Iansan",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "iansan",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "id": 103,
+      "key": "Varesa",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "varesa",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "id": 104,
+      "key": "Escoffier",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "escoffier",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 36,
+      "id": 105,
+      "key": "Ifa",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "ifa",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "id": 106,
+      "key": "Skirk",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "skirk",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "id": 107,
+      "key": "Dahlia",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "dahlia",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "id": 108,
+      "key": "Ineffa",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "ineffa",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 1
+      }
+    }
+  ],
+  "config": {
+    "description": "Each character's DEFAULT weapon passive turned ON at base refine R1 (sword the_alley_flash, bow alley_hunter@10, claymore the_bell, catalyst solar_pearl 1&2, polearm blackcliff_pole@3). Isolates the weapon-conditional channel vs base (passive OFF).",
+    "id": "weapon-passive"
+  },
+  "featureTotal": 3088
+}

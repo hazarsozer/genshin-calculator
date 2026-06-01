@@ -30,7 +30,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js:3188 (Mavuika)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Mavuika as MavuikaStatTable } from "../generated/charTables.js";
 import { Mavuika as MavuikaTalents } from "../generated/charTalentTables.js";
 
@@ -170,6 +170,59 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
+  // --- C6 "Humanity's Name, Unfettered": two cons-added FeatureDamageSkill hits (pyro).
+  // Raw Mavuika.js:453-472. Both gated by ConditionConstellation({constellation:6}).
+  // mavuika_c6_flamestrider_dmg: StatTable('mavuika_c6_flamestrider_dmg', [C6FlamestriderDmg])
+  //   C6FlamestriderDmg = 200. Fixed single-entry table; source:'constellation6'.
+  {
+    name: "mavuika_c6_flamestrider_dmg",
+    category: "skill",
+    element: "pyro",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "char_skill_elemental",
+        values: { getValue: (_level: number) => 200 },
+        source: "constellation6",
+      },
+    ],
+  },
+  // mavuika_c6_ring_dmg: StatTable('mavuika_c6_ring_dmg', [C6SkillDmg])
+  //   C6SkillDmg = 500. Fixed single-entry table; source:'constellation6'.
+  {
+    name: "mavuika_c6_ring_dmg",
+    category: "skill",
+    element: "pyro",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "char_skill_elemental",
+        values: { getValue: (_level: number) => 500 },
+        source: "constellation6",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: ConditionBoolean toggle (atk_percent:40) → SKIP (toggle OFF).
+// C2 "The Ashen Price": ConditionStatic auto-applies atk_base:200 at C≥2.
+//   Raw Mavuika.js:637-643. Also contains toggles/display-only → only the
+//   auto-active atk_base stat matters for damage here.
+// C3: +3 levels to Hour of Burning Skies (burst). Raw cons[2] settings char_skill_burst_bonus:3.
+// C4: ConditionStatic gated by ConditionBoolean toggle → SKIP (toggle OFF).
+// C5: +3 levels to The Named Moment (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
+// C6: Cons-added skill features above; ConditionBoolean toggles → SKIP (toggle OFF).
+const constellationConditions: readonly Condition[] = [
+  // C2: +200 flat base ATK (auto-active ConditionStatic inside C2 constellation slot).
+  // Raw Mavuika.js:637-643: new ConditionStatic({ stats:{ atk_base: C2AtkBase } }).
+  { type: "constellation", constellation: 2, stats: { atk_base: 200 } },
+  // C3: +3 levels to burst. Raw cons[2] settings char_skill_burst_bonus:3.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to skill. Raw cons[4] settings char_skill_elemental_bonus:3.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -187,4 +240,5 @@ export const mavuika: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

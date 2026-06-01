@@ -37,6 +37,7 @@
  */
 
 import type {
+  Condition,
   DbObjectChar,
   Feature,
   FeatureMultiplierEntry,
@@ -277,6 +278,27 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "As One Might Stride Betwixt the Clouds" (ConditionStatic description-only) → SKIP.
+// C2 "Dance Vestments Billow Like Rainbow Jade" (ConditionStatic description-only) → SKIP.
+// C3 "..."  → +3 Elemental Skill levels.
+//   raw: constellation[2]: Condition{ settings:{char_skill_elemental_bonus:3} }
+// C4 "With Drakefalcon's Blood Pearls Adorned" (ConditionBoolean mastery toggle) → SKIP (off).
+// C5 "..."  → +3 Elemental Burst levels.
+//   raw: constellation[4]: Condition{ settings:{char_skill_burst_bonus:3} }
+// C6 "Let Us Away on Sylphic Wing..." (ConditionStatic description-only) → SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/LanYan.js:390-446
+
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 Elemental Skill (Swallow-Wisp Pinion Dance) levels.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 Elemental Burst (Lustrous Moonrise) levels.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -291,4 +313,5 @@ export const lanYan: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

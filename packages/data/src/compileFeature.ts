@@ -45,10 +45,12 @@ import {
   cStat,
   cSum,
   cTransformativeDamage,
+  evaluate,
   type Block,
   type DamageBlock,
 } from "@genshin/core";
 import type {
+  CharMultiplier,
   Element,
   EvalContext,
   Feature,
@@ -89,6 +91,14 @@ export interface CompileContext {
    * instead, so it does not need this field.
    */
   readonly charLevel?: number;
+  /**
+   * Char-level ("targeted") multipliers — her `char.multipliers`. Each is summed
+   * into the base-damage term of EVERY feature whose damage type matches the
+   * entry's `target.damageTypes`, gated by `evaluate(condition)` (absent = always
+   * on). Mirrors her `Feature2.getMultipliers` merging `data.multipliers` into each
+   * feature (Feature2.js:121-125). Absent/empty = no char-level multipliers.
+   */
+  readonly charMultipliers?: readonly CharMultiplier[];
 }
 
 /**
@@ -144,15 +154,49 @@ function damageTypeOf(feature: Feature): string {
   }
 }
 
+/**
+ * Resolve the talent-level `_bonus` offset for a leveling key from the settings.
+ *
+ * Her `Feature.getTalentLevel` adds `settings[<key>_bonus] + settings[<key>_bonus_2]`
+ * on top of the base talent level (raw Feature.js:235-244), reached on the damage path
+ * via `FeatureMultiplier.getLevel → settings.getLevel(leveling)` (Multiplier.js:149).
+ * Constellations contribute these through condition `.settings` (Hu Tao C3 →
+ * `char_skill_elemental_bonus: 3`, C5 → `char_skill_burst_bonus: 3`), which `buildStats`
+ * propagates into the compile settings. Returns 0 for a constant multiplier
+ * (`leveling: ""`) or when no `_bonus` key is set — inert for every base build.
+ */
+function skillLevelBonus(settings: EvalContext, leveling: string): number {
+  if (!leveling) return 0;
+  const b1 = settings[`${leveling}_bonus`];
+  const b2 = settings[`${leveling}_bonus_2`];
+  return (typeof b1 === "number" ? b1 : 0) + (typeof b2 === "number" ? b2 : 0);
+}
+
 /** Build the base-damage term for one multiplier: talent% × scalingStatTotal. */
 function baseDamageTerm(
   entry: FeatureMultiplierEntry,
   ctx: CompileContext
 ): Block {
   const slot = LEVELING_TO_SLOT[entry.leveling];
-  const talentLevel = slot !== undefined ? ctx.talentLevels[slot] : 1;
-  // her getValue: values.getValue(level)/100 → a fraction.
-  const talentPercent = entry.values.getValue(talentLevel) / 100;
+  const baseLevel = slot !== undefined ? ctx.talentLevels[slot] : 1;
+  // Talent-level bumps (constellation C3/C5) are condition-contributed
+  // `<leveling>_bonus` settings added on top of the base level — her
+  // Feature.getTalentLevel (Feature.js:235-244). Inert when no `_bonus` key is set.
+  const talentLevel = baseLevel + skillLevelBonus(ctx.settings, entry.leveling);
+  // her getValue: values.getValue(level)/100 → a fraction. The optional numeric
+  // `scalingMultiplier` is the flat extra factor on the base term (her
+  // getTreeBonusMultiplier CConst — "bonus hit = X% of a base hit", e.g. Amber C1's
+  // second arrow at 0.20). Absent = ×1.
+  // `scalingOffset` adds a settings-driven additive offset to the scaling factor —
+  // faithful to FurinaSkill.getScalingMultiplier: `result += perStack × min(maxStacks, stacks)`.
+  // Absent or 0 stacks → offset 0 → no change.
+  let scalingFactor = entry.scalingMultiplier ?? 1;
+  if (entry.scalingOffset !== undefined) {
+    const raw = ctx.settings[entry.scalingOffset.setting];
+    const stacks = typeof raw === "number" ? raw : 0;
+    scalingFactor += entry.scalingOffset.perStack * Math.min(entry.scalingOffset.maxStacks, stacks);
+  }
+  const talentPercent = (entry.values.getValue(talentLevel) / 100) * scalingFactor;
 
   // Scaling stat: default 'atk' total. The `*` in her 'atk*' means "use total";
   // buildStats supplies `<stat>_total`. Strip any trailing '*' the data carries.
@@ -160,6 +204,49 @@ function baseDamageTerm(
   const scalingKey = `${scaling}_total`;
 
   return cMulti([cConst(talentPercent), cStat(scalingKey)]);
+}
+
+/**
+ * Select the char-level ("targeted") multipliers that apply to this feature:
+ * those whose `target.damageTypes` includes the feature's resolved damage type
+ * AND whose gate is active (`evaluate(condition)`; an absent condition is
+ * always-on, per her `FeatureMultiplier.isActive`).
+ *
+ * Faithful to her `Feature2.getMultipliers` second loop (Feature2.js:121-125):
+ * `for (item of data.multipliers) if (item.isActive(data) && item.isMatchFeature(this, data)) push`.
+ * The matched entries' base terms are summed into the SAME `cBaseDamage` as the
+ * feature's own multipliers (Damage.js:271-276) — a base term, not a separate factor.
+ */
+function activeCharMultipliers(
+  feature: Feature,
+  damageType: string,
+  ctx: CompileContext
+): readonly CharMultiplier[] {
+  const all = ctx.charMultipliers;
+  if (!all || all.length === 0) return [];
+  return all.filter((m) => {
+    if (!m.target.damageTypes.includes(damageType)) return false; // isMatchFeature
+    return m.condition === undefined || evaluate(m.condition, ctx.settings); // isActive
+  });
+}
+
+/**
+ * Filter a feature's OWN multipliers to the active ones: those with no `condition`,
+ * plus those whose `condition` evaluates true. Faithful to her
+ * `FeatureMultiplier.isActive` (Multiplier.js), which honours the condition at the
+ * per-feature level just as it does for char-level multipliers — e.g. Fischl C2:
+ * `skill_dmg` carries a SECOND multiplier (`ValueTable([C2SkillDmg])`) gated by
+ * `ConditionConstellation(2)` (Fischl.js:256-260), so the +200% ATK applies only at
+ * C≥2. Inert for every base feature (none set a per-feature multiplier condition) →
+ * the base golden is untouched.
+ */
+function activeOwnMultipliers(
+  multipliers: readonly FeatureMultiplierEntry[],
+  ctx: CompileContext
+): readonly FeatureMultiplierEntry[] {
+  return multipliers.filter(
+    (m) => m.condition === undefined || evaluate(m.condition, ctx.settings)
+  );
 }
 
 /**
@@ -238,6 +325,10 @@ function compileReaction(
       element: reaction.element,
       characterLevel: ctx.charLevel,
       ...(reaction.reactionBonusKeys ? { reactionBonusKeys: reaction.reactionBonusKeys } : {}),
+      // Reaction-specific crit (Nahida C2 makes burning/bloom crittable); 0/absent
+      // for every other char → crit === normal === avg, unchanged.
+      ...(critRate.length > 0 ? { critRateKeys: critRate } : {}),
+      ...(critDmg.length > 0 ? { critDmgKeys: critDmg } : {}),
     });
   }
 
@@ -257,7 +348,7 @@ function compileReaction(
   // ChargedLike amplifying factor, then the shared (1 + emBonus + Σ) × res tail.
   const multipliers: readonly FeatureMultiplierEntry[] =
     feature.multipliers ?? (feature.items ?? []).flatMap((item) => item.multipliers);
-  const baseTerms = multipliers.map((m) => baseDamageTerm(m, ctx));
+  const baseTerms = activeOwnMultipliers(multipliers, ctx).map((m) => baseDamageTerm(m, ctx));
   const base: Block = cBaseDamage(baseTerms);
 
   const factors: Block[] = [base];
@@ -302,17 +393,32 @@ export function compileFeature(
   const element = resolveElement(feature, ctx);
   const damageType = damageTypeOf(feature);
 
-  // Base damage = Σ over the feature's multipliers (multihit `items` flatten in).
+  // Base damage = Σ over the feature's own multipliers (multihit `items` flatten
+  // in) PLUS the active char-level multipliers targeting this damage type — her
+  // getMultipliers merges both into one CBaseDamage (e.g. Itto A4's 0.35×DEF on
+  // every charged hit). They are base terms, not separate multiplicative factors.
   const multipliers: readonly FeatureMultiplierEntry[] =
     feature.multipliers ??
     (feature.items ?? []).flatMap((item) => item.multipliers);
-  const baseTerms = multipliers.map((m) => baseDamageTerm(m, ctx));
+  const baseTerms = [
+    ...activeOwnMultipliers(multipliers, ctx),
+    ...activeCharMultipliers(feature, damageType, ctx),
+  ].map((m) => baseDamageTerm(m, ctx));
 
+  // DEF-ignore: the generic key plus this feature's per-type key
+  // (`enemy_def_ignore_<type>`), summed inside cMultiplierDefence — her
+  // getStatsDefIgnore. Per-type is 0 for every base build (Raiden C2 burst /
+  // Yae Miko C6 skill are the constellation-gated sources). Exclude the no-type
+  // hits (`""`/`"none"`) exactly as her guard does (`damageType && damageType != 'none'`).
+  const defIgnoreKeys =
+    damageType !== "" && damageType !== "none"
+      ? ["enemy_def_ignore", `enemy_def_ignore_${damageType}`]
+      : ["enemy_def_ignore"];
   const items: Block[] = [
     cBaseDamage(baseTerms),
     cMultiplierBonus(dmgBonusKeys(feature, element, damageType).map((k) => cStat(k))),
     cMultiplierResistance(element),
-    cMultiplierDefence(),
+    cMultiplierDefence("enemy_def_reduce", defIgnoreKeys),
   ];
 
   // Crit: the aggregated totals (buildStats folds per-element/-type crit in),

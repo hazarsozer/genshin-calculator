@@ -16,7 +16,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Emilie)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Emilie as EmilieStatTable } from "../generated/charTables.js";
 import { Emilie as EmilieTalents } from "../generated/charTalentTables.js";
 
@@ -169,6 +169,30 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Light Fragrance Leaching": dmg_skill_emilie +20. ConditionStatic (always-on at C1).
+// C2 "Lakelight Top Note": enemy_res_dendro toggle → SKIP.
+// C3 "Exquisite Sillage": +3 Elemental Burst talent levels.
+// C4 "Lumidouce Heart Note": ConditionStatic with no real stats (display text) → SKIP.
+// C5 "Pique-Nique pour Deux": +3 Elemental Skill talent levels.
+// C6 "Marcotte Sillage": ConditionBoolean toggle (attack_infusion:'dendro') → SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Emilie.js:347-428
+
+const constellationConditions: readonly Condition[] = [
+  // C1: dmg_skill_emilie +20. ConditionStatic{ stats:{ dmg_skill_emilie:20 } }
+  // Raw cons[0]: ConditionStatic{ stats:{ dmg_skill_emilie: TalentValues.C1SkillBonus=20 } }
+  { type: "constellation", constellation: 1, stats: { dmg_skill_emilie: 20 } },
+  // C3: +3 Elemental Burst talent levels.
+  // Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 Elemental Skill talent levels.
+  // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -183,4 +207,5 @@ export const emilie: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

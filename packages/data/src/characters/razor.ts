@@ -11,7 +11,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Razor)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Razor as RazorStatTable } from "../generated/charTables.js";
 import { Razor as RazorTalents } from "../generated/charTalentTables.js";
 
@@ -122,6 +122,41 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
+  // --- C6 "Lupus Fulguris": cons-added electro "other" hit (100% ATK, fixed).
+  // Raw FeatureDamage (base class → damageType:""), category:'other', element:'electro',
+  // values: new ValueTable([100]) → fixed 100% ATK; leveling key used as source label only.
+  // condition: ConditionConstellation(6). Raw Razor.js:315-326.
+  {
+    name: "razor_lupus_fulguris",
+    element: "electro",
+    damageType: "",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: { getValue: (_level: number) => 100 },
+        source: "constellation6",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Wolf's Instinct": ConditionBoolean toggle (dmg_all:10) → SKIP.
+// C2 "Suppression": ConditionBoolean toggle (crit_rate_enemy:10) → SKIP.
+// C3: +3 levels to Lightning Fang (burst). Raw conditions array
+//   ConditionConstellation({constellation:3, settings:{char_skill_burst_bonus:3}}). Raw Razor.js:329-333.
+// C4 "Bite": ConditionBoolean toggle (enemy_def_reduce:15) → SKIP.
+// C5: +3 levels to Claw and Thunder (skill). Raw Razor.js:334-338.
+// C6 "Lupus Fulguris": ConditionStatic (display text_percent_dmg:100) → damage handled by
+//   the razor_lupus_fulguris cons-added feature above (ConditionConstellation gate on feature).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Lightning Fang (burst).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Claw and Thunder (elemental skill).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -139,4 +174,5 @@ export const razor: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

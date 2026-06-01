@@ -48,7 +48,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Mualani)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Mualani as MualaniStatTable } from "../generated/charTables.js";
 import { Mualani as MualaniTalents } from "../generated/charTalentTables.js";
 
@@ -166,6 +166,29 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "The Leisurely Meztli": ConditionBoolean toggle (hp bonus to shark bites) → SKIP.
+// C2 "Mualani, Going All Out!": ConditionStatic with no real stats → SKIP.
+// C3 "Surfing Atop Jaws": +3 Elemental Skill talent levels.
+//    Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C4 "Sharky Eats Puffies": ConditionBoolean toggle (dmg_burst_mualani) → SKIP.
+// C5 "Same Day Returns": +3 Elemental Burst talent levels.
+//    Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C6 "Spirit of the Spring's People": ConditionStatic with no real stats → SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Mualani.js:332-393
+
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 Elemental Skill (Surfshark Wavebreaker).
+  // Raw cons[2]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 Elemental Burst (Boomsharka-laka).
+  // Raw cons[4]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -180,4 +203,5 @@ export const mualani: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

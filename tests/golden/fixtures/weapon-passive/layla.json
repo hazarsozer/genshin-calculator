@@ -1,0 +1,227 @@
+{
+  "defaultWeapon": "weapon_name.the_alley_flash",
+  "element": "cryo",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 1242.2503912510192,
+      "category": "attack",
+      "crit": 2258.637075001853,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1129.3185375009266
+    },
+    "attack.charged_hit_2": {
+      "average": 1367.5945748727438,
+      "category": "attack",
+      "crit": 2486.535590677716,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1243.267795338858
+    },
+    "attack.charged_hit_total": {
+      "average": 2609.8449661237632,
+      "category": "attack",
+      "crit": 4745.172665679569,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2372.5863328397845
+    },
+    "attack.normal_hit_1": {
+      "average": 1252.224342658798,
+      "category": "attack",
+      "crit": 2276.7715321069054,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1138.3857660534527
+    },
+    "attack.normal_hit_2": {
+      "average": 1185.381572357189,
+      "category": "attack",
+      "crit": 2155.2392224676164,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1077.6196112338082
+    },
+    "attack.normal_hit_3": {
+      "average": 1784.1489740177485,
+      "category": "attack",
+      "crit": 3243.907225486815,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1621.9536127434076
+    },
+    "attack.plunge": {
+      "average": 1462.2538512052543,
+      "category": "attack",
+      "crit": 2658.6433658277347,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1329.3216829138673
+    },
+    "attack.plunge_high": {
+      "average": 3652.0940617874567,
+      "category": "attack",
+      "crit": 6640.171021431739,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3320.0855107158695
+    },
+    "attack.plunge_low": {
+      "average": 2923.888681844908,
+      "category": "attack",
+      "crit": 5316.161239718014,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2658.080619859007
+    },
+    "burst.layla_starlight_slug_dmg": {
+      "average": 2198.2955257587873,
+      "category": "burst",
+      "crit": 3996.9009559250676,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1998.4504779625338
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "reaction.superconduct": {
+      "average": 3584.3021786316276,
+      "category": "reaction",
+      "crit": 3584.3021786316276,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3584.3021786316276
+    },
+    "skill.layla_base_shield_dmg_absorption": {
+      "average": 8150.28810105778,
+      "category": "skill",
+      "crit": 8150.28810105778,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 8150.28810105778
+    },
+    "skill.layla_shooting_star_dmg": {
+      "average": 702.9868371010974,
+      "category": "skill",
+      "crit": 1278.157885638359,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 639.0789428191795
+    },
+    "skill.skill_dmg": {
+      "average": 330.9316261242779,
+      "category": "skill",
+      "crit": 601.6938656805053,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 300.84693284025263
+    },
+    "stats.atk": {
+      "average": 2015.0605819740001,
+      "category": "stats",
+      "crit": 2015.0605819740001,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2015.0605819740001
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1531.220664,
+      "category": "stats",
+      "crit": 1531.220664,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1531.220664
+    },
+    "stats.hp": {
+      "average": 30154.832309968,
+      "category": "stats",
+      "crit": 30154.832309968,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 30154.832309968
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 62,
+  "key": "Layla",
+  "schema": 1,
+  "slug": "layla",
+  "weaponType": "sword"
+}

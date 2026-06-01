@@ -29,17 +29,16 @@
  *   burst.baal_energy_recharge                       (FeatureStatic, format decimal)
  * Constellations (C0 build) skipped. Reactions emitted generically from element.
  *
- * ALWAYS-ON PASSIVE FOLDED (A4 Enlightened One → +52.8% Electro DMG):
+ * ALWAYS-ON PASSIVE (A4 Enlightened One → dynamic Electro DMG%):
  *   A4 grants Electro DMG = 0.4% per 1% of Energy Recharge above 100%, capped 80%.
- *   In the FIXED canonical build, total Energy Recharge = 232% (fixture `stats.recharge`),
- *   so the bonus is a CONSTANT 0.4 × (232 − 100) = 52.8% (< 80% cap) — unconditional in
- *   the fixed solo build. Her engine derives this via PostEffectStatsExceedRecharge (its
- *   `other.electro_dmg_bonus` display row = 52.8, not a damage triple), and the oracle
- *   FOLDS it into the Electro hits' DMG bonus. Since it is a fixed constant here, it is
- *   folded faithfully via `baseStats: { dmg_electro: 52.8 }` (concatenated into the
- *   `dmg_electro` total alongside the base 2% → 54.8% on every electro hit).
- *   Verified: with the fold, skill_dmg / baal_coordinated_atk_dmg / burst all match the
- *   oracle within tolerance; without it they were short by exactly this 52.8% factor.
+ *   Her engine derives this via PostEffectStatsExceedRecharge (ExceedRecharge.js:
+ *   max(0, recharge_decimal − 1) × (40/100), where recharge is stored as a decimal
+ *   post processPercent). In our engine recharge is raw percent, so the equivalent is
+ *   max(0, recharge − 100) × 0.4, capped at 80 — modelled as a dynamic `postEffect`:
+ *     `{ fromStat:"recharge", toStat:"dmg_electro", offset:100, ratio:0.4, capValue:80 }`
+ *   At base ER=232: (232−100)×0.4 = 52.8 (matches the former constant). At full-build
+ *   ER=252 (Emblem 2pc): (252−100)×0.4 = 60.8 (correct; the old constant 52.8 was wrong).
+ *   `dmg_electro` is emitted as a raw-percent stat; the emit loop divides by 100.
  *
  *   A1 (Wishes Unnumbered): party energy/burst-DMG support — not a solo self damage stat.
  *
@@ -49,7 +48,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (RaidenShogun)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { RaidenShogun as RaidenShogunStatTable } from "../generated/charTables.js";
 import { RaidenShogun as RaidenShogunTalents } from "../generated/charTalentTables.js";
 
@@ -192,6 +191,48 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Toggle conditions
+// ---------------------------------------------------------------------------
+
+// "Eye of Stormy Judgment" skill bonus: dmg_burst += energy_cost × baal_burst_bonus.
+// Raw RaidenShogun.js:185-192 — PostEffectStats{ from:'burst_energy_cost'(=90),
+// percent:skill.'baal_burst_bonus' = 0.3% per energy → dmg_burst = 90 × 0.3 = 27 }.
+// BUILD-COUPLED at the oracle's elemental talent level 10 (the per-energy table tops out
+// at 0.3 — its last entry — so levels ≥ 9 all yield 0.3).
+// s2.p4 = baal_burst_bonus table (9 values); getValue(9) = 0.3; 90 × 0.3 = 27.
+const toggleConditions: readonly Condition[] = [
+  { type: "boolean", name: "baal_eye_of_stormy_judgment", stats: { dmg_burst: 27 } },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Ominous Inscription": ConditionStatic with no real stats (description only) → SKIP.
+// C2 "Steelbreaker": ConditionStatic — enemy_def_ignore_burst: 60 (always-on).
+//    Raw cons[1]: ConditionStatic{ stats:{ enemy_def_ignore_burst:60 } }
+//    Applies to burst features via the engine's standard def-ignore path.
+// C3 "Shinkage Bygones": +3 Elemental Burst talent levels.
+//    Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
+// C4 "Pledge of Propriety": ConditionStatic with ONLY text_percent: 30 (display) → SKIP.
+// C5 "Shogun's Descent": +3 Elemental Skill talent levels.
+//    Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
+// C6 "Wishbearer": ConditionStatic with no real stats → SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/RaidenShogun.js:687-744
+
+const constellationConditions: readonly Condition[] = [
+  // C2: enemy_def_ignore_burst +60 (always-on ConditionStatic).
+  // Raw cons[1]: ConditionStatic{ stats:{ enemy_def_ignore_burst: 60 } }.
+  { type: "constellation", constellation: 2, stats: { enemy_def_ignore_burst: 60 } },
+  // C3: +3 Elemental Burst (Secret Art: Musou Shinsetsu).
+  // Raw cons[2]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 Elemental Skill (Transcendence: Baleful Omen).
+  // Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -203,10 +244,31 @@ export const raidenShogun: DbObjectChar = {
   weapon: "polearm",
   origin: "inazuma",
   statTable: RaidenShogunStatTable,
-  // A4 (Enlightened One): +52.8% Electro DMG, a fixed constant in the canonical
-  // build (Energy Recharge 232% → 0.4×(232−100)). Folded into the electro hits.
-  baseStats: { dmg_electro: 52.8 },
+  // A4 (Enlightened One): Electro DMG = 0.4% per 1% Energy Recharge above 100%,
+  // capped at +80%. Modelled as a dynamic post-effect so builds with ER > 232%
+  // (e.g. full-build with Emblem 2pc) correctly compute a higher bonus.
+  //
+  // Formula: max(0, recharge_total − 100) × 0.4, capped at 80.
+  // At base build ER=232: (232−100)×0.4 = 52.8 ✓ (matches the old constant).
+  //
+  // Our engine stores `recharge` as raw percent (e.g. 232); `offset:100` mirrors
+  // her PostEffectStatsExceedRecharge which subtracts 1 from the decimal (2.32−1).
+  // `ratio:0.4` mirrors the StatTable('dmg_electro',[40]) value / 100 = 0.4.
+  // `dmg_electro` is a raw-percent stat; the emit loop divides by 100 at output.
+  //
+  // Source: raw/genshin_calc_pub/src/js/db/Char/RaidenShogun.js:194-198
+  //         raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/ExceedRecharge.js
+  postEffects: [
+    {
+      fromStat: "recharge",
+      toStat: "dmg_electro",
+      offset: 100,
+      ratio: 0.4,
+      capValue: 80,
+    },
+  ],
   talents,
   features,
   multipliers: [],
+  conditions: [...toggleConditions, ...constellationConditions],
 };

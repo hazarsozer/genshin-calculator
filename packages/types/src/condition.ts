@@ -8,6 +8,7 @@
  *   wiki/concepts/buff-condition-system.md
  *   wiki/architecture/db-object-model.md
  *   raw/genshin_calc_pub/src/js/classes/Condition/Boolean.js
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Boolean/Refine.js
  *   raw/genshin_calc_pub/src/js/classes/Condition/Static.js
  *   raw/genshin_calc_pub/src/js/classes/Condition/Static/Refine.js
  *   raw/genshin_calc_pub/src/js/classes/Condition/Constellation.js
@@ -15,6 +16,7 @@
  *   raw/genshin_calc_pub/src/js/classes/Condition/Stacks.js
  *   raw/genshin_calc_pub/src/js/classes/Condition/And.js
  *   raw/genshin_calc_pub/src/js/classes/Condition/Or.js
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Boolean/WeaponType.js
  */
 
 import type { AscensionLevel, ConstellationLevel, Refinement } from "./character.js";
@@ -48,9 +50,9 @@ export interface ConditionBase {
   readonly serializeId?: number;
   readonly title?: string;
   readonly description?: string;
-  /** Stats contributed when this condition is active. */
+  /** Stats contributed when this condition is active (non-refine-scaled). */
   readonly stats?: ConditionStats;
-  /** Settings applied when this condition is active. */
+  /** Settings applied when this condition is active (e.g. attack_infusion, level bonuses). */
   readonly settings?: ConditionSettings;
   /**
    * Optional gating condition. If present, this condition is only active
@@ -69,6 +71,27 @@ export interface ConditionBase {
  */
 export interface ConditionBoolean extends ConditionBase {
   readonly type: "boolean";
+  readonly rotation?: string;
+}
+
+/**
+ * A user-toggled boolean condition with per-refinement-rank stat values.
+ * Evaluation semantics identical to ConditionBoolean (active when ctx[name] truthy).
+ * Stats vary by weapon_refine: refinementStats[weapon_refine - 1].
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/Refine.js
+ * (ConditionBooleanRefine extends ConditionBoolean, resolves via stat.getValue(weapon_refine)).
+ *
+ * Example: WolfsGravestone's toggle passive (ATK +40/50/60/70/80% at R1..R5).
+ */
+export interface ConditionBooleanRefine extends ConditionBase {
+  readonly type: "boolean-refine";
+  readonly name: string;
+  /**
+   * Per-refinement stat bags. Index 0 = R1, index 4 = R5.
+   * Resolve via: refinementStats[weapon_refine - 1].
+   */
+  readonly refinementStats: readonly ConditionStats[];
   readonly rotation?: string;
 }
 
@@ -96,12 +119,25 @@ export interface ConditionConstellation extends ConditionBase {
 /**
  * A condition with per-refinement-rank stat values.
  * Inherits Static evaluation semantics (always active unless gated/inverted).
- * Used by weapon passives.
+ * Used by weapon passives that are always on but scale with refinement.
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Static/Refine.js
+ * (ConditionStaticRefine extends ConditionStatic, resolves via stat.getValue(weapon_refine)).
+ *
+ * `refinementStats` holds one ConditionStats bag per refinement rank (R1..R5, 0-indexed).
+ * Resolve via: refinementStats[weapon_refine - 1].
+ * `stats` (from ConditionBase) carries stats that do NOT vary by refine.
+ *
+ * Example: WolfsGravestone always-on passive (ATK +20/25/30/35/40% at R1..R5),
+ *          The Catch burst passive (Burst DMG / Burst Crit Rate by refine).
  */
 export interface ConditionStaticRefine extends ConditionBase {
   readonly type: "refine";
-  /** Refinement-indexed stat tables (typed as StatTable[] at P1.3+). */
-  readonly refinementStats?: readonly unknown[];
+  /**
+   * Per-refinement stat bags. Index 0 = R1, index 4 = R5.
+   * Resolve via: refinementStats[weapon_refine - 1].
+   */
+  readonly refinementStats: readonly ConditionStats[];
 }
 
 /**
@@ -119,10 +155,63 @@ export interface ConditionNumber extends ConditionBase {
  * A stack-count condition (0–maxStacks).
  * Active when ctx[name] > 0.
  * getStackCount() returns the clamped stack value for use in scaling calculations.
+ *
+ * When the per-stack stat values vary by refinement rank (raw: `levelSetting: "weapon_refine"`),
+ * `refinementStats` holds one ConditionStats bag per refinement rank (R1..R5, 0-indexed),
+ * each bag representing the per-stack stats at that rank.
+ * Resolve via: refinementStats[weapon_refine - 1].
+ *
+ * Example: Lost Prayer's stack passive — 8/10/12/14/16% per stack per R1..R5.
  */
 export interface ConditionStacks extends ConditionBase {
   readonly type: "stacks";
   readonly maxStacks: number;
+  /**
+   * Optional per-refinement stat bags for stack passives whose per-stack value
+   * scales with weapon refinement. Index 0 = R1, index 4 = R5.
+   */
+  readonly refinementStats?: readonly ConditionStats[];
+}
+
+/**
+ * A condition gated by equipped piece-count of a named artifact set.
+ * Active when ctx["set_pieces.<setName-lowercased>"] >= count.
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/PiecesCount.js
+ * (`settings[Artifact.settingName(setName)] >= count`, where
+ * `Artifact.settingName(name) = 'set_pieces.' + name.toLowerCase()`).
+ *
+ * This is the piece-count half of the global artifact-set buffs in
+ * raw/.../db/Buffs/Artifacts.js (e.g. Noblesse +20% ATK, Deepwood -30% dendro res),
+ * which gate on `(set.<x>_4 AND ConditionBooleanPiecesCount(<X>, 4)) OR set_other.<x>_4`.
+ * `buildStats` injects the `set_pieces.<name>` count from its `setBonuses` input.
+ */
+export interface ConditionBooleanPiecesCount extends ConditionBase {
+  readonly type: "pieces-count";
+  /** Registry key of the set, e.g. "NoblesseOblige" (lowercased for the setting key). */
+  readonly setName: string;
+  /** Minimum equipped pieces for activation (2 or 4). */
+  readonly count: number;
+  /**
+   * A pure gate — it contributes NO stats of its own (`conditionStats` returns `{}`
+   * for this variant even when active, like `and`/`or`). Narrowed to `never` so
+   * attaching a `stats` bag is a compile error, not a silently-discarded value.
+   */
+  readonly stats?: never;
+}
+
+/**
+ * A condition gated by the wearer's weapon type.
+ * Active when ctx["weapon_type"] is in `types` (AND the optional `.condition` gate passes).
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/WeaponType.js
+ * (`this.params.types.includes(settings.weapon_type)`).
+ */
+export interface ConditionBooleanWeaponType extends ConditionBase {
+  readonly type: "weapon-type";
+  /** Allowed weapon types, e.g. ["sword","claymore","polearm"]. */
+  readonly types: readonly string[];
+  /** A pure gate — contributes NO stats (narrowed to `never`, like pieces-count). */
+  readonly stats?: never;
 }
 
 /**
@@ -146,11 +235,14 @@ export interface ConditionOr {
 /** Discriminated union of all condition types. */
 export type Condition =
   | ConditionBoolean
+  | ConditionBooleanRefine
   | ConditionStatic
   | ConditionConstellation
   | ConditionStaticRefine
   | ConditionNumber
   | ConditionStacks
+  | ConditionBooleanPiecesCount
+  | ConditionBooleanWeaponType
   | ConditionAnd
   | ConditionOr;
 

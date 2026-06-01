@@ -15,7 +15,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Fischl)
  */
 
-import type { DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
 import { Fischl as FischlStatTable } from "../generated/charTables.js";
 import { Fischl as FischlTalents } from "../generated/charTalentTables.js";
 
@@ -99,6 +99,20 @@ const features: readonly Feature[] = [
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5") }],
   },
+  // --- C1 "Gaze of the Deep": Oz fires alongside normal attacks dealing 22% ATK.
+  // Raw: FeatureDamageNormal with ValueTable([22]) and ConditionConstellation(1). Fischl.js:168-177
+  {
+    name: "fischl_gaze_of_the_deep",
+    category: "attack",
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: { getValue: (_level: number) => 22 },
+        source: "constellation1",
+      },
+    ],
+  },
   // --- Charged attacks (bow aimed shots) ---
   // aimed: physical charged shot
   {
@@ -152,12 +166,27 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.fischl_oz_dmg") }],
   },
-  // skill_dmg: Fischl's re-summon attack (C0 only uses base table, no C2 bonus)
+  // skill_dmg: Fischl's re-summon attack. C2 "Devourer of All Sins" adds +200% ATK
+  // as a second constellation-gated multiplier. Raw: Fischl.js:248-261
   {
     name: "skill_dmg",
     category: "skill",
     element: "electro",
-    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") },
+      // C2 "Devourer of All Sins": +200% ATK on the re-summon, gated by
+      // ConditionConstellation(2). Per-feature multiplier conditions ARE honoured —
+      // compileFeature.activeOwnMultipliers filters them via evaluate (her
+      // FeatureMultiplier.isActive checks the gate at both char- and per-feature level),
+      // so this contributes 0 at C<2 and the C0 golden is unaffected.
+      // Raw: Fischl.js:257-260 new ValueTable([200]) + condition: ConditionConstellation(2).
+      {
+        leveling: "char_skill_elemental",
+        values: { getValue: (_level: number) => 200 },
+        source: "constellation2",
+        condition: { type: "constellation", constellation: 2 },
+      },
+    ],
   },
   // A4 "Undone Be Thy Sinful Hex": 80% ATK flat Oz attack, electro skill.
   // Auto-active at A6 (ConditionAscensionChar({ascension: 4})).
@@ -168,6 +197,21 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "char_skill_elemental", values: fischlUndoneTable }],
   },
+  // --- C6 "Evernight Raven": Oz fires alongside ALL party members dealing 30% ATK electro.
+  // Raw: FeatureDamageSkill with ValueTable([30]) and ConditionConstellation(6). Fischl.js:274-284
+  {
+    name: "fischl_evernight_raven",
+    category: "skill",
+    element: "electro",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "char_skill_elemental",
+        values: { getValue: (_level: number) => 30 },
+        source: "constellation6",
+      },
+    ],
+  },
   // --- Burst: Midnight Phantasmagoria (electro) ---
   {
     name: "burst_dmg",
@@ -175,6 +219,45 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
+  // --- C4 "Her Pilgrimage of Bleak": extra electro hit 222% ATK alongside burst.
+  // Raw: FeatureDamage (base class, NOT FeatureDamageBurst) with category:'burst',
+  // element:'electro', ValueTable([222]), ConditionConstellation(4). Fischl.js:295-306
+  // Base FeatureDamage → damageType:"" (engine outputs "none" for this class/category combo).
+  {
+    name: "fischl_her_pilgrimage_of_bleak",
+    category: "burst",
+    damageType: "",
+    element: "electro",
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      {
+        leveling: "char_skill_burst",
+        values: { getValue: (_level: number) => 222 },
+        source: "constellation4",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Gaze of the Deep": ConditionStatic (display-only text_percent_dmg) → SKIP here;
+//   the actual damage comes from fischl_gaze_of_the_deep feature above.
+// C2 "Devourer of All Sins": ConditionStatic (display-only) → SKIP; damage modeled
+//   as a per-feature conditional multiplier on skill_dmg above.
+// C3 "Wings of Nightmare": +3 levels to Nightrider (elemental skill). Raw cons[2] settings char_skill_elemental_bonus:3.
+// C4 "Her Pilgrimage of Bleak": ConditionStatic (display-only) → SKIP; damage modeled
+//   as fischl_her_pilgrimage_of_bleak feature above.
+// C5 "Against the Fleeing Light": +3 levels to Midnight Phantasmagoria (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+// C6 "Evernight Raven": ConditionStatic (display-only) → SKIP; damage modeled as
+//   fischl_evernight_raven feature above.
+// Raw: db/Char/Fischl.js constellation array (Fischl.js:344-409).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Nightrider (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Midnight Phantasmagoria (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -192,4 +275,5 @@ export const fischl: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

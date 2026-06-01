@@ -30,19 +30,21 @@
  *   wiki/concepts/stat-keys-and-good-format.md
  */
 
-import { Stats, applyPostEffects, type PostEffect } from "@genshin/core";
+import { Stats, applyPostEffects, conditionStats, conditionSettings, evaluate, type PostEffect } from "@genshin/core";
 import type {
   BuildStats,
   CharPostEffect,
   Condition,
   DamageContext,
+  DbObjectArtifactSet,
   DbObjectChar,
   Element,
   EvalContext,
   Feature,
   StatTableEntry,
 } from "@genshin/types";
-import { evaluate } from "@genshin/core";
+import { getArtifactSet } from "./artifacts/sets/index.js";
+import { CHARACTER_CONDITIONS } from "./characterConditions.js";
 
 /** The seven elements + physical, in the order the engine keys resistance. */
 const ELEMENTS: readonly Element[] = [
@@ -104,6 +106,35 @@ const REACTION_DERIVED_KEYS = [
 ] as const;
 
 /**
+ * Per-reaction DMG bonus keys CONDITIONS contribute (e.g. CrimsonWitch 4pc's
+ * `dmg_reaction_overloaded`/`_burgeon`/…). The reaction factories read each via
+ * `cStat(key)` inside `(1 + emBonus + Σ dmg_reaction_*)` (core's
+ * cTransformativeDamage / cAmplifyingDamage). Unlike `dmg_reaction_lunarcharged`
+ * (a post-effect output that ALREADY folded its isPercent /100 — see
+ * REACTION_DERIVED_KEYS), these arrive as RAW percents from `conditionStats`, so
+ * they are emitted as FRACTIONS (÷100) at emit time, exactly like every dmg_* key.
+ * `dmg_reaction_lunarcharged` is deliberately NOT in this list (it stays in the
+ * pre-divided REACTION_DERIVED_KEYS path). Absent keys are left unset → engine reads 0.
+ *
+ * Source: packages/data/src/reactions.ts (reactionBonusKeys per reaction);
+ *         raw/.../db/Artifacts/Set/CrimsonWitch.js (the 4pc reaction bonuses).
+ */
+const REACTION_BONUS_PERCENT_KEYS = [
+  "dmg_reaction_overloaded",
+  "dmg_reaction_superconduct",
+  "dmg_reaction_electrocharged",
+  "dmg_reaction_shatter",
+  "dmg_reaction_swirl",
+  "dmg_reaction_bloom",
+  "dmg_reaction_hyperbloom",
+  "dmg_reaction_burgeon",
+  "dmg_reaction_rupture",
+  "dmg_reaction_aggravate",
+  "dmg_reaction_vaporize",
+  "dmg_reaction_melt",
+] as const;
+
+/**
  * Level/ascension parameters for base-stat assembly. (Talent levels are a
  * compileFeature concern — they pick the talent-table row, not a base stat — so
  * they live on CompileContext, not here.)
@@ -122,6 +153,26 @@ export interface BuildEnemy {
   readonly resistance: number | Readonly<Partial<Record<Element, number>>>;
 }
 
+/**
+ * Optional base talent levels — the 1-indexed game talent level for each slot
+ * (attack / elemental / burst). When provided, `buildStats` injects these as
+ * `char_skill_attack`, `char_skill_elemental`, `char_skill_burst` into the
+ * merged settings so that talent-scaled post-effects (`ratioFromTalent`) can
+ * resolve the effective level (base + constellation `_bonus`).
+ *
+ * The `_bonus` keys are already propagated by the condition loop (C3/C5
+ * constellation keystone); the base keys are NOT in `input.settings` by
+ * default (they are a compileFeature concern), so they must be injected here
+ * for post-effects that need them. Only the keys present in the `talentLevels`
+ * object are injected — missing slots default to `undefined` (→ 0 in
+ * `settings[key] || 1` fallback, which mirrors her PostEffect.getLevel).
+ */
+export interface TalentLevels {
+  readonly attack?: number;
+  readonly elemental?: number;
+  readonly burst?: number;
+}
+
 /** Everything `buildStats` needs to assemble the bag. */
 export interface BuildInput {
   readonly char: DbObjectChar;
@@ -133,12 +184,65 @@ export interface BuildInput {
   readonly enemy: BuildEnemy;
   /** The immutable EvalContext for condition-gated post-effects/buffs. */
   readonly settings?: EvalContext;
+  /**
+   * Base talent levels (attack / elemental / burst). When provided, their
+   * values are injected into the merged settings as `char_skill_attack`,
+   * `char_skill_elemental`, `char_skill_burst` — required for talent-scaled
+   * post-effects (`CharPostEffect.ratioFromTalent`).
+   */
+  readonly talentLevels?: TalentLevels;
+  /**
+   * Generic condition channel for equipped-object (weapon / artifact-set)
+   * conditions. Applied identically to `char.conditions` in the condition loop —
+   * later tasks (weapon passives, set shapes) pass the equipped objects'
+   * conditions in here. Her CalcSet.getBaseStats iterates every equipped object's
+   * `getConditions()`; this is that same set, minus the character's own.
+   */
+  readonly extraConditions?: readonly Condition[];
+  /**
+   * Equipped artifact sets + their piece counts (e.g. `[{ setKey: "NoblesseOblige",
+   * pieces: 4 }]`). Each is resolved against the set registry; conditions from every
+   * bonus tier `t <= pieces` enter the condition loop (the PIECE-COUNT gate), each
+   * then independently subject to its own gate (the CONDITION gate). Mirrors her
+   * `CalcObjectArtifacts`: `activeSets()` counts pieces per set, `getConditions(pieces)`
+   * collects the unlocked tiers' conditions, and `getSettings()` injects
+   * `set_pieces.<setKey-lowercased> = pieces` (read by `ConditionBooleanPiecesCount`).
+   * Absent / empty → the whole set path is a no-op (the base golden suite is untouched).
+   */
+  readonly setBonuses?: readonly EquippedSet[];
+  /**
+   * Optional set-registry override (DI seam). When provided, set lookups resolve
+   * against this map instead of the module barrel `getArtifactSet`. Production callers
+   * omit it (→ barrel); the golden harness injects a glob-built registry so a set file
+   * validates without a barrel edit. The override is complete: if `setRegistry` is
+   * present and a key is absent from it, that set is treated as unported (no-op).
+   */
+  readonly setRegistry?: Readonly<Record<string, DbObjectArtifactSet>>;
+}
+
+/** One equipped artifact set: its registry key + how many pieces are worn. */
+export interface EquippedSet {
+  /** Registry key (GOOD `goodId`), e.g. "NoblesseOblige". */
+  readonly setKey: string;
+  /** Equipped piece count (1–5; bonus tiers exist at 2 and 4). */
+  readonly pieces: number;
 }
 
 /** The assembled bag + the context the engine evaluates against. */
 export interface BuildResult {
   readonly stats: BuildStats;
   readonly context: DamageContext;
+  /**
+   * The settings AFTER condition-`.settings` propagation — the input settings
+   * extended with every active condition's contributed settings, exactly as her
+   * `CalcSet.getBaseStats` merges `condData.settings` into the running settings
+   * (CalcSet.js:360-363). The caller threads these into the `CompileContext` so
+   * condition-driven settings resolve at compile time: talent-level `_bonus`
+   * offsets (Hu Tao C3/C5), constellation-gated multiplier gates, infusions.
+   * Equals the input settings (+ system-canonical `weapon_type`/`set_pieces.*`)
+   * when no active condition carries `.settings` — i.e. the base-107 build.
+   */
+  readonly settings: EvalContext;
 }
 
 /**
@@ -147,6 +251,18 @@ export interface BuildResult {
  * Mirrors her PostEffectStatsHP: derive `ratio × getTotal(fromStat)`, optionally
  * capped at `capRatio × getTotal(capStat)`, gated by ALL `conditions` evaluating
  * true against the settings. Reads the PRE-GROUP snapshot (never mutates).
+ *
+ * When `offset` is set: `bonus = max(0, getTotal(fromStat) − offset) × ratio`,
+ * floored at 0 before capping. Mirrors `PostEffectStatsExceedRecharge` which
+ * subtracts 1 from the decimal recharge before multiplying (ExceedRecharge.js).
+ *
+ * `capUsesBase`: the stat-relative `cap` reads the BASE stat (`capStat_base`)
+ * × capRatio, not `getTotal(capStat)` — her `statCapPost` whose base is a
+ * `from: '<stat>_base'` term (Hu Tao's `atk_base × 4`, Hutao.js:155-158).
+ *
+ * Percent-stat post-effects (e.g. Furina's A4 `dmg_skill_furina`) land in the
+ * bag as RAW PERCENTS; `buildStats`'s `collectFeatureBonusKeys` emit loop applies
+ * the /100 at emit time — exactly as every other dmg_* feature-bonus key.
  */
 function toPostEffect(effect: CharPostEffect): PostEffect {
   const conditions: readonly Condition[] = effect.conditions ?? [];
@@ -154,10 +270,46 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
     priority: effect.priority ?? 1,
     contribute(readStats: Stats, settings: EvalContext): Record<string, number> {
       if (!conditions.every((c) => evaluate(c, settings))) return {};
-      let bonus = readStats.getTotal(effect.fromStat) * effect.ratio;
+      // Talent-table direct bonus — `bonus = table.getValue(effectiveLevel)`.
+      // Models ConditionLevels: contributes `dmg_skill_nahida` at burst talent level
+      // (Nahida.js:338-371). Skips the base-stat multiplication entirely.
+      // Source: raw/genshin_calc_pub/src/js/classes/Condition/Levels.js (getStats)
+      if (effect.talentBonus !== undefined) {
+        const { table, levelSetting } = effect.talentBonus;
+        const base = (settings[levelSetting] as number | undefined) ?? 1;
+        const bonus1 = (settings[`${levelSetting}_bonus`] as number | undefined) ?? 0;
+        const bonus2 = (settings[`${levelSetting}_bonus_2`] as number | undefined) ?? 0;
+        const effectiveLevel = base + bonus1 + bonus2;
+        return { [effect.toStat]: table.getValue(effectiveLevel) };
+      }
+      // Resolve ratio: talent-scaled (dynamic) or fixed constant.
+      let ratio: number;
+      if (effect.ratioFromTalent !== undefined) {
+        const { table, levelSetting, multi } = effect.ratioFromTalent;
+        // Mirror her PostEffect.getLevel: base || 1, then add _bonus and _bonus_2.
+        const base = (settings[levelSetting] as number | undefined) ?? 1;
+        const bonus1 = (settings[`${levelSetting}_bonus`] as number | undefined) ?? 0;
+        const bonus2 = (settings[`${levelSetting}_bonus_2`] as number | undefined) ?? 0;
+        const effectiveLevel = base + bonus1 + bonus2;
+        ratio = table.getValue(effectiveLevel) * multi;
+      } else {
+        ratio = effect.ratio ?? 0;
+      }
+      // Base stat: getTotal(fromStat), or max(getTotal(fromStat), getTotal(fromStatMax))
+      // when fromStatMax is set. Mirrors PostEffectStatsNahida.getBaseValueTree which
+      // returns CMax([makeStatTotalItem('mastery'), makeStatItem('party_max_mastery')]).
+      // Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/Nahida.js:6-11
+      const fromTotal0 = readStats.getTotal(effect.fromStat);
+      const fromTotal = effect.fromStatMax !== undefined
+        ? Math.max(fromTotal0, readStats.getTotal(effect.fromStatMax))
+        : fromTotal0;
+      const fromValue = effect.offset !== undefined ? Math.max(0, fromTotal - effect.offset) : fromTotal;
+      let bonus = fromValue * ratio;
       if (effect.cap !== undefined) {
-        const capValue = readStats.getTotal(effect.cap.capStat) * effect.cap.capRatio;
-        bonus = Math.min(bonus, capValue);
+        const capBase = effect.capUsesBase
+          ? readStats.get(`${effect.cap.capStat}_base`)
+          : readStats.getTotal(effect.cap.capStat);
+        bonus = Math.min(bonus, capBase * effect.cap.capRatio);
       }
       if (effect.capValue !== undefined) {
         bonus = Math.min(bonus, effect.capValue);
@@ -183,6 +335,55 @@ function collectFeatureBonusKeys(features: readonly Feature[]): readonly string[
   return [...keys];
 }
 
+/** What an equipped-set's `setBonuses` resolve to: gated conditions + piece-count settings + post-effects. */
+interface ResolvedSetBonuses {
+  /** Piece-count-gated conditions (tiers `t <= pieces`), still subject to their own gate. */
+  readonly conditions: readonly Condition[];
+  /** `set_pieces.<setKey-lowercased> → pieces`, the settings ConditionBooleanPiecesCount reads. */
+  readonly pieceSettings: Readonly<Record<string, number>>;
+  /** Set-level post-effects (HP→ATK-style folds), in equip order. */
+  readonly postEffects: readonly CharPostEffect[];
+}
+
+/**
+ * Resolve equipped sets into their piece-count-gated conditions, the
+ * `set_pieces.*` settings, and any set-level post-effects.
+ *
+ * The PIECE-COUNT gate lives here (which tiers enter): a set's tier-`t` conditions
+ * are included only when `pieces >= t`. The CONDITION gate stays in `conditionStats`
+ * (whether an entered condition fires). Mirrors her `ArtifactSet.getConditions(pieces)`
+ * (concats `bonus[i].conditions` for `i <= pieces`) + `CalcObjectArtifacts.getSettings`
+ * (injects `set_pieces.<name> = count`). Unknown set keys are skipped (a set not yet
+ * ported contributes nothing) — P2.A1 fills the registry.
+ *
+ * When `setRegistry` is provided it replaces the barrel lookup entirely (DI seam):
+ * the golden harness injects a glob-built registry so a set file validates without
+ * a barrel edit.
+ */
+function resolveSetBonuses(
+  setBonuses: readonly EquippedSet[],
+  setRegistry?: Readonly<Record<string, DbObjectArtifactSet>>
+): ResolvedSetBonuses {
+  const conditions: Condition[] = [];
+  const pieceSettings: Record<string, number> = {};
+  const postEffects: CharPostEffect[] = [];
+
+  for (const { setKey, pieces } of setBonuses) {
+    const set = setRegistry ? setRegistry[setKey] : getArtifactSet(setKey);
+    if (set === undefined) continue;
+    pieceSettings[`set_pieces.${setKey.toLowerCase()}`] = pieces;
+    // Piece-count gate: include each bonus tier unlocked at this piece count.
+    for (const tier of [2, 4] as const) {
+      if (pieces < tier) continue;
+      const bonus = set.bonus[tier];
+      if (bonus?.conditions) conditions.push(...bonus.conditions);
+    }
+    if (set.postEffects) postEffects.push(...set.postEffects);
+  }
+
+  return { conditions, pieceSettings, postEffects };
+}
+
 /** Resolve the enemy resistance input into a per-element fraction lookup. */
 function resistanceFraction(
   resistance: BuildEnemy["resistance"],
@@ -196,7 +397,45 @@ function resistanceFraction(
  * Assemble the BuildStats bag + DamageContext for a character under a build.
  */
 export function buildStats(input: BuildInput): BuildResult {
-  const settings = input.settings ?? {};
+  // Resolve equipped sets up front: their piece-count settings (`set_pieces.*`)
+  // must be visible to every condition's evaluate() — the global set buffs gate on
+  // them via ConditionBooleanPiecesCount. Merge them into the build settings (they
+  // add only `set_pieces.*` keys, which char/weapon conditions never read, so this
+  // is inert for the no-set path → the base golden suite is untouched).
+  const sets = resolveSetBonuses(input.setBonuses ?? [], input.setRegistry);
+
+  // Inject the character's weapon type as `weapon_type` so ConditionBooleanWeaponType
+  // conditions (e.g. GladiatorFinale 4pc) can read it from the EvalContext. Like the
+  // `set_pieces.*` keys, this is a SYSTEM-DERIVED canonical fact (the char's actual
+  // equipped weapon), so it is spread AFTER `input.settings` — a caller cannot override
+  // it. It is always present; no existing condition reads it, so this is inert for every
+  // current build — the base-107 golden suite and all existing set suites are untouched.
+  // NOTE (P2.C): char-feature weapon-type conditions would also need `weapon_type` in
+  // the COMPILE settings (CompileContext). Out of scope here — set conditions are
+  // resolved entirely within buildStats, so this injection suffices for set 4pc gates.
+  //
+  // Inject base talent levels (when provided) as `char_skill_<slot>` keys so that
+  // talent-scaled post-effects (`CharPostEffect.ratioFromTalent`) can read the base
+  // level from settings and combine it with the constellation `_bonus` offset (already
+  // propagated by the condition loop). Mirrors her `PostEffect.getLevel` which reads
+  // `settings[levelSetting] || 1` + `settings[levelSetting + '_bonus']`. These keys
+  // are NOT normally in the caller's settings (they are a compileFeature concern); this
+  // injection is opt-in (only when `input.talentLevels` is provided) and base-safe —
+  // no existing condition reads `char_skill_*`, so the 107/base + all other tests are
+  // untouched. Injected BEFORE `input.settings` so callers can override if needed.
+  const talentSettings: Record<string, number> = {};
+  if (input.talentLevels) {
+    if (input.talentLevels.attack !== undefined) talentSettings["char_skill_attack"] = input.talentLevels.attack;
+    if (input.talentLevels.elemental !== undefined) talentSettings["char_skill_elemental"] = input.talentLevels.elemental;
+    if (input.talentLevels.burst !== undefined) talentSettings["char_skill_burst"] = input.talentLevels.burst;
+  }
+
+  const baseSettings: EvalContext = { weapon_type: input.char.weapon };
+
+  const settings: EvalContext =
+    input.setBonuses && input.setBonuses.length > 0
+      ? { ...talentSettings, ...(input.settings ?? {}), ...baseSettings, ...sets.pieceSettings }
+      : { ...talentSettings, ...(input.settings ?? {}), ...baseSettings };
 
   // 1-2. Aggregate base stats (char then weapon), then concat the bonus block.
   const raw = new Stats();
@@ -213,9 +452,51 @@ export function buildStats(input: BuildInput): BuildResult {
   if (input.char.baseStats) raw.concat(input.char.baseStats);
   raw.concat(input.statBlock);
 
+  // 2b. Apply the conditional layer — every active condition's contributed stats,
+  // RAW, concatenated like the bonus block. Mirrors her CalcSet.getBaseStats loop
+  // (`cond.getData(settings).stats` over each equipped object's conditions). This
+  // is ADDITIVE on top of `baseStats` (always-on passives): each condition here is
+  // gated/toggleable, so at the base C0 build with no toggles `conditionStats`
+  // returns {} and the loop is a no-op (the 107/107 base golden suite is untouched).
+  // Runs BEFORE applyPostEffects so post-effects (HP→ATK) read condition-contributed
+  // stats — exactly her order. Stacks scale by getStackCount, refine resolves by
+  // weapon_refine: all handled inside the pure `conditionStats` resolver.
+  //
+  // Settings PROPAGATION (her CalcSet.getBaseStats:360-363): each active condition's
+  // `.settings` are merged into the running settings that subsequent conditions, the
+  // post-effects, AND the compile context read. `getData` returns `{stats, settings}`
+  // and she does `result.settings.concat(result.settings, condData.settings)`; here
+  // `conditionStats` is the stats half and `conditionSettings` the settings half. The
+  // stats for a condition are computed against the PRE-merge settings (its own settings
+  // don't gate itself), then merged in for the rest — exactly her order. Inert for the
+  // base build: every condition is a gated-off toggle → both halves return {} → no merge.
+  let merged: EvalContext = settings;
+  const applyCondition = (cond: Condition): void => {
+    raw.concat(conditionStats(cond, merged));
+    merged = { ...merged, ...conditionSettings(cond, merged) };
+  };
+  for (const cond of input.char.conditions ?? []) applyCondition(cond);
+  for (const cond of input.extraConditions ?? []) applyCondition(cond);
+  // Equipped artifact-set conditions (piece-count gated in resolveSetBonuses, then
+  // each subject to its own gate here) — the same loop as char/weapon conditions.
+  // Mirrors her CalcSet.getBaseStats iterating the artifacts' (+ buffs') getConditions.
+  for (const cond of sets.conditions) applyCondition(cond);
+  // Global character conditions (DB.Conditions.Character). In her engine,
+  // CalcObjectCharacter.getConditions() does `result.concat(DB.Conditions.Character)`,
+  // appending these onto EVERY character's condition list. Each is gated by its own
+  // boolean `name` — contributes nothing unless that toggle is set in settings. Inert
+  // for the base build and all constellation/set configs where no global toggle is set.
+  // Source: raw/genshin_calc_pub/src/js/db/Conditions/Character.js
+  //         raw/genshin_calc_pub/src/js/classes/Objects/Character.js (getConditions concat)
+  for (const cond of CHARACTER_CONDITIONS) applyCondition(cond);
+
   // 3. Derive — condition-gated post-effects (reads RAW percents via getTotal).
-  const effects = (input.char.postEffects ?? []).map(toPostEffect);
-  applyPostEffects(raw, effects, settings);
+  // Char post-effects then any set-level post-effects (HP→ATK-style folds), both
+  // through the same path — her getPostEffects concats every equipped object's. Reads
+  // the MERGED settings so a condition-contributed level bonus / infusion is visible
+  // to a post-effect's `levelSetting` (her PostEffect.getLevel adds `_bonus`).
+  const effects = [...(input.char.postEffects ?? []), ...sets.postEffects].map(toPostEffect);
+  applyPostEffects(raw, effects, merged);
 
   // 4. Read — emit the engine-facing bag.
   const out: Record<string, number> = {};
@@ -262,7 +543,8 @@ export function buildStats(input: BuildInput): BuildResult {
   // (all are percent stats). Absent → unset (engine reads 0). This stays in the
   // explicit-emit spirit: only keys the character's features actually reference.
   for (const key of collectFeatureBonusKeys(input.char.features)) {
-    if (raw.isSet(key)) out[key] = raw.get(key) / 100;
+    if (!raw.isSet(key)) continue;
+    out[key] = raw.get(key) / 100;
   }
 
   // Reaction scaling / bonus keys the reaction factories read inside their
@@ -275,6 +557,22 @@ export function buildStats(input: BuildInput): BuildResult {
   // lunarPost2, PostEffect/Stats.js getTree isPercent fold.)
   for (const key of REACTION_DERIVED_KEYS) {
     if (raw.isSet(key)) out[key] = raw.get(key);
+  }
+
+  // Condition-contributed per-reaction DMG bonuses (e.g. CrimsonWitch 4pc) → fractions.
+  // These arrive RAW (percent) from the condition loop, so divide by 100 here (unlike the
+  // pre-divided REACTION_DERIVED_KEYS above). Absent → unset (engine reads 0). No-op for
+  // every build that contributes no `dmg_reaction_*` (the base suite is untouched).
+  for (const key of REACTION_BONUS_PERCENT_KEYS) {
+    if (raw.isSet(key)) out[key] = raw.get(key) / 100;
+  }
+
+  // Condition-contributed reaction CRIT (Nahida C2 makes burning/bloom crittable) →
+  // fractions. Read by cTransformativeDamage's reaction-specific crit keys; absent →
+  // unset (engine reads 0) so every non-crit reaction and every char without the grant
+  // is unchanged (crit === normal === avg).
+  for (const key of ["crit_rate_burning", "crit_dmg_burning", "crit_rate_bloom", "crit_dmg_bloom"]) {
+    if (raw.isSet(key)) out[key] = raw.get(key) / 100;
   }
 
   // Enemy resistance (percent) → enemy_res_<element> fractions. Fold any
@@ -292,6 +590,13 @@ export function buildStats(input: BuildInput): BuildResult {
 
   // DEF-ignore / DEF-reduce (source-local + team-wide), default 0, as fractions.
   out["enemy_def_ignore"] = raw.get("enemy_def_ignore") / 100;
+  // Per-damage-type DEF-ignore — her getStatsDefIgnore sums the base key plus a
+  // per-type `enemy_def_ignore_<type>` (Damage.js:128-137). 0 for every base build;
+  // constellation-gated sources (Raiden C2 burst, Yae Miko C6 skill) land here as
+  // fractions and compileFeature passes the matching key to cMultiplierDefence.
+  for (const t of ["normal", "charged", "plunge", "skill", "burst"]) {
+    out[`enemy_def_ignore_${t}`] = raw.get(`enemy_def_ignore_${t}`) / 100;
+  }
   out["enemy_def_reduce"] = raw.get("enemy_def_reduce") / 100;
 
   const stats = out as BuildStats;
@@ -301,5 +606,5 @@ export function buildStats(input: BuildInput): BuildResult {
     characterLevel: input.levels.charLevel,
   };
 
-  return { stats, context };
+  return { stats, context, settings: merged };
 }

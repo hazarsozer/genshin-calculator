@@ -1,0 +1,245 @@
+{
+  "defaultWeapon": "weapon_name.solar_pearl",
+  "element": "electro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 4346.110231639236,
+      "category": "attack",
+      "crit": 5544.780984970065,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2772.3904924850326
+    },
+    "attack.normal_hit_1": {
+      "average": 1328.864266103485,
+      "category": "attack",
+      "crit": 1695.3691741770879,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 847.6845870885439
+    },
+    "attack.normal_hit_2": {
+      "average": 1290.6933287839997,
+      "category": "attack",
+      "crit": 1646.670573325508,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 823.335286662754
+    },
+    "attack.normal_hit_3": {
+      "average": 1906.216214254006,
+      "category": "attack",
+      "crit": 2431.9565898471665,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1215.9782949235832
+    },
+    "attack.plunge": {
+      "average": 1640.7742288057864,
+      "category": "attack",
+      "crit": 2093.304877147542,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1046.652438573771
+    },
+    "attack.plunge_high": {
+      "average": 4097.962753058519,
+      "category": "attack",
+      "crit": 5228.193658057359,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2614.0968290286796
+    },
+    "attack.plunge_low": {
+      "average": 3280.8532142942813,
+      "category": "attack",
+      "crit": 4185.722760703072,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2092.861380351536
+    },
+    "burst.burst_dmg": {
+      "average": 12464.891309011173,
+      "category": "burst",
+      "crit": 15902.747198350608,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 7951.373599175304
+    },
+    "burst.miko_thunderbolt_dmg": {
+      "average": 16003.769835418745,
+      "category": "burst",
+      "crit": 20417.659456786947,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 10208.829728393473
+    },
+    "other.yae_miko_skill_bonus": {
+      "average": 8.25,
+      "category": "other",
+      "crit": 8.25,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 8.25
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.hyperbloom": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.miko_sesshou_sakura_1_dmg": {
+      "average": 2537.3198701908163,
+      "category": "skill",
+      "crit": 3237.1206019121946,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1618.5603009560973
+    },
+    "skill.miko_sesshou_sakura_2_dmg": {
+      "average": 3171.649837738521,
+      "category": "skill",
+      "crit": 4046.400752390244,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2023.200376195122
+    },
+    "skill.miko_sesshou_sakura_3_dmg": {
+      "average": 3964.562297173151,
+      "category": "skill",
+      "crit": 5058.000940487805,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2529.0004702439023
+    },
+    "stats.atk": {
+      "average": 2029.882261428,
+      "category": "stats",
+      "crit": 2029.882261428,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2029.882261428
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 56.763999999999996,
+      "category": "stats",
+      "crit": 56.763999999999996,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 56.763999999999996
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1444.7302338,
+      "category": "stats",
+      "crit": 1444.7302338,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1444.7302338
+    },
+    "stats.hp": {
+      "average": 23598.286118,
+      "category": "stats",
+      "crit": 23598.286118,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23598.286118
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 49,
+  "key": "YaeMiko",
+  "schema": 1,
+  "slug": "yae_miko",
+  "weaponType": "catalyst"
+}

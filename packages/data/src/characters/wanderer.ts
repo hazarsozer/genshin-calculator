@@ -35,7 +35,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Wanderer)
  */
 
-import type { DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
 import { Wanderer as WandererStatTable } from "../generated/charTables.js";
 import { Wanderer as WandererTalents } from "../generated/charTalentTables.js";
 
@@ -175,6 +175,25 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Ostentatious Plumage": ConditionStatic with atk_speed_normal + text_percent_dmg,
+//   subCondition on ConditionBoolean(windfavored) — speed stat + display, SKIP.
+// C2 "Isle Amidst White Waves": ConditionNumber toggle (dmg_burst_wanderer) — SKIP.
+// C3 "Wending Gales": +3 burst talent (char_skill_burst_bonus).
+// C4 "Set Adrift into Spring": ConditionStatic, no real stats — SKIP.
+// C5 "Stirring for Hope": +3 skill talent (char_skill_elemental_bonus).
+// C6 "Curtains' Melancholic Sway": ConditionStatic with text_percent_dmg — display, SKIP.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Wanderer.js:375-440
+
+const constellationConditions: readonly Condition[] = [
+  // C3 — +3 Elemental Burst (Kyougen: Five Ceremonial Plays).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 — +3 Elemental Skill (Hanega: Song of the Wind).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -189,4 +208,5 @@ export const wanderer: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

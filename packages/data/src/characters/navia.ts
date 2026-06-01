@@ -36,7 +36,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Navia)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Navia as NaviaStatTable } from "../generated/charTables.js";
 import { Navia as NaviaTalents } from "../generated/charTalentTables.js";
 
@@ -178,6 +178,32 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "A Lady's Rules..." (ConditionStatic description-only) → SKIP.
+// C2 "The President's Pursuit of Victory": ConditionStatic with text_percent display
+//   stats, sub-conditioned on ConditionBoolean{name:'navia_shrapnel_charge'} toggle.
+//   The actual crit_rate_navia effect is in ConditionStaticNavia (char conditions);
+//   here only display text keys → SKIP (no always-on REAL stats; shrapnel toggle off).
+// C3 "Diamond Disarray" → +3 Elemental Skill (Ceremonial Crystalshot) levels.
+//   raw: constellation[2]: Condition{ settings:{char_skill_elemental_bonus:3} }
+// C4 "Whirling Chaos" (ConditionBoolean enemy_res_geo: -20 toggle) → SKIP (off).
+// C5 "Blazing Breakthrough" → +3 Elemental Burst (As the Sunlit Sky's Singing Salute) levels.
+//   raw: constellation[4]: Condition{ settings:{char_skill_burst_bonus:3} }
+// C6 "The Flexible Finesse...": ConditionStatic with text_percent display key,
+//   sub-conditioned on ConditionBooleanValue(navia_shrapnel_charge ≥ 4) toggle.
+//   In fixed build shrapnel=0 → inert → SKIP.
+//
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Navia.js:356-429
+
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 Elemental Skill (Ceremonial Crystalshot) levels.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 Elemental Burst (As the Sunlit Sky's Singing Salute) levels.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -192,4 +218,5 @@ export const navia: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

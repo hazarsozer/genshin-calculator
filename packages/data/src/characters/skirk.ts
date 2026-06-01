@@ -30,7 +30,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Skirk)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Skirk as SkirkStatTable } from "../generated/charTables.js";
 import { Skirk as SkirkTalents } from "../generated/charTalentTables.js";
 
@@ -157,6 +157,93 @@ const features: readonly Feature[] = [
     element: "cryo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.skirk_final_dmg") }],
   },
+  // --- C1 "Far to Fall": Crystal Blade coordinated attack (cryo charged DMG) ---
+  // FeatureDamageCharged, category:'other', fixed 500% ATK. Raw Skirk.js:506-517
+  // (FeatureDamageCharged, ValueTable([C1Dmg=500]), ConditionConstellation(1)).
+  // category 'other' → omit category (loader derives "other." prefix from absent category).
+  {
+    name: "skirk_crystal_blade_dmg",
+    damageType: "charged",
+    element: "cryo",
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      {
+        leveling: "",
+        values: { getValue: (_level: number) => 500 },
+        source: "constellation1",
+      },
+    ],
+  },
+  // --- C6 "To the Source": burst coordinated attack (cryo burst DMG) ---
+  // FeatureDamageBurst, category:'other', 750% ATK via FeatureMultiplierSkirkBurst.
+  // At 0 skirk_serpents_subtlety stacks the SkirkBurst scaling resolves to 1 → plain 750%.
+  // Raw Skirk.js:518-529 (ValueTable([C6BurstDmg=750]), ConditionConstellation(6)).
+  {
+    name: "skirk_burst_coordinated_attack_dmg",
+    damageType: "burst",
+    element: "cryo",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "",
+        values: { getValue: (_level: number) => 750 },
+        source: "constellation6",
+      },
+    ],
+  },
+  // --- C6 "To the Source": normal coordinated attack (cryo normal DMG) ---
+  // FeatureDamageNormal, category:'other', 180% ATK via FeatureMultiplierSkirkNormal.
+  // Non-stance: SkirkNormal scaling resolves to 1 → plain 180%.
+  // Carries damageBonuses:['dmg_normal_skirk'] (same as the stance-mode normals).
+  // Raw Skirk.js:530-542 (ValueTable([C6NormalDmg=180]), ConditionConstellation(6)).
+  {
+    name: "skirk_normal_coordinated_attack_dmg",
+    damageType: "normal",
+    element: "cryo",
+    damageBonuses: ["dmg_normal_skirk"],
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "",
+        values: { getValue: (_level: number) => 180 },
+        source: "constellation6",
+      },
+    ],
+  },
+  // --- C6 "To the Source": charged coordinated attack (cryo charged DMG) ---
+  // FeatureDamageCharged, category:'other', 180% ATK (plain FeatureMultiplier).
+  // Raw Skirk.js:543-554 (ValueTable([C6NormalDmg=180]), ConditionConstellation(6)).
+  {
+    name: "skirk_charged_coordinated_attack_dmg",
+    damageType: "charged",
+    element: "cryo",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "",
+        values: { getValue: (_level: number) => 180 },
+        source: "constellation6",
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: skirk_crystal_blade_dmg feature (cons-added, gated above).
+// C2: ConditionBoolean toggle (atk_percent:70, gated by stanceCond) → SKIP (toggle OFF).
+// C3: +3 levels to Burst (Havoc: Ruin). Raw cons[2] settings char_skill_burst_bonus:3.
+// C4: ConditionBoolean+ConditionLevels (atk stacks) → SKIP (toggle OFF).
+// C5: +3 levels to Skill (Warp). Raw cons[4] settings char_skill_elemental_bonus:3.
+// C6: skirk_burst/normal/charged_coordinated_attack_dmg features (cons-added, gated above).
+//     Raw cons[5] ConditionStatic with text_percent_dmg_1/2 → display-only, SKIP.
+// Raw: raw/genshin_calc_pub/src/js/db/Char/Skirk.js constellation array (Skirk.js:649-714).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Havoc: Ruin (elemental burst). Raw cons[2].
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Warp (elemental skill). Raw cons[4].
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -174,4 +261,5 @@ export const skirk: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

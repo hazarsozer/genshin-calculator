@@ -10,7 +10,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Xiangling)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Xiangling as XianglingStatTable } from "../generated/charTables.js";
 import { Xiangling as XianglingTalents } from "../generated/charTalentTables.js";
 
@@ -154,6 +154,47 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.xiangling_pyronado") }],
   },
+  // --- C2 "Oil Meets Fire": cons-added pyro attack hit (75% ATK). Fixed value,
+  // not talent-leveled. Raw: db/Char/Xiangling.js features array, FeatureDamage
+  // with StatTable('xiangling_oil_meets_fire', [75]) + ConditionConstellation(2). ---
+  {
+    name: "xiangling_oil_meets_fire",
+    category: "attack",
+    element: "pyro",
+    // Raw is base FeatureDamage (NOT FeatureDamageNormal) → it carries no damage
+    // TYPE, so it gets dmg_all + dmg_pyro but NOT dmg_normal. Empty damageType
+    // suppresses the dmg_<type> bonus (without it, ours is +8% = dmg_normal too high).
+    damageType: "",
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: { getValue: (_level: number) => 75 },
+      },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Crispy Outside, Tender Inside": ConditionBoolean toggle → SKIP (toggle OFF).
+// C2 "Oil Meets Fire": ConditionStatic with text_percent_dmg:75 (display-only) → SKIP.
+//   The actual C2 damage comes from the xiangling_oil_meets_fire feature above.
+// C3 "Slow-Bake It": +3 levels to Pyronado (burst). Raw cons[2] settings char_skill_burst_bonus:3.
+// C4 "Slowbake": ConditionStatic with text_percent:40 (display-only) → SKIP.
+// C5 "Guoba Mad": +3 levels to Guoba Attack (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
+// C6 "Condensed Pyronado": ConditionBoolean toggle (dmg_pyro:15) → SKIP (toggle OFF).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Pyronado (elemental burst).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to Guoba Attack (elemental skill).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // A4 "Beware, It's Super Hot!" — +10% ATK while Pyronado is active.
+  // Raw: raw/genshin_calc_pub/src/js/db/Char/Xiangling.js:305-317
+  // (ConditionBoolean { name:'xiangling_beware', stats:{ atk_percent:10 } }; asc-4 gate
+  // always true at oracle asc 6 → no gate needed here).
+  { type: "boolean", name: "xiangling_beware", stats: { atk_percent: 10 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -171,4 +212,5 @@ export const xiangling: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

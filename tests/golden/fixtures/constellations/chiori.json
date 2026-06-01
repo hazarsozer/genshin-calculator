@@ -1,0 +1,245 @@
+{
+  "defaultWeapon": "weapon_name.the_alley_flash",
+  "element": "geo",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 1603.1700663586998,
+      "category": "attack",
+      "crit": 2481.6874092239937,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1240.8437046119968
+    },
+    "attack.charged_hit_2": {
+      "average": 1603.1700663586998,
+      "category": "attack",
+      "crit": 2481.6874092239937,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1240.8437046119968
+    },
+    "attack.charged_hit_total": {
+      "average": 3206.3401327173997,
+      "category": "attack",
+      "crit": 4963.374818447987,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2481.6874092239937
+    },
+    "attack.normal_hit_1": {
+      "average": 1361.3295982011282,
+      "category": "attack",
+      "crit": 2107.321359444471,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1053.6606797222355
+    },
+    "attack.normal_hit_2": {
+      "average": 1290.3416169254888,
+      "category": "attack",
+      "crit": 1997.4328435379086,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 998.7164217689543
+    },
+    "attack.normal_hit_3": {
+      "average": 1676.0366633890585,
+      "category": "attack",
+      "crit": 2594.4839990542705,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1297.2419995271352
+    },
+    "attack.normal_hit_3_1": {
+      "average": 838.0183316945293,
+      "category": "attack",
+      "crit": 1297.2419995271352,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 648.6209997635676
+    },
+    "attack.normal_hit_4": {
+      "average": 2069.740367286263,
+      "category": "attack",
+      "crit": 3203.932457099478,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1601.966228549739
+    },
+    "attack.plunge": {
+      "average": 1635.614268176695,
+      "category": "attack",
+      "crit": 2531.9106318524696,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1265.9553159262348
+    },
+    "attack.plunge_high": {
+      "average": 4085.0753453371954,
+      "category": "attack",
+      "crit": 6323.646045413615,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3161.8230227068075
+    },
+    "attack.plunge_low": {
+      "average": 3270.536126572041,
+      "category": "attack",
+      "crit": 5062.749421938144,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2531.374710969072
+    },
+    "burst.burst_dmg": {
+      "average": 22990.02006676743,
+      "category": "burst",
+      "crit": 35588.266357225126,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 17794.133178612563
+    },
+    "reaction.crystalize": {
+      "average": 2450.4199868011824,
+      "category": "reaction",
+      "crit": 2450.4199868011824,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2450.4199868011824
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "skill.chiori_kinu_dmg": {
+      "average": 10073.333401959742,
+      "category": "skill",
+      "crit": 15593.395359070808,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 7796.697679535404
+    },
+    "skill.chiori_sode_dmg": {
+      "average": 5925.490236446907,
+      "category": "skill",
+      "crit": 9172.58550533577,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4586.292752667885
+    },
+    "skill.chiori_upward_sweep_dmg": {
+      "average": 10776.76879260227,
+      "category": "skill",
+      "crit": 16682.304632511255,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 8341.152316255628
+    },
+    "stats.atk": {
+      "average": 2140.43007987,
+      "category": "stats",
+      "crit": 2140.43007987,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2140.43007987
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 29.2,
+      "category": "stats",
+      "crit": 29.2,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 29.2
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1829.0074188,
+      "category": "stats",
+      "crit": 1829.0074188,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1829.0074188
+    },
+    "stats.hp": {
+      "average": 24663.680765099998,
+      "category": "stats",
+      "crit": 24663.680765099998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 24663.680765099998
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 84,
+  "key": "Chiori",
+  "schema": 1,
+  "slug": "chiori",
+  "weaponType": "sword"
+}

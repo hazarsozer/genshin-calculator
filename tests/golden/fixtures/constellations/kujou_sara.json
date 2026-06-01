@@ -1,0 +1,272 @@
+{
+  "defaultWeapon": "weapon_name.alley_hunter",
+  "element": "electro",
+  "features": {
+    "attack.aimed": {
+      "average": 1424.4381422720394,
+      "category": "attack",
+      "crit": 2589.8875314037077,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1294.9437657018539
+    },
+    "attack.charged_aimed": {
+      "average": 3802.6359737905614,
+      "category": "attack",
+      "crit": 8523.149596427122,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3278.1344601642772
+    },
+    "attack.normal_hit_1": {
+      "average": 1118.323592481813,
+      "category": "attack",
+      "crit": 2033.3156226942053,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1016.6578113471027
+    },
+    "attack.normal_hit_2": {
+      "average": 1173.066705400503,
+      "category": "attack",
+      "crit": 2132.848555273642,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1066.424277636821
+    },
+    "attack.normal_hit_3": {
+      "average": 1470.2436041019637,
+      "category": "attack",
+      "crit": 2673.1701892762976,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1336.5850946381488
+    },
+    "attack.normal_hit_4": {
+      "average": 1527.5935319215441,
+      "category": "attack",
+      "crit": 2777.442785311898,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1388.721392655949
+    },
+    "attack.normal_hit_5": {
+      "average": 1759.6000581007545,
+      "category": "attack",
+      "crit": 3199.2728329104625,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1599.6364164552313
+    },
+    "attack.plunge": {
+      "average": 1599.541623186108,
+      "category": "attack",
+      "crit": 2908.257496702014,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1454.128748351007
+    },
+    "attack.plunge_high": {
+      "average": 3994.981075826805,
+      "category": "attack",
+      "crit": 7263.601956048736,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3631.800978024368
+    },
+    "attack.plunge_low": {
+      "average": 3198.4054744979844,
+      "category": "attack",
+      "crit": 5815.282680905426,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2907.641340452713
+    },
+    "burst.sara_stormcluster_dmg": {
+      "average": 1737.7392067776739,
+      "category": "burst",
+      "crit": 3894.9327048465107,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1498.051040325581
+    },
+    "burst.sara_titanbreaker_dmg": {
+      "average": 20861.019317002792,
+      "category": "burst",
+      "crit": 46757.45708983385,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 17983.637342243786
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.hyperbloom": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.sara_ambush_dmg": {
+      "average": 5170.2889649472945,
+      "category": "skill",
+      "crit": 11588.578714537038,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4457.145659437322
+    },
+    "skill.sara_atk_bonus": {
+      "average": 1489.1128315599,
+      "category": "skill",
+      "crit": 1489.1128315599,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1489.1128315599
+    },
+    "skill.sara_dark_wings_dmg": {
+      "average": 1551.0866894841881,
+      "category": "skill",
+      "crit": 3476.573614361111,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1337.1436978311965
+    },
+    "skill.sara_decorum": {
+      "average": 2.4,
+      "category": "skill",
+      "crit": 2.4,
+      "damageType": "",
+      "format": "decimal",
+      "isReacted": false,
+      "normal": 2.4
+    },
+    "stats.atk": {
+      "average": 2765.9100467808403,
+      "category": "stats",
+      "crit": 2765.9100467808403,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2765.9100467808403
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1503.919803,
+      "category": "stats",
+      "crit": 1503.919803,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1503.919803
+    },
+    "stats.hp": {
+      "average": 22795.9252589,
+      "category": "stats",
+      "crit": 22795.9252589,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 22795.9252589
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "id": 42,
+  "key": "Sara",
+  "schema": 1,
+  "slug": "kujou_sara",
+  "weaponType": "bow"
+}

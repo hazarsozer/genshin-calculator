@@ -15,7 +15,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Tighnari)
  */
 
-import type { DbObjectChar, Feature, TalentResolver, CharPostEffect } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver, CharPostEffect } from "@genshin/types";
 import { Tighnari as TighnariStatTable } from "../generated/charTables.js";
 import { Tighnari as TighnariTalents } from "../generated/charTalentTables.js";
 
@@ -96,6 +96,9 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "charged",
     damageBonuses: ["dmg_charged_tighnari"],
+    // C1 "Beginnings Determined at the Roots": +15% Charged crit rate (ConditionStatic,
+    // auto-active, NOT display-only). crit_rate_charged is type-specific → wired per charged hit.
+    critRateBonuses: ["crit_rate_charged"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
   },
   // raw: FeatureDamageChargedAimed tighnari_charged_dmg — dendro charged (Tighnari.js:198-207)
@@ -105,6 +108,9 @@ const features: readonly Feature[] = [
     damageType: "charged",
     element: "dendro",
     damageBonuses: ["dmg_charged_tighnari"],
+    // C1 "Beginnings Determined at the Roots": +15% Charged crit rate (ConditionStatic,
+    // auto-active, NOT display-only). crit_rate_charged is type-specific → wired per charged hit.
+    critRateBonuses: ["crit_rate_charged"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.tighnari_charged_dmg") }],
   },
   // raw: FeatureDamageChargedAimed tighnari_wreath_arrow_dmg — dendro wreath arrow (Tighnari.js:208-217)
@@ -114,6 +120,9 @@ const features: readonly Feature[] = [
     damageType: "charged",
     element: "dendro",
     damageBonuses: ["dmg_charged_tighnari"],
+    // C1 "Beginnings Determined at the Roots": +15% Charged crit rate (ConditionStatic,
+    // auto-active, NOT display-only). crit_rate_charged is type-specific → wired per charged hit.
+    critRateBonuses: ["crit_rate_charged"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.tighnari_wreath_arrow_dmg") }],
   },
   // raw: FeatureDamageCharged tighnari_clusterbloom_arrow_dmg — dendro charged (Tighnari.js:218-227)
@@ -123,7 +132,28 @@ const features: readonly Feature[] = [
     damageType: "charged",
     element: "dendro",
     damageBonuses: ["dmg_charged_tighnari"],
+    // C1 "Beginnings Determined at the Roots": +15% Charged crit rate (ConditionStatic,
+    // auto-active, NOT display-only). crit_rate_charged is type-specific → wired per charged hit.
+    critRateBonuses: ["crit_rate_charged"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.tighnari_clusterbloom_arrow_dmg") }],
+  },
+  // --- C6 "Karma Adjudged from the Leaden Fruit": extra clusterbloom arrow, fixed 150% ATK.
+  // Raw FeatureDamageCharged tighnari_clusterbloom_arrow_c6_dmg with ValueTable([150])
+  // and ConditionConstellation({constellation:6}). Tighnari.js:228-239.
+  {
+    name: "tighnari_clusterbloom_arrow_c6_dmg",
+    category: "attack",
+    damageType: "charged",
+    element: "dendro",
+    damageBonuses: ["dmg_charged_tighnari"],
+    critRateBonuses: ["crit_rate_charged"],
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: { getValue: (_level: number) => 150 },
+      },
+    ],
   },
   // --- Plunge attacks ---
   {
@@ -172,6 +202,28 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic stats:{crit_rate_charged:15} — display-only marker, SKIP.
+// C2: ConditionBoolean toggle stats:{dmg_dendro:20} — toggle OFF, SKIP.
+// C3: +3 levels to Fashioner's Tanglevine Shaft (burst). Raw cons[2] settings char_skill_burst_bonus:3.
+// C4: ConditionBoolean toggles (mastery) — toggles OFF, SKIP.
+// C5: +3 levels to Vijnana-Phala Mine (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
+// C6: cons-ADDED feature tighnari_clusterbloom_arrow_c6_dmg handled above in features array.
+//     Raw cons[5] has ConditionStatic({stats:{text_percent_dmg:150}}) — display only, SKIP.
+// Raw: db/Char/Tighnari.js constellation array (Tighnari.js:327-408).
+const constellationConditions: readonly Condition[] = [
+  // C1 "Beginnings Determined at the Roots": +15% Charged Attack crit rate.
+  // ConditionStatic (auto-active, NOT display-only). Consumed by the charged hits
+  // via critRateBonuses:["crit_rate_charged"]. Raw Tighnari.js C1 crit_rate_charged:15.
+  { type: "constellation", constellation: 1, stats: { crit_rate_charged: 15 } },
+  // C3: +3 levels to burst talent.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5: +3 levels to elemental skill talent.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // Post-effects
 // ---------------------------------------------------------------------------
 
@@ -209,5 +261,6 @@ export const tighnari: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
   postEffects: a4PostEffects,
 };

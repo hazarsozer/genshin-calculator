@@ -21,7 +21,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Gorou)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Gorou as GorouStatTable } from "../generated/charTables.js";
 import { Gorou as GorouTalents } from "../generated/charTalentTables.js";
 
@@ -184,6 +184,29 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Rushing Hound: Swift as the Wind": ConditionStatic, no real stats → SKIP.
+// C2 "Steady Hound: Steadfast as a Clock": ConditionStatic, no real stats → SKIP.
+// C4 "Lapping Hound: Warm as Water": FeatureHeal gated by ConditionConstellation(4)
+//   (heal feature, not a damage triple → not in golden suite) → SKIP.
+// C6 "Inviolable Essence": Condition(crit_dmg_geo) gated by ConditionBoolean toggles
+//   (gorou_generals_war_banner + ConditionElementsCount) → OFF at baseline → SKIP.
+//
+// Always-on: C3 (+3 skill talent), C5 (+3 burst talent).
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Gorou.js — char.conditions C3 + constellation C5.
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Mauling Hound: Fierce as Fire" — +3 Elemental Skill.
+  // Raw char.conditions: new Condition({ settings: { char_skill_elemental_bonus: 3 },
+  //   condition: new ConditionConstellation({ constellation: 3 }) }).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Flowerfall" — +3 Elemental Burst.
+  // Raw constellation[4]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -198,4 +221,5 @@ export const gorou: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

@@ -14,6 +14,7 @@ import {
   minimalHuTao,
   blackcliffPoleStatTable,
 } from "./fixtures/hu-tao.js";
+import type { DbObjectArtifactSet } from "@genshin/types";
 
 // The fixed canonical build (tests/golden/fixtures/_manifest.json).
 const FIXED = {
@@ -174,14 +175,91 @@ describe("buildStats — condition-gated HP→ATK post-effect (Paramita)", () =>
     expect(stats.atk_total).toBeCloseTo(1754.7075883379998 + 1800.370862122176, 3);
   });
 
-  it("caps the HP→ATK bonus at capRatio × atk_total", () => {
-    // Inflate HP so HP×0.06256 exceeds the 400%-of-ATK cap and the clamp bites.
-    // atk_total = 1754.7075883379998 → cap = 4 × that = 7018.830353…
-    // HP bonus uncapped at hp_base 200000 ≈ (200000+charHP)×0.06256 ≫ cap.
+  it("caps the HP→ATK bonus at capRatio × atk_BASE (capUsesBase)", () => {
+    // Inflate HP so HP×0.06256 exceeds the 400%-of-atk_base cap and the clamp bites.
+    // Her statCapPost base is `from: 'atk_base'` × atk_percent[400] = 4 × atk_base
+    // (Hutao.js:155-158) — NOT getTotal('atk'). atk_base 1487.0403291 → cap =
+    // 4 × 1487.0403291 = 5948.1613164. HP bonus uncapped at hp_base 200000 ≫ cap.
     const bigHp = { ...FIXED.statBlock, hp_base: 200000 };
     const { stats } = build({ hutao_paramita_papilio: true }, bigHp);
     const atkTotal = 1754.7075883379998;
-    const cap = atkTotal * 4;
+    const atkBase = atkTotal / 1.18; // char+weapon+bonus atk_base = 1487.0403291
+    const cap = atkBase * 4;
     expect(stats.atk_total).toBeCloseTo(atkTotal + cap, 2);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// setRegistry DI seam (P2.A1 pre-step)
+// ---------------------------------------------------------------------------
+
+/**
+ * A minimal throwaway DbObjectArtifactSet not present in the barrel registry.
+ * Gives +10% normal DMG (2pc static) — a stat easy to verify in the bag.
+ */
+const THROWAWAY_SET: DbObjectArtifactSet = {
+  name: "artifact_set.throwaway",
+  goodId: "ThrowawaySetNotInBarrel",
+  bonus: {
+    2: {
+      conditions: [
+        {
+          type: "static",
+          title: "test_bonus",
+          stats: { dmg_normal: 10 },
+        },
+      ],
+    },
+  },
+};
+
+const SEAM_BUILD = {
+  char: minimalHuTao,
+  weaponStatTable: blackcliffPoleStatTable,
+  statBlock: {
+    atk_base: 871,
+    atk_percent: 18,
+    crit_dmg_base: 50,
+    crit_rate_base: 5,
+    def_base: 876,
+    hp_base: 13226,
+    mastery_base: 55,
+    recharge_base: 100,
+  } as const,
+  levels: { charLevel: 90, ascension: 6, weaponLevel: 90, weaponAscension: 6 },
+  enemy: { level: 90, resistance: 10 },
+  settings: {},
+} as const;
+
+describe("buildStats — setRegistry DI seam", () => {
+  it("a set NOT in the barrel resolves when passed via setRegistry (bonus lands in bag)", () => {
+    const { stats } = buildStats({
+      ...SEAM_BUILD,
+      setBonuses: [{ setKey: "ThrowawaySetNotInBarrel", pieces: 2 }],
+      setRegistry: { ThrowawaySetNotInBarrel: THROWAWAY_SET },
+    });
+    // The +10% dmg_normal lands as fraction 0.10 in the bag.
+    expect(stats["dmg_normal"]).toBeCloseTo(0.10, 10);
+  });
+
+  it("omitting setRegistry still uses the barrel (barrel sets still resolve)", () => {
+    // NoblesseOblige is in the barrel — resolves without setRegistry.
+    const { stats } = buildStats({
+      ...SEAM_BUILD,
+      // CrimsonWitch's 2pc is an unconditional dmg_pyro:15 → 0.15 fraction in the bag.
+      setBonuses: [{ setKey: "CrimsonWitch", pieces: 2 }],
+    });
+    expect(stats["dmg_pyro"]).toBeCloseTo(0.15, 10);
+  });
+
+  it("barrel set is NOT resolved when ThrowawaySet is in setRegistry but barrel set is not (override semantics)", () => {
+    // With setRegistry present, lookups ONLY use it (override, not augment).
+    // CrimsonWitch is not in this one-set registry → no dmg_pyro contribution.
+    const { stats } = buildStats({
+      ...SEAM_BUILD,
+      setBonuses: [{ setKey: "CrimsonWitch", pieces: 2 }],
+      setRegistry: { ThrowawaySetNotInBarrel: THROWAWAY_SET },
+    });
+    expect(stats["dmg_pyro"]).toBeUndefined();
   });
 });

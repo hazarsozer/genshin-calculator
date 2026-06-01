@@ -15,6 +15,7 @@
  */
 
 import type {
+  CharMultiplier,
   CharPostEffect,
   Condition,
   DbObjectChar,
@@ -87,22 +88,29 @@ const defToAtk: CharPostEffect = {
 
 /**
  * A4 adds `0.35 × DEF` to charged-attack base damage. Her data models it as a
- * char-level FeatureMultiplier `{ scaling:'def*', source:'ascension4',
- * values:[35], target:{damageTypes:['charged']} }` — a base term, not a separate
- * factor. We attach it numerically faithfully as a `scaling:"def"` multiplier on
- * each charged feature (compileFeature's baseDamageTerm sums it into cBaseDamage
- * as `0.35 × def_total`). The general char-level *targeted* multiplier mechanism
- * her data uses is deferred to P1.9; this per-feature DEF term is the same number.
+ * char-level targeted multiplier (P2.3 generalized this from the former per-feature
+ * hack): `{ scaling:'def*', source:'ascension4', values:[35],
+ * target:{damageTypes:['charged']} }`. `compileFeature` sums it into the base term
+ * (cBaseDamage) of EVERY charged feature as `0.35 × def_total` — identical to her
+ * `getMultipliers` merging `char.multipliers` into each feature (Feature2.js:121).
+ *
+ * Always-on (no `condition`): A4 is unlocked at ascension 4 and the canonical build
+ * is ascension 6, so it is unconditionally active — matching her `defToAtk`
+ * post-effect, which likewise does not re-gate on ascension. (Her raw entry gates on
+ * `ConditionAscensionChar({ascension:4})`; we have no ascension condition variant and
+ * the baseline is always ≥ A4, so the gate is vacuously true and omitted.)
  *
  * Source: raw/genshin_calc_pub/src/js/db/Char/Itto.js:124 (A4ChargedDefBonus: 35),
  *         :320-330 (the def* charged-targeted char-level multiplier).
  */
 const A4_CHARGED_DEF_BONUS = 35;
-const a4ChargedDefTerm = {
+const a4ChargedDefMultiplier: CharMultiplier = {
   leveling: "",
-  scaling: "def",
+  scaling: "def*",
+  source: "ascension4",
   values: { getValue: () => A4_CHARGED_DEF_BONUS },
-} as const;
+  target: { damageTypes: ["charged"] },
+};
 
 // ---------------------------------------------------------------------------
 // Features
@@ -131,31 +139,35 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }],
   },
   // --- Charged attacks (Kesagiri) ---
+  // C6 "Arataki Itto, Present!" adds +70% Crit DMG to Kesagiri and Saichimonji hits.
+  // Modelled via critDamageBonuses:['crit_dmg_charged'] on all charged features; the
+  // C6 constellation condition contributes crit_dmg_charged:70 to the stats bag.
+  // (buildStats collectFeatureBonusKeys emits the key as a fraction; absent at C0-C5 → 0.)
   {
     name: "itto_kesagiri_combo_slash_dmg",
     category: "attack",
     damageType: "charged",
+    critDamageBonuses: ["crit_dmg_charged"],
     multipliers: [
       { leveling: "char_skill_attack", values: talents.get("attack.itto_kesagiri_combo_slash_dmg") },
-      a4ChargedDefTerm,
     ],
   },
   {
     name: "itto_kesagiri_final_slash_dmg",
     category: "attack",
     damageType: "charged",
+    critDamageBonuses: ["crit_dmg_charged"],
     multipliers: [
       { leveling: "char_skill_attack", values: talents.get("attack.itto_kesagiri_final_slash_dmg") },
-      a4ChargedDefTerm,
     ],
   },
   {
     name: "itto_saichimonji_slash_dmg",
     category: "attack",
     damageType: "charged",
+    critDamageBonuses: ["crit_dmg_charged"],
     multipliers: [
       { leveling: "char_skill_attack", values: talents.get("attack.itto_saichimonji_slash_dmg") },
-      a4ChargedDefTerm,
     ],
   },
   // --- Plunge attacks (her FeatureDamagePlunge: category="attack", damageType="plunge") ---
@@ -187,6 +199,29 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Stay a While and Listen Up": ConditionStatic no real stats → SKIP.
+// C2 "Gather 'Round, It's a Brawl!": ConditionStatic no real stats → SKIP.
+// C4 "Jailhouse Bread and Butter": ConditionBoolean def_percent/atk_percent toggle → SKIP.
+//
+// Source: raw/genshin_calc_pub/src/js/db/Char/Itto.js:334-394
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Horns Lowered, Coming Through": +3 levels to Masatsu Zetsugi: Akaushi Burst (Elemental Skill).
+  // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus: 3 } }.
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "10 Years of Hanamizaka Fame": +3 levels to Royal Descent: Behold, Itto the Evil! (Elemental Burst).
+  // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // C6 "Arataki Itto, Present!": ConditionStatic crit_dmg_charged:70 — ALWAYS-ON at C6
+  // (no toggle — a plain ConditionStatic with a real stat). Provides +70% Crit DMG on
+  // Arataki Kesagiri and Saichimonji Slash hits.
+  // Raw cons[5]: ConditionStatic{ stats:{ crit_dmg_charged: 70 } }.
+  { type: "constellation", constellation: 6, stats: { crit_dmg_charged: 70 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -200,7 +235,7 @@ export const aratakiItto: DbObjectChar = {
   statTable: IttoStatTable,
   talents,
   features,
-  multipliers: [],
+  multipliers: [a4ChargedDefMultiplier],
   postEffects: [defToAtk],
-  conditions: [royalDescent],
+  conditions: [royalDescent, ...constellationConditions],
 };

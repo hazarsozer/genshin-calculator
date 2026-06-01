@@ -20,7 +20,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Chevreuse)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Chevreuse as ChevreuseStatTable } from "../generated/charTables.js";
 import { Chevreuse as ChevreuseTalents } from "../generated/charTalentTables.js";
 
@@ -153,6 +153,23 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.chevreuse_overcharge_dmg") }],
   },
+  // --- C2 "Sniper-Induced Explosion": cons-added pyro skill chain explosion (fixed 120% ATK).
+  // Raw: FeatureDamageSkill → damageType:"skill". Fixed ValueTable([120]), C2-gated.
+  // Raw Chevreuse.js:304-313. TalentValues.C2ChainDmg = 120.
+  {
+    name: "chevreuse_chain_explosion_dmg",
+    category: "skill",
+    element: "pyro",
+    damageType: "skill",
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        leveling: "char_skill_attack",
+        values: { getValue: (_level: number) => 120 },
+        source: "constellation2",
+      },
+    ],
+  },
   // raw: FeatureDamageSkill surging_blade_dmg (cannotReact:true, still a pyro skill hit)
   {
     name: "surging_blade_dmg",
@@ -178,6 +195,24 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Stable Front Line's Resolve": ConditionStatic display-only → SKIP.
+// C2 "Sniper-Induced Explosion": ConditionStatic (text_percent_dmg:120) display-only → SKIP.
+//   The actual C2 damage comes from the chevreuse_chain_explosion_dmg feature above.
+// C3: +3 levels to Short-Range Rapid Interdiction Fire (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
+// C4 "The Secret to Rapid-Fire Multishots": ConditionStatic display-only → SKIP.
+// C5: +3 levels to Ring of Bursting Grenades (burst). Raw cons[4] settings char_skill_burst_bonus:3.
+// C6 "In Pursuit of Ending Evil": ConditionStacks (dmg_pyro/electro per stack, toggle) → SKIP.
+// Raw: Chevreuse.js:408-470 (constellation array).
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Short-Range Rapid Interdiction Fire (skill).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Ring of Bursting Grenades (burst).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -192,4 +227,5 @@ export const chevreuse: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

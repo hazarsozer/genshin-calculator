@@ -24,7 +24,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js:1799 (Dori)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Dori as DoriStatTable } from "../generated/charTables.js";
 import { Dori as DoriTalents } from "../generated/charTalentTables.js";
 
@@ -149,6 +149,23 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.dori_aftersales_service_round_dmg") }],
   },
+  // --- C2 "Special Franchise": cons-added electro skill hit (50% ATK, fixed,
+  // not talent-leveled). Raw class is FeatureDamageSkill → damageType:"skill".
+  // Raw: Dori.js features array, FeatureDamageSkill({ name:'dori_special_franchise',
+  // element:'electro', ValueTable([50]), condition:ConditionConstellation(2) }).
+  {
+    name: "dori_special_franchise",
+    category: "skill",
+    element: "electro",
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        source: "constellation2",
+        leveling: "char_skill_elemental",
+        values: { getValue: (_level: number) => 50 },
+      },
+    ],
+  },
   // --- Burst: Alcazarzaray's Exactitude (electro ATK-scaled) ---
   // raw: FeatureDamageBurst dori_connector_dmg, element:'electro' (s3.p1)
   {
@@ -157,6 +174,27 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.dori_connector_dmg") }],
   },
+];
+
+// ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic display-only. SKIP.
+// C2: ConditionStatic display-only (text_percent:50). Actual damage is the
+//   dori_special_franchise feature above. No flat stat needed.
+// C3: +3 levels to Troubleshooter Cannon (elemental skill). Raw cons[2]
+//   settings char_skill_elemental_bonus:3. Raw Dori.js:367-374.
+// C4: ConditionBoolean toggles (healing_recv:50, recharge:30) — SKIP (toggles OFF).
+// C5: +3 levels to Alcazarzaray's Exactitude (burst). Raw cons[4] settings
+//   char_skill_burst_bonus:3. Raw Dori.js:396-403.
+// C6: Condition {allowed_infusion_electro:1} + ConditionBoolean toggle for
+//   electro infusion + dori_sprinkling_weight heal feature. Toggle OFF in
+//   constellations config → no infusion → normals stay physical. SKIP.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to elemental skill (Troubleshooter Cannon).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to burst (Alcazarzaray's Exactitude).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -174,4 +212,5 @@ export const dori: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

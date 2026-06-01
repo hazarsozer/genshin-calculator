@@ -26,7 +26,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Iansan s1/s2/s3)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Iansan as IansanStatTable } from "../generated/charTables.js";
 import { Iansan as IansanTalents } from "../generated/charTalentTables.js";
 
@@ -130,6 +130,28 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Starting's Never Easy": ConditionStatic, no real stats → SKIP.
+// C2 "Laziness Is the Enemy": ConditionStatic + ConditionAscensionChar with
+//   text_percent (display-only atk%) → SKIP (text_percent is a display key).
+// C4 "Slow and Steady Wins the Race": ConditionStatic, no real stats → SKIP.
+// C6 "Teachings of the Collective of Plenty": ConditionBoolean toggle
+//   (iansan_teachings_of_the_collective_of_plenty, dmg_all) → OFF → SKIP.
+//
+// Always-on: C3 (+3 skill talent), C5 (+3 burst talent).
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Iansan.js:316-388
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Hard Work Always Beats Talent" — +3 Elemental Skill.
+  // Raw cons[2]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Never Idle" — +3 Elemental Burst.
+  // Raw cons[4]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -144,4 +166,5 @@ export const iansan: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

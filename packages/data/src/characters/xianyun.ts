@@ -29,7 +29,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Xianyun)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Xianyun as XianyunStatTable } from "../generated/charTables.js";
 import { Xianyun as XianyunTalents } from "../generated/charTalentTables.js";
 
@@ -174,6 +174,25 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Purifying Wind": ConditionStatic, no real stats — SKIP.
+// C2 "Aloof from the World": ConditionBoolean toggle (atk_percent:20) — SKIP.
+// C3 "Creations of Star and Moon": +3 burst talent (char_skill_burst_bonus).
+// C4 "Mystery Millet Gourmet": ConditionStatic with text_percent (display-only) — SKIP.
+// C5 "Astride Rose-Tinted Clouds": +3 skill talent (char_skill_elemental_bonus).
+// C6 "They Call Her Cloud Retainer": ConditionStacksLevels (crit_dmg_xianyun) —
+//   stacks toggle, OFF at canonial C6 build (toggles off) → reads 0. SKIP.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Xianyun.js:364-445
+
+const constellationConditions: readonly Condition[] = [
+  // C3 — +3 Elemental Burst (Stars Gather at Dusk).
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 — +3 Elemental Skill (White Clouds at Dawn).
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -188,4 +207,5 @@ export const xianyun: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };

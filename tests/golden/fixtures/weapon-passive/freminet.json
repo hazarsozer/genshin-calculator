@@ -1,0 +1,308 @@
+{
+  "defaultWeapon": "weapon_name.the_bell",
+  "element": "cryo",
+  "features": {
+    "attack.charged_final": {
+      "average": 3392.251636367739,
+      "category": "attack",
+      "crit": 6167.730247941344,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3083.865123970672
+    },
+    "attack.charged_spin": {
+      "average": 1875.4121213987426,
+      "category": "attack",
+      "crit": 3409.8402207249865,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1704.9201103624932
+    },
+    "attack.normal_hit_1": {
+      "average": 2373.6623207857015,
+      "category": "attack",
+      "crit": 4315.749674155821,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2157.8748370779103
+    },
+    "attack.normal_hit_2": {
+      "average": 2273.288569290624,
+      "category": "attack",
+      "crit": 4133.25194416477,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2066.625972082385
+    },
+    "attack.normal_hit_3": {
+      "average": 2871.4599072685323,
+      "category": "attack",
+      "crit": 5220.836195033696,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2610.418097516848
+    },
+    "attack.normal_hit_4": {
+      "average": 3488.5815768903713,
+      "category": "attack",
+      "crit": 6342.87559434613,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3171.437797173065
+    },
+    "attack.plunge": {
+      "average": 1966.1457652363285,
+      "category": "attack",
+      "crit": 3574.81048224787,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1787.405241123935
+    },
+    "attack.plunge_high": {
+      "average": 4910.60376959146,
+      "category": "attack",
+      "crit": 8928.370490166291,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4464.185245083146
+    },
+    "attack.plunge_low": {
+      "average": 3931.458084481873,
+      "category": "attack",
+      "crit": 7148.10560814886,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3574.05280407443
+    },
+    "burst.burst_dmg": {
+      "average": 11595.719125237185,
+      "category": "burst",
+      "crit": 21083.125682249425,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 10541.562841124713
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.freminet_frost_dmg": {
+      "average": 213.34745900818982,
+      "category": "skill",
+      "crit": 387.9044709239815,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 193.95223546199074
+    },
+    "skill.freminet_pressure_0_dmg": {
+      "average": 5973.728852229314,
+      "category": "skill",
+      "crit": 10861.32518587148,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5430.66259293574
+    },
+    "skill.freminet_pressure_1_cryo_dmg": {
+      "average": 2986.864426114657,
+      "category": "skill",
+      "crit": 5430.66259293574,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2715.33129646787
+    },
+    "skill.freminet_pressure_1_phys_dmg": {
+      "average": 1491.0616857350155,
+      "category": "skill",
+      "crit": 2711.0212467909373,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1355.5106233954687
+    },
+    "skill.freminet_pressure_2_cryo_dmg": {
+      "average": 2090.8050982802606,
+      "category": "skill",
+      "crit": 3801.463815055019,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1900.7319075275095
+    },
+    "skill.freminet_pressure_2_phys_dmg": {
+      "average": 2609.3579500362766,
+      "category": "skill",
+      "crit": 4744.2871818841395,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2372.1435909420697
+    },
+    "skill.freminet_pressure_3_cryo_dmg": {
+      "average": 1194.745770445863,
+      "category": "skill",
+      "crit": 2172.265037174296,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1086.132518587148
+    },
+    "skill.freminet_pressure_3_phys_dmg": {
+      "average": 3727.6542143375386,
+      "category": "skill",
+      "crit": 6777.553116977343,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3388.7765584886715
+    },
+    "skill.freminet_pressure_4_dmg": {
+      "average": 7455.308428675077,
+      "category": "skill",
+      "crit": 13555.106233954686,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6777.553116977343
+    },
+    "skill.freminet_upward_thrust_dmg": {
+      "average": 2474.3537703966604,
+      "category": "skill",
+      "crit": 4498.825037084836,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2249.412518542418
+    },
+    "skill.spiritbreath_thorn_dmg": {
+      "average": 429.0786885080913,
+      "category": "skill",
+      "crit": 780.1430700147115,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 390.07153500735575
+    },
+    "stats.atk": {
+      "average": 2322.385205948,
+      "category": "stats",
+      "crit": 2322.385205948,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2322.385205948
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1584.4569255000001,
+      "category": "stats",
+      "crit": 1584.4569255000001,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1584.4569255000001
+    },
+    "stats.hp": {
+      "average": 35756.517288645526,
+      "category": "stats",
+      "crit": 35756.517288645526,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 35756.517288645526
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.bell_shield": {
+      "average": 7151.3034577291055,
+      "category": "weapon",
+      "crit": 7151.3034577291055,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 7151.3034577291055
+    }
+  },
+  "id": 74,
+  "key": "Freminet",
+  "schema": 1,
+  "slug": "freminet",
+  "weaponType": "claymore"
+}
