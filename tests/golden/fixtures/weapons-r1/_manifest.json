@@ -59,6 +59,7 @@
       "weapon": {
         "name": "weapon_name.a_thousand_blazing_suns",
         "passiveToggles": {
+          "common.nightsoul_blessing_state": true,
           "weapon_a_thousand_blazing_suns": true
         },
         "refine": 1,
@@ -268,7 +269,9 @@
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.astral_vultures_crimson_plumage",
-        "passiveToggles": {},
+        "passiveToggles": {
+          "astral_vultures_crimson_plumage": true
+        },
         "refine": 1,
         "type": "bow"
       }
@@ -353,7 +356,10 @@
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.beacon_of_the_reed_sea",
-        "passiveToggles": {},
+        "passiveToggles": {
+          "beacon_of_the_reed_sea": 2,
+          "common.char_status_shield": true
+        },
         "refine": 1,
         "type": "polearm"
       }
@@ -545,7 +551,9 @@
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.calamity_of_eshu",
-        "passiveToggles": {},
+        "passiveToggles": {
+          "common.char_status_shield": true
+        },
         "refine": 1,
         "type": "sword"
       }
@@ -1307,7 +1315,9 @@
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.flower_wreathed_feathers",
-        "passiveToggles": {},
+        "passiveToggles": {
+          "flower_wreathed_feathers": 6
+        },
         "refine": 1,
         "type": "bow"
       }
@@ -1371,7 +1381,10 @@
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.fractured_halo",
-        "passiveToggles": {},
+        "passiveToggles": {
+          "talent_name.weapon_fractured_halo_1": true,
+          "talent_name.weapon_fractured_halo_2": true
+        },
         "refine": 1,
         "type": "polearm"
       }
@@ -1541,7 +1554,9 @@
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.haran_geppaku_futsu",
-        "passiveToggles": {},
+        "passiveToggles": {
+          "haran_geppaku_futsu": 2
+        },
         "refine": 1,
         "type": "sword"
       }
@@ -2032,6 +2047,7 @@
       "weapon": {
         "name": "weapon_name.memory_of_dust",
         "passiveToggles": {
+          "common.char_status_shield": true,
           "weapon_memory_of_dust": 5
         },
         "refine": 1,
@@ -2360,6 +2376,7 @@
       "weapon": {
         "name": "weapon_name.predator",
         "passiveToggles": {
+          "common.ps_network": true,
           "weapon_predator": 2
         },
         "refine": 1,
@@ -2401,7 +2418,9 @@
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.primordial_jade_winged_spear",
-        "passiveToggles": {},
+        "passiveToggles": {
+          "primordial_jade_winged_spear": 7
+        },
         "refine": 1,
         "type": "polearm"
       }
@@ -2527,7 +2546,9 @@
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.prototype_starglitter",
-        "passiveToggles": {},
+        "passiveToggles": {
+          "prototype_starglitter": 2
+        },
         "refine": 1,
         "type": "polearm"
       }
@@ -3465,6 +3486,7 @@
       "weapon": {
         "name": "weapon_name.summit_shaper",
         "passiveToggles": {
+          "common.char_status_shield": true,
           "weapon_unforged": 5
         },
         "refine": 1,
@@ -3508,7 +3530,9 @@
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.sword_of_descension",
-        "passiveToggles": {},
+        "passiveToggles": {
+          "common.ps_network": true
+        },
         "refine": 1,
         "type": "sword"
       }
@@ -3548,7 +3572,10 @@
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.symphonist_of_scents",
-        "passiveToggles": {},
+        "passiveToggles": {
+          "symphonist_of_scents_2": true,
+          "symphonist_of_scents_3": true
+        },
         "refine": 1,
         "type": "polearm"
       }
@@ -3758,6 +3785,7 @@
       "weapon": {
         "name": "weapon_name.the_unforged",
         "passiveToggles": {
+          "common.char_status_shield": true,
           "weapon_unforged": 5
         },
         "refine": 1,
@@ -3909,7 +3937,9 @@
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.toukabou_shigure",
-        "passiveToggles": {},
+        "passiveToggles": {
+          "whisper_toukabou_shigure": true
+        },
         "refine": 1,
         "type": "sword"
       }
@@ -4083,6 +4113,7 @@
       "weapon": {
         "name": "weapon_name.vortex_vanquisher",
         "passiveToggles": {
+          "common.char_status_shield": true,
           "weapon_vortex_vanquisher": 5
         },
         "refine": 1,
@@ -4146,7 +4177,9 @@
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.waveriding_whirl",
-        "passiveToggles": {},
+        "passiveToggles": {
+          "waveriding_whirl": true
+        },
         "refine": 1,
         "type": "polearm"
       }
@@ -4337,7 +4370,9 @@
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.xiphos_moonlight",
-        "passiveToggles": {},
+        "passiveToggles": {
+          "whisper_of_the_jinn": true
+        },
         "refine": 1,
         "type": "sword"
       }

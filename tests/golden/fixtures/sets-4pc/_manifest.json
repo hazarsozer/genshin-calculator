@@ -169,7 +169,9 @@
       "kind": "set",
       "repKey": "Keqing",
       "repSlug": "keqing",
-      "setToggles": {},
+      "setToggles": {
+        "brave_heart_4": true
+      },
       "slug": "BraveHeart",
       "statBlock": "sampleStats",
       "weapon": {
@@ -784,6 +786,7 @@
       "repKey": "Mavuika",
       "repSlug": "mavuika",
       "setToggles": {
+        "common.nightsoul_blessing_state": true,
         "set.obsidian_codex_4": true
       },
       "slug": "ObsidianCodex",
@@ -963,7 +966,9 @@
       "kind": "set",
       "repKey": "Noelle",
       "repSlug": "noelle",
-      "setToggles": {},
+      "setToggles": {
+        "common.char_status_shield": true
+      },
       "slug": "RetracingBolide",
       "statBlock": "sampleStats",
       "weapon": {

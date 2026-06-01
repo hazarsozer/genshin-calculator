@@ -737,7 +737,9 @@
       "kind": "set",
       "repKey": "Mavuika",
       "repSlug": "mavuika",
-      "setToggles": {},
+      "setToggles": {
+        "common.nightsoul_blessing_state": true
+      },
       "slug": "ObsidianCodex",
       "statBlock": "sampleStats",
       "weapon": {
