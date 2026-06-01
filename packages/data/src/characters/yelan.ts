@@ -206,6 +206,20 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Toggle conditions
+// ---------------------------------------------------------------------------
+
+// "Adapt with Ease" passive: dmg_all += buffValues[stacks-1].
+// Raw Yelan.js:289-325 — ConditionLevels table buffValues=[1,4.5,8,...,50] (15 stacks),
+// levelSetting:'yelan_adapt_with_ease', stats:[StatTable('dmg_all', buffValues)].
+// BUILD-COUPLED at 15 stacks: buffValues[14]=50 → dmg_all:50.
+// True form is a ConditionLevels table-lookup primitive (deferred); the constant matches
+// the fixture which always runs at max stacks (15). Yelan.js:116 buffValues[14]=50.
+const toggleConditions: readonly Condition[] = [
+  { type: "boolean", name: "yelan_adapt_with_ease", stats: { dmg_all: 50 } },
+];
+
+// ---------------------------------------------------------------------------
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
 // C1 "Enter the Plotters": ConditionStatic (display-only) → SKIP.
@@ -240,7 +254,7 @@ export const yelan: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: constellationConditions,
+  conditions: [...toggleConditions, ...constellationConditions],
   // A1 "Turn Control": oracle runs with a single-char party (Yelan = 1 unique element)
   // → ConditionCalcElements sets party_elements_count_level=1 → hp_percent[0]=6.
   // Source: raw/genshin_calc_pub/src/js/db/Char/Yelan.js ConditionStaticLevel hp_percent:[6,12,18,30]
