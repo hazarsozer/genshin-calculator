@@ -18,7 +18,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Yaoyao)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Yaoyao as YaoyaoStatTable } from "../generated/charTables.js";
 import { Yaoyao as YaoyaoTalents } from "../generated/charTalentTables.js";
 
@@ -134,6 +134,22 @@ const features: readonly Feature[] = [
     element: "dendro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.yaoyao_radish_dmg") }],
   },
+  // --- C6 "Beneficent": cons-added skill hit (75% ATK, fixed, not talent-leveled).
+  // Raw: FeatureDamageSkill, StatTable('yaoyao_megaradish_dmg', [75]),
+  // source:'constellation6', ConditionConstellation(6). Yaoyao.js:265-274.
+  {
+    name: "yaoyao_megaradish_dmg",
+    category: "skill",
+    element: "dendro",
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      {
+        leveling: "char_skill_elemental",
+        values: { getValue: (_level: number) => 75 },
+        source: "constellation6",
+      },
+    ],
+  },
   // --- Burst: Moonjade Descent (dendro) ---
   // raw: FeatureDamageBurst, no explicit name → derived 'burst_dmg' (from s3.p4)
   {
@@ -152,6 +168,25 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Constellation conditions (P2.C)
+// ---------------------------------------------------------------------------
+// C1 "Adeptus Tutelage": ConditionBoolean toggle (dmg_dendro:15) → SKIP (toggle OFF).
+// C2 "Innocent": ConditionStatic (display-only) → SKIP.
+// C3: +3 levels to Raphanus Sky Cluster (elemental skill).
+//   Raw cons[2] settings char_skill_elemental_bonus:3. Yaoyao.js:398-407.
+// C4 "Winsome": ConditionBoolean toggle (mastery HP-bonus display) → SKIP (toggle OFF).
+// C5: +3 levels to Moonjade Descent (burst).
+//   Raw cons[4] settings char_skill_burst_bonus:3. Yaoyao.js:420-430.
+// C6 "Beneficent": ConditionStatic (display-only text_percent_atk/heal) → SKIP.
+//   The actual C6 damage is the yaoyao_megaradish_dmg feature above.
+const constellationConditions: readonly Condition[] = [
+  // C3: +3 levels to Raphanus Sky Cluster (elemental skill).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5: +3 levels to Moonjade Descent (burst).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -166,4 +201,5 @@ export const yaoyao: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: constellationConditions,
 };
