@@ -63,6 +63,7 @@ const talents: TalentResolver = {
 const paramita: Condition = {
   type: "boolean",
   name: "hutao_paramita_papilio",
+  settings: { attack_infusion: "pyro" },
 };
 
 // ---------------------------------------------------------------------------
