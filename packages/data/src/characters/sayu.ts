@@ -242,13 +242,26 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.sayu_burst_dmg") }],
   },
   // raw: FeatureDamageBurst (no name → sayu_mujimuji_dmg), element='anemo'
-  // Second FeatureMultiplierSayuBurst requires constellation 6 → inactive at C0.
-  // Only s3.p4 contributes. Sayu.js:377-389
+  // Sayu.js:377-389. The 2nd multiplier (FeatureMultiplierSayuBurst, Multiplier/SayuBurst.js)
+  // is a C6 ATK term whose coefficient = min(mastery_total × 0.002, 4) — a product of EM and
+  // ATK our single-scaling-stat term can't express faithfully. BUILD-COUPLED CARRY: baked at
+  // the fixed build's mastery_total=151 → 0.302×ATK (values 30.2; /100×ATK). Parity-correct
+  // at the validated build (cap 4 unbound); desyncs at other EM — needs a runtime-coefficient
+  // primitive for the real calculator (same class as the kirara/furina/raiden A4 carries).
   {
     name: "sayu_mujimuji_dmg",
     category: "burst",
     element: "anemo",
-    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.sayu_mujimuji_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.sayu_mujimuji_dmg") },
+      {
+        leveling: "char_skill_burst",
+        scaling: "atk",
+        values: { getValue: (_level: number) => 30.2 },
+        source: "constellation6",
+        condition: { type: "constellation", constellation: 6 },
+      },
+    ],
   },
 ];
 

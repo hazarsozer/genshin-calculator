@@ -165,6 +165,9 @@ const features: readonly Feature[] = [
     name: "dehya_flame_manes_fist_dmg",
     category: "burst",
     element: "pyro",
+    // C6 "The Burning Claws Cleaving": +10% burst crit rate (crit_rate_burst, always-on
+    // ConditionStatic). Type-specific → wired per burst hit. Raw Dehya.js cons[5].
+    critRateBonuses: ["crit_rate_burst"],
     multipliers: [
       { leveling: "char_skill_burst", values: talents.get("burst.dehya_flame_manes_fist_dmg") },
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.dehya_flame_manes_fist_hp") },
@@ -176,6 +179,8 @@ const features: readonly Feature[] = [
     name: "dehya_incineration_drive_dmg",
     category: "burst",
     element: "pyro",
+    // C6: +10% burst crit rate (crit_rate_burst). Raw Dehya.js cons[5].
+    critRateBonuses: ["crit_rate_burst"],
     multipliers: [
       { leveling: "char_skill_burst", values: talents.get("burst.dehya_incineration_drive_dmg") },
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.dehya_incineration_drive_hp") },

@@ -38,7 +38,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Nilou)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver, CharPostEffect } from "@genshin/types";
 import { Nilou as NilouStatTable } from "../generated/charTables.js";
 import { Nilou as NilouTalents } from "../generated/charTalentTables.js";
 
@@ -247,6 +247,16 @@ const constellationConditions: readonly Condition[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// C6 "Frostfall Storm": HP → crit_rate (ratio 0.0006, abs cap 30) + crit_dmg
+// (ratio 0.0012, abs cap 60), gated by C6. Faithful PostEffectStatsHP with a
+// ConditionConstellation(6) gate + absolute cap; at the fixed build HP=36593 →
+// +21.96 crit_rate / +43.91 crit_dmg (neither cap binds). Generic crit → folds
+// into crit_rate/dmg_total for every feature. Raw Nilou.js:165-179.
+const c6CritPostEffects: readonly CharPostEffect[] = [
+  { fromStat: "hp", toStat: "crit_rate", ratio: 0.0006, capValue: 30, conditions: [{ type: "constellation", constellation: 6 }] },
+  { fromStat: "hp", toStat: "crit_dmg", ratio: 0.0012, capValue: 60, conditions: [{ type: "constellation", constellation: 6 }] },
+];
+
 export const nilou: DbObjectChar = {
   name: "nilou",
   gameId: 10000070,
@@ -259,4 +269,5 @@ export const nilou: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  postEffects: c6CritPostEffects,
 };
