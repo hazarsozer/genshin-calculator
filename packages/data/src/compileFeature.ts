@@ -267,6 +267,22 @@ function dmgBonusKeys(
 }
 
 /**
+ * Per-type CRIT keys for a hit, folded generically (type only):
+ * `crit_<which>_<damageType>` when the hit has a damage type. Mirrors her
+ * getDefaultStatsCritRate / getDefaultStatsCritDamage (Damage.js:72-122), which
+ * push `crit_rate_<damageType>` / `crit_dmg_<damageType>` for the hit's type —
+ * exactly as getStatsDmgBonus pushes `dmg_<damageType>`. This lets a WEAPON/
+ * SET/cons-sourced type-crit (e.g. The Catch's always-on `crit_rate_burst`)
+ * reach every burst hit without the feature pre-declaring the key. Absent keys
+ * read 0 (cStat default) → base-safe. ELEMENT crit (`crit_*_<element>`) and the
+ * combined `crit_*_<element>_<type>` are deliberately NOT folded here (deferred);
+ * char-specific suffixed keys stay on `feature.critRateBonuses` (not generic).
+ */
+function critBonusTypeKeys(which: "rate" | "dmg", damageType: string): readonly string[] {
+  return damageType ? [`crit_${which}_${damageType}`] : [];
+}
+
+/**
  * Lunar-Charged EM bonus term: `6 × mastery / (mastery + 2000)`.
  *
  * The watershed coefficient is 6 (vs transformative's 16). Ported from
@@ -421,17 +437,22 @@ export function compileFeature(
     cMultiplierDefence("enemy_def_reduce", defIgnoreKeys),
   ];
 
-  // Crit: the aggregated totals (buildStats folds per-element/-type crit in),
-  // PLUS any feature-declared crit bonus keys. Mirrors her getDefaultStatsCritRate
-  // / getDefaultStatsCritDamage (Damage.js:72-122): the generic crit set, then
-  // `this.critRateBonuses` / `this.critDamageBonuses` concatenated. E.g. Amber's
-  // A1 `crit_rate_amber` (auto-active at A6) lifts her burst crit rate by 10%.
+  // Crit: the aggregated totals (buildStats folds crit_rate/_dmg in), PLUS the
+  // generic per-TYPE crit keys (`crit_*_<damageType>`, folded here exactly as
+  // `dmg_<damageType>` is in dmgBonusKeys — so a weapon/set/cons-sourced type-crit
+  // like The Catch's `crit_rate_burst` reaches every burst hit), PLUS any
+  // feature-declared crit bonus keys (char-specific suffixed keys + element crit,
+  // not yet generically folded). Mirrors her getDefaultStatsCritRate /
+  // getDefaultStatsCritDamage (Damage.js:72-122): generic set (incl. the per-type
+  // push), then `this.critRateBonuses` / `this.critDamageBonuses` concatenated.
   const critRate = cCritRate([
     cStat("crit_rate_total"),
+    ...critBonusTypeKeys("rate", damageType).map((k) => cStat(k)),
     ...(feature.critRateBonuses ?? []).map((k) => cStat(k)),
   ]);
   const critDmg = cCritDmg([
     cStat("crit_dmg_total"),
+    ...critBonusTypeKeys("dmg", damageType).map((k) => cStat(k)),
     ...(feature.critDamageBonuses ?? []).map((k) => cStat(k)),
   ]);
 

@@ -95,6 +95,20 @@ const DMG_BONUS_TYPE_KEYS = [
 ] as const;
 
 /**
+ * The damage TYPES whose per-type crit folds generically (her
+ * getDefaultStatsCritRate / getDefaultStatsCritDamage push `crit_rate_<type>` /
+ * `crit_dmg_<type>` for the hit's damageType — Damage.js:77/105). Emitted as
+ * `crit_rate_<type>` / `crit_dmg_<type>` fractions when set in the bag so a
+ * weapon/set/cons-sourced type-crit (e.g. The Catch's `crit_rate_burst`) reaches
+ * compileFeature's `critBonusTypeKeys` regardless of feature references.
+ *
+ * No `_all` (her engine has no `crit_rate_all`). ELEMENT crit (`crit_*_<element>`)
+ * is NOT folded here — it stays on the per-feature `collectFeatureBonusKeys` emit
+ * (deferred follow-up). Mirrors the structure of DMG_BONUS_TYPE_KEYS above.
+ */
+const CRIT_BONUS_TYPES = ["normal", "charged", "plunge", "skill", "burst"] as const;
+
+/**
  * Reaction scaling / bonus keys derived by post-effects (Ineffa's Lunar-Charged
  * passives today; extended in P1.9 as more reaction-driving post-effects land).
  * Already fraction-valued in `raw` (the post-effect folded the isPercent /100),
@@ -534,6 +548,19 @@ export function buildStats(input: BuildInput): BuildResult {
   // Type DMG% bonuses + dmg_all → fractions, flat only (no `*` in her getStatsDmgBonus).
   for (const key of DMG_BONUS_TYPE_KEYS) {
     if (raw.isSet(key)) out[key] = raw.get(key) / 100;
+  }
+  // Per-TYPE crit (her getDefaultStatsCritRate/CritDamage push crit_*_<type> for the
+  // hit's type) → fractions, flat only. Emitted GENERICALLY (not gated on feature
+  // references) so a weapon/set/cons-sourced type-crit reaches compileFeature regardless
+  // of which feature declares it — e.g. The Catch's always-on `crit_rate_burst` lands on
+  // every Hu Tao burst hit. 0 for every base build (no source sets a type-crit at C0) →
+  // base golden untouched. ELEMENT crit (`crit_*_<element>`) stays on the
+  // collectFeatureBonusKeys emit below (deferred — no ported item folds it yet).
+  for (const type of CRIT_BONUS_TYPES) {
+    for (const which of ["rate", "dmg"] as const) {
+      const key = `crit_${which}_${type}`;
+      if (raw.isSet(key)) out[key] = raw.get(key) / 100;
+    }
   }
 
   // Feature-declared bonus keys (her FeatureDamage critRateBonuses /
