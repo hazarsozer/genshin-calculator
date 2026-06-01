@@ -192,6 +192,20 @@ export interface CharPostEffect {
     /** Divisor/multiplier applied to the table value (e.g. `0.01` for a percent→fraction fold). */
     readonly multi: number;
   };
+  /**
+   * Optional subtraction applied to `getTotal(fromStat)` BEFORE multiplying by
+   * the ratio. The bonus is floored at 0 after the subtraction:
+   *   `bonus = max(0, getTotal(fromStat) − offset) × ratio`
+   *
+   * Mirrors `PostEffectStatsExceedRecharge` (ExceedRecharge.js) which computes
+   * `max(0, recharge_decimal − 1)` in her engine (recharge stored as decimal
+   * post `processPercent`). In our engine recharge is stored as raw percent,
+   * so the equivalent offset is 100:
+   *   `max(0, recharge_percent − 100) × 0.4` → 52.8 at recharge=232.
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/ExceedRecharge.js
+   */
+  readonly offset?: number;
   /** Optional cap on the bonus, as `capRatio × getTotal(capStat)`. */
   readonly cap?: { readonly capStat: string; readonly capRatio: number };
   /**

@@ -252,6 +252,10 @@ export interface BuildResult {
  * capped at `capRatio × getTotal(capStat)`, gated by ALL `conditions` evaluating
  * true against the settings. Reads the PRE-GROUP snapshot (never mutates).
  *
+ * When `offset` is set: `bonus = max(0, getTotal(fromStat) − offset) × ratio`,
+ * floored at 0 before capping. Mirrors `PostEffectStatsExceedRecharge` which
+ * subtracts 1 from the decimal recharge before multiplying (ExceedRecharge.js).
+ *
  * `capUsesBase`: the stat-relative `cap` reads the BASE stat (`capStat_base`)
  * × capRatio, not `getTotal(capStat)` — her `statCapPost` whose base is a
  * `from: '<stat>_base'` term (Hu Tao's `atk_base × 4`, Hutao.js:155-158).
@@ -279,7 +283,9 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       } else {
         ratio = effect.ratio ?? 0;
       }
-      let bonus = readStats.getTotal(effect.fromStat) * ratio;
+      const fromTotal = readStats.getTotal(effect.fromStat);
+      const fromValue = effect.offset !== undefined ? Math.max(0, fromTotal - effect.offset) : fromTotal;
+      let bonus = fromValue * ratio;
       if (effect.cap !== undefined) {
         const capBase = effect.capUsesBase
           ? readStats.get(`${effect.cap.capStat}_base`)
