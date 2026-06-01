@@ -1,0 +1,192 @@
+{
+  "element": "hydro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 4471.845375370547,
+      "category": "attack",
+      "crit": 5705.194273392548,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2852.597136696274
+    },
+    "attack.normal_hit_1": {
+      "average": 2066.516814205439,
+      "category": "attack",
+      "crit": 2636.4685950925455,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1318.2342975462727
+    },
+    "attack.normal_hit_2": {
+      "average": 1869.2315179982472,
+      "category": "attack",
+      "crit": 2384.771399043463,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1192.3856995217316
+    },
+    "attack.normal_hit_3": {
+      "average": 2609.628906156886,
+      "category": "attack",
+      "crit": 3329.3726954618232,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1664.6863477309116
+    },
+    "attack.plunge": {
+      "average": 1683.8515390283626,
+      "category": "attack",
+      "crit": 2148.2630438472643,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1074.1315219236321
+    },
+    "attack.plunge_high": {
+      "average": 4205.551725200378,
+      "category": "attack",
+      "crit": 5365.456004185117,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2682.7280020925587
+    },
+    "attack.plunge_low": {
+      "average": 3366.989581641882,
+      "category": "attack",
+      "crit": 4295.615806743745,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2147.8079033718727
+    },
+    "burst.burst_dmg": {
+      "average": 34575.22939514128,
+      "category": "burst",
+      "crit": 44111.18547005853,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 22055.592735029266
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.mualani_shark_bite_dmg": {
+      "average": 3950.762709086057,
+      "category": "skill",
+      "crit": 5040.395382978308,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2520.197691489154
+    },
+    "stats.atk": {
+      "average": 2124.838820688,
+      "category": "stats",
+      "crit": 2124.838820688,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2124.838820688
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 56.763999999999996,
+      "category": "stats",
+      "crit": 56.763999999999996,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 56.763999999999996
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1446.2676921000002,
+      "category": "stats",
+      "crit": 1446.2676921000002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1446.2676921000002
+    },
+    "stats.hp": {
+      "average": 28410.929315200003,
+      "category": "stats",
+      "crit": 28410.929315200003,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 28410.929315200003
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "set",
+  "repChar": "Mualani",
+  "repSlug": "mualani",
+  "schema": 1,
+  "slug": "EchoesOfAnOffering",
+  "weapon": "weapon_name.solar_pearl",
+  "weaponType": "catalyst"
+}

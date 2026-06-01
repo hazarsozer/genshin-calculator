@@ -1,0 +1,228 @@
+{
+  "element": "dendro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3445.102648902693,
+      "category": "attack",
+      "crit": 6263.822998004896,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3131.911499002448
+    },
+    "attack.normal_hit_1": {
+      "average": 979.3784248988319,
+      "category": "attack",
+      "crit": 1780.6880452706034,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 890.3440226353017
+    },
+    "attack.normal_hit_2": {
+      "average": 898.4522616959442,
+      "category": "attack",
+      "crit": 1633.5495667198986,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 816.7747833599493
+    },
+    "attack.normal_hit_3": {
+      "average": 1114.716150549475,
+      "category": "attack",
+      "crit": 2026.756637362682,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1013.378318681341
+    },
+    "attack.normal_hit_4": {
+      "average": 1419.2351455059306,
+      "category": "attack",
+      "crit": 2580.42753728351,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1290.213768641755
+    },
+    "attack.plunge": {
+      "average": 1404.1603214876236,
+      "category": "attack",
+      "crit": 2553.018766341134,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1276.509383170567
+    },
+    "attack.plunge_high": {
+      "average": 3507.0008997929394,
+      "category": "attack",
+      "crit": 6376.3652723507985,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3188.1826361753992
+    },
+    "attack.plunge_low": {
+      "average": 2807.725659788176,
+      "category": "attack",
+      "crit": 5104.955745069411,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2552.4778725347055
+    },
+    "other.nahida_mastery_bonus": {
+      "average": 82.55,
+      "category": "other",
+      "crit": 82.55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 82.55
+    },
+    "reaction.burning": {
+      "average": 1063.6347731106773,
+      "category": "reaction",
+      "crit": 1063.6347731106773,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1063.6347731106773
+    },
+    "reaction.electrocharged": {
+      "average": 8509.078184885419,
+      "category": "reaction",
+      "crit": 8509.078184885419,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8509.078184885419
+    },
+    "reaction.rupture": {
+      "average": 8509.078184885419,
+      "category": "reaction",
+      "crit": 8509.078184885419,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8509.078184885419
+    },
+    "reaction.shatter": {
+      "average": 12763.617277328127,
+      "category": "reaction",
+      "crit": 12763.617277328127,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 12763.617277328127
+    },
+    "skill.hold_dmg": {
+      "average": 3872.7705639388896,
+      "category": "skill",
+      "crit": 7041.401025343435,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3520.7005126717177
+    },
+    "skill.nahida_trikarma_purification_dmg": {
+      "average": 4398.735959099026,
+      "category": "skill",
+      "crit": 7723.449088018237,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3861.7245440091183
+    },
+    "skill.press_dmg": {
+      "average": 2922.3974194140087,
+      "category": "skill",
+      "crit": 5313.449853480016,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2656.724926740008
+    },
+    "stats.atk": {
+      "average": 2525.181169132616,
+      "category": "stats",
+      "crit": 2525.181169132616,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2525.181169132616
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1506.2145834,
+      "category": "stats",
+      "crit": 1506.2145834,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1506.2145834
+    },
+    "stats.hp": {
+      "average": 23586.0405293,
+      "category": "stats",
+      "crit": 23586.0405293,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23586.0405293
+    },
+    "stats.mastery": {
+      "average": 330.2,
+      "category": "stats",
+      "crit": 330.2,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 330.2
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Nahida",
+  "repSlug": "nahida",
+  "schema": 1,
+  "slug": "ibis_piercer",
+  "weapon": "weapon_name.ibis_piercer",
+  "weaponType": "catalyst"
+}

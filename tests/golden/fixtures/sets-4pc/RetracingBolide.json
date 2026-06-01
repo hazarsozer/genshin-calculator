@@ -1,0 +1,255 @@
+{
+  "element": "geo",
+  "features": {
+    "attack.charged_final": {
+      "average": 2626.993711894339,
+      "category": "attack",
+      "crit": 4776.352203444252,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2388.176101722126
+    },
+    "attack.charged_spin": {
+      "average": 1473.3139638951136,
+      "category": "attack",
+      "crit": 2678.752661627479,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1339.3763308137395
+    },
+    "attack.normal_hit_1": {
+      "average": 2182.502380414118,
+      "category": "attack",
+      "crit": 3968.186146207487,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1984.0930731037436
+    },
+    "attack.normal_hit_2": {
+      "average": 2023.559272275263,
+      "category": "attack",
+      "crit": 3679.198676864115,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1839.5993384320575
+    },
+    "attack.normal_hit_3": {
+      "average": 2379.4020516906085,
+      "category": "attack",
+      "crit": 4326.185548528379,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2163.0927742641893
+    },
+    "attack.normal_hit_4": {
+      "average": 3129.0441736589355,
+      "category": "attack",
+      "crit": 5689.171224834428,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2844.585612417214
+    },
+    "attack.plunge": {
+      "average": 1407.7514925017813,
+      "category": "attack",
+      "crit": 2559.548168185057,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1279.7740840925285
+    },
+    "attack.plunge_high": {
+      "average": 3515.970131999001,
+      "category": "attack",
+      "crit": 6392.672967270911,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3196.3364836354554
+    },
+    "attack.plunge_low": {
+      "average": 2814.9062414364316,
+      "category": "attack",
+      "crit": 5118.011348066239,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2559.0056740331197
+    },
+    "burst.burst_dmg": {
+      "average": 1821.209955130327,
+      "category": "burst",
+      "crit": 3311.290827509685,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1655.6454137548426
+    },
+    "burst.noelle_skill_dmg": {
+      "average": 2515.0042237514035,
+      "category": "burst",
+      "crit": 4572.734952275279,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2286.3674761376396
+    },
+    "other.noelle_devotion_shield": {
+      "average": 11755.339362936002,
+      "category": "other",
+      "crit": 11755.339362936002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 11755.339362936002
+    },
+    "reaction.crystalize": {
+      "average": 2918.3396861690726,
+      "category": "reaction",
+      "crit": 2918.3396861690726,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2918.3396861690726
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.heal": {
+      "average": 1059.8422054775938,
+      "category": "skill",
+      "crit": 1059.8422054775938,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1059.8422054775938
+    },
+    "skill.shield": {
+      "average": 10750.27926631392,
+      "category": "skill",
+      "crit": 10750.27926631392,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 10750.27926631392
+    },
+    "skill.skill_dmg": {
+      "average": 3072.375495896954,
+      "category": "skill",
+      "crit": 5586.137265267189,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2793.0686326335945
+    },
+    "stats.atk": {
+      "average": 1854.6808613239998,
+      "category": "stats",
+      "crit": 1854.6808613239998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1854.6808613239998
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 2176.91469684,
+      "category": "stats",
+      "crit": 2176.91469684,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2176.91469684
+    },
+    "stats.hp": {
+      "average": 35756.517288645526,
+      "category": "stats",
+      "crit": 35756.517288645526,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 35756.517288645526
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.bell_shield": {
+      "average": 9654.259667934293,
+      "category": "weapon",
+      "crit": 9654.259667934293,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 9654.259667934293
+    }
+  },
+  "kind": "set",
+  "repChar": "Noelle",
+  "repSlug": "noelle",
+  "schema": 1,
+  "slug": "RetracingBolide",
+  "weapon": "weapon_name.the_bell",
+  "weaponType": "claymore"
+}

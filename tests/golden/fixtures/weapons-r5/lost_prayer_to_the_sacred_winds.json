@@ -1,0 +1,219 @@
+{
+  "element": "pyro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 8042.956157375653,
+      "category": "attack",
+      "crit": 11242.851611687782,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 5621.425805843891
+    },
+    "attack.normal_hit_1": {
+      "average": 3546.9175494162546,
+      "category": "attack",
+      "crit": 4958.061054505349,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2479.0305272526743
+    },
+    "attack.normal_hit_2": {
+      "average": 3067.17925559277,
+      "category": "attack",
+      "crit": 4287.458561545645,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2143.7292807728227
+    },
+    "attack.normal_hit_3": {
+      "average": 4419.883952931119,
+      "category": "attack",
+      "crit": 6178.3377220221855,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3089.1688610110928
+    },
+    "attack.plunge": {
+      "average": 2945.400391821635,
+      "category": "attack",
+      "crit": 4117.229895862411,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2058.6149479312053
+    },
+    "attack.plunge_high": {
+      "average": 7356.369259477036,
+      "category": "attack",
+      "crit": 10283.105660005027,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 5141.5528300025135
+    },
+    "attack.plunge_low": {
+      "average": 5889.552732629787,
+      "category": "attack",
+      "crit": 8232.715202785897,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4116.357601392949
+    },
+    "burst.burst_dmg": {
+      "average": 2680.4213932839602,
+      "category": "burst",
+      "crit": 3746.8288265937736,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1873.4144132968868
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.klee_jumpy_dumpty": {
+      "average": 5238.707075685292,
+      "category": "skill",
+      "crit": 7322.930168532273,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3661.4650842661363
+    },
+    "skill.klee_mine": {
+      "average": 1804.932689941991,
+      "category": "skill",
+      "crit": 2523.026360586749,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1261.5131802933745
+    },
+    "stats.atk": {
+      "average": 2112.2077068159997,
+      "category": "stats",
+      "crit": 2112.2077068159997,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2112.2077068159997
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 43.076800000000006,
+      "category": "stats",
+      "crit": 43.076800000000006,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 43.076800000000006
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1490.843496,
+      "category": "stats",
+      "crit": 1490.843496,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1490.843496
+    },
+    "stats.hp": {
+      "average": 23512.5650232,
+      "category": "stats",
+      "crit": 23512.5650232,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23512.5650232
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Klee",
+  "repSlug": "klee",
+  "schema": 1,
+  "slug": "lost_prayer_to_the_sacred_winds",
+  "weapon": "weapon_name.lost_prayer_to_the_sacred_winds",
+  "weaponType": "catalyst"
+}

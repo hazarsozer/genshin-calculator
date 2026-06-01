@@ -1,0 +1,309 @@
+{
+  "element": "electro",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 2782.30836815196,
+      "category": "attack",
+      "crit": 4155.553288916723,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1743.1012117939274
+    },
+    "attack.charged_hit_2": {
+      "average": 3115.6868624322065,
+      "category": "attack",
+      "crit": 4653.47512756632,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1951.961043442248
+    },
+    "attack.charged_hit_total": {
+      "average": 5897.995230584167,
+      "category": "attack",
+      "crit": 8809.028416483045,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3695.0622552361756
+    },
+    "attack.normal_hit_1": {
+      "average": 1882.498002281539,
+      "category": "attack",
+      "crit": 2811.6296720755704,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1179.3748624478062
+    },
+    "attack.normal_hit_2": {
+      "average": 1882.498002281539,
+      "category": "attack",
+      "crit": 2811.6296720755704,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1179.3748624478062
+    },
+    "attack.normal_hit_3": {
+      "average": 2498.1577262981427,
+      "category": "attack",
+      "crit": 3731.156357282675,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1565.0823646319943
+    },
+    "attack.normal_hit_4": {
+      "average": 3023.0471063892223,
+      "category": "attack",
+      "crit": 4515.111800440015,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1893.9227350838987
+    },
+    "attack.normal_hit_4_1": {
+      "average": 1444.4324294235707,
+      "category": "attack",
+      "crit": 2157.351069139746,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 904.9291397398262
+    },
+    "attack.normal_hit_4_2": {
+      "average": 1578.6146769656514,
+      "category": "attack",
+      "crit": 2357.760731300269,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 988.9935953440724
+    },
+    "attack.normal_hit_5": {
+      "average": 3074.352083390606,
+      "category": "attack",
+      "crit": 4591.739024207274,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1926.065026932581
+    },
+    "attack.plunge": {
+      "average": 2007.3747317278219,
+      "category": "attack",
+      "crit": 2998.1409551884285,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1257.6094610689715
+    },
+    "attack.plunge_high": {
+      "average": 5013.57635781416,
+      "category": "attack",
+      "crit": 7488.0929667720675,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3140.9785934446586
+    },
+    "attack.plunge_low": {
+      "average": 4013.8996751368895,
+      "category": "attack",
+      "crit": 5995.012697846965,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2514.6865343317804
+    },
+    "burst.burst_dmg": {
+      "average": 4306.24579527689,
+      "category": "burst",
+      "crit": 6431.650093958721,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2697.839804512886
+    },
+    "burst.keqing_burst_last": {
+      "average": 9238.854615321326,
+      "category": "burst",
+      "crit": 13798.812928856893,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 5788.092671500373
+    },
+    "burst.keqing_burst_slash": {
+      "average": 1174.4306714391519,
+      "category": "burst",
+      "crit": 1754.0863892614698,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 735.7744921398781
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.hyperbloom": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.keqing_skill_clap_dmg": {
+      "average": 3371.539736547227,
+      "category": "skill",
+      "crit": 5035.607555688824,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2112.251491480211
+    },
+    "skill.keqing_skill_clap_total_dmg": {
+      "average": 6743.079473094454,
+      "category": "skill",
+      "crit": 10071.215111377647,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4224.502982960422
+    },
+    "skill.keqing_skill_slash": {
+      "average": 6743.079473094454,
+      "category": "skill",
+      "crit": 10071.215111377647,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4224.502982960422
+    },
+    "skill.keqing_skill_stiletto": {
+      "average": 2022.9238419283367,
+      "category": "skill",
+      "crit": 3021.3645334132952,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1267.350894888127
+    },
+    "stats.atk": {
+      "average": 2126.319219436,
+      "category": "stats",
+      "crit": 2126.319219436,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2126.319219436
+    },
+    "stats.crit_dmg": {
+      "average": 138.4,
+      "category": "stats",
+      "crit": 138.4,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 138.4
+    },
+    "stats.crit_rate": {
+      "average": 43.076800000000006,
+      "category": "stats",
+      "crit": 43.076800000000006,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 43.076800000000006
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1675.2965448,
+      "category": "stats",
+      "crit": 1675.2965448,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1675.2965448
+    },
+    "stats.hp": {
+      "average": 26329.1246236,
+      "category": "stats",
+      "crit": 26329.1246236,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26329.1246236
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Keqing",
+  "repSlug": "keqing",
+  "schema": 1,
+  "slug": "haran_geppaku_futsu",
+  "weapon": "weapon_name.haran_geppaku_futsu",
+  "weaponType": "sword"
+}

@@ -1,0 +1,246 @@
+{
+  "element": "hydro",
+  "features": {
+    "attack.aimed": {
+      "average": 1220.6746139262966,
+      "category": "attack",
+      "crit": 2219.408388956903,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1109.7041944784514
+    },
+    "attack.charged_aimed": {
+      "average": 3037.748035763988,
+      "category": "attack",
+      "crit": 5523.178246843614,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2761.589123421807
+    },
+    "attack.normal_hit_1": {
+      "average": 1366.6864455889631,
+      "category": "attack",
+      "crit": 2484.8844465253874,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1242.4422232626937
+    },
+    "attack.normal_hit_2": {
+      "average": 1326.6100225780178,
+      "category": "attack",
+      "crit": 2412.0182228691233,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1206.0091114345616
+    },
+    "attack.normal_hit_3": {
+      "average": 2033.666245944472,
+      "category": "attack",
+      "crit": 3697.5749926263125,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1848.7874963131562
+    },
+    "attack.plunge": {
+      "average": 1370.7298305192753,
+      "category": "attack",
+      "crit": 2492.2360554895918,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1246.1180277447959
+    },
+    "attack.plunge_high": {
+      "average": 3423.505617870782,
+      "category": "attack",
+      "crit": 6224.555668855966,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3112.277834427983
+    },
+    "attack.plunge_low": {
+      "average": 2740.8788433137556,
+      "category": "attack",
+      "crit": 4983.416078752282,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2491.708039376141
+    },
+    "attack.sigewinnne_mini_stration_bubble_dmg": {
+      "average": 607.5496071527976,
+      "category": "attack",
+      "crit": 1104.6356493687229,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 552.3178246843614
+    },
+    "burst.burst_dmg": {
+      "average": 5887.0836368786195,
+      "category": "burst",
+      "crit": 10703.788430688399,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 5351.894215344199
+    },
+    "other.sigewinne_hp_buff": {
+      "average": 338.18936941132824,
+      "category": "other",
+      "crit": 338.18936941132824,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 338.18936941132824
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.sigewinne_bolstering_bubblebalm_dmg": {
+      "average": 917.8251951283347,
+      "category": "skill",
+      "crit": 1668.7730820515176,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 834.3865410257588
+    },
+    "skill.sigewinne_bolstering_bubblebalm_heal": {
+      "average": 2666.037413138507,
+      "category": "skill",
+      "crit": 2666.037413138507,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2666.037413138507
+    },
+    "skill.sigewinne_bounce_end_heal": {
+      "average": 19680.73609264392,
+      "category": "skill",
+      "crit": 19680.73609264392,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 19680.73609264392
+    },
+    "skill.surging_blade_dmg": {
+      "average": 275.3475585385004,
+      "category": "skill",
+      "crit": 500.63192461545526,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 250.31596230772763
+    },
+    "stats.atk": {
+      "average": 2370.2511736478523,
+      "category": "stats",
+      "crit": 2370.2511736478523,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2370.2511736478523
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1375.5603405000002,
+      "category": "stats",
+      "crit": 1375.5603405000002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1375.5603405000002
+    },
+    "stats.hp": {
+      "average": 34227.3671176416,
+      "category": "stats",
+      "crit": 34227.3671176416,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 34227.3671176416
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "set",
+  "repChar": "Sigewinne",
+  "repSlug": "sigewinne",
+  "schema": 1,
+  "slug": "SongOfDaysPast",
+  "weapon": "weapon_name.alley_hunter",
+  "weaponType": "bow"
+}

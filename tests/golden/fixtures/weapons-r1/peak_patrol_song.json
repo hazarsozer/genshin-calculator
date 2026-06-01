@@ -1,0 +1,237 @@
+{
+  "element": "geo",
+  "features": {
+    "attack.itto_kesagiri_combo_slash_dmg": {
+      "average": 3323.4283939248335,
+      "category": "attack",
+      "crit": 5144.625996787669,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2572.3129983938343
+    },
+    "attack.itto_kesagiri_final_slash_dmg": {
+      "average": 5986.004778491442,
+      "category": "attack",
+      "crit": 9266.261267014617,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 4633.130633507309
+    },
+    "attack.itto_saichimonji_slash_dmg": {
+      "average": 3305.065798169202,
+      "category": "attack",
+      "crit": 5116.2009259585175,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2558.1004629792587
+    },
+    "attack.normal_hit_1": {
+      "average": 1973.7036047940821,
+      "category": "attack",
+      "crit": 3055.2687380713346,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1527.6343690356673
+    },
+    "attack.normal_hit_2": {
+      "average": 1902.3649202834524,
+      "category": "attack",
+      "crit": 2944.8373379000814,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1472.4186689500407
+    },
+    "attack.normal_hit_3": {
+      "average": 2282.837904340143,
+      "category": "attack",
+      "crit": 3533.8048054800975,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1766.9024027400487
+    },
+    "attack.normal_hit_4": {
+      "average": 2920.130152635099,
+      "category": "attack",
+      "crit": 4520.325313676624,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2260.162656838312
+    },
+    "attack.plunge": {
+      "average": 1892.9040428839849,
+      "category": "attack",
+      "crit": 2930.192016848274,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1465.096008424137
+    },
+    "attack.plunge_high": {
+      "average": 4727.677739441688,
+      "category": "attack",
+      "crit": 7318.386593562986,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3659.193296781493
+    },
+    "attack.plunge_low": {
+      "average": 3785.0065224581467,
+      "category": "attack",
+      "crit": 5859.143223619422,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2929.571611809711
+    },
+    "burst.atk_bonus": {
+      "average": 3780.491278423171,
+      "category": "burst",
+      "crit": 3780.491278423171,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3780.491278423171
+    },
+    "reaction.crystalize": {
+      "average": 2161.7331008659794,
+      "category": "reaction",
+      "crit": 2161.7331008659794,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2161.7331008659794
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.itto_hurls_ushi_hp": {
+      "average": 26084.206654,
+      "category": "skill",
+      "crit": 26084.206654,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26084.206654
+    },
+    "skill.skill_dmg": {
+      "average": 11049.702797478341,
+      "category": "skill",
+      "crit": 17104.803092071736,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 8552.401546035868
+    },
+    "stats.atk": {
+      "average": 1935.2580902200002,
+      "category": "stats",
+      "crit": 1935.2580902200002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1935.2580902200002
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 29.2,
+      "category": "stats",
+      "crit": 29.2,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 29.2
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 3646.307174405064,
+      "category": "stats",
+      "crit": 3646.307174405064,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3646.307174405064
+    },
+    "stats.hp": {
+      "average": 26084.206654,
+      "category": "stats",
+      "crit": 26084.206654,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26084.206654
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.elem_dmg_bonus": {
+      "average": 25.6,
+      "category": "weapon",
+      "crit": 25.6,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 25.6
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Itto",
+  "repSlug": "arataki_itto",
+  "schema": 1,
+  "slug": "peak_patrol_song",
+  "weapon": "weapon_name.peak_patrol_song",
+  "weaponType": "claymore"
+}

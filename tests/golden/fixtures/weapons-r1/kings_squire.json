@@ -1,0 +1,237 @@
+{
+  "element": "dendro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3836.6556940675537,
+      "category": "attack",
+      "crit": 6975.73762557737,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3487.868812788685
+    },
+    "attack.normal_hit_1": {
+      "average": 1090.689652377074,
+      "category": "attack",
+      "crit": 1983.0720952310437,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 991.5360476155219
+    },
+    "attack.normal_hit_2": {
+      "average": 1000.565828359728,
+      "category": "attack",
+      "crit": 1819.2105970176872,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 909.6052985088436
+    },
+    "attack.normal_hit_3": {
+      "average": 1241.4091834497053,
+      "category": "attack",
+      "crit": 2257.1076062721913,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1128.5538031360957
+    },
+    "attack.normal_hit_4": {
+      "average": 1580.5382762573004,
+      "category": "attack",
+      "crit": 2873.7059568314553,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1436.8529784157276
+    },
+    "attack.plunge": {
+      "average": 1563.7501235369957,
+      "category": "attack",
+      "crit": 2843.1820427945377,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1421.5910213972688
+    },
+    "attack.plunge_high": {
+      "average": 3905.588988930778,
+      "category": "attack",
+      "crit": 7101.070888965051,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3550.5354444825257
+    },
+    "attack.plunge_low": {
+      "average": 3126.8376410894425,
+      "category": "attack",
+      "crit": 5685.159347435349,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2842.5796737176747
+    },
+    "other.nahida_mastery_bonus": {
+      "average": 57.55,
+      "category": "other",
+      "crit": 57.55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 57.55
+    },
+    "reaction.burning": {
+      "average": 863.1783178874093,
+      "category": "reaction",
+      "crit": 863.1783178874093,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 863.1783178874093
+    },
+    "reaction.electrocharged": {
+      "average": 6905.426543099275,
+      "category": "reaction",
+      "crit": 6905.426543099275,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 6905.426543099275
+    },
+    "reaction.rupture": {
+      "average": 6905.426543099275,
+      "category": "reaction",
+      "crit": 6905.426543099275,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 6905.426543099275
+    },
+    "reaction.shatter": {
+      "average": 10358.13981464891,
+      "category": "reaction",
+      "crit": 10358.13981464891,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 10358.13981464891
+    },
+    "skill.hold_dmg": {
+      "average": 4312.930194020768,
+      "category": "skill",
+      "crit": 7841.691261855941,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3920.8456309279704
+    },
+    "skill.nahida_trikarma_purification_dmg": {
+      "average": 4096.455190817527,
+      "category": "skill",
+      "crit": 7387.25621845081,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3693.628109225405
+    },
+    "skill.press_dmg": {
+      "average": 3254.54241634696,
+      "category": "skill",
+      "crit": 5917.349847903563,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2958.6749239517817
+    },
+    "stats.atk": {
+      "average": 2812.1805642542,
+      "category": "stats",
+      "crit": 2812.1805642542,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2812.1805642542
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1506.2145834,
+      "category": "stats",
+      "crit": 1506.2145834,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1506.2145834
+    },
+    "stats.hp": {
+      "average": 23586.0405293,
+      "category": "stats",
+      "crit": 23586.0405293,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23586.0405293
+    },
+    "stats.mastery": {
+      "average": 230.2,
+      "category": "stats",
+      "crit": 230.2,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 230.2
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.kings_squire_dmg": {
+      "average": 1447.7105544780622,
+      "category": "weapon",
+      "crit": 2632.201008141931,
+      "damageType": "none",
+      "format": "",
+      "isReacted": false,
+      "normal": 1316.1005040709656
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Nahida",
+  "repSlug": "nahida",
+  "schema": 1,
+  "slug": "kings_squire",
+  "weapon": "weapon_name.kings_squire",
+  "weaponType": "catalyst"
+}

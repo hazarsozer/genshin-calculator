@@ -1,0 +1,4346 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "EVERY non-beta weapon (202) at refine R5, passive ON, same reps as weapons-r1. Diff vs weapons-r1 = the refine scaling of each passive + refine-keyed stats.",
+    "id": "weapons-r5"
+  },
+  "featureTotal": 5820,
+  "itemCount": 202,
+  "items": [
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "a_thousand_blazing_suns",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.a_thousand_blazing_suns",
+        "passiveToggles": {
+          "weapon_a_thousand_blazing_suns": true
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "a_thousand_floating_dreams",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.a_thousand_floating_dreams",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "absolution",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.absolution",
+        "passiveToggles": {
+          "weapon_absolution": 3
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "akuoumaru",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.akuoumaru",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "alley_hunter",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {
+          "weapon_alley_hunter": 10
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "amenoma_kageuchi",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.amenoma_kageuchi",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "amos_bow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.amos_bow",
+        "passiveToggles": {
+          "weapon_amos_bow": 5
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "aqua_simulacra",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.aqua_simulacra",
+        "passiveToggles": {
+          "weapon_aqua_simulacra": true
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 34,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "aquila_favonia",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.aquila_favonia",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "ash_graven_drinking_horn",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.ash_graven_drinking_horn",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "astral_vultures_crimson_plumage",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.astral_vultures_crimson_plumage",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "azurelight",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.azurelight",
+        "passiveToggles": {
+          "weapon_azurelight_1": true,
+          "weapon_azurelight_2": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "ballad_of_the_boundless_blue",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.ballad_of_the_boundless_blue",
+        "passiveToggles": {
+          "weapon_azure_skies": 3
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "ballad_of_the_fjords",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.ballad_of_the_fjords",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "beacon_of_the_reed_sea",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.beacon_of_the_reed_sea",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "black_tassel",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.black_tassel",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "blackcliff_agate",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_agate",
+        "passiveToggles": {
+          "weapon_blackcliff_agate": 3
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "blackcliff_longsword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_longsword",
+        "passiveToggles": {
+          "weapon_blackcliff_longsword": 3
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "blackcliff_pole",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {
+          "weapon_blackcliff_pole": 3
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "blackcliff_slasher",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_slasher",
+        "passiveToggles": {
+          "weapon_blackcliff_slasher": 3
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "blackcliff_warbow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_warbow",
+        "passiveToggles": {
+          "weapon_blackcliff_warbow": 3
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "bloodtainted_greatsword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.bloodtainted_greatsword",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "brief_pavilion_chatter",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.brief_pavilion_chatter",
+        "passiveToggles": {
+          "weapon_brief_pavilion_chatter": true
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "calamity_of_eshu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.calamity_of_eshu",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "calamity_queller",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.calamity_queller",
+        "passiveToggles": {
+          "weapon_calamity_queller": 6,
+          "weapon_calamity_queller_off_field": true
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "cashflow_supervision",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.cashflow_supervision",
+        "passiveToggles": {
+          "weapon_cashflow_supervision": 3
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "cinnabar_spindle",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.cinnabar_spindle",
+        "passiveToggles": {
+          "weapon_cinnabar_spindle": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "cloudforged",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.cloudforged",
+        "passiveToggles": {
+          "weapon_cloudforged": 2
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "compound_bow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.compound_bow",
+        "passiveToggles": {
+          "weapon_compound_bow": 4
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "cool_steel",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.cool_steel",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "cranes_echoing_call",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.cranes_echoing_call",
+        "passiveToggles": {
+          "weapon_cranes_echoing_call": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "crescent_pike",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.crescent_pike",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "crimson_moons_semblance",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.crimson_moons_semblance",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "dark_iron_sword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.dark_iron_sword",
+        "passiveToggles": {
+          "weapon_dark_iron_sword": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {},
+      "slug": "deathmatch",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.deathmatch",
+        "passiveToggles": {
+          "weapon_deathmatch": true
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "debate_club",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.debate_club",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "dodoco_tales",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.dodoco_tales",
+        "passiveToggles": {
+          "weapon_dodoco_tales_1": true,
+          "weapon_dodoco_tales_2": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "dragons_bane",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.dragons_bane",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "dragonspine_spear",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.dragonspine_spear",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "earthshaker",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.earthshaker",
+        "passiveToggles": {
+          "weapon_earthshaker": true
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "elegy_for_the_end",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.elegy_for_the_end",
+        "passiveToggles": {
+          "weapon_elegy_for_the_end": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "emerald_orb",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.emerald_orb",
+        "passiveToggles": {
+          "weapon_emerald_orb": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "end_of_the_line",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.end_of_the_line",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "engulfing_lightning",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.engulfing_lightning",
+        "passiveToggles": {
+          "weapon_grasscutters_light": true
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "everlasting_moonglow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.everlasting_moonglow",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "eye_of_perception",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.eye_of_perception",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "fading_twilight",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.fading_twilight",
+        "passiveToggles": {
+          "weapon_fading_twilight_1": true,
+          "weapon_fading_twilight_2": true,
+          "weapon_fading_twilight_3": true
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "favonius_codex",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.favonius_codex",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "favonius_greatsword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.favonius_greatsword",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "favonius_lance",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.favonius_lance",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "favonius_sword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.favonius_sword",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "favonius_warbow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.favonius_warbow",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "ferrous_shadow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.ferrous_shadow",
+        "passiveToggles": {
+          "weapon_ferrous_shadow": true
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "festering_desire",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.festering_desire",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 34,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "fillet_blade",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.fillet_blade",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "finale_of_the_deep",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.finale_of_the_deep",
+        "passiveToggles": {
+          "weapon_finale_of_the_deep_1": true
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "flame_forged_insight",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.flame_forged_insight",
+        "passiveToggles": {
+          "weapon_flame_forged_insight": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {},
+      "slug": "flamebreath_flute",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.flamebreath_flute",
+        "passiveToggles": {
+          "weapon_flamebreath_flute": true
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "fleuve_cendre_ferryman",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.fleuve_cendre_ferryman",
+        "passiveToggles": {
+          "weapon_fleuve_cendre_ferryman": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "flower_wreathed_feathers",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.flower_wreathed_feathers",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "flowing_purity",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.flowing_purity",
+        "passiveToggles": {
+          "weapon_flowing_purity_1": true
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "forest_regalia",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.forest_regalia",
+        "passiveToggles": {
+          "weapon_forest_sanctuary": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "fractured_halo",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.fractured_halo",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "freedom_sworn",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.freedom_sworn",
+        "passiveToggles": {
+          "weapon_freedom_sworn": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "frostbearer",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.frostbearer",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "fruit_of_fulfillment",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.fruit_of_fulfillment",
+        "passiveToggles": {
+          "weapon_fruit_of_fulfillment": 5
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "fruitful_hook",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.fruitful_hook",
+        "passiveToggles": {
+          "weapon_fruitful_hook": true
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "hakushin_ring",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.hakushin_ring",
+        "passiveToggles": {
+          "weapon_white_dragon_ring": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "halberd",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.halberd",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "hamayumi",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.hamayumi",
+        "passiveToggles": {
+          "weapon_demon_slayer_bow": true
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "haran_geppaku_futsu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.haran_geppaku_futsu",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "harbinger_of_dawn",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.harbinger_of_dawn",
+        "passiveToggles": {
+          "weapon_harbinger_of_dawn": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "hunters_path",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.hunters_path",
+        "passiveToggles": {
+          "weapon_hunters_path": true
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "ibis_piercer",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.ibis_piercer",
+        "passiveToggles": {
+          "weapon_ibis_piercer": 2
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "iron_sting",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.iron_sting",
+        "passiveToggles": {
+          "weapon_iron_sting": 2
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "jadefalls_splendor",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.jadefalls_splendor",
+        "passiveToggles": {
+          "weapon_jadefalls_splendor": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 34,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "kagotsurube_isshin",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.kagotsurube_isshin",
+        "passiveToggles": {
+          "weapon_kagotsurube_isshin": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "kaguras_verity",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.kaguras_verity",
+        "passiveToggles": {
+          "weapon_kaguras_verity": 3
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "katsuragikiri_nagamasa",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.katsuragikiri_nagamasa",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "key_of_khaj_nisut",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.key_of_khaj_nisut",
+        "passiveToggles": {
+          "weapon_key_of_khaj_nisut": 3
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "kings_squire",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.kings_squire",
+        "passiveToggles": {
+          "weapon_kings_squire": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "kitain_cross_spear",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.kitain_cross_spear",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "light_of_foliar_incision",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.light_of_foliar_incision",
+        "passiveToggles": {
+          "weapon_light_of_foliar_incision": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "lions_roar",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.lions_roar",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "lithic_blade",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.lithic_blade",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "lithic_spear",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.lithic_spear",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "lost_prayer_to_the_sacred_winds",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.lost_prayer_to_the_sacred_winds",
+        "passiveToggles": {
+          "weapon_lost_prayer": 4
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "lumidouce_elegy",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.lumidouce_elegy",
+        "passiveToggles": {
+          "weapon_lumidouce_elegy": 2
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "luxurious_sea_lord",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.luxurious_sea_lord",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "magic_guide",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.magic_guide",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "mailed_flower",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.mailed_flower",
+        "passiveToggles": {
+          "weapon_mailed_flower": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "makhaira_aquamarine",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.makhaira_aquamarine",
+        "passiveToggles": {
+          "weapon_desert_pavilion": true
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "mappa_mare",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.mappa_mare",
+        "passiveToggles": {
+          "weapon_mappa_mare": 2
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "memory_of_dust",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.memory_of_dust",
+        "passiveToggles": {
+          "weapon_memory_of_dust": 5
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "messenger",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.messenger",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "missive_windspear",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.missive_windspear",
+        "passiveToggles": {
+          "weapon_missive_windspear": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "mistsplitter_reforged",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.mistsplitter_reforged",
+        "passiveToggles": {
+          "weapon_mistsplitters_reforged": 3
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "mitternachts_waltz",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.mitternachts_waltz",
+        "passiveToggles": {
+          "weapon_mitternachts_waltz_1": true,
+          "weapon_mitternachts_waltz_2": true
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "moonpiercer",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.moonpiercer",
+        "passiveToggles": {
+          "weapon_stillwood_moonshadow": true
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "morning_hibernation",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.morning_hibernation",
+        "passiveToggles": {
+          "weapon_morning_hibernation_1": true,
+          "weapon_morning_hibernation_2": true,
+          "weapon_morning_hibernation_3": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "mountain_bracing_bolt",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.mountain_bracing_bolt",
+        "passiveToggles": {
+          "weapon_mountain_bracing_bolt": true
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "mountain_kings_fang",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.mountain_kings_fang",
+        "passiveToggles": {
+          "weapon_mountain_kings_fang": 6
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "mouuns_moon",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.mouuns_moon",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "oathsworn_eye",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.oathsworn_eye",
+        "passiveToggles": {
+          "weapon_oathsworn_eye": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "otherworldly_story",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.otherworldly_story",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "weapon",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {},
+      "slug": "peak_patrol_song",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.peak_patrol_song",
+        "passiveToggles": {
+          "weapon_peak_patrol_song": 2,
+          "weapon_peak_patrol_song_2": true
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "polar_star",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.polar_star",
+        "passiveToggles": {
+          "weapon_polar_star": 4
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "portable_power_saw",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.portable_power_saw",
+        "passiveToggles": {
+          "weapon_sea_shanty": 3
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "predator",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.predator",
+        "passiveToggles": {
+          "weapon_predator": 2
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "primordial_jade_cutter",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.primordial_jade_cutter",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "primordial_jade_winged_spear",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.primordial_jade_winged_spear",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "prospectors_drill",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.prospectors_drill",
+        "passiveToggles": {
+          "weapon_masons_ditty": 3
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "prototype_amber",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.prototype_amber",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "prototype_archaic",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.prototype_archaic",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "prototype_crescent",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.prototype_crescent",
+        "passiveToggles": {
+          "weapon_prototype_crescent": true
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {},
+      "slug": "prototype_rancour",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.prototype_rancour",
+        "passiveToggles": {
+          "weapon_prototype_rancour": 4
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "prototype_starglitter",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.prototype_starglitter",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {},
+      "slug": "rainbows_trail",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.rainbows_trail",
+        "passiveToggles": {
+          "weapon_rainbows_trail": true
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "rainslasher",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.rainslasher",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "range_gauge",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.range_gauge",
+        "passiveToggles": {
+          "weapon_masons_ditty": 3
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "raven_bow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.raven_bow",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "recurve_bow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.recurve_bow",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {},
+      "slug": "redhorn_stonethresher",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.redhorn_stonethresher",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "rightful_reward",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.rightful_reward",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "ring_of_ceiba",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.ring_of_ceiba",
+        "passiveToggles": {
+          "weapon_ring_of_ceiba": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "royal_bow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.royal_bow",
+        "passiveToggles": {
+          "weapon_royal_avg_crit_rate": true,
+          "weapon_royal_bow": 5
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "royal_greatsword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.royal_greatsword",
+        "passiveToggles": {
+          "weapon_royal_avg_crit_rate": true,
+          "weapon_royal_greatsword": 5
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "royal_grimoire",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.royal_grimoire",
+        "passiveToggles": {
+          "weapon_royal_avg_crit_rate": true,
+          "weapon_royal_grimoire": 5
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "royal_longsword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.royal_longsword",
+        "passiveToggles": {
+          "weapon_royal_avg_crit_rate": true,
+          "weapon_royal_longsword": 5
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "royal_spear",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.royal_spear",
+        "passiveToggles": {
+          "weapon_royal_avg_crit_rate": true,
+          "weapon_royal_spear": 5
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "rust",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.rust",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "sacrificial_bow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.sacrificial_bow",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "sacrificial_fragments",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.sacrificial_fragments",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "sacrificial_greatsword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.sacrificial_greatsword",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "sacrificial_jade",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.sacrificial_jade",
+        "passiveToggles": {
+          "weapon_sacrificial_jade": true
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "sacrificial_sword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.sacrificial_sword",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "sapwood_blade",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.sapwood_blade",
+        "passiveToggles": {
+          "weapon_forest_sanctuary": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "scion_of_the_blazing_sun",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.scion_of_the_blazing_sun",
+        "passiveToggles": {
+          "weapon_scion_of_the_blazing_sun": true
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "sequence_of_solitude",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.sequence_of_solitude",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "serpent_spine",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.serpent_spine",
+        "passiveToggles": {
+          "weapon_serpent_spine": 5
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "sharpshooters_oath",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.sharpshooters_oath",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "shattered_chains",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.shattered_chains",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "silvershower_heartstrings",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.silvershower_heartstrings",
+        "passiveToggles": {
+          "weapon_silvershower_heartstrings": 3
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "skyrider_greatsword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.skyrider_greatsword",
+        "passiveToggles": {
+          "weapon_skyrider_greatsword": 4
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "skyrider_sword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.skyrider_sword",
+        "passiveToggles": {
+          "weapon_skyrider_sword": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "skyward_atlas",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.skyward_atlas",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 34,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "skyward_blade",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.skyward_blade",
+        "passiveToggles": {
+          "weapon_skyward_blade": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "skyward_harp",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.skyward_harp",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "skyward_pride",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.skyward_pride",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "skyward_spine",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.skyward_spine",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "slingshot",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.slingshot",
+        "passiveToggles": {
+          "weapon_slingshot": true
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "snow_tombed_starsilver",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.snow_tombed_starsilver",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "solar_pearl",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {
+          "weapon_solar_pearl_1": true,
+          "weapon_solar_pearl_2": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "song_of_broken_pines",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.song_of_broken_pines",
+        "passiveToggles": {
+          "weapon_song_of_broken_pines": true
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "song_of_stillness",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.song_of_stillness",
+        "passiveToggles": {
+          "weapon_song_of_stillness": true
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "splendor_of_tranquil_waters",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.splendor_of_tranquil_waters",
+        "passiveToggles": {
+          "weapon_splendor_of_tranquil_waters": 3,
+          "weapon_splendor_of_tranquil_waters_2": 2
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "staff_of_homa",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.staff_of_homa",
+        "passiveToggles": {
+          "weapon_staff_of_homa": true
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "staff_of_the_scarlet_sands",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.staff_of_the_scarlet_sands",
+        "passiveToggles": {
+          "weapon_staff_of_the_scarlet_sands": 3
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "starcallers_watch",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.starcallers_watch",
+        "passiveToggles": {
+          "weapon_starcallers_watch": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "sturdy_bone",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.sturdy_bone",
+        "passiveToggles": {
+          "weapon_sturdy_bone": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "summit_shaper",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.summit_shaper",
+        "passiveToggles": {
+          "weapon_unforged": 5
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "surfing_time",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.surfing_time",
+        "passiveToggles": {
+          "weapon_surfing_time": 4
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 34,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "sword_of_descension",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.sword_of_descension",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 34,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "sword_of_narzissenkreuz",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.sword_of_narzissenkreuz",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "symphonist_of_scents",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.symphonist_of_scents",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "talking_stick",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.talking_stick",
+        "passiveToggles": {
+          "weapon_talking_stick_1": true,
+          "weapon_talking_stick_2": true
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "the_alley_flash",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {
+          "weapon_alley_flash": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "the_bell",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {
+          "weapon_bell": true
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 34,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "the_black_sword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_black_sword",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "the_catch",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_catch",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "the_dockhands_assistant",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_dockhands_assistant",
+        "passiveToggles": {
+          "weapon_sea_shanty": 3
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "the_first_great_magic",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_first_great_magic",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 34,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "the_flute",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_flute",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "the_stringless",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_stringless",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "the_unforged",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_unforged",
+        "passiveToggles": {
+          "weapon_unforged": 5
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "the_viridescent_hunt",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_viridescent_hunt",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "the_widsith",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_widsith",
+        "passiveToggles": {
+          "weapon_widsith_1": true,
+          "weapon_widsith_2": true,
+          "weapon_widsith_3": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "thrilling_tales_of_dragon_slayers",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.thrilling_tales_of_dragon_slayers",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "thundering_pulse",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.thundering_pulse",
+        "passiveToggles": {
+          "weapon_thundering_pulse_2": 3
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "tidal_shadow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.tidal_shadow",
+        "passiveToggles": {
+          "weapon_tidal_shadow": true
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "tome_of_the_eternal_flow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.tome_of_the_eternal_flow",
+        "passiveToggles": {
+          "weapon_tome_of_the_eternal_flow": 3
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "toukabou_shigure",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.toukabou_shigure",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "travelers_handy_sword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.travelers_handy_sword",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "tulaytullahs_remembrance",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.tulaytullahs_remembrance",
+        "passiveToggles": {
+          "weapon_tulaytullahs_remembrance_2": 10
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "twin_nephrite",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.twin_nephrite",
+        "passiveToggles": {
+          "weapon_twin_nephrite": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "ultimate_overlords_mega_magic_sword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.ultimate_overlords_mega_magic_sword",
+        "passiveToggles": {
+          "weapon_ultimate_overlords_mega_magic_sword": 12
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {},
+      "slug": "uraku_misugiri",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.uraku_misugiri",
+        "passiveToggles": {
+          "weapon_uraku_misugiri": true
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "verdict",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.verdict",
+        "passiveToggles": {
+          "weapon_verdict": 2
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "vivid_notions",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.vivid_notions",
+        "passiveToggles": {
+          "weapon_vivid_notions_3_1": true,
+          "weapon_vivid_notions_3_2": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "vortex_vanquisher",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.vortex_vanquisher",
+        "passiveToggles": {
+          "weapon_vortex_vanquisher": 5
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "wandering_evenstar",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.wandering_evenstar",
+        "passiveToggles": {
+          "weapon_desert_pavilion": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "wavebreakers_fin",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.wavebreakers_fin",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "waveriding_whirl",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.waveriding_whirl",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "weapon_dialogues_of_the_desert_sages",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.weapon_dialogues_of_the_desert_sages",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "white_iron_greatsword",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.white_iron_greatsword",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "white_tassel",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.white_tassel",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {},
+      "slug": "whiteblind",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.whiteblind",
+        "passiveToggles": {
+          "weapon_whiteblind": 4
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "weapon",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "windblume_ode",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.windblume_ode",
+        "passiveToggles": {
+          "weapon_windblume_ode": true
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "wine_and_song",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.wine_and_song",
+        "passiveToggles": {
+          "weapon_wine_and_song": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "wolf_fang",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.wolf_fang",
+        "passiveToggles": {
+          "weapon_wolf_fang_1": 4,
+          "weapon_wolf_fang_2": 4
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "weapon",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "wolfs_gravestone",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.wolfs_gravestone",
+        "passiveToggles": {
+          "weapon_wolfs_gravestone": true
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "kind": "weapon",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "xiphos_moonlight",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.xiphos_moonlight",
+        "passiveToggles": {},
+        "refine": 5,
+        "type": "sword"
+      }
+    }
+  ]
+}

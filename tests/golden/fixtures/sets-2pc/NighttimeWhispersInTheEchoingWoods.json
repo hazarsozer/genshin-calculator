@@ -1,0 +1,246 @@
+{
+  "element": "geo",
+  "features": {
+    "attack.charged_final": {
+      "average": 3237.425743636543,
+      "category": "attack",
+      "crit": 6779.710974024524,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2843.8384958156557
+    },
+    "attack.charged_spin": {
+      "average": 1789.8163616910774,
+      "category": "attack",
+      "crit": 3748.174812255384,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1572.2209782950433
+    },
+    "attack.normal_hit_1": {
+      "average": 2498.688682871362,
+      "category": "attack",
+      "crit": 5232.672013321616,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2194.912757265778
+    },
+    "attack.normal_hit_2": {
+      "average": 2311.3266685795625,
+      "category": "attack",
+      "crit": 4840.304618669779,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2030.329118569538
+    },
+    "attack.normal_hit_3": {
+      "average": 2796.298789457991,
+      "category": "attack",
+      "crit": 5855.917352484058,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2456.3411713439837
+    },
+    "attack.normal_hit_3_1": {
+      "average": 932.099596485997,
+      "category": "attack",
+      "crit": 1951.9724508280192,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 818.7803904479945
+    },
+    "attack.normal_hit_4": {
+      "average": 3565.0942609045214,
+      "category": "attack",
+      "crit": 7465.903652491549,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3131.6709951726293
+    },
+    "attack.plunge": {
+      "average": 1850.5273265869537,
+      "category": "attack",
+      "crit": 3875.313726794886,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1625.5510598971834
+    },
+    "attack.plunge_high": {
+      "average": 4621.837620761362,
+      "category": "attack",
+      "crit": 9678.900990772214,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4059.9416907601562
+    },
+    "attack.plunge_low": {
+      "average": 3700.270217651145,
+      "category": "attack",
+      "crit": 7748.984714406473,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3250.413051344997
+    },
+    "burst.burst_dmg": {
+      "average": 2679.0331611130014,
+      "category": "burst",
+      "crit": 5610.343513785485,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2353.3320108160588
+    },
+    "burst.navia_cannon_fire_support_dmg": {
+      "average": 1537.2377779524738,
+      "category": "burst",
+      "crit": 3219.2330135617512,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1350.3494184403316
+    },
+    "reaction.crystalize": {
+      "average": 2161.7331008659794,
+      "category": "reaction",
+      "crit": 2161.7331008659794,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2161.7331008659794
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.navia_rosula_shardshot_dmg": {
+      "average": 11320.548662507987,
+      "category": "skill",
+      "crit": 23707.122286910613,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 9944.262704241028
+    },
+    "skill.surging_blade_dmg": {
+      "average": 1032.2688750007283,
+      "category": "skill",
+      "crit": 2161.7436735784754,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 906.7716751587562
+    },
+    "stats.atk": {
+      "average": 2355.7895704959997,
+      "category": "stats",
+      "crit": 2355.7895704959997,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2355.7895704959997
+    },
+    "stats.crit_dmg": {
+      "average": 138.4,
+      "category": "stats",
+      "crit": 138.4,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 138.4
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1669.1484594,
+      "category": "stats",
+      "crit": 1669.1484594,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1669.1484594
+    },
+    "stats.hp": {
+      "average": 36574.72693326374,
+      "category": "stats",
+      "crit": 36574.72693326374,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 36574.72693326374
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.bell_shield": {
+      "average": 7314.945386652747,
+      "category": "weapon",
+      "crit": 7314.945386652747,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 7314.945386652747
+    }
+  },
+  "kind": "set",
+  "repChar": "Navia",
+  "repSlug": "navia",
+  "schema": 1,
+  "slug": "NighttimeWhispersInTheEchoingWoods",
+  "weapon": "weapon_name.the_bell",
+  "weaponType": "claymore"
+}
