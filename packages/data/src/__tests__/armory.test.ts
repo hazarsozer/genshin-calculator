@@ -390,9 +390,19 @@ for (const family of WEAPON_FAMILIES) {
     const weaponKey = weaponNameFromManifest(item.weapon.name);
     const weapon = weaponByName[weaponKey];
 
-    // STEP 1+2: ported-only filter — the RED burndown branch is added in STEP 3.
+    // RED-NOT-ERROR: an un-ported weapon resolves to a FAILING burndown test, never a
+    // thrown error at glob/load time (a throw would abort the whole suite and make the
+    // burndown impossible). One clear RED per un-ported item == the remaining-work signal.
     if (weapon === undefined) {
       weaponUnported.add(weaponKey);
+      describe(`${family}: ${slug}`, () => {
+        it(`${slug}: not yet ported — burndown`, () => {
+          expect.fail(
+            `weapon "${weaponKey}" not yet ported (no packages/data/src/weapons/*.ts ` +
+            `exports a DbObjectWeapon named "${weaponKey}"). Port it to flip this test green (③).`
+          );
+        });
+      });
       continue;
     }
     weaponPorted.add(weaponKey);
@@ -456,9 +466,20 @@ for (const family of SET_FAMILIES) {
     const pieces = item.artifactSets[goodId]!;
     const set = setByGoodId[goodId];
 
-    // STEP 1+2: ported-only filter — the RED burndown branch is added in STEP 3.
+    // RED-NOT-ERROR (the one real deviation from artifactSets.test.ts, which SKIPS
+    // unported sets): an un-ported set resolves to a FAILING burndown test, not a skip.
+    // Skipping would be a silent cap; this harness must SURFACE the gap as RED so the
+    // burndown count is the remaining-work signal.
     if (set === undefined) {
       setUnported.add(goodId);
+      describe(`${family}: ${slug} (${goodId})`, () => {
+        it(`${slug}: not yet ported — burndown`, () => {
+          expect.fail(
+            `set "${goodId}" not yet ported (no packages/data/src/artifacts/sets/*.ts ` +
+            `exports a DbObjectArtifactSet with goodId "${goodId}"). Port it to flip this test green (③).`
+          );
+        });
+      });
       continue;
     }
     setPorted.add(goodId);
