@@ -161,6 +161,18 @@ export interface CharPostEffect {
   readonly priority?: number;
   /** Stat the bonus is derived FROM (e.g. `hp` → reads `getTotal('hp')`). */
   readonly fromStat: string;
+  /**
+   * Optional second stat for a max(fromStat, fromStatMax) base derivation.
+   *
+   * When present, the effective base is `max(getTotal(fromStat), getTotal(fromStatMax))`
+   * instead of `getTotal(fromStat)` alone. Mirrors `PostEffectStatsNahida.getBaseValueTree`
+   * (PostEffect/Stats/Nahida.js:6-11) which returns `CMax([makeStatTotalItem('mastery'),
+   * makeStatItem('party_max_mastery')])` — the larger of Nahida's own mastery total and
+   * the party's max mastery (injected as a stat by ConditionNumber `party_max_mastery`).
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/Nahida.js
+   */
+  readonly fromStatMax?: string;
   /** Stat the bonus is written TO (e.g. `atk`). */
   readonly toStat: string;
   /**
@@ -191,6 +203,26 @@ export interface CharPostEffect {
     readonly levelSetting: string;
     /** Divisor/multiplier applied to the table value (e.g. `0.01` for a percent→fraction fold). */
     readonly multi: number;
+  };
+  /**
+   * Optional talent-table bonus contributed directly to `toStat`, without
+   * multiplying by any base stat. When present, `bonus = table.getValue(effectiveLevel)`
+   * where effectiveLevel = settings[levelSetting] + settings[levelSetting_bonus] + _bonus_2.
+   *
+   * This models Nahida's `ConditionLevels` burst bonus: `dmg_skill_nahida` gains a
+   * fixed percent at the character's effective burst talent level (rather than being
+   * derived from a base stat like ATK or HP). The `fromStat` field is IGNORED when
+   * `talentBonus` is present.
+   *
+   * Source: raw/genshin_calc_pub/src/js/db/Char/Nahida.js:338-371 (ConditionLevels,
+   *         levelSetting='char_skill_burst', stats=[StatTable('dmg_skill_nahida', ...)]),
+   *         raw/genshin_calc_pub/src/js/classes/Condition/Levels.js (getStats → getLevel).
+   */
+  readonly talentBonus?: {
+    /** Talent multiplier table; `getValue(level)` returns the raw percent value. */
+    readonly table: TalentTable;
+    /** Settings key for the BASE talent level (e.g. `char_skill_burst`). */
+    readonly levelSetting: string;
   };
   /**
    * Optional subtraction applied to `getTotal(fromStat)` BEFORE multiplying by

@@ -270,6 +270,18 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
     priority: effect.priority ?? 1,
     contribute(readStats: Stats, settings: EvalContext): Record<string, number> {
       if (!conditions.every((c) => evaluate(c, settings))) return {};
+      // Talent-table direct bonus — `bonus = table.getValue(effectiveLevel)`.
+      // Models ConditionLevels: contributes `dmg_skill_nahida` at burst talent level
+      // (Nahida.js:338-371). Skips the base-stat multiplication entirely.
+      // Source: raw/genshin_calc_pub/src/js/classes/Condition/Levels.js (getStats)
+      if (effect.talentBonus !== undefined) {
+        const { table, levelSetting } = effect.talentBonus;
+        const base = (settings[levelSetting] as number | undefined) ?? 1;
+        const bonus1 = (settings[`${levelSetting}_bonus`] as number | undefined) ?? 0;
+        const bonus2 = (settings[`${levelSetting}_bonus_2`] as number | undefined) ?? 0;
+        const effectiveLevel = base + bonus1 + bonus2;
+        return { [effect.toStat]: table.getValue(effectiveLevel) };
+      }
       // Resolve ratio: talent-scaled (dynamic) or fixed constant.
       let ratio: number;
       if (effect.ratioFromTalent !== undefined) {
@@ -283,7 +295,14 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       } else {
         ratio = effect.ratio ?? 0;
       }
-      const fromTotal = readStats.getTotal(effect.fromStat);
+      // Base stat: getTotal(fromStat), or max(getTotal(fromStat), getTotal(fromStatMax))
+      // when fromStatMax is set. Mirrors PostEffectStatsNahida.getBaseValueTree which
+      // returns CMax([makeStatTotalItem('mastery'), makeStatItem('party_max_mastery')]).
+      // Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/Nahida.js:6-11
+      const fromTotal0 = readStats.getTotal(effect.fromStat);
+      const fromTotal = effect.fromStatMax !== undefined
+        ? Math.max(fromTotal0, readStats.getTotal(effect.fromStatMax))
+        : fromTotal0;
       const fromValue = effect.offset !== undefined ? Math.max(0, fromTotal - effect.offset) : fromTotal;
       let bonus = fromValue * ratio;
       if (effect.cap !== undefined) {

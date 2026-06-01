@@ -149,9 +149,33 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "boolean":
     case "static":
     case "constellation":
-    case "number":
       // Plain stat-bearing variants — `cond.stats` as-is.
       return toNumberBag(condition.stats);
+    case "number": {
+      // Plain stat-bearing variants — `cond.stats` as-is, PLUS the dynamic
+      // clamped value injected as a stat keyed by the condition's name.
+      //
+      // Her ConditionNumber.getStats() (Condition/Number.js:58-70) calls
+      // `super.getStats()` (i.e. `cond.stats`), then ALSO does:
+      //   `stats.add(this.params.stat || this.params.name, this.getValue(settings))`
+      // where `getValue` clamps the raw settings value to [min, max]. This is how
+      // `party_max_mastery: 1000` becomes a stat named `party_max_mastery` with
+      // value `min(settings.party_max_mastery, max=1000)` = 1000.
+      // The PostEffectStatsNahida then reads it via `makeStatItem('party_max_mastery')`.
+      //
+      // Source: raw/genshin_calc_pub/src/js/classes/Condition/Number.js:58-70
+      const base = toNumberBag(condition.stats);
+      if (condition.name === undefined) return base;
+      // getValue semantics: clamp(ctx[name], min=0, max) → the dynamic stat value.
+      const raw = ctx[condition.name];
+      const rawNum = typeof raw === "number" ? raw : 0;
+      const min = condition.min ?? 0;
+      const max = condition.max;
+      const clamped = max !== undefined
+        ? Math.min(max, Math.max(min, rawNum))
+        : Math.max(min, rawNum);
+      return { ...base, [condition.name]: clamped };
+    }
     default: {
       // Exhaustiveness tripwire: a new Condition variant must be handled above,
       // not silently fall through to `cond.stats`.
