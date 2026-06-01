@@ -22,6 +22,14 @@ export type ArtifactSlot =
 /**
  * A single artifact with its main stat and sub-stats.
  * Sub-stat values follow the GOOD convention (whole-number percents for % stats).
+ *
+ * `mainStatValue` is the rolled main-stat value at the artifact's current level,
+ * in the same GOOD convention as subStats (whole-number for % stats, e.g. 46.6
+ * means 46.6%). Callers provide this directly; it equals
+ * `DB.Artifacts.Mainstats.get(mainStat).values[rarity-1].getValue(level)` from
+ * Aspirine's engine. GOOD-format exporters (Paimon.moe, Inventory Kamera) always
+ * include it alongside `mainStatKey`, so requiring it here is the simplest faithful
+ * approach — no level-dependent lookup tables need to be ported into this package.
  */
 export interface Artifact {
   readonly slot: ArtifactSlot;
@@ -29,6 +37,12 @@ export interface Artifact {
   readonly rarity: 1 | 2 | 3 | 4 | 5;
   readonly level: number;
   readonly mainStatKey: GoodStatKey;
+  /**
+   * The main-stat value at this artifact's level. Whole-number for % stats
+   * (46.6 = 46.6%), raw integer for flat stats (717 = 717 HP).
+   * Follows the same GOOD convention as subStats.
+   */
+  readonly mainStatValue: number;
   readonly subStats: readonly ArtifactSubStat[];
 }
 

@@ -47,3 +47,6 @@ export {
 
 // P2.W1 — weapon barrel (5 default weapons + P2.W0 exemplars)
 export * from "./weapons/index.js";
+
+// P2.B0 — artifact build assembly (GOOD artifacts → raw stat bag + set detection)
+export { assembleArtifactStats, detectSets } from "./assembleBuild.js";
