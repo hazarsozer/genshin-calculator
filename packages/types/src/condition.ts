@@ -267,6 +267,30 @@ export interface ConditionBooleanValue extends ConditionBase {
 }
 
 /**
+ * A multi-state selector ("dropdown") condition. Active when `ctx[name]` is a positive
+ * number (the selected option, 1-indexed) AND the optional `.condition` gate passes.
+ * Each option carries a refine-indexed stat bag; the active bag is
+ * `options[ctx[name] - 1][weapon_refine - 1]`.
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Dropdown.js — her `params.values[i]`
+ * each wrap an inner `ConditionStaticRefine` whose `getStats` is refine-scaled. The selection
+ * is caller-supplied (a `passiveToggles` value; e.g. Mistsplitter's stack level 1/2/3, Polar
+ * Star's 1-4). `ConditionDropdownElement` (an element-keyed selector) reuses this shape — the
+ * element-icon rendering is UI-only; here the option index is the discriminant either way.
+ */
+export interface ConditionDropdown extends ConditionBase {
+  readonly type: "dropdown";
+  /** Settings key holding the selected option (positive integer; 0/absent → inactive). */
+  readonly name: string;
+  /**
+   * Per-option stat bags. `options[selected - 1]` is the chosen option's per-refinement
+   * array (`refinementStats[weapon_refine - 1]`). Mirrors her `values[i].conditions[0]`
+   * (a ConditionStaticRefine) per option.
+   */
+  readonly options: readonly (readonly ConditionStats[])[];
+}
+
+/**
  * Logical AND of all items — all must evaluate to true.
  * Vacuous truth: empty items list → true.
  */
@@ -297,6 +321,7 @@ export type Condition =
   | ConditionBooleanWeaponType
   | ConditionEnemyStatus
   | ConditionBooleanValue
+  | ConditionDropdown
   | ConditionAnd
   | ConditionOr;
 

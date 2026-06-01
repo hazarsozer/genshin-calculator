@@ -92,6 +92,7 @@ export type {
   ConditionBooleanWeaponType,
   ConditionEnemyStatus,
   ConditionBooleanValue,
+  ConditionDropdown,
   ConditionAnd,
   ConditionOr,
   Condition,

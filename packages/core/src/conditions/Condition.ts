@@ -33,6 +33,7 @@ import type {
   ConditionBooleanWeaponType,
   ConditionEnemyStatus,
   ConditionBooleanValue,
+  ConditionDropdown,
   ConditionStats,
   EvalContext,
 } from "@genshin/types";
@@ -75,6 +76,8 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return evaluateEnemyStatus(condition, ctx);
     case "boolean-value":
       return evaluateBooleanValue(condition, ctx);
+    case "dropdown":
+      return evaluateDropdown(condition, ctx);
     case "and":
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
@@ -152,6 +155,14 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
       return condition.refinementStats !== undefined
         ? { ...toNumberBag(condition.stats), ...(refineBag(condition.refinementStats, ctx) ?? {}) }
         : toNumberBag(condition.stats);
+    case "dropdown": {
+      // The selected option's refine-scaled bag: options[ctx[name] - 1][weapon_refine - 1].
+      // `evaluate` already guaranteed active (selected > 0) above.
+      const raw = ctx[condition.name];
+      const selected = typeof raw === "number" ? raw : 0;
+      const optionBag = selected > 0 ? condition.options[selected - 1] : undefined;
+      return optionBag !== undefined ? (refineBag(optionBag, ctx) ?? {}) : {};
+    }
     case "and":
     case "or":
     case "pieces-count":
@@ -426,6 +437,20 @@ function evaluateBooleanValue(
   const value2 = typeof raw === "number" ? raw : 0;
   const value1 = condition.value ?? 0;
   const active = VALUE_OPS[condition.cond](value2, value1);
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionDropdown.isActive — active when `ctx[name]` is a positive number (a selected
+ * option), AND the optional `.condition` gate passes. The stat bag is resolved in
+ * `conditionStats` (the selected option's refine-scaled bag). `invert` flips activeness.
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Dropdown.js:42-65
+ */
+function evaluateDropdown(condition: ConditionDropdown, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const raw = ctx[condition.name];
+  const active = typeof raw === "number" && raw > 0;
   return condition.invert ? !active : active;
 }
 

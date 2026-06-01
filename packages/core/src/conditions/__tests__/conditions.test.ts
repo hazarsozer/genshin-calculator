@@ -30,6 +30,7 @@ import type {
   ConditionBooleanWeaponType,
   ConditionEnemyStatus,
   ConditionBooleanValue,
+  ConditionDropdown,
   ConditionAnd,
   ConditionOr,
 } from "@genshin/types";
@@ -470,6 +471,38 @@ describe("ConditionBooleanValue", () => {
     const gated: ConditionBooleanValue = { type: "boolean-value", setting: "s", cond: "ge", value: 1, condition: gate };
     expect(evaluate(gated, { s: 5 })).toBe(false);
     expect(evaluate(gated, { s: 5, g: true })).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 9f. ConditionDropdown — multi-state selector; active option → refine-scaled bag
+//
+// Ports raw/genshin_calc_pub/src/js/classes/Condition/Dropdown.js
+// ---------------------------------------------------------------------------
+
+describe("ConditionDropdown", () => {
+  const sel: ConditionDropdown = {
+    type: "dropdown",
+    name: "weapon_polar_star",
+    options: [
+      [{ atk_percent: 10 }, { atk_percent: 12.5 }, { atk_percent: 15 }, { atk_percent: 17.5 }, { atk_percent: 20 }],
+      [{ atk_percent: 20 }, { atk_percent: 25 }, { atk_percent: 30 }, { atk_percent: 35 }, { atk_percent: 40 }],
+      [{ atk_percent: 30 }, { atk_percent: 37.5 }, { atk_percent: 45 }, { atk_percent: 52.5 }, { atk_percent: 60 }],
+      [{ atk_percent: 48 }, { atk_percent: 60 }, { atk_percent: 72 }, { atk_percent: 84 }, { atk_percent: 96 }],
+    ],
+  };
+
+  it("is active when a positive option is selected, inactive at 0/absent", () => {
+    expect(evaluate(sel, { weapon_polar_star: 4 })).toBe(true);
+    expect(evaluate(sel, { weapon_polar_star: 0 })).toBe(false);
+    expect(evaluate(sel, {})).toBe(false);
+  });
+
+  it("conditionStats: the selected option's refine-scaled bag", () => {
+    expect(conditionStats(sel, { weapon_polar_star: 4, weapon_refine: 1 })).toEqual({ atk_percent: 48 });
+    expect(conditionStats(sel, { weapon_polar_star: 4, weapon_refine: 5 })).toEqual({ atk_percent: 96 });
+    expect(conditionStats(sel, { weapon_polar_star: 1, weapon_refine: 1 })).toEqual({ atk_percent: 10 });
+    expect(conditionStats(sel, { weapon_polar_star: 0, weapon_refine: 1 })).toEqual({});
   });
 });
 

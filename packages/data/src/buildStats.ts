@@ -542,6 +542,17 @@ export function buildStats(input: BuildInput): BuildResult {
   ].map(toPostEffect);
   applyPostEffects(raw, effects, merged);
 
+  // Fold `dmg_own` (the wielder's "own-element" DMG bonus — Mistsplitter Reforged, A
+  // Thousand Floating Dreams, Hakushin Ring) into `dmg_<char_element>`, mirroring her
+  // CalcSet.js:380-381 (`stats.add('dmg_'+char_element, stats.get('dmg_own'))`). The
+  // element key uses `phys` for physical (matching DMG_BONUS_ELEMENT_KEYS). Base-inert:
+  // no base build contributes `dmg_own` → `get` returns 0 → no-op.
+  const ownDmg = raw.get("dmg_own");
+  if (ownDmg) {
+    const elemKey = input.char.element === "physical" ? "phys" : input.char.element;
+    raw.add(`dmg_${elemKey}`, ownDmg);
+  }
+
   // 4. Read — emit the engine-facing bag.
   const out: Record<string, number> = {};
 
