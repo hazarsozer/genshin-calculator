@@ -68,6 +68,27 @@ export interface FeatureMultiplierEntry {
    */
   readonly scalingMultiplier?: number;
   /**
+   * Settings-driven additive offset to the scaling fraction.
+   *
+   * When present, `compileFeature` reads `settings[setting]`, clamps it to
+   * `[0, maxStacks]`, and adds `perStack × clamped` to the `scalingMultiplier`
+   * before the talent% × scalingStat multiplication. The total scaling factor
+   * becomes `(scalingMultiplier ?? 1) + perStack × min(maxStacks, settings[setting])`.
+   *
+   * When `settings[setting]` is absent or 0 the offset is 0 — base-safe by design.
+   *
+   * Ports Furina's `FeatureMultiplierFurinaSkill.getScalingMultiplier`:
+   *   `result += 0.1 × Math.min(4, data.settings.furina_hp_offers)`
+   * (raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/FurinaSkill.js:12-13).
+   * Only furina's three Salon Member hits use this; every other multiplier leaves it
+   * absent → offset 0 → existing behaviour unchanged.
+   */
+  readonly scalingOffset?: {
+    readonly setting: string;
+    readonly perStack: number;
+    readonly maxStacks: number;
+  };
+  /**
    * CHAR-LEVEL multipliers only: which features this multiplier applies to.
    * When set (only on `char.multipliers` entries), the multiplier is summed into
    * a feature's base-damage term iff `target.damageTypes` includes the feature's

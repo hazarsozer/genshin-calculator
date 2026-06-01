@@ -187,8 +187,16 @@ function baseDamageTerm(
   // `scalingMultiplier` is the flat extra factor on the base term (her
   // getTreeBonusMultiplier CConst — "bonus hit = X% of a base hit", e.g. Amber C1's
   // second arrow at 0.20). Absent = ×1.
-  const talentPercent =
-    (entry.values.getValue(talentLevel) / 100) * (entry.scalingMultiplier ?? 1);
+  // `scalingOffset` adds a settings-driven additive offset to the scaling factor —
+  // faithful to FurinaSkill.getScalingMultiplier: `result += perStack × min(maxStacks, stacks)`.
+  // Absent or 0 stacks → offset 0 → no change.
+  let scalingFactor = entry.scalingMultiplier ?? 1;
+  if (entry.scalingOffset !== undefined) {
+    const raw = ctx.settings[entry.scalingOffset.setting];
+    const stacks = typeof raw === "number" ? raw : 0;
+    scalingFactor += entry.scalingOffset.perStack * Math.min(entry.scalingOffset.maxStacks, stacks);
+  }
+  const talentPercent = (entry.values.getValue(talentLevel) / 100) * scalingFactor;
 
   // Scaling stat: default 'atk' total. The `*` in her 'atk*' means "use total";
   // buildStats supplies `<stat>_total`. Strip any trailing '*' the data carries.
