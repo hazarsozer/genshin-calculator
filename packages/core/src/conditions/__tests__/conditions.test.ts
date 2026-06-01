@@ -14,6 +14,7 @@
 import { describe, expect, it } from "vitest";
 import {
   evaluate,
+  conditionStats,
   getStackCount,
   type EvalContext,
 } from "../index.js";
@@ -27,6 +28,7 @@ import type {
   ConditionStacks,
   ConditionBooleanPiecesCount,
   ConditionBooleanWeaponType,
+  ConditionEnemyStatus,
   ConditionAnd,
   ConditionOr,
 } from "@genshin/types";
@@ -352,6 +354,64 @@ describe("ConditionBooleanWeaponType", () => {
     expect(evaluate(gated, { weapon_type: "claymore" })).toBe(false);
     // gate on + matching weapon_type → true
     expect(evaluate(gated, { weapon_type: "claymore", gate: true })).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 9d. ConditionEnemyStatus — gates on the enemy's elemental affliction status
+//
+// Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/EnemyStatus.js:
+//   status = settings['common.enemy_status'];
+//   result = status && this.params.status.includes(status);  // else false
+// ---------------------------------------------------------------------------
+
+describe("ConditionEnemyStatus", () => {
+  const vsWater: ConditionEnemyStatus = {
+    type: "enemy-status",
+    statuses: ["cryo", "hydro"],
+  };
+
+  it("is active when common.enemy_status is in the allowed list", () => {
+    expect(evaluate(vsWater, { "common.enemy_status": "cryo" })).toBe(true);
+    expect(evaluate(vsWater, { "common.enemy_status": "hydro" })).toBe(true);
+  });
+
+  it("is inactive when common.enemy_status is NOT in the allowed list", () => {
+    expect(evaluate(vsWater, { "common.enemy_status": "pyro" })).toBe(false);
+  });
+
+  it("is inactive when common.enemy_status is absent (the oracle baseline)", () => {
+    expect(evaluate(vsWater, {})).toBe(false);
+  });
+
+  it("is inactive when common.enemy_status is the empty string", () => {
+    expect(evaluate(vsWater, { "common.enemy_status": "" })).toBe(false);
+  });
+
+  it("invert: flips the result (active when NOT affected — the Everfrost non-cryo branch)", () => {
+    const inverted: ConditionEnemyStatus = {
+      type: "enemy-status",
+      statuses: ["cryo"],
+      invert: true,
+    };
+    // no status set → not-cryo branch ACTIVE (this is the v5.8 oracle case)
+    expect(evaluate(inverted, {})).toBe(true);
+    expect(evaluate(inverted, { "common.enemy_status": "cryo" })).toBe(false);
+  });
+
+  it("respects the optional .condition gate", () => {
+    const gate: ConditionBoolean = { type: "boolean", name: "gate" };
+    const gated: ConditionEnemyStatus = {
+      type: "enemy-status",
+      statuses: ["pyro"],
+      condition: gate,
+    };
+    expect(evaluate(gated, { "common.enemy_status": "pyro" })).toBe(false);
+    expect(evaluate(gated, { "common.enemy_status": "pyro", gate: true })).toBe(true);
+  });
+
+  it("conditionStats: contributes no stats of its own (pure gate)", () => {
+    expect(conditionStats(vsWater, { "common.enemy_status": "cryo" })).toEqual({});
   });
 });
 

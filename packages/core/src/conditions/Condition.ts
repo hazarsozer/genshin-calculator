@@ -31,6 +31,7 @@ import type {
   ConditionStacks,
   ConditionBooleanPiecesCount,
   ConditionBooleanWeaponType,
+  ConditionEnemyStatus,
   ConditionStats,
   EvalContext,
 } from "@genshin/types";
@@ -69,6 +70,8 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return evaluatePiecesCount(condition, ctx);
     case "weapon-type":
       return evaluateWeaponType(condition, ctx);
+    case "enemy-status":
+      return evaluateEnemyStatus(condition, ctx);
     case "and":
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
@@ -144,6 +147,7 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "or":
     case "pieces-count":
     case "weapon-type":
+    case "enemy-status":
       // Pure gates / logical containers carry no stats of their own.
       return {};
     case "boolean":
@@ -366,6 +370,24 @@ function evaluateWeaponType(
   if (!checkGate(condition, ctx)) return false;
   const wt = ctx["weapon_type"];
   const active = typeof wt === "string" && condition.types.includes(wt);
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionEnemyStatus.isActive — active when ctx["common.enemy_status"] is a
+ * non-empty string in `statuses`, AND the optional `.condition` gate passes. Mirrors raw:
+ *   `checkSubconditions(settings) && status && statuses.includes(status)` (EnemyStatus.js:9-19),
+ * where a falsy `common.enemy_status` yields `false` (the `result = false` branch). An absent
+ * context key → inactive. `invert` flips the result (her `ConditionNot` wrapper).
+ */
+function evaluateEnemyStatus(
+  condition: ConditionEnemyStatus,
+  ctx: EvalContext
+): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const status = ctx["common.enemy_status"];
+  const active =
+    typeof status === "string" && status !== "" && condition.statuses.includes(status);
   return condition.invert ? !active : active;
 }
 

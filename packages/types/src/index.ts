@@ -90,6 +90,7 @@ export type {
   ConditionStacks,
   ConditionBooleanPiecesCount,
   ConditionBooleanWeaponType,
+  ConditionEnemyStatus,
   ConditionAnd,
   ConditionOr,
   Condition,

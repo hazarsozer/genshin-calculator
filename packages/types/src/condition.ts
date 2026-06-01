@@ -215,6 +215,31 @@ export interface ConditionBooleanWeaponType extends ConditionBase {
 }
 
 /**
+ * A condition gated by the enemy's current elemental affliction status.
+ * Active when ctx["common.enemy_status"] is a non-empty string present in
+ * `statuses` (AND the optional `.condition` gate passes; `invert` flips it).
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/EnemyStatus.js
+ * (`this.params.status.includes(settings['common.enemy_status'])`; an absent/empty
+ * status → false). The enemy-status key is CALLER-supplied via settings (her
+ * `settingsSets` presets enemy_no_status / enemy_cryo / …), so buildStats injects
+ * nothing — it flows through `input.settings` unchanged. Every v5.8 oracle fixture
+ * leaves it unset → these gates are inert (the guarded DMG bonus / FeatureDamage
+ * branch is dormant), matching her output exactly.
+ *
+ * `invert: true` (her `ConditionNot([ConditionEnemyStatus])`) is the "enemy NOT
+ * affected" branch — Dragonspine Spear / Frostbearer / Snow-Tombed Starsilver's
+ * lower-multiplier Everfrost hit, which fires when no cryo status is set.
+ */
+export interface ConditionEnemyStatus extends ConditionBase {
+  readonly type: "enemy-status";
+  /** Enemy affliction elements that activate this condition, e.g. ["cryo", "hydro"]. */
+  readonly statuses: readonly string[];
+  /** A pure gate — contributes NO stats of its own (narrowed to `never`, like weapon-type). */
+  readonly stats?: never;
+}
+
+/**
  * Logical AND of all items — all must evaluate to true.
  * Vacuous truth: empty items list → true.
  */
@@ -243,6 +268,7 @@ export type Condition =
   | ConditionStacks
   | ConditionBooleanPiecesCount
   | ConditionBooleanWeaponType
+  | ConditionEnemyStatus
   | ConditionAnd
   | ConditionOr;
 
