@@ -131,20 +131,28 @@ const c5BurstTalentBonus: Condition = {
 
 /**
  * HP→ATK conversion during Paramita Papilio (Guide to Afterlife skill).
- * ratio = hutao_atk_bonus @ skill level 10 × 0.01 = 6.256 × 0.01 = 0.06256
+ * The ratio is talent-scaled: `hutao_atk_bonus @ effective_skill_level × 0.01`.
+ * At C0 (skill level 10): 6.256 × 0.01 = 0.06256.
+ * At C6 (skill level 13, bumped by C3 +3 bonus): 7.152 × 0.01 = 0.07152.
+ * `ratioFromTalent` resolves at runtime using `settings.char_skill_elemental` (base)
+ * + `settings.char_skill_elemental_bonus` (C3 offset), mirroring her PostEffect.getLevel.
  * cap = 400% of atk_BASE. Her `statCapPost` base is a `from: 'atk_base'` term
  * (a plain makeStatItem('atk_base'), NOT getTotal) × an atk_percent[SkillMaxBonus=
  * 400] table → 4 × atk_base (Hutao.js:155-158). `capUsesBase: true` reads
  * `atk_base × 4`, not `getTotal('atk') × 4`, so the build's atk_percent / flat ATK
  * do not loosen the cap.
  *
- * Source: Hutao.js:145-159
+ * Source: Hutao.js:145-159, PostEffect.js (getLevel)
  */
 const hpToAtk: CharPostEffect = {
   priority: 1,
   fromStat: "hp",
   toStat: "atk",
-  ratio: HutaoTalents.s2.p2.getValue(10) * 0.01,
+  ratioFromTalent: {
+    table: HutaoTalents.s2.p2,
+    levelSetting: "char_skill_elemental",
+    multi: 0.01,
+  },
   cap: { capStat: "atk", capRatio: 4 },
   capUsesBase: true,
   conditions: [paramita],
