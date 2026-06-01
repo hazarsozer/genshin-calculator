@@ -100,6 +100,9 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "charged",
     element: "electro",
+    // C6 "Sin of Pride": crit_dmg_electro:60 applies to every electro hit (her engine
+    // folds crit_dmg_<element> by element); our per-feature model needs it declared.
+    critDamageBonuses: ["crit_dmg_electro"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_aimed") }],
   },
   // --- Plunge attacks (physical) ---

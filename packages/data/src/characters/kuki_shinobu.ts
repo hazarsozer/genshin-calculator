@@ -177,6 +177,9 @@ const features: readonly Feature[] = [
         values: { getValue: (_level: number) => 9.7 },
         source: "constellation4",
       },
+      // A4: 25% × mastery base term — her A4 multiplier targets damageTypes:['skill'],
+      // so this skill-type hit picks it up too (same per-feature model as skill_dmg/ring_dmg).
+      { scaling: "mastery", leveling: "ascension4", values: a4MasteryValues },
     ],
   },
 ];

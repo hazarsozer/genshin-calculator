@@ -181,6 +181,10 @@ const features: readonly Feature[] = [
 // C5 "Favonius Sweeper Master": +3 levels to Sweeping Time (burst). Noelle.js:399-406.
 // C6 "Must Be Spotless": ConditionStatic gated by noelle_sweeping_time boolean → SKIP. Noelle.js:407-427.
 const constellationConditions: readonly Condition[] = [
+  // C1 "I Got Your Back": +15% Charged Attack DMG. ConditionStatic (auto-active,
+  // NOT display-only) → dmg_charged:15, picked up generically by the charged hits.
+  // Raw Noelle.js C1 stats { dmg_charged: C1ChargedBonus=15 }.
+  { type: "constellation", constellation: 1, stats: { dmg_charged: 15 } },
   // C3: +3 levels to Breastplate (elemental skill). Noelle.js:383-390.
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Sweeping Time (elemental burst). Noelle.js:399-406.
