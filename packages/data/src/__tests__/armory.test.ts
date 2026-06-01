@@ -535,6 +535,36 @@ for (const family of SET_FAMILIES) {
 }
 
 // ===========================================================================
+// Orphan guard — a ported weapon/set absent from its family manifest fails LOUD
+// (mirrors P1.9c's under-discovery guard + artifactSets.test.ts's readdirSync guard).
+//
+// `weaponPorted` is the set of weapon names matched by ≥1 manifest item; if a ported
+// weapons/*.ts exports a name that NEVER appears, it is mis-keyed (a typo'd `name`)
+// and would silently never be validated. Same for sets (goodId vs the artifactSets
+// key). Both loops above ran at module load, so these sets are fully populated here.
+// ===========================================================================
+
+describe("armory: orphan guard", () => {
+  it("every ported weapon name appears in the weapon manifests (no mis-keyed name)", () => {
+    const orphans = Object.keys(weaponByName).filter((name) => !weaponPorted.has(name));
+    expect(
+      orphans,
+      `ported weapon(s) with a name absent from weapons-r1/r5 manifests ` +
+      `(mis-keyed DbObjectWeapon.name → never validated): ${orphans.join(", ")}`
+    ).toEqual([]);
+  });
+
+  it("every ported set goodId appears in the set manifests (no mis-keyed goodId)", () => {
+    const orphans = Object.keys(setByGoodId).filter((goodId) => !setPorted.has(goodId));
+    expect(
+      orphans,
+      `ported set(s) with a goodId absent from sets-2pc/4pc manifests ` +
+      `(mis-keyed DbObjectArtifactSet.goodId → never validated): ${orphans.join(", ")}`
+    ).toEqual([]);
+  });
+});
+
+// ===========================================================================
 // Burndown summary — report once (the burndown is legible).
 // ===========================================================================
 
