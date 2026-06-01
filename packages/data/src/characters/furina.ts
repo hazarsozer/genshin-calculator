@@ -162,6 +162,10 @@ const features: readonly Feature[] = [
     ],
   },
   // The three salon-member hits carry damageBonuses: ['dmg_skill_furina'] (A4).
+  // Their HP multiplier gets an additive offset from furina_hp_offers (ConditionStacks,
+  // max 4): +0.1 × min(4, stacks) — ports FeatureMultiplierFurinaSkill.getScalingMultiplier
+  // (raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/FurinaSkill.js:12-13).
+  // Base (offers absent / 0) → offset 0 → no change.
   // raw: FeatureDamageSkill furina_gentilhomme_usher_dmg / _surintendante_chevalmarin_dmg / _mademoiselle_crabaletta_dmg
   {
     name: "furina_gentilhomme_usher_dmg",
@@ -169,7 +173,12 @@ const features: readonly Feature[] = [
     element: "hydro",
     damageBonuses: ["dmg_skill_furina"],
     multipliers: [
-      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.furina_gentilhomme_usher_dmg") },
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.furina_gentilhomme_usher_dmg"),
+        scalingOffset: { setting: "furina_hp_offers", perStack: 0.1, maxStacks: 4 },
+      },
     ],
   },
   {
@@ -178,7 +187,12 @@ const features: readonly Feature[] = [
     element: "hydro",
     damageBonuses: ["dmg_skill_furina"],
     multipliers: [
-      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.furina_surintendante_chevalmarin_dmg") },
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.furina_surintendante_chevalmarin_dmg"),
+        scalingOffset: { setting: "furina_hp_offers", perStack: 0.1, maxStacks: 4 },
+      },
     ],
   },
   {
@@ -187,7 +201,12 @@ const features: readonly Feature[] = [
     element: "hydro",
     damageBonuses: ["dmg_skill_furina"],
     multipliers: [
-      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.furina_mademoiselle_crabaletta_dmg") },
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.furina_mademoiselle_crabaletta_dmg"),
+        scalingOffset: { setting: "furina_hp_offers", perStack: 0.1, maxStacks: 4 },
+      },
     ],
   },
   // --- Burst: Let the People Rejoice (hydro, HP-scaling) ---
