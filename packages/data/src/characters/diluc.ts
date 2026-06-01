@@ -162,6 +162,14 @@ const constellationConditions: readonly Condition[] = [
   // C5 "Phoenix, Harbinger of Dawn": +3 levels to Dawn (Elemental Burst).
   // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // Dawn pyro infusion on normals/charged/plunge. Raw Diluc.js:286-294
+  // (ConditionBoolean { name:'diluc_dawn', settings:{ attack_infusion_pyro:1 } }
+  //  → canonical key: attack_infusion:"pyro").
+  { type: "boolean", name: "diluc_dawn", settings: { attack_infusion: "pyro" } },
+  // A4 "Blessing of Phoenix" +20% Pyro DMG while Dawn active. Raw Diluc.js:306-319
+  // (ConditionStatic gated by asc-4 + ConditionBoolean{name:'diluc_dawn'}; asc-4 always
+  // true at oracle asc 6). Faithful to her two-condition design.
+  { type: "boolean", name: "diluc_dawn", stats: { dmg_pyro: 20 } },
 ];
 
 // ---------------------------------------------------------------------------
