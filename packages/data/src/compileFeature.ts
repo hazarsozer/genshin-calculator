@@ -200,8 +200,25 @@ function baseDamageTerm(
   entry: FeatureMultiplierEntry,
   ctx: CompileContext
 ): Block {
+  // Resolve the base level her `FeatureMultiplier.getLevel` reads
+  // (`settings.getLevel(leveling)` → `getSkillLevelByName`, Build/Settings.js:49-50:
+  // `settings[name] || 1`). For the three char-skill slots that is the build's talent
+  // level (carried on `ctx.talentLevels`); for any OTHER settings-driven leveling key
+  // (`weapon_refine` for a weapon/set FeatureDamage proc — Aquila's AoE — leveled R1→R5)
+  // it is `settings[leveling]`. A constant multiplier (`leveling: ""`) stays at 1.
+  // Base-inert: every base/cons char feature uses a char-skill slot or "" → the
+  // `settings[leveling]` branch is reached only by weapon/set features (none in the base
+  // build), so the goldenConfig 1773 / constellations surface is untouched.
   const slot = LEVELING_TO_SLOT[entry.leveling];
-  const baseLevel = slot !== undefined ? ctx.talentLevels[slot] : 1;
+  let baseLevel: number;
+  if (slot !== undefined) {
+    baseLevel = ctx.talentLevels[slot];
+  } else if (entry.leveling) {
+    const fromSettings = ctx.settings[entry.leveling];
+    baseLevel = typeof fromSettings === "number" ? fromSettings : 1;
+  } else {
+    baseLevel = 1;
+  }
   // Talent-level bumps (constellation C3/C5) are condition-contributed
   // `<leveling>_bonus` settings added on top of the base level — her
   // Feature.getTalentLevel (Feature.js:235-244). Inert when no `_bonus` key is set.
