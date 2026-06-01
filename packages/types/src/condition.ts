@@ -240,6 +240,33 @@ export interface ConditionEnemyStatus extends ConditionBase {
 }
 
 /**
+ * A condition that activates when a numeric value in the context passes a comparison
+ * threshold. Activation: `ctx[setting] <cond> value` (value defaults to 0; an absent ctx
+ * key reads 0), AND the optional `.condition` gate passes; `invert` flips the result.
+ *
+ * Stat-bearing and refine-scaled like ConditionBooleanRefine: when `refinementStats` is
+ * present the active bag is `refinementStats[weapon_refine - 1]` (folded with any flat
+ * `stats`); otherwise plain `stats`. Models "max-stack reached" weapon passives (Primordial
+ * Jade Winged Spear's 7th stack, Kagura's Verity's 3rd, Cashflow Supervision) and sub-gates
+ * on a ConditionStaticRefine (Bond-of-Life / party-element thresholds).
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/Value.js:
+ *   getCompareValue = settings[setting] || 0;  checkSubconditions = gate && (value2 <cond> value1);
+ *   getStats refine-scaled via getLevel('weapon_refine').
+ */
+export interface ConditionBooleanValue extends ConditionBase {
+  readonly type: "boolean-value";
+  /** Settings key holding the comparison value (caller-supplied; e.g. a stack count). */
+  readonly setting: string;
+  /** Comparison operator applied as `ctx[setting] <cond> value`. */
+  readonly cond: "gt" | "ge" | "eq" | "le" | "lt";
+  /** Threshold to compare against (default 0). */
+  readonly value?: number;
+  /** Optional per-refinement stat bags (refinementStats[weapon_refine - 1]); else `stats`. */
+  readonly refinementStats?: readonly ConditionStats[];
+}
+
+/**
  * Logical AND of all items — all must evaluate to true.
  * Vacuous truth: empty items list → true.
  */
@@ -269,6 +296,7 @@ export type Condition =
   | ConditionBooleanPiecesCount
   | ConditionBooleanWeaponType
   | ConditionEnemyStatus
+  | ConditionBooleanValue
   | ConditionAnd
   | ConditionOr;
 

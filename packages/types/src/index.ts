@@ -91,6 +91,7 @@ export type {
   ConditionBooleanPiecesCount,
   ConditionBooleanWeaponType,
   ConditionEnemyStatus,
+  ConditionBooleanValue,
   ConditionAnd,
   ConditionOr,
   Condition,

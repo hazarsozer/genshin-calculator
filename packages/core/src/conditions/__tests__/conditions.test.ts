@@ -29,6 +29,7 @@ import type {
   ConditionBooleanPiecesCount,
   ConditionBooleanWeaponType,
   ConditionEnemyStatus,
+  ConditionBooleanValue,
   ConditionAnd,
   ConditionOr,
 } from "@genshin/types";
@@ -412,6 +413,63 @@ describe("ConditionEnemyStatus", () => {
 
   it("conditionStats: contributes no stats of its own (pure gate)", () => {
     expect(conditionStats(vsWater, { "common.enemy_status": "cryo" })).toEqual({});
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 9e. ConditionBooleanValue — gates on a numeric threshold comparison
+//
+// Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/Value.js:
+//   value2 = settings[setting] || 0;  active = value2 <cond> value
+// ---------------------------------------------------------------------------
+
+describe("ConditionBooleanValue", () => {
+  const maxStack: ConditionBooleanValue = {
+    type: "boolean-value",
+    setting: "weapon_jade_spear",
+    cond: "ge",
+    value: 7,
+    refinementStats: [{ dmg_all: 12 }, { dmg_all: 15 }, { dmg_all: 18 }, { dmg_all: 21 }, { dmg_all: 24 }],
+  };
+
+  it("is active when ctx[setting] meets the >= threshold", () => {
+    expect(evaluate(maxStack, { weapon_jade_spear: 7 })).toBe(true);
+    expect(evaluate(maxStack, { weapon_jade_spear: 8 })).toBe(true);
+  });
+
+  it("is inactive below the threshold (and when the key is absent → 0)", () => {
+    expect(evaluate(maxStack, { weapon_jade_spear: 6 })).toBe(false);
+    expect(evaluate(maxStack, {})).toBe(false);
+  });
+
+  it("honours each comparison operator", () => {
+    const mk = (cond: ConditionBooleanValue["cond"]): ConditionBooleanValue => ({
+      type: "boolean-value", setting: "s", cond, value: 3,
+    });
+    expect(evaluate(mk("gt"), { s: 4 })).toBe(true);
+    expect(evaluate(mk("gt"), { s: 3 })).toBe(false);
+    expect(evaluate(mk("eq"), { s: 3 })).toBe(true);
+    expect(evaluate(mk("lt"), { s: 2 })).toBe(true);
+    expect(evaluate(mk("le"), { s: 3 })).toBe(true);
+  });
+
+  it("invert flips the result", () => {
+    const inv: ConditionBooleanValue = { type: "boolean-value", setting: "s", cond: "ge", value: 3, invert: true };
+    expect(evaluate(inv, { s: 1 })).toBe(true);
+    expect(evaluate(inv, { s: 3 })).toBe(false);
+  });
+
+  it("conditionStats: refine-scaled bag when active", () => {
+    expect(conditionStats(maxStack, { weapon_jade_spear: 7, weapon_refine: 1 })).toEqual({ dmg_all: 12 });
+    expect(conditionStats(maxStack, { weapon_jade_spear: 7, weapon_refine: 5 })).toEqual({ dmg_all: 24 });
+    expect(conditionStats(maxStack, { weapon_jade_spear: 6, weapon_refine: 5 })).toEqual({});
+  });
+
+  it("respects the optional .condition gate", () => {
+    const gate: ConditionBoolean = { type: "boolean", name: "g" };
+    const gated: ConditionBooleanValue = { type: "boolean-value", setting: "s", cond: "ge", value: 1, condition: gate };
+    expect(evaluate(gated, { s: 5 })).toBe(false);
+    expect(evaluate(gated, { s: 5, g: true })).toBe(true);
   });
 });
 

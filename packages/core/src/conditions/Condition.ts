@@ -32,6 +32,7 @@ import type {
   ConditionBooleanPiecesCount,
   ConditionBooleanWeaponType,
   ConditionEnemyStatus,
+  ConditionBooleanValue,
   ConditionStats,
   EvalContext,
 } from "@genshin/types";
@@ -72,6 +73,8 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return evaluateWeaponType(condition, ctx);
     case "enemy-status":
       return evaluateEnemyStatus(condition, ctx);
+    case "boolean-value":
+      return evaluateBooleanValue(condition, ctx);
     case "and":
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
@@ -143,6 +146,12 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "refine":
     case "boolean-refine":
       return { ...toNumberBag(condition.stats), ...(refineBag(condition.refinementStats, ctx) ?? {}) };
+    case "boolean-value":
+      // Stat-bearing; refine-scaled when refinementStats is present (her getStats via
+      // getLevel('weapon_refine')), else the plain flat `stats` bag.
+      return condition.refinementStats !== undefined
+        ? { ...toNumberBag(condition.stats), ...(refineBag(condition.refinementStats, ctx) ?? {}) }
+        : toNumberBag(condition.stats);
     case "and":
     case "or":
     case "pieces-count":
@@ -388,6 +397,35 @@ function evaluateEnemyStatus(
   const status = ctx["common.enemy_status"];
   const active =
     typeof status === "string" && status !== "" && condition.statuses.includes(status);
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionBooleanValue.checkSubconditions — active when `ctx[setting] <cond> value`,
+ * AND the optional `.condition` gate passes. The compare value reads `ctx[setting]` (a number;
+ * absent → 0, her `settings[setting] || 0`); the threshold defaults to 0. `invert` flips it.
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Boolean/Value.js:13-43
+ */
+const VALUE_OPS: Readonly<
+  Record<ConditionBooleanValue["cond"], (a: number, b: number) => boolean>
+> = {
+  gt: (a, b) => a > b,
+  ge: (a, b) => a >= b,
+  eq: (a, b) => a === b,
+  le: (a, b) => a <= b,
+  lt: (a, b) => a < b,
+};
+
+function evaluateBooleanValue(
+  condition: ConditionBooleanValue,
+  ctx: EvalContext
+): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const raw = ctx[condition.setting];
+  const value2 = typeof raw === "number" ? raw : 0;
+  const value1 = condition.value ?? 0;
+  const active = VALUE_OPS[condition.cond](value2, value1);
   return condition.invert ? !active : active;
 }
 
