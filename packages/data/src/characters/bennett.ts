@@ -266,6 +266,22 @@ const fantasticVoyageAtk: CharPostEffect = {
   conditions: [{ type: "boolean", name: "bennet_fantastic_voyage" }],
 };
 
+// C1 "Grand Expectation": lifts the ATK-bonus cap AND adds +20% of base ATK to the
+// buff. Raw Bennet.js:150,164,171 — percentBonus ValueTable([C1BuffBonus=20 / 100])
+// on the same post-effect, gated by `setting:'char_constellation'` ≥ 1. Modelled as a
+// second base-ATK post-effect gated by the toggle AND constellation ≥ 1 (additive with
+// the base buff → base_atk × (1.008 + 0.20) at C1). Base-safe: the C1 gate is off at
+// C0, so the toggles-family (C0) bennett is unaffected.
+const fantasticVoyageC1Atk: CharPostEffect = {
+  fromStat: "atk_base",
+  toStat: "atk",
+  ratio: 0.2,
+  conditions: [
+    { type: "boolean", name: "bennet_fantastic_voyage" },
+    { type: "constellation", constellation: 1 },
+  ],
+};
+
 // ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
@@ -281,6 +297,6 @@ export const bennett: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  postEffects: [fantasticVoyageAtk],
+  postEffects: [fantasticVoyageAtk, fantasticVoyageC1Atk],
   conditions: constellationConditions,
 };
