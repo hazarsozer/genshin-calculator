@@ -579,6 +579,18 @@ export function buildStats(input: BuildInput): BuildResult {
       if (raw.isSet(key)) out[key] = raw.get(key) / 100;
     }
   }
+  // Royal-passive crit-rate stat — emitted VERBATIM (RAW, NOT /100) for the
+  // Royal-weapon series' average-crit transform (cRoyalCritRate). Her
+  // `makeStatItem('royal_crit_rate')` reads `stats.royal_crit_rate` directly, and
+  // `isPercent('royal_crit_rate')` is FALSE (it starts `royal_`, not `crit_`), so
+  // `processPercent` never divides it — the value stays raw (8 at R1, 16 at R5).
+  // Gated on the Royal toggle so this is a no-op for every non-royal build (the
+  // base golden suite never sets `weapon_royal_avg_crit_rate` → key never emitted).
+  // Source: raw/.../Feature2/Damage.js:298-300, .../Compile/Helpers.js makeStatItem,
+  //         raw/.../classes/Stats.js isPercent (no `royal_` branch).
+  if (settings["weapon_royal_avg_crit_rate"] && raw.isSet("royal_crit_rate")) {
+    out["royal_crit_rate"] = raw.get("royal_crit_rate");
+  }
 
   // Feature-declared bonus keys (her FeatureDamage critRateBonuses /
   // critDamageBonuses / damageBonuses) — char-specific percent stats like Amber's

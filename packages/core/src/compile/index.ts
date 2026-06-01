@@ -26,6 +26,7 @@ export {
   cMultiplierDefence,
   cMultiplierResistance,
   cCritRate,
+  cRoyalCritRate,
   cCritDmg,
 } from "./blocks.js";
 

@@ -44,6 +44,7 @@ export {
   cMultiplierDefence,
   cMultiplierResistance,
   cCritRate,
+  cRoyalCritRate,
   cCritDmg,
   cDamage,
   isDamageBlock,

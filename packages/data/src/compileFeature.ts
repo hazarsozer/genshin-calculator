@@ -34,6 +34,7 @@ import {
   cConst,
   cCritDmg,
   cCritRate,
+  cRoyalCritRate,
   cDamage,
   cDivide,
   cLunarChargedDamage,
@@ -445,11 +446,31 @@ export function compileFeature(
   // not yet generically folded). Mirrors her getDefaultStatsCritRate /
   // getDefaultStatsCritDamage (Damage.js:72-122): generic set (incl. the per-type
   // push), then `this.critRateBonuses` / `this.critDamageBonuses` concatenated.
-  const critRate = cCritRate([
+  const critRateBase = cCritRate([
     cStat("crit_rate_total"),
     ...critBonusTypeKeys("rate", damageType).map((k) => cStat(k)),
     ...(feature.critRateBonuses ?? []).map((k) => cStat(k)),
   ]);
+  // Royal-passive AVERAGE crit transform — wrap the clamped chance ONLY when the
+  // Royal-weapon toggle `weapon_royal_avg_crit_rate` is set (her Damage.js:298 gate)
+  // AND this is a single-hit feature. Affects ONLY the avg (cDamage feeds `chance`
+  // only into the avg term); normal/crit are untouched. Base-inert: no base-build
+  // char sets that toggle → the wrap never applies (goldenConfig 1773 + constellations
+  // 107 unchanged). When set but `royal_crit_rate` is 0/absent the polynomial
+  // degenerates to the base chance.
+  //
+  // MULTIHIT EXCLUSION: her `FeatureDamageMultihit.getTree` (Multihit.js:57-60)
+  // builds its CDamage WITHOUT `royalCrit` — it OVERRIDES the base getTree that adds
+  // it (Damage.js:298-300). So multihit-AGGREGATE features (our `feature.items` shape)
+  // use the plain crit chance for their avg; only their single-hit children (modelled
+  // with `multipliers`, using the base getTree) get the royal transform. Every other
+  // Damage subclass (Normal/Charged/Burst/Skill/Plunge) inherits the base getTree →
+  // royal applies. Mirror that exactly: skip the wrap when `feature.items` is present.
+  const isMultihitAggregate = feature.items !== undefined;
+  const critRate =
+    ctx.settings["weapon_royal_avg_crit_rate"] && !isMultihitAggregate
+      ? cRoyalCritRate(critRateBase)
+      : critRateBase;
   const critDmg = cCritDmg([
     cStat("crit_dmg_total"),
     ...critBonusTypeKeys("dmg", damageType).map((k) => cStat(k)),
