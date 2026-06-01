@@ -204,7 +204,7 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
-// C1: ConditionStatic stats:{crit_rate_charged:15} — display-only marker, SKIP.
+// C1: ConditionStatic stats:{crit_rate_charged:15} — auto-active; folded generically via the engine's crit_rate_<type> fold (see condition below).
 // C2: ConditionBoolean toggle stats:{dmg_dendro:20} — toggle OFF, SKIP.
 // C3: +3 levels to Fashioner's Tanglevine Shaft (burst). Raw cons[2] settings char_skill_burst_bonus:3.
 // C4: ConditionBoolean toggles (mastery) — toggles OFF, SKIP.
