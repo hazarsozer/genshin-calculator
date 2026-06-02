@@ -98,6 +98,7 @@ export type {
   ConditionBooleanChar,
   ConditionBooleanNightSoul,
   ConditionBooleanEnemyType,
+  ConditionResonance,
   ConditionAnd,
   ConditionOr,
   ConditionStaticLevel,

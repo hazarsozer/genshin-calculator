@@ -38,6 +38,7 @@ import type {
   ConditionBooleanChar,
   ConditionBooleanNightSoul,
   ConditionBooleanEnemyType,
+  ConditionResonance,
   ConditionStaticLevel,
   ConditionStats,
   EvalContext,
@@ -93,6 +94,8 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return evaluateNightSoul(condition, ctx);
     case "enemy-type":
       return evaluateEnemyType(condition, ctx);
+    case "resonance":
+      return evaluateResonance(condition, ctx);
     case "and":
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
@@ -190,6 +193,7 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "boolean-char":
     case "nightsoul":
     case "enemy-type":
+    case "resonance":
       // Pure gates / logical containers / settings-publishers carry no stats of their own.
       return {};
     case "boolean":
@@ -502,6 +506,48 @@ function evaluateBooleanChar(condition: ConditionBooleanChar, ctx: EvalContext):
 function evaluateNightSoul(condition: ConditionBooleanNightSoul, ctx: EvalContext): boolean {
   if (!checkGate(condition, ctx)) return false;
   const active = ctx["char_origin"] === "natlan" || ctx["char_id"] === 100;
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionResonance.isActive (Resonance.js:8-38) — its getType() is 'static', so it
+ * first runs `super.isActive` (our checkGate), then counts each element across the four
+ * resonance slots (`char_element`, `resonance_element_1/2/3`), tracking whether any element
+ * appears twice (`isDuo`). With a target `element`, active iff that element's count >= 2;
+ * with no target (the none-case), active iff `!isDuo`. `invert` flips the result.
+ *
+ * Faithful detail: a falsy slot value (`!element`) is skipped, exactly her `if (!element) continue`.
+ */
+const RESONANCE_SLOTS = [
+  "char_element",
+  "resonance_element_1",
+  "resonance_element_2",
+  "resonance_element_3",
+] as const;
+
+function evaluateResonance(condition: ConditionResonance, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+
+  const counts: Record<string, number> = {};
+  let isDuo = false;
+  for (const slot of RESONANCE_SLOTS) {
+    const element = ctx[slot];
+    if (typeof element !== "string" || element === "") continue;
+    if (counts[element] === undefined) {
+      counts[element] = 1;
+    } else {
+      counts[element] += 1;
+      isDuo = true;
+    }
+  }
+
+  const target = condition.element;
+  let active = false;
+  if (target !== undefined && target !== "") {
+    active = (counts[target] ?? 0) >= 2;
+  } else if (!isDuo) {
+    active = true;
+  }
   return condition.invert ? !active : active;
 }
 

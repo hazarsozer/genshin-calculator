@@ -353,6 +353,30 @@ export interface ConditionBooleanEnemyType extends ConditionBase {
 }
 
 /**
+ * Elemental-resonance gate. Counts each element across the resonance slots
+ * `char_element` + `resonance_element_1/2/3`; active per `ConditionResonance.isActive`:
+ *   - with `element` set: active iff that element's count is >= 2 (a duo of it), OR
+ *   - with `element` absent/"" (the none-case): active iff NO element reaches 2 (`!isDuo`).
+ * `invert` flips the result (her `params.invert` — used as a `hideCondition`, irrelevant here).
+ * A pure gate: contributes NO stats (narrowed to `never`); used as the `.condition` on the
+ * stat-bearing resonance buffs in CHARACTER_CONDITIONS.
+ *
+ * Inert with no party: the resonance slots `resonance_element_*` are absent, so an
+ * element gate counts only `char_element` (count 1, never >= 2 → inactive). The none-case
+ * is held inert by the ResonanceEnabled team-presence gate it is AND-composed with (a real
+ * party has `party_size >= 2`; solo leaves it absent → 0).
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Resonance.js:8-38
+ */
+export interface ConditionResonance extends ConditionBase {
+  readonly type: "resonance";
+  /** Target element (e.g. "pyro"); omit/"" for the none-resonance (no-duo) case. */
+  readonly element?: string;
+  /** A pure gate — contributes NO stats of its own (narrowed to `never`, like and/or). */
+  readonly stats?: never;
+}
+
+/**
  * Logical AND of all items — all must evaluate to true.
  * Vacuous truth: empty items list → true.
  */
@@ -436,6 +460,7 @@ export type Condition =
   | ConditionBooleanChar
   | ConditionBooleanNightSoul
   | ConditionBooleanEnemyType
+  | ConditionResonance
   | ConditionAnd
   | ConditionOr
   | ConditionStaticLevel;
