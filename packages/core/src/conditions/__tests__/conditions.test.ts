@@ -15,6 +15,7 @@ import { describe, expect, it } from "vitest";
 import {
   evaluate,
   conditionStats,
+  conditionSettings,
   getStackCount,
   type EvalContext,
 } from "../index.js";
@@ -31,6 +32,11 @@ import type {
   ConditionEnemyStatus,
   ConditionBooleanValue,
   ConditionDropdown,
+  ConditionNot,
+  ConditionLithic,
+  ConditionBooleanChar,
+  ConditionBooleanNightSoul,
+  ConditionBooleanEnemyType,
   ConditionAnd,
   ConditionOr,
 } from "@genshin/types";
@@ -503,6 +509,58 @@ describe("ConditionDropdown", () => {
     expect(conditionStats(sel, { weapon_polar_star: 4, weapon_refine: 5 })).toEqual({ atk_percent: 96 });
     expect(conditionStats(sel, { weapon_polar_star: 1, weapon_refine: 1 })).toEqual({ atk_percent: 10 });
     expect(conditionStats(sel, { weapon_polar_star: 0, weapon_refine: 1 })).toEqual({});
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 9g. Char-attribute gates + ConditionNot (E3 char-attribute wave)
+// ---------------------------------------------------------------------------
+
+describe("ConditionNot", () => {
+  it("active iff NOT all items are active", () => {
+    const c: ConditionNot = { type: "not", items: [{ type: "boolean", name: "x" }] };
+    expect(evaluate(c, {})).toBe(true); // x off → not(false) = true
+    expect(evaluate(c, { x: true })).toBe(false);
+  });
+  it("nests Or (The Widsith theme exclusivity)", () => {
+    const c: ConditionNot = {
+      type: "not",
+      items: [{ type: "or", items: [{ type: "boolean", name: "a" }, { type: "boolean", name: "b" }] }],
+    };
+    expect(evaluate(c, {})).toBe(true);
+    expect(evaluate(c, { a: true })).toBe(false);
+  });
+  it("conditionStats: pure gate", () => {
+    expect(conditionStats({ type: "not", items: [] }, {})).toEqual({});
+  });
+});
+
+describe("ConditionLithic", () => {
+  const c: ConditionLithic = { type: "lithic" };
+  it("always active; publishes weapon_lithic_stacks from char_origin", () => {
+    expect(evaluate(c, {})).toBe(true);
+    expect(conditionSettings(c, { char_origin: "liyue" })).toEqual({ weapon_lithic_stacks: 1 });
+    expect(conditionSettings(c, { char_origin: "mondstadt" })).toEqual({ weapon_lithic_stacks: 0 });
+    expect(conditionSettings(c, {})).toEqual({ weapon_lithic_stacks: 0 });
+  });
+});
+
+describe("ConditionBooleanChar / NightSoul / EnemyType", () => {
+  it("boolean-char gates on char_name", () => {
+    const c: ConditionBooleanChar = { type: "boolean-char", chars: ["aloy"] };
+    expect(evaluate(c, { char_name: "aloy" })).toBe(true);
+    expect(evaluate(c, { char_name: "ganyu" })).toBe(false);
+    expect(evaluate(c, {})).toBe(false);
+  });
+  it("nightsoul gates on natlan origin", () => {
+    const c: ConditionBooleanNightSoul = { type: "nightsoul" };
+    expect(evaluate(c, { char_origin: "natlan" })).toBe(true);
+    expect(evaluate(c, { char_origin: "mondstadt" })).toBe(false);
+  });
+  it("enemy-type is inert when enemy_type unset (the oracle baseline)", () => {
+    const c: ConditionBooleanEnemyType = { type: "enemy-type", types: ["slime"] };
+    expect(evaluate(c, {})).toBe(false);
+    expect(evaluate(c, { enemy_type: "slime" })).toBe(true);
   });
 });
 

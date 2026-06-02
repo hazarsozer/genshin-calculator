@@ -291,6 +291,62 @@ export interface ConditionDropdown extends ConditionBase {
 }
 
 /**
+ * Logical NOT: active iff NOT all `items` are active (`!items.every(active)`).
+ * Her `ConditionNot.isActive` = `!(item1 && item2 && …)`. A pure gate (no stats);
+ * used as a `.condition` on another condition (e.g. The Widsith's mutually-exclusive
+ * themes: theme N active only when no higher theme is selected).
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Not.js
+ */
+export interface ConditionNot {
+  readonly type: "not";
+  readonly items: readonly Condition[];
+}
+
+/**
+ * Lithic settings-publisher: ALWAYS active, contributes no stats, but publishes
+ * `weapon_lithic_stacks` = (wielder is Liyue ? 1 : 0) + Liyue party (party=0 solo).
+ * A downstream `ConditionStacks` keyed `weapon_lithic_stacks` reads it (the
+ * settings-propagation keystone). Reads `ctx["char_origin"]` (injected by buildStats).
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Lithic.js
+ */
+export interface ConditionLithic extends ConditionBase {
+  readonly type: "lithic";
+  /** A pure settings-publisher — no stats of its own. */
+  readonly stats?: never;
+}
+
+/**
+ * Gate on the WIELDER's identity: active when `ctx["char_name"]` ∈ `chars`
+ * (+ optional `.condition` gate + `invert`). Ports Condition/Boolean/Char.js.
+ */
+export interface ConditionBooleanChar extends ConditionBase {
+  readonly type: "boolean-char";
+  /** Allowed character names (snake_case slugs, e.g. ["aloy"]). */
+  readonly chars: readonly string[];
+  readonly stats?: never;
+}
+
+/**
+ * Gate active for NightSoul-capable wielders: `ctx["char_origin"]==="natlan"`
+ * (TravelerPyro id==100 deferred — needs char_id injection). Pure gate.
+ * Ports Condition/Boolean/NightSoul.js. INERT for any non-Natlan rep.
+ */
+export interface ConditionBooleanNightSoul extends ConditionBase {
+  readonly type: "nightsoul";
+  readonly stats?: never;
+}
+
+/**
+ * Gate on the ENEMY's type: active when `ctx["enemy_type"]` ∈ `types`. The oracle
+ * never sets `enemy_type` → always INERT in v5.8 fixtures. Ports Boolean/EnemyType.js.
+ */
+export interface ConditionBooleanEnemyType extends ConditionBase {
+  readonly type: "enemy-type";
+  readonly types: readonly string[];
+  readonly stats?: never;
+}
+
+/**
  * Logical AND of all items — all must evaluate to true.
  * Vacuous truth: empty items list → true.
  */
@@ -322,6 +378,11 @@ export type Condition =
   | ConditionEnemyStatus
   | ConditionBooleanValue
   | ConditionDropdown
+  | ConditionNot
+  | ConditionLithic
+  | ConditionBooleanChar
+  | ConditionBooleanNightSoul
+  | ConditionBooleanEnemyType
   | ConditionAnd
   | ConditionOr;
 

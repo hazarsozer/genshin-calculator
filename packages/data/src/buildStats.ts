@@ -466,7 +466,17 @@ export function buildStats(input: BuildInput): BuildResult {
     if (input.talentLevels.burst !== undefined) talentSettings["char_skill_burst"] = input.talentLevels.burst;
   }
 
-  const baseSettings: EvalContext = { weapon_type: input.char.weapon };
+  // System-canonical wielder attributes injected into the settings the condition loop reads
+  // (alongside weapon_type). Drive char-attribute gates: char_origin → ConditionLithic /
+  // ConditionBooleanNightSoul, char_name → ConditionBooleanChar. Base-inert (no base char
+  // condition reads them). char_id (=serializeId) is deferred (DbObjectChar has no serializeId;
+  // the natlan-origin branch covers every v5.8 NightSoul case).
+  const baseSettings: EvalContext = {
+    weapon_type: input.char.weapon,
+    char_origin: input.char.origin,
+    char_name: input.char.name,
+    char_element: input.char.element,
+  };
 
   const settings: EvalContext =
     input.setBonuses && input.setBonuses.length > 0

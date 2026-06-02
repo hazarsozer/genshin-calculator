@@ -34,6 +34,10 @@ import type {
   ConditionEnemyStatus,
   ConditionBooleanValue,
   ConditionDropdown,
+  ConditionNot,
+  ConditionBooleanChar,
+  ConditionBooleanNightSoul,
+  ConditionBooleanEnemyType,
   ConditionStats,
   EvalContext,
 } from "@genshin/types";
@@ -78,6 +82,16 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return evaluateBooleanValue(condition, ctx);
     case "dropdown":
       return evaluateDropdown(condition, ctx);
+    case "not":
+      return !condition.items.every((item) => evaluate(item, ctx));
+    case "lithic":
+      return true; // always active; publishes weapon_lithic_stacks via conditionSettings
+    case "boolean-char":
+      return evaluateBooleanChar(condition, ctx);
+    case "nightsoul":
+      return evaluateNightSoul(condition, ctx);
+    case "enemy-type":
+      return evaluateEnemyType(condition, ctx);
     case "and":
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
@@ -165,10 +179,15 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     }
     case "and":
     case "or":
+    case "not":
     case "pieces-count":
     case "weapon-type":
     case "enemy-status":
-      // Pure gates / logical containers carry no stats of their own.
+    case "lithic":
+    case "boolean-char":
+    case "nightsoul":
+    case "enemy-type":
+      // Pure gates / logical containers / settings-publishers carry no stats of their own.
       return {};
     case "boolean":
     case "static":
@@ -241,7 +260,14 @@ export function conditionSettings(
 ): Record<string, unknown> {
   if (!evaluate(condition, ctx)) return {};
   // Logical containers carry no settings of their own (their operands do).
-  if (condition.type === "and" || condition.type === "or") return {};
+  if (condition.type === "and" || condition.type === "or" || condition.type === "not") return {};
+  // Lithic publishes a DYNAMIC settings value computed from the wielder's origin:
+  // weapon_lithic_stacks = (Liyue ? 1 : 0) + Liyue party (party=0 in the solo model).
+  // A downstream ConditionStacks keyed `weapon_lithic_stacks` reads it.
+  // Source: raw/genshin_calc_pub/src/js/classes/Condition/Lithic.js:4-32
+  if (condition.type === "lithic") {
+    return { weapon_lithic_stacks: ctx["char_origin"] === "liyue" ? 1 : 0 };
+  }
   // Every other variant extends ConditionBase, which may carry `.settings`.
   return condition.settings ? { ...condition.settings } : {};
 }
@@ -451,6 +477,33 @@ function evaluateDropdown(condition: ConditionDropdown, ctx: EvalContext): boole
   if (!checkGate(condition, ctx)) return false;
   const raw = ctx[condition.name];
   const active = typeof raw === "number" && raw > 0;
+  return condition.invert ? !active : active;
+}
+
+/** Ports ConditionBooleanChar.isActive — active when ctx["char_name"] is in `chars`. */
+function evaluateBooleanChar(condition: ConditionBooleanChar, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const name = ctx["char_name"];
+  const active = typeof name === "string" && condition.chars.includes(name);
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionBooleanNightSoul.isActive — active for NightSoul-capable wielders:
+ * `ctx["char_origin"] === "natlan"` (or `char_id === 100` for TravelerPyro, deferred until
+ * char_id is injected). Source: raw/.../Condition/Boolean/NightSoul.js.
+ */
+function evaluateNightSoul(condition: ConditionBooleanNightSoul, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const active = ctx["char_origin"] === "natlan" || ctx["char_id"] === 100;
+  return condition.invert ? !active : active;
+}
+
+/** Ports ConditionBooleanEnemyType.isActive — active when ctx["enemy_type"] is in `types`. */
+function evaluateEnemyType(condition: ConditionBooleanEnemyType, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const typ = ctx["enemy_type"];
+  const active = typeof typ === "string" && condition.types.includes(typ);
   return condition.invert ? !active : active;
 }
 
