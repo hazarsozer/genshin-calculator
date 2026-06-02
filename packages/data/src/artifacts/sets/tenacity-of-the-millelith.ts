@@ -3,21 +3,20 @@
  *
  * 2pc: HP% +20 (always-on static once 2 pieces equipped).
  * 4pc: after the wearer's Skill hits a foe, all party members gain ATK% +20 and
- *      Shield Strength +30 for 3s. The per-set 4pc toggle (`set.tenacity_of_the_millelith_4`)
- *      carries only `text_percent: 30` and `text_percent2: 20` (display markers, numeric
- *      no-ops). The real shield:30 + atk_percent:20 lives in the global artifact-buffs
- *      (raw/.../db/Buffs/Artifacts.js:217-232), gated by:
- *          Or( And( boolean set.tenacity_of_the_millelith_4, piecesCount TenacityofMillelith>=4 ),
- *              boolean set_other.tenacity_of_the_millelith_4 )
+ *      Shield Strength +30 for 3s. The per-set 4pc toggle carries only `text_percent: 30`
+ *      and `text_percent2: 20` (display markers, numeric no-ops). The real atk_percent:20
+ *      lives ONCE in CHARACTER_CONDITIONS (characterConditions.ts), gated by
+ *      OR(AND(set.tenacity_of_the_millelith_4, piecesCount TenacityofMillelith≥4),
+ *         set_other.tenacity_of_the_millelith_4). Fires once.
  *
  * KEY DISTINCTION:
- *   - `goodId` = "TenacityOfTheMillelith"  (capital O, capital T, capital M — her ArtifactSet.goodId)
- *   - `setName` in pieces-count = "TenacityofMillelith"  (lowercase "of" — her ArtifactSet.name key)
- * Confirmed: raw Buffs/Artifacts.js:226 uses "TenacityofMillelith" for the PiecesCount gate.
+ *   - `goodId` = "TenacityofMillelith"  (lowercase "of" — her ArtifactSet.name key)
+ *   - This matches the piecesCount setName in characterConditions.ts.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Artifacts/Set/TenacityofMillelith.js (setBonus 2pc/4pc)
- *   raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:217-232 (shield:30 + atk_percent:20 + Or gate)
+ *   raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:217-232 (atk_percent:20 + OR gate)
+ *   packages/data/src/characterConditions.ts (setOtherTenacityOfTheMillelith4 — authoritative OR gate)
  */
 
 import type { DbObjectArtifactSet } from "@genshin/types";
@@ -36,29 +35,8 @@ export const tenacityOfTheMillelith: DbObjectArtifactSet = {
         },
       ],
     },
-    // 4pc — Or-gated shield:30 + atk_percent:20 from Buffs/Artifacts.js:217-232.
-    // piecesCount setName = "TenacityofMillelith" (lowercase "of" — her ArtifactSet.name),
-    // distinct from the goodId "TenacityOfTheMillelith".
-    4: {
-      conditions: [
-        {
-          type: "static",
-          stats: { shield: 30, atk_percent: 20 },
-          condition: {
-            type: "or",
-            items: [
-              {
-                type: "and",
-                items: [
-                  { type: "boolean", name: "set.tenacity_of_the_millelith_4" },
-                  { type: "pieces-count", setName: "TenacityofMillelith", count: 4 },
-                ],
-              },
-              { type: "boolean", name: "set_other.tenacity_of_the_millelith_4" },
-            ],
-          },
-        },
-      ],
-    },
+    // 4pc — no real stat here; the per-set toggle carries only display markers (numeric
+    // no-ops). The +20% ATK lives in characterConditions.ts (setOtherTenacityOfTheMillelith4).
+    4: {},
   },
 };

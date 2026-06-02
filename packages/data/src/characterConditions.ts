@@ -272,49 +272,96 @@ const resonanceNone: Condition = {
 // ===========================================================================
 
 /**
- * Noblesse Oblige 4pc (team) — +20% ATK.
- * Source: Buffs/Artifacts.js:21-49 — `set_other.noblesse_oblige_4` boolean gate;
- * the OR-branch `new ConditionBoolean({name: 'set_other.noblesse_oblige_4'})`.
+ * Noblesse Oblige 4pc — +20% ATK.
+ * Source: Buffs/Artifacts.js:35-49 — OR(AND(set.noblesse_oblige_4, piecesCount NoblesseOblige≥4),
+ * set_other.noblesse_oblige_4). Fires once whether the active char wears it or a teammate does.
  */
 const setOtherNoblesseOblige4: Condition = {
   type: "static",
   stats: { atk_percent: 20 },
-  condition: { type: "boolean", name: "set_other.noblesse_oblige_4" },
+  condition: {
+    type: "or",
+    items: [
+      {
+        type: "and",
+        items: [
+          { type: "boolean", name: "set.noblesse_oblige_4" },
+          { type: "pieces-count", setName: "NoblesseOblige", count: 4 },
+        ],
+      },
+      { type: "boolean", name: "set_other.noblesse_oblige_4" },
+    ],
+  },
 };
 
 /**
- * Deepwood Memories 4pc (team) — enemy Dendro RES −30%.
- * Source: Buffs/Artifacts.js:234-261 — `set_other.deepwood_memories_4` boolean gate.
- * The −30 is a RAW negative percent; buildStats folds `enemy_res_dendro` into the
- * base enemy resistance the same way it does Escoffier's shred.
+ * Deepwood Memories 4pc — enemy Dendro RES −30%.
+ * Source: Buffs/Artifacts.js:247-261 — OR(AND(set.deepwood_memories_4, piecesCount DeepwoodMemories≥4),
+ * set_other.deepwood_memories_4). The −30 is a RAW negative percent. Fires once.
  */
 const setOtherDeepwoodMemories4: Condition = {
   type: "static",
   stats: { enemy_res_dendro: -30 },
-  condition: { type: "boolean", name: "set_other.deepwood_memories_4" },
+  condition: {
+    type: "or",
+    items: [
+      {
+        type: "and",
+        items: [
+          { type: "boolean", name: "set.deepwood_memories_4" },
+          { type: "pieces-count", setName: "DeepwoodMemories", count: 4 },
+        ],
+      },
+      { type: "boolean", name: "set_other.deepwood_memories_4" },
+    ],
+  },
 };
 
 /**
- * Tenacity of the Millelith 4pc (team) — +20% ATK.
- * Source: Buffs/Artifacts.js:202-232 — stats: { shield: 30, atk_percent: 20 }.
- * `shield` is a non-damage key (display-only for the shield-strength buff) — omitted
- * per the resonance/gilded convention. Only `atk_percent: 20` is emitted.
+ * Tenacity of the Millelith 4pc — +20% ATK.
+ * Source: Buffs/Artifacts.js:217-232 — OR(AND(set.tenacity_of_the_millelith_4, piecesCount TenacityofMillelith≥4),
+ * set_other.tenacity_of_the_millelith_4). `shield:30` omitted (non-damage). Fires once.
+ * Note: piecesCount setName is "TenacityofMillelith" (lowercase "of") — her ArtifactSet.name key.
  */
 const setOtherTenacityOfTheMillelith4: Condition = {
   type: "static",
   stats: { atk_percent: 20 },
-  condition: { type: "boolean", name: "set_other.tenacity_of_the_millelith_4" },
+  condition: {
+    type: "or",
+    items: [
+      {
+        type: "and",
+        items: [
+          { type: "boolean", name: "set.tenacity_of_the_millelith_4" },
+          { type: "pieces-count", setName: "TenacityofMillelith", count: 4 },
+        ],
+      },
+      { type: "boolean", name: "set_other.tenacity_of_the_millelith_4" },
+    ],
+  },
 };
 
 /**
- * Instructor 4pc (team) — +120 Elemental Mastery.
- * Source: Buffs/Artifacts.js:143-171 — `set_other.instructor_4` boolean gate;
- * stats: { mastery: 120 }.
+ * Instructor 4pc — +120 Elemental Mastery.
+ * Source: Buffs/Artifacts.js:157-171 — OR(AND(set.instructor_4, piecesCount Instructor≥4),
+ * set_other.instructor_4). Fires once.
  */
 const setOtherInstructor4: Condition = {
   type: "static",
   stats: { mastery: 120 },
-  condition: { type: "boolean", name: "set_other.instructor_4" },
+  condition: {
+    type: "or",
+    items: [
+      {
+        type: "and",
+        items: [
+          { type: "boolean", name: "set.instructor_4" },
+          { type: "pieces-count", setName: "Instructor", count: 4 },
+        ],
+      },
+      { type: "boolean", name: "set_other.instructor_4" },
+    ],
+  },
 };
 
 /**
@@ -357,10 +404,9 @@ const setViridescentVenerer4SwirlConditions: readonly Condition[] =
   }));
 
 /**
- * Scroll of the Hero of Cinder City 4pc (team) — tier 1: +12% to all elemental DMG types.
- * Source: Buffs/Artifacts.js:289-337 — `set_other.scroll_of_the_hero_of_cinder_city_4_1`
- * boolean gate; stats: dmg_anemo/electro/pyro/cryo/hydro/geo/dendro: 12. Physical is absent
- * (Scroll does not buff physical). RAW percents.
+ * Scroll of the Hero of Cinder City 4pc — tier 1: +12% to all elemental DMG types.
+ * Source: Buffs/Artifacts.js:317-337 — OR(AND(set.scroll_..._4_1, piecesCount ScrollOfTheEmberedCitysHero≥4),
+ * set_other.scroll_..._4_1). Physical absent (Scroll does not buff physical). Fires once.
  */
 const setOtherScrollCinderCity4Tier1: Condition = {
   type: "static",
@@ -374,17 +420,24 @@ const setOtherScrollCinderCity4Tier1: Condition = {
     dmg_dendro: 12,
   },
   condition: {
-    type: "boolean",
-    name: "set_other.scroll_of_the_hero_of_cinder_city_4_1",
+    type: "or",
+    items: [
+      {
+        type: "and",
+        items: [
+          { type: "boolean", name: "set.scroll_of_the_hero_of_cinder_city_4_1" },
+          { type: "pieces-count", setName: "ScrollOfTheEmberedCitysHero", count: 4 },
+        ],
+      },
+      { type: "boolean", name: "set_other.scroll_of_the_hero_of_cinder_city_4_1" },
+    ],
   },
 };
 
 /**
- * Scroll of the Hero of Cinder City 4pc (team) — tier 2: +28% to all elemental DMG types.
- * Source: Buffs/Artifacts.js:338-359 — `set_other.scroll_of_the_hero_of_cinder_city_4_2`
- * boolean gate; stats: dmg_anemo/electro/pyro/cryo/hydro/geo/dendro: 28.
- * In her engine the tier-2 self-worn is gated by PiecesCount + NightSoul; the team-buff
- * branch is a plain boolean (`set_other.scroll_of_the_hero_of_cinder_city_4_2`). Faithful.
+ * Scroll of the Hero of Cinder City 4pc — tier 2: +28% to all elemental DMG types.
+ * Source: Buffs/Artifacts.js:338-359 — OR(AND(set.scroll_..._4_2, nightsoul, piecesCount≥4),
+ * set_other.scroll_..._4_2). The team-buff arm is a plain boolean (no nightsoul gate). Fires once.
  */
 const setOtherScrollCinderCity4Tier2: Condition = {
   type: "static",
@@ -398,8 +451,18 @@ const setOtherScrollCinderCity4Tier2: Condition = {
     dmg_dendro: 28,
   },
   condition: {
-    type: "boolean",
-    name: "set_other.scroll_of_the_hero_of_cinder_city_4_2",
+    type: "or",
+    items: [
+      {
+        type: "and",
+        items: [
+          { type: "boolean", name: "set.scroll_of_the_hero_of_cinder_city_4_2" },
+          { type: "nightsoul" },
+          { type: "pieces-count", setName: "ScrollOfTheEmberedCitysHero", count: 4 },
+        ],
+      },
+      { type: "boolean", name: "set_other.scroll_of_the_hero_of_cinder_city_4_2" },
+    ],
   },
 };
 
