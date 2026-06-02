@@ -353,6 +353,62 @@ export interface ConditionBooleanEnemyType extends ConditionBase {
 }
 
 /**
+ * Elemental-resonance gate. Counts each element across the resonance slots
+ * `char_element` + `resonance_element_1/2/3`; active per `ConditionResonance.isActive`:
+ *   - with `element` set: active iff that element's count is >= 2 (a duo of it), OR
+ *   - with `element` absent/"" (the none-case): active iff NO element reaches 2 (`!isDuo`).
+ * `invert` flips the result (her `params.invert` — used as a `hideCondition`, irrelevant here).
+ * A pure gate: contributes NO stats (narrowed to `never`); used as the `.condition` on the
+ * stat-bearing resonance buffs in CHARACTER_CONDITIONS.
+ *
+ * Inert with no party: the resonance slots `resonance_element_*` are absent, so an
+ * element gate counts only `char_element` (count 1, never >= 2 → inactive). The none-case
+ * is held inert by the ResonanceEnabled team-presence gate it is AND-composed with (a real
+ * party has `party_size >= 2`; solo leaves it absent → 0).
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Resonance.js:8-38
+ */
+export interface ConditionResonance extends ConditionBase {
+  readonly type: "resonance";
+  /** Target element (e.g. "pyro"); omit/"" for the none-resonance (no-duo) case. */
+  readonly element?: string;
+  /** A pure gate — contributes NO stats of its own (narrowed to `never`, like and/or). */
+  readonly stats?: never;
+}
+
+/**
+ * Two-element party-composition gate: active iff the party (the `char_element` +
+ * `resonance_element_1/2/3` slots) contains BOTH `elements[0]` AND `elements[1]`
+ * AND no element outside that pair — the "ONLY these two elements" requirement.
+ *
+ * Ports the three structurally-identical gates Chevreuse/Nilou/Skirk share, each a
+ * scan over the four slots tracking hasA / hasB / hasOther, returning
+ * `hasA && hasB && !hasOther` after the super (subcondition) gate:
+ *   - raw/genshin_calc_pub/src/js/classes/Condition/Boolean/ChevreuseParty.js
+ *     (NOTE her quirk: she treats `electro` as the second trigger — Chevreuse's party
+ *     requires Pyro + Electro, so `elements: ["pyro","electro"]`).
+ *   - raw/genshin_calc_pub/src/js/classes/Condition/Boolean/NilouParty.js  → ["hydro","dendro"].
+ *   - raw/genshin_calc_pub/src/js/classes/Condition/Boolean/SkirkParty.js  → ["cryo","hydro"].
+ *
+ * The three differ ONLY in the element pair; a single parameterised variant is faithful
+ * to all three. NOT expressible by composing existing gates: `resonance` counts a DUO of
+ * one element (count >= 2), and nothing expresses the "no third element present" clause.
+ *
+ * A pure gate — contributes NO stats of its own (narrowed to `never`, like `resonance`);
+ * used as the `.condition` on the stat-bearing toggle it guards (Chevreuse's `chevreuse_tactics`
+ * res-shred, Nilou's `nilou_stance_bonus`, Skirk's `skirk_mutual_weapons_mentorship`). `invert`
+ * flips the result. Inert with no party: a solo build has only `char_element` (one element) →
+ * the wielder's own element is one of the pair but the partner is absent → `false`.
+ */
+export interface ConditionPartyElements extends ConditionBase {
+  readonly type: "party-elements";
+  /** The two elements the party must contain (and ONLY those), e.g. ["pyro","electro"]. */
+  readonly elements: readonly [string, string];
+  /** A pure gate — contributes NO stats of its own (narrowed to `never`, like resonance). */
+  readonly stats?: never;
+}
+
+/**
  * Logical AND of all items — all must evaluate to true.
  * Vacuous truth: empty items list → true.
  */
@@ -368,6 +424,102 @@ export interface ConditionAnd {
 export interface ConditionOr {
   readonly type: "or";
   readonly items: readonly Condition[];
+}
+
+/**
+ * A level-indexed condition whose stat contributions are determined by reading an
+ * integer level from `ctx[levelSetting]` and indexing into per-stat value arrays.
+ *
+ * Evaluation: active iff the optional `.condition` gate passes (inherits ConditionStatic
+ * semantics — always active once gated). Stats are resolved by `getLevel`:
+ *   level = (ctx[levelSetting] || 0) + (fromZero ? 1 : 0)
+ *   per stat: stats[key][level - 1] (1-indexed, clamped to array length; level <= 0 → 0)
+ * A stat whose resolved value is 0 is omitted from the emitted bag.
+ *
+ * `fromZero: true` means a missing/0 key in ctx shifts to level 1 (index 0), which
+ * conventionally holds a 0 placeholder — so a 0 ctx value still yields no contribution.
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Static/Level.js:
+ *   getLevel(settings) reads settings[levelSetting] || 0, adds 1 when fromZero.
+ *   getStats(settings) calls StatTable.getValue(level) for each entry.
+ *   StatTable.getValue: level <= 0 → 0; level > length → values[length-1]; else values[level-1].
+ *
+ * Example (GildedDreams 4pc, same-element path):
+ *   { type: "staticLevel", levelSetting: "party_elements_same", fromZero: true,
+ *     levelStats: { atk_percent: [0, 14, 28, 42] },
+ *     condition: { type: "and", items: [{type:"boolean",name:"set.gilded_dreams_4"},
+ *                                       {type:"boolean",name:"party_elements_same"}] } }
+ *   ctx { party_elements_same: 2 } → level = 2+1 = 3 → atk_percent[2] = 28.
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Static/Level.js
+ *   raw/genshin_calc_pub/src/js/classes/StatTable.js
+ *   raw/genshin_calc_pub/src/js/db/Artifacts/Set/GildedDreams.js:44-73
+ */
+export interface ConditionStaticLevel extends ConditionBase {
+  readonly type: "staticLevel";
+  /** The context key holding the integer level (e.g. "party_elements_same"). */
+  readonly levelSetting: string;
+  /**
+   * When true, the raw value is incremented by 1 before indexing (her `fromZero` flag).
+   * Conventionally the value arrays begin with a 0 placeholder at index 0, so a ctx
+   * value of 0 still resolves to 0 contribution.
+   */
+  readonly fromZero?: boolean;
+  /**
+   * Per-stat value arrays. Each key maps to a StatTable-values array (1-indexed by level).
+   * StatTable.getValue semantics: level <= 0 → 0; level > length → values[length-1].
+   */
+  readonly levelStats: Readonly<Record<string, readonly number[]>>;
+}
+
+/**
+ * Gate on the WIELDER's element: active when `ctx["char_element"]` ∈ `elements`
+ * (+ optional `.condition` gate + `invert`). A pure gate — contributes NO stats
+ * (narrowed to `never`, like `boolean-char`).
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/CharElement.js
+ * (`this.params.element.includes(settings.char_element)`; a non-array/absent
+ * `element` → false). `char_element` is injected by buildStats from `input.char.element`.
+ *
+ * Used by ViridescentVenerer's 4pc swirl res-shred (the `anemo` gate on each
+ * per-element `enemy_res_<el>: -40` condition).
+ */
+export interface ConditionBooleanCharElement extends ConditionBase {
+  readonly type: "char-element";
+  /** Allowed wielder elements, e.g. ["anemo"]. */
+  readonly elements: readonly string[];
+  readonly stats?: never;
+}
+
+/**
+ * Gate on whether a specific element is selected in a multi-select element dropdown.
+ * Active when `ctx[name]` (a `;`-delimited string of element tokens) split-includes
+ * `element`, AND the optional `.condition` gate passes; `invert` flips it. A pure gate —
+ * contributes NO stats of its own (narrowed to `never`).
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/DropdownValue.js
+ * (`(settings[name] || '').split(';').includes(this.params.value)` after super gate).
+ *
+ * This is the CONSUMER of the multi-select `ConditionDropdownElement` selector
+ * (`ViridescentVenerer.js:43-72`, a UI/suggester widget whose `getAllConditionsOn`
+ * publishes the element list). The actual effect — ViridescentVenerer's 4pc swirl
+ * res-shred — lives in `raw/.../db/Buffs/Artifacts.js:82-99` as four per-element
+ * `enemy_res_<el>: -40` conditions, each gated by a `ConditionBooleanDropdownValue`
+ * on `set.viridescent_venerer_4` (value === that element). The numeric-indexed
+ * `dropdown` variant cannot express this string-membership selection.
+ *
+ * The selection is caller-supplied (a string setting, e.g. `set.viridescent_venerer_4`
+ * = "pyro" or "cryo;electro"). Absent/empty → inactive (every v5.8 fixture that does
+ * not select an element leaves it inert).
+ */
+export interface ConditionDropdownElement extends ConditionBase {
+  readonly type: "dropdownElement";
+  /** Settings key holding the `;`-delimited element selection string. */
+  readonly name: string;
+  /** The element token this gate fires for (e.g. "pyro"). */
+  readonly element: string;
+  readonly stats?: never;
 }
 
 /** Discriminated union of all condition types. */
@@ -389,7 +541,12 @@ export type Condition =
   | ConditionBooleanChar
   | ConditionBooleanNightSoul
   | ConditionBooleanEnemyType
+  | ConditionResonance
+  | ConditionPartyElements
   | ConditionAnd
-  | ConditionOr;
+  | ConditionOr
+  | ConditionStaticLevel
+  | ConditionBooleanCharElement
+  | ConditionDropdownElement;
 
 export type { AscensionLevel, ConstellationLevel, Refinement };

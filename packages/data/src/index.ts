@@ -50,3 +50,7 @@ export * from "./weapons/index.js";
 
 // P2.B0 — artifact build assembly (GOOD artifacts → raw stat bag + set detection)
 export { assembleArtifactStats, detectSets } from "./assembleBuild.js";
+
+// Phase 3 ② — party composition input model
+export { buildPartyContext } from "./partyContext.js";
+export type { PartyInput, PartyMember, ActiveCharFacts } from "./partyContext.js";

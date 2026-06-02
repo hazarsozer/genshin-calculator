@@ -2,30 +2,24 @@
  * Viridescent Venerer — artifact set port.
  *
  * 2pc: +15% Anemo DMG (always-on once 2 pieces are equipped).
- * 4pc: Swirl reaction DMG +60% (always-on static, no toggle).
- *      DEFERRED — per-element enemy RES −40% swirl shred (see below).
+ * 4pc: Swirl reaction DMG +60% (always-on static, no toggle), AND a per-element
+ *      enemy RES −40% shred to the swirled element selected via a multi-select dropdown.
  *
- * The 4pc carries two conditions in the raw source:
+ * The 4pc carries two raw constructs:
  *   (a) a static +60% dmg_reaction_swirl (ViridescentVenerer.js:35-42): always fires
- *       with 4 pieces, no toggle needed — PORTED here.
- *   (b) a ConditionDropdownElement `set.viridescent_venerer_4` selecting the swirled
- *       element (cryo/electro/hydro/pyro), which feeds the global-buff channel in
- *       raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:82-99 to apply
- *       enemy_res_<element>: -40 — DEFERRED.
- *
- * DEFERRED — res-shred (ViridescentVenerer.js:43-72 + Buffs/Artifacts.js:82-99):
- *   Needs a DropdownElement primitive + char_element subCondition + global-buff channel
- *   (the res-shred lives in the Buffs layer, not the setBonus layer). The dropdown
- *   `setToggles` is EMPTY in every v5.8 oracle fixture (no element selected), so this
- *   shred is inert for all current golden tests — safe to defer.
- *
- * With 4 pieces + swirl dropdown unset (all v5.8 fixtures): 2pc(15 anemo) + 4pc-static(60 swirl).
+ *       with 4 pieces, no toggle needed. `dmg_reaction_swirl` is a REACTION_BONUS_PERCENT_KEY
+ *       in buildStats → boosts swirl in core's cTransformativeDamage `(1 + … + Σ dmg_reaction_*)`.
+ *   (b) the res-shred. The ACTUAL effect lives in the global-buff layer
+ *       raw/.../db/Buffs/Artifacts.js:82-99 as four per-element `enemy_res_<el>: -40` conditions,
+ *       each gated by OR(self-worn AND anemo, team-buff), and is ported to CHARACTER_CONDITIONS
+ *       in characterConditions.ts (setViridescentVenerer4SwirlConditions). The OR gate is
+ *       authoritative there — this bonus[4] carries ONLY the +60% swirl bonus.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Artifacts/Set/ViridescentVenerer.js:19-26 (2pc)
- *   raw/genshin_calc_pub/src/js/db/Artifacts/Set/ViridescentVenerer.js:35-42 (4pc static)
- *   raw/genshin_calc_pub/src/js/db/Artifacts/Set/ViridescentVenerer.js:43-72 (4pc dropdown — deferred)
- *   raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:82-99 (res-shred global-buff — deferred)
+ *   raw/genshin_calc_pub/src/js/db/Artifacts/Set/ViridescentVenerer.js:35-42 (4pc static swirl)
+ *   raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:82-99 (res-shred — moved to CHARACTER_CONDITIONS)
+ *   packages/data/src/characterConditions.ts (setViridescentVenerer4SwirlConditions)
  */
 
 import type { DbObjectArtifactSet } from "@genshin/types";
@@ -45,9 +39,9 @@ export const viridescentVenerer: DbObjectArtifactSet = {
       ],
     },
     // 4pc — always-on Swirl DMG +60% (ViridescentVenerer.js:35-42).
-    // The per-element enemy RES −40% shred (ViridescentVenerer.js:43-72 +
-    // Buffs/Artifacts.js:82-99) is DEFERRED: needs DropdownElement + global-buff
-    // channel primitives; inert in all v5.8 oracle fixtures (setToggles empty).
+    // The per-element enemy RES −40% shred lives in characterConditions.ts
+    // (setViridescentVenerer4SwirlConditions) as OR(self-worn, team-buff) to prevent
+    // double application when both branches are active simultaneously.
     4: {
       conditions: [
         {

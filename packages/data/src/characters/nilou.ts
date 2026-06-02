@@ -16,13 +16,16 @@
  * Burst "Distant Dreams, Listening Spring" — HP-scaling hydro:
  *   burst_dmg, nilou_lingering_aeon (scaling:'hp*', char_skill_burst).
  *
+ * A4 "Dreamy Dance of Aeons" — bloomDmgPost: HP → dmg_reaction_rupture (per-100
+ *   raw percent, cap 400). Gated by party-elements(hydro+dendro) AND stance_bonus.
+ *   Raw: Nilou.js:153-163 (PostEffectStatsHP: exceed=30000, percent=[0.009],
+ *   statCap=[400], conditions=[AscensionChar(4), NilouParty(), Boolean(stance_bonus)]).
+ *   Active only in the party fixture (hydro+dendro, stance_bonus ON); inert solo.
+ *   The FeaturePostEffectValue "other.nilou_bloom_bonus" display feature is NOT
+ *   modelled (empty damageType → excluded from assertions). The post-effect itself
+ *   IS modelled here (it adds real dmg_reaction_rupture).
+ *
  * NOT MODELLED (intentional):
- *   - other.nilou_bloom_bonus — a FeaturePostEffectValue percent readout (A4
- *     "Dreamy Dance of Aeons": (HP−30000)×0.9% capped at 400), value-display only
- *     (empty damageType). The golden harness's isDamageTripleEntry excludes empty-
- *     damageType entries from assertions, so it is not a gate. The engine has no
- *     value-feature-from-post-effect path (CharPostEffect is HP→ATK style only), so
- *     it is genuinely unmodelled here and correctly omitted (no orphan key).
  *   - reaction.rupture / electrocharged / shatter — emitted GENERICALLY by the
  *     loader from element="hydro" (transformativeReactionFeatures), not per-char.
  *
@@ -247,6 +250,27 @@ const constellationConditions: readonly Condition[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// A4 "Dreamy Dance of Aeons" — bloom HP post-effect: adds dmg_reaction_rupture
+// = max(0, HP − 30000) × 0.009 (raw percent), capped at 400 raw (≙ 4 fraction
+// after /100 emit). Gated by party-elements(hydro+dendro) AND stance_bonus.
+// Raw Nilou.js:153-163: PostEffectStatsHP{ exceed:30000, percent:StatTable('dmg_reaction_rupture',[0.009]),
+// statCap:StatTable('',[400]), conditions:[AscensionChar(4), NilouParty(), Boolean(stance_bonus)] }.
+// NOTE: Our ratio=0.009 stores the raw-percent form so REACTION_BONUS_PERCENT_KEYS
+// emits it /100 at build time — matching the isPercent fold PostEffectStats.getTree applies.
+const bloomPostEffect: readonly CharPostEffect[] = [
+  {
+    fromStat: "hp",
+    toStat: "dmg_reaction_rupture",
+    ratio: 0.009,
+    offset: 30000,
+    capValue: 400,
+    conditions: [
+      { type: "party-elements", elements: ["hydro", "dendro"] },
+      { type: "boolean", name: "nilou_stance_bonus" },
+    ],
+  },
+];
+
 // C6 "Frostfall Storm": HP → crit_rate (ratio 0.0006, abs cap 30) + crit_dmg
 // (ratio 0.0012, abs cap 60), gated by C6. Faithful PostEffectStatsHP with a
 // ConditionConstellation(6) gate + absolute cap; at the fixed build HP=36593 →
@@ -269,5 +293,5 @@ export const nilou: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
-  postEffects: c6CritPostEffects,
+  postEffects: [...bloomPostEffect, ...c6CritPostEffects],
 };

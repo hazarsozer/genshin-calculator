@@ -30,13 +30,14 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { conditionStats, type EvalContext } from "../index.js";
+import { conditionStats, evaluate, type EvalContext } from "../index.js";
 import type {
   ConditionBoolean,
   ConditionStatic,
   ConditionConstellation,
   ConditionNumber,
   ConditionStacks,
+  ConditionStaticLevel,
   ConditionStaticRefine,
   ConditionBooleanRefine,
   ConditionAnd,
@@ -211,5 +212,129 @@ describe("conditionStats — refine variants resolve by weapon_refine (1-indexed
       refinementStats: refineStats,
     };
     expect(conditionStats(c, { weapon_refine: 2 })).toEqual({ atk_percent: 25, crit_rate: 5 });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// staticLevel — level-indexed stat tables (ConditionStaticLevel)
+// ---------------------------------------------------------------------------
+
+describe("conditionStats — staticLevel resolves level-indexed stat tables", () => {
+  // GildedDreams 4pc same-element table: [0, 14, 28, 42] with fromZero: true
+  // ctx.party_elements_same = N → level = N+1 → atk_percent[N] (0-based, so index N)
+  const samePath: ConditionStaticLevel = {
+    type: "staticLevel",
+    levelSetting: "party_elements_same",
+    fromZero: true,
+    levelStats: { atk_percent: [0, 14, 28, 42] },
+  };
+
+  it("fromZero: level 0 ctx value → level 1 → arr[0] = 0 → {} (zero omitted)", () => {
+    expect(conditionStats(samePath, {})).toEqual({});
+    expect(conditionStats(samePath, { party_elements_same: 0 })).toEqual({});
+  });
+
+  it("fromZero: ctx=1 → level 2 → arr[1] = 14", () => {
+    expect(conditionStats(samePath, { party_elements_same: 1 })).toEqual({ atk_percent: 14 });
+  });
+
+  it("fromZero: ctx=2 → level 3 → arr[2] = 28", () => {
+    expect(conditionStats(samePath, { party_elements_same: 2 })).toEqual({ atk_percent: 28 });
+  });
+
+  it("fromZero: ctx=3 → level 4 → arr[3] = 42", () => {
+    expect(conditionStats(samePath, { party_elements_same: 3 })).toEqual({ atk_percent: 42 });
+  });
+
+  it("StatTable.getValue clamp: level beyond length clamps to last value", () => {
+    // ctx=99 → level 100 → clamps to arr[3] = 42
+    expect(conditionStats(samePath, { party_elements_same: 99 })).toEqual({ atk_percent: 42 });
+  });
+
+  it("GildedDreams diff-element table: [0, 50, 100, 150] with fromZero", () => {
+    const diffPath: ConditionStaticLevel = {
+      type: "staticLevel",
+      levelSetting: "party_elements_different",
+      fromZero: true,
+      levelStats: { mastery: [0, 50, 100, 150] },
+    };
+    expect(conditionStats(diffPath, {})).toEqual({});
+    expect(conditionStats(diffPath, { party_elements_different: 1 })).toEqual({ mastery: 50 });
+    expect(conditionStats(diffPath, { party_elements_different: 3 })).toEqual({ mastery: 150 });
+  });
+
+  it("gated (condition): inactive when gate fails, active when gate passes", () => {
+    const gated: ConditionStaticLevel = {
+      type: "staticLevel",
+      levelSetting: "party_elements_same",
+      fromZero: true,
+      levelStats: { atk_percent: [0, 14, 28, 42] },
+      condition: { type: "boolean", name: "set.gilded_dreams_4" },
+    };
+    // Gate fails → inactive → {}
+    expect(conditionStats(gated, { party_elements_same: 2 })).toEqual({});
+    // Gate passes and level resolves → stats
+    expect(conditionStats(gated, { "set.gilded_dreams_4": true, party_elements_same: 2 })).toEqual({ atk_percent: 28 });
+  });
+});
+
+describe("conditionStats — staticLevel fromZero:false and _bonus accumulation", () => {
+  it("fromZero:false — absent/0 ctx falls through to level 1 (her level ||= 1 path)", () => {
+    // Level.js:13: level ||= 1 when !fromZero → 0 becomes 1 → arr[0]
+    const c: ConditionStaticLevel = {
+      type: "staticLevel",
+      levelSetting: "some_level",
+      fromZero: false,
+      levelStats: { atk_percent: [10, 20, 30] },
+    };
+    // absent key: raw=0, bonus=0 → level = 0||1 = 1 → arr[0] = 10
+    expect(conditionStats(c, {})).toEqual({ atk_percent: 10 });
+    expect(conditionStats(c, { some_level: 0 })).toEqual({ atk_percent: 10 });
+    // explicit value 2: raw=2 → level = 2||1 = 2 → arr[1] = 20
+    expect(conditionStats(c, { some_level: 2 })).toEqual({ atk_percent: 20 });
+  });
+
+  it("_bonus accumulation: ctx[levelSetting_bonus] and _bonus_2 added before fromZero (Level.js:7-8)", () => {
+    // Level.js: raw += bonus || 0; raw += bonus_2 || 0; then fromZero → ++raw → level
+    // With fromZero: true, levelSetting=x, stats=[0,14,28,42]:
+    //   ctx = { x: 0, x_bonus: 1, x_bonus_2: 1 } → raw=0+1+1=2, level=2+1=3 → arr[2]=28
+    const c: ConditionStaticLevel = {
+      type: "staticLevel",
+      levelSetting: "party_elements_same",
+      fromZero: true,
+      levelStats: { atk_percent: [0, 14, 28, 42] },
+    };
+    // base=0, bonus=1, bonus_2=1 → raw=2, level=3 → arr[2]=28
+    expect(
+      conditionStats(c, { party_elements_same: 0, party_elements_same_bonus: 1, party_elements_same_bonus_2: 1 })
+    ).toEqual({ atk_percent: 28 });
+    // base=1, bonus=1 (no _bonus_2) → raw=2, level=3 → arr[2]=28
+    expect(
+      conditionStats(c, { party_elements_same: 1, party_elements_same_bonus: 1 })
+    ).toEqual({ atk_percent: 28 });
+  });
+});
+
+describe("evaluate — staticLevel activation semantics", () => {
+  const c: ConditionStaticLevel = {
+    type: "staticLevel",
+    levelSetting: "party_elements_same",
+    fromZero: true,
+    levelStats: { atk_percent: [0, 14, 28, 42] },
+  };
+
+  it("active (no gate) regardless of ctx value — static semantics", () => {
+    expect(evaluate(c, {})).toBe(true);
+    expect(evaluate(c, { party_elements_same: 0 })).toBe(true);
+    expect(evaluate(c, { party_elements_same: 2 })).toBe(true);
+  });
+
+  it("inactive when gate condition fails", () => {
+    const gated: ConditionStaticLevel = {
+      ...c,
+      condition: { type: "boolean", name: "set.gilded_dreams_4" },
+    };
+    expect(evaluate(gated, { party_elements_same: 2 })).toBe(false);
+    expect(evaluate(gated, { "set.gilded_dreams_4": true, party_elements_same: 2 })).toBe(true);
   });
 });

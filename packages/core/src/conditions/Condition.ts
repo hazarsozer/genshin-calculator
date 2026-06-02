@@ -38,6 +38,11 @@ import type {
   ConditionBooleanChar,
   ConditionBooleanNightSoul,
   ConditionBooleanEnemyType,
+  ConditionResonance,
+  ConditionPartyElements,
+  ConditionStaticLevel,
+  ConditionBooleanCharElement,
+  ConditionDropdownElement,
   ConditionStats,
   EvalContext,
 } from "@genshin/types";
@@ -92,10 +97,20 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return evaluateNightSoul(condition, ctx);
     case "enemy-type":
       return evaluateEnemyType(condition, ctx);
+    case "resonance":
+      return evaluateResonance(condition, ctx);
+    case "party-elements":
+      return evaluatePartyElements(condition, ctx);
     case "and":
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
       return condition.items.some((item) => evaluate(item, ctx));
+    case "staticLevel":
+      return evaluateStaticLevel(condition, ctx);
+    case "char-element":
+      return evaluateCharElement(condition, ctx);
+    case "dropdownElement":
+      return evaluateDropdownElement(condition, ctx);
     default: {
       // Exhaustiveness tripwire: a new Condition variant without a case is a compile error.
       const _exhaustive: never = condition;
@@ -187,6 +202,10 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "boolean-char":
     case "nightsoul":
     case "enemy-type":
+    case "resonance":
+    case "party-elements":
+    case "char-element":
+    case "dropdownElement":
       // Pure gates / logical containers / settings-publishers carry no stats of their own.
       return {};
     case "boolean":
@@ -194,6 +213,9 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "constellation":
       // Plain stat-bearing variants — `cond.stats` as-is.
       return toNumberBag(condition.stats);
+    case "staticLevel":
+      // Level-indexed stat tables; grouped with the plain stat-bearing variants for readability.
+      return resolveStaticLevel(condition, ctx);
     case "number": {
       // Plain stat-bearing variants — `cond.stats` as-is, PLUS the dynamic
       // clamped value injected as a stat keyed by the condition's name.
@@ -480,11 +502,41 @@ function evaluateDropdown(condition: ConditionDropdown, ctx: EvalContext): boole
   return condition.invert ? !active : active;
 }
 
+/**
+ * Ports ConditionBooleanDropdownValue.isActive — active when `ctx[name]` (a `;`-delimited
+ * element string) split-includes `element`, AND the optional `.condition` gate passes.
+ * Mirrors raw exactly: `(settings[name] || '').split(';').includes(this.params.value)`
+ * after the super (boolean) gate. An absent/empty selection → `[''].includes(element)` →
+ * false (no element matches the empty token). `invert` flips the result.
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Boolean/DropdownValue.js:4-12
+ */
+function evaluateDropdownElement(condition: ConditionDropdownElement, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const raw = ctx[condition.name];
+  const selection = typeof raw === "string" ? raw : "";
+  const active = selection.split(";").includes(condition.element);
+  return condition.invert ? !active : active;
+}
+
 /** Ports ConditionBooleanChar.isActive — active when ctx["char_name"] is in `chars`. */
 function evaluateBooleanChar(condition: ConditionBooleanChar, ctx: EvalContext): boolean {
   if (!checkGate(condition, ctx)) return false;
   const name = ctx["char_name"];
   const active = typeof name === "string" && condition.chars.includes(name);
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionBooleanCharElement.isActive — active when ctx["char_element"] is in
+ * `elements`, AND the optional `.condition` gate passes. Mirrors raw:
+ *   `checkSubconditions && this.params.element.includes(settings.char_element)`
+ * (a non-array/absent element → false). `invert` flips the result.
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Boolean/CharElement.js
+ */
+function evaluateCharElement(condition: ConditionBooleanCharElement, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const el = ctx["char_element"];
+  const active = typeof el === "string" && condition.elements.includes(el);
   return condition.invert ? !active : active;
 }
 
@@ -499,12 +551,155 @@ function evaluateNightSoul(condition: ConditionBooleanNightSoul, ctx: EvalContex
   return condition.invert ? !active : active;
 }
 
+/**
+ * Ports ConditionResonance.isActive (Resonance.js:8-38) — its getType() is 'static', so it
+ * first runs `super.isActive` (our checkGate), then counts each element across the four
+ * resonance slots (`char_element`, `resonance_element_1/2/3`), tracking whether any element
+ * appears twice (`isDuo`). With a target `element`, active iff that element's count >= 2;
+ * with no target (the none-case), active iff `!isDuo`. `invert` flips the result.
+ *
+ * Faithful detail: a falsy slot value (`!element`) is skipped, exactly her `if (!element) continue`.
+ */
+const RESONANCE_SLOTS = [
+  "char_element",
+  "resonance_element_1",
+  "resonance_element_2",
+  "resonance_element_3",
+] as const;
+
+function evaluateResonance(condition: ConditionResonance, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+
+  const counts: Record<string, number> = {};
+  let isDuo = false;
+  for (const slot of RESONANCE_SLOTS) {
+    const element = ctx[slot];
+    if (typeof element !== "string" || element === "") continue;
+    if (counts[element] === undefined) {
+      counts[element] = 1;
+    } else {
+      counts[element] += 1;
+      isDuo = true;
+    }
+  }
+
+  const target = condition.element;
+  let active = false;
+  if (target !== undefined && target !== "") {
+    active = (counts[target] ?? 0) >= 2;
+  } else if (!isDuo) {
+    active = true;
+  }
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports the shared Chevreuse/Nilou/SkirkParty.isActive logic — scans the four resonance
+ * slots (`char_element`, `resonance_element_1/2/3`) and returns `hasA && hasB && !hasOther`
+ * after the super (subcondition) gate: the party must contain BOTH `elements` and ONLY those.
+ *
+ * Faithful detail: a falsy slot value is skipped (her `if (!element) continue`); any element
+ * outside the pair sets `hasOther` (her `else` branch). `invert` flips the result.
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Boolean/ChevreuseParty.js (pyro + electro)
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Boolean/NilouParty.js     (hydro + dendro)
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Boolean/SkirkParty.js     (cryo + hydro)
+ */
+function evaluatePartyElements(condition: ConditionPartyElements, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+
+  const [elementA, elementB] = condition.elements;
+  let hasA = false;
+  let hasB = false;
+  let hasOther = false;
+  for (const slot of RESONANCE_SLOTS) {
+    const element = ctx[slot];
+    if (typeof element !== "string" || element === "") continue;
+    if (element === elementA) hasA = true;
+    else if (element === elementB) hasB = true;
+    else hasOther = true;
+  }
+
+  const active = hasA && hasB && !hasOther;
+  return condition.invert ? !active : active;
+}
+
 /** Ports ConditionBooleanEnemyType.isActive — active when ctx["enemy_type"] is in `types`. */
 function evaluateEnemyType(condition: ConditionBooleanEnemyType, ctx: EvalContext): boolean {
   if (!checkGate(condition, ctx)) return false;
   const typ = ctx["enemy_type"];
   const active = typeof typ === "string" && condition.types.includes(typ);
   return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionStaticLevel.isActive — inherits ConditionStatic semantics:
+ * active iff the optional `.condition` gate passes (always-active-if-gated).
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Static/Level.js
+ *   ConditionStaticLevel extends ConditionStatic (which extends ConditionBase);
+ *   isActive = checkSubconditions (inherited) → our checkGate.
+ */
+function evaluateStaticLevel(condition: ConditionStaticLevel, ctx: EvalContext): boolean {
+  const base = checkGate(condition, ctx);
+  return condition.invert ? !base : base;
+}
+
+/**
+ * Resolves the level-indexed stat bag for an active ConditionStaticLevel.
+ *
+ * Replicates StatTable.getValue(level) exactly:
+ *   level <= 0  → 0
+ *   level > arr.length → arr[arr.length - 1]   (clamp to last)
+ *   else        → arr[level - 1]               (1-indexed)
+ *
+ * getLevel semantics (Level.js:5-16):
+ *   raw = ctx[levelSetting] || 0
+ *   raw += ctx[levelSetting + "_bonus"] || 0
+ *   raw += ctx[levelSetting + "_bonus_2"] || 0
+ *   if fromZero: level = raw + 1
+ *   else:        level = raw || 1              (fallthrough to 1 when 0; not used by GildedDreams)
+ *
+ * The _bonus accumulation mirrors buildStats.ts toPostEffect (lines ~330-332).
+ * Stats whose resolved value is 0 are omitted from the result bag.
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Static/Level.js (getLevel, getStats)
+ *   raw/genshin_calc_pub/src/js/classes/StatTable.js (getValue)
+ */
+function resolveStaticLevel(
+  condition: ConditionStaticLevel,
+  ctx: EvalContext
+): Record<string, number> {
+  const rawVal = ctx[condition.levelSetting];
+  let raw = typeof rawVal === "number" ? rawVal : 0;
+  raw += (ctx[`${condition.levelSetting}_bonus`] as number | undefined) ?? 0;
+  raw += (ctx[`${condition.levelSetting}_bonus_2`] as number | undefined) ?? 0;
+  const level = condition.fromZero ? raw + 1 : raw || 1;
+
+  const out: Record<string, number> = {};
+  for (const key of Object.keys(condition.levelStats)) {
+    const arr = condition.levelStats[key]!;
+    const value = staticLevelGetValue(arr, level);
+    if (value !== 0) out[key] = value;
+  }
+  return out;
+}
+
+/**
+ * StatTable.getValue replication (StatTable.js:11-19):
+ *   if level > 0:
+ *     if level > length: level = length
+ *     return values[level - 1]
+ *   return 0
+ */
+function staticLevelGetValue(arr: readonly number[], level: number): number {
+  if (level > 0) {
+    const idx = Math.min(level, arr.length);
+    return arr[idx - 1] ?? 0;
+  }
+  return 0;
 }
 
 // ---------------------------------------------------------------------------

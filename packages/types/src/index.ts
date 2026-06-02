@@ -98,7 +98,12 @@ export type {
   ConditionBooleanChar,
   ConditionBooleanNightSoul,
   ConditionBooleanEnemyType,
+  ConditionResonance,
+  ConditionPartyElements,
   ConditionAnd,
   ConditionOr,
+  ConditionStaticLevel,
+  ConditionBooleanCharElement,
+  ConditionDropdownElement,
   Condition,
 } from "./condition.js";

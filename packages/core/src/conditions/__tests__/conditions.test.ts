@@ -37,6 +37,8 @@ import type {
   ConditionBooleanChar,
   ConditionBooleanNightSoul,
   ConditionBooleanEnemyType,
+  ConditionBooleanCharElement,
+  ConditionDropdownElement,
   ConditionAnd,
   ConditionOr,
 } from "@genshin/types";
@@ -561,6 +563,69 @@ describe("ConditionBooleanChar / NightSoul / EnemyType", () => {
     const c: ConditionBooleanEnemyType = { type: "enemy-type", types: ["slime"] };
     expect(evaluate(c, {})).toBe(false);
     expect(evaluate(c, { enemy_type: "slime" })).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 9h. ConditionBooleanCharElement + ConditionDropdownElement
+//     (ViridescentVenerer 4pc swirl res-shred — Phase 3 ② / D4)
+// ---------------------------------------------------------------------------
+
+describe("ConditionBooleanCharElement", () => {
+  it("gates on char_element membership", () => {
+    const c: ConditionBooleanCharElement = { type: "char-element", elements: ["anemo"] };
+    expect(evaluate(c, { char_element: "anemo" })).toBe(true);
+    expect(evaluate(c, { char_element: "pyro" })).toBe(false);
+    expect(evaluate(c, {})).toBe(false);
+  });
+  it("supports multiple allowed elements", () => {
+    const c: ConditionBooleanCharElement = { type: "char-element", elements: ["pyro", "hydro"] };
+    expect(evaluate(c, { char_element: "hydro" })).toBe(true);
+    expect(evaluate(c, { char_element: "cryo" })).toBe(false);
+  });
+  it("invert flips the result", () => {
+    const c: ConditionBooleanCharElement = { type: "char-element", elements: ["anemo"], invert: true };
+    expect(evaluate(c, { char_element: "anemo" })).toBe(false);
+    expect(evaluate(c, { char_element: "pyro" })).toBe(true);
+  });
+  it("conditionStats: pure gate (no stats)", () => {
+    const c: ConditionBooleanCharElement = { type: "char-element", elements: ["anemo"] };
+    expect(conditionStats(c, { char_element: "anemo" })).toEqual({});
+  });
+});
+
+describe("ConditionDropdownElement", () => {
+  it("active when the element is present in the ;-delimited selection string", () => {
+    const c: ConditionDropdownElement = { type: "dropdownElement", name: "set.viridescent_venerer_4", element: "pyro" };
+    expect(evaluate(c, { "set.viridescent_venerer_4": "pyro" })).toBe(true);
+    expect(evaluate(c, { "set.viridescent_venerer_4": "cryo;electro;pyro" })).toBe(true);
+    expect(evaluate(c, { "set.viridescent_venerer_4": "cryo;electro" })).toBe(false);
+    expect(evaluate(c, { "set.viridescent_venerer_4": "" })).toBe(false);
+    expect(evaluate(c, {})).toBe(false);
+  });
+  it("does not match on substring (split must be exact-token)", () => {
+    // "pyro" must NOT match within "cryopyro"; the split is on ';'.
+    const c: ConditionDropdownElement = { type: "dropdownElement", name: "k", element: "pyro" };
+    expect(evaluate(c, { k: "cryopyro" })).toBe(false);
+    expect(evaluate(c, { k: "pyro;hydro" })).toBe(true);
+  });
+  it("conditionStats: pure gate (no stats of its own)", () => {
+    const c: ConditionDropdownElement = { type: "dropdownElement", name: "k", element: "pyro" };
+    expect(conditionStats(c, { k: "pyro" })).toEqual({});
+  });
+  it("composes under AND with char-element (the VV self-worn shred gate)", () => {
+    const gate: ConditionAnd = {
+      type: "and",
+      items: [
+        { type: "dropdownElement", name: "set.viridescent_venerer_4", element: "pyro" },
+        { type: "char-element", elements: ["anemo"] },
+      ],
+    };
+    expect(evaluate(gate, { "set.viridescent_venerer_4": "pyro", char_element: "anemo" })).toBe(true);
+    // wrong element selected
+    expect(evaluate(gate, { "set.viridescent_venerer_4": "cryo", char_element: "anemo" })).toBe(false);
+    // non-anemo wielder
+    expect(evaluate(gate, { "set.viridescent_venerer_4": "pyro", char_element: "pyro" })).toBe(false);
   });
 });
 

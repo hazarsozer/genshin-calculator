@@ -206,6 +206,17 @@ const features: readonly Feature[] = [
 // C6 "In Pursuit of Ending Evil": ConditionStacks (dmg_pyro/electro per stack, toggle) → SKIP.
 // Raw: Chevreuse.js:408-470 (constellation array).
 const constellationConditions: readonly Condition[] = [
+  // A1 "Vanguard's Coordinated Tactics" (chevreuse_tactics co-toggle): with a Pyro+Electro-ONLY
+  // party, enemy Pyro & Electro RES −40 each. Gated by the two-element party gate — her
+  // ConditionBooleanChevreuseParty treats `electro` as the second trigger (Pyro + Electro, NOT
+  // Pyro+Hydro). The raw ConditionAscensionChar(1) subcondition is always satisfied at the fixed
+  // ascension-6 build, so it is omitted. Raw Chevreuse.js:430-449 (TalentValues.ResShred=-40).
+  {
+    type: "boolean",
+    name: "chevreuse_tactics",
+    stats: { enemy_res_pyro: -40, enemy_res_electro: -40 },
+    condition: { type: "party-elements", elements: ["pyro", "electro"] },
+  },
   // C3: +3 levels to Short-Range Rapid Interdiction Fire (skill).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Ring of Bursting Grenades (burst).

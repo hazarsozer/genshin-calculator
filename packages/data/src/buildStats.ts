@@ -33,6 +33,7 @@
 import { Stats, applyPostEffects, conditionStats, conditionSettings, evaluate, type PostEffect } from "@genshin/core";
 import type {
   BuildStats,
+  CharMultiplier,
   CharPostEffect,
   Condition,
   DamageContext,
@@ -44,7 +45,8 @@ import type {
   StatTableEntry,
 } from "@genshin/types";
 import { getArtifactSet } from "./artifacts/sets/index.js";
-import { CHARACTER_CONDITIONS } from "./characterConditions.js";
+import { CHARACTER_CONDITIONS, CHARACTER_MULTIPLIERS } from "./characterConditions.js";
+import { buildPartyContext, type PartyInput, type ActiveCharFacts } from "./partyContext.js";
 
 /** The seven elements + physical, in the order the engine keys resistance. */
 const ELEMENTS: readonly Element[] = [
@@ -155,6 +157,23 @@ const REACTION_BONUS_PERCENT_KEYS = [
 ] as const;
 
 /**
+ * Raw-bag scaling INPUT keys read VERBATIM by a non-`*` multiplier scaling.
+ *
+ * A multiplier whose `scaling` key carries no `*` (and is not one of the total stats
+ * atk/hp/def/mastery) reads the bag value directly — her `makeStatItem(scaling)`
+ * (Feature2/Compile/Helpers.js:11-19) → `stats.get(scaling)`, no `_total`, no `/100`.
+ * These are flat numeric inputs a ConditionNumber injects (not percent stats), so they
+ * are emitted RAW. The sole v5.8 user is Song of Days Past 4pc (team):
+ * `party_days_past_healing_recorded` (the recorded healing the team multiplier scales).
+ * Absent for every build that sets no such input → key never emitted → multiplier reads
+ * 0 → the base golden suite + all existing fixtures are byte-untouched.
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:262-380 (ConditionNumber +
+ *         the FeatureMultiplier scaling it), classes/Feature2/Multiplier.js:281-288.
+ */
+const RAW_BAG_SCALING_KEYS = ["party_days_past_healing_recorded"] as const;
+
+/**
  * Level/ascension parameters for base-stat assembly. (Talent levels are a
  * compileFeature concern — they pick the talent-table row, not a base stat — so
  * they live on CompileContext, not here.)
@@ -247,6 +266,26 @@ export interface BuildInput {
    * present and a key is absent from it, that set is treated as unported (no-op).
    */
   readonly setRegistry?: Readonly<Record<string, DbObjectArtifactSet>>;
+  /**
+   * Optional party composition. When provided, the universal party publisher
+   * (`buildPartyContext`) derives `party_*` context keys (element/origin counts,
+   * resonance slots, raw passthrough) and injects them into `baseSettings` so the
+   * condition loop and compiled features can gate on them. Absent → no `party_*` keys
+   * are added and the base build path is byte-identical (base-safety invariant).
+   *
+   * Slug-keyed members (`{ character: slug }`) require the caller to supply a
+   * `partySlugResolver`; without one the default resolver throws. For now, callers
+   * that know each member's element/origin should use `{ element, origin }` members
+   * directly (no resolver needed). See Task B1 for oracle-harness wiring.
+   */
+  readonly party?: PartyInput;
+  /**
+   * Optional resolver for slug-keyed party members (`{ character: slug }`). Called
+   * with the slug string; must return `{ element, origin? }`. Omitting this while
+   * passing slug members causes a runtime throw. Callers using only
+   * `{ element, origin? }` members can safely omit this.
+   */
+  readonly partySlugResolver?: (slug: string) => ActiveCharFacts;
 }
 
 /** One equipped artifact set: its registry key + how many pieces are worn. */
@@ -272,6 +311,18 @@ export interface BuildResult {
    * when no active condition carries `.settings` — i.e. the base-107 build.
    */
   readonly settings: EvalContext;
+  /**
+   * Global character MULTIPLIERS (`CHARACTER_MULTIPLIERS`) — the team-buff analogue of
+   * the global `CHARACTER_CONDITIONS`, for set_other buffs whose effect is a
+   * FeatureMultiplier (a base-damage-term bonus, e.g. Song of Days Past 4pc team) rather
+   * than a stat-bag condition. The caller threads these into `compileCharacter` as
+   * `extraMultipliers` so each is summed into every matching feature's base term, gated
+   * by its own `condition` against THESE propagated settings. Each is gated on a
+   * `set_other.*` toggle, so the channel is inert for every non-party build (no toggle →
+   * no match → byte-identical compiled features). Returned verbatim — the gate decides
+   * activation at compile time, not buildStats.
+   */
+  readonly characterMultipliers: readonly CharMultiplier[];
 }
 
 /**
@@ -479,11 +530,22 @@ export function buildStats(input: BuildInput): BuildResult {
   // ConditionBooleanNightSoul, char_name → ConditionBooleanChar. Base-inert (no base char
   // condition reads them). char_id (=serializeId) is deferred (DbObjectChar has no serializeId;
   // the natlan-origin branch covers every v5.8 NightSoul case).
+  //
+  // Party keys (party_*): derived from the optional PartyInput via the universal publisher.
+  // Absent party → empty object → no party_* keys added (base-safety invariant).
+  const partyKeys = input.party
+    ? buildPartyContext(
+        input.party,
+        { element: input.char.element, origin: input.char.origin },
+        input.partySlugResolver
+      )
+    : {};
   const baseSettings: EvalContext = {
     weapon_type: input.char.weapon,
     char_origin: input.char.origin,
     char_name: input.char.name,
     char_element: input.char.element,
+    ...partyKeys,
   };
 
   const settings: EvalContext =
@@ -621,6 +683,14 @@ export function buildStats(input: BuildInput): BuildResult {
       if (raw.isSet(key)) out[key] = raw.get(key) / 100;
     }
   }
+  // Enemy-vulnerability crit rate (her getDefaultStatsCritRate ALWAYS includes
+  // `crit_rate_enemy` in the crit-rate sum, Feature2/Damage.js:73) → fraction, flat.
+  // Sourced by enemy-status debuffs: Cryo Resonance (+15 vs Cryo'd enemy) and
+  // BlizzardStrayer 4pc (+20/+40 vs Cryo/Frozen). compileFeature folds it into every
+  // feature's crit-rate block (no `crit_dmg_enemy` counterpart — she has none). 0 for
+  // every base build (no C0 source sets it; Razor C2's is a gated-off toggle) → base
+  // golden untouched; only the resonance-cryo / blizzard party fixtures exercise it.
+  if (raw.isSet("crit_rate_enemy")) out["crit_rate_enemy"] = raw.get("crit_rate_enemy") / 100;
   // Royal-passive crit-rate stat — emitted VERBATIM (RAW, NOT /100) for the
   // Royal-weapon series' average-crit transform (cRoyalCritRate). Her
   // `makeStatItem('royal_crit_rate')` reads `stats.royal_crit_rate` directly, and
@@ -654,6 +724,19 @@ export function buildStats(input: BuildInput): BuildResult {
   // engine reads them as 0 (cStat default). (Raw: db/Char/Ineffa.js lunarPost /
   // lunarPost2, PostEffect/Stats.js getTree isPercent fold.)
   for (const key of REACTION_DERIVED_KEYS) {
+    if (raw.isSet(key)) out[key] = raw.get(key);
+  }
+
+  // Raw-bag scaling inputs that a NON-`*` multiplier scaling reads VERBATIM via
+  // `cStat(key)` (her `makeStatItem(scaling)` → `stats.get(scaling)`, no `_total`,
+  // no `/100`). These are flat numeric INPUTS injected by a ConditionNumber, not
+  // percent stats. The only v5.8 source is Song of Days Past 4pc (team): its global
+  // ConditionNumber `party_days_past_healing_recorded` adds the recorded healing
+  // (≤15000) to the bag, and the CHARACTER_MULTIPLIERS team multiplier scales `8% ×`
+  // that value into each matching feature's base term. Absent (no party / toggle off)
+  // → the ConditionNumber is inactive → key never set → not emitted → the multiplier
+  // reads 0 and the base golden suite is byte-untouched.
+  for (const key of RAW_BAG_SCALING_KEYS) {
     if (raw.isSet(key)) out[key] = raw.get(key);
   }
 
@@ -704,5 +787,5 @@ export function buildStats(input: BuildInput): BuildResult {
     characterLevel: input.levels.charLevel,
   };
 
-  return { stats, context, settings: merged };
+  return { stats, context, settings: merged, characterMultipliers: CHARACTER_MULTIPLIERS };
 }
