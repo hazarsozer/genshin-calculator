@@ -50,6 +50,8 @@ export function buildPartyContext(
   let same = 0;
   let different = 0;
   members.forEach((m, i) => {
+    // Dead under the Element type, but mirrors CalcElements.js:14 (`settings[name] || ''`):
+    // a member whose element fails to resolve contributes nothing (no distinct/same/different).
     if (!m.element) return;
     distinct.add(m.element);
     if (m.element === active.element) same += 1;

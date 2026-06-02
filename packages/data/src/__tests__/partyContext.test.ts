@@ -28,12 +28,13 @@ describe("buildPartyContext — element counts (CalcElements.js:4-51)", () => {
   it("passes raw inputs through unchanged", () => {
     const ctx = buildPartyContext(
       { members: [{ element: "hydro", origin: "fontaine" }], enemyStatus: "cryo", bondOfLife: 0.5,
-        setOther: ["noblesse_oblige_4"] },
+        setOther: ["noblesse_oblige_4"], partyWeapons: { skyward_blade: 5 } },
       { element: "cryo", origin: "natlan" }
     );
     expect(ctx.resonance_element_1).toBe("hydro");
     expect(ctx["common.enemy_status"]).toBe("cryo");
     expect(ctx["common.bond_of_life"]).toBe(0.5);
     expect(ctx["set_other.noblesse_oblige_4"]).toBe(true);
+    expect(ctx["party_weapon_skyward_blade"]).toBe(5);
   });
 });
