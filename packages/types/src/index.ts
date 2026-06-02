@@ -100,5 +100,6 @@ export type {
   ConditionBooleanEnemyType,
   ConditionAnd,
   ConditionOr,
+  ConditionStaticLevel,
   Condition,
 } from "./condition.js";

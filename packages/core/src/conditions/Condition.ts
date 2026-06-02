@@ -38,6 +38,7 @@ import type {
   ConditionBooleanChar,
   ConditionBooleanNightSoul,
   ConditionBooleanEnemyType,
+  ConditionStaticLevel,
   ConditionStats,
   EvalContext,
 } from "@genshin/types";
@@ -96,6 +97,8 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
       return condition.items.some((item) => evaluate(item, ctx));
+    case "staticLevel":
+      return evaluateStaticLevel(condition, ctx);
     default: {
       // Exhaustiveness tripwire: a new Condition variant without a case is a compile error.
       const _exhaustive: never = condition;
@@ -194,6 +197,8 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "constellation":
       // Plain stat-bearing variants — `cond.stats` as-is.
       return toNumberBag(condition.stats);
+    case "staticLevel":
+      return resolveStaticLevel(condition, ctx);
     case "number": {
       // Plain stat-bearing variants — `cond.stats` as-is, PLUS the dynamic
       // clamped value injected as a stat keyed by the condition's name.
@@ -505,6 +510,70 @@ function evaluateEnemyType(condition: ConditionBooleanEnemyType, ctx: EvalContex
   const typ = ctx["enemy_type"];
   const active = typeof typ === "string" && condition.types.includes(typ);
   return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionStaticLevel.isActive — inherits ConditionStatic semantics:
+ * active iff the optional `.condition` gate passes (always-active-if-gated).
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Static/Level.js
+ *   ConditionStaticLevel extends ConditionStatic (which extends ConditionBase);
+ *   isActive = checkSubconditions (inherited) → our checkGate.
+ */
+function evaluateStaticLevel(condition: ConditionStaticLevel, ctx: EvalContext): boolean {
+  const base = checkGate(condition, ctx);
+  return condition.invert ? !base : base;
+}
+
+/**
+ * Resolves the level-indexed stat bag for an active ConditionStaticLevel.
+ *
+ * Replicates StatTable.getValue(level) exactly:
+ *   level <= 0  → 0
+ *   level > arr.length → arr[arr.length - 1]   (clamp to last)
+ *   else        → arr[level - 1]               (1-indexed)
+ *
+ * getLevel semantics (Level.js:5-16):
+ *   raw = ctx[levelSetting] || 0
+ *   if fromZero: level = raw + 1
+ *   else:        level = raw || 1              (fallthrough to 1 when 0; not used by GildedDreams)
+ *
+ * Stats whose resolved value is 0 are omitted from the result bag.
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Static/Level.js (getLevel, getStats)
+ *   raw/genshin_calc_pub/src/js/classes/StatTable.js (getValue)
+ */
+function resolveStaticLevel(
+  condition: ConditionStaticLevel,
+  ctx: EvalContext
+): Record<string, number> {
+  const rawVal = ctx[condition.levelSetting];
+  const raw = typeof rawVal === "number" ? rawVal : 0;
+  const level = condition.fromZero ? raw + 1 : raw || 1;
+
+  const out: Record<string, number> = {};
+  for (const key of Object.keys(condition.levelStats)) {
+    const arr = condition.levelStats[key]!;
+    const value = staticLevelGetValue(arr, level);
+    if (value !== 0) out[key] = value;
+  }
+  return out;
+}
+
+/**
+ * StatTable.getValue replication (StatTable.js:11-19):
+ *   if level > 0:
+ *     if level > length: level = length
+ *     return values[level - 1]
+ *   return 0
+ */
+function staticLevelGetValue(arr: readonly number[], level: number): number {
+  if (level > 0) {
+    const idx = Math.min(level, arr.length);
+    return arr[idx - 1] ?? 0;
+  }
+  return 0;
 }
 
 // ---------------------------------------------------------------------------

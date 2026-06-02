@@ -370,6 +370,53 @@ export interface ConditionOr {
   readonly items: readonly Condition[];
 }
 
+/**
+ * A level-indexed condition whose stat contributions are determined by reading an
+ * integer level from `ctx[levelSetting]` and indexing into per-stat value arrays.
+ *
+ * Evaluation: active iff the optional `.condition` gate passes (inherits ConditionStatic
+ * semantics — always active once gated). Stats are resolved by `getLevel`:
+ *   level = (ctx[levelSetting] || 0) + (fromZero ? 1 : 0)
+ *   per stat: stats[key][level - 1] (1-indexed, clamped to array length; level <= 0 → 0)
+ * A stat whose resolved value is 0 is omitted from the emitted bag.
+ *
+ * `fromZero: true` means a missing/0 key in ctx shifts to level 1 (index 0), which
+ * conventionally holds a 0 placeholder — so a 0 ctx value still yields no contribution.
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Static/Level.js:
+ *   getLevel(settings) reads settings[levelSetting] || 0, adds 1 when fromZero.
+ *   getStats(settings) calls StatTable.getValue(level) for each entry.
+ *   StatTable.getValue: level <= 0 → 0; level > length → values[length-1]; else values[level-1].
+ *
+ * Example (GildedDreams 4pc, same-element path):
+ *   { type: "staticLevel", levelSetting: "party_elements_same", fromZero: true,
+ *     stats: { atk_percent: [0, 14, 28, 42] },
+ *     condition: { type: "and", items: [{type:"boolean",name:"set.gilded_dreams_4"},
+ *                                       {type:"boolean",name:"party_elements_same"}] } }
+ *   ctx { party_elements_same: 2 } → level = 2+1 = 3 → atk_percent[2] = 28.
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Static/Level.js
+ *   raw/genshin_calc_pub/src/js/classes/StatTable.js
+ *   raw/genshin_calc_pub/src/js/db/Artifacts/Set/GildedDreams.js:44-73
+ */
+export interface ConditionStaticLevel extends ConditionBase {
+  readonly type: "staticLevel";
+  /** The context key holding the integer level (e.g. "party_elements_same"). */
+  readonly levelSetting: string;
+  /**
+   * When true, the raw value is incremented by 1 before indexing (her `fromZero` flag).
+   * Conventionally the value arrays begin with a 0 placeholder at index 0, so a ctx
+   * value of 0 still resolves to 0 contribution.
+   */
+  readonly fromZero?: boolean;
+  /**
+   * Per-stat value arrays. Each key maps to a StatTable-values array (1-indexed by level).
+   * StatTable.getValue semantics: level <= 0 → 0; level > length → values[length-1].
+   */
+  readonly levelStats: Readonly<Record<string, readonly number[]>>;
+}
+
 /** Discriminated union of all condition types. */
 export type Condition =
   | ConditionBoolean
@@ -390,6 +437,7 @@ export type Condition =
   | ConditionBooleanNightSoul
   | ConditionBooleanEnemyType
   | ConditionAnd
-  | ConditionOr;
+  | ConditionOr
+  | ConditionStaticLevel;
 
 export type { AscensionLevel, ConstellationLevel, Refinement };
