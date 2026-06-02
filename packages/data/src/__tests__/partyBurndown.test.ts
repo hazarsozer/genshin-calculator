@@ -470,7 +470,7 @@ for (const item of manifest.items) {
     const fixture = loadFixture(slug);
     const statBlock = resolveStatBlock(manifest, item.statBlock);
 
-    const { context, settings: propagated } = buildStats({
+    const { context, settings: propagated, characterMultipliers } = buildStats({
       char: rep,
       weaponStatTable: weapon.statTable,
       statBlock,
@@ -493,7 +493,15 @@ for (const item of manifest.items) {
       settings: propagated,
       charLevel: LEVELS.charLevel,
       extraFeatures: isWeaponEffect ? weapon.features ?? [] : [],
-      extraMultipliers: isWeaponEffect ? weapon.multipliers ?? [] : [],
+      // Weapon-sourced char-level multipliers (inert-weapon family only) PLUS the global
+      // CHARACTER_MULTIPLIERS team-buff channel (Song of Days Past 4pc team). The global
+      // entries are gated on their own `set_other.*` toggle, so they are inert for every
+      // effect that doesn't set it; the gate evaluates against `propagated`, the same
+      // merged settings the conditions saw.
+      extraMultipliers: [
+        ...(isWeaponEffect ? weapon.multipliers ?? [] : []),
+        ...characterMultipliers,
+      ],
     });
 
     assertItemAgainstFixture(slug, fixture, context, compiled);
