@@ -45,6 +45,7 @@ import type {
 } from "@genshin/types";
 import { getArtifactSet } from "./artifacts/sets/index.js";
 import { CHARACTER_CONDITIONS } from "./characterConditions.js";
+import { buildPartyContext, type PartyInput } from "./partyContext.js";
 
 /** The seven elements + physical, in the order the engine keys resistance. */
 const ELEMENTS: readonly Element[] = [
@@ -247,6 +248,26 @@ export interface BuildInput {
    * present and a key is absent from it, that set is treated as unported (no-op).
    */
   readonly setRegistry?: Readonly<Record<string, DbObjectArtifactSet>>;
+  /**
+   * Optional party composition. When provided, the universal party publisher
+   * (`buildPartyContext`) derives `party_*` context keys (element/origin counts,
+   * resonance slots, raw passthrough) and injects them into `baseSettings` so the
+   * condition loop and compiled features can gate on them. Absent → no `party_*` keys
+   * are added and the base build path is byte-identical (base-safety invariant).
+   *
+   * Slug-keyed members (`{ character: slug }`) require the caller to supply a
+   * `partySlugResolver`; without one the default resolver throws. For now, callers
+   * that know each member's element/origin should use `{ element, origin }` members
+   * directly (no resolver needed). See Task B1 for oracle-harness wiring.
+   */
+  readonly party?: PartyInput;
+  /**
+   * Optional resolver for slug-keyed party members (`{ character: slug }`). Called
+   * with the slug string; must return `{ element, origin? }`. Omitting this while
+   * passing slug members causes a runtime throw. Callers using only
+   * `{ element, origin? }` members can safely omit this.
+   */
+  readonly partySlugResolver?: (slug: string) => { element: Element; origin?: string };
 }
 
 /** One equipped artifact set: its registry key + how many pieces are worn. */
@@ -479,11 +500,22 @@ export function buildStats(input: BuildInput): BuildResult {
   // ConditionBooleanNightSoul, char_name → ConditionBooleanChar. Base-inert (no base char
   // condition reads them). char_id (=serializeId) is deferred (DbObjectChar has no serializeId;
   // the natlan-origin branch covers every v5.8 NightSoul case).
+  //
+  // Party keys (party_*): derived from the optional PartyInput via the universal publisher.
+  // Absent party → empty object → no party_* keys added (base-safety invariant).
+  const partyKeys = input.party
+    ? buildPartyContext(
+        input.party,
+        { element: input.char.element, origin: input.char.origin },
+        input.partySlugResolver
+      )
+    : {};
   const baseSettings: EvalContext = {
     weapon_type: input.char.weapon,
     char_origin: input.char.origin,
     char_name: input.char.name,
     char_element: input.char.element,
+    ...partyKeys,
   };
 
   const settings: EvalContext =
