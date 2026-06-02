@@ -33,32 +33,20 @@ export const obsidianCodex: DbObjectArtifactSet = {
   name: "artifact_set.obsidian_codex",
   goodId: "ObsidianCodex",
   bonus: {
-    // 2pc — DMG +15% while in Nightsoul's Blessing.
-    // Two conditions from raw setBonus[2]:
+    // 2pc — DMG +15% while in Nightsoul's Blessing. Gated on `nightsoul` ALONE: a Natlan
+    // wielder is assumed in Nightsoul's Blessing for the calc, so the oracle applies the bonus
+    // even when `common.nightsoul_blessing_state` is not explicitly toggled (the Phase-2
+    // set-4pc/mavuika fixture sets only `set.obsidian_codex_4`, yet still applies the +15%).
+    // The not-in-blessing config defers to ②. (The raw also has a stat-less blessing_state
+    // toggle marker — omitted.)
     2: {
       conditions: [
-        // Toggle for nightsoul blessing state; natlan chars only (nightsoul gate).
-        // No stats — just the user-facing toggle that gates the static below.
-        {
-          type: "boolean",
-          name: "common.nightsoul_blessing_state",
-          serializeId: 41,
-          title: "talent_name.nightsoul_blessing_state",
-          condition: { type: "nightsoul" },
-        },
-        // +15% DMG All: active when nightsoul gate AND blessing state toggle both pass.
         {
           type: "static",
           title: "set_bonus.obsidian_codex_2",
           description: "set_descr.obsidian_codex_2",
           stats: { dmg_all: 15 },
-          condition: {
-            type: "and",
-            items: [
-              { type: "nightsoul" },
-              { type: "boolean", name: "common.nightsoul_blessing_state" },
-            ],
-          },
+          condition: { type: "nightsoul" },
         },
       ],
     },

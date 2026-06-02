@@ -262,6 +262,20 @@ export interface CharPostEffect {
     readonly levelSetting: string;
   };
   /**
+   * A per-stack ADDITIVE term on the ratio: `ratio += table.getValue(settings[levelSetting]) ×
+   * (settings[setting] || 0)`. Models her `PostEffectStats.percentBonus` × `bonusStackSettings`
+   * (Staff of the Scarlet Sands: EM→ATK = (base 0.52…1.04 + bonus 0.28…0.56 × stacks)) and the
+   * `stacksSetting` multiplier (the whole ratio scaled by a stack count). The stack count is the
+   * caller-supplied `settings[setting]`; absent → 0 → no contribution (base-safe).
+   *
+   * Source: raw/.../classes/PostEffect/Stats.js (getStacks / percentBonus × bonusStackSettings).
+   */
+  readonly ratioPerStack?: {
+    readonly setting: string;
+    readonly table: TalentTable;
+    readonly levelSetting: string;
+  };
+  /**
    * When true, the stat-relative `cap` reads the BASE stat (`capStat + '_base'`)
    * × `capRatio` rather than `getTotal(capStat)` × `capRatio`.
    *

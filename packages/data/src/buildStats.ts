@@ -324,6 +324,14 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       } else {
         ratio = effect.ratio ?? 0;
       }
+      // Per-stack additive on the ratio (her percentBonus × bonusStackSettings / stacksSetting):
+      // ratio += perStackTable(level) × settings[setting]. Absent setting → 0 → no change.
+      if (effect.ratioPerStack !== undefined) {
+        const { setting, table, levelSetting } = effect.ratioPerStack;
+        const lvl = (settings[levelSetting] as number | undefined) ?? 1;
+        const stacks = (settings[setting] as number | undefined) ?? 0;
+        ratio += table.getValue(lvl) * stacks;
+      }
       // Base stat: getTotal(fromStat), or max(getTotal(fromStat), getTotal(fromStatMax))
       // when fromStatMax is set. Mirrors PostEffectStatsNahida.getBaseValueTree which
       // returns CMax([makeStatTotalItem('mastery'), makeStatItem('party_max_mastery')]).
