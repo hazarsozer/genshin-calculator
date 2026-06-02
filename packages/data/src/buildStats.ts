@@ -33,6 +33,7 @@
 import { Stats, applyPostEffects, conditionStats, conditionSettings, evaluate, type PostEffect } from "@genshin/core";
 import type {
   BuildStats,
+  CharMultiplier,
   CharPostEffect,
   Condition,
   DamageContext,
@@ -44,7 +45,7 @@ import type {
   StatTableEntry,
 } from "@genshin/types";
 import { getArtifactSet } from "./artifacts/sets/index.js";
-import { CHARACTER_CONDITIONS } from "./characterConditions.js";
+import { CHARACTER_CONDITIONS, CHARACTER_MULTIPLIERS } from "./characterConditions.js";
 import { buildPartyContext, type PartyInput, type ActiveCharFacts } from "./partyContext.js";
 
 /** The seven elements + physical, in the order the engine keys resistance. */
@@ -154,6 +155,23 @@ const REACTION_BONUS_PERCENT_KEYS = [
   "dmg_reaction_vaporize",
   "dmg_reaction_melt",
 ] as const;
+
+/**
+ * Raw-bag scaling INPUT keys read VERBATIM by a non-`*` multiplier scaling.
+ *
+ * A multiplier whose `scaling` key carries no `*` (and is not one of the total stats
+ * atk/hp/def/mastery) reads the bag value directly — her `makeStatItem(scaling)`
+ * (Feature2/Compile/Helpers.js:11-19) → `stats.get(scaling)`, no `_total`, no `/100`.
+ * These are flat numeric inputs a ConditionNumber injects (not percent stats), so they
+ * are emitted RAW. The sole v5.8 user is Song of Days Past 4pc (team):
+ * `party_days_past_healing_recorded` (the recorded healing the team multiplier scales).
+ * Absent for every build that sets no such input → key never emitted → multiplier reads
+ * 0 → the base golden suite + all existing fixtures are byte-untouched.
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:262-380 (ConditionNumber +
+ *         the FeatureMultiplier scaling it), classes/Feature2/Multiplier.js:281-288.
+ */
+const RAW_BAG_SCALING_KEYS = ["party_days_past_healing_recorded"] as const;
 
 /**
  * Level/ascension parameters for base-stat assembly. (Talent levels are a
@@ -293,6 +311,18 @@ export interface BuildResult {
    * when no active condition carries `.settings` — i.e. the base-107 build.
    */
   readonly settings: EvalContext;
+  /**
+   * Global character MULTIPLIERS (`CHARACTER_MULTIPLIERS`) — the team-buff analogue of
+   * the global `CHARACTER_CONDITIONS`, for set_other buffs whose effect is a
+   * FeatureMultiplier (a base-damage-term bonus, e.g. Song of Days Past 4pc team) rather
+   * than a stat-bag condition. The caller threads these into `compileCharacter` as
+   * `extraMultipliers` so each is summed into every matching feature's base term, gated
+   * by its own `condition` against THESE propagated settings. Each is gated on a
+   * `set_other.*` toggle, so the channel is inert for every non-party build (no toggle →
+   * no match → byte-identical compiled features). Returned verbatim — the gate decides
+   * activation at compile time, not buildStats.
+   */
+  readonly characterMultipliers: readonly CharMultiplier[];
 }
 
 /**
@@ -697,6 +727,19 @@ export function buildStats(input: BuildInput): BuildResult {
     if (raw.isSet(key)) out[key] = raw.get(key);
   }
 
+  // Raw-bag scaling inputs that a NON-`*` multiplier scaling reads VERBATIM via
+  // `cStat(key)` (her `makeStatItem(scaling)` → `stats.get(scaling)`, no `_total`,
+  // no `/100`). These are flat numeric INPUTS injected by a ConditionNumber, not
+  // percent stats. The only v5.8 source is Song of Days Past 4pc (team): its global
+  // ConditionNumber `party_days_past_healing_recorded` adds the recorded healing
+  // (≤15000) to the bag, and the CHARACTER_MULTIPLIERS team multiplier scales `8% ×`
+  // that value into each matching feature's base term. Absent (no party / toggle off)
+  // → the ConditionNumber is inactive → key never set → not emitted → the multiplier
+  // reads 0 and the base golden suite is byte-untouched.
+  for (const key of RAW_BAG_SCALING_KEYS) {
+    if (raw.isSet(key)) out[key] = raw.get(key);
+  }
+
   // Condition-contributed per-reaction DMG bonuses (e.g. CrimsonWitch 4pc) → fractions.
   // These arrive RAW (percent) from the condition loop, so divide by 100 here (unlike the
   // pre-divided REACTION_DERIVED_KEYS above). Absent → unset (engine reads 0). No-op for
@@ -744,5 +787,5 @@ export function buildStats(input: BuildInput): BuildResult {
     characterLevel: input.levels.charLevel,
   };
 
-  return { stats, context, settings: merged };
+  return { stats, context, settings: merged, characterMultipliers: CHARACTER_MULTIPLIERS };
 }

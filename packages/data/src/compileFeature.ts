@@ -238,10 +238,29 @@ function baseDamageTerm(
   }
   const talentPercent = (entry.values.getValue(talentLevel) / 100) * scalingFactor;
 
-  // Scaling stat: default 'atk' total. The `*` in her 'atk*' means "use total";
-  // buildStats supplies `<stat>_total`. Strip any trailing '*' the data carries.
-  const scaling = (entry.scaling ?? "atk").replace("*", "");
-  const scalingKey = `${scaling}_total`;
+  // Scaling stat key. Two paths, faithful to her FeatureMultiplier.getTreeStatValue
+  // (Multiplier.js:281-288 → makeStatItem vs makeStatTotalItem):
+  //   - TOTAL scaling (`<stat>_total`): the base×(1+%)+flat aggregate buildStats emits.
+  //     In OUR port the standard char/weapon/set multipliers carry the bare stat key
+  //     (`scaling: "hp"`, `"def"`, `"atk"`, `"mastery"`) — or her `*` marker — and have
+  //     always meant the total here, so the total path is keyed on that stat-set (the `*`
+  //     is stripped first for the rare entry that carries it). This preserves every
+  //     HP-/DEF-/ATK-/EM-scaling feature (Nilou, Sigewinne, Xilonen, Chiori, Kuki A4,
+  //     Sethos, …) byte-for-byte: each maps to `<stat>_total`, exactly as before.
+  //   - RAW-BAG scaling (`stats.get(scaling)` verbatim): a scaling key that is NOT one of
+  //     the total stats reads the RAW value the bag carries under that exact key — her
+  //     `makeStatItem(scaling)` with no `*`. The only v5.8 user is Song of Days Past's
+  //     team multiplier, scaling `party_days_past_healing_recorded` (a ConditionNumber
+  //     adds the recorded healing — 15000 — directly to the stats bag). Base-safe: the
+  //     other non-total key any data file carries is `accumulated_healing` (Song of Days
+  //     Past self-worn), absent from every build's bag → 0 either way; no base/cons/armory
+  //     fixture exercises a non-total scaling that resolves nonzero, so this branch leaves
+  //     goldenConfig / constellations / armory byte-unchanged.
+  const TOTAL_SCALING_STATS = new Set(["atk", "hp", "def", "mastery"]);
+  const rawScaling = (entry.scaling ?? "atk").replace("*", "");
+  const scalingKey = TOTAL_SCALING_STATS.has(rawScaling)
+    ? `${rawScaling}_total`
+    : rawScaling;
 
   return cMulti([cConst(talentPercent), cStat(scalingKey)]);
 }

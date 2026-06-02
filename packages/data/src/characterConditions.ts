@@ -15,7 +15,7 @@
  *   gilded-dreams.ts). Stats are RAW percents — identical to her internal bag convention.
  */
 
-import type { Condition } from "@genshin/types";
+import type { CharMultiplier, Condition } from "@genshin/types";
 
 /**
  * Imaginarium Theatre challenge buff: +20% HP / DEF / ATK while active.
@@ -404,6 +404,26 @@ const setOtherScrollCinderCity4Tier2: Condition = {
 };
 
 /**
+ * Song of Days Past 4pc (team) — the recorded-healing INPUT, injected into the stats bag.
+ *
+ * Faithful port of the ConditionNumber in Buffs/Artifacts.js:262-273
+ * (`party_days_past_healing_recorded`, max 15000). Her `ConditionNumber.getStats`
+ * (Condition/Number.js:58-70) adds the clamped value to the stats bag under the
+ * condition's `name` (no `stat`/`noStat` override). The team multiplier below then
+ * scales off that bag value via its bare (non-`*`) `scaling` key — her
+ * `makeStatItem('party_days_past_healing_recorded')` reads `stats.get(...)` directly.
+ *
+ * Active only when the value is > 0 (ConditionNumber.isActive); absent/0 → no stat
+ * added → base-inert. The companion `set_other.song_of_days_past_4` boolean gates the
+ * MULTIPLIER (below), not this input — her input has no gate of its own.
+ */
+const setOtherSongOfDaysPast4HealingInput: Condition = {
+  type: "number",
+  name: "party_days_past_healing_recorded",
+  max: 15000,
+};
+
+/**
  * All global character conditions, in source order (imaginarium_theatre, then the Elemental
  * Resonance buffs in ElementalResonance.js order, then set_other team buffs from
  * Buffs/Artifacts.js). Wire into buildStats alongside `char.conditions` and `extraConditions`.
@@ -431,4 +451,72 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
   ...setViridescentVenerer4SwirlConditions,
   setOtherScrollCinderCity4Tier1,
   setOtherScrollCinderCity4Tier2,
+  // Song of Days Past 4pc (team) — the healing-recorded INPUT (the multiplier is in
+  // CHARACTER_MULTIPLIERS). Inert unless `party_days_past_healing_recorded > 0`.
+  setOtherSongOfDaysPast4HealingInput,
+];
+
+// ===========================================================================
+// Global character MULTIPLIERS — the team-buff analogue of CHARACTER_CONDITIONS,
+// for set_other buffs whose effect is a FeatureMultiplier (a base-damage-term
+// bonus) rather than a stat-bag condition. In her engine these live in the same
+// Buffs/Artifacts.js buff her ConditionNumber/ConditionBoolean above do, on the
+// buff's `multipliers` array; CalcObjectCharacter merges every buff's multipliers
+// into the active char's `data.multipliers` (Feature2.getMultipliers), so they
+// behave exactly like a char-level ("targeted") CharMultiplier — summed into each
+// matching feature's base term, gated by their own `condition` + `target`.
+//
+// Threaded into compileCharacter via buildStats' BuildResult (the party harness
+// passes them as `extraMultipliers`), so the gate evaluates against the SAME
+// merged settings the conditions saw. Each is gated on a `set_other.*` toggle, so
+// the whole channel is INERT for every non-party build (no toggle set → no match).
+//
+// Source: raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:362-381
+// ===========================================================================
+
+/**
+ * Song of Days Past 4pc (team) — per-hit base bonus = 8% × recorded healing.
+ *
+ * Faithful port of the FeatureMultiplier in Buffs/Artifacts.js:363-380:
+ *   scaling: 'party_days_past_healing_recorded'  (NO `*` → reads the RAW bag value the
+ *            ConditionNumber injected, not `<key>_total`)
+ *   values:  ValueTable([8])  (leveling absent → level 1 → 8% as a fraction = 0.08)
+ *   target:  damageTypes [normal, charged, plunge, skill, burst]
+ *   condition: AND(
+ *     NOT(set_bonus.song_of_days_past_4 AND PiecesCount('SongOfDaysPast', 4)),  // not self-worn
+ *     set_other.song_of_days_past_4                                             // a teammate wears it
+ *   )
+ * The NOT-self-worn arm keeps this from double-counting against the active char's own
+ * self-worn 4pc (which has its own set-level multiplier in song-of-days-past.ts). For
+ * the party fixture the rep does NOT wear the set, so NOT(false AND false) = true and the
+ * team buff fires: base term += 0.08 × stats.get('party_days_past_healing_recorded').
+ */
+const setOtherSongOfDaysPast4Multiplier: CharMultiplier = {
+  source: "artifacts",
+  scaling: "party_days_past_healing_recorded",
+  leveling: "",
+  values: { getValue: (): number => 8 },
+  target: { damageTypes: ["normal", "charged", "plunge", "skill", "burst"] },
+  condition: {
+    type: "and",
+    items: [
+      {
+        type: "not",
+        items: [
+          { type: "boolean", name: "set_bonus.song_of_days_past_4" },
+          { type: "pieces-count", setName: "SongOfDaysPast", count: 4 },
+        ],
+      },
+      { type: "boolean", name: "set_other.song_of_days_past_4" },
+    ],
+  },
+};
+
+/**
+ * All global character MULTIPLIERS (set_other FeatureMultiplier team buffs). Threaded
+ * into compileCharacter as `extraMultipliers` by the caller (the party harness via the
+ * BuildResult). Inert for every build that sets no matching `set_other.*` toggle.
+ */
+export const CHARACTER_MULTIPLIERS: readonly CharMultiplier[] = [
+  setOtherSongOfDaysPast4Multiplier,
 ];
