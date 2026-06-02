@@ -507,6 +507,11 @@ export function compileFeature(
   // push), then `this.critRateBonuses` / `this.critDamageBonuses` concatenated.
   const critRateBase = cCritRate([
     cStat("crit_rate_total"),
+    // Enemy-vulnerability crit rate — her getDefaultStatsCritRate ALWAYS includes
+    // `crit_rate_enemy` (Feature2/Damage.js:73). buildStats emits it as a fraction only
+    // when a source sets it (Cryo Resonance / BlizzardStrayer 4pc); 0 otherwise → no-op
+    // for every build that has no enemy-status crit debuff (base golden untouched).
+    cStat("crit_rate_enemy"),
     ...critBonusTypeKeys("rate", damageType).map((k) => cStat(k)),
     ...(feature.critRateBonuses ?? []).map((k) => cStat(k)),
   ]);

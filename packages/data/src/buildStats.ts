@@ -653,6 +653,14 @@ export function buildStats(input: BuildInput): BuildResult {
       if (raw.isSet(key)) out[key] = raw.get(key) / 100;
     }
   }
+  // Enemy-vulnerability crit rate (her getDefaultStatsCritRate ALWAYS includes
+  // `crit_rate_enemy` in the crit-rate sum, Feature2/Damage.js:73) → fraction, flat.
+  // Sourced by enemy-status debuffs: Cryo Resonance (+15 vs Cryo'd enemy) and
+  // BlizzardStrayer 4pc (+20/+40 vs Cryo/Frozen). compileFeature folds it into every
+  // feature's crit-rate block (no `crit_dmg_enemy` counterpart — she has none). 0 for
+  // every base build (no C0 source sets it; Razor C2's is a gated-off toggle) → base
+  // golden untouched; only the resonance-cryo / blizzard party fixtures exercise it.
+  if (raw.isSet("crit_rate_enemy")) out["crit_rate_enemy"] = raw.get("crit_rate_enemy") / 100;
   // Royal-passive crit-rate stat — emitted VERBATIM (RAW, NOT /100) for the
   // Royal-weapon series' average-crit transform (cRoyalCritRate). Her
   // `makeStatItem('royal_crit_rate')` reads `stats.royal_crit_rate` directly, and
