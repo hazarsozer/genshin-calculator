@@ -40,6 +40,8 @@ import type {
   ConditionBooleanEnemyType,
   ConditionResonance,
   ConditionStaticLevel,
+  ConditionBooleanCharElement,
+  ConditionDropdownElement,
   ConditionStats,
   EvalContext,
 } from "@genshin/types";
@@ -102,6 +104,10 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return condition.items.some((item) => evaluate(item, ctx));
     case "staticLevel":
       return evaluateStaticLevel(condition, ctx);
+    case "char-element":
+      return evaluateCharElement(condition, ctx);
+    case "dropdownElement":
+      return evaluateDropdownElement(condition, ctx);
     default: {
       // Exhaustiveness tripwire: a new Condition variant without a case is a compile error.
       const _exhaustive: never = condition;
@@ -194,6 +200,8 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "nightsoul":
     case "enemy-type":
     case "resonance":
+    case "char-element":
+    case "dropdownElement":
       // Pure gates / logical containers / settings-publishers carry no stats of their own.
       return {};
     case "boolean":
@@ -490,11 +498,41 @@ function evaluateDropdown(condition: ConditionDropdown, ctx: EvalContext): boole
   return condition.invert ? !active : active;
 }
 
+/**
+ * Ports ConditionBooleanDropdownValue.isActive — active when `ctx[name]` (a `;`-delimited
+ * element string) split-includes `element`, AND the optional `.condition` gate passes.
+ * Mirrors raw exactly: `(settings[name] || '').split(';').includes(this.params.value)`
+ * after the super (boolean) gate. An absent/empty selection → `[''].includes(element)` →
+ * false (no element matches the empty token). `invert` flips the result.
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Boolean/DropdownValue.js:4-12
+ */
+function evaluateDropdownElement(condition: ConditionDropdownElement, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const raw = ctx[condition.name];
+  const selection = typeof raw === "string" ? raw : "";
+  const active = selection.split(";").includes(condition.element);
+  return condition.invert ? !active : active;
+}
+
 /** Ports ConditionBooleanChar.isActive — active when ctx["char_name"] is in `chars`. */
 function evaluateBooleanChar(condition: ConditionBooleanChar, ctx: EvalContext): boolean {
   if (!checkGate(condition, ctx)) return false;
   const name = ctx["char_name"];
   const active = typeof name === "string" && condition.chars.includes(name);
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionBooleanCharElement.isActive — active when ctx["char_element"] is in
+ * `elements`, AND the optional `.condition` gate passes. Mirrors raw:
+ *   `checkSubconditions && this.params.element.includes(settings.char_element)`
+ * (a non-array/absent element → false). `invert` flips the result.
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Boolean/CharElement.js
+ */
+function evaluateCharElement(condition: ConditionBooleanCharElement, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const el = ctx["char_element"];
+  const active = typeof el === "string" && condition.elements.includes(el);
   return condition.invert ? !active : active;
 }
 

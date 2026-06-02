@@ -441,6 +441,55 @@ export interface ConditionStaticLevel extends ConditionBase {
   readonly levelStats: Readonly<Record<string, readonly number[]>>;
 }
 
+/**
+ * Gate on the WIELDER's element: active when `ctx["char_element"]` ∈ `elements`
+ * (+ optional `.condition` gate + `invert`). A pure gate — contributes NO stats
+ * (narrowed to `never`, like `boolean-char`).
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/CharElement.js
+ * (`this.params.element.includes(settings.char_element)`; a non-array/absent
+ * `element` → false). `char_element` is injected by buildStats from `input.char.element`.
+ *
+ * Used by ViridescentVenerer's 4pc swirl res-shred (the `anemo` gate on each
+ * per-element `enemy_res_<el>: -40` condition).
+ */
+export interface ConditionBooleanCharElement extends ConditionBase {
+  readonly type: "char-element";
+  /** Allowed wielder elements, e.g. ["anemo"]. */
+  readonly elements: readonly string[];
+  readonly stats?: never;
+}
+
+/**
+ * Gate on whether a specific element is selected in a multi-select element dropdown.
+ * Active when `ctx[name]` (a `;`-delimited string of element tokens) split-includes
+ * `element`, AND the optional `.condition` gate passes; `invert` flips it. A pure gate —
+ * contributes NO stats of its own (narrowed to `never`).
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/DropdownValue.js
+ * (`(settings[name] || '').split(';').includes(this.params.value)` after super gate).
+ *
+ * This is the CONSUMER of the multi-select `ConditionDropdownElement` selector
+ * (`ViridescentVenerer.js:43-72`, a UI/suggester widget whose `getAllConditionsOn`
+ * publishes the element list). The actual effect — ViridescentVenerer's 4pc swirl
+ * res-shred — lives in `raw/.../db/Buffs/Artifacts.js:82-99` as four per-element
+ * `enemy_res_<el>: -40` conditions, each gated by a `ConditionBooleanDropdownValue`
+ * on `set.viridescent_venerer_4` (value === that element). The numeric-indexed
+ * `dropdown` variant cannot express this string-membership selection.
+ *
+ * The selection is caller-supplied (a string setting, e.g. `set.viridescent_venerer_4`
+ * = "pyro" or "cryo;electro"). Absent/empty → inactive (every v5.8 fixture that does
+ * not select an element leaves it inert).
+ */
+export interface ConditionDropdownElement extends ConditionBase {
+  readonly type: "dropdownElement";
+  /** Settings key holding the `;`-delimited element selection string. */
+  readonly name: string;
+  /** The element token this gate fires for (e.g. "pyro"). */
+  readonly element: string;
+  readonly stats?: never;
+}
+
 /** Discriminated union of all condition types. */
 export type Condition =
   | ConditionBoolean
@@ -463,6 +512,8 @@ export type Condition =
   | ConditionResonance
   | ConditionAnd
   | ConditionOr
-  | ConditionStaticLevel;
+  | ConditionStaticLevel
+  | ConditionBooleanCharElement
+  | ConditionDropdownElement;
 
 export type { AscensionLevel, ConstellationLevel, Refinement };

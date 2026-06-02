@@ -102,5 +102,7 @@ export type {
   ConditionAnd,
   ConditionOr,
   ConditionStaticLevel,
+  ConditionBooleanCharElement,
+  ConditionDropdownElement,
   Condition,
 } from "./condition.js";
