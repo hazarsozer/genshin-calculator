@@ -210,13 +210,20 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 
 // "Adapt with Ease" passive: dmg_all += buffValues[stacks-1].
-// Raw Yelan.js:289-325 — ConditionLevels table buffValues=[1,4.5,8,...,50] (15 stacks),
+// Raw Yelan.js:116,289-325 — ConditionLevels table buffValues=[1,4.5,8,...,50] (15 stacks),
 // levelSetting:'yelan_adapt_with_ease', stats:[StatTable('dmg_all', buffValues)].
-// BUILD-COUPLED at 15 stacks: buffValues[14]=50 → dmg_all:50.
-// True form is a ConditionLevels table-lookup primitive (deferred); the constant matches
-// the fixture which always runs at max stacks (15). Yelan.js:116 buffValues[14]=50.
+// Gate (ConditionBooleanValue ge 1): inactive when yelan_adapt_with_ease is absent/0.
+// With fromZero unset: level = (ctx[levelSetting] || 0) || 1; gate ensures 0 is gated out.
+// Transcribed from raw/genshin_calc_pub/src/js/db/Char/Yelan.js:116
+//   buffValues = [1, 4.5, 8, 11.5, 15, 18.5, 22, 25.5, 29, 32.5, 36, 39.5, 43, 46.5, 50]
+// Anchors: stacks 1 → buffValues[0]=1; stacks 7 → buffValues[6]=22; stacks 15 → buffValues[14]=50.
 const toggleConditions: readonly Condition[] = [
-  { type: "boolean", name: "yelan_adapt_with_ease", stats: { dmg_all: 50 } },
+  {
+    type: "staticLevel",
+    levelSetting: "yelan_adapt_with_ease",
+    levelStats: { dmg_all: [1, 4.5, 8, 11.5, 15, 18.5, 22, 25.5, 29, 32.5, 36, 39.5, 43, 46.5, 50] },
+    condition: { type: "boolean-value", setting: "yelan_adapt_with_ease", cond: "ge", value: 1 },
+  },
 ];
 
 // ---------------------------------------------------------------------------
