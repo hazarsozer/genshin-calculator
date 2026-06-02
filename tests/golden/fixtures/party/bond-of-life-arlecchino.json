@@ -1,0 +1,273 @@
+{
+  "element": "pyro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2351.8709005567553,
+      "category": "attack",
+      "crit": 5784.02820628107,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1970.5200888096092
+    },
+    "attack.normal_hit_1": {
+      "average": 1148.113886557019,
+      "category": "attack",
+      "crit": 2823.5916785639606,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 961.9496874451365
+    },
+    "attack.normal_hit_2": {
+      "average": 1259.4268672481426,
+      "category": "attack",
+      "crit": 3097.3471044635135,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1055.2135075575459
+    },
+    "attack.normal_hit_3": {
+      "average": 1580.4156716986251,
+      "category": "attack",
+      "crit": 3886.7647116980415,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1324.1546672542454
+    },
+    "attack.normal_hit_4": {
+      "average": 1795.6415544392219,
+      "category": "attack",
+      "crit": 4416.07632323193,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1504.4821356844764
+    },
+    "attack.normal_hit_4_1": {
+      "average": 897.8207772196109,
+      "category": "attack",
+      "crit": 2208.038161615965,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 752.2410678422382
+    },
+    "attack.normal_hit_5": {
+      "average": 1691.4999982744168,
+      "category": "attack",
+      "crit": 4159.957801521984,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1417.226909024687
+    },
+    "attack.normal_hit_6": {
+      "average": 2063.644964345974,
+      "category": "attack",
+      "crit": 5075.185325309042,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1729.0293686834107
+    },
+    "attack.plunge": {
+      "average": 1434.9085073965025,
+      "category": "attack",
+      "crit": 3528.914481763985,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1202.2411769112264
+    },
+    "attack.plunge_high": {
+      "average": 3583.7969137517966,
+      "category": "attack",
+      "crit": 8813.741617287047,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3002.6919466923246
+    },
+    "attack.plunge_low": {
+      "average": 2869.209570418622,
+      "category": "attack",
+      "crit": 7056.335056955826,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2403.9734052478216
+    },
+    "burst.arlecchino_heal": {
+      "average": 3312.348127564,
+      "category": "burst",
+      "crit": 3312.348127564,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3312.348127564
+    },
+    "burst.burst_dmg": {
+      "average": 11937.316926542484,
+      "category": "burst",
+      "crit": 29357.809475891325,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 10001.7066432815
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.arlecchino_blooddebt_dmg": {
+      "average": 824.8841320335091,
+      "category": "skill",
+      "crit": 2028.6628341147575,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 691.1309429133703
+    },
+    "skill.arlecchino_cleave_dmg": {
+      "average": 3464.513354540738,
+      "category": "skill",
+      "crit": 8520.383903281983,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2902.7499602361554
+    },
+    "skill.arlecchino_spike_dmg": {
+      "average": 384.94592828230435,
+      "category": "skill",
+      "crit": 946.7093225868872,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 322.5277733595729
+    },
+    "stats.atk": {
+      "average": 2032.704587552,
+      "category": "stats",
+      "crit": 2032.704587552,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2032.704587552
+    },
+    "stats.crit_dmg": {
+      "average": 193.52800000000002,
+      "category": "stats",
+      "crit": 193.52800000000002,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 193.52800000000002
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1640.7120351,
+      "category": "stats",
+      "crit": 1640.7120351,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1640.7120351
+    },
+    "stats.hp": {
+      "average": 26329.1246236,
+      "category": "stats",
+      "crit": 26329.1246236,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26329.1246236
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Arlecchino",
+  "repSlug": "arlecchino",
+  "schema": 1,
+  "slug": "bond-of-life-arlecchino",
+  "weapon": "weapon_name.blackcliff_pole",
+  "weaponType": "polearm"
+}

@@ -1,0 +1,237 @@
+{
+  "element": "cryo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 1142.2231987790615,
+      "category": "attack",
+      "crit": 2392.0064176820824,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1003.3583966787257
+    },
+    "attack.charged_hit_total": {
+      "average": 3426.6695963371844,
+      "category": "attack",
+      "crit": 7176.019253046248,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3010.0751900361774
+    },
+    "attack.normal_hit_1": {
+      "average": 3170.782553794038,
+      "category": "attack",
+      "crit": 6640.148988268611,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2785.297394407974
+    },
+    "attack.normal_hit_2": {
+      "average": 2859.857111556825,
+      "category": "attack",
+      "crit": 5989.019109233548,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2512.1724451483
+    },
+    "attack.normal_hit_3": {
+      "average": 3615.316631097593,
+      "category": "attack",
+      "crit": 7571.077695481959,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3175.7876239437746
+    },
+    "attack.normal_hit_3_1": {
+      "average": 1807.6583155487965,
+      "category": "attack",
+      "crit": 3785.5388477409797,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1587.8938119718873
+    },
+    "attack.normal_hit_4": {
+      "average": 3845.2515900316816,
+      "category": "attack",
+      "crit": 8052.599956636973,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3377.7684381866493
+    },
+    "attack.normal_hit_4_1": {
+      "average": 1922.6257950158408,
+      "category": "attack",
+      "crit": 4026.2999783184864,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1688.8842190933246
+    },
+    "attack.normal_hit_5": {
+      "average": 4693.8142380337085,
+      "category": "attack",
+      "crit": 9829.632065594134,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 4123.167812749217
+    },
+    "attack.plunge": {
+      "average": 1413.141935115754,
+      "category": "attack",
+      "crit": 2959.3555633485225,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1241.3404208676686
+    },
+    "attack.plunge_high": {
+      "average": 3529.4331866147704,
+      "category": "attack",
+      "crit": 7391.223398532689,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3100.3453852905573
+    },
+    "attack.plunge_low": {
+      "average": 2825.68564036928,
+      "category": "attack",
+      "crit": 5917.458333310228,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2482.155341153619
+    },
+    "burst.skirk_final_dmg": {
+      "average": 6753.614833734235,
+      "category": "burst",
+      "crit": 14143.19901934506,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 5932.54992422192
+    },
+    "burst.skirk_slash_dmg": {
+      "average": 4052.1689002405415,
+      "category": "burst",
+      "crit": 8485.919411607038,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3559.5299545331527
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "reaction.superconduct": {
+      "average": 3584.3021786316276,
+      "category": "reaction",
+      "crit": 3584.3021786316276,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3584.3021786316276
+    },
+    "stats.atk": {
+      "average": 2182.76461773,
+      "category": "stats",
+      "crit": 2182.76461773,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2182.76461773
+    },
+    "stats.crit_dmg": {
+      "average": 138.4,
+      "category": "stats",
+      "crit": 138.4,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 138.4
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1682.2137963,
+      "category": "stats",
+      "crit": 1682.2137963,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1682.2137963
+    },
+    "stats.hp": {
+      "average": 25643.3538435,
+      "category": "stats",
+      "crit": 25643.3538435,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 25643.3538435
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Skirk",
+  "repSlug": "skirk",
+  "schema": 1,
+  "slug": "gate-skirk",
+  "weapon": "weapon_name.the_alley_flash",
+  "weaponType": "sword"
+}

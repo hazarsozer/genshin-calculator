@@ -1,0 +1,1650 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Party-composition effects on representative active chars exercising each effect's scaling: 6 elemental resonances + none, the 3 two-element gates (Chevreuse/Nilou/Skirk), GildedDreams 4pc (same 1-3 / different 1-3), BlizzardStrayer 4pc (cryo / cryo+frozen), ViridescentVenerer 4pc (per swirl element), all v5.8 set_other team buffs, bond-of-life, Nahida party-pyro-2, CalcOrigin counts (same/different), and the four inert party-element weapons. Fillers are buff-clean (probe-verified) so only the active char's own party-reading conditions move.",
+    "id": "party"
+  },
+  "featureTotal": 1252,
+  "itemCount": 42,
+  "items": [
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "enemyStatus": "cryo",
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "BlizzardStrayer"
+          }
+        ]
+      },
+      "repKey": "Ayaka",
+      "repSlug": "kamisato_ayaka",
+      "resonanceElements": {},
+      "slug": "blizzard-strayer-cryo",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "enemyStatus": "cryo",
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "BlizzardStrayer"
+          }
+        ],
+        "settings": {
+          "enemy_frozen": 1
+        }
+      },
+      "repKey": "Ayaka",
+      "repSlug": "kamisato_ayaka",
+      "resonanceElements": {},
+      "slug": "blizzard-strayer-frozen",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "fontain",
+      "party": {
+        "bondOfLife": 2
+      },
+      "repKey": "Arlecchino",
+      "repSlug": "arlecchino",
+      "resonanceElements": {},
+      "slug": "bond-of-life-arlecchino",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "bondOfLife": 2
+      },
+      "repKey": "Clorinde",
+      "repSlug": "clorinde",
+      "resonanceElements": {},
+      "slug": "bond-of-life-clorinde",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "charSettings": {
+          "chevreuse_tactics": true
+        },
+        "members": [
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Chevreuse",
+      "repSlug": "chevreuse",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "gate-chevreuse",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "charSettings": {
+          "nilou_stance_bonus": true
+        },
+        "members": [
+          {
+            "element": "dendro",
+            "origin": "sumeru"
+          }
+        ]
+      },
+      "repKey": "Nilou",
+      "repSlug": "nilou",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "gate-nilou",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "foreign",
+      "party": {
+        "charSettings": {
+          "skirk_seven_phase_flash": true
+        },
+        "members": [
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Skirk",
+      "repSlug": "skirk",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "gate-skirk",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 2,
+        "party_elements_different": 1,
+        "party_elements_different_total": 1,
+        "party_elements_same_inc": 1,
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "charSettings": {
+          "set.gilded_dreams_4": true
+        },
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          }
+        ],
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "GildedDreams"
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "gilded-dreams-different-1",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 3,
+        "party_elements_different": 2,
+        "party_elements_different_total": 2,
+        "party_elements_same_inc": 1,
+        "party_size": 3
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "charSettings": {
+          "set.gilded_dreams_4": true
+        },
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          }
+        ],
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "GildedDreams"
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "hydro"
+      },
+      "slug": "gilded-dreams-different-2",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 4,
+        "party_elements_different": 3,
+        "party_elements_different_total": 3,
+        "party_elements_same_inc": 1,
+        "party_size": 4
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "charSettings": {
+          "set.gilded_dreams_4": true
+        },
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          }
+        ],
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "GildedDreams"
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "hydro",
+        "resonance_element_3": "electro"
+      },
+      "slug": "gilded-dreams-different-3",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 1,
+        "party_elements_different_total": 1,
+        "party_elements_same": 1,
+        "party_elements_same_inc": 2,
+        "party_size": 2
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "charSettings": {
+          "set.gilded_dreams_4": true
+        },
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          }
+        ],
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "GildedDreams"
+          }
+        ]
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "gilded-dreams-same-1",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 1,
+        "party_elements_different_total": 2,
+        "party_elements_same": 2,
+        "party_elements_same_inc": 3,
+        "party_size": 3
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "charSettings": {
+          "set.gilded_dreams_4": true
+        },
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          }
+        ],
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "GildedDreams"
+          }
+        ]
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "pyro"
+      },
+      "slug": "gilded-dreams-same-2",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 1,
+        "party_elements_different_total": 3,
+        "party_elements_same": 3,
+        "party_elements_same_inc": 4,
+        "party_size": 4
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "charSettings": {
+          "set.gilded_dreams_4": true
+        },
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          }
+        ],
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "GildedDreams"
+          }
+        ]
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "pyro",
+        "resonance_element_3": "pyro"
+      },
+      "slug": "gilded-dreams-same-3",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 3
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "pyro"
+      },
+      "slug": "nahida-pyro-2",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_origin_different": 3,
+        "party_origin_same_inc": 1,
+        "party_size": 4
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "electro",
+            "origin": "liyue"
+          },
+          {
+            "element": "geo",
+            "origin": "inazuma"
+          }
+        ]
+      },
+      "repKey": "Charlotte",
+      "repSlug": "charlotte",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "electro",
+        "resonance_element_3": "geo"
+      },
+      "slug": "origin-different",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_origin_same": 3,
+        "party_origin_same_inc": 4,
+        "party_size": 4
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "members": [
+          {
+            "element": "hydro",
+            "origin": "fontaine"
+          },
+          {
+            "element": "pyro",
+            "origin": "fontaine"
+          },
+          {
+            "element": "hydro",
+            "origin": "fontaine"
+          }
+        ]
+      },
+      "repKey": "Charlotte",
+      "repSlug": "charlotte",
+      "resonanceElements": {
+        "resonance_element_1": "hydro",
+        "resonance_element_2": "pyro",
+        "resonance_element_3": "hydro"
+      },
+      "slug": "origin-same",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "element": "anemo",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "anemo",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "anemo",
+            "origin": "inazuma"
+          }
+        ]
+      },
+      "repKey": "Xiao",
+      "repSlug": "xiao",
+      "resonanceElements": {
+        "resonance_element_1": "anemo",
+        "resonance_element_2": "anemo",
+        "resonance_element_3": "anemo"
+      },
+      "slug": "resonance-anemo",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "enemyStatus": "cryo",
+        "members": [
+          {
+            "element": "cryo",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "cryo",
+            "origin": "liyue"
+          },
+          {
+            "element": "cryo",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "resonanceElements": {
+        "resonance_element_1": "cryo",
+        "resonance_element_2": "cryo",
+        "resonance_element_3": "cryo"
+      },
+      "slug": "resonance-cryo",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "element": "dendro",
+            "origin": "sumeru"
+          },
+          {
+            "element": "dendro",
+            "origin": "sumeru"
+          },
+          {
+            "element": "dendro",
+            "origin": "liyue"
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "dendro",
+        "resonance_element_2": "dendro",
+        "resonance_element_3": "dendro"
+      },
+      "slug": "resonance-dendro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "electro",
+            "origin": "liyue"
+          }
+        ]
+      },
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "resonanceElements": {
+        "resonance_element_1": "electro",
+        "resonance_element_2": "electro",
+        "resonance_element_3": "electro"
+      },
+      "slug": "resonance-electro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "element": "geo",
+            "origin": "liyue"
+          },
+          {
+            "element": "geo",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "geo",
+            "origin": "inazuma"
+          }
+        ]
+      },
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "resonanceElements": {
+        "resonance_element_1": "geo",
+        "resonance_element_2": "geo",
+        "resonance_element_3": "geo"
+      },
+      "slug": "resonance-geo",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "members": [
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "hydro",
+            "origin": "liyue"
+          }
+        ]
+      },
+      "repKey": "Neuvillette",
+      "repSlug": "neuvillette",
+      "resonanceElements": {
+        "resonance_element_1": "hydro",
+        "resonance_element_2": "hydro",
+        "resonance_element_3": "hydro"
+      },
+      "slug": "resonance-hydro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "geo",
+            "origin": "liyue"
+          },
+          {
+            "element": "anemo",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "resonanceElements": {
+        "resonance_element_1": "hydro",
+        "resonance_element_2": "geo",
+        "resonance_element_3": "anemo"
+      },
+      "slug": "resonance-none",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          }
+        ]
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "pyro",
+        "resonance_element_3": "pyro"
+      },
+      "slug": "resonance-pyro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "setOther": [
+          "archaic_petra_4=geo"
+        ],
+        "settings": {
+          "set_other.archaic_petra_4": "geo"
+        }
+      },
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "resonanceElements": {},
+      "slug": "set-other-archaic-petra-4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "setOther": [
+          "deepwood_memories_4"
+        ],
+        "settings": {
+          "set_other.deepwood_memories_4": true
+        }
+      },
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "resonanceElements": {},
+      "slug": "set-other-deepwood-memories-4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "setOther": [
+          "instructor_4"
+        ],
+        "settings": {
+          "set_other.instructor_4": true
+        }
+      },
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "resonanceElements": {},
+      "slug": "set-other-instructor-4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "setOther": [
+          "maiden_beloved_4"
+        ],
+        "settings": {
+          "set_other.maiden_beloved_4": true
+        }
+      },
+      "repKey": "Sigewinne",
+      "repSlug": "sigewinne",
+      "resonanceElements": {},
+      "slug": "set-other-maiden-beloved-4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "setOther": [
+          "noblesse_oblige_4"
+        ],
+        "settings": {
+          "set_other.noblesse_oblige_4": true
+        }
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {},
+      "slug": "set-other-noblesse-oblige-4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "setOther": [
+          "scroll_of_the_hero_of_cinder_city_4_1"
+        ],
+        "settings": {
+          "set_other.scroll_of_the_hero_of_cinder_city_4_1": true
+        }
+      },
+      "repKey": "Mavuika",
+      "repSlug": "mavuika",
+      "resonanceElements": {},
+      "slug": "set-other-scroll-of-the-hero-of-cinder-city-4-1",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "setOther": [
+          "scroll_of_the_hero_of_cinder_city_4_2"
+        ],
+        "settings": {
+          "set_other.scroll_of_the_hero_of_cinder_city_4_2": true
+        }
+      },
+      "repKey": "Mavuika",
+      "repSlug": "mavuika",
+      "resonanceElements": {},
+      "slug": "set-other-scroll-of-the-hero-of-cinder-city-4-2",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "setOther": [
+          "song_of_days_past_4"
+        ],
+        "settings": {
+          "party_days_past_healing_recorded": 15000,
+          "set_other.song_of_days_past_4": true
+        }
+      },
+      "repKey": "Sigewinne",
+      "repSlug": "sigewinne",
+      "resonanceElements": {},
+      "slug": "set-other-song-of-days-past-4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "setOther": [
+          "tenacity_of_the_millelith_4"
+        ],
+        "settings": {
+          "set_other.tenacity_of_the_millelith_4": true
+        }
+      },
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "resonanceElements": {},
+      "slug": "set-other-tenacity-of-the-millelith-4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "setOther": [
+          "viridescent_venerer_4=pyro"
+        ],
+        "settings": {
+          "set_other.viridescent_venerer_4": "pyro"
+        }
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {},
+      "slug": "set-other-viridescent-venerer-4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 50,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "ViridescentVenerer"
+          }
+        ],
+        "settings": {
+          "set.viridescent_venerer_4": "cryo"
+        }
+      },
+      "repKey": "Kazuha",
+      "repSlug": "kaedehara_kazuha",
+      "resonanceElements": {},
+      "slug": "viridescent-venerer-cryo",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 50,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "ViridescentVenerer"
+          }
+        ],
+        "settings": {
+          "set.viridescent_venerer_4": "electro"
+        }
+      },
+      "repKey": "Kazuha",
+      "repSlug": "kaedehara_kazuha",
+      "resonanceElements": {},
+      "slug": "viridescent-venerer-electro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 50,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "ViridescentVenerer"
+          }
+        ],
+        "settings": {
+          "set.viridescent_venerer_4": "hydro"
+        }
+      },
+      "repKey": "Kazuha",
+      "repSlug": "kaedehara_kazuha",
+      "resonanceElements": {},
+      "slug": "viridescent-venerer-hydro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 50,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "ViridescentVenerer"
+          }
+        ],
+        "settings": {
+          "set.viridescent_venerer_4": "pyro"
+        }
+      },
+      "repKey": "Kazuha",
+      "repSlug": "kaedehara_kazuha",
+      "resonanceElements": {},
+      "slug": "viridescent-venerer-pyro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 4,
+        "party_elements_different": 3,
+        "party_elements_different_total": 3,
+        "party_elements_same_inc": 1,
+        "party_size": 4
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          }
+        ],
+        "weaponName": "a_thousand_floating_dreams",
+        "weaponType": "catalyst"
+      },
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "hydro",
+        "resonance_element_3": "electro"
+      },
+      "slug": "weapon-a-thousand-floating-dreams",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.a_thousand_floating_dreams",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 4,
+        "party_elements_different": 3,
+        "party_elements_different_total": 3,
+        "party_elements_same_inc": 1,
+        "party_size": 4
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "anemo",
+            "origin": "mondstadt"
+          }
+        ],
+        "weaponName": "ballad_of_the_fjords",
+        "weaponType": "polearm"
+      },
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "resonanceElements": {
+        "resonance_element_1": "hydro",
+        "resonance_element_2": "electro",
+        "resonance_element_3": "anemo"
+      },
+      "slug": "weapon-ballad-of-the-fjords",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.ballad_of_the_fjords",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 1,
+        "party_elements_different_total": 3,
+        "party_elements_same": 3,
+        "party_elements_same_inc": 4,
+        "party_size": 4
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "element": "cryo",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "cryo",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "cryo",
+            "origin": "mondstadt"
+          }
+        ],
+        "weaponName": "the_first_great_magic",
+        "weaponType": "bow"
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "cryo",
+        "resonance_element_2": "cryo",
+        "resonance_element_3": "cryo"
+      },
+      "slug": "weapon-the-first-great-magic",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_first_great_magic",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "anemo",
+            "origin": "mondstadt"
+          }
+        ],
+        "weaponName": "waveriding_whirl",
+        "weaponType": "catalyst"
+      },
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "resonanceElements": {
+        "resonance_element_1": "hydro",
+        "resonance_element_2": "electro",
+        "resonance_element_3": "anemo"
+      },
+      "slug": "weapon-waveriding-whirl",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.waveriding_whirl",
+        "type": "catalyst"
+      }
+    }
+  ]
+}

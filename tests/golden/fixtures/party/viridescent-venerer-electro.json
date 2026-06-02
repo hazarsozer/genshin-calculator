@@ -1,0 +1,462 @@
+{
+  "element": "anemo",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 1065.0283494226792,
+      "category": "attack",
+      "crit": 1936.4151807685075,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 968.2075903842538
+    },
+    "attack.charged_hit_2": {
+      "average": 1848.8892145977713,
+      "category": "attack",
+      "crit": 3361.6167538141294,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1680.8083769070647
+    },
+    "attack.charged_hit_total": {
+      "average": 2913.9175640204508,
+      "category": "attack",
+      "crit": 5298.031934582637,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2649.0159672913187
+    },
+    "attack.kazuha_plunge": {
+      "average": 1942.406743596975,
+      "category": "attack",
+      "crit": 3531.6486247217726,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1765.8243123608863
+    },
+    "attack.kazuha_plunge_cryo": {
+      "average": 2088.29088122094,
+      "category": "attack",
+      "crit": 3796.8925113107994,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1898.4462556553997
+    },
+    "attack.kazuha_plunge_electro": {
+      "average": 2721.7391151912916,
+      "category": "attack",
+      "crit": 4948.616573075075,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2474.3082865375377
+    },
+    "attack.kazuha_plunge_high": {
+      "average": 4851.314654415192,
+      "category": "attack",
+      "crit": 8820.572098936713,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4410.286049468356
+    },
+    "attack.kazuha_plunge_hydro": {
+      "average": 2088.29088122094,
+      "category": "attack",
+      "crit": 3796.8925113107994,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1898.4462556553997
+    },
+    "attack.kazuha_plunge_low": {
+      "average": 3883.9909616231084,
+      "category": "attack",
+      "crit": 7061.801748405652,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3530.900874202826
+    },
+    "attack.kazuha_plunge_pyro": {
+      "average": 2088.29088122094,
+      "category": "attack",
+      "crit": 3796.8925113107994,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1898.4462556553997
+    },
+    "attack.normal_hit_1": {
+      "average": 1039.7516765963812,
+      "category": "attack",
+      "crit": 1890.4575938116022,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 945.2287969058011
+    },
+    "attack.normal_hit_2": {
+      "average": 1045.7158353531481,
+      "category": "attack",
+      "crit": 1901.3015188239056,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 950.6507594119528
+    },
+    "attack.normal_hit_3": {
+      "average": 1312.114926488741,
+      "category": "attack",
+      "crit": 2385.663502706802,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1192.831751353401
+    },
+    "attack.normal_hit_3_1": {
+      "average": 596.4158756767006,
+      "category": "attack",
+      "crit": 1084.3925012303646,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 542.1962506151823
+    },
+    "attack.normal_hit_3_2": {
+      "average": 715.6990508120406,
+      "category": "attack",
+      "crit": 1301.2710014764373,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 650.6355007382186
+    },
+    "attack.normal_hit_4": {
+      "average": 1403.5653607591685,
+      "category": "attack",
+      "crit": 2551.9370195621245,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1275.9685097810623
+    },
+    "attack.normal_hit_5": {
+      "average": 1759.426833246266,
+      "category": "attack",
+      "crit": 3198.957878629574,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1599.478939314787
+    },
+    "attack.normal_hit_5_1": {
+      "average": 586.4756110820886,
+      "category": "attack",
+      "crit": 1066.3192928765247,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 533.1596464382624
+    },
+    "attack.plunge": {
+      "average": 1756.611315948569,
+      "category": "attack",
+      "crit": 3193.8387562701255,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1596.9193781350627
+    },
+    "attack.plunge_high": {
+      "average": 4387.275861384174,
+      "category": "attack",
+      "crit": 7976.865202516679,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3988.4326012583397
+    },
+    "attack.plunge_low": {
+      "average": 3512.478782685247,
+      "category": "attack",
+      "crit": 6386.3250594277215,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3193.1625297138607
+    },
+    "burst.anemoskill_cryo_dmg": {
+      "average": 1109.6342426455585,
+      "category": "burst",
+      "crit": 2017.5168048101066,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1008.7584024050533
+    },
+    "burst.anemoskill_electro_dmg": {
+      "average": 1435.1570252102788,
+      "category": "burst",
+      "crit": 2609.376409473234,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1304.688204736617
+    },
+    "burst.anemoskill_hydro_dmg": {
+      "average": 1109.6342426455585,
+      "category": "burst",
+      "crit": 2017.5168048101066,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1008.7584024050533
+    },
+    "burst.anemoskill_pyro_dmg": {
+      "average": 1109.6342426455585,
+      "category": "burst",
+      "crit": 2017.5168048101066,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1008.7584024050533
+    },
+    "burst.dot_dmg": {
+      "average": 4037.083931576321,
+      "category": "burst",
+      "crit": 7340.152602866038,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3670.076301433019
+    },
+    "burst.kazuha_slashing_dmg": {
+      "average": 8827.756863713554,
+      "category": "burst",
+      "crit": 16050.467024933734,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 8025.233512466867
+    },
+    "other.kazuha_elemental_bonus": {
+      "average": 9.013119999999999,
+      "category": "other",
+      "crit": 9.013119999999999,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 9.013119999999999
+    },
+    "reaction.burgeon": {
+      "average": 10235.421964790448,
+      "category": "reaction",
+      "crit": 10235.421964790448,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 10235.421964790448
+    },
+    "reaction.burning": {
+      "average": 852.951830399204,
+      "category": "reaction",
+      "crit": 852.951830399204,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 852.951830399204
+    },
+    "reaction.electrocharged": {
+      "average": 8719.063155191863,
+      "category": "reaction",
+      "crit": 8719.063155191863,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8719.063155191863
+    },
+    "reaction.hyperbloom": {
+      "average": 10235.421964790448,
+      "category": "reaction",
+      "crit": 10235.421964790448,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 10235.421964790448
+    },
+    "reaction.overloaded": {
+      "average": 9382.470134391246,
+      "category": "reaction",
+      "crit": 9382.470134391246,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 9382.470134391246
+    },
+    "reaction.rupture": {
+      "average": 6823.614643193632,
+      "category": "reaction",
+      "crit": 6823.614643193632,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 6823.614643193632
+    },
+    "reaction.shatter": {
+      "average": 10235.421964790448,
+      "category": "reaction",
+      "crit": 10235.421964790448,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 10235.421964790448
+    },
+    "reaction.superconduct": {
+      "average": 5117.710982395224,
+      "category": "reaction",
+      "crit": 5117.710982395224,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5117.710982395224
+    },
+    "reaction.swirl_cryo": {
+      "average": 2515.8649269580897,
+      "category": "reaction",
+      "crit": 2515.8649269580897,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2515.8649269580897
+    },
+    "reaction.swirl_electro": {
+      "average": 3214.7162955575586,
+      "category": "reaction",
+      "crit": 3214.7162955575586,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3214.7162955575586
+    },
+    "reaction.swirl_hydro": {
+      "average": 2515.8649269580897,
+      "category": "reaction",
+      "crit": 2515.8649269580897,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2515.8649269580897
+    },
+    "reaction.swirl_pyro": {
+      "average": 2515.8649269580897,
+      "category": "reaction",
+      "crit": 2515.8649269580897,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2515.8649269580897
+    },
+    "skill.hold_dmg": {
+      "average": 7205.405443910629,
+      "category": "skill",
+      "crit": 13100.737170746599,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6550.3685853732995
+    },
+    "skill.press_dmg": {
+      "average": 5304.592964842183,
+      "category": "skill",
+      "crit": 9644.714481531242,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4822.357240765621
+    },
+    "stats.atk": {
+      "average": 2109.3847285059996,
+      "category": "stats",
+      "crit": 2109.3847285059996,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2109.3847285059996
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1682.9820885,
+      "category": "stats",
+      "crit": 1682.9820885,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1682.9820885
+    },
+    "stats.hp": {
+      "average": 26574.042793200002,
+      "category": "stats",
+      "crit": 26574.042793200002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26574.042793200002
+    },
+    "stats.mastery": {
+      "average": 225.32799999999997,
+      "category": "stats",
+      "crit": 225.32799999999997,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 225.32799999999997
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Kazuha",
+  "repSlug": "kaedehara_kazuha",
+  "schema": 1,
+  "slug": "viridescent-venerer-electro",
+  "weapon": "weapon_name.the_alley_flash",
+  "weaponType": "sword"
+}
