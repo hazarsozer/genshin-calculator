@@ -7,9 +7,10 @@
  * (burst_dmg + kamera_dmg). Heals (heal, charlotte_kamera_heal) have no
  * damageType and are skipped by the golden harness.
  *
- * A4 "Diversified Investigation" stat bonuses are conditional
- * (ConditionStaticLevel gated on party_origin_same / party_origin_different);
- * not active in the fixed solo C0 build — omitted.
+ * A4 "Diversified Investigation" — two ConditionStaticLevel paths:
+ *   same-origin  → healing (no dmg features → inert in golden harness)
+ *   diff-origin  → dmg_cryo [0,5,10,15] gated on party_origin_different ≥ 1
+ * Solo: party_origin_different absent/0 → level 1 → table[0] = 0 → no effect.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Charlotte.js
@@ -182,6 +183,22 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Passive A4: Diversified Investigation (Charlotte.js:409-422)
+// diff-origin path: dmg_cryo +5%/10%/15% per 1/2/3 party members of different origin.
+// levelSetting: party_origin_different; fromZero:true → level = party_origin_different + 1.
+// table (raw StatTable, excl. text_number display entry): [0, 5, 10, 15].
+// gated by ConditionBoolean(party_origin_different) — only active when ≥ 1 diff-origin member.
+// same-origin path gives healing only → no dmg stat → inert in golden harness (omitted).
+// ---------------------------------------------------------------------------
+const a4DiffOrigin: Condition = {
+  type: "staticLevel",
+  levelSetting: "party_origin_different",
+  fromZero: true,
+  levelStats: { dmg_cryo: [0, 5, 10, 15] },
+  condition: { type: "boolean", name: "party_origin_different" },
+};
+
+// ---------------------------------------------------------------------------
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
 // C1 "A Need to Verify Facts": ConditionStatic display-only (charlotte_verification_heal is
@@ -214,5 +231,5 @@ export const charlotte: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: constellationConditions,
+  conditions: [a4DiffOrigin, ...constellationConditions],
 };
