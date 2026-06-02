@@ -185,7 +185,10 @@ interface ManifestItem {
 
 interface Manifest {
   readonly config: { readonly id: string };
-  readonly base: { readonly statBlock: Readonly<Record<string, number>> };
+  readonly base: {
+    readonly statBlock: Readonly<Record<string, number>>;
+    readonly weapon: { readonly refine: number };
+  };
   readonly items: readonly ManifestItem[];
 }
 
@@ -452,11 +455,16 @@ for (const item of manifest.items) {
   }
 
   const party = partyInputFromManifest(item.party);
-  const settings = settingsFromManifest(item.party);
+  const isWeaponEffect = item.party.weaponName !== undefined;
   const setBonuses = item.party.setBonuses ?? [];
   // Inert-weapon family: equip that weapon's passive (its own conditions, ON to max via the
   // oracle); other effects keep the default weapon passive OFF (no extra conditions).
-  const isWeaponEffect = item.party.weaponName !== undefined;
+  // Inject weapon_refine (from manifest base) so refine-scaled weapon conditions resolve
+  // correctly — mirrors how armory.test.ts injects item.weapon.refine. Without this,
+  // refineBag returns undefined and every refinementStats-based condition returns {}.
+  const settings: EvalContext = isWeaponEffect
+    ? { ...settingsFromManifest(item.party), weapon_refine: manifest.base.weapon.refine }
+    : settingsFromManifest(item.party);
 
   describe(`party: ${slug} (${item.repSlug})`, () => {
     const fixture = loadFixture(slug);
