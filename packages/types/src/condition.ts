@@ -390,7 +390,7 @@ export interface ConditionOr {
  *
  * Example (GildedDreams 4pc, same-element path):
  *   { type: "staticLevel", levelSetting: "party_elements_same", fromZero: true,
- *     stats: { atk_percent: [0, 14, 28, 42] },
+ *     levelStats: { atk_percent: [0, 14, 28, 42] },
  *     condition: { type: "and", items: [{type:"boolean",name:"set.gilded_dreams_4"},
  *                                       {type:"boolean",name:"party_elements_same"}] } }
  *   ctx { party_elements_same: 2 } → level = 2+1 = 3 → atk_percent[2] = 28.

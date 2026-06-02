@@ -278,6 +278,43 @@ describe("conditionStats — staticLevel resolves level-indexed stat tables", ()
   });
 });
 
+describe("conditionStats — staticLevel fromZero:false and _bonus accumulation", () => {
+  it("fromZero:false — absent/0 ctx falls through to level 1 (her level ||= 1 path)", () => {
+    // Level.js:13: level ||= 1 when !fromZero → 0 becomes 1 → arr[0]
+    const c: ConditionStaticLevel = {
+      type: "staticLevel",
+      levelSetting: "some_level",
+      fromZero: false,
+      levelStats: { atk_percent: [10, 20, 30] },
+    };
+    // absent key: raw=0, bonus=0 → level = 0||1 = 1 → arr[0] = 10
+    expect(conditionStats(c, {})).toEqual({ atk_percent: 10 });
+    expect(conditionStats(c, { some_level: 0 })).toEqual({ atk_percent: 10 });
+    // explicit value 2: raw=2 → level = 2||1 = 2 → arr[1] = 20
+    expect(conditionStats(c, { some_level: 2 })).toEqual({ atk_percent: 20 });
+  });
+
+  it("_bonus accumulation: ctx[levelSetting_bonus] and _bonus_2 added before fromZero (Level.js:7-8)", () => {
+    // Level.js: raw += bonus || 0; raw += bonus_2 || 0; then fromZero → ++raw → level
+    // With fromZero: true, levelSetting=x, stats=[0,14,28,42]:
+    //   ctx = { x: 0, x_bonus: 1, x_bonus_2: 1 } → raw=0+1+1=2, level=2+1=3 → arr[2]=28
+    const c: ConditionStaticLevel = {
+      type: "staticLevel",
+      levelSetting: "party_elements_same",
+      fromZero: true,
+      levelStats: { atk_percent: [0, 14, 28, 42] },
+    };
+    // base=0, bonus=1, bonus_2=1 → raw=2, level=3 → arr[2]=28
+    expect(
+      conditionStats(c, { party_elements_same: 0, party_elements_same_bonus: 1, party_elements_same_bonus_2: 1 })
+    ).toEqual({ atk_percent: 28 });
+    // base=1, bonus=1 (no _bonus_2) → raw=2, level=3 → arr[2]=28
+    expect(
+      conditionStats(c, { party_elements_same: 1, party_elements_same_bonus: 1 })
+    ).toEqual({ atk_percent: 28 });
+  });
+});
+
 describe("evaluate — staticLevel activation semantics", () => {
   const c: ConditionStaticLevel = {
     type: "staticLevel",

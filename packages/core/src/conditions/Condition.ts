@@ -198,6 +198,7 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
       // Plain stat-bearing variants — `cond.stats` as-is.
       return toNumberBag(condition.stats);
     case "staticLevel":
+      // Level-indexed stat tables; grouped with the plain stat-bearing variants for readability.
       return resolveStaticLevel(condition, ctx);
     case "number": {
       // Plain stat-bearing variants — `cond.stats` as-is, PLUS the dynamic
@@ -535,9 +536,12 @@ function evaluateStaticLevel(condition: ConditionStaticLevel, ctx: EvalContext):
  *
  * getLevel semantics (Level.js:5-16):
  *   raw = ctx[levelSetting] || 0
+ *   raw += ctx[levelSetting + "_bonus"] || 0
+ *   raw += ctx[levelSetting + "_bonus_2"] || 0
  *   if fromZero: level = raw + 1
  *   else:        level = raw || 1              (fallthrough to 1 when 0; not used by GildedDreams)
  *
+ * The _bonus accumulation mirrors buildStats.ts toPostEffect (lines ~330-332).
  * Stats whose resolved value is 0 are omitted from the result bag.
  *
  * Sources:
@@ -549,7 +553,9 @@ function resolveStaticLevel(
   ctx: EvalContext
 ): Record<string, number> {
   const rawVal = ctx[condition.levelSetting];
-  const raw = typeof rawVal === "number" ? rawVal : 0;
+  let raw = typeof rawVal === "number" ? rawVal : 0;
+  raw += (ctx[`${condition.levelSetting}_bonus`] as number | undefined) ?? 0;
+  raw += (ctx[`${condition.levelSetting}_bonus_2`] as number | undefined) ?? 0;
   const level = condition.fromZero ? raw + 1 : raw || 1;
 
   const out: Record<string, number> = {};
