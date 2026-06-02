@@ -377,6 +377,38 @@ export interface ConditionResonance extends ConditionBase {
 }
 
 /**
+ * Two-element party-composition gate: active iff the party (the `char_element` +
+ * `resonance_element_1/2/3` slots) contains BOTH `elements[0]` AND `elements[1]`
+ * AND no element outside that pair — the "ONLY these two elements" requirement.
+ *
+ * Ports the three structurally-identical gates Chevreuse/Nilou/Skirk share, each a
+ * scan over the four slots tracking hasA / hasB / hasOther, returning
+ * `hasA && hasB && !hasOther` after the super (subcondition) gate:
+ *   - raw/genshin_calc_pub/src/js/classes/Condition/Boolean/ChevreuseParty.js
+ *     (NOTE her quirk: she treats `electro` as the second trigger — Chevreuse's party
+ *     requires Pyro + Electro, so `elements: ["pyro","electro"]`).
+ *   - raw/genshin_calc_pub/src/js/classes/Condition/Boolean/NilouParty.js  → ["hydro","dendro"].
+ *   - raw/genshin_calc_pub/src/js/classes/Condition/Boolean/SkirkParty.js  → ["cryo","hydro"].
+ *
+ * The three differ ONLY in the element pair; a single parameterised variant is faithful
+ * to all three. NOT expressible by composing existing gates: `resonance` counts a DUO of
+ * one element (count >= 2), and nothing expresses the "no third element present" clause.
+ *
+ * A pure gate — contributes NO stats of its own (narrowed to `never`, like `resonance`);
+ * used as the `.condition` on the stat-bearing toggle it guards (Chevreuse's `chevreuse_tactics`
+ * res-shred, Nilou's `nilou_stance_bonus`, Skirk's `skirk_mutual_weapons_mentorship`). `invert`
+ * flips the result. Inert with no party: a solo build has only `char_element` (one element) →
+ * the wielder's own element is one of the pair but the partner is absent → `false`.
+ */
+export interface ConditionPartyElements extends ConditionBase {
+  readonly type: "party-elements";
+  /** The two elements the party must contain (and ONLY those), e.g. ["pyro","electro"]. */
+  readonly elements: readonly [string, string];
+  /** A pure gate — contributes NO stats of its own (narrowed to `never`, like resonance). */
+  readonly stats?: never;
+}
+
+/**
  * Logical AND of all items — all must evaluate to true.
  * Vacuous truth: empty items list → true.
  */
@@ -510,6 +542,7 @@ export type Condition =
   | ConditionBooleanNightSoul
   | ConditionBooleanEnemyType
   | ConditionResonance
+  | ConditionPartyElements
   | ConditionAnd
   | ConditionOr
   | ConditionStaticLevel

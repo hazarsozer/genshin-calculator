@@ -39,6 +39,7 @@ import type {
   ConditionBooleanNightSoul,
   ConditionBooleanEnemyType,
   ConditionResonance,
+  ConditionPartyElements,
   ConditionStaticLevel,
   ConditionBooleanCharElement,
   ConditionDropdownElement,
@@ -98,6 +99,8 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return evaluateEnemyType(condition, ctx);
     case "resonance":
       return evaluateResonance(condition, ctx);
+    case "party-elements":
+      return evaluatePartyElements(condition, ctx);
     case "and":
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
@@ -200,6 +203,7 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "nightsoul":
     case "enemy-type":
     case "resonance":
+    case "party-elements":
     case "char-element":
     case "dropdownElement":
       // Pure gates / logical containers / settings-publishers carry no stats of their own.
@@ -586,6 +590,38 @@ function evaluateResonance(condition: ConditionResonance, ctx: EvalContext): boo
   } else if (!isDuo) {
     active = true;
   }
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports the shared Chevreuse/Nilou/SkirkParty.isActive logic — scans the four resonance
+ * slots (`char_element`, `resonance_element_1/2/3`) and returns `hasA && hasB && !hasOther`
+ * after the super (subcondition) gate: the party must contain BOTH `elements` and ONLY those.
+ *
+ * Faithful detail: a falsy slot value is skipped (her `if (!element) continue`); any element
+ * outside the pair sets `hasOther` (her `else` branch). `invert` flips the result.
+ *
+ * Sources:
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Boolean/ChevreuseParty.js (pyro + electro)
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Boolean/NilouParty.js     (hydro + dendro)
+ *   raw/genshin_calc_pub/src/js/classes/Condition/Boolean/SkirkParty.js     (cryo + hydro)
+ */
+function evaluatePartyElements(condition: ConditionPartyElements, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+
+  const [elementA, elementB] = condition.elements;
+  let hasA = false;
+  let hasB = false;
+  let hasOther = false;
+  for (const slot of RESONANCE_SLOTS) {
+    const element = ctx[slot];
+    if (typeof element !== "string" || element === "") continue;
+    if (element === elementA) hasA = true;
+    else if (element === elementB) hasB = true;
+    else hasOther = true;
+  }
+
+  const active = hasA && hasB && !hasOther;
   return condition.invert ? !active : active;
 }
 
