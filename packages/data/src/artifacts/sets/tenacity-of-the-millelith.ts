@@ -24,7 +24,7 @@ import type { DbObjectArtifactSet } from "@genshin/types";
 
 export const tenacityOfTheMillelith: DbObjectArtifactSet = {
   name: "artifact_set.tenacity_of_the_millelith",
-  goodId: "TenacityOfTheMillelith",
+  goodId: "TenacityofMillelith",
   bonus: {
     // 2pc — HP% +20 (TenacityofMillelith.js:35-44).
     2: {
