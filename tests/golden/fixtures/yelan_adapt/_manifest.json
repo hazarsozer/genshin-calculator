@@ -1,0 +1,139 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Yelan 'Adapt with Ease' at stacks ∈ {1, 7} (C0). Exposes the dmg_all levels-table fold (buffValues[stacks-1]: 1 at stacks 1, 22 at stacks 7) vs the TS boolean fold dmg_all:50.",
+    "id": "yelan_adapt"
+  },
+  "featureTotal": 48,
+  "itemCount": 2,
+  "items": [
+    {
+      "constellation": 0,
+      "derived": {
+        "party_elements_count_level": 1,
+        "party_elements_same_inc": 1,
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "fold",
+      "origin": "liyue",
+      "party": {
+        "settings": {
+          "yelan_adapt_with_ease": 1
+        }
+      },
+      "repKey": "Yelan",
+      "repSlug": "yelan",
+      "resonanceElements": {},
+      "slug": "yelan_adapt_1",
+      "statBlock": "fold",
+      "statBlockValues": {
+        "atk_base": 871,
+        "atk_percent": 18,
+        "crit_dmg_base": 50,
+        "crit_rate_base": 5,
+        "def_base": 876,
+        "dmg_burst": 64,
+        "dmg_charged": 16,
+        "dmg_electro": 2,
+        "dmg_normal": 8,
+        "dmg_phys": 4,
+        "dmg_skill": 32,
+        "hp_base": 13226,
+        "mastery_base": 55,
+        "recharge_base": 100
+      },
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "constellation": 0,
+      "derived": {
+        "party_elements_count_level": 1,
+        "party_elements_same_inc": 1,
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "fold",
+      "origin": "liyue",
+      "party": {
+        "settings": {
+          "yelan_adapt_with_ease": 7
+        }
+      },
+      "repKey": "Yelan",
+      "repSlug": "yelan",
+      "resonanceElements": {},
+      "slug": "yelan_adapt_7",
+      "statBlock": "fold",
+      "statBlockValues": {
+        "atk_base": 871,
+        "atk_percent": 18,
+        "crit_dmg_base": 50,
+        "crit_rate_base": 5,
+        "def_base": 876,
+        "dmg_burst": 64,
+        "dmg_charged": 16,
+        "dmg_electro": 2,
+        "dmg_normal": 8,
+        "dmg_phys": 4,
+        "dmg_skill": 32,
+        "hp_base": 13226,
+        "mastery_base": 55,
+        "recharge_base": 100
+      },
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    }
+  ]
+}

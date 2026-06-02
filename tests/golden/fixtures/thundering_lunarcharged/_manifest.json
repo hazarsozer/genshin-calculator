@@ -1,0 +1,94 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "A Lunar-Charged-capable rep (Ineffa) wearing ThunderingFury 4pc so dmg_reaction_lunarcharged:20 is non-inert — exposes the buildStats un-divided-emit quirk (M3). Empty (deferred to a Task-5 unit test) if no clean rep exists.",
+    "id": "thundering_lunarcharged"
+  },
+  "featureTotal": 31,
+  "itemCount": 1,
+  "items": [
+    {
+      "constellation": 0,
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "kind": "fold",
+      "origin": "nodkrai",
+      "party": {
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "ThunderingFury"
+          }
+        ]
+      },
+      "repKey": "Ineffa",
+      "repSlug": "ineffa",
+      "resonanceElements": {},
+      "slug": "thundering_lunarcharged_ineffa",
+      "statBlock": "fold",
+      "statBlockValues": {
+        "atk_base": 871,
+        "atk_percent": 18,
+        "crit_dmg_base": 50,
+        "crit_rate_base": 5,
+        "def_base": 876,
+        "dmg_burst": 64,
+        "dmg_charged": 16,
+        "dmg_electro": 2,
+        "dmg_normal": 8,
+        "dmg_phys": 4,
+        "dmg_skill": 32,
+        "hp_base": 13226,
+        "mastery_base": 55,
+        "recharge_base": 100
+      },
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    }
+  ]
+}
