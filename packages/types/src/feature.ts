@@ -89,6 +89,30 @@ export interface FeatureMultiplierEntry {
     readonly maxStacks: number;
   };
   /**
+   * Runtime coefficient on the base term, derived from a STAT TOTAL (her
+   * FeatureMultiplierSayuBurst / FeatureMultiplierKiraraBurst). When present, the
+   * term's scalingFactor becomes min( f(getTotal(stat)), cap ), where
+   *   f = stat × ratio          (sayu C6:  mastery × 0.002, cap 4)
+   *     | floor(stat / divisor) (kirara C1: floor(hp / 8000), cap 4)
+   * exactly one of `ratio` | `divisor` (divisor implies floor()). Absent → unchanged.
+   * Replaces the build-coupled constant fold; reads the CURRENT build's total, so it
+   * tracks any build (validated off-build by the Task-1 oracle fixtures in Task 3).
+   *
+   * Applied as a RUNTIME factor — a `cStat`-rooted subtree on the base term, NOT a
+   * compile-time literal: the stat total lives in the eval-time bag (`<stat>_total`),
+   * not in the CompileContext, so the coefficient is read where every other
+   * stat-dependent factor is — at eval. `stat` is the bare total-stat key (`"mastery"`
+   * | `"hp"`), resolved to `<stat>_total` exactly like the `scaling` field. Mutually
+   * exclusive with `scalingMultiplier` / `scalingOffset` (none co-occur on a
+   * coefficient term).
+   */
+  readonly coefficientFromStat?: {
+    readonly stat: string;      // total-stat key, e.g. "mastery" | "hp"
+    readonly ratio?: number;
+    readonly divisor?: number;
+    readonly cap: number;
+  };
+  /**
    * CHAR-LEVEL multipliers only: which features this multiplier applies to.
    * When set (only on `char.multipliers` entries), the multiplier is summed into
    * a feature's base-damage term iff `target.damageTypes` includes the feature's

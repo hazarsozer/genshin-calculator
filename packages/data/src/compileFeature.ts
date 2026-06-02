@@ -37,7 +37,9 @@ import {
   cRoyalCritRate,
   cDamage,
   cDivide,
+  cFloor,
   cLunarChargedDamage,
+  cMin,
   cMulti,
   cMultiplierBonus,
   cMultiplierDefence,
@@ -202,6 +204,39 @@ function skillLevelBonus(settings: EvalContext, leveling: string): number {
   return (typeof b1 === "number" ? b1 : 0) + (typeof b2 === "number" ? b2 : 0);
 }
 
+/**
+ * Resolve a multiplier scaling/coefficient stat key to the bag key it reads.
+ * The four total stats (atk/hp/def/mastery) map to `<stat>_total` (the aggregate
+ * buildStats emits); any other key reads the raw bag verbatim. Shared by the base
+ * term's `scaling` and the coefficient's `stat` so both honour the same convention.
+ */
+function resolveStatKey(stat: string): string {
+  const bare = stat.replace("*", "");
+  return TOTAL_SCALING_STATS.has(bare) ? `${bare}_total` : bare;
+}
+
+/**
+ * The M1 stat-derived coefficient as a RUNTIME subtree: `min( f(getTotal(stat)), cap )`,
+ * where `f` is `stat × ratio` (sayu C6) or `floor(stat / divisor)` (kirara C1).
+ *
+ * Built from `cStat(<stat>_total)` so it reads the LIVE build total at eval time — the
+ * stat bag is not in the CompileContext (it materialises only in the eval-time
+ * `DamageContext`), so the coefficient is composed where every other stat-dependent
+ * factor is. floor THEN cap (the `cMin` wraps the floored value — kirara hp=45000 →
+ * floor 5 → cap 4, NOT floor of the min). Ports her FeatureMultiplierSayuBurst /
+ * FeatureMultiplierKiraraBurst getScalingMultiplier (`CMin([CMul/CFloor, CConst(cap)])`).
+ */
+function coefficientBlock(
+  spec: NonNullable<FeatureMultiplierEntry["coefficientFromStat"]>
+): Block {
+  const total = cStat(resolveStatKey(spec.stat));
+  const raw =
+    spec.divisor !== undefined
+      ? cFloor(cDivide([total, cConst(spec.divisor)]))
+      : cMulti([total, cConst(spec.ratio ?? 1)]);
+  return cMin([raw, cConst(spec.cap)]);
+}
+
 /** Build the base-damage term for one multiplier: talent% × scalingStatTotal. */
 function baseDamageTerm(
   entry: FeatureMultiplierEntry,
@@ -263,12 +298,19 @@ function baseDamageTerm(
   //     Past self-worn), absent from every build's bag → 0 either way; no base/cons/armory
   //     fixture exercises a non-total scaling that resolves nonzero, so this branch leaves
   //     goldenConfig / constellations / armory byte-unchanged.
-  const rawScaling = (entry.scaling ?? "atk").replace("*", "");
-  const scalingKey = TOTAL_SCALING_STATS.has(rawScaling)
-    ? `${rawScaling}_total`
-    : rawScaling;
+  const scalingKey = resolveStatKey(entry.scaling ?? "atk");
 
-  return cMulti([cConst(talentPercent), cStat(scalingKey)]);
+  // M1 coefficient: a THIRD, mutually-exclusive factor beside scalingMultiplier /
+  // scalingOffset (none co-occur on a coefficient term). When present, the term's
+  // scaling factor is `min( f(getTotal(stat)), cap )` read at eval time, replacing
+  // the build-coupled constant fold (sayu C6 30.2, kirara C1 scalingMultiplier 3).
+  // Absent → the children are exactly [talentPercent, scalingStat] as before.
+  const factors: Block[] = [cConst(talentPercent)];
+  if (entry.coefficientFromStat !== undefined) {
+    factors.push(coefficientBlock(entry.coefficientFromStat));
+  }
+  factors.push(cStat(scalingKey));
+  return cMulti(factors);
 }
 
 /**

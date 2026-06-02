@@ -20,6 +20,7 @@ export {
   cDivide,
   cMin,
   cMax,
+  cFloor,
   cBaseDamage,
   cMultiplierBonus,
   cMultiplierReaction,
