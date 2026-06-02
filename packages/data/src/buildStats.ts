@@ -92,7 +92,27 @@ const DMG_BONUS_TYPE_KEYS = [
   "dmg_plunge",
   "dmg_skill",
   "dmg_burst",
+  // Charged-only enemy-vulnerability key — her FeatureDamageCharged.getStatsDmgBonus
+  // (Charged.js:14-18) is the sole subclass that adds a `dmg_<type>_enemy` key, so
+  // compileFeature requests it only for charged hits. Emitted as a fraction like the
+  // rest; Scion of the Blazing Sun's Sunfire Fan is the v5.8 source. 0 (unset) for
+  // every build that contributes none → base golden untouched.
+  "dmg_charged_enemy",
 ] as const;
+
+/**
+ * The damage TYPES whose per-type crit folds generically (her
+ * getDefaultStatsCritRate / getDefaultStatsCritDamage push `crit_rate_<type>` /
+ * `crit_dmg_<type>` for the hit's damageType — Damage.js:77/105). Emitted as
+ * `crit_rate_<type>` / `crit_dmg_<type>` fractions when set in the bag so a
+ * weapon/set/cons-sourced type-crit (e.g. The Catch's `crit_rate_burst`) reaches
+ * compileFeature's `critBonusTypeKeys` regardless of feature references.
+ *
+ * No `_all` (her engine has no `crit_rate_all`). ELEMENT crit (`crit_*_<element>`)
+ * is NOT folded here — it stays on the per-feature `collectFeatureBonusKeys` emit
+ * (deferred follow-up). Mirrors the structure of DMG_BONUS_TYPE_KEYS above.
+ */
+const CRIT_BONUS_TYPES = ["normal", "charged", "plunge", "skill", "burst"] as const;
 
 /**
  * Reaction scaling / bonus keys derived by post-effects (Ineffa's Lunar-Charged
@@ -200,6 +220,15 @@ export interface BuildInput {
    */
   readonly extraConditions?: readonly Condition[];
   /**
+   * Equipped weapon's post-effects (HP→ATK / crit-from-HP folds). Applied in the
+   * SAME post-effect path as char + set post-effects — her `getPostEffects()`
+   * concats every equipped object's. The weapon path passes `weapon.postEffects`
+   * here (mirroring how it passes `weapon.conditions` via `extraConditions`).
+   * Absent / empty → no-op: no base-build weapon carries a post-effect, so the
+   * base golden suite is untouched.
+   */
+  readonly weaponPostEffects?: readonly CharPostEffect[];
+  /**
    * Equipped artifact sets + their piece counts (e.g. `[{ setKey: "NoblesseOblige",
    * pieces: 4 }]`). Each is resolved against the set registry; conditions from every
    * bonus tier `t <= pieces` enter the condition loop (the PIECE-COUNT gate), each
@@ -295,6 +324,14 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       } else {
         ratio = effect.ratio ?? 0;
       }
+      // Per-stack additive on the ratio (her percentBonus × bonusStackSettings / stacksSetting):
+      // ratio += perStackTable(level) × settings[setting]. Absent setting → 0 → no change.
+      if (effect.ratioPerStack !== undefined) {
+        const { setting, table, levelSetting } = effect.ratioPerStack;
+        const lvl = (settings[levelSetting] as number | undefined) ?? 1;
+        const stacks = (settings[setting] as number | undefined) ?? 0;
+        ratio += table.getValue(lvl) * stacks;
+      }
       // Base stat: getTotal(fromStat), or max(getTotal(fromStat), getTotal(fromStatMax))
       // when fromStatMax is set. Mirrors PostEffectStatsNahida.getBaseValueTree which
       // returns CMax([makeStatTotalItem('mastery'), makeStatItem('party_max_mastery')]).
@@ -313,6 +350,13 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       }
       if (effect.capValue !== undefined) {
         bonus = Math.min(bonus, effect.capValue);
+      }
+      // Refine/talent-scaled absolute cap (her statCap StatTable keyed off a
+      // levelSetting) — e.g. Ring of Yaxche's [16,20,24,28,32] over weapon_refine.
+      if (effect.capValueFromTalent !== undefined) {
+        const { table, levelSetting } = effect.capValueFromTalent;
+        const level = (settings[levelSetting] as number | undefined) ?? 1;
+        bonus = Math.min(bonus, table.getValue(level));
       }
       return { [effect.toStat]: bonus };
     },
@@ -430,7 +474,17 @@ export function buildStats(input: BuildInput): BuildResult {
     if (input.talentLevels.burst !== undefined) talentSettings["char_skill_burst"] = input.talentLevels.burst;
   }
 
-  const baseSettings: EvalContext = { weapon_type: input.char.weapon };
+  // System-canonical wielder attributes injected into the settings the condition loop reads
+  // (alongside weapon_type). Drive char-attribute gates: char_origin → ConditionLithic /
+  // ConditionBooleanNightSoul, char_name → ConditionBooleanChar. Base-inert (no base char
+  // condition reads them). char_id (=serializeId) is deferred (DbObjectChar has no serializeId;
+  // the natlan-origin branch covers every v5.8 NightSoul case).
+  const baseSettings: EvalContext = {
+    weapon_type: input.char.weapon,
+    char_origin: input.char.origin,
+    char_name: input.char.name,
+    char_element: input.char.element,
+  };
 
   const settings: EvalContext =
     input.setBonuses && input.setBonuses.length > 0
@@ -491,12 +545,31 @@ export function buildStats(input: BuildInput): BuildResult {
   for (const cond of CHARACTER_CONDITIONS) applyCondition(cond);
 
   // 3. Derive — condition-gated post-effects (reads RAW percents via getTotal).
-  // Char post-effects then any set-level post-effects (HP→ATK-style folds), both
-  // through the same path — her getPostEffects concats every equipped object's. Reads
-  // the MERGED settings so a condition-contributed level bonus / infusion is visible
-  // to a post-effect's `levelSetting` (her PostEffect.getLevel adds `_bonus`).
-  const effects = [...(input.char.postEffects ?? []), ...sets.postEffects].map(toPostEffect);
+  // Char post-effects, then the equipped WEAPON's post-effects (Staff of Homa /
+  // Primordial Jade Cutter HP→ATK folds), then any set-level post-effects — all
+  // through the same path. Her getPostEffects concats EVERY equipped object's
+  // (char + weapon + artifact sets). Reads the MERGED settings so a condition-
+  // contributed level bonus / infusion is visible to a post-effect's `levelSetting`
+  // (her PostEffect.getLevel adds `_bonus`); refine-scaled weapon folds read
+  // `weapon_refine` from the merged settings. No base-build weapon carries a
+  // post-effect → the weapon channel is a no-op for the base golden suite.
+  const effects = [
+    ...(input.char.postEffects ?? []),
+    ...(input.weaponPostEffects ?? []),
+    ...sets.postEffects,
+  ].map(toPostEffect);
   applyPostEffects(raw, effects, merged);
+
+  // Fold `dmg_own` (the wielder's "own-element" DMG bonus — Mistsplitter Reforged, A
+  // Thousand Floating Dreams, Hakushin Ring) into `dmg_<char_element>`, mirroring her
+  // CalcSet.js:380-381 (`stats.add('dmg_'+char_element, stats.get('dmg_own'))`). The
+  // element key uses `phys` for physical (matching DMG_BONUS_ELEMENT_KEYS). Base-inert:
+  // no base build contributes `dmg_own` → `get` returns 0 → no-op.
+  const ownDmg = raw.get("dmg_own");
+  if (ownDmg) {
+    const elemKey = input.char.element === "physical" ? "phys" : input.char.element;
+    raw.add(`dmg_${elemKey}`, ownDmg);
+  }
 
   // 4. Read — emit the engine-facing bag.
   const out: Record<string, number> = {};
@@ -534,6 +607,31 @@ export function buildStats(input: BuildInput): BuildResult {
   // Type DMG% bonuses + dmg_all → fractions, flat only (no `*` in her getStatsDmgBonus).
   for (const key of DMG_BONUS_TYPE_KEYS) {
     if (raw.isSet(key)) out[key] = raw.get(key) / 100;
+  }
+  // Per-TYPE crit (her getDefaultStatsCritRate/CritDamage push crit_*_<type> for the
+  // hit's type) → fractions, flat only. Emitted GENERICALLY (not gated on feature
+  // references) so a weapon/set/cons-sourced type-crit reaches compileFeature regardless
+  // of which feature declares it — e.g. The Catch's always-on `crit_rate_burst` lands on
+  // every Hu Tao burst hit. 0 for every base build (no source sets a type-crit at C0) →
+  // base golden untouched. ELEMENT crit (`crit_*_<element>`) stays on the
+  // collectFeatureBonusKeys emit below (deferred — no ported item folds it yet).
+  for (const type of CRIT_BONUS_TYPES) {
+    for (const which of ["rate", "dmg"] as const) {
+      const key = `crit_${which}_${type}`;
+      if (raw.isSet(key)) out[key] = raw.get(key) / 100;
+    }
+  }
+  // Royal-passive crit-rate stat — emitted VERBATIM (RAW, NOT /100) for the
+  // Royal-weapon series' average-crit transform (cRoyalCritRate). Her
+  // `makeStatItem('royal_crit_rate')` reads `stats.royal_crit_rate` directly, and
+  // `isPercent('royal_crit_rate')` is FALSE (it starts `royal_`, not `crit_`), so
+  // `processPercent` never divides it — the value stays raw (8 at R1, 16 at R5).
+  // Gated on the Royal toggle so this is a no-op for every non-royal build (the
+  // base golden suite never sets `weapon_royal_avg_crit_rate` → key never emitted).
+  // Source: raw/.../Feature2/Damage.js:298-300, .../Compile/Helpers.js makeStatItem,
+  //         raw/.../classes/Stats.js isPercent (no `royal_` branch).
+  if (settings["weapon_royal_avg_crit_rate"] && raw.isSet("royal_crit_rate")) {
+    out["royal_crit_rate"] = raw.get("royal_crit_rate");
   }
 
   // Feature-declared bonus keys (her FeatureDamage critRateBonuses /

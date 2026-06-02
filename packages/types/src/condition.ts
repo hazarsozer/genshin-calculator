@@ -215,6 +215,144 @@ export interface ConditionBooleanWeaponType extends ConditionBase {
 }
 
 /**
+ * A condition gated by the enemy's current elemental affliction status.
+ * Active when ctx["common.enemy_status"] is a non-empty string present in
+ * `statuses` (AND the optional `.condition` gate passes; `invert` flips it).
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/EnemyStatus.js
+ * (`this.params.status.includes(settings['common.enemy_status'])`; an absent/empty
+ * status → false). The enemy-status key is CALLER-supplied via settings (her
+ * `settingsSets` presets enemy_no_status / enemy_cryo / …), so buildStats injects
+ * nothing — it flows through `input.settings` unchanged. Every v5.8 oracle fixture
+ * leaves it unset → these gates are inert (the guarded DMG bonus / FeatureDamage
+ * branch is dormant), matching her output exactly.
+ *
+ * `invert: true` (her `ConditionNot([ConditionEnemyStatus])`) is the "enemy NOT
+ * affected" branch — Dragonspine Spear / Frostbearer / Snow-Tombed Starsilver's
+ * lower-multiplier Everfrost hit, which fires when no cryo status is set.
+ */
+export interface ConditionEnemyStatus extends ConditionBase {
+  readonly type: "enemy-status";
+  /** Enemy affliction elements that activate this condition, e.g. ["cryo", "hydro"]. */
+  readonly statuses: readonly string[];
+  /** A pure gate — contributes NO stats of its own (narrowed to `never`, like weapon-type). */
+  readonly stats?: never;
+}
+
+/**
+ * A condition that activates when a numeric value in the context passes a comparison
+ * threshold. Activation: `ctx[setting] <cond> value` (value defaults to 0; an absent ctx
+ * key reads 0), AND the optional `.condition` gate passes; `invert` flips the result.
+ *
+ * Stat-bearing and refine-scaled like ConditionBooleanRefine: when `refinementStats` is
+ * present the active bag is `refinementStats[weapon_refine - 1]` (folded with any flat
+ * `stats`); otherwise plain `stats`. Models "max-stack reached" weapon passives (Primordial
+ * Jade Winged Spear's 7th stack, Kagura's Verity's 3rd, Cashflow Supervision) and sub-gates
+ * on a ConditionStaticRefine (Bond-of-Life / party-element thresholds).
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/Value.js:
+ *   getCompareValue = settings[setting] || 0;  checkSubconditions = gate && (value2 <cond> value1);
+ *   getStats refine-scaled via getLevel('weapon_refine').
+ */
+export interface ConditionBooleanValue extends ConditionBase {
+  readonly type: "boolean-value";
+  /** Settings key holding the comparison value (caller-supplied; e.g. a stack count). */
+  readonly setting: string;
+  /** Comparison operator applied as `ctx[setting] <cond> value`. */
+  readonly cond: "gt" | "ge" | "eq" | "le" | "lt";
+  /** Threshold to compare against (default 0). */
+  readonly value?: number;
+  /** Optional per-refinement stat bags (refinementStats[weapon_refine - 1]); else `stats`. */
+  readonly refinementStats?: readonly ConditionStats[];
+}
+
+/**
+ * A multi-state selector ("dropdown") condition. Active when `ctx[name]` is a positive
+ * number (the selected option, 1-indexed) AND the optional `.condition` gate passes.
+ * Each option carries a refine-indexed stat bag; the active bag is
+ * `options[ctx[name] - 1][weapon_refine - 1]`.
+ *
+ * Ports raw/genshin_calc_pub/src/js/classes/Condition/Dropdown.js — her `params.values[i]`
+ * each wrap an inner `ConditionStaticRefine` whose `getStats` is refine-scaled. The selection
+ * is caller-supplied (a `passiveToggles` value; e.g. Mistsplitter's stack level 1/2/3, Polar
+ * Star's 1-4). `ConditionDropdownElement` (an element-keyed selector) reuses this shape — the
+ * element-icon rendering is UI-only; here the option index is the discriminant either way.
+ */
+export interface ConditionDropdown extends ConditionBase {
+  readonly type: "dropdown";
+  /** Settings key holding the selected option (positive integer; 0/absent → inactive). */
+  readonly name: string;
+  /**
+   * Per-option stat bags. `options[selected - 1]` is the chosen option's per-refinement
+   * array (`refinementStats[weapon_refine - 1]`). Mirrors her `values[i].conditions[0]`
+   * (a ConditionStaticRefine) per option.
+   */
+  readonly options: readonly (readonly ConditionStats[])[];
+}
+
+/**
+ * Logical NOT: active iff NOT all `items` are active (`!items.every(active)`).
+ * Her `ConditionNot.isActive` = `!(item1 && item2 && …)`. A pure gate (no stats);
+ * used as a `.condition` on another condition (e.g. The Widsith's mutually-exclusive
+ * themes: theme N active only when no higher theme is selected).
+ *
+ * NOTE: unlike the other variants, ConditionNot does NOT extend `ConditionBase` — it carries
+ * no `settings`/`invert`/`condition`/`stats`. Use it ONLY as a nested `.condition` gate, never
+ * as a top-level entry in a conditions array: it would evaluate fine but contribute no stats or
+ * settings (and cannot itself be gated). For a top-level negated gate, attach the `not` as the
+ * `.condition` of a stat-bearing variant.
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Not.js
+ */
+export interface ConditionNot {
+  readonly type: "not";
+  readonly items: readonly Condition[];
+}
+
+/**
+ * Lithic settings-publisher: ALWAYS active, contributes no stats, but publishes
+ * `weapon_lithic_stacks` = (wielder is Liyue ? 1 : 0) + Liyue party (party=0 solo).
+ * A downstream `ConditionStacks` keyed `weapon_lithic_stacks` reads it (the
+ * settings-propagation keystone). Reads `ctx["char_origin"]` (injected by buildStats).
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Lithic.js
+ */
+export interface ConditionLithic extends ConditionBase {
+  readonly type: "lithic";
+  /** A pure settings-publisher — no stats of its own. */
+  readonly stats?: never;
+}
+
+/**
+ * Gate on the WIELDER's identity: active when `ctx["char_name"]` ∈ `chars`
+ * (+ optional `.condition` gate + `invert`). Ports Condition/Boolean/Char.js.
+ */
+export interface ConditionBooleanChar extends ConditionBase {
+  readonly type: "boolean-char";
+  /** Allowed character names (snake_case slugs, e.g. ["aloy"]). */
+  readonly chars: readonly string[];
+  readonly stats?: never;
+}
+
+/**
+ * Gate active for NightSoul-capable wielders: `ctx["char_origin"]==="natlan"`
+ * (TravelerPyro id==100 deferred — needs char_id injection). Pure gate.
+ * Ports Condition/Boolean/NightSoul.js. INERT for any non-Natlan rep.
+ */
+export interface ConditionBooleanNightSoul extends ConditionBase {
+  readonly type: "nightsoul";
+  readonly stats?: never;
+}
+
+/**
+ * Gate on the ENEMY's type: active when `ctx["enemy_type"]` ∈ `types`. The oracle
+ * never sets `enemy_type` → always INERT in v5.8 fixtures. Ports Boolean/EnemyType.js.
+ */
+export interface ConditionBooleanEnemyType extends ConditionBase {
+  readonly type: "enemy-type";
+  readonly types: readonly string[];
+  readonly stats?: never;
+}
+
+/**
  * Logical AND of all items — all must evaluate to true.
  * Vacuous truth: empty items list → true.
  */
@@ -243,6 +381,14 @@ export type Condition =
   | ConditionStacks
   | ConditionBooleanPiecesCount
   | ConditionBooleanWeaponType
+  | ConditionEnemyStatus
+  | ConditionBooleanValue
+  | ConditionDropdown
+  | ConditionNot
+  | ConditionLithic
+  | ConditionBooleanChar
+  | ConditionBooleanNightSoul
+  | ConditionBooleanEnemyType
   | ConditionAnd
   | ConditionOr;
 

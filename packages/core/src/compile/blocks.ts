@@ -42,6 +42,7 @@ export type BlockKind =
   | "multiplier_resistance"
   | "multiplier_reaction"
   | "crit_rate"
+  | "royal_crit_rate"
   | "crit_dmg"
   | "damage";
 
@@ -317,6 +318,71 @@ export function cCritRate(children: readonly Block[]): Block {
     kind: "crit_rate",
     children,
     run: (ctx) => Math.max(0, Math.min(1, sum.run(ctx))),
+  };
+}
+
+/**
+ * Royal-passive AVERAGE crit rate transform — the Royal-weapon series (Royal Bow /
+ * Grimoire / Greatsword / Spear / Longsword) "Focus" passive's expected-value crit
+ * model. ONLY transforms the chance used for the average; `normal`/`crit` are
+ * unaffected (the royal mechanic raises the realized crit rate over a sequence of
+ * non-crit hits, captured as an effective average chance).
+ *
+ * Faithful 1:1 port of her `makeRoyalAverageCrit(critVar, royalStat)`
+ * (Feature2/Compile/Helpers.js:54-127). Inputs:
+ *   - `base`  = the per-hit clamped crit chance (the wrapped `cCritRate` block,
+ *               already a [0,1] fraction — her `critVar`).
+ *   - `bonus` = `royal_crit_rate` read VERBATIM from the stats bag (her
+ *               `makeStatItem('royal_crit_rate')` → `stats.royal_crit_rate`). NOTE:
+ *               `isPercent('royal_crit_rate')` is FALSE (it starts `royal_`, not
+ *               `crit_`), so `processPercent` does NOT divide it — it is the RAW
+ *               value (e.g. 8 at R1, 16 at R5). buildStats emits it RAW to match.
+ *               At ≥1 every `s_i` saturates to 1, which is why the effective chance
+ *               is refine-invariant for these fixtures.
+ *
+ * The polynomial (her exact expression):
+ *   s_k = min(1, base + k·bonus)   for k = 1..5
+ *   chance = −s5 / D(base, s1..s5)
+ *   result = clamp(chance, 0, 1)
+ * Degenerates cleanly: `bonus = 0` → every `s_k = base` → `result = base` (so the
+ * transform is identity when `royal_crit_rate` is absent/0).
+ *
+ * Built as a Block wrapping the base block + a `royal_crit_rate` stat read, both
+ * captured closures (closure-tree contract). The polynomial is pure arithmetic on
+ * the two resolved scalars — modelled directly in `run` (as `cCritRate`'s clamp is),
+ * NOT re-expanded into ~50 arithmetic nodes (no value, and harder to audit against
+ * her single expression).
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Compile/Helpers.js:54-127
+ *         (makeRoyalAverageCrit); Feature2/Compile/Types/Damage.js:99-100 (avg-only
+ *         substitution); Feature2/Damage.js:298-300 (gate + makeStatItem read).
+ */
+export function cRoyalCritRate(base: Block): Block {
+  const baseFn = base.run;
+  const royalFn = cStat("royal_crit_rate").run;
+  return {
+    kind: "royal_crit_rate",
+    children: [base],
+    run: (ctx) => {
+      const b = baseFn(ctx);
+      const bonus = royalFn(ctx);
+      if (b >= 1) return 1;
+      const s1 = Math.min(1, b + bonus);
+      const s2 = Math.min(1, b + 2 * bonus);
+      const s3 = Math.min(1, b + 3 * bonus);
+      const s4 = Math.min(1, b + 4 * bonus);
+      const s5 = Math.min(1, b + 5 * bonus);
+      const denom =
+        b - b * s1 + s1 - b * s2 + b * s1 * s2 - s1 * s2 + s2 - b * s3 + b * s1 * s3 - s1 * s3 +
+        b * s2 * s3 - b * s1 * s2 * s3 + s1 * s2 * s3 - s2 * s3 + s3 - b * s4 + b * s1 * s4 - s1 * s4 +
+        b * s2 * s4 - b * s1 * s2 * s4 + s1 * s2 * s4 - s2 * s4 + b * s3 * s4 - b * s1 * s3 * s4 + s1 * s3 * s4 -
+        b * s2 * s3 * s4 + b * s1 * s2 * s3 * s4 - s1 * s2 * s3 * s4 + s2 * s3 * s4 - s3 * s4 + s4 + 4 * b * s5 -
+        3 * b * s1 * s5 + 3 * s1 * s5 - 2 * b * s2 * s5 + 2 * b * s1 * s2 * s5 - 2 * s1 * s2 * s5 + 2 * s2 * s5 -
+        b * s3 * s5 + b * s1 * s3 * s5 - s1 * s3 * s5 + b * s2 * s3 * s5 -
+        b * s1 * s2 * s3 * s5 + s1 * s2 * s3 * s5 - s2 * s3 * s5 + s3 * s5 - 5 * s5 - 1;
+      const chance = -s5 / denom;
+      return Math.max(0, Math.min(1, chance));
+    },
   };
 }
 

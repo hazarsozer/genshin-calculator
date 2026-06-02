@@ -1,0 +1,1328 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "EVERY non-beta artifact set (55) at 4pc, zero artifact stats, on the SET_REP rep; named checkbox/stacks 4pc conditionals enabled to max (equipSet). Isolates the full 2pc+4pc bonus.",
+    "id": "sets-4pc"
+  },
+  "featureTotal": 1569,
+  "itemCount": 55,
+  "items": [
+    {
+      "artifactSets": {
+        "Adventurer": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "set",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "Adventurer",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {
+        "ArchaicPetra": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "set",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {},
+      "slug": "ArchaicPetra",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "Berserker": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "set",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {
+        "set.berserker_4": true
+      },
+      "slug": "Berserker",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "BlizzardStrayer": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "set",
+      "repKey": "Ayaka",
+      "repSlug": "kamisato_ayaka",
+      "setToggles": {},
+      "slug": "BlizzardStrayer",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "BloodstainedChivalry": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "set",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {
+        "set.bloodstained_chivalry_4": true
+      },
+      "slug": "BloodstainedChivalry",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "BraveHeart": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "set",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {
+        "brave_heart_4": true
+      },
+      "slug": "BraveHeart",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "CrimsonWitch": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "set",
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "setToggles": {
+        "set.crimson_witch_of_flames_4": 3
+      },
+      "slug": "CrimsonWitchOfFlames",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "DeepwoodMemories": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "set",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {
+        "set.deepwood_memories_4": true
+      },
+      "slug": "DeepwoodMemories",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {
+        "DefendersWill": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "set",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {},
+      "slug": "DefendersWill",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "DesertPavilionChronicle": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "kind": "set",
+      "repKey": "Wanderer",
+      "repSlug": "wanderer",
+      "setToggles": {
+        "set.desert_pavilion_chronicle_4": true
+      },
+      "slug": "DesertPavilionChronicle",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {
+        "EchoesofanOffering": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 20,
+      "kind": "set",
+      "repKey": "Mualani",
+      "repSlug": "mualani",
+      "setToggles": {
+        "set.echoes_of_an_offering_4": true,
+        "set.echoes_of_an_offering_4_avg": true
+      },
+      "slug": "EchoesOfAnOffering",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {
+        "EmblemofSeveredFate": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "set",
+      "repKey": "RaidenShogun",
+      "repSlug": "raiden_shogun",
+      "setToggles": {},
+      "slug": "EmblemOfSeveredFate",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {
+        "FinaleOfTheDeepGalleries": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "set",
+      "repKey": "Escoffier",
+      "repSlug": "escoffier",
+      "setToggles": {
+        "set.finale_of_the_deep_galleries_4_1": true,
+        "set.finale_of_the_deep_galleries_4_2": true
+      },
+      "slug": "FinaleOfTheDeepGalleries",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {
+        "FlowerOfParadiseLost": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "set",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {
+        "set.flower_of_paradise_lost_4": 4
+      },
+      "slug": "FlowerOfParadiseLost",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {
+        "FragmentOfHarmonicWhimsy": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "set",
+      "repKey": "Furina",
+      "repSlug": "furina",
+      "setToggles": {
+        "set.fragment_of_harmonic_whimsy_4": 3
+      },
+      "slug": "FragmentOfHarmonicWhimsy",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "Gambler": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "set",
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "setToggles": {},
+      "slug": "Gambler",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "GildedDreams": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "set",
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "setToggles": {
+        "set.gilded_dreams_4": true
+      },
+      "slug": "GildedDreams",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "GladiatorFinale": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "set",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {},
+      "slug": "GladiatorsFinale",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "GoldenTroupe": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "set",
+      "repKey": "Fischl",
+      "repSlug": "fischl",
+      "setToggles": {
+        "set.golden_troupe_4": true
+      },
+      "slug": "GoldenTroupe",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {
+        "HeartofDepth": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "set",
+      "repKey": "Tartaglia",
+      "repSlug": "tartaglia",
+      "setToggles": {
+        "set.heart_of_depth_4": true
+      },
+      "slug": "HeartOfDepth",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {
+        "HuskofOpulentDreams": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "set",
+      "repKey": "Albedo",
+      "repSlug": "albedo",
+      "setToggles": {
+        "set.husk_of_opulent_dreams_4_def": 4,
+        "set.husk_of_opulent_dreams_4_geo": 4
+      },
+      "slug": "HuskOfOpulentDreams",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "Instructor": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "set",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {
+        "set.instructor_4": true
+      },
+      "slug": "Instructor",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {
+        "Lavawalker": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "set",
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "setToggles": {},
+      "slug": "Lavawalker",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "LongNightsOath": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "set",
+      "repKey": "Mavuika",
+      "repSlug": "mavuika",
+      "setToggles": {
+        "set.long_nights_oath_4": 5
+      },
+      "slug": "LongNightsOath",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "LuckyDog": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "set",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "LuckyDog",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {
+        "MaidenBeloved": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "set",
+      "repKey": "Sigewinne",
+      "repSlug": "sigewinne",
+      "setToggles": {
+        "set.maiden_beloved_4": true
+      },
+      "slug": "MaidenBeloved",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {
+        "MarechausseeHunter": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "set",
+      "repKey": "Furina",
+      "repSlug": "furina",
+      "setToggles": {
+        "set.marechaussee_hunter_4": 3
+      },
+      "slug": "MarechausseeHunter",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "MartialArtist": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "set",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {
+        "set.martial_artist_4": true
+      },
+      "slug": "MartialArtist",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {
+        "NighttimeWhispersInTheEchoingWoods": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "set",
+      "repKey": "Navia",
+      "repSlug": "navia",
+      "setToggles": {
+        "set.nighttime_whispers_in_the_echoing_woods_4_1": true,
+        "set.nighttime_whispers_in_the_echoing_woods_4_2": true
+      },
+      "slug": "NighttimeWhispersInTheEchoingWoods",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "NoblesseOblige": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "kind": "set",
+      "repKey": "Bennet",
+      "repSlug": "bennett",
+      "setToggles": {
+        "set.noblesse_oblige_4": true
+      },
+      "slug": "NoblesseOblige",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "NymphsDream": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "set",
+      "repKey": "Tartaglia",
+      "repSlug": "tartaglia",
+      "setToggles": {
+        "set.nymphs_dream_4": 3
+      },
+      "slug": "NymphsDream",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {
+        "ObsidianCodex": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "set",
+      "repKey": "Mavuika",
+      "repSlug": "mavuika",
+      "setToggles": {
+        "common.nightsoul_blessing_state": true,
+        "set.obsidian_codex_4": true
+      },
+      "slug": "ObsidianCodex",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "OceanHuedClam": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "set",
+      "repKey": "Sigewinne",
+      "repSlug": "sigewinne",
+      "setToggles": {},
+      "slug": "OceanHuedClam",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {
+        "PaleFlame": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "set",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {
+        "set.pale_flame_4": 2
+      },
+      "slug": "PaleFlame",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "PrayersForDestiny": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "set",
+      "repKey": "Tartaglia",
+      "repSlug": "tartaglia",
+      "setToggles": {},
+      "slug": "PrayersForDestiny",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {
+        "PrayersForIllumination": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "set",
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "setToggles": {},
+      "slug": "PrayersForIllumination",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "PrayersForWisdom": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "set",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "PrayersForWisdom",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "PrayersForSpringtime": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "set",
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "setToggles": {},
+      "slug": "PrayersToSpringtime",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "ResolutionofSojourner": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "set",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "ResolutionOfSojourner",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "RetracingBolide": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "set",
+      "repKey": "Noelle",
+      "repSlug": "noelle",
+      "setToggles": {
+        "common.char_status_shield": true
+      },
+      "slug": "RetracingBolide",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "Scholar": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "set",
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "setToggles": {},
+      "slug": "Scholar",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {
+        "ScrollOfTheEmberedCitysHero": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "set",
+      "repKey": "Mavuika",
+      "repSlug": "mavuika",
+      "setToggles": {
+        "set.scroll_of_the_hero_of_cinder_city_4_1": true,
+        "set.scroll_of_the_hero_of_cinder_city_4_2": true
+      },
+      "slug": "ScrollOfTheHeroOfCinderCity",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "ShimenawasReminiscence": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "set",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {
+        "set.shimenawas_reminiscence_4": true
+      },
+      "slug": "ShimenawasReminiscence",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {
+        "SongOfDaysPast": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "set",
+      "repKey": "Sigewinne",
+      "repSlug": "sigewinne",
+      "setToggles": {
+        "set.song_of_days_past_4": true
+      },
+      "slug": "SongOfDaysPast",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {
+        "TenacityofMillelith": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "set",
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "setToggles": {
+        "set.tenacity_of_the_millelith_4": true
+      },
+      "slug": "TenacityOfTheMillelith",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "Exile": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "kind": "set",
+      "repKey": "Bennet",
+      "repSlug": "bennett",
+      "setToggles": {},
+      "slug": "TheExile",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "ThunderingFury": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "set",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "ThunderingFury",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "Thundersoother": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "set",
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "setToggles": {},
+      "slug": "Thundersoother",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "TinyMiracle": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "set",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "TinyMiracle",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {
+        "TravelingDoctor": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "set",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "TravelingDoctor",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {
+        "UnfinishedReverie": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "set",
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "setToggles": {
+        "set.unfinished_reverie_4": 5
+      },
+      "slug": "UnfinishedReverie",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "VermillionHereafter": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "set",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {
+        "set.vermillion_hereafter_4_burst": true,
+        "set.vermillion_hereafter_4_stacks": 4
+      },
+      "slug": "VermillionHereafter",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {
+        "ViridescentVenerer": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 50,
+      "kind": "set",
+      "repKey": "Kazuha",
+      "repSlug": "kaedehara_kazuha",
+      "setToggles": {},
+      "slug": "ViridescentVenerer",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "DewflowersGlow": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "set",
+      "repKey": "Sigewinne",
+      "repSlug": "sigewinne",
+      "setToggles": {
+        "set.vourukashas_glow_4": 5
+      },
+      "slug": "VourukashasGlow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {
+        "WandererTroupe": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "set",
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "setToggles": {},
+      "slug": "WanderersTroupe",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "catalyst"
+      }
+    }
+  ]
+}

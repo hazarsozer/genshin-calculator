@@ -13,7 +13,7 @@
  *         raw/genshin_calc_pub/src/js/db/generated/WeaponScale.js
  */
 
-import { StatTable, StatTableAscensionScale } from "@genshin/core";
+import { StatTable, StatTableAscensionScale, StatTableAscensionWeapon } from "@genshin/core";
 import type { StatTableEntry } from "@genshin/types";
 
 const atk_1_1 = new StatTable([
@@ -1148,7 +1148,9 @@ export const FlowerWreathedFeathersStatTable: readonly StatTableEntry[] = [
 
 export const ShatteredChainsStatTable: readonly StatTableEntry[] = [
   entry("atk_base", 43.7349, atk_2_2, asc_1),
-  entry("atk_percent", 6, crt_3_1),
+  // atk_percent: a level-breakpoint substat emitted as exact AtkTables values — her
+  // db/generated approximates it as base×scale (off ~0.025% at L90; oracle uses AtkTables).
+  new StatTableAscensionWeapon("atk_percent", [6, 10.6, 15.5, 17.9, 20.3, 22.7, 25.1, 27.6]),
 ];
 
 export const SequenceofSolitudeStatTable: readonly StatTableEntry[] = [

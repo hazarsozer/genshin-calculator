@@ -50,9 +50,15 @@ export function compileCharacter(
   // active ones into each matching feature's base term. An explicit `ctx.charMultipliers`
   // (e.g. from tests) takes precedence so callers can override. Mirrors
   // Feature2.getMultipliers reading `data.multipliers` (Feature2.js:121).
-  const charMultipliers: readonly CharMultiplier[] =
-    ctx.charMultipliers ??
-    char.multipliers.filter((m): m is CharMultiplier => m.target !== undefined);
+  // Weapon/set-sourced char-level ("targeted") multipliers (Redhorn def→normal/charged,
+  // Echoes normal-DMG variant) merge into the same active-multiplier list as the char's
+  // own — her getMultipliers iterates `data.multipliers`, populated from every equipped
+  // object. `extraMultipliers` is the caller-assembled weapon+set slice. Inert when absent.
+  const charMultipliers: readonly CharMultiplier[] = [
+    ...(ctx.charMultipliers ??
+      char.multipliers.filter((m): m is CharMultiplier => m.target !== undefined)),
+    ...(ctx.extraMultipliers ?? []),
+  ];
   const featureCtx: CompileContext = { ...ctx, charMultipliers };
 
   // The standard transformative-reaction contributions are generic (computed from
@@ -67,7 +73,10 @@ export function compileCharacter(
         })
       : [];
 
-  for (const feature of [...char.features, ...reactionFeatures]) {
+  // Weapon/set-sourced damage features (Aquila's proc, Ocean-Hued Clam's Foam) compile
+  // alongside the char's own — her getFeaturesHash concats features from every equipped
+  // object. `extraFeatures` is the caller-assembled weapon+set slice. Inert when absent.
+  for (const feature of [...char.features, ...(ctx.extraFeatures ?? []), ...reactionFeatures]) {
     if (feature.isChild) continue;
     // Feature-level gate: a constellation-added (or otherwise conditional) feature is
     // produced only when its condition holds against the compile settings (absent =

@@ -31,6 +31,13 @@ import type {
   ConditionStacks,
   ConditionBooleanPiecesCount,
   ConditionBooleanWeaponType,
+  ConditionEnemyStatus,
+  ConditionBooleanValue,
+  ConditionDropdown,
+  ConditionNot,
+  ConditionBooleanChar,
+  ConditionBooleanNightSoul,
+  ConditionBooleanEnemyType,
   ConditionStats,
   EvalContext,
 } from "@genshin/types";
@@ -69,6 +76,22 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return evaluatePiecesCount(condition, ctx);
     case "weapon-type":
       return evaluateWeaponType(condition, ctx);
+    case "enemy-status":
+      return evaluateEnemyStatus(condition, ctx);
+    case "boolean-value":
+      return evaluateBooleanValue(condition, ctx);
+    case "dropdown":
+      return evaluateDropdown(condition, ctx);
+    case "not":
+      return !condition.items.every((item) => evaluate(item, ctx));
+    case "lithic":
+      return true; // always active; publishes weapon_lithic_stacks via conditionSettings
+    case "boolean-char":
+      return evaluateBooleanChar(condition, ctx);
+    case "nightsoul":
+      return evaluateNightSoul(condition, ctx);
+    case "enemy-type":
+      return evaluateEnemyType(condition, ctx);
     case "and":
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
@@ -140,11 +163,31 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "refine":
     case "boolean-refine":
       return { ...toNumberBag(condition.stats), ...(refineBag(condition.refinementStats, ctx) ?? {}) };
+    case "boolean-value":
+      // Stat-bearing; refine-scaled when refinementStats is present (her getStats via
+      // getLevel('weapon_refine')), else the plain flat `stats` bag.
+      return condition.refinementStats !== undefined
+        ? { ...toNumberBag(condition.stats), ...(refineBag(condition.refinementStats, ctx) ?? {}) }
+        : toNumberBag(condition.stats);
+    case "dropdown": {
+      // The selected option's refine-scaled bag: options[ctx[name] - 1][weapon_refine - 1].
+      // `evaluate` already guaranteed active (selected > 0) above.
+      const raw = ctx[condition.name];
+      const selected = typeof raw === "number" ? raw : 0;
+      const optionBag = selected > 0 ? condition.options[selected - 1] : undefined;
+      return optionBag !== undefined ? (refineBag(optionBag, ctx) ?? {}) : {};
+    }
     case "and":
     case "or":
+    case "not":
     case "pieces-count":
     case "weapon-type":
-      // Pure gates / logical containers carry no stats of their own.
+    case "enemy-status":
+    case "lithic":
+    case "boolean-char":
+    case "nightsoul":
+    case "enemy-type":
+      // Pure gates / logical containers / settings-publishers carry no stats of their own.
       return {};
     case "boolean":
     case "static":
@@ -217,7 +260,14 @@ export function conditionSettings(
 ): Record<string, unknown> {
   if (!evaluate(condition, ctx)) return {};
   // Logical containers carry no settings of their own (their operands do).
-  if (condition.type === "and" || condition.type === "or") return {};
+  if (condition.type === "and" || condition.type === "or" || condition.type === "not") return {};
+  // Lithic publishes a DYNAMIC settings value computed from the wielder's origin:
+  // weapon_lithic_stacks = (Liyue ? 1 : 0) + Liyue party (party=0 in the solo model).
+  // A downstream ConditionStacks keyed `weapon_lithic_stacks` reads it.
+  // Source: raw/genshin_calc_pub/src/js/classes/Condition/Lithic.js:4-32
+  if (condition.type === "lithic") {
+    return { weapon_lithic_stacks: ctx["char_origin"] === "liyue" ? 1 : 0 };
+  }
   // Every other variant extends ConditionBase, which may carry `.settings`.
   return condition.settings ? { ...condition.settings } : {};
 }
@@ -366,6 +416,94 @@ function evaluateWeaponType(
   if (!checkGate(condition, ctx)) return false;
   const wt = ctx["weapon_type"];
   const active = typeof wt === "string" && condition.types.includes(wt);
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionEnemyStatus.isActive — active when ctx["common.enemy_status"] is a
+ * non-empty string in `statuses`, AND the optional `.condition` gate passes. Mirrors raw:
+ *   `checkSubconditions(settings) && status && statuses.includes(status)` (EnemyStatus.js:9-19),
+ * where a falsy `common.enemy_status` yields `false` (the `result = false` branch). An absent
+ * context key → inactive. `invert` flips the result (her `ConditionNot` wrapper).
+ */
+function evaluateEnemyStatus(
+  condition: ConditionEnemyStatus,
+  ctx: EvalContext
+): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const status = ctx["common.enemy_status"];
+  const active =
+    typeof status === "string" && status !== "" && condition.statuses.includes(status);
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionBooleanValue.checkSubconditions — active when `ctx[setting] <cond> value`,
+ * AND the optional `.condition` gate passes. The compare value reads `ctx[setting]` (a number;
+ * absent → 0, her `settings[setting] || 0`); the threshold defaults to 0. `invert` flips it.
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Boolean/Value.js:13-43
+ */
+const VALUE_OPS: Readonly<
+  Record<ConditionBooleanValue["cond"], (a: number, b: number) => boolean>
+> = {
+  gt: (a, b) => a > b,
+  ge: (a, b) => a >= b,
+  eq: (a, b) => a === b,
+  le: (a, b) => a <= b,
+  lt: (a, b) => a < b,
+};
+
+function evaluateBooleanValue(
+  condition: ConditionBooleanValue,
+  ctx: EvalContext
+): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const raw = ctx[condition.setting];
+  const value2 = typeof raw === "number" ? raw : 0;
+  const value1 = condition.value ?? 0;
+  const active = VALUE_OPS[condition.cond](value2, value1);
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionDropdown.isActive — active when `ctx[name]` is a positive number (a selected
+ * option), AND the optional `.condition` gate passes. The stat bag is resolved in
+ * `conditionStats` (the selected option's refine-scaled bag). `invert` flips activeness.
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Dropdown.js:42-65
+ */
+function evaluateDropdown(condition: ConditionDropdown, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const raw = ctx[condition.name];
+  const active = typeof raw === "number" && raw > 0;
+  return condition.invert ? !active : active;
+}
+
+/** Ports ConditionBooleanChar.isActive — active when ctx["char_name"] is in `chars`. */
+function evaluateBooleanChar(condition: ConditionBooleanChar, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const name = ctx["char_name"];
+  const active = typeof name === "string" && condition.chars.includes(name);
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionBooleanNightSoul.isActive — active for NightSoul-capable wielders:
+ * `ctx["char_origin"] === "natlan"` (or `char_id === 100` for TravelerPyro, deferred until
+ * char_id is injected). Source: raw/.../Condition/Boolean/NightSoul.js.
+ */
+function evaluateNightSoul(condition: ConditionBooleanNightSoul, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const active = ctx["char_origin"] === "natlan" || ctx["char_id"] === 100;
+  return condition.invert ? !active : active;
+}
+
+/** Ports ConditionBooleanEnemyType.isActive — active when ctx["enemy_type"] is in `types`. */
+function evaluateEnemyType(condition: ConditionBooleanEnemyType, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const typ = ctx["enemy_type"];
+  const active = typeof typ === "string" && condition.types.includes(typ);
   return condition.invert ? !active : active;
 }
 

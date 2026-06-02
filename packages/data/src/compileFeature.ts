@@ -34,6 +34,7 @@ import {
   cConst,
   cCritDmg,
   cCritRate,
+  cRoyalCritRate,
   cDamage,
   cDivide,
   cLunarChargedDamage,
@@ -99,6 +100,28 @@ export interface CompileContext {
    * feature (Feature2.js:121-125). Absent/empty = no char-level multipliers.
    */
   readonly charMultipliers?: readonly CharMultiplier[];
+  /**
+   * WEAPON/SET-sourced features folded into the compile loop alongside `char.features`
+   * — a weapon's `DbObjectWeapon.features` (Aquila's ATK%-physical proc) + an equipped
+   * set's `DbObjectArtifactSet.features` (Ocean-Hued Clam's Foam), concatenated by the
+   * caller (the armory harness). Each compiles through the SAME `compileFeature` path as
+   * a char feature (its scaling reads the wielder's `*_total` stats, already in the
+   * build) and is subject to the same `feature.condition` produce-gate. Mirrors her
+   * `CalcSet.getFeaturesHash`, which concats features from every equipped object.
+   * Absent/empty = char features only (the base build → C0 golden untouched).
+   */
+  readonly extraFeatures?: readonly Feature[];
+  /**
+   * WEAPON/SET-sourced CHAR-LEVEL ("targeted") multipliers merged into the active
+   * char-level multiplier list — a weapon's `DbObjectWeapon.multipliers` (Redhorn's
+   * `def*` into normal/charged) + an equipped set's `DbObjectArtifactSet.multipliers`
+   * (Echoes' normal-DMG variant), concatenated by the caller. Each injects into every
+   * matching feature's base term gated by its own `target` + `condition`, exactly as
+   * `char.multipliers` do — her `Feature2.getMultipliers` iterates `data.multipliers`,
+   * which she populates from every equipped object's contributions. Absent/empty = char
+   * multipliers only.
+   */
+  readonly extraMultipliers?: readonly CharMultiplier[];
 }
 
 /**
@@ -177,8 +200,25 @@ function baseDamageTerm(
   entry: FeatureMultiplierEntry,
   ctx: CompileContext
 ): Block {
+  // Resolve the base level her `FeatureMultiplier.getLevel` reads
+  // (`settings.getLevel(leveling)` → `getSkillLevelByName`, Build/Settings.js:49-50:
+  // `settings[name] || 1`). For the three char-skill slots that is the build's talent
+  // level (carried on `ctx.talentLevels`); for any OTHER settings-driven leveling key
+  // (`weapon_refine` for a weapon/set FeatureDamage proc — Aquila's AoE — leveled R1→R5)
+  // it is `settings[leveling]`. A constant multiplier (`leveling: ""`) stays at 1.
+  // Base-inert: every base/cons char feature uses a char-skill slot or "" → the
+  // `settings[leveling]` branch is reached only by weapon/set features (none in the base
+  // build), so the goldenConfig 1773 / constellations surface is untouched.
   const slot = LEVELING_TO_SLOT[entry.leveling];
-  const baseLevel = slot !== undefined ? ctx.talentLevels[slot] : 1;
+  let baseLevel: number;
+  if (slot !== undefined) {
+    baseLevel = ctx.talentLevels[slot];
+  } else if (entry.leveling) {
+    const fromSettings = ctx.settings[entry.leveling];
+    baseLevel = typeof fromSettings === "number" ? fromSettings : 1;
+  } else {
+    baseLevel = 1;
+  }
   // Talent-level bumps (constellation C3/C5) are condition-contributed
   // `<leveling>_bonus` settings added on top of the base level — her
   // Feature.getTalentLevel (Feature.js:235-244). Inert when no `_bonus` key is set.
@@ -262,8 +302,30 @@ function dmgBonusKeys(
 ): readonly string[] {
   const keys = ["dmg_all", `dmg_${dmgElementKey(element)}`];
   if (damageType) keys.push(`dmg_${damageType}`);
+  // Charged attacks additionally pick up the enemy-vulnerability key
+  // `dmg_charged_enemy` — her FeatureDamageCharged.getStatsDmgBonus override
+  // (Charged.js:14-18) is the ONLY damage subclass that adds a `dmg_<type>_enemy`
+  // key. The v5.8 source is an enemy debuff (Scion of the Blazing Sun's Sunfire
+  // Fan); the key reads 0 for every build that contributes none → base-safe.
+  if (damageType === "charged") keys.push("dmg_charged_enemy");
   if (feature.damageBonuses) keys.push(...feature.damageBonuses);
   return keys;
+}
+
+/**
+ * Per-type CRIT keys for a hit, folded generically (type only):
+ * `crit_<which>_<damageType>` when the hit has a damage type. Mirrors her
+ * getDefaultStatsCritRate / getDefaultStatsCritDamage (Damage.js:72-122), which
+ * push `crit_rate_<damageType>` / `crit_dmg_<damageType>` for the hit's type —
+ * exactly as getStatsDmgBonus pushes `dmg_<damageType>`. This lets a WEAPON/
+ * SET/cons-sourced type-crit (e.g. The Catch's always-on `crit_rate_burst`)
+ * reach every burst hit without the feature pre-declaring the key. Absent keys
+ * read 0 (cStat default) → base-safe. ELEMENT crit (`crit_*_<element>`) and the
+ * combined `crit_*_<element>_<type>` are deliberately NOT folded here (deferred);
+ * char-specific suffixed keys stay on `feature.critRateBonuses` (not generic).
+ */
+function critBonusTypeKeys(which: "rate" | "dmg", damageType: string): readonly string[] {
+  return damageType ? [`crit_${which}_${damageType}`] : [];
 }
 
 /**
@@ -397,12 +459,26 @@ export function compileFeature(
   // in) PLUS the active char-level multipliers targeting this damage type — her
   // getMultipliers merges both into one CBaseDamage (e.g. Itto A4's 0.35×DEF on
   // every charged hit). They are base terms, not separate multiplicative factors.
-  const multipliers: readonly FeatureMultiplierEntry[] =
+  const ownMultipliers: readonly FeatureMultiplierEntry[] =
     feature.multipliers ??
     (feature.items ?? []).flatMap((item) => item.multipliers);
+  // Char-level ("targeted") multipliers apply PER ITEM, not once to the aggregate:
+  // her FeatureDamageMultihit.getTree calls getMultipliers() FRESH inside the per-hit
+  // loop (Multihit.js:23-27), so an N-instance hit (e.g. Keqing's 2-slash normal_hit_4,
+  // Hu Tao's normal_hit_5) sums each matched char-multiplier's base term N times. Our
+  // model computes ONE shared CBaseDamage over the summed item bases, so we replicate
+  // the matched char-multiplier terms once per item to reproduce that sum. itemCount = 1
+  // for a single-hit feature → IDENTICAL to before. Base-safe: a currently-green feature
+  // is either single-item (itemCount 1, no change) or has no active char-multiplier
+  // targeting it (nothing to replicate) — a base multihit feature targeted by an active
+  // char-multiplier would already be RED (short by the per-item amount), and none are.
+  const charMultipliers = activeCharMultipliers(feature, damageType, ctx);
+  const itemCount = feature.items?.length ?? 1;
+  const replicatedCharMultipliers: FeatureMultiplierEntry[] = [];
+  for (let i = 0; i < itemCount; i++) replicatedCharMultipliers.push(...charMultipliers);
   const baseTerms = [
-    ...activeOwnMultipliers(multipliers, ctx),
-    ...activeCharMultipliers(feature, damageType, ctx),
+    ...activeOwnMultipliers(ownMultipliers, ctx),
+    ...replicatedCharMultipliers,
   ].map((m) => baseDamageTerm(m, ctx));
 
   // DEF-ignore: the generic key plus this feature's per-type key
@@ -421,17 +497,42 @@ export function compileFeature(
     cMultiplierDefence("enemy_def_reduce", defIgnoreKeys),
   ];
 
-  // Crit: the aggregated totals (buildStats folds per-element/-type crit in),
-  // PLUS any feature-declared crit bonus keys. Mirrors her getDefaultStatsCritRate
-  // / getDefaultStatsCritDamage (Damage.js:72-122): the generic crit set, then
-  // `this.critRateBonuses` / `this.critDamageBonuses` concatenated. E.g. Amber's
-  // A1 `crit_rate_amber` (auto-active at A6) lifts her burst crit rate by 10%.
-  const critRate = cCritRate([
+  // Crit: the aggregated totals (buildStats folds crit_rate/_dmg in), PLUS the
+  // generic per-TYPE crit keys (`crit_*_<damageType>`, folded here exactly as
+  // `dmg_<damageType>` is in dmgBonusKeys — so a weapon/set/cons-sourced type-crit
+  // like The Catch's `crit_rate_burst` reaches every burst hit), PLUS any
+  // feature-declared crit bonus keys (char-specific suffixed keys + element crit,
+  // not yet generically folded). Mirrors her getDefaultStatsCritRate /
+  // getDefaultStatsCritDamage (Damage.js:72-122): generic set (incl. the per-type
+  // push), then `this.critRateBonuses` / `this.critDamageBonuses` concatenated.
+  const critRateBase = cCritRate([
     cStat("crit_rate_total"),
+    ...critBonusTypeKeys("rate", damageType).map((k) => cStat(k)),
     ...(feature.critRateBonuses ?? []).map((k) => cStat(k)),
   ]);
+  // Royal-passive AVERAGE crit transform — wrap the clamped chance ONLY when the
+  // Royal-weapon toggle `weapon_royal_avg_crit_rate` is set (her Damage.js:298 gate)
+  // AND this is a single-hit feature. Affects ONLY the avg (cDamage feeds `chance`
+  // only into the avg term); normal/crit are untouched. Base-inert: no base-build
+  // char sets that toggle → the wrap never applies (goldenConfig 1773 + constellations
+  // 107 unchanged). When set but `royal_crit_rate` is 0/absent the polynomial
+  // degenerates to the base chance.
+  //
+  // MULTIHIT EXCLUSION: her `FeatureDamageMultihit.getTree` (Multihit.js:57-60)
+  // builds its CDamage WITHOUT `royalCrit` — it OVERRIDES the base getTree that adds
+  // it (Damage.js:298-300). So multihit-AGGREGATE features (our `feature.items` shape)
+  // use the plain crit chance for their avg; only their single-hit children (modelled
+  // with `multipliers`, using the base getTree) get the royal transform. Every other
+  // Damage subclass (Normal/Charged/Burst/Skill/Plunge) inherits the base getTree →
+  // royal applies. Mirror that exactly: skip the wrap when `feature.items` is present.
+  const isMultihitAggregate = feature.items !== undefined;
+  const critRate =
+    ctx.settings["weapon_royal_avg_crit_rate"] && !isMultihitAggregate
+      ? cRoyalCritRate(critRateBase)
+      : critRateBase;
   const critDmg = cCritDmg([
     cStat("crit_dmg_total"),
+    ...critBonusTypeKeys("dmg", damageType).map((k) => cStat(k)),
     ...(feature.critDamageBonuses ?? []).map((k) => cStat(k)),
   ]);
 

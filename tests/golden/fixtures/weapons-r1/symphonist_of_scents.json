@@ -1,0 +1,300 @@
+{
+  "element": "pyro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 4352.772604885663,
+      "category": "attack",
+      "crit": 11005.343114655141,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3613.598103800165
+    },
+    "attack.normal_hit_1": {
+      "average": 1401.0011397783446,
+      "category": "attack",
+      "crit": 3542.2246110392934,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1163.0874207493503
+    },
+    "attack.normal_hit_2": {
+      "average": 1441.864007990879,
+      "category": "attack",
+      "crit": 3645.5403424476167,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1197.0110819401302
+    },
+    "attack.normal_hit_3": {
+      "average": 1824.2210715088845,
+      "category": "attack",
+      "crit": 4612.2737462566065,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1514.4374409813597
+    },
+    "attack.normal_hit_4": {
+      "average": 1961.4009257516839,
+      "category": "attack",
+      "crit": 4959.112761615656,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1628.3218328779092
+    },
+    "attack.normal_hit_5": {
+      "average": 2046.0459170047898,
+      "category": "attack",
+      "crit": 5173.12512941815,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1698.5926711810828
+    },
+    "attack.normal_hit_5_1": {
+      "average": 994.2432595135399,
+      "category": "attack",
+      "crit": 2513.797343352615,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 825.4039168647538
+    },
+    "attack.normal_hit_5_2": {
+      "average": 1051.8026574912496,
+      "category": "attack",
+      "crit": 2659.3277860655353,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 873.188754316329
+    },
+    "attack.normal_hit_6": {
+      "average": 2568.5020895936314,
+      "category": "attack",
+      "crit": 6494.078453572037,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2132.326938040475
+    },
+    "attack.plunge": {
+      "average": 1815.1484361655241,
+      "category": "attack",
+      "crit": 4589.334926802598,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1506.9054927614047
+    },
+    "attack.plunge_high": {
+      "average": 4533.476057880721,
+      "category": "attack",
+      "crit": 11462.225125900433,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3763.615050322975
+    },
+    "attack.plunge_low": {
+      "average": 3629.5270417918127,
+      "category": "attack",
+      "crit": 9176.723450704452,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3013.171885245964
+    },
+    "burst.burst_dmg": {
+      "average": 12113.933733620239,
+      "category": "burst",
+      "crit": 30628.293574777286,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 10056.782640158344
+    },
+    "burst.heal": {
+      "average": 2935.3872751992,
+      "category": "burst",
+      "crit": 2935.3872751992,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2935.3872751992
+    },
+    "burst.hutao_burst_dmg_lowhp": {
+      "average": 15142.417167025302,
+      "category": "burst",
+      "crit": 38285.366968471615,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 12570.978300197934
+    },
+    "burst.hutao_heal_lowhp": {
+      "average": 3913.8497002656004,
+      "category": "burst",
+      "crit": 3913.8497002656004,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3913.8497002656004
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.hutao_atk_bonus": {
+      "average": 1800.370862122176,
+      "category": "skill",
+      "crit": 1800.370862122176,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1800.370862122176
+    },
+    "skill.hutao_blood_blossom": {
+      "average": 2273.960977433311,
+      "category": "skill",
+      "crit": 5749.37472219446,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1887.8038946820725
+    },
+    "skill.hutao_max_hp_bonus": {
+      "average": 101375.25430306904,
+      "category": "skill",
+      "crit": 101375.25430306904,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 101375.25430306904
+    },
+    "stats.atk": {
+      "average": 2758.785620502,
+      "category": "stats",
+      "crit": 2758.785620502,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2758.785620502
+    },
+    "stats.crit_dmg": {
+      "average": 204.55360000000002,
+      "category": "stats",
+      "crit": 204.55360000000002,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 204.55360000000002
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1752.1519818,
+      "category": "stats",
+      "crit": 1752.1519818,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1752.1519818
+    },
+    "stats.hp": {
+      "average": 28778.3066196,
+      "category": "stats",
+      "crit": 28778.3066196,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 28778.3066196
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Hutao",
+  "repSlug": "hu_tao",
+  "schema": 1,
+  "slug": "symphonist_of_scents",
+  "weapon": "weapon_name.symphonist_of_scents",
+  "weaponType": "polearm"
+}

@@ -14,6 +14,8 @@
 import { describe, expect, it } from "vitest";
 import {
   evaluate,
+  conditionStats,
+  conditionSettings,
   getStackCount,
   type EvalContext,
 } from "../index.js";
@@ -27,6 +29,14 @@ import type {
   ConditionStacks,
   ConditionBooleanPiecesCount,
   ConditionBooleanWeaponType,
+  ConditionEnemyStatus,
+  ConditionBooleanValue,
+  ConditionDropdown,
+  ConditionNot,
+  ConditionLithic,
+  ConditionBooleanChar,
+  ConditionBooleanNightSoul,
+  ConditionBooleanEnemyType,
   ConditionAnd,
   ConditionOr,
 } from "@genshin/types";
@@ -352,6 +362,205 @@ describe("ConditionBooleanWeaponType", () => {
     expect(evaluate(gated, { weapon_type: "claymore" })).toBe(false);
     // gate on + matching weapon_type → true
     expect(evaluate(gated, { weapon_type: "claymore", gate: true })).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 9d. ConditionEnemyStatus — gates on the enemy's elemental affliction status
+//
+// Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/EnemyStatus.js:
+//   status = settings['common.enemy_status'];
+//   result = status && this.params.status.includes(status);  // else false
+// ---------------------------------------------------------------------------
+
+describe("ConditionEnemyStatus", () => {
+  const vsWater: ConditionEnemyStatus = {
+    type: "enemy-status",
+    statuses: ["cryo", "hydro"],
+  };
+
+  it("is active when common.enemy_status is in the allowed list", () => {
+    expect(evaluate(vsWater, { "common.enemy_status": "cryo" })).toBe(true);
+    expect(evaluate(vsWater, { "common.enemy_status": "hydro" })).toBe(true);
+  });
+
+  it("is inactive when common.enemy_status is NOT in the allowed list", () => {
+    expect(evaluate(vsWater, { "common.enemy_status": "pyro" })).toBe(false);
+  });
+
+  it("is inactive when common.enemy_status is absent (the oracle baseline)", () => {
+    expect(evaluate(vsWater, {})).toBe(false);
+  });
+
+  it("is inactive when common.enemy_status is the empty string", () => {
+    expect(evaluate(vsWater, { "common.enemy_status": "" })).toBe(false);
+  });
+
+  it("invert: flips the result (active when NOT affected — the Everfrost non-cryo branch)", () => {
+    const inverted: ConditionEnemyStatus = {
+      type: "enemy-status",
+      statuses: ["cryo"],
+      invert: true,
+    };
+    // no status set → not-cryo branch ACTIVE (this is the v5.8 oracle case)
+    expect(evaluate(inverted, {})).toBe(true);
+    expect(evaluate(inverted, { "common.enemy_status": "cryo" })).toBe(false);
+  });
+
+  it("respects the optional .condition gate", () => {
+    const gate: ConditionBoolean = { type: "boolean", name: "gate" };
+    const gated: ConditionEnemyStatus = {
+      type: "enemy-status",
+      statuses: ["pyro"],
+      condition: gate,
+    };
+    expect(evaluate(gated, { "common.enemy_status": "pyro" })).toBe(false);
+    expect(evaluate(gated, { "common.enemy_status": "pyro", gate: true })).toBe(true);
+  });
+
+  it("conditionStats: contributes no stats of its own (pure gate)", () => {
+    expect(conditionStats(vsWater, { "common.enemy_status": "cryo" })).toEqual({});
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 9e. ConditionBooleanValue — gates on a numeric threshold comparison
+//
+// Ports raw/genshin_calc_pub/src/js/classes/Condition/Boolean/Value.js:
+//   value2 = settings[setting] || 0;  active = value2 <cond> value
+// ---------------------------------------------------------------------------
+
+describe("ConditionBooleanValue", () => {
+  const maxStack: ConditionBooleanValue = {
+    type: "boolean-value",
+    setting: "weapon_jade_spear",
+    cond: "ge",
+    value: 7,
+    refinementStats: [{ dmg_all: 12 }, { dmg_all: 15 }, { dmg_all: 18 }, { dmg_all: 21 }, { dmg_all: 24 }],
+  };
+
+  it("is active when ctx[setting] meets the >= threshold", () => {
+    expect(evaluate(maxStack, { weapon_jade_spear: 7 })).toBe(true);
+    expect(evaluate(maxStack, { weapon_jade_spear: 8 })).toBe(true);
+  });
+
+  it("is inactive below the threshold (and when the key is absent → 0)", () => {
+    expect(evaluate(maxStack, { weapon_jade_spear: 6 })).toBe(false);
+    expect(evaluate(maxStack, {})).toBe(false);
+  });
+
+  it("honours each comparison operator", () => {
+    const mk = (cond: ConditionBooleanValue["cond"]): ConditionBooleanValue => ({
+      type: "boolean-value", setting: "s", cond, value: 3,
+    });
+    expect(evaluate(mk("gt"), { s: 4 })).toBe(true);
+    expect(evaluate(mk("gt"), { s: 3 })).toBe(false);
+    expect(evaluate(mk("eq"), { s: 3 })).toBe(true);
+    expect(evaluate(mk("lt"), { s: 2 })).toBe(true);
+    expect(evaluate(mk("le"), { s: 3 })).toBe(true);
+  });
+
+  it("invert flips the result", () => {
+    const inv: ConditionBooleanValue = { type: "boolean-value", setting: "s", cond: "ge", value: 3, invert: true };
+    expect(evaluate(inv, { s: 1 })).toBe(true);
+    expect(evaluate(inv, { s: 3 })).toBe(false);
+  });
+
+  it("conditionStats: refine-scaled bag when active", () => {
+    expect(conditionStats(maxStack, { weapon_jade_spear: 7, weapon_refine: 1 })).toEqual({ dmg_all: 12 });
+    expect(conditionStats(maxStack, { weapon_jade_spear: 7, weapon_refine: 5 })).toEqual({ dmg_all: 24 });
+    expect(conditionStats(maxStack, { weapon_jade_spear: 6, weapon_refine: 5 })).toEqual({});
+  });
+
+  it("respects the optional .condition gate", () => {
+    const gate: ConditionBoolean = { type: "boolean", name: "g" };
+    const gated: ConditionBooleanValue = { type: "boolean-value", setting: "s", cond: "ge", value: 1, condition: gate };
+    expect(evaluate(gated, { s: 5 })).toBe(false);
+    expect(evaluate(gated, { s: 5, g: true })).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 9f. ConditionDropdown — multi-state selector; active option → refine-scaled bag
+//
+// Ports raw/genshin_calc_pub/src/js/classes/Condition/Dropdown.js
+// ---------------------------------------------------------------------------
+
+describe("ConditionDropdown", () => {
+  const sel: ConditionDropdown = {
+    type: "dropdown",
+    name: "weapon_polar_star",
+    options: [
+      [{ atk_percent: 10 }, { atk_percent: 12.5 }, { atk_percent: 15 }, { atk_percent: 17.5 }, { atk_percent: 20 }],
+      [{ atk_percent: 20 }, { atk_percent: 25 }, { atk_percent: 30 }, { atk_percent: 35 }, { atk_percent: 40 }],
+      [{ atk_percent: 30 }, { atk_percent: 37.5 }, { atk_percent: 45 }, { atk_percent: 52.5 }, { atk_percent: 60 }],
+      [{ atk_percent: 48 }, { atk_percent: 60 }, { atk_percent: 72 }, { atk_percent: 84 }, { atk_percent: 96 }],
+    ],
+  };
+
+  it("is active when a positive option is selected, inactive at 0/absent", () => {
+    expect(evaluate(sel, { weapon_polar_star: 4 })).toBe(true);
+    expect(evaluate(sel, { weapon_polar_star: 0 })).toBe(false);
+    expect(evaluate(sel, {})).toBe(false);
+  });
+
+  it("conditionStats: the selected option's refine-scaled bag", () => {
+    expect(conditionStats(sel, { weapon_polar_star: 4, weapon_refine: 1 })).toEqual({ atk_percent: 48 });
+    expect(conditionStats(sel, { weapon_polar_star: 4, weapon_refine: 5 })).toEqual({ atk_percent: 96 });
+    expect(conditionStats(sel, { weapon_polar_star: 1, weapon_refine: 1 })).toEqual({ atk_percent: 10 });
+    expect(conditionStats(sel, { weapon_polar_star: 0, weapon_refine: 1 })).toEqual({});
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 9g. Char-attribute gates + ConditionNot (E3 char-attribute wave)
+// ---------------------------------------------------------------------------
+
+describe("ConditionNot", () => {
+  it("active iff NOT all items are active", () => {
+    const c: ConditionNot = { type: "not", items: [{ type: "boolean", name: "x" }] };
+    expect(evaluate(c, {})).toBe(true); // x off → not(false) = true
+    expect(evaluate(c, { x: true })).toBe(false);
+  });
+  it("nests Or (The Widsith theme exclusivity)", () => {
+    const c: ConditionNot = {
+      type: "not",
+      items: [{ type: "or", items: [{ type: "boolean", name: "a" }, { type: "boolean", name: "b" }] }],
+    };
+    expect(evaluate(c, {})).toBe(true);
+    expect(evaluate(c, { a: true })).toBe(false);
+  });
+  it("conditionStats: pure gate", () => {
+    expect(conditionStats({ type: "not", items: [] }, {})).toEqual({});
+  });
+});
+
+describe("ConditionLithic", () => {
+  const c: ConditionLithic = { type: "lithic" };
+  it("always active; publishes weapon_lithic_stacks from char_origin", () => {
+    expect(evaluate(c, {})).toBe(true);
+    expect(conditionSettings(c, { char_origin: "liyue" })).toEqual({ weapon_lithic_stacks: 1 });
+    expect(conditionSettings(c, { char_origin: "mondstadt" })).toEqual({ weapon_lithic_stacks: 0 });
+    expect(conditionSettings(c, {})).toEqual({ weapon_lithic_stacks: 0 });
+  });
+});
+
+describe("ConditionBooleanChar / NightSoul / EnemyType", () => {
+  it("boolean-char gates on char_name", () => {
+    const c: ConditionBooleanChar = { type: "boolean-char", chars: ["aloy"] };
+    expect(evaluate(c, { char_name: "aloy" })).toBe(true);
+    expect(evaluate(c, { char_name: "ganyu" })).toBe(false);
+    expect(evaluate(c, {})).toBe(false);
+  });
+  it("nightsoul gates on natlan origin", () => {
+    const c: ConditionBooleanNightSoul = { type: "nightsoul" };
+    expect(evaluate(c, { char_origin: "natlan" })).toBe(true);
+    expect(evaluate(c, { char_origin: "mondstadt" })).toBe(false);
+  });
+  it("enemy-type is inert when enemy_type unset (the oracle baseline)", () => {
+    const c: ConditionBooleanEnemyType = { type: "enemy-type", types: ["slime"] };
+    expect(evaluate(c, {})).toBe(false);
+    expect(evaluate(c, { enemy_type: "slime" })).toBe(true);
   });
 });
 

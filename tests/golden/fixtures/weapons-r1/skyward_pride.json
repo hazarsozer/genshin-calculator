@@ -1,0 +1,282 @@
+{
+  "element": "cryo",
+  "features": {
+    "attack.charged_final": {
+      "average": 3591.049506969756,
+      "category": "attack",
+      "crit": 7520.258278826334,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3154.470754541247
+    },
+    "attack.charged_spin": {
+      "average": 1986.0626377986898,
+      "category": "attack",
+      "crit": 4159.147337062612,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1744.6087823249206
+    },
+    "attack.normal_hit_1": {
+      "average": 2428.427058139632,
+      "category": "attack",
+      "crit": 5085.532419716166,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2133.193129075573
+    },
+    "attack.normal_hit_2": {
+      "average": 2531.7643797625956,
+      "category": "attack",
+      "crit": 5301.938054597706,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2223.9673047809165
+    },
+    "attack.normal_hit_3": {
+      "average": 3074.2853182831514,
+      "category": "attack",
+      "crit": 6438.067637725785,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2700.53172723397
+    },
+    "attack.normal_hit_3_1": {
+      "average": 1537.1426591415757,
+      "category": "attack",
+      "crit": 3219.0338188628925,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1350.265863616985
+    },
+    "attack.normal_hit_4": {
+      "average": 3048.4509878774106,
+      "category": "attack",
+      "crit": 6383.966229005399,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2677.8381833076337
+    },
+    "attack.normal_hit_5": {
+      "average": 3888.0680951329005,
+      "category": "attack",
+      "crit": 8142.264879477192,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3415.37956353909
+    },
+    "attack.normal_hit_5_1": {
+      "average": 1944.0340475664502,
+      "category": "attack",
+      "crit": 4071.132439738596,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1707.689781769545
+    },
+    "attack.plunge": {
+      "average": 1883.9976375530666,
+      "category": "attack",
+      "crit": 3945.4061559438783,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1654.952246620754
+    },
+    "attack.plunge_high": {
+      "average": 4705.432356261472,
+      "category": "attack",
+      "crit": 9853.96234831988,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4133.373468254982
+    },
+    "attack.plunge_low": {
+      "average": 3767.196651573011,
+      "category": "attack",
+      "crit": 7889.13986063779,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3309.2029616769246
+    },
+    "burst.burst_dmg": {
+      "average": 8675.07779169943,
+      "category": "burst",
+      "crit": 18167.063822392345,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 7620.412677177996
+    },
+    "burst.eula_lightfall_dmg": {
+      "average": 14569.010737402015,
+      "category": "burst",
+      "crit": 30509.945184439923,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 12797.795798842248
+    },
+    "burst.eula_roiling_rime": {
+      "average": 7284.505368701008,
+      "category": "burst",
+      "crit": 15254.972592219961,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 6398.897899421124
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.eula_icewhirl_brand": {
+      "average": 2760.0429304702384,
+      "category": "skill",
+      "crit": 5779.991519888483,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2424.4930872015443
+    },
+    "skill.hold_dmg": {
+      "average": 7061.109830453025,
+      "category": "skill",
+      "crit": 14787.144971714699,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6202.66148142395
+    },
+    "skill.press_dmg": {
+      "average": 4209.065468967113,
+      "category": "skill",
+      "crit": 8814.487067829934,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3697.3519579823546
+    },
+    "stats.atk": {
+      "average": 2227.0843320120002,
+      "category": "stats",
+      "crit": 2227.0843320120002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2227.0843320120002
+    },
+    "stats.crit_dmg": {
+      "average": 138.4,
+      "category": "stats",
+      "crit": 138.4,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 138.4
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1626.8775321,
+      "category": "stats",
+      "crit": 1626.8775321,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1626.8775321
+    },
+    "stats.hp": {
+      "average": 26451.5835584,
+      "category": "stats",
+      "crit": 26451.5835584,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26451.5835584
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 236.75200000000004,
+      "category": "stats",
+      "crit": 236.75200000000004,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 236.75200000000004
+    },
+    "weapon.skyward_pride_vacuum_blade": {
+      "average": 1022.2381223963846,
+      "category": "weapon",
+      "crit": 2140.7375999586975,
+      "damageType": "none",
+      "format": "",
+      "isReacted": false,
+      "normal": 897.9604026672387
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Eula",
+  "repSlug": "eula",
+  "schema": 1,
+  "slug": "skyward_pride",
+  "weapon": "weapon_name.skyward_pride",
+  "weaponType": "claymore"
+}

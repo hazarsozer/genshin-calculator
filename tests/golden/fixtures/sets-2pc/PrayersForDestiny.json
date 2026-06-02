@@ -1,0 +1,264 @@
+{
+  "element": "hydro",
+  "features": {
+    "attack.aimed": {
+      "average": 1394.180241999371,
+      "category": "attack",
+      "crit": 2534.8731672715835,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1267.4365836357917
+    },
+    "attack.charged_aimed": {
+      "average": 4270.118837012453,
+      "category": "attack",
+      "crit": 7763.852430931732,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3881.926215465866
+    },
+    "attack.normal_hit_1": {
+      "average": 1224.691663560232,
+      "category": "attack",
+      "crit": 2226.712115564058,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1113.356057782029
+    },
+    "attack.normal_hit_2": {
+      "average": 1372.67523957376,
+      "category": "attack",
+      "crit": 2495.773162861382,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1247.886581430691
+    },
+    "attack.normal_hit_3": {
+      "average": 1643.1279819433114,
+      "category": "attack",
+      "crit": 2987.5054217151114,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1493.7527108575557
+    },
+    "attack.normal_hit_4": {
+      "average": 1691.6053602925706,
+      "category": "attack",
+      "crit": 3075.6461096228554,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1537.8230548114277
+    },
+    "attack.normal_hit_5": {
+      "average": 1806.4202037513421,
+      "category": "attack",
+      "crit": 3284.4003704569855,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1642.2001852284927
+    },
+    "attack.normal_hit_6": {
+      "average": 2158.519057024909,
+      "category": "attack",
+      "crit": 3924.580103681653,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1962.2900518408264
+    },
+    "attack.plunge": {
+      "average": 1761.2596986575588,
+      "category": "attack",
+      "crit": 3202.290361195561,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1601.1451805977806
+    },
+    "attack.plunge_high": {
+      "average": 4398.884695315427,
+      "category": "attack",
+      "crit": 7997.972173300776,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3998.986086650388
+    },
+    "attack.plunge_low": {
+      "average": 3521.7734913593135,
+      "category": "attack",
+      "crit": 6403.224529744206,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3201.612264872103
+    },
+    "attack.tartaglia_tide_burst": {
+      "average": 2017.1003346108548,
+      "category": "attack",
+      "crit": 3667.455153837918,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1833.727576918959
+    },
+    "attack.tartaglia_tide_flash": {
+      "average": 403.4200669221709,
+      "category": "attack",
+      "crit": 733.4910307675834,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 366.7455153837917
+    },
+    "burst.burst_dmg": {
+      "average": 16437.159749319646,
+      "category": "burst",
+      "crit": 29885.744998762988,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 14942.872499381494
+    },
+    "burst.tartaglia_riptide_blast_dmg": {
+      "average": 5212.629941644707,
+      "category": "burst",
+      "crit": 9477.508984808559,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4738.7544924042795
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.activation_dmg": {
+      "average": 2608.477887810588,
+      "category": "skill",
+      "crit": 4742.687068746524,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2371.343534373262
+    },
+    "skill.tartaglia_slash_dmg": {
+      "average": 2395.1301593322532,
+      "category": "skill",
+      "crit": 4354.782107876824,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2177.391053938412
+    },
+    "stats.atk": {
+      "average": 2528.662771504768,
+      "category": "stats",
+      "crit": 2528.662771504768,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2528.662771504768
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1690.6676322,
+      "category": "stats",
+      "crit": 1690.6676322,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1690.6676322
+    },
+    "stats.hp": {
+      "average": 26329.1246236,
+      "category": "stats",
+      "crit": 26329.1246236,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26329.1246236
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "set",
+  "repChar": "Tartaglia",
+  "repSlug": "tartaglia",
+  "schema": 1,
+  "slug": "PrayersForDestiny",
+  "weapon": "weapon_name.alley_hunter",
+  "weaponType": "bow"
+}

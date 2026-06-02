@@ -166,8 +166,9 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "pyro",
     // C6 "The Burning Claws Cleaving": +10% burst crit rate (crit_rate_burst, always-on
-    // ConditionStatic). Type-specific → wired per burst hit. Raw Dehya.js cons[5].
-    critRateBonuses: ["crit_rate_burst"],
+    // ConditionStatic, Raw Dehya.js cons[5]). The engine folds crit_rate_<type>
+    // GENERICALLY now, so every burst hit picks it up from the stats bag — no per-feature
+    // critRateBonuses declaration needed.
     multipliers: [
       { leveling: "char_skill_burst", values: talents.get("burst.dehya_flame_manes_fist_dmg") },
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.dehya_flame_manes_fist_hp") },
@@ -179,8 +180,8 @@ const features: readonly Feature[] = [
     name: "dehya_incineration_drive_dmg",
     category: "burst",
     element: "pyro",
-    // C6: +10% burst crit rate (crit_rate_burst). Raw Dehya.js cons[5].
-    critRateBonuses: ["crit_rate_burst"],
+    // C6: +10% burst crit rate (crit_rate_burst). Raw Dehya.js cons[5]. Now folded
+    // generically by the engine (crit_rate_<type>) — no per-feature declaration needed.
     multipliers: [
       { leveling: "char_skill_burst", values: talents.get("burst.dehya_incineration_drive_dmg") },
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.dehya_incineration_drive_hp") },
