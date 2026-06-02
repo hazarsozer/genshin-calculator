@@ -295,6 +295,12 @@ export interface ConditionDropdown extends ConditionBase {
  * Her `ConditionNot.isActive` = `!(item1 && item2 && …)`. A pure gate (no stats);
  * used as a `.condition` on another condition (e.g. The Widsith's mutually-exclusive
  * themes: theme N active only when no higher theme is selected).
+ *
+ * NOTE: unlike the other variants, ConditionNot does NOT extend `ConditionBase` — it carries
+ * no `settings`/`invert`/`condition`/`stats`. Use it ONLY as a nested `.condition` gate, never
+ * as a top-level entry in a conditions array: it would evaluate fine but contribute no stats or
+ * settings (and cannot itself be gated). For a top-level negated gate, attach the `not` as the
+ * `.condition` of a stat-bearing variant.
  * Source: raw/genshin_calc_pub/src/js/classes/Condition/Not.js
  */
 export interface ConditionNot {

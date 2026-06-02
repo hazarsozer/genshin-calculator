@@ -1148,12 +1148,8 @@ export const FlowerWreathedFeathersStatTable: readonly StatTableEntry[] = [
 
 export const ShatteredChainsStatTable: readonly StatTableEntry[] = [
   entry("atk_base", 43.7349, atk_2_2, asc_1),
-  // MANUAL OVERRIDE: s4atkp6 is a StatTableAscensionWeapon (level-breakpoint substat).
-  // Her db/generated/WeaponStatTables.js — the source this file is generated from —
-  // approximates it as base×scale (6×crt_3_1 = 27.564 at L90), which DIVERGES from her
-  // actual weapon object's AtkTables (s4atkp6 → 27.6 at L90, the value the oracle builds
-  // from). Use the exact breakpoints to match the oracle. shattered_chains is the only
-  // s4atkp6 weapon; the armory burndown guards this (a regen that reverts it → RED).
+  // atk_percent: a level-breakpoint substat emitted as exact AtkTables values — her
+  // db/generated approximates it as base×scale (off ~0.025% at L90; oracle uses AtkTables).
   new StatTableAscensionWeapon("atk_percent", [6, 10.6, 15.5, 17.9, 20.3, 22.7, 25.1, 27.6]),
 ];
 

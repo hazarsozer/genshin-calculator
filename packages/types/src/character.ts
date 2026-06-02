@@ -268,6 +268,12 @@ export interface CharPostEffect {
    * `stacksSetting` multiplier (the whole ratio scaled by a stack count). The stack count is the
    * caller-supplied `settings[setting]`; absent → 0 → no contribution (base-safe).
    *
+   * NOTE: the fold uses `settings[setting] ?? 0` (absent → 0 stacks → no contribution), which
+   * diverges from her `PostEffectStats.getStacks` fallback of `settings[stacksSetting] || 1`
+   * (absent → 1). Harmless wherever the stack setting is always present (every v5.8 user — e.g.
+   * key_of_khaj_nisut sets `weapon_key_of_khaj_nisut: 3`); only matters if a future port relies
+   * on a `stacksSetting` post-effect applying once when the count is unset.
+   *
    * Source: raw/.../classes/PostEffect/Stats.js (getStacks / percentBonus × bonusStackSettings).
    */
   readonly ratioPerStack?: {
