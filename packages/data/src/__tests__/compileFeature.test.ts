@@ -486,4 +486,54 @@ describe("compileFeature — coefficientFromStat (M1)", () => {
     const expected = atkTotal * 1.32 * 0.5 * 0.9; // (1+dmg_skill) × defMult × resMult(pyro)
     expect(withoutField).toBeCloseTo(expected, 3);
   });
+
+  // --- fail-loud guards -------------------------------------------------------
+
+  it("throws when coefficientFromStat and scalingMultiplier co-occur (mutually exclusive)", () => {
+    const ctx: CompileContext = {
+      charElement: "pyro",
+      talentLevels: { attack: 10, elemental: 10, burst: 10 },
+      settings: {},
+    };
+    const feature: Feature = {
+      name: "bad_feature",
+      category: "skill",
+      element: "pyro",
+      multipliers: [
+        {
+          leveling: "char_skill_elemental",
+          values: constTable(100),
+          scalingMultiplier: 2,
+          coefficientFromStat: { stat: "mastery", ratio: 0.002, cap: 4 },
+        },
+      ],
+    };
+    expect(() => compileFeature(feature, ctx)).toThrow(
+      /mutually exclusive/
+    );
+  });
+
+  it("throws when coefficientFromStat sets neither ratio nor divisor", () => {
+    const ctx: CompileContext = {
+      charElement: "pyro",
+      talentLevels: { attack: 10, elemental: 10, burst: 10 },
+      settings: {},
+    };
+    const feature: Feature = {
+      name: "bad_feature",
+      category: "skill",
+      element: "pyro",
+      multipliers: [
+        {
+          leveling: "char_skill_elemental",
+          values: constTable(100),
+          // @ts-expect-error — deliberately malformed to test the runtime guard
+          coefficientFromStat: { stat: "mastery", cap: 4 },
+        },
+      ],
+    };
+    expect(() => compileFeature(feature, ctx)).toThrow(
+      /exactly one of ratio \| divisor/
+    );
+  });
 });

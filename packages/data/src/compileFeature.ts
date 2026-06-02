@@ -305,6 +305,26 @@ function baseDamageTerm(
   // scaling factor is `min( f(getTotal(stat)), cap )` read at eval time, replacing
   // the build-coupled constant fold (sayu C6 30.2, kirara C1 scalingMultiplier 3).
   // Absent → the children are exactly [talentPercent, scalingStat] as before.
+  if (entry.coefficientFromStat !== undefined) {
+    // Fail loud: mutually exclusive with scalingMultiplier / scalingOffset (either would
+    // double-count the coefficient — the convention is coefficientFromStat XOR scalar).
+    if (entry.scalingMultiplier !== undefined || entry.scalingOffset !== undefined) {
+      throw new Error(
+        `baseDamageTerm: entry '${entry.source ?? "(unnamed)"}' sets coefficientFromStat ` +
+        `alongside ${entry.scalingMultiplier !== undefined ? "scalingMultiplier" : "scalingOffset"} ` +
+        `— these are mutually exclusive`
+      );
+    }
+    // Fail loud: exactly one of ratio | divisor required (both or neither silently mis-computes).
+    const hasRatio = entry.coefficientFromStat.ratio !== undefined;
+    const hasDivisor = entry.coefficientFromStat.divisor !== undefined;
+    if (hasRatio === hasDivisor) {
+      throw new Error(
+        `baseDamageTerm: entry '${entry.source ?? "(unnamed)"}' coefficientFromStat must set ` +
+        `exactly one of ratio | divisor (got ${hasRatio && hasDivisor ? "both" : "neither"})`
+      );
+    }
+  }
   const factors: Block[] = [cConst(talentPercent)];
   if (entry.coefficientFromStat !== undefined) {
     factors.push(coefficientBlock(entry.coefficientFromStat));
