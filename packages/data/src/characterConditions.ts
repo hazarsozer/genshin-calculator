@@ -108,11 +108,10 @@ const resonanceCryo: Condition = {
  * Gated additionally on ConditionEnemyStatus(['cryo']) — her enemy_status setting.
  * Source: ElementalResonance.js:94-116.
  *
- * GATED-BUT-NO-DELTA: `crit_rate_enemy` is not yet plumbed by the engine (same deferred
- * mechanism as BlizzardStrayer 4pc — buildStats does not emit it, compileFeature does not
- * read it). In resonance-cryo the gate IS active (enemyStatus: cryo), so the stat lands in
- * the raw bag, but is dropped at emit — matching the oracle (which shows base 25% crit, no
- * +15). When that mechanism is ported (D3), this fires automatically with no change here.
+ * `crit_rate_enemy` is emitted by buildStats (÷100) and folded into every feature's
+ * crit-rate block by compileFeature (the C6a engine fix). When enemy_status=cryo is set
+ * this +15 adds directly to the crit-rate sum — exactly as her getDefaultStatsCritRate
+ * (Damage.js:73) includes it. BlizzardStrayer 4pc (D3) reuses the same now-live plumbing.
  */
 const resonanceCryoStatus: Condition = {
   type: "static",
