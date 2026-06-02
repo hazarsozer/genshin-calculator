@@ -261,10 +261,152 @@ const resonanceNone: Condition = {
   condition: resonanceGate(),
 };
 
+// ===========================================================================
+// set_other team buffs — the global artifact-set buffs that activate when a
+// TEAMMATE wears a set, not the active character. Each is gated by the
+// `set_other.<set>_4` boolean (true = teammate has the set; absent = inert).
+//
+// Source: raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js
+// Port convention: display-only `text_*` and `shield` keys omitted (same as
+// gilded-dreams.ts / resonance convention). Stats are RAW percents.
+// ===========================================================================
+
+/**
+ * Noblesse Oblige 4pc (team) — +20% ATK.
+ * Source: Buffs/Artifacts.js:21-49 — `set_other.noblesse_oblige_4` boolean gate;
+ * the OR-branch `new ConditionBoolean({name: 'set_other.noblesse_oblige_4'})`.
+ */
+const setOtherNoblesseOblige4: Condition = {
+  type: "static",
+  stats: { atk_percent: 20 },
+  condition: { type: "boolean", name: "set_other.noblesse_oblige_4" },
+};
+
+/**
+ * Deepwood Memories 4pc (team) — enemy Dendro RES −30%.
+ * Source: Buffs/Artifacts.js:234-261 — `set_other.deepwood_memories_4` boolean gate.
+ * The −30 is a RAW negative percent; buildStats folds `enemy_res_dendro` into the
+ * base enemy resistance the same way it does Escoffier's shred.
+ */
+const setOtherDeepwoodMemories4: Condition = {
+  type: "static",
+  stats: { enemy_res_dendro: -30 },
+  condition: { type: "boolean", name: "set_other.deepwood_memories_4" },
+};
+
+/**
+ * Tenacity of the Millelith 4pc (team) — +20% ATK.
+ * Source: Buffs/Artifacts.js:202-232 — stats: { shield: 30, atk_percent: 20 }.
+ * `shield` is a non-damage key (display-only for the shield-strength buff) — omitted
+ * per the resonance/gilded convention. Only `atk_percent: 20` is emitted.
+ */
+const setOtherTenacityOfTheMillelith4: Condition = {
+  type: "static",
+  stats: { atk_percent: 20 },
+  condition: { type: "boolean", name: "set_other.tenacity_of_the_millelith_4" },
+};
+
+/**
+ * Instructor 4pc (team) — +120 Elemental Mastery.
+ * Source: Buffs/Artifacts.js:143-171 — `set_other.instructor_4` boolean gate;
+ * stats: { mastery: 120 }.
+ */
+const setOtherInstructor4: Condition = {
+  type: "static",
+  stats: { mastery: 120 },
+  condition: { type: "boolean", name: "set_other.instructor_4" },
+};
+
+/**
+ * Viridescent Venerer 4pc res-shred — OR-once across self-worn and team-buff paths.
+ *
+ * Faithful port of Buffs/Artifacts.js:82-99: one condition per swirlable element
+ * (pyro/hydro/electro/cryo), each emitting `enemy_res_<el>: −40`, gated by:
+ *   OR(
+ *     AND(DropdownValue('set.viridescent_venerer_4', el), CharElement(['anemo']),
+ *         PiecesCount('ViridescentVenerer', 4)),
+ *     DropdownValue('set_other.viridescent_venerer_4', el)
+ *   )
+ * The OR ensures the shred applies once even when BOTH the self-worn and team-buff
+ * branches are simultaneously active (additively would double to −80 → wrong).
+ * The self-worn conditions previously in viridescent-venerer.ts bonus[4] are
+ * REMOVED from that file and consolidated here so the OR is authoritative.
+ */
+const SWIRL_ELEMENTS = ["pyro", "hydro", "electro", "cryo"] as const;
+
+const setViridescentVenerer4SwirlConditions: readonly Condition[] =
+  SWIRL_ELEMENTS.map((el) => ({
+    type: "static" as const,
+    stats: { [`enemy_res_${el}`]: -40 },
+    condition: {
+      type: "or" as const,
+      items: [
+        // Self-worn arm: character has VV-4 equipped, is Anemo, and selected this element.
+        {
+          type: "and" as const,
+          items: [
+            { type: "dropdownElement" as const, name: "set.viridescent_venerer_4", element: el },
+            { type: "char-element" as const, elements: ["anemo"] },
+            { type: "pieces-count" as const, setName: "ViridescentVenerer", count: 4 },
+          ],
+        },
+        // Team-buff arm: a teammate wears VV-4 and selected this element.
+        { type: "dropdownElement" as const, name: "set_other.viridescent_venerer_4", element: el },
+      ],
+    },
+  }));
+
+/**
+ * Scroll of the Hero of Cinder City 4pc (team) — tier 1: +12% to all elemental DMG types.
+ * Source: Buffs/Artifacts.js:289-337 — `set_other.scroll_of_the_hero_of_cinder_city_4_1`
+ * boolean gate; stats: dmg_anemo/electro/pyro/cryo/hydro/geo/dendro: 12. Physical is absent
+ * (Scroll does not buff physical). RAW percents.
+ */
+const setOtherScrollCinderCity4Tier1: Condition = {
+  type: "static",
+  stats: {
+    dmg_anemo: 12,
+    dmg_electro: 12,
+    dmg_pyro: 12,
+    dmg_cryo: 12,
+    dmg_hydro: 12,
+    dmg_geo: 12,
+    dmg_dendro: 12,
+  },
+  condition: {
+    type: "boolean",
+    name: "set_other.scroll_of_the_hero_of_cinder_city_4_1",
+  },
+};
+
+/**
+ * Scroll of the Hero of Cinder City 4pc (team) — tier 2: +28% to all elemental DMG types.
+ * Source: Buffs/Artifacts.js:338-359 — `set_other.scroll_of_the_hero_of_cinder_city_4_2`
+ * boolean gate; stats: dmg_anemo/electro/pyro/cryo/hydro/geo/dendro: 28.
+ * In her engine the tier-2 self-worn is gated by PiecesCount + NightSoul; the team-buff
+ * branch is a plain boolean (`set_other.scroll_of_the_hero_of_cinder_city_4_2`). Faithful.
+ */
+const setOtherScrollCinderCity4Tier2: Condition = {
+  type: "static",
+  stats: {
+    dmg_anemo: 28,
+    dmg_electro: 28,
+    dmg_pyro: 28,
+    dmg_cryo: 28,
+    dmg_hydro: 28,
+    dmg_geo: 28,
+    dmg_dendro: 28,
+  },
+  condition: {
+    type: "boolean",
+    name: "set_other.scroll_of_the_hero_of_cinder_city_4_2",
+  },
+};
+
 /**
  * All global character conditions, in source order (imaginarium_theatre, then the Elemental
- * Resonance buffs in ElementalResonance.js order). Wire into buildStats alongside
- * `char.conditions` and `extraConditions`.
+ * Resonance buffs in ElementalResonance.js order, then set_other team buffs from
+ * Buffs/Artifacts.js). Wire into buildStats alongside `char.conditions` and `extraConditions`.
  */
 export const CHARACTER_CONDITIONS: readonly Condition[] = [
   imaginariumTheatre,
@@ -281,4 +423,12 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
   resonanceDendro1,
   resonanceDendro2,
   resonanceNone,
+  // set_other team buffs (Buffs/Artifacts.js) — inert unless the toggle is set via partyContext.
+  setOtherNoblesseOblige4,
+  setOtherDeepwoodMemories4,
+  setOtherTenacityOfTheMillelith4,
+  setOtherInstructor4,
+  ...setViridescentVenerer4SwirlConditions,
+  setOtherScrollCinderCity4Tier1,
+  setOtherScrollCinderCity4Tier2,
 ];
