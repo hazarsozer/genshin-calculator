@@ -45,7 +45,7 @@ import type {
 } from "@genshin/types";
 import { getArtifactSet } from "./artifacts/sets/index.js";
 import { CHARACTER_CONDITIONS } from "./characterConditions.js";
-import { buildPartyContext, type PartyInput } from "./partyContext.js";
+import { buildPartyContext, type PartyInput, type ActiveCharFacts } from "./partyContext.js";
 
 /** The seven elements + physical, in the order the engine keys resistance. */
 const ELEMENTS: readonly Element[] = [
@@ -267,7 +267,7 @@ export interface BuildInput {
    * passing slug members causes a runtime throw. Callers using only
    * `{ element, origin? }` members can safely omit this.
    */
-  readonly partySlugResolver?: (slug: string) => { element: Element; origin?: string };
+  readonly partySlugResolver?: (slug: string) => ActiveCharFacts;
 }
 
 /** One equipped artifact set: its registry key + how many pieces are worn. */
