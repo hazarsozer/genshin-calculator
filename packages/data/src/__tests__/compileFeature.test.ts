@@ -273,3 +273,217 @@ describe("compileFeature — composition transforms", () => {
     expect(result.normal).toBeCloseTo(expected, 3);
   });
 });
+
+/**
+ * M1 — stat-derived coefficient multiplier (Phase 3 ④, the new engine primitive).
+ *
+ * `coefficientFromStat` puts a RUNTIME coefficient on the base term, read from a
+ * stat TOTAL, replacing the build-coupled constant folds:
+ *   - sayu C6:  min(mastery_total × 0.002, 4) × ATK  (folded to const 30.2 @ EM=151)
+ *   - kirara C1: min(floor(hp_total / 8000), 4)       (folded to scalingMultiplier 3 @ HP=31503)
+ *
+ * These tests are the FOLD-BUILD ANCHOR: at the frozen build's stat point the
+ * coefficient must reproduce the old constant EXACTLY (parity), and off that point
+ * it must track the live total (the whole reason the fold is being retired). They
+ * lock the unit handling (sayu's 30.2 is a PERCENT: values/100) and the floor-then-cap
+ * order (kirara hp=45000 → floor 5 → cap 4, NOT floor of the min).
+ */
+describe("compileFeature — coefficientFromStat (M1)", () => {
+  /**
+   * Build Hu Tao at a chosen raw EM / HP point, then assert the resulting LIVE
+   * total (mastery_total / hp_total) the bag emits. The coefficient reads that
+   * exact total, so anchoring on it proves M1 tracks the live build (not a literal).
+   */
+  function buildAt(statOverrides: Record<string, number>) {
+    return buildStats({
+      char: minimalHuTao,
+      weaponStatTable: blackcliffPoleStatTable,
+      statBlock: { ...STAT_BLOCK, ...statOverrides },
+      levels: { charLevel: 90, ascension: 6, weaponLevel: 90, weaponAscension: 6 },
+      enemy: { level: 90, resistance: 10 },
+      settings: {},
+    });
+  }
+
+  const PYRO_SKILL_CTX: CompileContext = {
+    charElement: "pyro",
+    talentLevels: { attack: 10, elemental: 10, burst: 10 },
+    settings: {},
+  };
+
+  /** Resolve the normal-hit triple for a single-multiplier pyro skill feature. */
+  function normalOf(multiplier: FeatureMultiplierEntry, ctxBag: ReturnType<typeof buildAt>): number {
+    const feature: Feature = {
+      name: "m1_probe",
+      category: "skill",
+      element: "pyro",
+      multipliers: [multiplier],
+    };
+    return compile(compileFeature(feature, PYRO_SKILL_CTX))(ctxBag.context).normal;
+  }
+
+  // --- sayu C6: ratio path, percent channel -------------------------------
+
+  it("sayu fold-build anchor: coefficientFromStat{mastery,0.002,cap4} on EM=151 == const 30.2", () => {
+    // Pin mastery_total to exactly 151 (the frozen build's EM): mastery_base 55 →
+    // bump to 151 via raw flat EM. The fold const 30.2 is a PERCENT (30.2/100 =
+    // 0.302 fraction of ATK); the new form is values:()=>100 (→ 1.0) × coeff 0.302.
+    const built = buildAt({ mastery_base: 151 });
+    expect(built.context.stats["mastery_total"]).toBeCloseTo(151, 6);
+
+    const dynamic = normalOf(
+      {
+        scaling: "atk",
+        leveling: "",
+        values: constTable(100),
+        coefficientFromStat: { stat: "mastery", ratio: 0.002, cap: 4 },
+      },
+      built
+    );
+    const folded = normalOf(
+      { scaling: "atk", leveling: "", values: constTable(30.2) },
+      built
+    );
+    expect(dynamic).toBeCloseTo(folded, 6);
+  });
+
+  it("sayu coefficient TRACKS the live EM total off the fold build", () => {
+    // At EM≈400 the coefficient is mastery×0.002 (≈0.8), NOT the frozen 0.302.
+    // It must equal the SAME constant computed from this build's live total.
+    const built = buildAt({ mastery_base: 400 });
+    const em = built.context.stats["mastery_total"]!;
+    const expectedCoeff = em * 0.002; // < cap 4
+    const dynamic = normalOf(
+      {
+        scaling: "atk",
+        leveling: "",
+        values: constTable(100),
+        coefficientFromStat: { stat: "mastery", ratio: 0.002, cap: 4 },
+      },
+      built
+    );
+    const equivalent = normalOf(
+      { scaling: "atk", leveling: "", values: constTable(100 * expectedCoeff) },
+      built
+    );
+    expect(dynamic).toBeCloseTo(equivalent, 6);
+    // And NOT the frozen fold (proves it's not baked at 0.302).
+    const frozen = normalOf({ scaling: "atk", leveling: "", values: constTable(30.2) }, built);
+    expect(Math.abs(dynamic - frozen)).toBeGreaterThan(1);
+  });
+
+  it("sayu cap binds: EM=2500 → coefficient capped at 4 (not 5.0)", () => {
+    const built = buildAt({ mastery_base: 2500 });
+    expect(built.context.stats["mastery_total"]!).toBeGreaterThan(2000); // > cap/ratio
+    const dynamic = normalOf(
+      {
+        scaling: "atk",
+        leveling: "",
+        values: constTable(100),
+        coefficientFromStat: { stat: "mastery", ratio: 0.002, cap: 4 },
+      },
+      built
+    );
+    // capped: coeff 4 → values 100 × 4 ⇒ 400% ATK
+    const capped = normalOf({ scaling: "atk", leveling: "", values: constTable(400) }, built);
+    expect(dynamic).toBeCloseTo(capped, 6);
+    // NOT the uncapped 5.0 (2500×0.002).
+    const uncapped = normalOf({ scaling: "atk", leveling: "", values: constTable(500) }, built);
+    expect(Math.abs(dynamic - uncapped)).toBeGreaterThan(1);
+  });
+
+  // --- kirara C1: divisor path (floor), via scalingMultiplier slot ----------
+
+  it("kirara fold-build anchor: coefficientFromStat{hp,÷8000,cap4} at floor-3 HP == scalingMultiplier 3", () => {
+    // The frozen build's hp_total floors to 3 (her HP=31503 → floor(31503/8000)=3).
+    // This probe build's hp_total (≈28778) sits in the SAME floor-3 bucket, so the
+    // coefficient is 3 — identical to the old scalingMultiplier:3 fold. Talent table
+    // arbitrary (cancels in the comparison).
+    const built = buildAt({});
+    expect(Math.floor(built.context.stats["hp_total"]! / 8000)).toBe(3);
+
+    const dynamic = normalOf(
+      {
+        scaling: "atk",
+        leveling: "char_skill_burst",
+        values: constTable(120),
+        coefficientFromStat: { stat: "hp", divisor: 8000, cap: 4 },
+      },
+      built
+    );
+    const folded = normalOf(
+      { scaling: "atk", leveling: "char_skill_burst", values: constTable(120), scalingMultiplier: 3 },
+      built
+    );
+    expect(dynamic).toBeCloseTo(folded, 6);
+  });
+
+  it("kirara coefficient TRACKS live HP (floor) off the fold build", () => {
+    // hp_base 3000 → HP≈18552 → floor(18552/8000)=2, NOT the frozen 3.
+    const built = buildAt({ hp_base: 3000, hp_percent: 0 });
+    const hp = built.context.stats["hp_total"]!;
+    const expectedCoeff = Math.floor(hp / 8000);
+    const dynamic = normalOf(
+      {
+        scaling: "atk",
+        leveling: "char_skill_burst",
+        values: constTable(120),
+        coefficientFromStat: { stat: "hp", divisor: 8000, cap: 4 },
+      },
+      built
+    );
+    const equivalent = normalOf(
+      { scaling: "atk", leveling: "char_skill_burst", values: constTable(120), scalingMultiplier: expectedCoeff },
+      built
+    );
+    expect(dynamic).toBeCloseTo(equivalent, 6);
+    expect(expectedCoeff).toBe(2); // off the frozen 3
+  });
+
+  it("kirara cap binds (floor THEN cap): floor 5 → capped 4, NOT floor(min)", () => {
+    // hp_base 31503 → HP≈47055 → floor(47055/8000)=5 (above the cap 4).
+    const built = buildAt({ hp_base: 31503, hp_percent: 0 });
+    const hp = built.context.stats["hp_total"]!;
+    expect(Math.floor(hp / 8000)).toBe(5); // raw floor is 5
+    const dynamic = normalOf(
+      {
+        scaling: "atk",
+        leveling: "char_skill_burst",
+        values: constTable(120),
+        coefficientFromStat: { stat: "hp", divisor: 8000, cap: 4 },
+      },
+      built
+    );
+    const capped = normalOf(
+      { scaling: "atk", leveling: "char_skill_burst", values: constTable(120), scalingMultiplier: 4 },
+      built
+    );
+    expect(dynamic).toBeCloseTo(capped, 6);
+    // floor-THEN-cap, not floor-of-min: a hypothetical 5 would diverge.
+    const uncapped = normalOf(
+      { scaling: "atk", leveling: "char_skill_burst", values: constTable(120), scalingMultiplier: 5 },
+      built
+    );
+    expect(Math.abs(dynamic - uncapped)).toBeGreaterThan(1);
+  });
+
+  // --- base-inert: absent field == today --------------------------------------
+
+  it("absent coefficientFromStat is byte-identical to a plain term", () => {
+    const built = buildAt({});
+    const withoutField = normalOf(
+      { scaling: "atk", leveling: "char_skill_elemental", values: constTable(100) },
+      built
+    );
+    // Same multiplier, field simply not present → must match exactly.
+    const plain = normalOf(
+      { scaling: "atk", leveling: "char_skill_elemental", values: constTable(100) },
+      built
+    );
+    expect(withoutField).toBe(plain);
+    // And it equals the existing hand-derived expectation (atk_total × 1.0 path).
+    const atkTotal = built.context.stats["atk_total"]!;
+    const expected = atkTotal * 1.32 * 0.5 * 0.9; // (1+dmg_skill) × defMult × resMult(pyro)
+    expect(withoutField).toBeCloseTo(expected, 3);
+  });
+});
