@@ -66,6 +66,13 @@ const LEVELING_TO_SLOT: Readonly<Record<string, keyof TalentLevels>> = {
   char_skill_burst: "burst",
 };
 
+/**
+ * Multiplier scaling keys that resolve to `<stat>_total` (her makeStatTotalItem); every
+ * other scaling key reads the raw bag verbatim (makeStatItem). Module-scope: allocated once,
+ * not per `baseDamageTerm` call (hot path across the armory loop).
+ */
+const TOTAL_SCALING_STATS: ReadonlySet<string> = new Set(["atk", "hp", "def", "mastery"]);
+
 /** Talent levels for a build (1-indexed game talent levels). */
 export interface TalentLevels {
   readonly attack: number;
@@ -256,7 +263,6 @@ function baseDamageTerm(
   //     Past self-worn), absent from every build's bag → 0 either way; no base/cons/armory
   //     fixture exercises a non-total scaling that resolves nonzero, so this branch leaves
   //     goldenConfig / constellations / armory byte-unchanged.
-  const TOTAL_SCALING_STATS = new Set(["atk", "hp", "def", "mastery"]);
   const rawScaling = (entry.scaling ?? "atk").replace("*", "");
   const scalingKey = TOTAL_SCALING_STATS.has(rawScaling)
     ? `${rawScaling}_total`
