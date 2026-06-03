@@ -181,15 +181,23 @@ const REACTION_BONUS_PERCENT_KEYS = [
  * atk/hp/def/mastery) reads the bag value directly — her `makeStatItem(scaling)`
  * (Feature2/Compile/Helpers.js:11-19) → `stats.get(scaling)`, no `_total`, no `/100`.
  * These are flat numeric inputs a ConditionNumber injects (not percent stats), so they
- * are emitted RAW. The sole v5.8 user is Song of Days Past 4pc (team):
- * `party_days_past_healing_recorded` (the recorded healing the team multiplier scales).
+ * are emitted RAW. The two v5.8 users (both ConditionNumber-driven scaling inputs):
+ *   - `party_days_past_healing_recorded` — Song of Days Past 4pc (team): the recorded
+ *     healing the team multiplier scales (≤15000).
+ *   - `accumulated_healing` — Ocean-Hued Clam 4pc (self-worn): the healing accumulated
+ *     over the foam's window that the Sea-Dyed Foam (`FeatureDamageClam`) scales `90% ×`,
+ *     capped 30000. Her ConditionNumber (OceanHuedClam.js:35-41) is INACTIVE until the
+ *     input is > 0 (Condition/Number.js:8-11), so at the v5.8 standard 0 the key is never
+ *     in the bag → never emitted → the foam reads 0 (the existing OceanHuedClam armory
+ *     fixture, foam 0, is byte-unchanged).
  * Absent for every build that sets no such input → key never emitted → multiplier reads
  * 0 → the base golden suite + all existing fixtures are byte-untouched.
  *
- * Source: raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:262-380 (ConditionNumber +
- *         the FeatureMultiplier scaling it), classes/Feature2/Multiplier.js:281-288.
+ * Source: raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:262-380 (Song of Days Past
+ *         ConditionNumber + its FeatureMultiplier), db/Artifacts/Set/OceanHuedClam.js:35-67
+ *         (Clam ConditionNumber + FeatureDamageClam), classes/Feature2/Multiplier.js:281-288.
  */
-const RAW_BAG_SCALING_KEYS = ["party_days_past_healing_recorded"] as const;
+const RAW_BAG_SCALING_KEYS = ["party_days_past_healing_recorded", "accumulated_healing"] as const;
 
 /**
  * Level/ascension parameters for base-stat assembly. (Talent levels are a
