@@ -17,6 +17,9 @@
  *                              (fold: unmodeled / inert at solo C0.)
  *   thundering_lunarcharged  — ThunderingFury 4pc dmg_reaction_lunarcharged with a live
  *                              Lunar-Charged reaction (Ineffa). (fold: buildStats un-divided emit.)
+ *   clam_foam                — Ocean-Hued Clam 4pc Sea-Dyed Foam at accumulated_healing=20000
+ *                              (foam 16200, no-crit / no-dmg-bonus / DEF-ignored). (fold: foam
+ *                              modeled only at accumulated_healing=0, i.e. 0.)
  *
  * For each manifest item the harness reconstructs the SAME build her oracle used — the rep char,
  * the per-item raw stat block (sayu EM / kirara HP), the off-build constellation, and the off-build
@@ -104,6 +107,7 @@ const FOLD_FAMILIES = [
   "yelan_a1",
   "xilonen_resshred",
   "thundering_lunarcharged",
+  "clam_foam",
 ] as const;
 
 // ---------------------------------------------------------------------------
@@ -487,6 +491,12 @@ for (const family of FOLD_FAMILIES) {
     const party = partyInputFromManifest(item.party);
     const settings = settingsFromManifest(item);
     const setBonuses = item.party.setBonuses ?? [];
+    // SET-sourced features/multipliers from every equipped set (clam_foam equips OceanHuedClam
+    // 4pc — its Sea-Dyed Foam is a SET FeatureDamage, threaded as extraFeatures exactly as
+    // armory.test.ts does for the sets-4pc family). The foam carries its own pieces-count
+    // produce-gate (4pc), so a <4pc equip leaves it absent; inert for every set-less fold.
+    const setFeatures = setBonuses.flatMap((b) => setByGoodId[b.setKey]?.features ?? []);
+    const setMultipliers = setBonuses.flatMap((b) => setByGoodId[b.setKey]?.multipliers ?? []);
 
     describe(`fold: ${family}/${slug} (${item.repSlug})`, () => {
       const fixture = loadFixture(family, slug);
@@ -512,10 +522,15 @@ for (const family of FOLD_FAMILIES) {
         talentLevels: TALENTS,
         settings: propagated,
         charLevel: LEVELS.charLevel,
+        // SET features (OceanHuedClam's foam) threaded as the char path's extraFeatures —
+        // each subject to its own produce-gate against `propagated` (the merged settings, which
+        // carry `set_pieces.*`). Empty for every set-less fold → byte-identical to before.
+        extraFeatures: setFeatures,
         // The global CHARACTER_MULTIPLIERS team-buff channel (e.g. Song of Days Past 4pc),
         // each gated on its own toggle — inert for these folds, threaded for parity with the
-        // party harness (the gate evaluates against `propagated`, the merged settings).
-        extraMultipliers: [...characterMultipliers],
+        // party harness (the gate evaluates against `propagated`, the merged settings). PLUS
+        // any equipped set's own char-level multipliers (parity with armory.test.ts).
+        extraMultipliers: [...setMultipliers, ...characterMultipliers],
       });
 
       // Round-trip anchor (GREEN now) for the M1 stat-derived folds: the externally-set stat
