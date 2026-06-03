@@ -20,6 +20,10 @@
  *   clam_foam                — Ocean-Hued Clam 4pc Sea-Dyed Foam at accumulated_healing=20000
  *                              (foam 16200, no-crit / no-dmg-bonus / DEF-ignored). (fold: foam
  *                              modeled only at accumulated_healing=0, i.e. 0.)
+ *   weapon_other             — off-field weapon party buffs (M4a): Thrilling Tales +48% ATK
+ *                              (weapon.thrilling_tales) / Wolf's Gravestone +80% ATK
+ *                              (weapon_other.weapon_wolfs_gravestone) on Diluc, via a global
+ *                              weapon_other-gated condition. (fold: unmodeled / inert before this.)
  *
  * For each manifest item the harness reconstructs the SAME build her oracle used — the rep char,
  * the per-item raw stat block (sayu EM / kirara HP), the off-build constellation, and the off-build
@@ -108,6 +112,7 @@ const FOLD_FAMILIES = [
   "xilonen_resshred",
   "thundering_lunarcharged",
   "clam_foam",
+  "weapon_other",
 ] as const;
 
 // ---------------------------------------------------------------------------
