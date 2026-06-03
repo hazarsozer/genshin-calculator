@@ -113,6 +113,7 @@ const FOLD_FAMILIES = [
   "thundering_lunarcharged",
   "clam_foam",
   "weapon_other",
+  "weapon_other_group_b",
 ] as const;
 
 // ---------------------------------------------------------------------------
