@@ -30,6 +30,7 @@ import {
   cDivide,
   cMin,
   cMax,
+  cFloor,
   cBaseDamage,
   cMultiplierBonus,
   cMultiplierReaction,
@@ -83,6 +84,17 @@ describe("leaf + arithmetic blocks", () => {
   it("cMin / cMax", () => {
     expect(runBlock(cMin([cConst(3), cConst(1), cConst(2)]), ctx({}))).toBe(1);
     expect(runBlock(cMax([cConst(3), cConst(1), cConst(2)]), ctx({}))).toBe(3);
+  });
+
+  it("cFloor floors its child (truncates toward -∞)", () => {
+    expect(runBlock(cFloor(cConst(3.9)), ctx({}))).toBe(3);
+    expect(runBlock(cFloor(cConst(5)), ctx({}))).toBe(5);
+    // floor(hp / divisor) — the kirara C1 coefficient shape.
+    expect(runBlock(cFloor(cDivide([cStat("hp_total"), cConst(8000)])), ctx({ hp_total: 31503 }))).toBe(3);
+    // floor THEN min(cap): floor(45000/8000)=5, capped at 4.
+    expect(
+      runBlock(cMin([cFloor(cDivide([cStat("hp_total"), cConst(8000)])), cConst(4)]), ctx({ hp_total: 45000 }))
+    ).toBe(4);
   });
 });
 

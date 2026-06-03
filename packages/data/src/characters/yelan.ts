@@ -17,10 +17,11 @@
  *   burst_dmg — hydro, HP-scaled (scoring:'hp*')
  *   yelan_exquisite_throw_dmg — hydro, HP-scaled
  *
- * A1 "Turn Control": ConditionStaticLevel + ConditionCalcElements. The oracle
- * computes with a single-char party (Yelan herself = 1 unique element), so
- * party_elements_count_level=1 → hp_percent:6 is always applied. Fold into
- * baseStats so our hp_total matches.
+ * A1 "Turn Control": ConditionStaticLevel keyed on party_elements_count_level.
+ * Raw: ConditionCalcElements (publisher) + ConditionStaticLevel hp_percent:[6,12,18,30]
+ * (Yelan.js:270-287). party_elements_count_level is published by buildPartyContext.
+ * Without party, party_elements_count_level is absent → level = 0||1 = 1 → hp_percent[0]=6
+ * (matches previous baseStats:{hp_percent:6} behaviour; base golden unchanged).
  * A4 crit_rate ascension bonus IS folded in via charTables (asc6 = +19.2).
  *
  * C6 yelan_breakthrough_barb_c6_dmg (FeatureDamageCharged, ×1.56 scalingMultiplier).
@@ -210,13 +211,37 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 
 // "Adapt with Ease" passive: dmg_all += buffValues[stacks-1].
-// Raw Yelan.js:289-325 — ConditionLevels table buffValues=[1,4.5,8,...,50] (15 stacks),
+// Raw Yelan.js:116,289-325 — ConditionLevels table buffValues=[1,4.5,8,...,50] (15 stacks),
 // levelSetting:'yelan_adapt_with_ease', stats:[StatTable('dmg_all', buffValues)].
-// BUILD-COUPLED at 15 stacks: buffValues[14]=50 → dmg_all:50.
-// True form is a ConditionLevels table-lookup primitive (deferred); the constant matches
-// the fixture which always runs at max stacks (15). Yelan.js:116 buffValues[14]=50.
+// Gate (ConditionBooleanValue ge 1): inactive when yelan_adapt_with_ease is absent/0.
+// With fromZero unset: level = (ctx[levelSetting] || 0) || 1; gate ensures 0 is gated out.
+// Transcribed from raw/genshin_calc_pub/src/js/db/Char/Yelan.js:116
+//   buffValues = [1, 4.5, 8, 11.5, 15, 18.5, 22, 25.5, 29, 32.5, 36, 39.5, 43, 46.5, 50]
+// Anchors: stacks 1 → buffValues[0]=1; stacks 7 → buffValues[6]=22; stacks 15 → buffValues[14]=50.
 const toggleConditions: readonly Condition[] = [
-  { type: "boolean", name: "yelan_adapt_with_ease", stats: { dmg_all: 50 } },
+  {
+    type: "static-level",
+    levelSetting: "yelan_adapt_with_ease",
+    levelStats: { dmg_all: [1, 4.5, 8, 11.5, 15, 18.5, 22, 25.5, 29, 32.5, 36, 39.5, 43, 46.5, 50] },
+    condition: { type: "boolean-value", setting: "yelan_adapt_with_ease", cond: "ge", value: 1 },
+  },
+];
+
+// ---------------------------------------------------------------------------
+// A1 condition — "Turn Control" hp_percent table
+// ---------------------------------------------------------------------------
+// Raw Yelan.js:270-287 — ConditionCalcElements (publisher) + ConditionStaticLevel.
+// levelSetting:'party_elements_count_level', hp_percent:[6,12,18,30].
+// party_elements_count_level is published by buildPartyContext; absent → level=0||1=1 → 6.
+// No gate needed: always-active mirrors ConditionAscensionChar(1) at our fixed asc-6 builds.
+// Transcribed from raw/genshin_calc_pub/src/js/db/Char/Yelan.js:280-281.
+// Anchors: count_level 1 → hp_percent[0]=6; count_level 4 → hp_percent[3]=30.
+const a1Conditions: readonly Condition[] = [
+  {
+    type: "static-level",
+    levelSetting: "party_elements_count_level",
+    levelStats: { hp_percent: [6, 12, 18, 30] },
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -254,9 +279,5 @@ export const yelan: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: [...toggleConditions, ...constellationConditions],
-  // A1 "Turn Control": oracle runs with a single-char party (Yelan = 1 unique element)
-  // → ConditionCalcElements sets party_elements_count_level=1 → hp_percent[0]=6.
-  // Source: raw/genshin_calc_pub/src/js/db/Char/Yelan.js ConditionStaticLevel hp_percent:[6,12,18,30]
-  baseStats: { hp_percent: 6 },
+  conditions: [...toggleConditions, ...a1Conditions, ...constellationConditions],
 };

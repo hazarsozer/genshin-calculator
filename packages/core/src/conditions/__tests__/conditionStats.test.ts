@@ -223,7 +223,7 @@ describe("conditionStats — staticLevel resolves level-indexed stat tables", ()
   // GildedDreams 4pc same-element table: [0, 14, 28, 42] with fromZero: true
   // ctx.party_elements_same = N → level = N+1 → atk_percent[N] (0-based, so index N)
   const samePath: ConditionStaticLevel = {
-    type: "staticLevel",
+    type: "static-level",
     levelSetting: "party_elements_same",
     fromZero: true,
     levelStats: { atk_percent: [0, 14, 28, 42] },
@@ -253,7 +253,7 @@ describe("conditionStats — staticLevel resolves level-indexed stat tables", ()
 
   it("GildedDreams diff-element table: [0, 50, 100, 150] with fromZero", () => {
     const diffPath: ConditionStaticLevel = {
-      type: "staticLevel",
+      type: "static-level",
       levelSetting: "party_elements_different",
       fromZero: true,
       levelStats: { mastery: [0, 50, 100, 150] },
@@ -265,7 +265,7 @@ describe("conditionStats — staticLevel resolves level-indexed stat tables", ()
 
   it("gated (condition): inactive when gate fails, active when gate passes", () => {
     const gated: ConditionStaticLevel = {
-      type: "staticLevel",
+      type: "static-level",
       levelSetting: "party_elements_same",
       fromZero: true,
       levelStats: { atk_percent: [0, 14, 28, 42] },
@@ -282,7 +282,7 @@ describe("conditionStats — staticLevel fromZero:false and _bonus accumulation"
   it("fromZero:false — absent/0 ctx falls through to level 1 (her level ||= 1 path)", () => {
     // Level.js:13: level ||= 1 when !fromZero → 0 becomes 1 → arr[0]
     const c: ConditionStaticLevel = {
-      type: "staticLevel",
+      type: "static-level",
       levelSetting: "some_level",
       fromZero: false,
       levelStats: { atk_percent: [10, 20, 30] },
@@ -299,7 +299,7 @@ describe("conditionStats — staticLevel fromZero:false and _bonus accumulation"
     // With fromZero: true, levelSetting=x, stats=[0,14,28,42]:
     //   ctx = { x: 0, x_bonus: 1, x_bonus_2: 1 } → raw=0+1+1=2, level=2+1=3 → arr[2]=28
     const c: ConditionStaticLevel = {
-      type: "staticLevel",
+      type: "static-level",
       levelSetting: "party_elements_same",
       fromZero: true,
       levelStats: { atk_percent: [0, 14, 28, 42] },
@@ -317,7 +317,7 @@ describe("conditionStats — staticLevel fromZero:false and _bonus accumulation"
 
 describe("evaluate — staticLevel activation semantics", () => {
   const c: ConditionStaticLevel = {
-    type: "staticLevel",
+    type: "static-level",
     levelSetting: "party_elements_same",
     fromZero: true,
     levelStats: { atk_percent: [0, 14, 28, 42] },

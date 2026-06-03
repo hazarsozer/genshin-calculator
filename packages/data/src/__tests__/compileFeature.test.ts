@@ -17,7 +17,7 @@
 
 import { describe, it, expect } from "vitest";
 import { compile } from "@genshin/core";
-import type { Feature, FeatureMultiplierEntry } from "@genshin/types";
+import type { DamageContext, Feature, FeatureMultiplierEntry } from "@genshin/types";
 import { buildStats } from "../buildStats.js";
 import { compileFeature, type CompileContext } from "../compileFeature.js";
 import { minimalHuTao, blackcliffPoleStatTable } from "./fixtures/hu-tao.js";
@@ -271,5 +271,353 @@ describe("compileFeature — composition transforms", () => {
     const baseDmg = 28778.3066196 * 0.01;
     const expected = baseDmg * 1.32 * 0.5 * 0.9;
     expect(result.normal).toBeCloseTo(expected, 3);
+  });
+});
+
+/**
+ * M1 — stat-derived coefficient multiplier (Phase 3 ④, the new engine primitive).
+ *
+ * `coefficientFromStat` puts a RUNTIME coefficient on the base term, read from a
+ * stat TOTAL, replacing the build-coupled constant folds:
+ *   - sayu C6:  min(mastery_total × 0.002, 4) × ATK  (folded to const 30.2 @ EM=151)
+ *   - kirara C1: min(floor(hp_total / 8000), 4)       (folded to scalingMultiplier 3 @ HP=31503)
+ *
+ * These tests are the FOLD-BUILD ANCHOR: at the frozen build's stat point the
+ * coefficient must reproduce the old constant EXACTLY (parity), and off that point
+ * it must track the live total (the whole reason the fold is being retired). They
+ * lock the unit handling (sayu's 30.2 is a PERCENT: values/100) and the floor-then-cap
+ * order (kirara hp=45000 → floor 5 → cap 4, NOT floor of the min).
+ */
+describe("compileFeature — coefficientFromStat (M1)", () => {
+  /**
+   * Build Hu Tao at a chosen raw EM / HP point, then assert the resulting LIVE
+   * total (mastery_total / hp_total) the bag emits. The coefficient reads that
+   * exact total, so anchoring on it proves M1 tracks the live build (not a literal).
+   */
+  function buildAt(statOverrides: Record<string, number>) {
+    return buildStats({
+      char: minimalHuTao,
+      weaponStatTable: blackcliffPoleStatTable,
+      statBlock: { ...STAT_BLOCK, ...statOverrides },
+      levels: { charLevel: 90, ascension: 6, weaponLevel: 90, weaponAscension: 6 },
+      enemy: { level: 90, resistance: 10 },
+      settings: {},
+    });
+  }
+
+  const PYRO_SKILL_CTX: CompileContext = {
+    charElement: "pyro",
+    talentLevels: { attack: 10, elemental: 10, burst: 10 },
+    settings: {},
+  };
+
+  /** Resolve the normal-hit triple for a single-multiplier pyro skill feature. */
+  function normalOf(multiplier: FeatureMultiplierEntry, ctxBag: ReturnType<typeof buildAt>): number {
+    const feature: Feature = {
+      name: "m1_probe",
+      category: "skill",
+      element: "pyro",
+      multipliers: [multiplier],
+    };
+    return compile(compileFeature(feature, PYRO_SKILL_CTX))(ctxBag.context).normal;
+  }
+
+  // --- sayu C6: ratio path, percent channel -------------------------------
+
+  it("sayu fold-build anchor: coefficientFromStat{mastery,0.002,cap4} on EM=151 == const 30.2", () => {
+    // Pin mastery_total to exactly 151 (the frozen build's EM): mastery_base 55 →
+    // bump to 151 via raw flat EM. The fold const 30.2 is a PERCENT (30.2/100 =
+    // 0.302 fraction of ATK); the new form is values:()=>100 (→ 1.0) × coeff 0.302.
+    const built = buildAt({ mastery_base: 151 });
+    expect(built.context.stats["mastery_total"]).toBeCloseTo(151, 6);
+
+    const dynamic = normalOf(
+      {
+        scaling: "atk",
+        leveling: "",
+        values: constTable(100),
+        coefficientFromStat: { stat: "mastery", ratio: 0.002, cap: 4 },
+      },
+      built
+    );
+    const folded = normalOf(
+      { scaling: "atk", leveling: "", values: constTable(30.2) },
+      built
+    );
+    expect(dynamic).toBeCloseTo(folded, 6);
+  });
+
+  it("sayu coefficient TRACKS the live EM total off the fold build", () => {
+    // At EM≈400 the coefficient is mastery×0.002 (≈0.8), NOT the frozen 0.302.
+    // It must equal the SAME constant computed from this build's live total.
+    const built = buildAt({ mastery_base: 400 });
+    const em = built.context.stats["mastery_total"]!;
+    const expectedCoeff = em * 0.002; // < cap 4
+    const dynamic = normalOf(
+      {
+        scaling: "atk",
+        leveling: "",
+        values: constTable(100),
+        coefficientFromStat: { stat: "mastery", ratio: 0.002, cap: 4 },
+      },
+      built
+    );
+    const equivalent = normalOf(
+      { scaling: "atk", leveling: "", values: constTable(100 * expectedCoeff) },
+      built
+    );
+    expect(dynamic).toBeCloseTo(equivalent, 6);
+    // And NOT the frozen fold (proves it's not baked at 0.302).
+    const frozen = normalOf({ scaling: "atk", leveling: "", values: constTable(30.2) }, built);
+    expect(Math.abs(dynamic - frozen)).toBeGreaterThan(1);
+  });
+
+  it("sayu cap binds: EM=2500 → coefficient capped at 4 (not 5.0)", () => {
+    const built = buildAt({ mastery_base: 2500 });
+    expect(built.context.stats["mastery_total"]!).toBeGreaterThan(2000); // > cap/ratio
+    const dynamic = normalOf(
+      {
+        scaling: "atk",
+        leveling: "",
+        values: constTable(100),
+        coefficientFromStat: { stat: "mastery", ratio: 0.002, cap: 4 },
+      },
+      built
+    );
+    // capped: coeff 4 → values 100 × 4 ⇒ 400% ATK
+    const capped = normalOf({ scaling: "atk", leveling: "", values: constTable(400) }, built);
+    expect(dynamic).toBeCloseTo(capped, 6);
+    // NOT the uncapped 5.0 (2500×0.002).
+    const uncapped = normalOf({ scaling: "atk", leveling: "", values: constTable(500) }, built);
+    expect(Math.abs(dynamic - uncapped)).toBeGreaterThan(1);
+  });
+
+  // --- kirara C1: divisor path (floor), via scalingMultiplier slot ----------
+
+  it("kirara fold-build anchor: coefficientFromStat{hp,÷8000,cap4} at floor-3 HP == scalingMultiplier 3", () => {
+    // The frozen build's hp_total floors to 3 (her HP=31503 → floor(31503/8000)=3).
+    // This probe build's hp_total (≈28778) sits in the SAME floor-3 bucket, so the
+    // coefficient is 3 — identical to the old scalingMultiplier:3 fold. Talent table
+    // arbitrary (cancels in the comparison).
+    const built = buildAt({});
+    expect(Math.floor(built.context.stats["hp_total"]! / 8000)).toBe(3);
+
+    const dynamic = normalOf(
+      {
+        scaling: "atk",
+        leveling: "char_skill_burst",
+        values: constTable(120),
+        coefficientFromStat: { stat: "hp", divisor: 8000, cap: 4 },
+      },
+      built
+    );
+    const folded = normalOf(
+      { scaling: "atk", leveling: "char_skill_burst", values: constTable(120), scalingMultiplier: 3 },
+      built
+    );
+    expect(dynamic).toBeCloseTo(folded, 6);
+  });
+
+  it("kirara coefficient TRACKS live HP (floor) off the fold build", () => {
+    // hp_base 3000 → HP≈18552 → floor(18552/8000)=2, NOT the frozen 3.
+    const built = buildAt({ hp_base: 3000, hp_percent: 0 });
+    const hp = built.context.stats["hp_total"]!;
+    const expectedCoeff = Math.floor(hp / 8000);
+    const dynamic = normalOf(
+      {
+        scaling: "atk",
+        leveling: "char_skill_burst",
+        values: constTable(120),
+        coefficientFromStat: { stat: "hp", divisor: 8000, cap: 4 },
+      },
+      built
+    );
+    const equivalent = normalOf(
+      { scaling: "atk", leveling: "char_skill_burst", values: constTable(120), scalingMultiplier: expectedCoeff },
+      built
+    );
+    expect(dynamic).toBeCloseTo(equivalent, 6);
+    expect(expectedCoeff).toBe(2); // off the frozen 3
+  });
+
+  it("kirara cap binds (floor THEN cap): floor 5 → capped 4, NOT floor(min)", () => {
+    // hp_base 31503 → HP≈47055 → floor(47055/8000)=5 (above the cap 4).
+    const built = buildAt({ hp_base: 31503, hp_percent: 0 });
+    const hp = built.context.stats["hp_total"]!;
+    expect(Math.floor(hp / 8000)).toBe(5); // raw floor is 5
+    const dynamic = normalOf(
+      {
+        scaling: "atk",
+        leveling: "char_skill_burst",
+        values: constTable(120),
+        coefficientFromStat: { stat: "hp", divisor: 8000, cap: 4 },
+      },
+      built
+    );
+    const capped = normalOf(
+      { scaling: "atk", leveling: "char_skill_burst", values: constTable(120), scalingMultiplier: 4 },
+      built
+    );
+    expect(dynamic).toBeCloseTo(capped, 6);
+    // floor-THEN-cap, not floor-of-min: a hypothetical 5 would diverge.
+    const uncapped = normalOf(
+      { scaling: "atk", leveling: "char_skill_burst", values: constTable(120), scalingMultiplier: 5 },
+      built
+    );
+    expect(Math.abs(dynamic - uncapped)).toBeGreaterThan(1);
+  });
+
+  // --- base-inert: absent field == today --------------------------------------
+
+  it("absent coefficientFromStat is byte-identical to a plain term", () => {
+    const built = buildAt({});
+    const withoutField = normalOf(
+      { scaling: "atk", leveling: "char_skill_elemental", values: constTable(100) },
+      built
+    );
+    // Same multiplier, field simply not present → must match exactly.
+    const plain = normalOf(
+      { scaling: "atk", leveling: "char_skill_elemental", values: constTable(100) },
+      built
+    );
+    expect(withoutField).toBe(plain);
+    // And it equals the existing hand-derived expectation (atk_total × 1.0 path).
+    const atkTotal = built.context.stats["atk_total"]!;
+    const expected = atkTotal * 1.32 * 0.5 * 0.9; // (1+dmg_skill) × defMult × resMult(pyro)
+    expect(withoutField).toBeCloseTo(expected, 3);
+  });
+
+  // --- fail-loud guards -------------------------------------------------------
+
+  it("throws when coefficientFromStat and scalingMultiplier co-occur (mutually exclusive)", () => {
+    const ctx: CompileContext = {
+      charElement: "pyro",
+      talentLevels: { attack: 10, elemental: 10, burst: 10 },
+      settings: {},
+    };
+    const feature: Feature = {
+      name: "bad_feature",
+      category: "skill",
+      element: "pyro",
+      multipliers: [
+        {
+          leveling: "char_skill_elemental",
+          values: constTable(100),
+          scalingMultiplier: 2,
+          coefficientFromStat: { stat: "mastery", ratio: 0.002, cap: 4 },
+        },
+      ],
+    };
+    expect(() => compileFeature(feature, ctx)).toThrow(
+      /mutually exclusive/
+    );
+  });
+
+  it("throws when coefficientFromStat sets neither ratio nor divisor", () => {
+    const ctx: CompileContext = {
+      charElement: "pyro",
+      talentLevels: { attack: 10, elemental: 10, burst: 10 },
+      settings: {},
+    };
+    const feature: Feature = {
+      name: "bad_feature",
+      category: "skill",
+      element: "pyro",
+      multipliers: [
+        {
+          leveling: "char_skill_elemental",
+          values: constTable(100),
+          // @ts-expect-error — deliberately malformed to test the runtime guard
+          coefficientFromStat: { stat: "mastery", cap: 4 },
+        },
+      ],
+    };
+    expect(() => compileFeature(feature, ctx)).toThrow(
+      /exactly one of ratio \| divisor/
+    );
+  });
+});
+
+// ===========================================================================
+// Ocean-Hued Clam foam (M4b) — her FeatureDamageClam: a special damage hit with
+// NO crit, NO dmg-bonus, DEF IGNORED, and a per-multiplier 30000 cap. Resistance
+// STILL applies (Clam.js overrides only getStatsDmgBonus/getStatsCritRate/
+// getStatsCritDamage → [] and getDefenceLevelMultiplier → 1). The hit scales the
+// BARE bag key `accumulated_healing` (a non-`*` scaling read verbatim by cStat).
+// ===========================================================================
+
+describe("compileFeature — Clam foam suppression flags (no-crit / no-dmg-bonus / DEF-ignore / cap)", () => {
+  // A synthetic eval bag with a chosen accumulated_healing + non-trivial crit /
+  // dmg-bonus / def-reduce so the suppression flags are PROVABLY exercised: if any
+  // of them were ignored, the value would move off the suppressed result.
+  function bagWith(accumulatedHealing: number): DamageContext {
+    const stats = {
+      accumulated_healing: accumulatedHealing,
+      // Non-zero crit (would inflate crit/avg if not suppressed):
+      crit_rate_total: 0.5,
+      crit_dmg_total: 1.0,
+      // Non-zero dmg bonuses (would inflate normal if not suppressed):
+      dmg_all: 0.466,
+      dmg_phys: 0.4,
+      // Physical resistance 10% → res multiplier 0.9 (STILL applies).
+      enemy_res_physical: 0.1,
+      // Non-zero DEF-reduce (would change the def multiplier if not ignored):
+      enemy_def_reduce: 0.2,
+    } as unknown as DamageContext["stats"];
+    return { stats, enemy: { level: 90, resistance: {} }, characterLevel: 90 };
+  }
+
+  const FOAM_CTX: CompileContext = {
+    charElement: "hydro", // ignored — the foam carries an explicit physical element
+    talentLevels: { attack: 10, elemental: 10, burst: 10 },
+    settings: {},
+  };
+
+  /** The foam feature: physical, scales 0.9 × accumulated_healing, capped 30000, all suppressions on. */
+  function foamFeature(): Feature {
+    return {
+      name: "sea_dyed_foam_dmg",
+      element: "physical",
+      noCrit: true,
+      noDamageBonus: true,
+      ignoreEnemyDefence: true,
+      multipliers: [
+        {
+          scaling: "accumulated_healing",
+          leveling: "",
+          values: constTable(90), // 90% → 0.9 fraction
+          capValue: 30000,
+        },
+      ],
+    };
+  }
+
+  it("foam below the cap: normal == crit == avg == 0.9 × ah × res (no crit / no dmg-bonus / DEF-ignored)", () => {
+    const ah = 20000;
+    const result = compile(compileFeature(foamFeature(), FOAM_CTX))(bagWith(ah));
+    // 0.9 × 20000 = 18000 (< cap); × res 0.9 = 16200; def ignored (×1); no dmg-bonus; no crit.
+    expect(result.normal).toBeCloseTo(16200, 6);
+    expect(result.crit).toBeCloseTo(16200, 6); // no crit → crit == normal
+    expect(result.avg).toBeCloseTo(16200, 6); // no crit → avg == normal
+  });
+
+  it("the 30000 cap binds on the BASE term (pre-res), exactly her CValueCap", () => {
+    // ah huge → 0.9 × ah ≫ 30000, capped to 30000 BEFORE res → 30000 × 0.9 = 27000.
+    const result = compile(compileFeature(foamFeature(), FOAM_CTX))(bagWith(1_000_000));
+    expect(result.normal).toBeCloseTo(27000, 6);
+    expect(result.crit).toBeCloseTo(27000, 6);
+  });
+
+  it("noCrit suppression is real: WITHOUT it, the same bag would crit (control)", () => {
+    const ah = 20000;
+    const noSuppress: Feature = {
+      name: "control",
+      element: "physical",
+      // no suppression flags
+      multipliers: [{ scaling: "accumulated_healing", leveling: "", values: constTable(90) }],
+    };
+    const result = compile(compileFeature(noSuppress, FOAM_CTX))(bagWith(ah));
+    // crit_rate 0.5, crit_dmg +100% → crit = normal × 2, avg between. Proves the bag CAN crit.
+    expect(result.crit).toBeGreaterThan(result.normal * 1.9);
   });
 });

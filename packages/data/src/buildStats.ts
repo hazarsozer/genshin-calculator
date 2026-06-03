@@ -45,7 +45,7 @@ import type {
   StatTableEntry,
 } from "@genshin/types";
 import { getArtifactSet } from "./artifacts/sets/index.js";
-import { CHARACTER_CONDITIONS, CHARACTER_MULTIPLIERS } from "./characterConditions.js";
+import { CHARACTER_CONDITIONS, CHARACTER_MULTIPLIERS, CHARACTER_POST_EFFECTS } from "./characterConditions.js";
 import { buildPartyContext, type PartyInput, type ActiveCharFacts } from "./partyContext.js";
 
 /** The seven elements + physical, in the order the engine keys resistance. */
@@ -117,29 +117,46 @@ const DMG_BONUS_TYPE_KEYS = [
 const CRIT_BONUS_TYPES = ["normal", "charged", "plunge", "skill", "burst"] as const;
 
 /**
- * Reaction scaling / bonus keys derived by post-effects (Ineffa's Lunar-Charged
- * passives today; extended in P1.9 as more reaction-driving post-effects land).
- * Already fraction-valued in `raw` (the post-effect folded the isPercent /100),
- * so emitted as-is. Read by the reaction factories' `(1 + Σ)` terms.
+ * Reaction SCALING keys derived by post-effects (Ineffa's `lunarcharged_multi`
+ * today; extended as more reaction-rate-driving post-effects land). Already
+ * fraction-valued in `raw` (the post-effect folded the isPercent /100 — her
+ * PostEffect/Stats.js getTree), so emitted as-is. Read by the reaction factories'
+ * `(1 + Σ scaling)` rate term.
+ *
+ * NOTE: `dmg_reaction_lunarcharged` is NOT here — see REACTION_BONUS_PERCENT_KEYS.
+ * Every LIVE v5.8 producer of that key is a CONDITION emitting a RAW percent
+ * (FracturedHalo refine 40-80, ThunderingFury 4pc 20), so it must be /100'd like
+ * its sibling `dmg_reaction_*` keys. The only post-effect that would write it
+ * (Ineffa's C1 `lunarPost2`) is a gated-off toggle never ported, so no
+ * fraction-valued contribution to that key exists in scope.
  */
 const REACTION_DERIVED_KEYS = [
   "lunarcharged_multi",
-  "dmg_reaction_lunarcharged",
 ] as const;
 
 /**
  * Per-reaction DMG bonus keys CONDITIONS contribute (e.g. CrimsonWitch 4pc's
  * `dmg_reaction_overloaded`/`_burgeon`/…). The reaction factories read each via
  * `cStat(key)` inside `(1 + emBonus + Σ dmg_reaction_*)` (core's
- * cTransformativeDamage / cAmplifyingDamage). Unlike `dmg_reaction_lunarcharged`
- * (a post-effect output that ALREADY folded its isPercent /100 — see
- * REACTION_DERIVED_KEYS), these arrive as RAW percents from `conditionStats`, so
- * they are emitted as FRACTIONS (÷100) at emit time, exactly like every dmg_* key.
- * `dmg_reaction_lunarcharged` is deliberately NOT in this list (it stays in the
- * pre-divided REACTION_DERIVED_KEYS path). Absent keys are left unset → engine reads 0.
+ * cTransformativeDamage / cAmplifyingDamage / cLunarChargedDamage). These arrive
+ * as RAW percents from `conditionStats`, so they are emitted as FRACTIONS (÷100)
+ * at emit time, exactly like every dmg_* key. Absent keys are left unset → engine
+ * reads 0.
+ *
+ * `dmg_reaction_lunarcharged` belongs HERE. Both of its LIVE v5.8 producers are
+ * conditions emitting raw percents — FracturedHalo's refine passive (40-80) and
+ * ThunderingFury 4pc (20) — so its /100 is identical to its sibling keys. (The
+ * only post-effect that would write it pre-divided is Ineffa's C1 `lunarPost2`, a
+ * gated-off toggle never ported; were it ported, its fraction would accumulate
+ * into the SAME `raw` value as the conditions and could not be re-separated at
+ * emit, so the engine assumes condition-sourced raw percents only. The rate
+ * scaling `lunarcharged_multi` IS post-effect-sourced and stays pre-divided in
+ * REACTION_DERIVED_KEYS above.) This is the M3 fix: previously it sat in the
+ * un-divided REACTION_DERIVED_KEYS path, so ThunderingFury's 20 read as +2000%.
  *
  * Source: packages/data/src/reactions.ts (reactionBonusKeys per reaction);
- *         raw/.../db/Artifacts/Set/CrimsonWitch.js (the 4pc reaction bonuses).
+ *         raw/.../db/Artifacts/Set/CrimsonWitch.js (the 4pc reaction bonuses);
+ *         raw/.../db/Artifacts/Set/ThunderingFury.js + Weapon/Polearm/FracturedHalo.js.
  */
 const REACTION_BONUS_PERCENT_KEYS = [
   "dmg_reaction_overloaded",
@@ -154,6 +171,7 @@ const REACTION_BONUS_PERCENT_KEYS = [
   "dmg_reaction_aggravate",
   "dmg_reaction_vaporize",
   "dmg_reaction_melt",
+  "dmg_reaction_lunarcharged",
 ] as const;
 
 /**
@@ -163,15 +181,23 @@ const REACTION_BONUS_PERCENT_KEYS = [
  * atk/hp/def/mastery) reads the bag value directly — her `makeStatItem(scaling)`
  * (Feature2/Compile/Helpers.js:11-19) → `stats.get(scaling)`, no `_total`, no `/100`.
  * These are flat numeric inputs a ConditionNumber injects (not percent stats), so they
- * are emitted RAW. The sole v5.8 user is Song of Days Past 4pc (team):
- * `party_days_past_healing_recorded` (the recorded healing the team multiplier scales).
+ * are emitted RAW. The two v5.8 users (both ConditionNumber-driven scaling inputs):
+ *   - `party_days_past_healing_recorded` — Song of Days Past 4pc (team): the recorded
+ *     healing the team multiplier scales (≤15000).
+ *   - `accumulated_healing` — Ocean-Hued Clam 4pc (self-worn): the healing accumulated
+ *     over the foam's window that the Sea-Dyed Foam (`FeatureDamageClam`) scales `90% ×`,
+ *     capped 30000. Her ConditionNumber (OceanHuedClam.js:35-41) is INACTIVE until the
+ *     input is > 0 (Condition/Number.js:8-11), so at the v5.8 standard 0 the key is never
+ *     in the bag → never emitted → the foam reads 0 (the existing OceanHuedClam armory
+ *     fixture, foam 0, is byte-unchanged).
  * Absent for every build that sets no such input → key never emitted → multiplier reads
  * 0 → the base golden suite + all existing fixtures are byte-untouched.
  *
- * Source: raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:262-380 (ConditionNumber +
- *         the FeatureMultiplier scaling it), classes/Feature2/Multiplier.js:281-288.
+ * Source: raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:262-380 (Song of Days Past
+ *         ConditionNumber + its FeatureMultiplier), db/Artifacts/Set/OceanHuedClam.js:35-67
+ *         (Clam ConditionNumber + FeatureDamageClam), classes/Feature2/Multiplier.js:281-288.
  */
-const RAW_BAG_SCALING_KEYS = ["party_days_past_healing_recorded"] as const;
+const RAW_BAG_SCALING_KEYS = ["party_days_past_healing_recorded", "accumulated_healing"] as const;
 
 /**
  * Level/ascension parameters for base-stat assembly. (Talent levels are a
@@ -615,10 +641,19 @@ export function buildStats(input: BuildInput): BuildResult {
   // (her PostEffect.getLevel adds `_bonus`); refine-scaled weapon folds read
   // `weapon_refine` from the merged settings. No base-build weapon carries a
   // post-effect → the weapon channel is a no-op for the base golden suite.
+  //
+  // Global character post-effects (DB.Buffs `weapons`/`static` post-effects in her engine) —
+  // off-field weapon teammate-stat conversions (desert_pavilion EM→atk, key_of_khaj_nisut HP→mastery,
+  // whisper_of_the_jinn EM→recharge, peak_patrol_song DEF→dmg_<el>). Appended onto EVERY character's
+  // post-effect list exactly like CHARACTER_CONDITIONS, since her CalcSet.getPostEffects() concats the
+  // always-present `weapons`/`static` buffs' post-effects. Each is gated on a `weapon_other.*` toggle
+  // and reads its teammate-stat INPUT from the bag; inert (gate fails → {}) for every build that sets
+  // no such toggle, so the base golden suite + all existing fixtures are byte-unchanged.
   const effects = [
     ...(input.char.postEffects ?? []),
     ...(input.weaponPostEffects ?? []),
     ...sets.postEffects,
+    ...CHARACTER_POST_EFFECTS,
   ].map(toPostEffect);
   applyPostEffects(raw, effects, merged);
 
@@ -715,14 +750,14 @@ export function buildStats(input: BuildInput): BuildResult {
     out[key] = raw.get(key) / 100;
   }
 
-  // Reaction scaling / bonus keys the reaction factories read inside their
-  // `(1 + Σ scaling)` / `(1 + emBonus + Σ reactionBonus)` terms — e.g. Ineffa's
-  // `lunarcharged_multi` and `dmg_reaction_lunarcharged`. In her engine these are
-  // ONLY ever produced by post-effects (PostEffectStatsAtk on a percent stat),
-  // which already fold the isPercent /100 — so they land in the bag as FRACTIONS
-  // and are read out as-is (no further /100). Absent keys are left unset so the
-  // engine reads them as 0 (cStat default). (Raw: db/Char/Ineffa.js lunarPost /
-  // lunarPost2, PostEffect/Stats.js getTree isPercent fold.)
+  // Reaction-RATE scaling keys the reaction factories read inside their
+  // `(1 + Σ scaling)` rate term — Ineffa's `lunarcharged_multi`. In her engine
+  // this is produced by a post-effect (PostEffectStatsAtk on a percent stat),
+  // which already folds the isPercent /100 — so it lands in the bag as a FRACTION
+  // and is read out as-is (no further /100). Absent → unset (engine reads 0,
+  // cStat default). The reaction-DMG-bonus key `dmg_reaction_lunarcharged` is
+  // condition-sourced (raw percent) and lives in REACTION_BONUS_PERCENT_KEYS — it
+  // is /100'd below. (Raw: db/Char/Ineffa.js lunarPost, PostEffect/Stats.js getTree.)
   for (const key of REACTION_DERIVED_KEYS) {
     if (raw.isSet(key)) out[key] = raw.get(key);
   }
@@ -740,10 +775,12 @@ export function buildStats(input: BuildInput): BuildResult {
     if (raw.isSet(key)) out[key] = raw.get(key);
   }
 
-  // Condition-contributed per-reaction DMG bonuses (e.g. CrimsonWitch 4pc) → fractions.
-  // These arrive RAW (percent) from the condition loop, so divide by 100 here (unlike the
-  // pre-divided REACTION_DERIVED_KEYS above). Absent → unset (engine reads 0). No-op for
-  // every build that contributes no `dmg_reaction_*` (the base suite is untouched).
+  // Condition-contributed per-reaction DMG bonuses (e.g. CrimsonWitch 4pc, and
+  // `dmg_reaction_lunarcharged` from FracturedHalo / ThunderingFury) → fractions.
+  // These arrive RAW (percent) from the condition loop, so divide by 100 here
+  // (unlike the pre-divided rate-scaling REACTION_DERIVED_KEYS above). Absent →
+  // unset (engine reads 0). No-op for every build that contributes no
+  // `dmg_reaction_*` (the base suite is untouched).
   for (const key of REACTION_BONUS_PERCENT_KEYS) {
     if (raw.isSet(key)) out[key] = raw.get(key) / 100;
   }

@@ -37,7 +37,9 @@ import {
   cRoyalCritRate,
   cDamage,
   cDivide,
+  cFloor,
   cLunarChargedDamage,
+  cMin,
   cMulti,
   cMultiplierBonus,
   cMultiplierDefence,
@@ -202,6 +204,39 @@ function skillLevelBonus(settings: EvalContext, leveling: string): number {
   return (typeof b1 === "number" ? b1 : 0) + (typeof b2 === "number" ? b2 : 0);
 }
 
+/**
+ * Resolve a multiplier scaling/coefficient stat key to the bag key it reads.
+ * The four total stats (atk/hp/def/mastery) map to `<stat>_total` (the aggregate
+ * buildStats emits); any other key reads the raw bag verbatim. Shared by the base
+ * term's `scaling` and the coefficient's `stat` so both honour the same convention.
+ */
+function resolveStatKey(stat: string): string {
+  const bare = stat.replace("*", "");
+  return TOTAL_SCALING_STATS.has(bare) ? `${bare}_total` : bare;
+}
+
+/**
+ * The M1 stat-derived coefficient as a RUNTIME subtree: `min( f(getTotal(stat)), cap )`,
+ * where `f` is `stat × ratio` (sayu C6) or `floor(stat / divisor)` (kirara C1).
+ *
+ * Built from `cStat(<stat>_total)` so it reads the LIVE build total at eval time — the
+ * stat bag is not in the CompileContext (it materialises only in the eval-time
+ * `DamageContext`), so the coefficient is composed where every other stat-dependent
+ * factor is. floor THEN cap (the `cMin` wraps the floored value — kirara hp=45000 →
+ * floor 5 → cap 4, NOT floor of the min). Ports her FeatureMultiplierSayuBurst /
+ * FeatureMultiplierKiraraBurst getScalingMultiplier (`CMin([CMul/CFloor, CConst(cap)])`).
+ */
+function coefficientBlock(
+  spec: NonNullable<FeatureMultiplierEntry["coefficientFromStat"]>
+): Block {
+  const total = cStat(resolveStatKey(spec.stat));
+  const raw =
+    spec.divisor !== undefined
+      ? cFloor(cDivide([total, cConst(spec.divisor)]))
+      : cMulti([total, cConst(spec.ratio ?? 1)]);
+  return cMin([raw, cConst(spec.cap)]);
+}
+
 /** Build the base-damage term for one multiplier: talent% × scalingStatTotal. */
 function baseDamageTerm(
   entry: FeatureMultiplierEntry,
@@ -263,12 +298,45 @@ function baseDamageTerm(
   //     Past self-worn), absent from every build's bag → 0 either way; no base/cons/armory
   //     fixture exercises a non-total scaling that resolves nonzero, so this branch leaves
   //     goldenConfig / constellations / armory byte-unchanged.
-  const rawScaling = (entry.scaling ?? "atk").replace("*", "");
-  const scalingKey = TOTAL_SCALING_STATS.has(rawScaling)
-    ? `${rawScaling}_total`
-    : rawScaling;
+  const scalingKey = resolveStatKey(entry.scaling ?? "atk");
 
-  return cMulti([cConst(talentPercent), cStat(scalingKey)]);
+  // M1 coefficient: a THIRD, mutually-exclusive factor beside scalingMultiplier /
+  // scalingOffset (none co-occur on a coefficient term). When present, the term's
+  // scaling factor is `min( f(getTotal(stat)), cap )` read at eval time, replacing
+  // the build-coupled constant fold (sayu C6 30.2, kirara C1 scalingMultiplier 3).
+  // Absent → the children are exactly [talentPercent, scalingStat] as before.
+  if (entry.coefficientFromStat !== undefined) {
+    // Fail loud: mutually exclusive with scalingMultiplier / scalingOffset (either would
+    // double-count the coefficient — the convention is coefficientFromStat XOR scalar).
+    if (entry.scalingMultiplier !== undefined || entry.scalingOffset !== undefined) {
+      throw new Error(
+        `baseDamageTerm: entry '${entry.source ?? "(unnamed)"}' sets coefficientFromStat ` +
+        `alongside ${entry.scalingMultiplier !== undefined ? "scalingMultiplier" : "scalingOffset"} ` +
+        `— these are mutually exclusive`
+      );
+    }
+    // Fail loud: exactly one of ratio | divisor required (both or neither silently mis-computes).
+    const hasRatio = entry.coefficientFromStat.ratio !== undefined;
+    const hasDivisor = entry.coefficientFromStat.divisor !== undefined;
+    if (hasRatio === hasDivisor) {
+      throw new Error(
+        `baseDamageTerm: entry '${entry.source ?? "(unnamed)"}' coefficientFromStat must set ` +
+        `exactly one of ratio | divisor (got ${hasRatio && hasDivisor ? "both" : "neither"})`
+      );
+    }
+  }
+  const factors: Block[] = [cConst(talentPercent)];
+  if (entry.coefficientFromStat !== undefined) {
+    factors.push(coefficientBlock(entry.coefficientFromStat));
+  }
+  factors.push(cStat(scalingKey));
+  const term = cMulti(factors);
+  // Per-multiplier absolute cap (her FeatureMultiplier.capValue → CValueCap, a
+  // Math.min wrapping the multiplier tree): `min(levelMult × scalingStat, capValue)`,
+  // applied to THIS term before it enters the base-damage sum and before the
+  // dmg-bonus/res/def factors. The sole v5.8 user is Ocean-Hued Clam's foam
+  // (`min(0.9 × accumulated_healing, 30000)`). Absent → no cap (every other multiplier).
+  return entry.capValue !== undefined ? cMin([term, cConst(entry.capValue)]) : term;
 }
 
 /**
@@ -515,12 +583,29 @@ export function compileFeature(
     damageType !== "" && damageType !== "none"
       ? ["enemy_def_ignore", `enemy_def_ignore_${damageType}`]
       : ["enemy_def_ignore"];
+  // Special-damage suppressions (her FeatureDamageClam): NO dmg-bonus → an empty
+  // cMultiplierBonus (degenerates to 1); IGNORE enemy DEF → a constant-1 defence factor
+  // (her getDefenceLevelMultiplier → CConst(1)). Resistance is NEVER suppressed. Both
+  // flags absent for every normal hit → identical block as before (base/cons/armory safe).
+  const bonusBlock = feature.noDamageBonus
+    ? cMultiplierBonus([])
+    : cMultiplierBonus(dmgBonusKeys(feature, element, damageType).map((k) => cStat(k)));
+  const defenceBlock = feature.ignoreEnemyDefence
+    ? cConst(1)
+    : cMultiplierDefence("enemy_def_reduce", defIgnoreKeys);
   const items: Block[] = [
     cBaseDamage(baseTerms),
-    cMultiplierBonus(dmgBonusKeys(feature, element, damageType).map((k) => cStat(k))),
+    bonusBlock,
     cMultiplierResistance(element),
-    cMultiplierDefence("enemy_def_reduce", defIgnoreKeys),
+    defenceBlock,
   ];
+
+  // NO-CRIT special damage (her FeatureDamageClam getStatsCritRate/CritDamage → []):
+  // omit the crit blocks entirely → cDamage uses chance 0 → crit == normal == avg.
+  // Only the foam sets this; every normal hit falls through to the crit path below.
+  if (feature.noCrit) {
+    return cDamage({ items });
+  }
 
   // Crit: the aggregated totals (buildStats folds crit_rate/_dmg in), PLUS the
   // generic per-TYPE crit keys (`crit_*_<damageType>`, folded here exactly as

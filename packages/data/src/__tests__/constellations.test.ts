@@ -217,6 +217,13 @@ for (const { char, weaponStatTable, slug } of REPS) {
       levels: LEVELS,
       enemy: ENEMY,
       settings: { char_constellation: CONSTELLATION },
+      // Thread base talent levels (parity with golden.test.ts / goldenConfig.test.ts) so
+      // talent-scaled conditions/post-effects can read the base skill level from settings and
+      // combine it with the constellation `_bonus` offset. Required for xilonen's dynamic geo
+      // RES-shred (a staticLevel keyed on char_skill_elemental → 10 + C3's +3 = 13 → -45). Other
+      // chars' char_skill_*-reading effects are toggle-gated OFF in this C6-no-toggles config, so
+      // their goldens are unaffected (verified: only xilonen's res-shred is C6-active).
+      talentLevels: TALENTS,
     });
 
     const compiled = compileCharacter(char, {

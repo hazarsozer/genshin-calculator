@@ -89,6 +89,43 @@ export interface FeatureMultiplierEntry {
     readonly maxStacks: number;
   };
   /**
+   * Runtime coefficient on the base term, derived from a STAT TOTAL (her
+   * FeatureMultiplierSayuBurst / FeatureMultiplierKiraraBurst). When present, the
+   * term's scalingFactor becomes min( f(getTotal(stat)), cap ), where
+   *   f = stat × ratio          (sayu C6:  mastery × 0.002, cap 4)
+   *     | floor(stat / divisor) (kirara C1: floor(hp / 8000), cap 4)
+   * exactly one of `ratio` | `divisor` (divisor implies floor()). Absent → unchanged.
+   * Replaces the build-coupled constant fold; reads the CURRENT build's total, so it
+   * tracks any build (validated off-build by the Task-1 oracle fixtures in Task 3).
+   *
+   * Applied as a RUNTIME factor — a `cStat`-rooted subtree on the base term, NOT a
+   * compile-time literal: the stat total lives in the eval-time bag (`<stat>_total`),
+   * not in the CompileContext, so the coefficient is read where every other
+   * stat-dependent factor is — at eval. `stat` is the bare total-stat key (`"mastery"`
+   * | `"hp"`), resolved to `<stat>_total` exactly like the `scaling` field. Mutually
+   * exclusive with `scalingMultiplier` / `scalingOffset` (none co-occur on a
+   * coefficient term).
+   */
+  readonly coefficientFromStat?: {
+    readonly stat: string;      // total-stat key, e.g. "mastery" | "hp"
+    readonly ratio?: number;
+    readonly divisor?: number;
+    readonly cap: number;
+  };
+  /**
+   * Absolute cap on THIS multiplier's base term (`levelMultiplier × scalingStat`),
+   * applied as `min(term, capValue)` BEFORE the term enters the base-damage sum and
+   * before the dmg-bonus / resistance / defence factors — exactly her
+   * `FeatureMultiplier.capValue` (a `ValueTable`) which wraps the multiplier `getTree`
+   * in a `CValueCap` (`Math.min(tree, cap)`, Multiplier.js:233-237, Block.js:466-477).
+   *
+   * The sole v5.8 user is Ocean-Hued Clam's Sea-Dyed Foam: `min(0.9 × accumulated_healing,
+   * 30000)`. Her table is a 1-entry constant, so a plain number suffices. Absent → no cap.
+   *
+   * Source: raw/genshin_calc_pub/src/js/db/Artifacts/Set/OceanHuedClam.js:59-65
+   */
+  readonly capValue?: number;
+  /**
    * CHAR-LEVEL multipliers only: which features this multiplier applies to.
    * When set (only on `char.multipliers` entries), the multiplier is summed into
    * a feature's base-damage term iff `target.damageTypes` includes the feature's
@@ -205,6 +242,29 @@ export interface Feature {
    * (Damage.js:109-111). Each is a fraction at execution time; absent keys read 0.
    */
   readonly critDamageBonuses?: readonly string[];
+  /**
+   * Special-damage suppression flags — her `FeatureDamageClam` (Ocean-Hued Clam's
+   * Sea-Dyed Foam) overrides, the only v5.8 user. Each maps 1:1 to one of her
+   * `getStats*`/`getDefenceLevelMultiplier` overrides (Damage/Clam.js). All absent =
+   * a normal damage feature (every other hit), so the base/cons/armory surface is
+   * untouched.
+   *
+   *   `noCrit` — her `getStatsCritRate`/`getStatsCritDamage` → []: the hit cannot crit
+   *     (crit blocks omitted → chance 0 → crit == normal == avg).
+   *   `noDamageBonus` — her `getStatsDmgBonus` → []: NO `dmg_all`/`dmg_<element>`/
+   *     `dmg_<type>` bonus is applied (the bonus factor degenerates to 1).
+   *   `ignoreEnemyDefence` — her `getDefenceLevelMultiplier` → `CConst(1)`: the hit
+   *     ignores enemy DEF entirely (the defence factor is a constant 1). Resistance is
+   *     NOT suppressed (she does not override `getResistanceMultiplier`).
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Damage/Clam.js
+   */
+  // --- FeatureDamageClam suppression flags (see group doc above) ---
+  readonly noCrit?: boolean;
+  /** See group comment above (FeatureDamageClam suppression flags). */
+  readonly noDamageBonus?: boolean;
+  /** See group comment above (FeatureDamageClam suppression flags). */
+  readonly ignoreEnemyDefence?: boolean;
   /**
    * Marks a standalone reaction feature (a separate damage instance keyed by its
    * reaction nature, NOT a `settings.reaction` toggle on a normal hit). When set,

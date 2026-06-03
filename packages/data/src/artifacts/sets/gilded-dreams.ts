@@ -54,7 +54,7 @@ export const gildedDreams: DbObjectArtifactSet = {
         // GildedDreams.js:44-58 — subConditions: [set.gilded_dreams_4, party_elements_same]
         // table (excluding text_percent display entry): atk_percent: [0, 14, 28, 42]
         {
-          type: "staticLevel",
+          type: "static-level",
           levelSetting: "party_elements_same",
           fromZero: true,
           levelStats: { atk_percent: [0, 14, 28, 42] },
@@ -72,7 +72,7 @@ export const gildedDreams: DbObjectArtifactSet = {
         // GildedDreams.js:59-73 — subConditions: [set.gilded_dreams_4, party_elements_different]
         // table (excluding text_value/text_value2 display entries): mastery: [0, 50, 100, 150]
         {
-          type: "staticLevel",
+          type: "static-level",
           levelSetting: "party_elements_different",
           fromZero: true,
           levelStats: { mastery: [0, 50, 100, 150] },

@@ -36,6 +36,7 @@ export type BlockKind =
   | "divide"
   | "min"
   | "max"
+  | "floor"
   | "base_damage"
   | "multiplier_bonus"
   | "multiplier_defence"
@@ -182,6 +183,22 @@ export function cMax(children: readonly Block[]): Block {
       }
       return m;
     },
+  };
+}
+
+/**
+ * Floor of a single child (`Math.floor`). Ports CFloor.
+ *
+ * Used by stat-derived coefficient terms whose coefficient steps in integer
+ * buckets — her `FeatureMultiplierKiraraBurst` `min(floor(hp/8000), 4)`. Sole
+ * child convention mirrors a unary block; the runner floors its value.
+ */
+export function cFloor(child: Block): Block {
+  const fn = child.run;
+  return {
+    kind: "floor",
+    children: [child],
+    run: (ctx) => Math.floor(fn(ctx)),
   };
 }
 

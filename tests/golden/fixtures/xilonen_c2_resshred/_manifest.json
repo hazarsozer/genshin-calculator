@@ -1,0 +1,92 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Xilonen at C2 with the geo samplers ON (C2 activates the geo sampler; toggles also set explicitly). At C2 the skill stays level 10, so her ONE sampler-gated res-shred emits enemy_res_geo=-36 (NOT -45). Exposes the RESIDUAL build-coupled `-45` C2 fold (correct only at skill 13/C6) AND the double-count trap (her engine fires the shred once even with C2 + explicit samplers — a buggy port firing both a cons-gated and sampler-gated path would emit -72). Retire = ONE talent-scaled sampler-gated res-shred.",
+    "id": "xilonen_c2_resshred"
+  },
+  "featureTotal": 24,
+  "itemCount": 1,
+  "items": [
+    {
+      "constellation": 2,
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "fold",
+      "origin": "natlan",
+      "party": {
+        "settings": {
+          "xilonen_active_sampler_geo": 1,
+          "xilonen_sampler_geo": true
+        }
+      },
+      "repKey": "Xilonen",
+      "repSlug": "xilonen",
+      "resonanceElements": {},
+      "slug": "xilonen_c2_resshred_geo",
+      "statBlock": "fold",
+      "statBlockValues": {
+        "atk_base": 871,
+        "atk_percent": 18,
+        "crit_dmg_base": 50,
+        "crit_rate_base": 5,
+        "def_base": 876,
+        "dmg_burst": 64,
+        "dmg_charged": 16,
+        "dmg_electro": 2,
+        "dmg_normal": 8,
+        "dmg_phys": 4,
+        "dmg_skill": 32,
+        "hp_base": 13226,
+        "mastery_base": 55,
+        "recharge_base": 100
+      },
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Kirara C1 ON at two HP points (hp_total ≈20000 / ≈45000) off the fold's hp=31503. Exposes the C1 extra-explosion scalingMultiplier fold min(floor(hp/8000), 4) — floor 2 at HP≈20000, floor 5→cap 4 at HP≈45000.",
+    "id": "kirara_c1_hp"
+  },
+  "featureTotal": 66,
+  "itemCount": 2,
+  "items": [
+    {
+      "constellation": 1,
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "fold",
+      "origin": "inazuma",
+      "party": {},
+      "repKey": "Kirara",
+      "repSlug": "kirara",
+      "resonanceElements": {},
+      "slug": "kirara_c1_hp_high",
+      "statBlock": "fold",
+      "statBlockValues": {
+        "atk_base": 871,
+        "atk_percent": 18,
+        "crit_dmg_base": 50,
+        "crit_rate_base": 5,
+        "def_base": 876,
+        "dmg_burst": 64,
+        "dmg_charged": 16,
+        "dmg_electro": 2,
+        "dmg_normal": 8,
+        "dmg_phys": 4,
+        "dmg_skill": 32,
+        "hp_base": 33000,
+        "mastery_base": 55,
+        "recharge_base": 100
+      },
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "constellation": 1,
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "fold",
+      "origin": "inazuma",
+      "party": {},
+      "repKey": "Kirara",
+      "repSlug": "kirara",
+      "resonanceElements": {},
+      "slug": "kirara_c1_hp_low",
+      "statBlock": "fold",
+      "statBlockValues": {
+        "atk_base": 871,
+        "atk_percent": 18,
+        "crit_dmg_base": 50,
+        "crit_rate_base": 5,
+        "def_base": 876,
+        "dmg_burst": 64,
+        "dmg_charged": 16,
+        "dmg_electro": 2,
+        "dmg_normal": 8,
+        "dmg_phys": 4,
+        "dmg_skill": 32,
+        "hp_base": 3900,
+        "mastery_base": 55,
+        "recharge_base": 100
+      },
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    }
+  ]
+}

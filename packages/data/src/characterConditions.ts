@@ -15,7 +15,7 @@
  *   gilded-dreams.ts). Stats are RAW percents — identical to her internal bag convention.
  */
 
-import type { CharMultiplier, Condition } from "@genshin/types";
+import type { CharMultiplier, CharPostEffect, Condition, TalentTable } from "@genshin/types";
 
 /**
  * Imaginarium Theatre challenge buff: +20% HP / DEF / ATK while active.
@@ -392,13 +392,13 @@ const setViridescentVenerer4SwirlConditions: readonly Condition[] =
         {
           type: "and" as const,
           items: [
-            { type: "dropdownElement" as const, name: "set.viridescent_venerer_4", element: el },
+            { type: "dropdown-element" as const, name: "set.viridescent_venerer_4", element: el },
             { type: "char-element" as const, elements: ["anemo"] },
             { type: "pieces-count" as const, setName: "ViridescentVenerer", count: 4 },
           ],
         },
         // Team-buff arm: a teammate wears VV-4 and selected this element.
-        { type: "dropdownElement" as const, name: "set_other.viridescent_venerer_4", element: el },
+        { type: "dropdown-element" as const, name: "set_other.viridescent_venerer_4", element: el },
       ],
     },
   }));
@@ -486,10 +486,250 @@ const setOtherSongOfDaysPast4HealingInput: Condition = {
   max: 15000,
 };
 
+// ===========================================================================
+// weapon_other off-field team buffs — a TEAMMATE's weapon passive buffs the
+// active char (the `weapons` DbObjectBuff in Buffs/Weapons.js, NOT the weapon's
+// own self-passive). Each is gated by a `weapon.<weapon>` / `weapon_other.<weapon>`
+// LEVEL setting (1–5 = the teammate weapon's refine; 0/absent → inert). The active
+// char does NOT equip the weapon, so there is no self-equip path to double-count
+// with — a pure off-field buff (mirrors the set_other team buffs above, but with
+// no OR(self) arm: the level setting IS the only gate).
+//
+// 7a scopes the two pipeline-proving exemplars. Faithful port of her
+// ConditionLevelSelect (Static/Level.js semantics): read the level off the gate
+// setting, index the atk_percent StatTable. Modeled as ConditionStaticLevel + an
+// explicit boolean gate on the SAME setting — REQUIRED because our staticLevel has
+// no built-in `settings[name] > 0` activeness check (her ConditionLevelSelect.isActive
+// does); without the gate, an absent level falls through to `level = raw || 1` and
+// would emit the R1 value, breaking base-safety. The boolean gate reproduces her
+// `isActive` so the buff is INERT (emits nothing) unless its level setting is present.
+//
+// Source: raw/genshin_calc_pub/src/js/db/Buffs/Weapons.js (Thrilling Tales :14, Wolf's :31)
+// ===========================================================================
+
+/**
+ * Thrilling Tales of Dragon Slayers (off-field) — +24/30/36/42/48% ATK (R1..R5).
+ * Source: Buffs/Weapons.js:14-28 — ConditionLevelSelect gated `weapon.thrilling_tales`
+ * (NOTE: `weapon.` not `weapon_other.` — Thrilling Tales' off-field ATK buff can be received
+ * even by its own wielder after a swap, so her gate name omits the `_other`). The `text_percent`
+ * StatTable is display-only (omitted, per the gilded-dreams/set_other convention). Level read off
+ * the gate setting; absent → boolean gate false → inert.
+ */
+const weaponOtherThrillingTales: Condition = {
+  type: "static-level",
+  levelSetting: "weapon.thrilling_tales",
+  levelStats: { atk_percent: [24, 30, 36, 42, 48] },
+  condition: { type: "boolean", name: "weapon.thrilling_tales" },
+};
+
+/**
+ * Wolf's Gravestone (off-field) — +40/50/60/70/80% ATK (R1..R5).
+ * Source: Buffs/Weapons.js:31-49 — ConditionLevelSelect gated `weapon_other.weapon_wolfs_gravestone`,
+ * with a subCondition ConditionBoolean({name:'weapon_wolfs_gravestone', invert:true}) → the off-field
+ * buff applies only when the active char has NOT toggled Wolf's OWN self-passive (its self-equip ATK
+ * buff lives in wolfs-gravestone.ts, gated `weapon_wolfs_gravestone`). The invert gate is the
+ * no-double-count guard: a Wolf's wielder gets the self-passive, not this team copy. Level read off
+ * the gate setting; absent → boolean gate false → inert.
+ */
+const weaponOtherWolfsGravestone: Condition = {
+  type: "static-level",
+  levelSetting: "weapon_other.weapon_wolfs_gravestone",
+  levelStats: { atk_percent: [40, 50, 60, 70, 80] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "weapon_other.weapon_wolfs_gravestone" },
+      { type: "boolean", name: "weapon_wolfs_gravestone", invert: true },
+    ],
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Task 7b — simple off-field weapon_other buffs (Buffs/Weapons.js, remaining
+// ConditionLevelSelect / 1-slot ConditionPartyWeapon without statName).
+// All follow the 7a pattern: ConditionStaticLevel + explicit boolean gate.
+// Each is INERT unless the gate level setting is present (base-safety).
+// ---------------------------------------------------------------------------
+
+/**
+ * Hakushin Ring (off-field) — +10/12.5/15/17.5/20% DMG (own element, R1..R5).
+ * Source: Buffs/Weapons.js:99-118 — ConditionLevelSelect gated
+ * `weapon_other.weapon_white_dragon_ring`, with subCondition
+ * ConditionBoolean({name:'weapon_white_dragon_ring', invert:true}).
+ * `dmg_own` is the wielder's own-element DMG bonus; buildStats folds it into
+ * `dmg_<char_element>`. The NOT(weapon_white_dragon_ring) guard prevents
+ * double-count vs the self-equip passive (hakushin-ring.ts).
+ */
+const weaponOtherWhiteDragonRing: Condition = {
+  type: "static-level",
+  levelSetting: "weapon_other.weapon_white_dragon_ring",
+  levelStats: { dmg_own: [10, 12.5, 15, 17.5, 20] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "weapon_other.weapon_white_dragon_ring" },
+      { type: "boolean", name: "weapon_white_dragon_ring", invert: true },
+    ],
+  },
+};
+
+/**
+ * Sapwood Blade (off-field) — +60/75/90/105/120 EM (R1..R5).
+ * Source: Buffs/Weapons.js:120-140 — ConditionLevelSelect gated
+ * `weapon_other.forest_sanctuary`, with subCondition
+ * ConditionBoolean({name:'weapon_forest_sanctuary', invert:true}).
+ * The NOT guard prevents double-count vs the self-equip EM buff.
+ */
+const weaponOtherForestSanctuary: Condition = {
+  type: "static-level",
+  levelSetting: "weapon_other.forest_sanctuary",
+  levelStats: { mastery: [60, 75, 90, 105, 120] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "weapon_other.forest_sanctuary" },
+      { type: "boolean", name: "weapon_forest_sanctuary", invert: true },
+    ],
+  },
+};
+
+/**
+ * Moonpiercer (off-field) — +16/20/24/28/32% ATK (R1..R5).
+ * Source: Buffs/Weapons.js:141-161 — ConditionLevelSelect gated
+ * `weapon_other.stillwood_moonshadow`, with subCondition
+ * ConditionBoolean({name:'weapon_stillwood_moonshadow', invert:true}).
+ * The NOT guard prevents double-count vs the self-equip ATK buff.
+ */
+const weaponOtherStillwoodMoonshadow: Condition = {
+  type: "static-level",
+  levelSetting: "weapon_other.stillwood_moonshadow",
+  levelStats: { atk_percent: [16, 20, 24, 28, 32] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "weapon_other.stillwood_moonshadow" },
+      { type: "boolean", name: "weapon_stillwood_moonshadow", invert: true },
+    ],
+  },
+};
+
+/**
+ * Starcaller's Watch (off-field) — +28/35/42/49/56% All DMG (R1..R5).
+ * Source: Buffs/Weapons.js:271-288 — ConditionPartyWeapon (1 slot, no statName)
+ * gated `weapon_other.weapon_starcallers_watch`, subCondition
+ * ConditionNot([ConditionBoolean({name:'weapon_starcallers_watch'})]).
+ * Functionally identical to ConditionLevelSelect (1 slot). The NOT guard
+ * prevents double-count vs the self-equip DMG bonus (starcallers-watch.ts).
+ */
+const weaponOtherStarcallersWatch: Condition = {
+  type: "static-level",
+  levelSetting: "weapon_other.weapon_starcallers_watch",
+  levelStats: { dmg_all: [28, 35, 42, 49, 56] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "weapon_other.weapon_starcallers_watch" },
+      { type: "boolean", name: "weapon_starcallers_watch", invert: true },
+    ],
+  },
+};
+
+/**
+ * Symphonist of Scents (off-field) — +32/40/48/56/64% ATK (R1..R5).
+ * Source: Buffs/Weapons.js:289-304 — ConditionPartyWeapon (1 slot, no statName)
+ * gated `weapon_other.weapon_symphonist_of_scents`, outer condition
+ * ConditionNot([ConditionBoolean({name:'symphonist_of_scents_3'})]).
+ * The NOT guard prevents double-count when the self-equip 3rd-stack passive
+ * (same atk_percent values, key `symphonist_of_scents_3`) is active.
+ */
+const weaponOtherSymphonistOfScents: Condition = {
+  type: "static-level",
+  levelSetting: "weapon_other.weapon_symphonist_of_scents",
+  levelStats: { atk_percent: [32, 40, 48, 56, 64] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "weapon_other.weapon_symphonist_of_scents" },
+      { type: "boolean", name: "symphonist_of_scents_3", invert: true },
+    ],
+  },
+};
+
+/**
+ * A Thousand Floating Dreams (off-field, primary slot) — +40/42/44/46/48 EM (R1..R5).
+ * Source: Buffs/Weapons.js:238-250 — ConditionPartyWeapon (3 slots: serializeIds [47,48,49],
+ * no statName, no self-exclusion) gated `weapon_other.weapon_thousand_floating_dreams`.
+ * Ports slot 1 only (the primary team buff from a single TFD wielder). Slots 2+3
+ * (`weapon_other.weapon_thousand_floating_dreams_2/_3`) deferred to a follow-up task
+ * if multi-wielder stacking is required.
+ */
+const weaponOtherThousandFloatingDreams: Condition = {
+  type: "static-level",
+  levelSetting: "weapon_other.weapon_thousand_floating_dreams",
+  levelStats: { mastery: [40, 42, 44, 46, 48] },
+  condition: { type: "boolean", name: "weapon_other.weapon_thousand_floating_dreams" },
+};
+
+/**
+ * Elegy for the End (off-field) — +20/25/30/35/40% ATK + 100/125/150/175/200 EM (R1..R5).
+ * Source: Buffs/Weapons.js:51-66 — ConditionLevelSelect gated
+ * `weapon_other.weapon_elegy_for_the_end`. No self-exclusion subCondition.
+ * Stats: `text_percent [20..40]` maps to atk_percent; `text_value [100..200]` maps to mastery.
+ * In her engine `text_*` prefixed stats are display-labelled but mechanically real:
+ * `text_percent` accumulates into atk_percent; `text_value` accumulates into mastery.
+ * Verified empirically: oracle ratio 2422/1808 = 1.339 matches atk_percent+40% on Diluc.
+ */
+const weaponOtherElegyForTheEnd: Condition = {
+  type: "static-level",
+  levelSetting: "weapon_other.weapon_elegy_for_the_end",
+  levelStats: {
+    atk_percent: [20, 25, 30, 35, 40],
+    mastery: [100, 125, 150, 175, 200],
+  },
+  condition: { type: "boolean", name: "weapon_other.weapon_elegy_for_the_end" },
+};
+
+/**
+ * Song of Broken Pines (off-field) — +20/25/30/35/40% ATK (R1..R5).
+ * Source: Buffs/Weapons.js:67-81 — ConditionLevelSelect gated
+ * `weapon_other.weapon_song_of_broken_pines`. No self-exclusion.
+ * Stats: `text_percent [20..40]` → atk_percent; `text_percent_2 [12..24]` → ATK SPD (display only).
+ * ATK SPD omitted: it has zero damage-number effect in this calculator. Verified: oracle
+ * 2422 matches atk_percent+40% on Diluc (same as Elegy, no extra from text_percent_2:24).
+ */
+const weaponOtherSongOfBrokenPines: Condition = {
+  type: "static-level",
+  levelSetting: "weapon_other.weapon_song_of_broken_pines",
+  levelStats: { atk_percent: [20, 25, 30, 35, 40] },
+  condition: { type: "boolean", name: "weapon_other.weapon_song_of_broken_pines" },
+};
+
+/**
+ * Freedom-Sworn (off-field) — +20/25/30/35/40% ATK + +16/20/24/28/32% Normal/Charged/Plunge DMG (R1..R5).
+ * Source: Buffs/Weapons.js:83-98 — ConditionLevelSelect gated
+ * `weapon_other.weapon_freedom_sworn`. No self-exclusion.
+ * Stats: `text_percent [20..40]` → atk_percent; `text_percent_2 [16..32]` → dmg_normal +
+ *   dmg_charged + dmg_plunge (Normal/Charged/Plunge DMG% bonus in-game).
+ * Verified: oracle 3114 matches atk_percent+40% × normal_dmg_bonus+32% on Diluc
+ *   (3114/1808 = 1.722 ≈ (1.58/1.18) × (1.12+0.32)/1.12 = 1.339 × 1.286 ✓).
+ */
+const weaponOtherFreedomSworn: Condition = {
+  type: "static-level",
+  levelSetting: "weapon_other.weapon_freedom_sworn",
+  levelStats: {
+    atk_percent: [20, 25, 30, 35, 40],
+    dmg_normal: [16, 20, 24, 28, 32],
+    dmg_charged: [16, 20, 24, 28, 32],
+    dmg_plunge: [16, 20, 24, 28, 32],
+  },
+  condition: { type: "boolean", name: "weapon_other.weapon_freedom_sworn" },
+};
+
 /**
  * All global character conditions, in source order (imaginarium_theatre, then the Elemental
  * Resonance buffs in ElementalResonance.js order, then set_other team buffs from
- * Buffs/Artifacts.js). Wire into buildStats alongside `char.conditions` and `extraConditions`.
+ * Buffs/Artifacts.js, then weapon_other off-field weapon team buffs from Buffs/Weapons.js).
+ * Wire into buildStats alongside `char.conditions` and `extraConditions`.
  */
 export const CHARACTER_CONDITIONS: readonly Condition[] = [
   imaginariumTheatre,
@@ -517,6 +757,20 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
   // Song of Days Past 4pc (team) — the healing-recorded INPUT (the multiplier is in
   // CHARACTER_MULTIPLIERS). Inert unless `party_days_past_healing_recorded > 0`.
   setOtherSongOfDaysPast4HealingInput,
+  // weapon_other off-field weapon team buffs (Buffs/Weapons.js) — inert unless the gate
+  // level setting is published via partyContext (weaponOther) or supplied in settings.
+  weaponOtherThrillingTales,
+  weaponOtherWolfsGravestone,
+  // Task 7b — simple off-field weapon buffs (ConditionLevelSelect / 1-slot PartyWeapon, no statName).
+  weaponOtherWhiteDragonRing,
+  weaponOtherForestSanctuary,
+  weaponOtherStillwoodMoonshadow,
+  weaponOtherStarcallersWatch,
+  weaponOtherSymphonistOfScents,
+  weaponOtherThousandFloatingDreams,
+  weaponOtherElegyForTheEnd,
+  weaponOtherSongOfBrokenPines,
+  weaponOtherFreedomSworn,
 ];
 
 // ===========================================================================
@@ -582,4 +836,182 @@ const setOtherSongOfDaysPast4Multiplier: CharMultiplier = {
  */
 export const CHARACTER_MULTIPLIERS: readonly CharMultiplier[] = [
   setOtherSongOfDaysPast4Multiplier,
+];
+
+// ===========================================================================
+// Global character POST-EFFECTS — the team-buff analogue of CHARACTER_CONDITIONS
+// for off-field weapon buffs whose value is a CONVERSION of a TEAMMATE's stat
+// (EM / HP / DEF) into a buff on the active char. In her engine these are the
+// `postEffects` array of the `weapons` DbObjectBuff (db/Buffs/Weapons.js:323-391)
+// PLUS the `static` buff's PostEffectKhajNisut (db/Buffs/Static.js:33). Her
+// CalcSet.getPostEffects() concats EVERY equipped object's post-effects — including
+// these two always-present buffs — so they run in the SAME applyPostEffects pass as
+// char / weapon / set post-effects.
+//
+// Each reads a TEAMMATE-STAT NUMBER from the stat bag (`fromStat`) and writes
+// `ratio × that number` to the active char. The number reaches the bag as a user-
+// supplied input (her ConditionPartyWeapon's ConditionNumber → `stats.add(statName,
+// value)`; in this calculator, the caller supplies it in the build's `statBlock`).
+// Gated on the off-field `weapon_other.*` toggle (published via PartyInput.weaponOther
+// or supplied in settings), which is ALSO the `levelSetting` (refine index 1-5) that
+// picks the ratio / cap table row. Absent toggle → the gate condition fails → the
+// post-effect contributes {} → the channel is INERT for every non-party build (the
+// base golden suite + all existing fixtures are byte-unchanged).
+//
+// Threaded into buildStats' applyPostEffects call (alongside char / weapon / set
+// post-effects). Source-fidelity notes per effect below.
+//
+// Sources: raw/.../db/Buffs/Weapons.js:182-265 (gate + statName), :323-391 (PostEffectStats),
+//          db/Buffs/Static.js:32-36 + classes/PostEffect/KhajNisut.js (the HP→mastery party fold).
+// ===========================================================================
+
+/** Refine-indexed ratio/cap table — `getValue(refine)` returns `values[refine-1]`. */
+function refineTable(values: readonly number[]): TalentTable {
+  return { getValue: (refine: number): number => values[refine - 1] ?? 0 };
+}
+
+/**
+ * Makhaira Aquamarine (`desert_pavilion`) — a teammate's EM → +ATK on the active char.
+ *
+ * Buffs/Weapons.js:348-354 (+`_2`/`_3` slots :356-370): `from: 'desert_pavilion_mastery'`,
+ * `percent: StatTable('atk', [24,30,36,42,48] × 0.003)` keyed off `weapon_other.desert_pavilion`.
+ * So `atk += teammate_EM × (0.072..0.144)`. `atk` is a REAL_TOTAL stat (not percent) → the bonus
+ * is a flat ATK value, written raw (no /100), exactly as the bag carries flat ATK. Three party
+ * slots share one ratio table; each is an independent gate/input (`_2`/`_3` for a 2nd/3rd wielder).
+ */
+function desertPavilionEffect(slot: "" | "_2" | "_3"): CharPostEffect {
+  const gate = `weapon_other.desert_pavilion${slot}`;
+  return {
+    priority: 1,
+    fromStat: `desert_pavilion_mastery${slot}`,
+    toStat: "atk",
+    ratioFromTalent: {
+      table: refineTable([24 * 0.003, 30 * 0.003, 36 * 0.003, 42 * 0.003, 48 * 0.003]),
+      levelSetting: gate,
+      multi: 1,
+    },
+    conditions: [{ type: "boolean", name: gate }],
+  };
+}
+
+/**
+ * Xiphos' Moonlight (`whisper_of_the_jinn`) — a teammate's EM → +Energy Recharge on the active char.
+ *
+ * Buffs/Weapons.js:324-346 (3 slots): `from: 'whisper_of_the_jinn_mastery'`,
+ * `percent: StatTable('recharge', [3.6,4.5,5.4,6.3,7.2] × 0.003)` keyed off `weapon_other.whisper_of_the_jinn`.
+ * So `recharge += teammate_EM × (0.0108..0.0216)`.
+ *
+ * NO-DELTA (oracle-proven): recharge drives a DAMAGE term only for the few characters whose
+ * features convert ER% → damage (Raiden A4, Mona A4, Eula, Engulfing Lightning). For every other
+ * character the recharge bonus moves no damage triple. The Group B oracle proves this on Diluc
+ * (`weapon-other-whisper-of-the-jinn.json` is byte-identical to base Diluc on every hit). The
+ * effect is still modelled faithfully (so an ER-scaling rep WOULD see it), but it lands no delta
+ * here. CAVEAT: `recharge` is an isPercent stat in her engine (her post-effect pre-divides /100),
+ * whereas buildStats emits `recharge_total` as a raw number; this divergence is immaterial because
+ * recharge feeds no damage path for any v5.8 rep that would receive this off-field buff, but it
+ * means the emitted `recharge_total` stat would be 100× hers IF an ER-scaling consumer were paired
+ * with this buff — out of scope (no such pairing exists in v5.8). Recorded for the ④ follow-up.
+ */
+function whisperOfTheJinnEffect(slot: "" | "_2" | "_3"): CharPostEffect {
+  const gate = `weapon_other.whisper_of_the_jinn${slot}`;
+  return {
+    priority: 1,
+    fromStat: `whisper_of_the_jinn_mastery${slot}`,
+    toStat: "recharge",
+    ratioFromTalent: {
+      table: refineTable([3.6 * 0.003, 4.5 * 0.003, 5.4 * 0.003, 6.3 * 0.003, 7.2 * 0.003]),
+      levelSetting: gate,
+      multi: 1,
+    },
+    conditions: [{ type: "boolean", name: gate }],
+  };
+}
+
+/**
+ * Peak Patrol Song (off-field, `weapon_peak_patrol_song`) — a teammate's DEF → +all-7-elemental
+ * DMG% on the active char, each capped.
+ *
+ * Buffs/Weapons.js:372-390: `from: 'peak_patrol_song_def'`, `percent: [StatTable('dmg_<el>',
+ * [0.008,0.01,0.012,0.014,0.016])]` for all 7 elements, `statCap: StatTable('', [25.6,32,38.4,44.8,
+ * 51.2])`, keyed off `weapon_other.weapon_peak_patrol_song`, gated AND `NOT(weapon_peak_patrol_song_2)`.
+ * So per element: `dmg_<el> += min(teammate_DEF × (0.008..0.016), 25.6..51.2)`. `dmg_<el>` is an
+ * isPercent stat → her post-effect pre-divides the ratio AND the cap by 100, writing a fraction;
+ * buildStats writes the RAW PERCENT and applies the /100 at emit (the ring-of-ceiba convention), so
+ * the TS ratio/cap are the RAW table values. Modelled as 7 separate post-effects (one per element),
+ * each with its own `capValueFromTalent` (the cap is applied per converted element, her getTree loop).
+ *
+ * The `NOT(weapon_peak_patrol_song_2)` sub-condition prevents double-count with the SELF-wielder's
+ * own Peak Patrol Song passive (peak-patrol-song.ts, gated `weapon_peak_patrol_song_2`): when the
+ * active char wields Peak Patrol Song its own DEF→dmg_own post-effect fires, so the OFF-FIELD team
+ * version must NOT also fire. Single slot (no `_2`/`_3`).
+ */
+const PEAK_PATROL_ELEMENTS = [
+  "anemo",
+  "electro",
+  "pyro",
+  "cryo",
+  "hydro",
+  "geo",
+  "dendro",
+] as const;
+const peakPatrolSongEffects: readonly CharPostEffect[] = PEAK_PATROL_ELEMENTS.map((el) => ({
+  priority: 1,
+  fromStat: "peak_patrol_song_def",
+  toStat: `dmg_${el}`,
+  ratioFromTalent: {
+    table: refineTable([0.008, 0.01, 0.012, 0.014, 0.016]),
+    levelSetting: "weapon_other.weapon_peak_patrol_song",
+    multi: 1,
+  },
+  capValueFromTalent: {
+    table: refineTable([25.6, 32, 38.4, 44.8, 51.2]),
+    levelSetting: "weapon_other.weapon_peak_patrol_song",
+  },
+  conditions: [
+    { type: "boolean", name: "weapon_other.weapon_peak_patrol_song" },
+    { type: "not", items: [{ type: "boolean", name: "weapon_peak_patrol_song_2" }] },
+  ],
+}));
+
+/**
+ * Key of Khaj-Nisut (off-field, `weapon_key_of_khaj_nisut`) — a teammate's HP → +EM on the active char.
+ *
+ * db/Buffs/Static.js:33 + classes/PostEffect/KhajNisut.js: the PARTY path returns the teammate HP
+ * (`settings['sunken_song_of_the_sands_hp']`) as the base and `percent: StatTable('mastery',
+ * [0.002,0.0025,0.003,0.0035,0.004])` keyed off `weapon_other.weapon_key_of_khaj_nisut`. So
+ * `mastery += teammate_HP × (0.002..0.004)`. `mastery` is NOT an isPercent stat → written raw.
+ *
+ * Her KhajNisut reads the teammate HP from SETTINGS; this TS port reads it from the BAG (`fromStat:
+ * 'sunken_song_of_the_sands_hp'`) so it shares the uniform bag-input path with the other three
+ * (the caller supplies the HP in the build's statBlock). Gated on the off-field toggle (the same
+ * gate is the `levelSetting`). The self-wielder's own KhajNisut HP→EM fold is the weapon file's
+ * PostEffectStatsHP (key-of-khaj-nisut weapon, gated `weapon_key_of_khaj_nisut`); the party gate
+ * is distinct (`weapon_other.weapon_key_of_khaj_nisut`), so no double-count. Single slot.
+ */
+const keyOfKhajNisutEffect: CharPostEffect = {
+  priority: 1,
+  fromStat: "sunken_song_of_the_sands_hp",
+  toStat: "mastery",
+  ratioFromTalent: {
+    table: refineTable([0.002, 0.0025, 0.003, 0.0035, 0.004]),
+    levelSetting: "weapon_other.weapon_key_of_khaj_nisut",
+    multi: 1,
+  },
+  conditions: [{ type: "boolean", name: "weapon_other.weapon_key_of_khaj_nisut" }],
+};
+
+/**
+ * All global character POST-EFFECTS (off-field weapon teammate-stat conversions). Threaded into
+ * buildStats' applyPostEffects call. Inert for every build that sets no matching `weapon_other.*`
+ * toggle (the gate condition fails → {} contribution → base golden suite byte-unchanged).
+ */
+export const CHARACTER_POST_EFFECTS: readonly CharPostEffect[] = [
+  desertPavilionEffect(""),
+  desertPavilionEffect("_2"),
+  desertPavilionEffect("_3"),
+  whisperOfTheJinnEffect(""),
+  whisperOfTheJinnEffect("_2"),
+  whisperOfTheJinnEffect("_3"),
+  ...peakPatrolSongEffects,
+  keyOfKhajNisutEffect,
 ];

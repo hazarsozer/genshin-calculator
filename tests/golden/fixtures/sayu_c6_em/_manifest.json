@@ -1,0 +1,127 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Sayu C6 ON at two EM points (mastery_total ≈400 / ≈2500) off the fold's mastery=151. Exposes the C6 ATK-coefficient fold min(mastery×0.002, 4) — cap unbound at EM≈400, binds at EM≈2500.",
+    "id": "sayu_c6_em"
+  },
+  "featureTotal": 96,
+  "itemCount": 2,
+  "items": [
+    {
+      "constellation": 6,
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 48,
+      "kind": "fold",
+      "origin": "inazuma",
+      "party": {},
+      "repKey": "Sayu",
+      "repSlug": "sayu",
+      "resonanceElements": {},
+      "slug": "sayu_c6_em_high",
+      "statBlock": "fold",
+      "statBlockValues": {
+        "atk_base": 871,
+        "atk_percent": 18,
+        "crit_dmg_base": 50,
+        "crit_rate_base": 5,
+        "def_base": 876,
+        "dmg_burst": 64,
+        "dmg_charged": 16,
+        "dmg_electro": 2,
+        "dmg_normal": 8,
+        "dmg_phys": 4,
+        "dmg_skill": 32,
+        "hp_base": 13226,
+        "mastery_base": 2400,
+        "recharge_base": 100
+      },
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "constellation": 6,
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 48,
+      "kind": "fold",
+      "origin": "inazuma",
+      "party": {},
+      "repKey": "Sayu",
+      "repSlug": "sayu",
+      "resonanceElements": {},
+      "slug": "sayu_c6_em_low",
+      "statBlock": "fold",
+      "statBlockValues": {
+        "atk_base": 871,
+        "atk_percent": 18,
+        "crit_dmg_base": 50,
+        "crit_rate_base": 5,
+        "def_base": 876,
+        "dmg_burst": 64,
+        "dmg_charged": 16,
+        "dmg_electro": 2,
+        "dmg_normal": 8,
+        "dmg_phys": 4,
+        "dmg_skill": 32,
+        "hp_base": 13226,
+        "mastery_base": 300,
+        "recharge_base": 100
+      },
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    }
+  ]
+}

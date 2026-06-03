@@ -445,7 +445,7 @@ export interface ConditionOr {
  *   StatTable.getValue: level <= 0 → 0; level > length → values[length-1]; else values[level-1].
  *
  * Example (GildedDreams 4pc, same-element path):
- *   { type: "staticLevel", levelSetting: "party_elements_same", fromZero: true,
+ *   { type: "static-level", levelSetting: "party_elements_same", fromZero: true,
  *     levelStats: { atk_percent: [0, 14, 28, 42] },
  *     condition: { type: "and", items: [{type:"boolean",name:"set.gilded_dreams_4"},
  *                                       {type:"boolean",name:"party_elements_same"}] } }
@@ -457,7 +457,7 @@ export interface ConditionOr {
  *   raw/genshin_calc_pub/src/js/db/Artifacts/Set/GildedDreams.js:44-73
  */
 export interface ConditionStaticLevel extends ConditionBase {
-  readonly type: "staticLevel";
+  readonly type: "static-level";
   /** The context key holding the integer level (e.g. "party_elements_same"). */
   readonly levelSetting: string;
   /**
@@ -514,7 +514,7 @@ export interface ConditionBooleanCharElement extends ConditionBase {
  * not select an element leaves it inert).
  */
 export interface ConditionDropdownElement extends ConditionBase {
-  readonly type: "dropdownElement";
+  readonly type: "dropdown-element";
   /** Settings key holding the `;`-delimited element selection string. */
   readonly name: string;
   /** The element token this gate fires for (e.g. "pyro"). */

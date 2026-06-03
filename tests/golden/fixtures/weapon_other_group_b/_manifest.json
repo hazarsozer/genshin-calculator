@@ -1,0 +1,227 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Off-field weapon party buffs whose value is f(teammate_stat) (7c): a teammate's weapon converts THEIR EM/HP/DEF into a buff on the active char, via a PostEffectStats in db/Buffs/Weapons.js. desert_pavilion (teammate EM 800 → atk += EM×0.144 R5) on Diluc; key_of_khaj_nisut (teammate HP 40000 → mastery += HP×0.0024 R5) on Nahida (EM scaler so it deltas); whisper_of_the_jinn (teammate EM 800 → recharge — NO-DELTA on Diluc, proof fixture); peak_patrol_song (teammate DEF 6000 → 7×dmg_<el> += DEF×0.016 capped 51.2 R5, cap BINDS) on Diluc. Gate via setBuffsSettings, teammate number via per-item statBlock (single-counted: ConditionNumber stays off). RED until CHARACTER_POST_EFFECTS lands.",
+    "id": "weapon_other_group_b"
+  },
+  "featureTotal": 111,
+  "itemCount": 4,
+  "items": [
+    {
+      "constellation": 0,
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "fold",
+      "origin": "mondstadt",
+      "party": {
+        "settings": {
+          "weapon_other.desert_pavilion": 5
+        }
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {},
+      "slug": "weapon-other-desert-pavilion",
+      "statBlock": "fold",
+      "statBlockValues": {
+        "atk_base": 871,
+        "atk_percent": 18,
+        "crit_dmg_base": 50,
+        "crit_rate_base": 5,
+        "def_base": 876,
+        "desert_pavilion_mastery": 800,
+        "dmg_burst": 64,
+        "dmg_charged": 16,
+        "dmg_electro": 2,
+        "dmg_normal": 8,
+        "dmg_phys": 4,
+        "dmg_skill": 32,
+        "hp_base": 13226,
+        "mastery_base": 55,
+        "recharge_base": 100
+      },
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "constellation": 0,
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "fold",
+      "origin": "sumeru",
+      "party": {
+        "settings": {
+          "weapon_other.weapon_key_of_khaj_nisut": 5
+        }
+      },
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "resonanceElements": {},
+      "slug": "weapon-other-key-of-khaj-nisut",
+      "statBlock": "fold",
+      "statBlockValues": {
+        "atk_base": 871,
+        "atk_percent": 18,
+        "crit_dmg_base": 50,
+        "crit_rate_base": 5,
+        "def_base": 876,
+        "dmg_burst": 64,
+        "dmg_charged": 16,
+        "dmg_electro": 2,
+        "dmg_normal": 8,
+        "dmg_phys": 4,
+        "dmg_skill": 32,
+        "hp_base": 13226,
+        "mastery_base": 55,
+        "recharge_base": 100,
+        "sunken_song_of_the_sands_hp": 40000
+      },
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "constellation": 0,
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "fold",
+      "origin": "mondstadt",
+      "party": {
+        "settings": {
+          "weapon_other.weapon_peak_patrol_song": 5
+        }
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {},
+      "slug": "weapon-other-peak-patrol-song",
+      "statBlock": "fold",
+      "statBlockValues": {
+        "atk_base": 871,
+        "atk_percent": 18,
+        "crit_dmg_base": 50,
+        "crit_rate_base": 5,
+        "def_base": 876,
+        "dmg_burst": 64,
+        "dmg_charged": 16,
+        "dmg_electro": 2,
+        "dmg_normal": 8,
+        "dmg_phys": 4,
+        "dmg_skill": 32,
+        "hp_base": 13226,
+        "mastery_base": 55,
+        "peak_patrol_song_def": 6000,
+        "recharge_base": 100
+      },
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "constellation": 0,
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "fold",
+      "origin": "mondstadt",
+      "party": {
+        "settings": {
+          "weapon_other.whisper_of_the_jinn": 5
+        }
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {},
+      "slug": "weapon-other-whisper-of-the-jinn",
+      "statBlock": "fold",
+      "statBlockValues": {
+        "atk_base": 871,
+        "atk_percent": 18,
+        "crit_dmg_base": 50,
+        "crit_rate_base": 5,
+        "def_base": 876,
+        "dmg_burst": 64,
+        "dmg_charged": 16,
+        "dmg_electro": 2,
+        "dmg_normal": 8,
+        "dmg_phys": 4,
+        "dmg_skill": 32,
+        "hp_base": 13226,
+        "mastery_base": 55,
+        "recharge_base": 100,
+        "whisper_of_the_jinn_mastery": 800
+      },
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    }
+  ]
+}

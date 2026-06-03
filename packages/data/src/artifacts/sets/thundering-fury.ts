@@ -11,11 +11,13 @@
  * keys are INERT for solo Keqing (electro only — no multi-element reactions fire),
  * so the fixture binds only on the 2pc electro DMG bonus.
  *
- * CARRY NOTE — dmg_reaction_lunarcharged quirk: in the current buildStats,
- * REACTION_DERIVED_KEYS processes lunarcharged via the un-divided path (raw, not /100),
- * unlike the other dmg_reaction_* keys. This is a latent engine quirk; the value is
- * inert for the Keqing fixture rep (no lunarcharged reaction fires), so it does not
- * affect golden tests. Ported faithfully; flag for resolution in a future engine pass.
+ * dmg_reaction_lunarcharged: this 4pc emits it as a RAW percent (20) via a
+ * condition. As of Phase 3 ④ M3, buildStats classifies it under
+ * REACTION_BONUS_PERCENT_KEYS (/100 like every sibling dmg_reaction_* key), so it
+ * reads as +0.20 inside the reaction's (1 + emBonus + Σ) term. (Previously it sat
+ * in the un-divided REACTION_DERIVED_KEYS path and read as +2000% — inert for the
+ * Keqing fixture rep, where no lunarcharged reaction fires, but desynced for a
+ * Lunar-Charged rep; see constantRetirement.test.ts thundering_lunarcharged.)
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Artifacts/Set/ThunderingFury.js:13-44 (setBonus 2pc/4pc)

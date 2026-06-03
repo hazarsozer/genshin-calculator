@@ -263,3 +263,71 @@ describe("buildStats — setRegistry DI seam", () => {
     expect(stats["dmg_pyro"]).toBeUndefined();
   });
 });
+
+// A throwaway 4pc set carrying a ConditionNumber named `accumulated_healing` (her
+// OceanHuedClam shape): when the setting is > 0 the condition adds the clamped value to
+// the raw bag, and buildStats emits it as a BARE bag key (RAW_BAG_SCALING_KEYS) — read
+// VERBATIM (no `_total`, no /100) by a non-`*` multiplier scaling, exactly her makeStatItem.
+const ACC_HEALING_SET: DbObjectArtifactSet = {
+  name: "artifact_set.acc_healing_test",
+  goodId: "AccHealingTest",
+  bonus: {
+    4: {
+      conditions: [
+        {
+          type: "number",
+          name: "accumulated_healing",
+          title: "acc_healing_input",
+          max: 30000,
+          stats: {},
+        },
+      ],
+    },
+  },
+};
+
+describe("buildStats — RAW_BAG_SCALING bare-key emit (accumulated_healing)", () => {
+  it("emits accumulated_healing VERBATIM into the bag when the ConditionNumber is set (>0)", () => {
+    const { stats } = buildStats({
+      ...SEAM_BUILD,
+      settings: { accumulated_healing: 20000 },
+      setBonuses: [{ setKey: "AccHealingTest", pieces: 4 }],
+      setRegistry: { AccHealingTest: ACC_HEALING_SET },
+    });
+    // Read as a bare key (NOT accumulated_healing_total) and NOT divided by 100.
+    expect(stats["accumulated_healing"]).toBe(20000);
+    expect(stats["accumulated_healing_total"]).toBeUndefined();
+  });
+
+  it("clamps to the ConditionNumber max (her getValue clamp)", () => {
+    const { stats } = buildStats({
+      ...SEAM_BUILD,
+      settings: { accumulated_healing: 99999 }, // above max 30000
+      setBonuses: [{ setKey: "AccHealingTest", pieces: 4 }],
+      setRegistry: { AccHealingTest: ACC_HEALING_SET },
+    });
+    expect(stats["accumulated_healing"]).toBe(30000);
+  });
+
+  it("is ABSENT from the bag at accumulated_healing=0 (ConditionNumber inactive — base-safe)", () => {
+    // The ConditionNumber.isActive requires the setting > 0; at 0 it is inactive, so
+    // conditionStats returns {} → the key is never set → never emitted (the existing
+    // OceanHuedClam armory fixture, foam=0, stays byte-unchanged).
+    const { stats } = buildStats({
+      ...SEAM_BUILD,
+      settings: { accumulated_healing: 0 },
+      setBonuses: [{ setKey: "AccHealingTest", pieces: 4 }],
+      setRegistry: { AccHealingTest: ACC_HEALING_SET },
+    });
+    expect(stats["accumulated_healing"]).toBeUndefined();
+  });
+
+  it("is ABSENT when no accumulated_healing setting is provided (no party / no input)", () => {
+    const { stats } = buildStats({
+      ...SEAM_BUILD,
+      setBonuses: [{ setKey: "AccHealingTest", pieces: 4 }],
+      setRegistry: { AccHealingTest: ACC_HEALING_SET },
+    });
+    expect(stats["accumulated_healing"]).toBeUndefined();
+  });
+});
