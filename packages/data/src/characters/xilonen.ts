@@ -27,7 +27,10 @@
  * xilonen_sampler_geo AND xilonen_active_sampler_geo (both must be truthy).
  * Raw Xilonen.js:478-491. Talent table s2.p2 × -1:
  *   [−9,−12,−15,−18,−21,−24,−27,−30,−33,−36,−39,−42,−45,−48,−51]
- * At skill level 10 → enemy_res_geo:-36. Gate keeps it inert at C0 solo (samplers OFF).
+ * At skill level 10 → enemy_res_geo:-36. xilonen_sampler_geo is always-on for geo Xilonen
+ * (geo padding); xilonen_active_sampler_geo (C2 / nightsoul) is OFF at C0 solo, so the AND-gate
+ * keeps the shred inert there. It is the SINGLE, dynamic res-shred — C2 activates it (skill 13 →
+ * -45 in the constellations golden), retiring the former build-coupled enemy_res_geo:-45 fold.
  * Transcribed from raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js:5397.
  *
  * Skipped (display-only, empty damageType → not asserted by the golden harness):
@@ -36,7 +39,8 @@
  * Geo universals (reaction.electrocharged, reaction.shatter) are auto-emitted by
  * the engine from the element; they are not declared here.
  *
- * Constellations are NOT modelled (C0 build).
+ * Constellations: C2 (dmg_all:50 + geo-sampler activation → dynamic res-shred), C3 (+3 skill),
+ * C5 (+3 burst) are modelled; C1/C4/C6 are toggle/nightsoul-gated (OFF in the C6 golden config).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Xilonen.js
@@ -170,16 +174,78 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Skill geo-RES shred condition
+// Geo sampler availability (ConditionBooleanXilonen — geo padding)
 // ---------------------------------------------------------------------------
-// Raw Xilonen.js:478-491 — ConditionLevels(levelSetting:'char_skill_elemental',
+// Her ConditionBooleanXilonen.getData() (Condition/Boolean/Xilonen.js) ALWAYS sets
+// `xilonen_sampler_<element>:1` for the sampler elements, UNCONDITIONALLY (regardless of the
+// toggle's active state). getSamplers() pads to 3 with 'geo' when no resonance element fills a
+// slot; for solo geo Xilonen (char_element 'geo', not in the pyro/cryo/electro/hydro sampler
+// set) the result is ['geo','geo','geo'] → `xilonen_sampler_geo:1` is set on EVERY build.
+// `xilonen_active_sampler_geo` is the SEPARATE gate, turned on only when the sampler is ACTIVE
+// (the nightsoul toggle, or C2's cons[0]). Modelled here as an always-active static condition
+// publishing `xilonen_sampler_geo:1` (the solo-geo case; resonance-element samplers are a party
+// concern handled by partyData). MUST be ordered before the res-shred staticLevel so its gate
+// reads the published key. Base-safe: it only PUBLISHES a setting; no stat-bearing effect fires
+// until `xilonen_active_sampler_geo` is also set (C2 / nightsoul), which no base build does.
+const geoSamplerSetup: readonly Condition[] = [
+  { type: "static", settings: { xilonen_sampler_geo: 1 } },
+];
+
+// ---------------------------------------------------------------------------
+// Constellations (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1: ConditionStatic, no real stats → SKIP.
+// C2: dmg_all:50 (C2GeoBonus) + activate the geo sampler (turns the res-shred on) — see below.
+// C3 "Tonalpohuallis Loop" — +3 Elemental Skill talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Xilonen.js:417-424 (char-level conditions).
+// C4: ConditionBoolean toggle (normal_base_def_percent/plunge_base_def_percent) → SKIP.
+// C5 "Ocelotlicue Points (Improved)" — +3 Burst talent levels.
+//   raw/genshin_calc_pub/src/js/db/Char/Xilonen.js:598-605 (constellation[4]).
+// C6: ConditionStatic gated by ConditionBoolean(nightsoul_blessing_state) subCondition (OFF) → SKIP.
+
+const constellationConditions: readonly Condition[] = [
+  // C2 "Yoalli's Scratching Tone" — activates the geo Source Sample: her cons[0]
+  // (Xilonen.js:409-416) sets `xilonen_active_sampler_geo:1` gated ConditionConstellation(2).
+  // With the geo sampler now ACTIVE (active_sampler_geo) AND available (sampler_geo, always-on
+  // for geo), BOTH sampler-gated effects fire:
+  //   • dmg_all:50 (C2GeoBonus) — her cons[1] (Xilonen.js:571-579), gated by the same samplers.
+  //     A real FLAT constant (not build-coupled), kept here. Modelled constellation:2-gated:
+  //     equivalent because C2 is exactly what turns the geo sampler on in this nightsoul-off config.
+  //   • the geo RES-shred — emitted DYNAMICALLY by skillResShredConditions below (NOT folded here):
+  //     it reads the live skill level so it is correct at any build (skill 10 → -36, skill 13 → -45).
+  // This retires the former build-coupled `enemy_res_geo:-45` fold (Task 4b): the -45 was the shred
+  // at skill 13 (10 + C3) — correct ONLY at the constellations C6 build. The dynamic shred below
+  // reproduces -45 there (level 13) AND -36 at skill 10, firing EXACTLY ONCE per build.
+  { type: "constellation", constellation: 2, stats: { dmg_all: 50 } },
+  // C2 also publishes the active-sampler setting (her cons[0]) — a SEPARATE condition so the
+  // settings-publish is visible to the res-shred staticLevel's gate (ordered before it below).
+  { type: "constellation", constellation: 2, settings: { xilonen_active_sampler_geo: 1 } },
+  // C3 — char_skill_elemental_bonus +3 (skill talent level up). MUST precede the res-shred so the
+  // staticLevel resolves at skill 13 in the C6 config (her getSkillLevelByName adds `_bonus`).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 — char_skill_burst_bonus +3 (burst talent level up).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
+// Skill geo-RES shred condition (the SINGLE, dynamic res-shred)
+// ---------------------------------------------------------------------------
+// Raw Xilonen.js:478-491 — ONE ConditionLevels(levelSetting:'char_skill_elemental',
 //   stats:[Talents.getMulti({name:'enemy_res_geo', from:'skill.xilonen_res_decrease', multi:-1})],
 //   subConditions:[ConditionBoolean('xilonen_sampler_geo'), ConditionBoolean('xilonen_active_sampler_geo')]).
 // Talent table s2.p2 (CharTalentTables.js:5397) multiplied by -1:
 //   [−9,−12,−15,−18,−21,−24,−27,−30,−33,−36,−39,−42,−45,−48,−51]
-// Gate (AND of both sampler booleans) is inert at solo C0 baseline (samplers OFF).
-// At skill level 10 → char_skill_elemental=10 → level=10 → enemy_res_geo[9]=-36.
-// Anchor: xilonen_resshred fixture: samplers ON + skill 10 → enemy_res_geo:-36 ✓.
+// Her engine has exactly ONE res-shred, gated by the AND of both sampler booleans; C2 (or the
+// nightsoul toggle) is what makes the geo sampler ACTIVE. There is NO separate C2 res-shred —
+// so this single staticLevel is the faithful model (Task 4b unification): it fires ONCE for every
+// build where both samplers are set, reading the LIVE skill level:
+//   • C0 + samplers (xilonen_resshred fixture): skill 10 → enemy_res_geo[9] = -36 ✓
+//   • C2 (constellations C6): active_sampler_geo from C2, sampler_geo always-on, skill 10+3(C3)=13
+//     → enemy_res_geo[12] = -45 ✓ (reproduces the former -45 fold)
+//   • C2 + explicit samplers (xilonen_c2_resshred fixture): skill 10 → -36, fired ONCE (no double).
+// ORDERED LAST so its staticLevel level + gate read the propagated char_skill_elemental_bonus (C3)
+// and xilonen_active_sampler_geo (C2) — mirroring her engine, where the constellation conditions
+// precede the char res-shred condition (probe-verified: C6 → enemy_res_geo -45 at level 13).
 const skillResShredConditions: readonly Condition[] = [
   {
     type: "staticLevel",
@@ -198,42 +264,6 @@ const skillResShredConditions: readonly Condition[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Constellations (P2.C Wave-1)
-// ---------------------------------------------------------------------------
-// C1: ConditionStatic, no real stats → SKIP.
-// C2: Condition{stats:{dmg_all:50}} gated by ConditionAnd[2×ConditionBoolean] (toggles) → SKIP.
-// C3 "Tonalpohuallis Loop" — +3 Elemental Skill talent levels.
-//   raw/genshin_calc_pub/src/js/db/Char/Xilonen.js:417-424 (char-level conditions).
-// C4: ConditionBoolean toggle (normal_base_def_percent/plunge_base_def_percent) → SKIP.
-// C5 "Ocelotlicue Points (Improved)" — +3 Burst talent levels.
-//   raw/genshin_calc_pub/src/js/db/Char/Xilonen.js:598-605 (constellation[4]).
-// C6: ConditionStatic gated by ConditionBoolean(nightsoul_blessing_state) subCondition (OFF) → SKIP.
-
-const constellationConditions: readonly Condition[] = [
-  // C2 "Yoalli's..." — the Source Sample (geo) goes ACTIVE: C2 sets
-  // xilonen_active_sampler_geo:1 (Xilonen.js:409-415), and xilonen_sampler_geo is always on
-  // for geo Xilonen (ConditionBooleanXilonen pads samplers to 'geo'). With BOTH gates true the
-  // sampler grants:
-  //   • dmg_all:50 (C2GeoBonus) — Xilonen.js cons[1], gated ConditionAnd([sampler_geo, active_sampler_geo]).
-  //   • geo res-shred — her skill Yohual's Scratch lowers enemy_res_geo by skill.xilonen_res_decrease
-  //     (Xilonen.js:478-491, gated by the same samplers). At skill lvl 13 (10 + C3's +3) = 45%.
-  // Modelled as constellation:2-gated (active_sampler_geo turns on at C2 in this nightsoul-off
-  // config; sampler_geo is always on). The res-shred value is BUILD-COUPLED (skill lvl 13 of the
-  // constellations config — res_decrease is talent-scaled; a static condition can't be).
-  // This is the entire C6 discrepancy: physical hits get +50% dmg_all (normal 1.12→1.62=1.446×,
-  // charged 1.20→1.70, plunge 1.04→1.54); geo skill/burst additionally ride the res-shred.
-  {
-    type: "constellation",
-    constellation: 2,
-    stats: { dmg_all: 50, enemy_res_geo: -45 },
-  },
-  // C3 — char_skill_elemental_bonus +3 (skill talent level up).
-  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
-  // C5 — char_skill_burst_bonus +3 (burst talent level up).
-  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
-];
-
-// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -248,5 +278,7 @@ export const xilonen: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: [...skillResShredConditions, ...constellationConditions],
+  // Order is load-bearing: sampler availability + constellation settings (active sampler, C3
+  // talent bonus) are published FIRST, then the res-shred staticLevel reads them (level + gate).
+  conditions: [...geoSamplerSetup, ...constellationConditions, ...skillResShredConditions],
 };
