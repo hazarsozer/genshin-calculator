@@ -37,7 +37,7 @@
     }
   },
   "config": {
-    "description": "A Lunar-Charged-capable rep (Ineffa) wearing ThunderingFury 4pc so dmg_reaction_lunarcharged:20 is non-inert — exposes the buildStats un-divided-emit quirk (M3). Empty (deferred to a Task-5 unit test) if no clean rep exists.",
+    "description": "A Lunar-Charged-capable rep (Ineffa) wearing ThunderingFury 4pc so dmg_reaction_lunarcharged:20 is non-inert — the buildStats un-divided-emit fix (M3). Rep and fixture exist; suite is GREEN.",
     "id": "thundering_lunarcharged"
   },
   "featureTotal": 31,
