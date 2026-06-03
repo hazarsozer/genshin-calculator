@@ -679,7 +679,7 @@ const weaponOtherThousandFloatingDreams: Condition = {
  * `text_percent` accumulates into atk_percent; `text_value` accumulates into mastery.
  * Verified empirically: oracle ratio 2422/1808 = 1.339 matches atk_percent+40% on Diluc.
  */
-const weaponOtherElegySforTheEnd: Condition = {
+const weaponOtherElegyForTheEnd: Condition = {
   type: "static-level",
   levelSetting: "weapon_other.weapon_elegy_for_the_end",
   levelStats: {
@@ -768,7 +768,7 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
   weaponOtherStarcallersWatch,
   weaponOtherSymphonistOfScents,
   weaponOtherThousandFloatingDreams,
-  weaponOtherElegySforTheEnd,
+  weaponOtherElegyForTheEnd,
   weaponOtherSongOfBrokenPines,
   weaponOtherFreedomSworn,
 ];

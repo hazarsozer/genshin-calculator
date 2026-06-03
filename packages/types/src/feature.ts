@@ -259,8 +259,11 @@ export interface Feature {
    *
    * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Damage/Clam.js
    */
+  // --- FeatureDamageClam suppression flags (see group doc above) ---
   readonly noCrit?: boolean;
+  /** See group comment above (FeatureDamageClam suppression flags). */
   readonly noDamageBonus?: boolean;
+  /** See group comment above (FeatureDamageClam suppression flags). */
   readonly ignoreEnemyDefence?: boolean;
   /**
    * Marks a standalone reaction feature (a separate damage instance keyed by its

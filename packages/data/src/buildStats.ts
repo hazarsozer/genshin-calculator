@@ -641,6 +641,7 @@ export function buildStats(input: BuildInput): BuildResult {
   // (her PostEffect.getLevel adds `_bonus`); refine-scaled weapon folds read
   // `weapon_refine` from the merged settings. No base-build weapon carries a
   // post-effect → the weapon channel is a no-op for the base golden suite.
+  //
   // Global character post-effects (DB.Buffs `weapons`/`static` post-effects in her engine) —
   // off-field weapon teammate-stat conversions (desert_pavilion EM→atk, key_of_khaj_nisut HP→mastery,
   // whisper_of_the_jinn EM→recharge, peak_patrol_song DEF→dmg_<el>). Appended onto EVERY character's

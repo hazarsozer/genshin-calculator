@@ -466,8 +466,8 @@ const foldEffects = new Set<string>();
 // ===========================================================================
 
 for (const family of FOLD_FAMILIES) {
-  // A deferred/empty family (e.g. thundering_lunarcharged with no clean rep) writes no
-  // fixtures + no manifest — skip its load silently (documented in the fold config + report).
+  // A family with no fixtures (no manifest yet) is skipped silently
+  // (documented in the fold config + report).
   if (!existsSync(join(FIXTURES_ROOT, family, "_manifest.json"))) continue;
 
   const manifest = loadManifest(family);

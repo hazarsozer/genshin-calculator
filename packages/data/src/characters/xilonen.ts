@@ -176,9 +176,9 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Geo sampler availability (ConditionBooleanXilonen — geo padding)
 // ---------------------------------------------------------------------------
-// Her ConditionBooleanXilonen.getData() (Condition/Boolean/Xilonen.js) ALWAYS sets
+// Her ConditionBooleanXilonen.getData() (Condition/Boolean/Xilonen.js:7-36) ALWAYS sets
 // `xilonen_sampler_<element>:1` for the sampler elements, UNCONDITIONALLY (regardless of the
-// toggle's active state). getSamplers() pads to 3 with 'geo' when no resonance element fills a
+// toggle's active state). getSamplers() (Xilonen.js:38-55) pads to 3 with 'geo' when no resonance element fills a
 // slot; for solo geo Xilonen (char_element 'geo', not in the pyro/cryo/electro/hydro sampler
 // set) the result is ['geo','geo','geo'] → `xilonen_sampler_geo:1` is set on EVERY build.
 // `xilonen_active_sampler_geo` is the SEPARATE gate, turned on only when the sampler is ACTIVE
@@ -217,8 +217,9 @@ const constellationConditions: readonly Condition[] = [
   // at skill 13 (10 + C3) — correct ONLY at the constellations C6 build. The dynamic shred below
   // reproduces -45 there (level 13) AND -36 at skill 10, firing EXACTLY ONCE per build.
   { type: "constellation", constellation: 2, stats: { dmg_all: 50 } },
-  // C2 also publishes the active-sampler setting (her cons[0]) — a SEPARATE condition so the
-  // settings-publish is visible to the res-shred staticLevel's gate (ordered before it below).
+  // C2 also publishes the active-sampler setting (her cons[0]) — split into a SEPARATE condition
+  // mirroring the raw two-condition structure (cons[0] settings-publish, cons[1] dmg_all stat),
+  // both ordered before the res-shred so the gate reads the propagated active-sampler key.
   { type: "constellation", constellation: 2, settings: { xilonen_active_sampler_geo: 1 } },
   // C3 — char_skill_elemental_bonus +3 (skill talent level up). MUST precede the res-shred so the
   // staticLevel resolves at skill 13 in the C6 config (her getSkillLevelByName adds `_bonus`).
