@@ -27,7 +27,7 @@
  *   tools/oracle/engine.mjs (FIXED_BUILD + getBuildData sequence)
  *   raw/genshin_calc_pub/src/js/classes/Stats.js (getTotal, getTotalPercent, isPercent)
  *   raw/genshin_calc_pub/src/js/classes/CalcSet.js (getBuildData → getBaseStats → processPercent)
- *   wiki/concepts/stat-keys-and-good-format.md
+ *   wiki/game/mechanics/stat-keys-and-good-format.md
  */
 
 import { Stats, applyPostEffects, conditionStats, conditionSettings, evaluate, type PostEffect } from "@genshin/core";

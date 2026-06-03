@@ -14,11 +14,11 @@ build comes next, informed by what's here.
 |------|------------|
 | `CLAUDE.md` | The **schema** — conventions + ingest/query/lint workflows. Start here. |
 | `wiki/` | The knowledge base (LLM-written). Open this folder as an Obsidian vault. |
-| `wiki/index.md` | Catalog of every page — the navigation backbone. |
-| `wiki/concepts/` | How Genshin's damage math works (the spec for the new calc). |
-| `wiki/architecture/` | How Aspirine's code implements it (reference to port from). |
-| `wiki/entities/` | Complete catalogs of all 107 characters / 202 weapons / 55 artifact sets. |
-| `wiki/decisions/` | Architecture decision records. |
+| `wiki/_meta/index.md` | Catalog of every page — the navigation backbone. |
+| `wiki/game/mechanics/` | How Genshin's damage math works (the spec for the new calc). |
+| `wiki/tools/calculator/` | How Aspirine's code implements it (reference to port from). |
+| `wiki/game/entities/` | Complete catalogs of all 107 characters / 202 weapons / 55 artifact sets. |
+| `wiki/_meta/decisions/` | Architecture decision records. |
 | `raw/genshin_calc_pub/` | Aspirine's vendored source (code + data; image blobs excluded). |
 
 ## How to use it

@@ -2,8 +2,8 @@
  * Damage output types and the context passed to the engine.
  *
  * Sources:
- *   wiki/concepts/damage-formula.md
- *   wiki/concepts/crit.md
+ *   wiki/game/mechanics/damage-formula.md
+ *   wiki/game/mechanics/crit.md
  */
 
 import type { GoodStatKey, EngineStatKey } from "./stats.js";
@@ -47,7 +47,7 @@ export type AnyStatKey = GoodStatKey | EngineStatKey;
  *
  * Value convention: percent stats are FRACTIONS at execution time (her
  * processPercent divides by 100 once before the formula runs); flat stats are
- * raw. See wiki/concepts/stat-keys-and-good-format.md.
+ * raw. See wiki/game/mechanics/stat-keys-and-good-format.md.
  */
 export type BuildStats = Readonly<Partial<Record<AnyStatKey, number>>> &
   Readonly<Record<string, number>>;
@@ -56,8 +56,8 @@ export type BuildStats = Readonly<Partial<Record<AnyStatKey, number>>> &
  * Enemy parameters for the defence and resistance multipliers.
  *
  * Sources:
- *   wiki/concepts/def-multiplier.md
- *   wiki/concepts/res-multiplier.md
+ *   wiki/game/mechanics/def-multiplier.md
+ *   wiki/game/mechanics/res-multiplier.md
  */
 export interface EnemyParams {
   readonly level: number;

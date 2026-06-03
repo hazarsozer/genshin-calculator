@@ -2,7 +2,7 @@
  * Artifact domain types.
  *
  * Sources:
- *   wiki/architecture/db-object-model.md
+ *   wiki/tools/calculator/db-object-model.md
  *   raw/genshin_calc_pub/src/js/db/Artifacts/Set/<Name>.js (ArtifactSet pattern)
  *   raw/genshin_calc_pub/src/js/classes/ArtifactSet.js (bonus[pieces] keying, getConditions)
  */
@@ -61,7 +61,7 @@ export interface ArtifactSubStat {
  * unlocked (`pieces >= count`); each is then independently subject to its OWN gate
  * (`conditionStats`'s `evaluate`). The piece-count gate (which tiers enter) and the
  * condition gate (whether an entered condition fires) are DISTINCT — see the
- * gotcha in wiki/tasks/phase-2-A0-artifact-set-shape.md.
+ * gotcha in wiki/_meta/tasks/phase-2-A0-artifact-set-shape.md.
  *
  * Ports the object her `ArtifactSet` stores at `this.bonus[count]` (ArtifactSet.js:23-29);
  * `getConditions(pieces)` concats `bonus[i].conditions` for every tier `i <= pieces`,

@@ -2,7 +2,7 @@
  * Weapon domain types.
  *
  * Sources:
- *   wiki/architecture/db-object-model.md
+ *   wiki/tools/calculator/db-object-model.md
  *   raw/genshin_calc_pub/src/js/db/Weapon/Sword/AquilaFavonia.js
  *   raw/genshin_calc_pub/src/js/db/Weapon/Claymore/WolfsGravestone.js
  *   raw/genshin_calc_pub/src/js/db/Weapon/Polearm/Catch.js

@@ -26,7 +26,7 @@
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Damage.js (getTree, getStatsDmgBonus, getElement)
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier.js (getValue, getTree, scaling 'atk*')
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Damage/Normal.js (allowInfusion, damageType)
- *   wiki/architecture/feature2-engine.md, wiki/concepts/damage-formula.md
+ *   wiki/tools/calculator/feature2-engine.md, wiki/game/mechanics/damage-formula.md
  */
 
 import {

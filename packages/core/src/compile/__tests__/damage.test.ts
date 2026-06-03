@@ -11,11 +11,11 @@
  *   avg    = normal × (1 + critRate × critDMG)
  *
  * Sources:
- *   wiki/concepts/damage-formula.md
- *   wiki/concepts/base-damage-and-scaling.md
- *   wiki/concepts/def-multiplier.md
- *   wiki/concepts/res-multiplier.md
- *   wiki/concepts/crit.md
+ *   wiki/game/mechanics/damage-formula.md
+ *   wiki/game/mechanics/base-damage-and-scaling.md
+ *   wiki/game/mechanics/def-multiplier.md
+ *   wiki/game/mechanics/res-multiplier.md
+ *   wiki/game/mechanics/crit.md
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Compile/Types/Damage.js (CDamage.makeResult, L86-126)
  */
 
@@ -44,7 +44,7 @@ import { compile, runBlock } from "../compiler.js";
 
 /** A controlled context. Stats are stored as the engine sees them at execution
  * time: percent stats are already FRACTIONS (her processPercent divides by 100
- * once before the formula runs). See wiki/concepts/stat-keys-and-good-format.md. */
+ * once before the formula runs). See wiki/game/mechanics/stat-keys-and-good-format.md. */
 function ctx(stats: Record<string, number>, characterLevel = 90, enemyLevel = 90): DamageContext {
   return {
     stats,

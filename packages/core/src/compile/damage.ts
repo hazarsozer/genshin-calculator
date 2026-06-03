@@ -25,7 +25,7 @@
  *       in `items` and supplies critRate/critDmg blocks. No core rewrite.
  *
  * Sources:
- *   wiki/concepts/damage-formula.md, crit.md
+ *   wiki/game/mechanics/damage-formula.md, crit.md
  */
 
 import type { DamageContext, DamageResult } from "@genshin/types";

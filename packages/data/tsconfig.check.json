@@ -5,7 +5,7 @@
     // Resolve @genshin/types and @genshin/core from source so `typecheck` is
     // self-contained and always fresh (no prior `tsc -b` of deps needed).
     // Intentional vs project `references`, which would require dist pre-built.
-    // See wiki/tasks/phase-1-00-scaffold.md.
+    // See wiki/_meta/tasks/phase-1-00-scaffold.md.
     "paths": {
       "@genshin/types": ["../types/src/index.ts"],
       "@genshin/core": ["../core/src/index.ts"]

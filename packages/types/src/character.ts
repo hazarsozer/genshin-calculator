@@ -2,7 +2,7 @@
  * Character domain types.
  *
  * Sources:
- *   wiki/architecture/db-object-model.md
+ *   wiki/tools/calculator/db-object-model.md
  *   raw/genshin_calc_pub/src/js/db/Char/Hutao.js
  */
 

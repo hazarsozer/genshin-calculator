@@ -22,7 +22,7 @@
  *   block-tree boundary keeps core pure. See the report / wiki for the decision.
  *
  * Sources:
- *   wiki/architecture/feature2-engine.md
+ *   wiki/tools/calculator/feature2-engine.md
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Compiler.js
  */
 

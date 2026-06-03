@@ -15,7 +15,7 @@
  *   raw/genshin_calc_pub/src/js/db/Artifacts/Set/DeepwoodMemories.js:14-42 (setBonus 2pc/4pc)
  *   raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:247-261 (the -30% dendro RES + OR gate)
  *   packages/data/src/characterConditions.ts (setOtherDeepwoodMemories4 — authoritative OR gate)
- *   wiki/concepts/res-multiplier.md (piecewise resistance, negative branch)
+ *   wiki/game/mechanics/res-multiplier.md (piecewise resistance, negative branch)
  */
 
 import type { DbObjectArtifactSet } from "@genshin/types";
