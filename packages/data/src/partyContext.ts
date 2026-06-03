@@ -21,6 +21,17 @@ export interface PartyInput {
   readonly enemyStatus?: string;
   readonly setOther?: readonly string[];
   readonly partyWeapons?: Readonly<Record<string, number>>;
+  /**
+   * Off-field weapon team buffs: a TEAMMATE's weapon passive that buffs the active char
+   * (the `weapons` DbObjectBuff in Buffs/Weapons.js). Keyed by her EXACT gate setting name
+   * (`weapon_other.<weapon>`, or `weapon.<weapon>` for Thrilling Tales — see Buffs/Weapons.js)
+   * → the teammate's weapon refine (1–5), read as the level by the ported global condition in
+   * characterConditions.ts. Published verbatim (`out[gate] = level`). Absent → inert.
+   *
+   * Distinct from `partyWeapons` (the legacy `party_weapon_*` stub, which no ported condition
+   * reads): her off-field weapon buffs gate on `weapon_other.*`, not `party_weapon_*`.
+   */
+  readonly weaponOther?: Readonly<Record<string, number>>;
   readonly bondOfLife?: number;
 }
 
@@ -82,6 +93,10 @@ export function buildPartyContext(
   if (party.bondOfLife !== undefined) out["common.bond_of_life"] = party.bondOfLife;
   for (const s of party.setOther ?? []) out[`set_other.${s}`] = true;
   for (const [k, v] of Object.entries(party.partyWeapons ?? {})) out[`party_weapon_${k}`] = v;
+  // weapon_other off-field weapon buffs: published by their EXACT gate name (her setting names),
+  // value = the teammate's weapon refine/level. The ported global conditions in characterConditions
+  // read these as the ConditionLevelSelect level. Absent → no keys → base-inert.
+  for (const [gate, level] of Object.entries(party.weaponOther ?? {})) out[gate] = level;
 
   return out;
 }

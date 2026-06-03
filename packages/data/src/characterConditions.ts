@@ -486,10 +486,69 @@ const setOtherSongOfDaysPast4HealingInput: Condition = {
   max: 15000,
 };
 
+// ===========================================================================
+// weapon_other off-field team buffs — a TEAMMATE's weapon passive buffs the
+// active char (the `weapons` DbObjectBuff in Buffs/Weapons.js, NOT the weapon's
+// own self-passive). Each is gated by a `weapon.<weapon>` / `weapon_other.<weapon>`
+// LEVEL setting (1–5 = the teammate weapon's refine; 0/absent → inert). The active
+// char does NOT equip the weapon, so there is no self-equip path to double-count
+// with — a pure off-field buff (mirrors the set_other team buffs above, but with
+// no OR(self) arm: the level setting IS the only gate).
+//
+// 7a scopes the two pipeline-proving exemplars. Faithful port of her
+// ConditionLevelSelect (Static/Level.js semantics): read the level off the gate
+// setting, index the atk_percent StatTable. Modeled as ConditionStaticLevel + an
+// explicit boolean gate on the SAME setting — REQUIRED because our staticLevel has
+// no built-in `settings[name] > 0` activeness check (her ConditionLevelSelect.isActive
+// does); without the gate, an absent level falls through to `level = raw || 1` and
+// would emit the R1 value, breaking base-safety. The boolean gate reproduces her
+// `isActive` so the buff is INERT (emits nothing) unless its level setting is present.
+//
+// Source: raw/genshin_calc_pub/src/js/db/Buffs/Weapons.js (Thrilling Tales :14, Wolf's :31)
+// ===========================================================================
+
+/**
+ * Thrilling Tales of Dragon Slayers (off-field) — +24/30/36/42/48% ATK (R1..R5).
+ * Source: Buffs/Weapons.js:14-28 — ConditionLevelSelect gated `weapon.thrilling_tales`
+ * (NOTE: `weapon.` not `weapon_other.` — Thrilling Tales' off-field ATK buff can be received
+ * even by its own wielder after a swap, so her gate name omits the `_other`). The `text_percent`
+ * StatTable is display-only (omitted, per the gilded-dreams/set_other convention). Level read off
+ * the gate setting; absent → boolean gate false → inert.
+ */
+const weaponOtherThrillingTales: Condition = {
+  type: "staticLevel",
+  levelSetting: "weapon.thrilling_tales",
+  levelStats: { atk_percent: [24, 30, 36, 42, 48] },
+  condition: { type: "boolean", name: "weapon.thrilling_tales" },
+};
+
+/**
+ * Wolf's Gravestone (off-field) — +40/50/60/70/80% ATK (R1..R5).
+ * Source: Buffs/Weapons.js:31-49 — ConditionLevelSelect gated `weapon_other.weapon_wolfs_gravestone`,
+ * with a subCondition ConditionBoolean({name:'weapon_wolfs_gravestone', invert:true}) → the off-field
+ * buff applies only when the active char has NOT toggled Wolf's OWN self-passive (its self-equip ATK
+ * buff lives in wolfs-gravestone.ts, gated `weapon_wolfs_gravestone`). The invert gate is the
+ * no-double-count guard: a Wolf's wielder gets the self-passive, not this team copy. Level read off
+ * the gate setting; absent → boolean gate false → inert.
+ */
+const weaponOtherWolfsGravestone: Condition = {
+  type: "staticLevel",
+  levelSetting: "weapon_other.weapon_wolfs_gravestone",
+  levelStats: { atk_percent: [40, 50, 60, 70, 80] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "weapon_other.weapon_wolfs_gravestone" },
+      { type: "boolean", name: "weapon_wolfs_gravestone", invert: true },
+    ],
+  },
+};
+
 /**
  * All global character conditions, in source order (imaginarium_theatre, then the Elemental
  * Resonance buffs in ElementalResonance.js order, then set_other team buffs from
- * Buffs/Artifacts.js). Wire into buildStats alongside `char.conditions` and `extraConditions`.
+ * Buffs/Artifacts.js, then weapon_other off-field weapon team buffs from Buffs/Weapons.js).
+ * Wire into buildStats alongside `char.conditions` and `extraConditions`.
  */
 export const CHARACTER_CONDITIONS: readonly Condition[] = [
   imaginariumTheatre,
@@ -517,6 +576,10 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
   // Song of Days Past 4pc (team) — the healing-recorded INPUT (the multiplier is in
   // CHARACTER_MULTIPLIERS). Inert unless `party_days_past_healing_recorded > 0`.
   setOtherSongOfDaysPast4HealingInput,
+  // weapon_other off-field weapon team buffs (Buffs/Weapons.js) — inert unless the gate
+  // level setting is published via partyContext (weaponOther) or supplied in settings.
+  weaponOtherThrillingTales,
+  weaponOtherWolfsGravestone,
 ];
 
 // ===========================================================================

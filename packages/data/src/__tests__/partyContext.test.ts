@@ -41,6 +41,35 @@ describe("buildPartyContext — element counts (CalcElements.js:4-51)", () => {
     expect(ctx["set_other.noblesse_oblige_4"]).toBe(true);
     expect(ctx["party_weapon_skyward_blade"]).toBe(5);
   });
+
+  it("publishes weapon_other off-field weapon buffs by their exact gate name + level", () => {
+    // The teammate's weapon passive gates on her exact setting names (Buffs/Weapons.js): Wolf's
+    // Gravestone on `weapon_other.weapon_wolfs_gravestone`, Thrilling Tales on `weapon.thrilling_tales`.
+    // The value is the teammate's weapon refine (1-5), read as the level by the ported global condition.
+    const ctx = buildPartyContext(
+      {
+        members: [{ element: "pyro", origin: "mondstadt" }],
+        weaponOther: {
+          "weapon_other.weapon_wolfs_gravestone": 5,
+          "weapon.thrilling_tales": 3,
+        },
+      },
+      { element: "pyro", origin: "liyue" }
+    );
+    expect(ctx["weapon_other.weapon_wolfs_gravestone"]).toBe(5);
+    expect(ctx["weapon.thrilling_tales"]).toBe(3);
+  });
+
+  it("omits the weapon_other channel entirely when absent (base-safety)", () => {
+    const ctx = buildPartyContext(
+      { members: [{ element: "pyro" }] },
+      { element: "pyro" }
+    );
+    const weaponOtherKeys = Object.keys(ctx).filter(
+      (k) => k.startsWith("weapon_other.") || k === "weapon.thrilling_tales"
+    );
+    expect(weaponOtherKeys).toHaveLength(0);
+  });
 });
 
 // ---------------------------------------------------------------------------
