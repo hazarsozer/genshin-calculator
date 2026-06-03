@@ -20,6 +20,10 @@ export interface PartyInput {
   readonly members?: readonly PartyMember[];
   readonly enemyStatus?: string;
   readonly setOther?: readonly string[];
+  /**
+   * @deprecated Dead stub — no ported condition reads `party_weapon_*` keys.
+   * Use `weaponOther` for off-field weapon team buffs (gated on `weapon_other.*` settings).
+   */
   readonly partyWeapons?: Readonly<Record<string, number>>;
   /**
    * Off-field weapon team buffs: a TEAMMATE's weapon passive that buffs the active char

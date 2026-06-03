@@ -544,6 +544,187 @@ const weaponOtherWolfsGravestone: Condition = {
   },
 };
 
+// ---------------------------------------------------------------------------
+// Task 7b — simple off-field weapon_other buffs (Buffs/Weapons.js, remaining
+// ConditionLevelSelect / 1-slot ConditionPartyWeapon without statName).
+// All follow the 7a pattern: ConditionStaticLevel + explicit boolean gate.
+// Each is INERT unless the gate level setting is present (base-safety).
+// ---------------------------------------------------------------------------
+
+/**
+ * Hakushin Ring (off-field) — +10/12.5/15/17.5/20% DMG (own element, R1..R5).
+ * Source: Buffs/Weapons.js:99-118 — ConditionLevelSelect gated
+ * `weapon_other.weapon_white_dragon_ring`, with subCondition
+ * ConditionBoolean({name:'weapon_white_dragon_ring', invert:true}).
+ * `dmg_own` is the wielder's own-element DMG bonus; buildStats folds it into
+ * `dmg_<char_element>`. The NOT(weapon_white_dragon_ring) guard prevents
+ * double-count vs the self-equip passive (hakushin-ring.ts).
+ */
+const weaponOtherWhiteDragonRing: Condition = {
+  type: "staticLevel",
+  levelSetting: "weapon_other.weapon_white_dragon_ring",
+  levelStats: { dmg_own: [10, 12.5, 15, 17.5, 20] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "weapon_other.weapon_white_dragon_ring" },
+      { type: "boolean", name: "weapon_white_dragon_ring", invert: true },
+    ],
+  },
+};
+
+/**
+ * Sapwood Blade (off-field) — +60/75/90/105/120 EM (R1..R5).
+ * Source: Buffs/Weapons.js:120-140 — ConditionLevelSelect gated
+ * `weapon_other.forest_sanctuary`, with subCondition
+ * ConditionBoolean({name:'weapon_forest_sanctuary', invert:true}).
+ * The NOT guard prevents double-count vs the self-equip EM buff.
+ */
+const weaponOtherForestSanctuary: Condition = {
+  type: "staticLevel",
+  levelSetting: "weapon_other.forest_sanctuary",
+  levelStats: { mastery: [60, 75, 90, 105, 120] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "weapon_other.forest_sanctuary" },
+      { type: "boolean", name: "weapon_forest_sanctuary", invert: true },
+    ],
+  },
+};
+
+/**
+ * Moonpiercer (off-field) — +16/20/24/28/32% ATK (R1..R5).
+ * Source: Buffs/Weapons.js:141-161 — ConditionLevelSelect gated
+ * `weapon_other.stillwood_moonshadow`, with subCondition
+ * ConditionBoolean({name:'weapon_stillwood_moonshadow', invert:true}).
+ * The NOT guard prevents double-count vs the self-equip ATK buff.
+ */
+const weaponOtherStillwoodMoonshadow: Condition = {
+  type: "staticLevel",
+  levelSetting: "weapon_other.stillwood_moonshadow",
+  levelStats: { atk_percent: [16, 20, 24, 28, 32] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "weapon_other.stillwood_moonshadow" },
+      { type: "boolean", name: "weapon_stillwood_moonshadow", invert: true },
+    ],
+  },
+};
+
+/**
+ * Starcaller's Watch (off-field) — +28/35/42/49/56% All DMG (R1..R5).
+ * Source: Buffs/Weapons.js:271-288 — ConditionPartyWeapon (1 slot, no statName)
+ * gated `weapon_other.weapon_starcallers_watch`, subCondition
+ * ConditionNot([ConditionBoolean({name:'weapon_starcallers_watch'})]).
+ * Functionally identical to ConditionLevelSelect (1 slot). The NOT guard
+ * prevents double-count vs the self-equip DMG bonus (starcallers-watch.ts).
+ */
+const weaponOtherStarcallersWatch: Condition = {
+  type: "staticLevel",
+  levelSetting: "weapon_other.weapon_starcallers_watch",
+  levelStats: { dmg_all: [28, 35, 42, 49, 56] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "weapon_other.weapon_starcallers_watch" },
+      { type: "boolean", name: "weapon_starcallers_watch", invert: true },
+    ],
+  },
+};
+
+/**
+ * Symphonist of Scents (off-field) — +32/40/48/56/64% ATK (R1..R5).
+ * Source: Buffs/Weapons.js:289-304 — ConditionPartyWeapon (1 slot, no statName)
+ * gated `weapon_other.weapon_symphonist_of_scents`, outer condition
+ * ConditionNot([ConditionBoolean({name:'symphonist_of_scents_3'})]).
+ * The NOT guard prevents double-count when the self-equip 3rd-stack passive
+ * (same atk_percent values, key `symphonist_of_scents_3`) is active.
+ */
+const weaponOtherSymphonistOfScents: Condition = {
+  type: "staticLevel",
+  levelSetting: "weapon_other.weapon_symphonist_of_scents",
+  levelStats: { atk_percent: [32, 40, 48, 56, 64] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "weapon_other.weapon_symphonist_of_scents" },
+      { type: "boolean", name: "symphonist_of_scents_3", invert: true },
+    ],
+  },
+};
+
+/**
+ * A Thousand Floating Dreams (off-field, primary slot) — +40/42/44/46/48 EM (R1..R5).
+ * Source: Buffs/Weapons.js:238-250 — ConditionPartyWeapon (3 slots: serializeIds [47,48,49],
+ * no statName, no self-exclusion) gated `weapon_other.weapon_thousand_floating_dreams`.
+ * Ports slot 1 only (the primary team buff from a single TFD wielder). Slots 2+3
+ * (`weapon_other.weapon_thousand_floating_dreams_2/_3`) deferred to a follow-up task
+ * if multi-wielder stacking is required.
+ */
+const weaponOtherThousandFloatingDreams: Condition = {
+  type: "staticLevel",
+  levelSetting: "weapon_other.weapon_thousand_floating_dreams",
+  levelStats: { mastery: [40, 42, 44, 46, 48] },
+  condition: { type: "boolean", name: "weapon_other.weapon_thousand_floating_dreams" },
+};
+
+/**
+ * Elegy for the End (off-field) — +20/25/30/35/40% ATK + 100/125/150/175/200 EM (R1..R5).
+ * Source: Buffs/Weapons.js:51-66 — ConditionLevelSelect gated
+ * `weapon_other.weapon_elegy_for_the_end`. No self-exclusion subCondition.
+ * Stats: `text_percent [20..40]` maps to atk_percent; `text_value [100..200]` maps to mastery.
+ * In her engine `text_*` prefixed stats are display-labelled but mechanically real:
+ * `text_percent` accumulates into atk_percent; `text_value` accumulates into mastery.
+ * Verified empirically: oracle ratio 2422/1808 = 1.339 matches atk_percent+40% on Diluc.
+ */
+const weaponOtherElegySforTheEnd: Condition = {
+  type: "staticLevel",
+  levelSetting: "weapon_other.weapon_elegy_for_the_end",
+  levelStats: {
+    atk_percent: [20, 25, 30, 35, 40],
+    mastery: [100, 125, 150, 175, 200],
+  },
+  condition: { type: "boolean", name: "weapon_other.weapon_elegy_for_the_end" },
+};
+
+/**
+ * Song of Broken Pines (off-field) — +20/25/30/35/40% ATK (R1..R5).
+ * Source: Buffs/Weapons.js:67-81 — ConditionLevelSelect gated
+ * `weapon_other.weapon_song_of_broken_pines`. No self-exclusion.
+ * Stats: `text_percent [20..40]` → atk_percent; `text_percent_2 [12..24]` → ATK SPD (display only).
+ * ATK SPD omitted: it has zero damage-number effect in this calculator. Verified: oracle
+ * 2422 matches atk_percent+40% on Diluc (same as Elegy, no extra from text_percent_2:24).
+ */
+const weaponOtherSongOfBrokenPines: Condition = {
+  type: "staticLevel",
+  levelSetting: "weapon_other.weapon_song_of_broken_pines",
+  levelStats: { atk_percent: [20, 25, 30, 35, 40] },
+  condition: { type: "boolean", name: "weapon_other.weapon_song_of_broken_pines" },
+};
+
+/**
+ * Freedom-Sworn (off-field) — +20/25/30/35/40% ATK + +16/20/24/28/32% Normal/Charged/Plunge DMG (R1..R5).
+ * Source: Buffs/Weapons.js:83-98 — ConditionLevelSelect gated
+ * `weapon_other.weapon_freedom_sworn`. No self-exclusion.
+ * Stats: `text_percent [20..40]` → atk_percent; `text_percent_2 [16..32]` → dmg_normal +
+ *   dmg_charged + dmg_plunge (Normal/Charged/Plunge DMG% bonus in-game).
+ * Verified: oracle 3114 matches atk_percent+40% × normal_dmg_bonus+32% on Diluc
+ *   (3114/1808 = 1.722 ≈ (1.58/1.18) × (1.12+0.32)/1.12 = 1.339 × 1.286 ✓).
+ */
+const weaponOtherFreedomSworn: Condition = {
+  type: "staticLevel",
+  levelSetting: "weapon_other.weapon_freedom_sworn",
+  levelStats: {
+    atk_percent: [20, 25, 30, 35, 40],
+    dmg_normal: [16, 20, 24, 28, 32],
+    dmg_charged: [16, 20, 24, 28, 32],
+    dmg_plunge: [16, 20, 24, 28, 32],
+  },
+  condition: { type: "boolean", name: "weapon_other.weapon_freedom_sworn" },
+};
+
 /**
  * All global character conditions, in source order (imaginarium_theatre, then the Elemental
  * Resonance buffs in ElementalResonance.js order, then set_other team buffs from
@@ -580,6 +761,16 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
   // level setting is published via partyContext (weaponOther) or supplied in settings.
   weaponOtherThrillingTales,
   weaponOtherWolfsGravestone,
+  // Task 7b — simple off-field weapon buffs (ConditionLevelSelect / 1-slot PartyWeapon, no statName).
+  weaponOtherWhiteDragonRing,
+  weaponOtherForestSanctuary,
+  weaponOtherStillwoodMoonshadow,
+  weaponOtherStarcallersWatch,
+  weaponOtherSymphonistOfScents,
+  weaponOtherThousandFloatingDreams,
+  weaponOtherElegySforTheEnd,
+  weaponOtherSongOfBrokenPines,
+  weaponOtherFreedomSworn,
 ];
 
 // ===========================================================================
