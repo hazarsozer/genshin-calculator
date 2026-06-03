@@ -392,13 +392,13 @@ const setViridescentVenerer4SwirlConditions: readonly Condition[] =
         {
           type: "and" as const,
           items: [
-            { type: "dropdownElement" as const, name: "set.viridescent_venerer_4", element: el },
+            { type: "dropdown-element" as const, name: "set.viridescent_venerer_4", element: el },
             { type: "char-element" as const, elements: ["anemo"] },
             { type: "pieces-count" as const, setName: "ViridescentVenerer", count: 4 },
           ],
         },
         // Team-buff arm: a teammate wears VV-4 and selected this element.
-        { type: "dropdownElement" as const, name: "set_other.viridescent_venerer_4", element: el },
+        { type: "dropdown-element" as const, name: "set_other.viridescent_venerer_4", element: el },
       ],
     },
   }));
@@ -516,7 +516,7 @@ const setOtherSongOfDaysPast4HealingInput: Condition = {
  * the gate setting; absent → boolean gate false → inert.
  */
 const weaponOtherThrillingTales: Condition = {
-  type: "staticLevel",
+  type: "static-level",
   levelSetting: "weapon.thrilling_tales",
   levelStats: { atk_percent: [24, 30, 36, 42, 48] },
   condition: { type: "boolean", name: "weapon.thrilling_tales" },
@@ -532,7 +532,7 @@ const weaponOtherThrillingTales: Condition = {
  * the gate setting; absent → boolean gate false → inert.
  */
 const weaponOtherWolfsGravestone: Condition = {
-  type: "staticLevel",
+  type: "static-level",
   levelSetting: "weapon_other.weapon_wolfs_gravestone",
   levelStats: { atk_percent: [40, 50, 60, 70, 80] },
   condition: {
@@ -561,7 +561,7 @@ const weaponOtherWolfsGravestone: Condition = {
  * double-count vs the self-equip passive (hakushin-ring.ts).
  */
 const weaponOtherWhiteDragonRing: Condition = {
-  type: "staticLevel",
+  type: "static-level",
   levelSetting: "weapon_other.weapon_white_dragon_ring",
   levelStats: { dmg_own: [10, 12.5, 15, 17.5, 20] },
   condition: {
@@ -581,7 +581,7 @@ const weaponOtherWhiteDragonRing: Condition = {
  * The NOT guard prevents double-count vs the self-equip EM buff.
  */
 const weaponOtherForestSanctuary: Condition = {
-  type: "staticLevel",
+  type: "static-level",
   levelSetting: "weapon_other.forest_sanctuary",
   levelStats: { mastery: [60, 75, 90, 105, 120] },
   condition: {
@@ -601,7 +601,7 @@ const weaponOtherForestSanctuary: Condition = {
  * The NOT guard prevents double-count vs the self-equip ATK buff.
  */
 const weaponOtherStillwoodMoonshadow: Condition = {
-  type: "staticLevel",
+  type: "static-level",
   levelSetting: "weapon_other.stillwood_moonshadow",
   levelStats: { atk_percent: [16, 20, 24, 28, 32] },
   condition: {
@@ -622,7 +622,7 @@ const weaponOtherStillwoodMoonshadow: Condition = {
  * prevents double-count vs the self-equip DMG bonus (starcallers-watch.ts).
  */
 const weaponOtherStarcallersWatch: Condition = {
-  type: "staticLevel",
+  type: "static-level",
   levelSetting: "weapon_other.weapon_starcallers_watch",
   levelStats: { dmg_all: [28, 35, 42, 49, 56] },
   condition: {
@@ -643,7 +643,7 @@ const weaponOtherStarcallersWatch: Condition = {
  * (same atk_percent values, key `symphonist_of_scents_3`) is active.
  */
 const weaponOtherSymphonistOfScents: Condition = {
-  type: "staticLevel",
+  type: "static-level",
   levelSetting: "weapon_other.weapon_symphonist_of_scents",
   levelStats: { atk_percent: [32, 40, 48, 56, 64] },
   condition: {
@@ -664,7 +664,7 @@ const weaponOtherSymphonistOfScents: Condition = {
  * if multi-wielder stacking is required.
  */
 const weaponOtherThousandFloatingDreams: Condition = {
-  type: "staticLevel",
+  type: "static-level",
   levelSetting: "weapon_other.weapon_thousand_floating_dreams",
   levelStats: { mastery: [40, 42, 44, 46, 48] },
   condition: { type: "boolean", name: "weapon_other.weapon_thousand_floating_dreams" },
@@ -680,7 +680,7 @@ const weaponOtherThousandFloatingDreams: Condition = {
  * Verified empirically: oracle ratio 2422/1808 = 1.339 matches atk_percent+40% on Diluc.
  */
 const weaponOtherElegySforTheEnd: Condition = {
-  type: "staticLevel",
+  type: "static-level",
   levelSetting: "weapon_other.weapon_elegy_for_the_end",
   levelStats: {
     atk_percent: [20, 25, 30, 35, 40],
@@ -698,7 +698,7 @@ const weaponOtherElegySforTheEnd: Condition = {
  * 2422 matches atk_percent+40% on Diluc (same as Elegy, no extra from text_percent_2:24).
  */
 const weaponOtherSongOfBrokenPines: Condition = {
-  type: "staticLevel",
+  type: "static-level",
   levelSetting: "weapon_other.weapon_song_of_broken_pines",
   levelStats: { atk_percent: [20, 25, 30, 35, 40] },
   condition: { type: "boolean", name: "weapon_other.weapon_song_of_broken_pines" },
@@ -714,7 +714,7 @@ const weaponOtherSongOfBrokenPines: Condition = {
  *   (3114/1808 = 1.722 ≈ (1.58/1.18) × (1.12+0.32)/1.12 = 1.339 × 1.286 ✓).
  */
 const weaponOtherFreedomSworn: Condition = {
-  type: "staticLevel",
+  type: "static-level",
   levelSetting: "weapon_other.weapon_freedom_sworn",
   levelStats: {
     atk_percent: [20, 25, 30, 35, 40],

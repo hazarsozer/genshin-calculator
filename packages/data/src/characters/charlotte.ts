@@ -191,7 +191,7 @@ const features: readonly Feature[] = [
 // same-origin path gives healing only → no dmg stat → inert in golden harness (omitted).
 // ---------------------------------------------------------------------------
 const a4DiffOrigin: Condition = {
-  type: "staticLevel",
+  type: "static-level",
   levelSetting: "party_origin_different",
   fromZero: true,
   levelStats: { dmg_cryo: [0, 5, 10, 15] },

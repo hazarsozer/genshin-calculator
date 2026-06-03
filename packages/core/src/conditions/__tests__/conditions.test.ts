@@ -596,7 +596,7 @@ describe("ConditionBooleanCharElement", () => {
 
 describe("ConditionDropdownElement", () => {
   it("active when the element is present in the ;-delimited selection string", () => {
-    const c: ConditionDropdownElement = { type: "dropdownElement", name: "set.viridescent_venerer_4", element: "pyro" };
+    const c: ConditionDropdownElement = { type: "dropdown-element", name: "set.viridescent_venerer_4", element: "pyro" };
     expect(evaluate(c, { "set.viridescent_venerer_4": "pyro" })).toBe(true);
     expect(evaluate(c, { "set.viridescent_venerer_4": "cryo;electro;pyro" })).toBe(true);
     expect(evaluate(c, { "set.viridescent_venerer_4": "cryo;electro" })).toBe(false);
@@ -605,19 +605,19 @@ describe("ConditionDropdownElement", () => {
   });
   it("does not match on substring (split must be exact-token)", () => {
     // "pyro" must NOT match within "cryopyro"; the split is on ';'.
-    const c: ConditionDropdownElement = { type: "dropdownElement", name: "k", element: "pyro" };
+    const c: ConditionDropdownElement = { type: "dropdown-element", name: "k", element: "pyro" };
     expect(evaluate(c, { k: "cryopyro" })).toBe(false);
     expect(evaluate(c, { k: "pyro;hydro" })).toBe(true);
   });
   it("conditionStats: pure gate (no stats of its own)", () => {
-    const c: ConditionDropdownElement = { type: "dropdownElement", name: "k", element: "pyro" };
+    const c: ConditionDropdownElement = { type: "dropdown-element", name: "k", element: "pyro" };
     expect(conditionStats(c, { k: "pyro" })).toEqual({});
   });
   it("composes under AND with char-element (the VV self-worn shred gate)", () => {
     const gate: ConditionAnd = {
       type: "and",
       items: [
-        { type: "dropdownElement", name: "set.viridescent_venerer_4", element: "pyro" },
+        { type: "dropdown-element", name: "set.viridescent_venerer_4", element: "pyro" },
         { type: "char-element", elements: ["anemo"] },
       ],
     };

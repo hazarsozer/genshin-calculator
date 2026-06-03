@@ -248,7 +248,7 @@ const constellationConditions: readonly Condition[] = [
 // precede the char res-shred condition (probe-verified: C6 → enemy_res_geo -45 at level 13).
 const skillResShredConditions: readonly Condition[] = [
   {
-    type: "staticLevel",
+    type: "static-level",
     levelSetting: "char_skill_elemental",
     levelStats: {
       enemy_res_geo: [-9, -12, -15, -18, -21, -24, -27, -30, -33, -36, -39, -42, -45, -48, -51],

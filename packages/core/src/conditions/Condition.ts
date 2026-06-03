@@ -105,11 +105,11 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
       return condition.items.some((item) => evaluate(item, ctx));
-    case "staticLevel":
+    case "static-level":
       return evaluateStaticLevel(condition, ctx);
     case "char-element":
       return evaluateCharElement(condition, ctx);
-    case "dropdownElement":
+    case "dropdown-element":
       return evaluateDropdownElement(condition, ctx);
     default: {
       // Exhaustiveness tripwire: a new Condition variant without a case is a compile error.
@@ -205,7 +205,7 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "resonance":
     case "party-elements":
     case "char-element":
-    case "dropdownElement":
+    case "dropdown-element":
       // Pure gates / logical containers / settings-publishers carry no stats of their own.
       return {};
     case "boolean":
@@ -213,7 +213,7 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "constellation":
       // Plain stat-bearing variants — `cond.stats` as-is.
       return toNumberBag(condition.stats);
-    case "staticLevel":
+    case "static-level":
       // Level-indexed stat tables; grouped with the plain stat-bearing variants for readability.
       return resolveStaticLevel(condition, ctx);
     case "number": {

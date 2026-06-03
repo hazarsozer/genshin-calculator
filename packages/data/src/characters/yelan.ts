@@ -220,7 +220,7 @@ const features: readonly Feature[] = [
 // Anchors: stacks 1 → buffValues[0]=1; stacks 7 → buffValues[6]=22; stacks 15 → buffValues[14]=50.
 const toggleConditions: readonly Condition[] = [
   {
-    type: "staticLevel",
+    type: "static-level",
     levelSetting: "yelan_adapt_with_ease",
     levelStats: { dmg_all: [1, 4.5, 8, 11.5, 15, 18.5, 22, 25.5, 29, 32.5, 36, 39.5, 43, 46.5, 50] },
     condition: { type: "boolean-value", setting: "yelan_adapt_with_ease", cond: "ge", value: 1 },
@@ -238,7 +238,7 @@ const toggleConditions: readonly Condition[] = [
 // Anchors: count_level 1 → hp_percent[0]=6; count_level 4 → hp_percent[3]=30.
 const a1Conditions: readonly Condition[] = [
   {
-    type: "staticLevel",
+    type: "static-level",
     levelSetting: "party_elements_count_level",
     levelStats: { hp_percent: [6, 12, 18, 30] },
   },
