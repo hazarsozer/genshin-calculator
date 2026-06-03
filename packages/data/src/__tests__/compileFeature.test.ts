@@ -17,7 +17,7 @@
 
 import { describe, it, expect } from "vitest";
 import { compile } from "@genshin/core";
-import type { Feature, FeatureMultiplierEntry } from "@genshin/types";
+import type { DamageContext, Feature, FeatureMultiplierEntry } from "@genshin/types";
 import { buildStats } from "../buildStats.js";
 import { compileFeature, type CompileContext } from "../compileFeature.js";
 import { minimalHuTao, blackcliffPoleStatTable } from "./fixtures/hu-tao.js";
@@ -535,5 +535,89 @@ describe("compileFeature — coefficientFromStat (M1)", () => {
     expect(() => compileFeature(feature, ctx)).toThrow(
       /exactly one of ratio \| divisor/
     );
+  });
+});
+
+// ===========================================================================
+// Ocean-Hued Clam foam (M4b) — her FeatureDamageClam: a special damage hit with
+// NO crit, NO dmg-bonus, DEF IGNORED, and a per-multiplier 30000 cap. Resistance
+// STILL applies (Clam.js overrides only getStatsDmgBonus/getStatsCritRate/
+// getStatsCritDamage → [] and getDefenceLevelMultiplier → 1). The hit scales the
+// BARE bag key `accumulated_healing` (a non-`*` scaling read verbatim by cStat).
+// ===========================================================================
+
+describe("compileFeature — Clam foam suppression flags (no-crit / no-dmg-bonus / DEF-ignore / cap)", () => {
+  // A synthetic eval bag with a chosen accumulated_healing + non-trivial crit /
+  // dmg-bonus / def-reduce so the suppression flags are PROVABLY exercised: if any
+  // of them were ignored, the value would move off the suppressed result.
+  function bagWith(accumulatedHealing: number): DamageContext {
+    const stats = {
+      accumulated_healing: accumulatedHealing,
+      // Non-zero crit (would inflate crit/avg if not suppressed):
+      crit_rate_total: 0.5,
+      crit_dmg_total: 1.0,
+      // Non-zero dmg bonuses (would inflate normal if not suppressed):
+      dmg_all: 0.466,
+      dmg_phys: 0.4,
+      // Physical resistance 10% → res multiplier 0.9 (STILL applies).
+      enemy_res_physical: 0.1,
+      // Non-zero DEF-reduce (would change the def multiplier if not ignored):
+      enemy_def_reduce: 0.2,
+    } as unknown as DamageContext["stats"];
+    return { stats, enemy: { level: 90, resistance: {} }, characterLevel: 90 };
+  }
+
+  const FOAM_CTX: CompileContext = {
+    charElement: "hydro", // ignored — the foam carries an explicit physical element
+    talentLevels: { attack: 10, elemental: 10, burst: 10 },
+    settings: {},
+  };
+
+  /** The foam feature: physical, scales 0.9 × accumulated_healing, capped 30000, all suppressions on. */
+  function foamFeature(): Feature {
+    return {
+      name: "sea_dyed_foam_dmg",
+      element: "physical",
+      noCrit: true,
+      noDamageBonus: true,
+      ignoreEnemyDefence: true,
+      multipliers: [
+        {
+          scaling: "accumulated_healing",
+          leveling: "",
+          values: constTable(90), // 90% → 0.9 fraction
+          capValue: 30000,
+        },
+      ],
+    };
+  }
+
+  it("foam below the cap: normal == crit == avg == 0.9 × ah × res (no crit / no dmg-bonus / DEF-ignored)", () => {
+    const ah = 20000;
+    const result = compile(compileFeature(foamFeature(), FOAM_CTX))(bagWith(ah));
+    // 0.9 × 20000 = 18000 (< cap); × res 0.9 = 16200; def ignored (×1); no dmg-bonus; no crit.
+    expect(result.normal).toBeCloseTo(16200, 6);
+    expect(result.crit).toBeCloseTo(16200, 6); // no crit → crit == normal
+    expect(result.avg).toBeCloseTo(16200, 6); // no crit → avg == normal
+  });
+
+  it("the 30000 cap binds on the BASE term (pre-res), exactly her CValueCap", () => {
+    // ah huge → 0.9 × ah ≫ 30000, capped to 30000 BEFORE res → 30000 × 0.9 = 27000.
+    const result = compile(compileFeature(foamFeature(), FOAM_CTX))(bagWith(1_000_000));
+    expect(result.normal).toBeCloseTo(27000, 6);
+    expect(result.crit).toBeCloseTo(27000, 6);
+  });
+
+  it("noCrit suppression is real: WITHOUT it, the same bag would crit (control)", () => {
+    const ah = 20000;
+    const noSuppress: Feature = {
+      name: "control",
+      element: "physical",
+      // no suppression flags
+      multipliers: [{ scaling: "accumulated_healing", leveling: "", values: constTable(90) }],
+    };
+    const result = compile(compileFeature(noSuppress, FOAM_CTX))(bagWith(ah));
+    // crit_rate 0.5, crit_dmg +100% → crit = normal × 2, avg between. Proves the bag CAN crit.
+    expect(result.crit).toBeGreaterThan(result.normal * 1.9);
   });
 });

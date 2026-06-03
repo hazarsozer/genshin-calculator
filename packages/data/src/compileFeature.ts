@@ -330,7 +330,13 @@ function baseDamageTerm(
     factors.push(coefficientBlock(entry.coefficientFromStat));
   }
   factors.push(cStat(scalingKey));
-  return cMulti(factors);
+  const term = cMulti(factors);
+  // Per-multiplier absolute cap (her FeatureMultiplier.capValue → CValueCap, a
+  // Math.min wrapping the multiplier tree): `min(levelMult × scalingStat, capValue)`,
+  // applied to THIS term before it enters the base-damage sum and before the
+  // dmg-bonus/res/def factors. The sole v5.8 user is Ocean-Hued Clam's foam
+  // (`min(0.9 × accumulated_healing, 30000)`). Absent → no cap (every other multiplier).
+  return entry.capValue !== undefined ? cMin([term, cConst(entry.capValue)]) : term;
 }
 
 /**
@@ -577,12 +583,29 @@ export function compileFeature(
     damageType !== "" && damageType !== "none"
       ? ["enemy_def_ignore", `enemy_def_ignore_${damageType}`]
       : ["enemy_def_ignore"];
+  // Special-damage suppressions (her FeatureDamageClam): NO dmg-bonus → an empty
+  // cMultiplierBonus (degenerates to 1); IGNORE enemy DEF → a constant-1 defence factor
+  // (her getDefenceLevelMultiplier → CConst(1)). Resistance is NEVER suppressed. Both
+  // flags absent for every normal hit → identical block as before (base/cons/armory safe).
+  const bonusBlock = feature.noDamageBonus
+    ? cMultiplierBonus([])
+    : cMultiplierBonus(dmgBonusKeys(feature, element, damageType).map((k) => cStat(k)));
+  const defenceBlock = feature.ignoreEnemyDefence
+    ? cConst(1)
+    : cMultiplierDefence("enemy_def_reduce", defIgnoreKeys);
   const items: Block[] = [
     cBaseDamage(baseTerms),
-    cMultiplierBonus(dmgBonusKeys(feature, element, damageType).map((k) => cStat(k))),
+    bonusBlock,
     cMultiplierResistance(element),
-    cMultiplierDefence("enemy_def_reduce", defIgnoreKeys),
+    defenceBlock,
   ];
+
+  // NO-CRIT special damage (her FeatureDamageClam getStatsCritRate/CritDamage → []):
+  // omit the crit blocks entirely → cDamage uses chance 0 → crit == normal == avg.
+  // Only the foam sets this; every normal hit falls through to the crit path below.
+  if (feature.noCrit) {
+    return cDamage({ items });
+  }
 
   // Crit: the aggregated totals (buildStats folds crit_rate/_dmg in), PLUS the
   // generic per-TYPE crit keys (`crit_*_<damageType>`, folded here exactly as
