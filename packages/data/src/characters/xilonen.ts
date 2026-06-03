@@ -22,7 +22,13 @@
  *     nightsoul + damage-mode boolean toggles → OFF. (Xilonen.js:451-464)
  *   - A4 (`xilonen_portable_armored_sheath`): +20% def_percent is a user boolean
  *     toggle (serializeId 3), OFF at baseline. (Xilonen.js:465-477)
- *   - Skill geo-RES shred: a ConditionLevels gated by sampler booleans → OFF.
+ *
+ * Skill geo-RES shred: a ConditionLevels keyed on char_skill_elemental, gated by
+ * xilonen_sampler_geo AND xilonen_active_sampler_geo (both must be truthy).
+ * Raw Xilonen.js:478-491. Talent table s2.p2 × -1:
+ *   [−9,−12,−15,−18,−21,−24,−27,−30,−33,−36,−39,−42,−45,−48,−51]
+ * At skill level 10 → enemy_res_geo:-36. Gate keeps it inert at C0 solo (samplers OFF).
+ * Transcribed from raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js:5397.
  *
  * Skipped (display-only, empty damageType → not asserted by the golden harness):
  *   - burst.heal_dot, the C6 party heal (FeatureHeal, out of the TS feature model).
@@ -164,6 +170,34 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Skill geo-RES shred condition
+// ---------------------------------------------------------------------------
+// Raw Xilonen.js:478-491 — ConditionLevels(levelSetting:'char_skill_elemental',
+//   stats:[Talents.getMulti({name:'enemy_res_geo', from:'skill.xilonen_res_decrease', multi:-1})],
+//   subConditions:[ConditionBoolean('xilonen_sampler_geo'), ConditionBoolean('xilonen_active_sampler_geo')]).
+// Talent table s2.p2 (CharTalentTables.js:5397) multiplied by -1:
+//   [−9,−12,−15,−18,−21,−24,−27,−30,−33,−36,−39,−42,−45,−48,−51]
+// Gate (AND of both sampler booleans) is inert at solo C0 baseline (samplers OFF).
+// At skill level 10 → char_skill_elemental=10 → level=10 → enemy_res_geo[9]=-36.
+// Anchor: xilonen_resshred fixture: samplers ON + skill 10 → enemy_res_geo:-36 ✓.
+const skillResShredConditions: readonly Condition[] = [
+  {
+    type: "staticLevel",
+    levelSetting: "char_skill_elemental",
+    levelStats: {
+      enemy_res_geo: [-9, -12, -15, -18, -21, -24, -27, -30, -33, -36, -39, -42, -45, -48, -51],
+    },
+    condition: {
+      type: "and",
+      items: [
+        { type: "boolean", name: "xilonen_sampler_geo" },
+        { type: "boolean", name: "xilonen_active_sampler_geo" },
+      ],
+    },
+  },
+];
+
+// ---------------------------------------------------------------------------
 // Constellations (P2.C Wave-1)
 // ---------------------------------------------------------------------------
 // C1: ConditionStatic, no real stats → SKIP.
@@ -214,5 +248,5 @@ export const xilonen: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: constellationConditions,
+  conditions: [...skillResShredConditions, ...constellationConditions],
 };
