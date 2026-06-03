@@ -20,7 +20,7 @@
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Compile/Types/Damage.js
  *
  * Formula provenance:
- *   wiki/concepts/damage-formula.md, base-damage-and-scaling.md,
+ *   wiki/game/mechanics/damage-formula.md, base-damage-and-scaling.md,
  *   def-multiplier.md, res-multiplier.md, crit.md
  */
 
@@ -210,7 +210,7 @@ export function cFloor(child: Block): Block {
  * Base damage = Σ(talentMultiplier × scalingStat) + Σ flat. Ports CBaseDamage
  * (a CSum). The caller composes the children: typically one or more
  * `cMulti([talent%, scalingStat])` terms plus flat `cStat(...)` additions
- * (Shenhe Quill, Yun Jin, Sara). See wiki/concepts/base-damage-and-scaling.md.
+ * (Shenhe Quill, Yun Jin, Sara). See wiki/game/mechanics/base-damage-and-scaling.md.
  */
 export function cBaseDamage(children: readonly Block[]): Block {
   const sum = cSum(children);
@@ -246,7 +246,7 @@ function makeSumPlusOne(
  * DMG% bonus factor: additive among themselves, then `(1 + Σ)`. Ports
  * CMultiplierBonus (a CSumPlusOne). Children are the individual DMG% terms
  * (`dmg_all`, `dmg_<element>`, `dmg_<type>`), each a fraction at execution time.
- * Empty → 1. See wiki/concepts/damage-formula.md.
+ * Empty → 1. See wiki/game/mechanics/damage-formula.md.
  */
 export function cMultiplierBonus(children: readonly Block[]): Block {
   return makeSumPlusOne("multiplier_bonus", children);
@@ -274,7 +274,7 @@ const DEF_IGNORE_KEYS: readonly string[] = ["enemy_def_ignore"];
  *
  * Ports CMultiplierDefence (getDefenceLevelMultiplier, Damage.js:160-189).
  * Depends on attacker/enemy LEVELS (from DamageContext), not attacker stats,
- * plus the aggregated shred/ignore fractions. See wiki/concepts/def-multiplier.md.
+ * plus the aggregated shred/ignore fractions. See wiki/game/mechanics/def-multiplier.md.
  *
  * `ignoreKeys` is a LIST that is summed inside `(1 − Σ)` — faithful to her
  * `getStatsDefIgnore` (Damage.js:128-137), which sums a base `enemy_def_ignore`
@@ -309,7 +309,7 @@ export function cMultiplierDefence(
  *
  * Ports CResistanceValue.compile() exactly (the ternary at Block.js:534-536).
  * `r` is read from the aggregated `enemy_res_<element>` stat (already a fraction,
- * shred folded in — shred is negative). See wiki/concepts/res-multiplier.md.
+ * shred folded in — shred is negative). See wiki/game/mechanics/res-multiplier.md.
  */
 export function cMultiplierResistance(element: string): Block {
   const key = `enemy_res_${element}`;
@@ -327,7 +327,7 @@ export function cMultiplierResistance(element: string): Block {
 /**
  * Crit rate, clamped to [0, 1]. Ports CCritRate (a CSum wrapped in
  * `Math.max(0, Math.min(1, …))`). Overcapped crit rate is wasted — this clamp is
- * a load-bearing invariant. See wiki/concepts/crit.md.
+ * a load-bearing invariant. See wiki/game/mechanics/crit.md.
  */
 export function cCritRate(children: readonly Block[]): Block {
   const sum = cSum(children);
@@ -405,7 +405,7 @@ export function cRoyalCritRate(base: Block): Block {
 
 /**
  * Crit DMG multiplier: `(1 + Σ critDMG)`. Ports CCritDmg (a CSumPlusOne).
- * critDMG is a fraction at execution time. See wiki/concepts/crit.md.
+ * critDMG is a fraction at execution time. See wiki/game/mechanics/crit.md.
  */
 export function cCritDmg(children: readonly Block[]): Block {
   return makeSumPlusOne("crit_dmg", children);

@@ -5,8 +5,8 @@
  * They are purely declarative data at the DB layer; the engine resolves them.
  *
  * Sources:
- *   wiki/concepts/buff-condition-system.md
- *   wiki/architecture/db-object-model.md
+ *   wiki/game/mechanics/buff-condition-system.md
+ *   wiki/tools/calculator/db-object-model.md
  *   raw/genshin_calc_pub/src/js/classes/Condition/Boolean.js
  *   raw/genshin_calc_pub/src/js/classes/Condition/Boolean/Refine.js
  *   raw/genshin_calc_pub/src/js/classes/Condition/Static.js

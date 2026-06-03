@@ -5,9 +5,9 @@
  * the wiki concept pages and her raw source. No oracle calls — those land in P1.8.
  *
  * Sources:
- *   wiki/concepts/amplifying-reactions.md
- *   wiki/concepts/transformative-reactions.md
- *   wiki/concepts/elemental-mastery.md
+ *   wiki/game/mechanics/amplifying-reactions.md
+ *   wiki/game/mechanics/transformative-reactions.md
+ *   wiki/game/mechanics/elemental-mastery.md
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Reaction/Amplifying.js
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Reaction/Transformative.js
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Reaction/LunarCharged.js

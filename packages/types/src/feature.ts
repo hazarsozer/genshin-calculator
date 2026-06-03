@@ -8,8 +8,8 @@
  * (engine core) will implement the compilation logic.
  *
  * Sources:
- *   wiki/architecture/feature2-engine.md
- *   wiki/architecture/db-object-model.md
+ *   wiki/tools/calculator/feature2-engine.md
+ *   wiki/tools/calculator/db-object-model.md
  *   raw/genshin_calc_pub/src/js/db/Char/Hutao.js (usage examples)
  */
 

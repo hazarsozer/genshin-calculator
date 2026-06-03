@@ -8,7 +8,7 @@
  *
  * Aspirine's keys are the internal vocabulary used in her calculator's source.
  * The mapping below is the single source of truth — derived from:
- *   wiki/concepts/stat-keys-and-good-format.md
+ *   wiki/game/mechanics/stat-keys-and-good-format.md
  */
 
 /**
@@ -70,7 +70,7 @@ export type AspirineStatKey =
  * Engine-internal stat keys that have no GOOD equivalent.
  * These are calc-internal; they never appear in build imports/exports.
  *
- * Source: wiki/concepts/stat-keys-and-good-format.md §"Keys with no GOOD equivalent"
+ * Source: wiki/game/mechanics/stat-keys-and-good-format.md §"Keys with no GOOD equivalent"
  */
 export type EngineStatKey =
   // Generic / typed DMG bonus
@@ -108,7 +108,7 @@ export type EngineStatKey =
 
 /**
  * Ordered list of all core GOOD stat keys that have an Aspirine equivalent.
- * Order mirrors the mapping table in wiki/concepts/stat-keys-and-good-format.md.
+ * Order mirrors the mapping table in wiki/game/mechanics/stat-keys-and-good-format.md.
  */
 export const GOOD_STAT_KEYS: readonly GoodStatKey[] = [
   "hp",

@@ -5,7 +5,7 @@
  * damage instance. The multiplier slots into `cDamage`'s `items` array as an
  * extra multiplicative factor alongside the base, bonus, def, and res blocks.
  *
- * Formula (wiki/concepts/amplifying-reactions.md):
+ * Formula (wiki/game/mechanics/amplifying-reactions.md):
  *   amplifyingMultiplier = baseMultiplier × (1 + emBonus + reactionDMGBonus)
  *   emBonus              = 2.78 × EM / (EM + 1400)
  *
@@ -17,7 +17,7 @@
  *   MeltReverse      (Cryo onto Pyro)  → 1.5
  *
  * EM is read from the stat key `mastery` (Aspirine's internal key for Elemental
- * Mastery; maps to GOOD `eleMas` — see wiki/concepts/stat-keys-and-good-format.md).
+ * Mastery; maps to GOOD `eleMas` — see wiki/game/mechanics/stat-keys-and-good-format.md).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Reaction/Amplifying.js:20-31

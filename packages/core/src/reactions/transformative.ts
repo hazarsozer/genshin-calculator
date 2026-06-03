@@ -13,7 +13,7 @@
  * levelMultiplier is a per-character-level table from her generated constants
  * (see raw/genshin_calc_pub/src/js/db/generated/ElementScale.js:4-14).
  *
- * Per-reaction multipliers (wiki/concepts/transformative-reactions.md):
+ * Per-reaction multipliers (wiki/game/mechanics/transformative-reactions.md):
  *   Overloaded 2.0 (Pyro), Bloom 2.0 (Dendro), Hyperbloom 3.0 (Dendro),
  *   Burgeon 3.0 (Dendro), Shatter 1.5 (Physical), Electro-Charged 1.2 (Electro),
  *   Swirl 0.6 (swirled element), Superconduct 0.5 (Cryo), Burning 0.25 (Pyro).
