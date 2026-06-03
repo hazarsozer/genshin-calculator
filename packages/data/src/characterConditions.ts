@@ -15,7 +15,7 @@
  *   gilded-dreams.ts). Stats are RAW percents — identical to her internal bag convention.
  */
 
-import type { CharMultiplier, Condition } from "@genshin/types";
+import type { CharMultiplier, CharPostEffect, Condition, TalentTable } from "@genshin/types";
 
 /**
  * Imaginarium Theatre challenge buff: +20% HP / DEF / ATK while active.
@@ -836,4 +836,182 @@ const setOtherSongOfDaysPast4Multiplier: CharMultiplier = {
  */
 export const CHARACTER_MULTIPLIERS: readonly CharMultiplier[] = [
   setOtherSongOfDaysPast4Multiplier,
+];
+
+// ===========================================================================
+// Global character POST-EFFECTS — the team-buff analogue of CHARACTER_CONDITIONS
+// for off-field weapon buffs whose value is a CONVERSION of a TEAMMATE's stat
+// (EM / HP / DEF) into a buff on the active char. In her engine these are the
+// `postEffects` array of the `weapons` DbObjectBuff (db/Buffs/Weapons.js:323-391)
+// PLUS the `static` buff's PostEffectKhajNisut (db/Buffs/Static.js:33). Her
+// CalcSet.getPostEffects() concats EVERY equipped object's post-effects — including
+// these two always-present buffs — so they run in the SAME applyPostEffects pass as
+// char / weapon / set post-effects.
+//
+// Each reads a TEAMMATE-STAT NUMBER from the stat bag (`fromStat`) and writes
+// `ratio × that number` to the active char. The number reaches the bag as a user-
+// supplied input (her ConditionPartyWeapon's ConditionNumber → `stats.add(statName,
+// value)`; in this calculator, the caller supplies it in the build's `statBlock`).
+// Gated on the off-field `weapon_other.*` toggle (published via PartyInput.weaponOther
+// or supplied in settings), which is ALSO the `levelSetting` (refine index 1-5) that
+// picks the ratio / cap table row. Absent toggle → the gate condition fails → the
+// post-effect contributes {} → the channel is INERT for every non-party build (the
+// base golden suite + all existing fixtures are byte-unchanged).
+//
+// Threaded into buildStats' applyPostEffects call (alongside char / weapon / set
+// post-effects). Source-fidelity notes per effect below.
+//
+// Sources: raw/.../db/Buffs/Weapons.js:182-265 (gate + statName), :323-391 (PostEffectStats),
+//          db/Buffs/Static.js:32-36 + classes/PostEffect/KhajNisut.js (the HP→mastery party fold).
+// ===========================================================================
+
+/** Refine-indexed ratio/cap table — `getValue(refine)` returns `values[refine-1]`. */
+function refineTable(values: readonly number[]): TalentTable {
+  return { getValue: (refine: number): number => values[refine - 1] ?? 0 };
+}
+
+/**
+ * Makhaira Aquamarine (`desert_pavilion`) — a teammate's EM → +ATK on the active char.
+ *
+ * Buffs/Weapons.js:348-354 (+`_2`/`_3` slots :356-370): `from: 'desert_pavilion_mastery'`,
+ * `percent: StatTable('atk', [24,30,36,42,48] × 0.003)` keyed off `weapon_other.desert_pavilion`.
+ * So `atk += teammate_EM × (0.072..0.144)`. `atk` is a REAL_TOTAL stat (not percent) → the bonus
+ * is a flat ATK value, written raw (no /100), exactly as the bag carries flat ATK. Three party
+ * slots share one ratio table; each is an independent gate/input (`_2`/`_3` for a 2nd/3rd wielder).
+ */
+function desertPavilionEffect(slot: "" | "_2" | "_3"): CharPostEffect {
+  const gate = `weapon_other.desert_pavilion${slot}`;
+  return {
+    priority: 1,
+    fromStat: `desert_pavilion_mastery${slot}`,
+    toStat: "atk",
+    ratioFromTalent: {
+      table: refineTable([24 * 0.003, 30 * 0.003, 36 * 0.003, 42 * 0.003, 48 * 0.003]),
+      levelSetting: gate,
+      multi: 1,
+    },
+    conditions: [{ type: "boolean", name: gate }],
+  };
+}
+
+/**
+ * Xiphos' Moonlight (`whisper_of_the_jinn`) — a teammate's EM → +Energy Recharge on the active char.
+ *
+ * Buffs/Weapons.js:324-346 (3 slots): `from: 'whisper_of_the_jinn_mastery'`,
+ * `percent: StatTable('recharge', [3.6,4.5,5.4,6.3,7.2] × 0.003)` keyed off `weapon_other.whisper_of_the_jinn`.
+ * So `recharge += teammate_EM × (0.0108..0.0216)`.
+ *
+ * NO-DELTA (oracle-proven): recharge drives a DAMAGE term only for the few characters whose
+ * features convert ER% → damage (Raiden A4, Mona A4, Eula, Engulfing Lightning). For every other
+ * character the recharge bonus moves no damage triple. The Group B oracle proves this on Diluc
+ * (`weapon-other-whisper-of-the-jinn.json` is byte-identical to base Diluc on every hit). The
+ * effect is still modelled faithfully (so an ER-scaling rep WOULD see it), but it lands no delta
+ * here. CAVEAT: `recharge` is an isPercent stat in her engine (her post-effect pre-divides /100),
+ * whereas buildStats emits `recharge_total` as a raw number; this divergence is immaterial because
+ * recharge feeds no damage path for any v5.8 rep that would receive this off-field buff, but it
+ * means the emitted `recharge_total` stat would be 100× hers IF an ER-scaling consumer were paired
+ * with this buff — out of scope (no such pairing exists in v5.8). Recorded for the ④ follow-up.
+ */
+function whisperOfTheJinnEffect(slot: "" | "_2" | "_3"): CharPostEffect {
+  const gate = `weapon_other.whisper_of_the_jinn${slot}`;
+  return {
+    priority: 1,
+    fromStat: `whisper_of_the_jinn_mastery${slot}`,
+    toStat: "recharge",
+    ratioFromTalent: {
+      table: refineTable([3.6 * 0.003, 4.5 * 0.003, 5.4 * 0.003, 6.3 * 0.003, 7.2 * 0.003]),
+      levelSetting: gate,
+      multi: 1,
+    },
+    conditions: [{ type: "boolean", name: gate }],
+  };
+}
+
+/**
+ * Peak Patrol Song (off-field, `weapon_peak_patrol_song`) — a teammate's DEF → +all-7-elemental
+ * DMG% on the active char, each capped.
+ *
+ * Buffs/Weapons.js:372-390: `from: 'peak_patrol_song_def'`, `percent: [StatTable('dmg_<el>',
+ * [0.008,0.01,0.012,0.014,0.016])]` for all 7 elements, `statCap: StatTable('', [25.6,32,38.4,44.8,
+ * 51.2])`, keyed off `weapon_other.weapon_peak_patrol_song`, gated AND `NOT(weapon_peak_patrol_song_2)`.
+ * So per element: `dmg_<el> += min(teammate_DEF × (0.008..0.016), 25.6..51.2)`. `dmg_<el>` is an
+ * isPercent stat → her post-effect pre-divides the ratio AND the cap by 100, writing a fraction;
+ * buildStats writes the RAW PERCENT and applies the /100 at emit (the ring-of-ceiba convention), so
+ * the TS ratio/cap are the RAW table values. Modelled as 7 separate post-effects (one per element),
+ * each with its own `capValueFromTalent` (the cap is applied per converted element, her getTree loop).
+ *
+ * The `NOT(weapon_peak_patrol_song_2)` sub-condition prevents double-count with the SELF-wielder's
+ * own Peak Patrol Song passive (peak-patrol-song.ts, gated `weapon_peak_patrol_song_2`): when the
+ * active char wields Peak Patrol Song its own DEF→dmg_own post-effect fires, so the OFF-FIELD team
+ * version must NOT also fire. Single slot (no `_2`/`_3`).
+ */
+const PEAK_PATROL_ELEMENTS = [
+  "anemo",
+  "electro",
+  "pyro",
+  "cryo",
+  "hydro",
+  "geo",
+  "dendro",
+] as const;
+const peakPatrolSongEffects: readonly CharPostEffect[] = PEAK_PATROL_ELEMENTS.map((el) => ({
+  priority: 1,
+  fromStat: "peak_patrol_song_def",
+  toStat: `dmg_${el}`,
+  ratioFromTalent: {
+    table: refineTable([0.008, 0.01, 0.012, 0.014, 0.016]),
+    levelSetting: "weapon_other.weapon_peak_patrol_song",
+    multi: 1,
+  },
+  capValueFromTalent: {
+    table: refineTable([25.6, 32, 38.4, 44.8, 51.2]),
+    levelSetting: "weapon_other.weapon_peak_patrol_song",
+  },
+  conditions: [
+    { type: "boolean", name: "weapon_other.weapon_peak_patrol_song" },
+    { type: "not", items: [{ type: "boolean", name: "weapon_peak_patrol_song_2" }] },
+  ],
+}));
+
+/**
+ * Key of Khaj-Nisut (off-field, `weapon_key_of_khaj_nisut`) — a teammate's HP → +EM on the active char.
+ *
+ * db/Buffs/Static.js:33 + classes/PostEffect/KhajNisut.js: the PARTY path returns the teammate HP
+ * (`settings['sunken_song_of_the_sands_hp']`) as the base and `percent: StatTable('mastery',
+ * [0.002,0.0025,0.003,0.0035,0.004])` keyed off `weapon_other.weapon_key_of_khaj_nisut`. So
+ * `mastery += teammate_HP × (0.002..0.004)`. `mastery` is NOT an isPercent stat → written raw.
+ *
+ * Her KhajNisut reads the teammate HP from SETTINGS; this TS port reads it from the BAG (`fromStat:
+ * 'sunken_song_of_the_sands_hp'`) so it shares the uniform bag-input path with the other three
+ * (the caller supplies the HP in the build's statBlock). Gated on the off-field toggle (the same
+ * gate is the `levelSetting`). The self-wielder's own KhajNisut HP→EM fold is the weapon file's
+ * PostEffectStatsHP (key-of-khaj-nisut weapon, gated `weapon_key_of_khaj_nisut`); the party gate
+ * is distinct (`weapon_other.weapon_key_of_khaj_nisut`), so no double-count. Single slot.
+ */
+const keyOfKhajNisutEffect: CharPostEffect = {
+  priority: 1,
+  fromStat: "sunken_song_of_the_sands_hp",
+  toStat: "mastery",
+  ratioFromTalent: {
+    table: refineTable([0.002, 0.0025, 0.003, 0.0035, 0.004]),
+    levelSetting: "weapon_other.weapon_key_of_khaj_nisut",
+    multi: 1,
+  },
+  conditions: [{ type: "boolean", name: "weapon_other.weapon_key_of_khaj_nisut" }],
+};
+
+/**
+ * All global character POST-EFFECTS (off-field weapon teammate-stat conversions). Threaded into
+ * buildStats' applyPostEffects call. Inert for every build that sets no matching `weapon_other.*`
+ * toggle (the gate condition fails → {} contribution → base golden suite byte-unchanged).
+ */
+export const CHARACTER_POST_EFFECTS: readonly CharPostEffect[] = [
+  desertPavilionEffect(""),
+  desertPavilionEffect("_2"),
+  desertPavilionEffect("_3"),
+  whisperOfTheJinnEffect(""),
+  whisperOfTheJinnEffect("_2"),
+  whisperOfTheJinnEffect("_3"),
+  ...peakPatrolSongEffects,
+  keyOfKhajNisutEffect,
 ];

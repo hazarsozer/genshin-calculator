@@ -45,7 +45,7 @@ import type {
   StatTableEntry,
 } from "@genshin/types";
 import { getArtifactSet } from "./artifacts/sets/index.js";
-import { CHARACTER_CONDITIONS, CHARACTER_MULTIPLIERS } from "./characterConditions.js";
+import { CHARACTER_CONDITIONS, CHARACTER_MULTIPLIERS, CHARACTER_POST_EFFECTS } from "./characterConditions.js";
 import { buildPartyContext, type PartyInput, type ActiveCharFacts } from "./partyContext.js";
 
 /** The seven elements + physical, in the order the engine keys resistance. */
@@ -641,10 +641,18 @@ export function buildStats(input: BuildInput): BuildResult {
   // (her PostEffect.getLevel adds `_bonus`); refine-scaled weapon folds read
   // `weapon_refine` from the merged settings. No base-build weapon carries a
   // post-effect → the weapon channel is a no-op for the base golden suite.
+  // Global character post-effects (DB.Buffs `weapons`/`static` post-effects in her engine) —
+  // off-field weapon teammate-stat conversions (desert_pavilion EM→atk, key_of_khaj_nisut HP→mastery,
+  // whisper_of_the_jinn EM→recharge, peak_patrol_song DEF→dmg_<el>). Appended onto EVERY character's
+  // post-effect list exactly like CHARACTER_CONDITIONS, since her CalcSet.getPostEffects() concats the
+  // always-present `weapons`/`static` buffs' post-effects. Each is gated on a `weapon_other.*` toggle
+  // and reads its teammate-stat INPUT from the bag; inert (gate fails → {}) for every build that sets
+  // no such toggle, so the base golden suite + all existing fixtures are byte-unchanged.
   const effects = [
     ...(input.char.postEffects ?? []),
     ...(input.weaponPostEffects ?? []),
     ...sets.postEffects,
+    ...CHARACTER_POST_EFFECTS,
   ].map(toPostEffect);
   applyPostEffects(raw, effects, merged);
 
