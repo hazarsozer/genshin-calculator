@@ -110,6 +110,7 @@ const FOLD_FAMILIES = [
   "yelan_adapt",
   "yelan_a1",
   "xilonen_resshred",
+  "xilonen_c2_resshred",
   "thundering_lunarcharged",
   "clam_foam",
   "weapon_other",
