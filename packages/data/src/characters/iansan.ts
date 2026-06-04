@@ -26,7 +26,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Iansan s1/s2/s3)
  */
 
-import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Iansan as IansanStatTable } from "../generated/charTables.js";
 import { Iansan as IansanTalents } from "../generated/charTalentTables.js";
 
@@ -167,49 +167,4 @@ export const iansan: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
-  // partyData — teammate kit buffs (P3.5.2 Bucket B).
-  // Source: raw/genshin_calc_pub/src/js/db/Char/Iansan.js:385-471
-  // Scope: oracle-gated core only — the Kinetic Energy Surge ATK battery (stacks=1 baseline).
-  // Deferred to the P3.5.2 variant-rep pass:
-  //   stacksSetting (party_iansan_points 1-42 as a stacks multiplier on the ratio) — the
-  //     full stacksSetting × percentBonus mechanic needs a ratioPerStack multi factor not
-  //     yet in the type; modelled here at stacks=1 via ratioFromTalent directly.
-  //   percentBonus +0.06 at party_iansan_points >= 42 (bonusCondition threshold).
-  //   C2 "Laziness is the Enemy": +30% ATK (party.iansan_laziness_is_the_enemy).
-  //   C6 "Teachings of the Collective of Plenty": +25% dmg_all (party.iansan_teachings...).
-  partyData: {
-    loadStats: {
-      stats: ["atk_total"],
-      settings: ["char_skill_burst"],
-    },
-    conditions: [
-      // ConditionNumber: lifts the teammate's atk_total into the recipient's stat bag.
-      { type: "number", name: "iansan_atk_total", max: 10000 },
-      // ConditionNumberTalent: mirrors 'iansan_char_skill_burst' (the burst level setting).
-      { type: "number", name: "iansan_char_skill_burst", max: 15 },
-      // ConditionNumber: lifts party Nightsoul points (gate + stacks; stacks=1 baseline here).
-      { type: "number", name: "party_iansan_points", max: 42 },
-    ],
-    postEffects: [
-      // Kinetic Energy Surge ATK battery: atk_total × burst iansan_conversion_low ratio,
-      // talent-scaled cap (burst.iansan_bonus_max), gated on party_iansan_points > 0.
-      // s3.p3 = [0.5] (% per stack); multi:0.01 folds % → fraction. Stacks=1 baseline.
-      // s3.p4 at L10 = 690 (ATK cap in flat units).
-      // Source: raw/genshin_calc_pub/src/js/db/Char/Iansan.js:451-469
-      {
-        fromStat: "iansan_atk_total",
-        toStat: "atk",
-        ratioFromTalent: {
-          table: IansanTalents.s3.p3,
-          levelSetting: "iansan_char_skill_burst",
-          multi: 0.01,
-        },
-        capValueFromTalent: {
-          table: IansanTalents.s3.p4,
-          levelSetting: "iansan_char_skill_burst",
-        },
-        conditions: [{ type: "boolean", name: "party_iansan_points" }],
-      } satisfies CharPostEffect,
-    ],
-  },
 };
