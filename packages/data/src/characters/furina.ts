@@ -279,4 +279,52 @@ export const furina: DbObjectChar = {
   multipliers: [],
   postEffects: a4PostEffects,
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket B).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Furina.js:589-632
+  // Scope: dmg_all output only from "Let the People Rejoice" fanfare stacks.
+  // Furina's partyData postEffect has:
+  //   from:'party_furina_fanfare_stacks', maxBase:400, levelSetting:'furina_char_skill_burst',
+  //   maxLevelSetting:10, percent:[getAlias('burst.furina_fanfare_dmg_ratio','dmg_all'), ...].
+  // maxLevelSetting:10 means the ratio is PINNED at talent level 10 (same pattern as
+  //   Bennett). Table s3.p5 at level 10 (index 9) = 0.25; isPercent('dmg_all')=true, so
+  //   raw divides by 100 → 0.0025 per stack in the raw fraction bag. In our engine dmg_all
+  //   is stored as raw percent (further /100 by buildStats emit), so ratio = 0.25 per stack.
+  //   400 stacks × 0.25 = 100 raw percent → /100 = 1.0 = 100% dmg_all. ✓
+  // Stacks gate: raw `condition: new ConditionBoolean({name:'party_furina_fanfare_stacks'})`
+  //   → truthy when stacks > 0.
+  // Defer: healing_recv output (heal-scope, damage-inert in P3.5.2 scope) and
+  //   C3 +3 burst talent levels (moot: the ratio is already clamped at L10 by
+  //   the baked maxLevelSetting, so +3 would still resolve to L10).
+  partyData: {
+    loadStats: {
+      settings: ["char_skill_burst"],
+    },
+    conditions: [
+      // ConditionNumberTalent: lifts the teammate's burst talent level into the bag.
+      // (partySetting: 'char_skill_burst', raw Furina.js:594-599)
+      { type: "number", name: "furina_char_skill_burst", max: 15 },
+      // ConditionNumber: the fanfare stack count (0–400, countable), gating the postEffect.
+      { type: "number", name: "party_furina_fanfare_stacks", max: 400 },
+      // C3 "Rejoice…" +3 burst levels — deferred (moot under L10 cap; variant-rep pass).
+    ],
+    postEffects: [
+      // "Let the People Rejoice" fanfare → dmg_all% per stack, pinned at burst L10.
+      // Raw: from:'party_furina_fanfare_stacks', maxBase:400, levelSetting:'furina_char_skill_burst',
+      //      maxLevelSetting:10, percent:getAlias('burst.furina_fanfare_dmg_ratio','dmg_all').
+      // ratio = FurinaTalents.s3.p5.getValue(10) × 0.01 as raw percent = 0.25 × 0.01 = 0.0025?
+      //   No: our engine stores dmg_all as raw percent (not fraction) in the bag, and buildStats
+      //   emits /100 at output. The raw table value 0.25 IS the per-stack percent (already small);
+      //   isPercent divides by 100 in the raw bag → 0.0025/stack fraction. Our bag is percent
+      //   (not fraction), so ratio = 0.25 → bonus = stacks × 0.25 (percent units) → /100 = fraction.
+      // Fanfare stacks gate: ConditionBoolean on name 'party_furina_fanfare_stacks' — truthy
+      //   (Boolean(400)=true) when stacks are set.
+      // healing_recv output DEFERRED (damage-inert, P3.5.2 scope).
+      {
+        fromStat: "party_furina_fanfare_stacks",
+        toStat: "dmg_all",
+        ratio: FurinaTalents.s3.p5.getValue(10),  // 0.25 at L10
+        conditions: [{ type: "boolean", name: "party_furina_fanfare_stacks" }],
+      },
+    ],
+  },
 };
