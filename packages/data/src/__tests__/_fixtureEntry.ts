@@ -39,19 +39,3 @@ export function isAssertableOutput(entry: FixtureEntry): boolean {
 export function isNonDamageOutput(entry: FixtureEntry): boolean {
   return isAssertableOutput(entry) && !isDamageTripleEntry(entry);
 }
-
-/**
- * Assert one produced value is within `tol` (abs) of an oracle number. Used by the new
- * P3.5.0 burndown suites. Field convention: fixtures store `average`; our engine returns
- * `avg` (DamageResult) — callers pass the matching pair.
- */
-export function assertValueWithin(
-  actual: number,
-  oracle: number,
-  tol: number,
-  label: string,
-): void {
-  if (Math.abs(actual - oracle) > tol) {
-    throw new Error(`${label}: ours=${actual.toFixed(4)}, oracle=${oracle.toFixed(4)} (tol ${tol})`);
-  }
-}
