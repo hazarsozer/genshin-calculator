@@ -40,8 +40,8 @@
     "description": "Teammate partyData KIT BUFFS applied to a recipient active char (the inverse of the buff-clean FILLER set — the teammate INTENTIONALLY leaks its kit via setPartyChars + baked setBuffsSettings). Reps span the mechanism buckets: A=static (Zhongli universal res-shred), B=postEffect (Bennett base-ATK->flat-ATK, Kazuha EM->elemental-dmg%), C=multiplier (Shenhe Icy Quill ATK-scaled cryo bonus). Each fixture = the recipient's damage with the teammate buff ON. RED until P3.5.2 models partyData (engine: Task 2; data: Tasks 3-5). Source: CalcObject/Buffs.js:149-209, DbObject/Char.js:56-97.",
     "id": "party-buffs"
   },
-  "featureTotal": 1700,
-  "itemCount": 60,
+  "featureTotal": 1757,
+  "itemCount": 62,
   "items": [
     {
       "derived": {
@@ -635,6 +635,41 @@
         "level": 90,
         "res": 10
       },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "furina",
+            "settings": {
+              "furina_char_skill_burst": 10,
+              "party_furina_fanfare_stacks": 400
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "furina-dmgall-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
       "featureCount": 25,
       "kind": "party",
       "origin": "inazuma",
@@ -828,6 +863,41 @@
       "weapon": {
         "name": "weapon_name.alley_hunter",
         "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "ineffa",
+            "settings": {
+              "ineffa_atk_total": 2000,
+              "party.ineffa_panoramic_permutation_protocol": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "ineffa-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
       }
     },
     {

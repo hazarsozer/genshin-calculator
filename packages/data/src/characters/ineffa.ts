@@ -357,4 +357,34 @@ export const ineffa: DbObjectChar = {
   // generic `electrocharged` contribution; the Lunar-Charged variants are declared
   // explicitly in `features` above.
   lunarChargedActive: true,
+  // partyData — teammate kit buffs (P3.5.2 Bucket B).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Ineffa.js:456-519
+  // Scope: effect 1 only — A4 "Panoramic Permutation Protocol" ATK→EM (6/100 per ATK unit).
+  // Defer: effect 2 (lunarcharged_multi always-on, raw Ineffa.js:507-511) and
+  //   effect 3 (C1 dmg_reaction_lunarcharged, Ineffa.js:512-518) — both need a
+  //   lunarcharged-capable recipient; addressed in the variant/engine pass.
+  partyData: {
+    loadStats: {
+      stats: ["atk_total"],
+    },
+    conditions: [
+      // ConditionNumber: lifts the teammate's atk_total into the recipient's stat bag.
+      { type: "number", name: "ineffa_atk_total", max: 10000 },
+      // A4 "Panoramic Permutation Protocol" master toggle.
+      { type: "boolean", name: "party.ineffa_panoramic_permutation_protocol" },
+    ],
+    postEffects: [
+      // A4 "Panoramic Permutation Protocol": ATK → +EM (6 per 100 ATK = 0.06 per ATK unit).
+      // Raw Ineffa.js:502-506: PostEffectStats{ from:'ineffa_atk_total',
+      //   percent: new StatTable('mastery', [A4EmScale/100]) }. A4EmScale=6, /100=0.06.
+      // 'mastery' is NOT isPercent → no extra /100 fold → ratio = 0.06 directly.
+      // e.g. 2000 ATK → 2000 × 0.06 = 120 EM.
+      {
+        fromStat: "ineffa_atk_total",
+        toStat: "mastery",
+        ratio: 0.06,  // raw A4EmScale/100 = 6/100 = 0.06
+        conditions: [{ type: "boolean", name: "party.ineffa_panoramic_permutation_protocol" }],
+      },
+    ],
+  },
 };

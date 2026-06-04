@@ -231,4 +231,13 @@ export const candace: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — BLOCKER: composite dmg_<type>_<element> bonus keys (dmg_normal_hydro etc.)
+  // are NOT in buildStats' DMG_BONUS_TYPE_KEYS/ELEMENT_KEYS and not read by compileFeature.
+  // The A4 "Celestial Dome of Sand" effect writes these keys but they have NO effect in
+  // our engine. Requires an engine pass to:
+  //   (a) extend buildStats emit to include composite dmg_<type>_<element> keys (7×5=35 keys),
+  //   (b) extend compileFeature to read them in the damage bonus block.
+  // Infusion (attack_infusion_hydro on sword/claymore/polearm via prayer toggle) is also
+  // deferred to the party-setting infusion engine pass.
+  // The partyData data port is DEFERRED until the engine supports composite bonus keys.
 };
