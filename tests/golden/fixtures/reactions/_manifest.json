@@ -75,35 +75,33 @@
         "constellation": 0,
         "level": 90
       },
-      "charToggles": {
-        "hutao_paramita_papilio": true
-      },
+      "charToggles": {},
       "enemy": {
         "level": 90,
         "res": 10
       },
-      "featureCount": 32,
-      "id": 11,
-      "key": "Hutao",
+      "featureCount": 24,
+      "id": 17,
+      "key": "Mona",
       "setToggles": {},
       "skills": {
         "attack": 10,
         "burst": 10,
         "elemental": 10
       },
-      "slug": "hu_tao",
+      "slug": "mona",
       "statBlock": "sampleStats",
       "weapon": {
         "level": 90,
-        "name": "weapon_name.blackcliff_pole",
+        "name": "weapon_name.solar_pearl",
         "passiveToggles": {},
         "refine": 1
       }
     }
   ],
   "config": {
-    "description": "Amplifying reaction (vaporize/melt) ON — settings.reaction via buffs bag (CalcSet.js:155 setBuffsSettings→setCommonSettings). Hutao: vaporize + paramita toggle (normals pyro-infused → REACTION_MULTI['vaporize_pyro'] ×1.5). Ganyu: melt (cryo features native → REACTION_MULTI['melt_cryo'] ×1.5). Fixtures are AMPLIFIED vs base; Task-5 reactionsBurndown suite burns them down (RED until our engine wires reactions).",
+    "description": "Amplifying reaction (vaporize/melt) ON — settings.reaction via buffs bag (CalcSet.js:155 setBuffsSettings→setCommonSettings), NO extra toggles. Mona: vaporize (hydro features native → REACTION_MULTI['vaporize_hydro'] ×2.0). Ganyu: melt (cryo features native → REACTION_MULTI['melt_cryo'] ×1.5). Each fixture differs from base by the reaction multiplier ONLY. Fixtures are AMPLIFIED vs base; Task-5 reactionsBurndown suite burns them down (RED until our engine wires reactions).",
     "id": "reactions"
   },
-  "featureTotal": 59
+  "featureTotal": 51
 }
