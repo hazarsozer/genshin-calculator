@@ -40,8 +40,8 @@
     "description": "Teammate partyData KIT BUFFS applied to a recipient active char (the inverse of the buff-clean FILLER set — the teammate INTENTIONALLY leaks its kit via setPartyChars + baked setBuffsSettings). Reps span the mechanism buckets: A=static (Zhongli universal res-shred), B=postEffect (Bennett base-ATK->flat-ATK, Kazuha EM->elemental-dmg%), C=multiplier (Shenhe Icy Quill ATK-scaled cryo bonus). Each fixture = the recipient's damage with the teammate buff ON. RED until P3.5.2 models partyData (engine: Task 2; data: Tasks 3-5). Source: CalcObject/Buffs.js:149-209, DbObject/Char.js:56-97.",
     "id": "party-buffs"
   },
-  "featureTotal": 1558,
-  "itemCount": 55,
+  "featureTotal": 1642,
+  "itemCount": 58,
   "items": [
     {
       "derived": {
@@ -1346,6 +1346,77 @@
       "derived": {
         "party_size": 2
       },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "rosaria",
+            "settings": {
+              "party.rosaria_shadow_samaritan": true,
+              "rosaria_crit_rate_total": 80
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "rosaria-critrate-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "kujou_sara",
+            "settings": {
+              "party.sara_tengu_juurai": true,
+              "sara_atk_base": 800,
+              "sara_char_skill_elemental": 10
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "sara-atk-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
       "element": "dendro",
       "enemy": {
         "level": 90,
@@ -1406,6 +1477,41 @@
         "resonance_element_1": "cryo"
       },
       "slug": "shenhe-icyquill-on-ayaka",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "sucrose",
+            "settings": {
+              "party.sucrose_mollis_favonius": true,
+              "sucrose_mastery": 900
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "sucrose-em-on-alhaitham",
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.the_alley_flash",
