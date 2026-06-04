@@ -165,9 +165,12 @@ export const chongyun: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
-  // A4 "Rimechaser Blade" — enemy Cryo RES -10%.
-  // C2 "Atmospheric Revolution" — skill/burst CD -15% (recovery key; display-only, no damage delta).
-  //   Subconditioned on party.chongyun_layered_frost.
+  // A4 "Rimechaser Blade" — enemy Cryo RES -10% (the only damage-affecting partyData stat).
+  // Intentionally omitted (no oracle rep; all damage-inert in the canonical v5.8 build):
+  //   - C2 "Atmospheric Revolution": recovery/text_percent_cd (display-only).
+  //   - Frost Field: atk_speed_normal (display-only).
+  // Out of current scope — teammate cryo INFUSION via condition `.settings` (tracked follow-up,
+  //   see spec §6): allowed_infusion_cryo (weapon-type gated) + attack_infusion_cryo (layered_frost).
   // Source: raw/genshin_calc_pub/src/js/db/Char/Chongyun.js (partyData conditions)
   partyData: {
     conditions: [
