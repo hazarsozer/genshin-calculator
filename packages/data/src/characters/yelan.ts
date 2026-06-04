@@ -280,4 +280,41 @@ export const yelan: DbObjectChar = {
   features,
   multipliers: [],
   conditions: [...toggleConditions, ...a1Conditions, ...constellationConditions],
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // A4 "Adapt with Ease": ConditionStacks(party.yelan_adapt_with_ease, maxStacks:15) +
+  //   ConditionLevels(levelSetting:'party.yelan_adapt_with_ease') → dmg_all per level.
+  //   buffValues: [1,4.5,8,11.5,15,18.5,22,25.5,29,32.5,36,39.5,43,46.5,50]
+  //   Stacks UI is empty-stats (just a selector); ConditionLevels reads it via static-level.
+  //   Gate: subConditions:[ConditionBooleanValue(ge 1)] → active when stacks>=1.
+  // C4 "Bait-and-Switch": ConditionStacks(party.yelan_bait_and_switch, maxStacks:4)
+  //   → hp_percent:10 per stack. text_percent_max:40 is display-only, skipped.
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Yelan.js partyData
+  partyData: {
+    conditions: [
+      // A4 UI selector (stacks 0-15, no stats of own — just the level source).
+      {
+        type: "stacks",
+        name: "party.yelan_adapt_with_ease",
+        maxStacks: 15,
+        stats: {},
+      },
+      // A4 dmg_all buff indexed by stack count.
+      // buffValues: [1,4.5,8,11.5,15,18.5,22,25.5,29,32.5,36,39.5,43,46.5,50]
+      {
+        type: "static-level",
+        levelSetting: "party.yelan_adapt_with_ease",
+        levelStats: {
+          dmg_all: [1, 4.5, 8, 11.5, 15, 18.5, 22, 25.5, 29, 32.5, 36, 39.5, 43, 46.5, 50],
+        },
+        condition: { type: "boolean-value", setting: "party.yelan_adapt_with_ease", cond: "ge", value: 1 },
+      },
+      // C4 "Bait-and-Switch": +10% max HP per stack (max 4 stacks = 40%).
+      {
+        type: "stacks",
+        name: "party.yelan_bait_and_switch",
+        maxStacks: 4,
+        stats: { hp_percent: 10 },
+      },
+    ],
+  },
 };

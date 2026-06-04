@@ -260,4 +260,37 @@ export const venti: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A, partial)
+  // C2 "Breeze of Reminiscence" (2 booleans): anemo -12% + phys -12% RES for the group.
+  //   cond[0]: venti_breeze (first stack).
+  //   cond[1]: venti_breeze_2, gated on venti_breeze (second stack, same stats).
+  // C6 "Storm of Defiance" part 1: venti_storm → enemy_res_anemo:-20.
+  //   Part 2 (venti_storm_element — ConditionDropdownElement, element-keyed string selector)
+  //   → engine gap (ConditionDropdownElement needs string-valued dropdown; deferred).
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Venti.js partyData
+  partyData: {
+    conditions: [
+      // C2 breeze stack 1: -12% anemo res, -12% phys res.
+      {
+        type: "boolean",
+        name: "party.venti_breeze",
+        stats: { enemy_res_anemo: -12, enemy_res_physical: -12 },
+      },
+      // C2 breeze stack 2: additional -12% anemo res, -12% phys res (gated on stack 1).
+      {
+        type: "boolean",
+        name: "party.venti_breeze_2",
+        stats: { enemy_res_anemo: -12, enemy_res_physical: -12 },
+        condition: { type: "boolean", name: "party.venti_breeze" },
+      },
+      // C6 part 1: -20% anemo res.
+      {
+        type: "boolean",
+        name: "party.venti_storm",
+        stats: { enemy_res_anemo: -20 },
+      },
+      // C6 part 2: element RES shred via ConditionDropdownElement (string-valued selector).
+      // DEFERRED — needs engine support for string-keyed dropdown element stat providers.
+    ],
+  },
 };

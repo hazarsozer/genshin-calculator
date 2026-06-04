@@ -150,4 +150,20 @@ export const barbara: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // A1 "Glorious Season": stamina_consume:12 is display-only (no damage stat), skipped.
+  // C2 "Vitality Burst": ConditionBoolean(party.barbara_vitality_burst) → dmg_hydro:15.
+  //   crit_dmg is omitted here as there's no `crit_dmg_hydro` key; the raw also has
+  //   text_percent_cd:15 (display-only).
+  //   TalentValues.C2HydroBonus=15 — Source: raw/genshin_calc_pub/src/js/db/Char/Barbara.js
+  partyData: {
+    conditions: [
+      // C2 "Vitality Burst" — hydro DMG% buff to party.
+      {
+        type: "boolean",
+        name: "party.barbara_vitality_burst",
+        stats: { dmg_hydro: 15 },
+      },
+    ],
+  },
 };

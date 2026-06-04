@@ -204,4 +204,51 @@ export const mona: DbObjectChar = {
   multipliers: [],
   conditions: constellationConditions,
   postEffects: [monaA4PostEffect],
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // C3 "Restless Revolution" toggle: ConditionBoolean → settings burst talent +3.
+  //   name='party.mona_constellation_5' (raw uses serializeId for C3).
+  // Burst "Omen" (BooleanLevels): ConditionBooleanLevels(party.mona_omen)
+  //   → dmg_all per burst talent level from s4.p10=[42,44,46,48,50,52,54,56,58,60].
+  //   Level from mona_char_skill_burst (baked via sourceSettings).
+  // C1 "Prophecy of Submersion": ConditionBoolean → dmg_reaction_ bonuses (+15).
+  //   duration_frozen and dmg_reaction_lunarcharged are display/non-damage, skipped.
+  //   C1ReactionBonus=15.
+  // C4 "Prophecy of Oblivion": ConditionBoolean → crit_rate:15, gated on omen toggle.
+  //   C4CritRate=15.
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Mona.js partyData
+  partyData: {
+    conditions: [
+      // C3 toggle: +3 burst talent levels.
+      {
+        type: "boolean",
+        name: "party.mona_constellation_5",
+        settings: { mona_char_skill_burst_bonus: 3 },
+      },
+      // Burst "Omen": dmg_all per burst talent level.
+      // raw s4.p10: [42,44,46,48,50,52,54,56,58,60]
+      {
+        type: "static-level",
+        levelSetting: "mona_char_skill_burst",
+        levelStats: { dmg_all: [42, 44, 46, 48, 50, 52, 54, 56, 58, 60] },
+        condition: { type: "boolean", name: "party.mona_omen" },
+      },
+      // C1 "Prophecy of Submersion": reaction DMG bonuses +15.
+      {
+        type: "boolean",
+        name: "party.mona_prophecy_of_submersion",
+        stats: {
+          dmg_reaction_electrocharged: 15,
+          dmg_reaction_vaporize: 15,
+          dmg_reaction_swirl_hydro: 15,
+        },
+      },
+      // C4 "Prophecy of Oblivion": +15% crit rate, gated on omen toggle.
+      {
+        type: "boolean",
+        name: "party.mona_prophecy_of_oblivion",
+        stats: { crit_rate: 15 },
+        condition: { type: "boolean", name: "party.mona_omen" },
+      },
+    ],
+  },
 };

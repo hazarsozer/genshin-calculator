@@ -445,4 +445,20 @@ export const skirk: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // A4 "Mutual Weapons Mentorship": ConditionBoolean(party.skirk_mutual_weapons_mentorship)
+  //   → settings: { char_skill_elemental_bonus_2: 1, char_skill_elemental_bonus_party: 1 }
+  //   gated by ConditionBooleanSkirkParty (party must be ONLY cryo+hydro).
+  //   Maps to {type:"party-elements", elements:["cryo","hydro"]} as the .condition gate.
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Skirk.js partyData.conditions[0]
+  partyData: {
+    conditions: [
+      {
+        type: "boolean",
+        name: "party.skirk_mutual_weapons_mentorship",
+        settings: { char_skill_elemental_bonus_2: 1, char_skill_elemental_bonus_party: 1 },
+        condition: { type: "party-elements", elements: ["cryo", "hydro"] },
+      },
+    ],
+  },
 };

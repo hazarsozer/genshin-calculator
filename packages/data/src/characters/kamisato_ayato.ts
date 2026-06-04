@@ -181,4 +181,42 @@ export const kamisatoAyato: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // C5 "Bansui Ichiro" toggle: Condition(settings{ayato_char_skill_burst_bonus:3}),
+  //   subConditions:[boolean(party.ayato_constellation_5)] → condition gate.
+  // Burst "Bloomwater Blades" (BooleanLevels): dmg_normal per burst talent level.
+  //   Level from ayato_char_skill_burst (baked via sourceSettings).
+  //   s3.p2: [11,12,13,14,15,16,17,18,19,20]
+  // C4 "Endless Flow": ConditionBoolean → atk_speed_normal:15.
+  //   C4AtkSpeed=15.
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Ayato.js partyData
+  partyData: {
+    conditions: [
+      // C5 settings gate: +3 burst talent levels when toggle on.
+      {
+        type: "static",
+        settings: { ayato_char_skill_burst_bonus: 3 },
+        condition: { type: "boolean", name: "party.ayato_constellation_5" },
+      },
+      // Burst "Bloomwater Blades": dmg_normal per burst talent level.
+      // raw s3.p2: [11,12,13,14,15,16,17,18,19,20]
+      {
+        type: "static-level",
+        levelSetting: "ayato_char_skill_burst",
+        levelStats: { dmg_normal: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20] },
+        condition: { type: "boolean", name: "party.ayato_bloomwater_blades" },
+      },
+      // C4 "Endless Flow": +15% normal ATK speed.
+      {
+        type: "boolean",
+        name: "party.kamisato_ayato_endless_flow",
+        stats: { atk_speed_normal: 15 },
+      },
+      // C5 toggle itself (no stats, just enables the settings condition above).
+      {
+        type: "boolean",
+        name: "party.ayato_constellation_5",
+      },
+    ],
+  },
 };

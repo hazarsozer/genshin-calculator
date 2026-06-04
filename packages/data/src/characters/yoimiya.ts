@@ -210,4 +210,26 @@ export const yoimiya: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // A4 "Summer Nights Dawn": 2-part buff — flat +10% ATK (master toggle) + 1% ATK per stack
+  //   when toggle is on. text_percent/text_percent_2 are display-only, skipped.
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Yoimiya.js partyData
+  partyData: {
+    conditions: [
+      // A4 master toggle: +10% ATK.
+      {
+        type: "boolean",
+        name: "party.yoimiya_summer_scorch",
+        stats: { atk_percent: 10 },
+      },
+      // A4 stack bonus: +1% ATK per stack (max 10), gated on master toggle.
+      {
+        type: "stacks",
+        name: "party.yoimiya_summer_scorch_stack",
+        maxStacks: 10,
+        stats: { atk_percent: 1 },
+        condition: { type: "boolean", name: "party.yoimiya_summer_scorch" },
+      },
+    ],
+  },
 };

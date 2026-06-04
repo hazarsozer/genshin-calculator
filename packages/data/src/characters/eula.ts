@@ -256,4 +256,34 @@ export const eula: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // C5 "Chivalric Quality" toggle: ConditionBoolean → settings skill talent +3.
+  // Skill "Icewhirl Brand" (BooleanLevels): ConditionBooleanLevels(party.eula_icewhirl_brand)
+  //   → enemy_res_phys:-s2.p4 (negated via getMulti mul:-1)
+  //   → enemy_res_cryo:-s2.p5 (negated)
+  //   Level from eula_char_skill_elemental (baked via sourceSettings).
+  //   s2.p4: [16,17,18,19,20,21,22,23,24,25] (phys res decrease)
+  //   s2.p5: [16,17,18,19,20,21,22,23,24,25] (cryo res decrease)
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Eula.js partyData
+  partyData: {
+    conditions: [
+      // C5 toggle: +3 skill talent levels.
+      {
+        type: "boolean",
+        name: "party.eula_constellation_5",
+        settings: { eula_char_skill_elemental_bonus: 3 },
+      },
+      // Skill "Icewhirl Brand": phys+cryo RES shred per skill talent level.
+      // raw s2.p4 = s2.p5 = [16,17,18,19,20,21,22,23,24,25] negated
+      {
+        type: "static-level",
+        levelSetting: "eula_char_skill_elemental",
+        levelStats: {
+          enemy_res_physical: [-16, -17, -18, -19, -20, -21, -22, -23, -24, -25],
+          enemy_res_cryo:     [-16, -17, -18, -19, -20, -21, -22, -23, -24, -25],
+        },
+        condition: { type: "boolean", name: "party.eula_icewhirl_brand" },
+      },
+    ],
+  },
 };

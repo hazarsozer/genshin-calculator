@@ -190,4 +190,46 @@ export const mika: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // Skill "Soulwind": ConditionBooleanLevels(mika_soulwind) → atk_speed_normal per talent level.
+  //   Level from mika_char_skill_elemental (ConditionNumberTalent, 1-10; baked via sourceSettings).
+  //   s2.p4: [13,14,15,16,17,18,19,20,21,22,23,24,25] (13 entries for C5 max=13).
+  // C5 "Constellation 5" toggle: ConditionBoolean(party.mika_constellation_5)
+  //   → settings: { mika_char_skill_elemental_bonus: 3 } (talent +3).
+  // A1 "Suppressive Barrage": ConditionStacks(mika_suppressive_barrage) maxStacks:5
+  //   → dmg_phys:10 per stack (A1PhysBonus=10).
+  // C6 "Companion's Counsel": ConditionBoolean(mika_companions_counsel) → crit_dmg_phys:60.
+  //   C6PhysCritDmg=60.
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Mika.js partyData
+  partyData: {
+    conditions: [
+      // C5 toggle: +3 skill talent levels to mika_char_skill_elemental.
+      {
+        type: "boolean",
+        name: "party.mika_constellation_5",
+        settings: { mika_char_skill_elemental_bonus: 3 },
+      },
+      // Skill "Soulwind": atk_speed_normal per skill talent level.
+      // raw s2.p4: [13,14,15,16,17,18,19,20,21,22,23,24,25]
+      {
+        type: "static-level",
+        levelSetting: "mika_char_skill_elemental",
+        levelStats: { atk_speed_normal: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25] },
+        condition: { type: "boolean", name: "mika_soulwind" },
+      },
+      // A1 "Suppressive Barrage": +10% phys DMG per stack (max 5).
+      {
+        type: "stacks",
+        name: "mika_suppressive_barrage",
+        maxStacks: 5,
+        stats: { dmg_phys: 10 },
+      },
+      // C6 "Companion's Counsel": +60% phys CRIT DMG.
+      {
+        type: "boolean",
+        name: "mika_companions_counsel",
+        stats: { crit_dmg_phys: 60 },
+      },
+    ],
+  },
 };

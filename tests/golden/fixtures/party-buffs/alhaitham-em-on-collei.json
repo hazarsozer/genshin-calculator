@@ -1,0 +1,237 @@
+{
+  "element": "dendro",
+  "features": {
+    "attack.aimed": {
+      "average": 1428.1472583554769,
+      "category": "attack",
+      "crit": 2596.6313788281395,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1298.3156894140698
+    },
+    "attack.charged_aimed": {
+      "average": 3554.060582038958,
+      "category": "attack",
+      "crit": 6461.928330979923,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3230.9641654899615
+    },
+    "attack.normal_hit_1": {
+      "average": 1325.0966326545329,
+      "category": "attack",
+      "crit": 2409.266604826423,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1204.6333024132116
+    },
+    "attack.normal_hit_2": {
+      "average": 1296.3470015712985,
+      "category": "attack",
+      "crit": 2356.9945483114516,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1178.4972741557258
+    },
+    "attack.normal_hit_3": {
+      "average": 1643.9561773958603,
+      "category": "attack",
+      "crit": 2989.011231628837,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1494.5056158144184
+    },
+    "attack.normal_hit_4": {
+      "average": 2067.359835167131,
+      "category": "attack",
+      "crit": 3758.8360639402385,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1879.4180319701193
+    },
+    "attack.plunge": {
+      "average": 1603.7066938793319,
+      "category": "attack",
+      "crit": 2915.830352507876,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1457.915176253938
+    },
+    "attack.plunge_high": {
+      "average": 4005.383667642932,
+      "category": "attack",
+      "crit": 7282.515759350785,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3641.2578796753924
+    },
+    "attack.plunge_low": {
+      "average": 3206.7338510239692,
+      "category": "attack",
+      "crit": 5830.425183679944,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2915.212591839972
+    },
+    "burst.collei_explosion_dmg": {
+      "average": 8178.276874106414,
+      "category": "burst",
+      "crit": 14869.594316557115,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 7434.797158278558
+    },
+    "burst.collei_leap_dmg": {
+      "average": 1752.4879015942315,
+      "category": "burst",
+      "crit": 3186.341639262239,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1593.1708196311195
+    },
+    "other.collei_floral_sidewinder_dmg": {
+      "average": 724.7806155437254,
+      "category": "other",
+      "crit": 1317.782937352228,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 658.891468676114
+    },
+    "reaction.burning": {
+      "average": 788.2714939920272,
+      "category": "reaction",
+      "crit": 788.2714939920272,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 788.2714939920272
+    },
+    "reaction.electrocharged": {
+      "average": 6306.171951936218,
+      "category": "reaction",
+      "crit": 6306.171951936218,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 6306.171951936218
+    },
+    "reaction.rupture": {
+      "average": 6306.171951936218,
+      "category": "reaction",
+      "crit": 6306.171951936218,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 6306.171951936218
+    },
+    "reaction.shatter": {
+      "average": 9459.257927904328,
+      "category": "reaction",
+      "crit": 9459.257927904328,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 9459.257927904328
+    },
+    "skill.skill_dmg": {
+      "average": 4931.407308159507,
+      "category": "skill",
+      "crit": 8966.195105744559,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4483.097552872279
+    },
+    "stats.atk": {
+      "average": 2773.112241902836,
+      "category": "stats",
+      "crit": 2773.112241902836,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2773.112241902836
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1476.618942,
+      "category": "stats",
+      "crit": 1476.618942,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1476.618942
+    },
+    "stats.hp": {
+      "average": 23013.4235531,
+      "category": "stats",
+      "crit": 23013.4235531,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23013.4235531
+    },
+    "stats.mastery": {
+      "average": 195,
+      "category": "stats",
+      "crit": 195,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 195
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Collei",
+  "repSlug": "collei",
+  "schema": 1,
+  "slug": "alhaitham-em-on-collei",
+  "weapon": "weapon_name.alley_hunter",
+  "weaponType": "bow"
+}
