@@ -10,6 +10,11 @@
  * {element,origin} members carry no kit buff (resonance only) and are skipped. Absent members
  * => empty => buildStats' base path is byte-identical (the 58k-golden guard).
  *
+ * NOT synthesized here: her getPartyConditions also exports `party_burst_energy_cost`
+ * (Char.js:78-82). Deliberately omitted — energy is out of Phase-3.5 scope (spec §6) and no
+ * damage fixture reads it; adding an un-oracle-tested condition would break the no-speculative-
+ * shapes discipline. Add it only if/when an energy fixture requires it.
+ *
  * Source: raw/genshin_calc_pub/src/js/classes/CalcObject/Buffs.js:149-209
  *         raw/genshin_calc_pub/src/js/classes/DbObject/Char.js:56-97
  */
