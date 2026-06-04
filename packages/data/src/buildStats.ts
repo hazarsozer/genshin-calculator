@@ -47,6 +47,7 @@ import type {
 import { getArtifactSet } from "./artifacts/sets/index.js";
 import { CHARACTER_CONDITIONS, CHARACTER_MULTIPLIERS, CHARACTER_POST_EFFECTS } from "./characterConditions.js";
 import { buildPartyContext, type PartyInput, type ActiveCharFacts } from "./partyContext.js";
+import { buildPartyBuffs } from "./partyBuffs.js";
 
 /** The seven elements + physical, in the order the engine keys resistance. */
 const ELEMENTS: readonly Element[] = [
@@ -311,7 +312,7 @@ export interface BuildInput {
    * passing slug members causes a runtime throw. Callers using only
    * `{ element, origin? }` members can safely omit this.
    */
-  readonly partySlugResolver?: (slug: string) => ActiveCharFacts;
+  readonly partySlugResolver?: (slug: string) => DbObjectChar;
 }
 
 /** One equipped artifact set: its registry key + how many pieces are worn. */
@@ -559,19 +560,24 @@ export function buildStats(input: BuildInput): BuildResult {
   //
   // Party keys (party_*): derived from the optional PartyInput via the universal publisher.
   // Absent party → empty object → no party_* keys added (base-safety invariant).
+  const resolveChar = input.partySlugResolver;
   const partyKeys = input.party
     ? buildPartyContext(
         input.party,
         { element: input.char.element, origin: input.char.origin },
-        input.partySlugResolver
+        resolveChar ? (slug) => { const c = resolveChar(slug); return { element: c.element, origin: c.origin }; } : undefined
       )
     : {};
+  const partyBuffs = input.party && resolveChar
+    ? buildPartyBuffs(input.party, resolveChar)
+    : { conditions: [], postEffects: [], multipliers: [], settings: {} };
   const baseSettings: EvalContext = {
     weapon_type: input.char.weapon,
     char_origin: input.char.origin,
     char_name: input.char.name,
     char_element: input.char.element,
     ...partyKeys,
+    ...partyBuffs.settings,
   };
 
   const settings: EvalContext =
@@ -631,6 +637,9 @@ export function buildStats(input: BuildInput): BuildResult {
   // Source: raw/genshin_calc_pub/src/js/db/Conditions/Character.js
   //         raw/genshin_calc_pub/src/js/classes/Objects/Character.js (getConditions concat)
   for (const cond of CHARACTER_CONDITIONS) applyCondition(cond);
+  // Per-teammate kit conditions (her char.getPartyConditions() concat). A `number` condition
+  // (e.g. bennet_atk_base) lifts a baked setting into the stat bag for a post-effect to read.
+  for (const cond of partyBuffs.conditions) applyCondition(cond);
 
   // 3. Derive — condition-gated post-effects (reads RAW percents via getTotal).
   // Char post-effects, then the equipped WEAPON's post-effects (Staff of Homa /
@@ -654,6 +663,7 @@ export function buildStats(input: BuildInput): BuildResult {
     ...(input.weaponPostEffects ?? []),
     ...sets.postEffects,
     ...CHARACTER_POST_EFFECTS,
+    ...partyBuffs.postEffects, // per-teammate kit post-effects (her char.getPartyPostEffects())
   ].map(toPostEffect);
   applyPostEffects(raw, effects, merged);
 
@@ -824,5 +834,10 @@ export function buildStats(input: BuildInput): BuildResult {
     characterLevel: input.levels.charLevel,
   };
 
-  return { stats, context, settings: merged, characterMultipliers: CHARACTER_MULTIPLIERS };
+  return {
+    stats,
+    context,
+    settings: merged,
+    characterMultipliers: [...CHARACTER_MULTIPLIERS, ...partyBuffs.multipliers],
+  };
 }

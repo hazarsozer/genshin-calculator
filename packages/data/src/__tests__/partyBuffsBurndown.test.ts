@@ -16,7 +16,6 @@ import { describe, it, expect } from "vitest";
 import { buildStats } from "../buildStats.js";
 import { compileCharacter } from "../loader.js";
 import type { PartyInput } from "../partyContext.js";
-import type { ActiveCharFacts } from "../partyContext.js";
 import {
   blackcliffPoleStatTable,
   theBellStatTable,
@@ -102,16 +101,13 @@ const charBySlug: Readonly<Record<string, DbObjectChar>> = Object.fromEntries(
 /**
  * Resolve a teammate slug → DbObjectChar for the party-buffs test.
  *
- * Today's `partySlugResolver` signature is `(slug: string) => ActiveCharFacts`.
- * Task 2 widens it to `(slug: string) => DbObjectChar` so the engine can read the
- * teammate's partyData kit. For Task 1 we return the full DbObjectChar but cast it
- * to satisfy the current type — the cast is removed in Task 2 when the types widen.
+ * `partySlugResolver` signature is `(slug: string) => DbObjectChar` so the engine
+ * can read the teammate's partyData kit.
  */
-const resolveChar = (slug: string): ActiveCharFacts => {
+const resolveChar = (slug: string): DbObjectChar => {
   const c = charBySlug[slug];
   if (!c) throw new Error(`party-buffs: no characters/*.ts for teammate slug '${slug}'`);
-  // Task 2 widens partySlugResolver to (slug) => DbObjectChar; cast removed then.
-  return c as unknown as ActiveCharFacts;
+  return c;
 };
 
 // ---------------------------------------------------------------------------
@@ -190,17 +186,15 @@ for (const item of manifest.items) {
     }
 
     // Reconstruct the PartyInput from the manifest members.
-    // Manifest members are {character, settings} objects.
-    // Today's PartyMember {character} variant has no `settings` field (Task 2 adds it).
-    // Cast the members array to satisfy today's type while still running the test.
+    // Manifest members are {character, settings} objects; PartyMember now carries settings.
     const members = item.party.members.map((m) =>
       m.character !== undefined
-        ? { character: m.character }
+        ? { character: m.character, ...(m.settings !== undefined ? { settings: m.settings } : {}) }
         : ({ element: m.element, ...(m.origin !== undefined ? { origin: m.origin } : {}) } as {
             element: string;
           })
     );
-    const party = { members } as PartyInput;
+    const party: PartyInput = { members };
 
     const { context, settings: merged, characterMultipliers } = buildStats({
       char: recipient,
@@ -209,9 +203,6 @@ for (const item of manifest.items) {
       levels: LEVELS,
       enemy: ENEMY,
       party,
-      // Task 2 widens partySlugResolver to (slug) => DbObjectChar so the engine can
-      // read the teammate's partyData buffs. Today it resolves to ActiveCharFacts only
-      // (element + origin counts), so party_* keys are computed but NO kit buffs land.
       partySlugResolver: resolveChar,
       talentLevels: TALENTS,
     });

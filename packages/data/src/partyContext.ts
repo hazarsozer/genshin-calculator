@@ -13,7 +13,7 @@
 import type { Element } from "@genshin/types";
 
 export type PartyMember =
-  | { readonly character: string }
+  | { readonly character: string; readonly settings?: Readonly<Record<string, unknown>> }
   | { readonly element: Element; readonly origin?: string };
 
 export interface PartyInput {

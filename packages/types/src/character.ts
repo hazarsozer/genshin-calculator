@@ -6,7 +6,7 @@
  *   raw/genshin_calc_pub/src/js/db/Char/Hutao.js
  */
 
-import type { Feature, FeatureMultiplierEntry } from "./feature.js";
+import type { Feature, FeatureMultiplierEntry, CharMultiplier } from "./feature.js";
 import type { Condition } from "./condition.js";
 
 // ---------------------------------------------------------------------------
@@ -361,8 +361,23 @@ export interface DbObjectChar {
   readonly conditions?: readonly Condition[];
   /** Constellation data. */
   readonly constellation?: CharConstellation;
-  /** Party (external) conditions the character provides. */
-  readonly partyData?: { readonly conditions: readonly Condition[] };
+  /**
+   * Party (external) buffs this character provides to teammates when in the roster —
+   * her `partyData` block (raw/.../db/Char/<Char>.js), read by `getPartyConditions/
+   * Multipliers/PostEffects` (DbObject/Char.js:56-97). `buildPartyBuffs` resolves a
+   * `{character}` teammate to this block and appends each list to the active char's
+   * buff channels. `loadStats` is descriptive metadata (the teammate's input contract);
+   * the engine consumes the inputs as explicit baked settings, not via loadStats.
+   */
+  readonly partyData?: {
+    readonly loadStats?: {
+      readonly stats?: readonly string[];
+      readonly settings?: readonly string[];
+    };
+    readonly conditions?: readonly Condition[];
+    readonly postEffects?: readonly CharPostEffect[];
+    readonly multipliers?: readonly CharMultiplier[];
+  };
   /**
    * True for a character whose data enables Lunar-Charged by default (her
    * `allowed_lunarcharged: 1` — Ineffa only, as of v5.8). Suppresses the generic
