@@ -44,6 +44,7 @@ import {
 import type { DbObjectChar, DbObjectWeapon } from "@genshin/types";
 import type { StatTableEntry } from "@genshin/types";
 import type { EvalContext } from "@genshin/types";
+import { type FixtureEntry, isDamageTripleEntry } from "./_fixtureEntry.js";
 
 // ---------------------------------------------------------------------------
 // Fixed canonical build (verbatim from _manifest.json / characters.test.ts)
@@ -107,16 +108,6 @@ const WEAPON_BY_TYPE: Readonly<Record<string, WeaponEntry>> = {
 // Fixture types (mirrors golden.test.ts)
 // ---------------------------------------------------------------------------
 
-interface FixtureEntry {
-  readonly category: string;
-  readonly damageType: string | undefined;
-  readonly normal: number;
-  readonly crit: number;
-  readonly average: number;
-  readonly isReacted: boolean;
-  readonly format: string;
-}
-
 interface Fixture {
   readonly features: Record<string, FixtureEntry>;
 }
@@ -136,16 +127,6 @@ function loadFixture(subDir: string, slug: string): Fixture {
     "utf-8"
   );
   return JSON.parse(raw) as Fixture;
-}
-
-// ---------------------------------------------------------------------------
-// Damage-triple filter (mirrors golden.test.ts isDamageTripleEntry)
-// ---------------------------------------------------------------------------
-
-function isDamageTripleEntry(entry: FixtureEntry): boolean {
-  if (entry.category === "stats") return false;
-  if (!entry.damageType) return false;
-  return true;
 }
 
 // ---------------------------------------------------------------------------

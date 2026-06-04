@@ -63,6 +63,7 @@ import type {
   DbObjectWeapon,
   EvalContext,
 } from "@genshin/types";
+import { type FixtureEntry, isDamageTripleEntry } from "./_fixtureEntry.js";
 
 // ---------------------------------------------------------------------------
 // Constants — mirror goldenConfig.test.ts / artifactSets.test.ts
@@ -85,25 +86,8 @@ const TOLERANCE = 0.1;
 // Fixture types — verbatim from artifactSets.test.ts (carries isReacted/format)
 // ---------------------------------------------------------------------------
 
-interface FixtureEntry {
-  readonly category: string;
-  readonly damageType: string | undefined;
-  readonly normal: number;
-  readonly crit: number;
-  readonly average: number;
-  readonly isReacted: boolean;
-  readonly format: string;
-}
-
 interface Fixture {
   readonly features: Record<string, FixtureEntry>;
-}
-
-/** Damage-triple predicate — verbatim from the templates. */
-function isDamageTripleEntry(entry: FixtureEntry): boolean {
-  if (entry.category === "stats") return false;
-  if (!entry.damageType) return false;
-  return true;
 }
 
 // ---------------------------------------------------------------------------

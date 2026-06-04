@@ -48,6 +48,7 @@ import {
   solarPearlStatTable,
 } from "../generated/weaponStatTables.js";
 import type { DbObjectChar, StatTableEntry } from "@genshin/types";
+import { type FixtureEntry, isDamageTripleEntry } from "./_fixtureEntry.js";
 
 // ---------------------------------------------------------------------------
 // FIXED canonical build (verbatim from golden.test.ts) + the C6 dimension
@@ -93,14 +94,6 @@ const TOLERANCE = 0.1;
 // Fixture types + loader
 // ---------------------------------------------------------------------------
 
-interface FixtureEntry {
-  readonly category: string;
-  readonly damageType: string | undefined;
-  readonly normal: number;
-  readonly crit: number;
-  readonly average: number;
-}
-
 interface Fixture {
   readonly features: Record<string, FixtureEntry>;
 }
@@ -112,14 +105,6 @@ const FIXTURES_DIR = join(
 
 function loadFixture(slug: string): Fixture {
   return JSON.parse(readFileSync(join(FIXTURES_DIR, `${slug}.json`), "utf-8")) as Fixture;
-}
-
-/** Damage-triple entries only (exclude stat readouts + display-only rows) — same
- *  predicate as golden.test.ts. */
-function isDamageTripleEntry(entry: FixtureEntry): boolean {
-  if (entry.category === "stats") return false;
-  if (!entry.damageType) return false;
-  return true;
 }
 
 // ---------------------------------------------------------------------------
