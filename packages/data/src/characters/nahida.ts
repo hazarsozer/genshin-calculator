@@ -326,4 +326,34 @@ export const nahida: DbObjectChar = {
   multipliers: [],
   conditions,
   postEffects: [masteryBuffPost, a4CritPost, a4SkillPost, burstPyro1Post],
+  // partyData — teammate kit buffs (P3.5.2 Bucket B).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Nahida.js:509-562
+  // Scope: oracle-gated core only — A1 "Compassion Illuminated" EM share.
+  // Deferred to the P3.5.2 variant-rep pass:
+  //   C2 "The Root of All Fullness": crit_rate_bloom, crit_dmg_bloom, crit_rate_burning,
+  //     crit_dmg_burning (party.nahida_the_root_of_all_fullness_1), and enemy_def_reduce
+  //     (party.nahida_the_root_of_all_fullness_2) — constellation-gated, separate reps.
+  partyData: {
+    conditions: [
+      // ConditionNumber: lifts the party's max mastery into the recipient's stat bag as
+      // 'party_max_mastery'. PostEffectStatsNahida reads max(own mastery, party_max_mastery).
+      { type: "number", name: "party_max_mastery", max: 5000 },
+      // A1 master toggle (gates the mastery postEffect below).
+      { type: "boolean", name: "party.nahida_compassion_illuminated" },
+    ],
+    postEffects: [
+      // A1 "Compassion Illuminated": max(own mastery, party_max_mastery) × 25%, capped 250.
+      // fromStatMax mirrors PostEffectStatsNahida.getBaseValueTree → CMax([mastery, party_max_mastery]).
+      // ratio = A1MasteryRatio/100 = 25/100 = 0.25; capValue = A1MasteryCap = 250.
+      // Source: raw/genshin_calc_pub/src/js/db/Char/Nahida.js:553-560
+      {
+        fromStat: "mastery",
+        fromStatMax: "party_max_mastery",
+        toStat: "mastery",
+        ratio: 0.25,  // A1MasteryRatio=25 / 100
+        capValue: 250,  // A1MasteryCap=250
+        conditions: [{ type: "boolean", name: "party.nahida_compassion_illuminated" }],
+      } satisfies CharPostEffect,
+    ],
+  },
 };
