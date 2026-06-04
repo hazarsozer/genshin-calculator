@@ -210,4 +210,15 @@ export const travelerGeo: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C1 "Invincible Stonewall" — +10% CRIT Rate while inside the Stone Wall.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/TravelerGeo.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { crit_rate: 10 },
+        condition: { type: "boolean", name: "party.traveler_invincible_stonewall" },
+      },
+    ],
+  },
 };

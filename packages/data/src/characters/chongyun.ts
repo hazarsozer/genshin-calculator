@@ -165,4 +165,17 @@ export const chongyun: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // A4 "Rimechaser Blade" — enemy Cryo RES -10%.
+  // C2 "Atmospheric Revolution" — skill/burst CD -15% (recovery key; display-only, no damage delta).
+  //   Subconditioned on party.chongyun_layered_frost.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Chongyun.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { enemy_res_cryo: -10 },
+        condition: { type: "boolean", name: "party.chongyun_rimechaser_blade" },
+      },
+    ],
+  },
 };

@@ -202,4 +202,15 @@ export const yaoyao: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C1 "Adeptus Tutelage" — +15% Dendro DMG to party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Yaoyao.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { dmg_dendro: 15 },
+        condition: { type: "boolean", name: "party.yaoyao_adeptus_tutelage" },
+      },
+    ],
+  },
 };

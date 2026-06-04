@@ -314,4 +314,15 @@ export const lanYan: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C4 "With Drakefalcon's Blood, Pearls Adorned" — +60 EM to party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/LanYan.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { mastery: 60 },
+        condition: { type: "boolean", name: "party.lanyan_with_drakefalcons_blood_pearls_adorned" },
+      },
+    ],
+  },
 };

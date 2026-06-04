@@ -150,4 +150,32 @@ export const ningguang: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // A4 "Strategic Reserve" — +12% Geo DMG to party.
+  // C4 "Exquisite Be the Jade..." — +10% to all self-RES (res_* keys; damage-inert).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Ningguang.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { dmg_geo: 12 },
+        condition: { type: "boolean", name: "party.ningguang_strategic_reserve" },
+      },
+      {
+        type: "static",
+        stats: {
+          res_anemo: 10,
+          res_pyro: 10,
+          res_hydro: 10,
+          res_cryo: 10,
+          res_electro: 10,
+          res_dendro: 10,
+          res_geo: 10,
+        },
+        condition: {
+          type: "boolean",
+          name: "party.ningguang_exquisite_be_the_jade_outshining_all_beneath",
+        },
+      },
+    ],
+  },
 };

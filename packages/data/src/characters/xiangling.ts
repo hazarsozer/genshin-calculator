@@ -213,4 +213,27 @@ export const xiangling: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // A2 "Beware, It's Super Hot!" — +10% ATK to party.
+  // C1 "Crispy Outside, Tender Inside" — enemy Pyro RES -15%.
+  // C6 "Condensed Pyronado" — +15% Pyro DMG to party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Xiangling.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { atk_percent: 10 },
+        condition: { type: "boolean", name: "party.xiangling_beware" },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_pyro: -15 },
+        condition: { type: "boolean", name: "party.xiangling_crispy" },
+      },
+      {
+        type: "static",
+        stats: { dmg_pyro: 15 },
+        condition: { type: "boolean", name: "party.xiangling_condensed_pyronado" },
+      },
+    ],
+  },
 };

@@ -175,4 +175,15 @@ export const razor: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C4 "Bite" — enemy DEF -15%.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Razor.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { enemy_def_reduce: 15 },
+        condition: { type: "boolean", name: "party.razor_bite" },
+      },
+    ],
+  },
 };

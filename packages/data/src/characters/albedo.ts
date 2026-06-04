@@ -269,4 +269,27 @@ export const albedo: DbObjectChar = {
   features,
   multipliers: [c2BurstDefMultiplier],
   conditions: constellationConditions,
+  // A4 "Homuncular Nature" — +125 EM to nearby party.
+  // C4 "Descent of Divinity" — +30% Plunge DMG to party.
+  // C6 "Dust of Purification" — +17% DMG to party (while protected by Solar Isotoma shield).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Albedo.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { mastery: 125 },
+        condition: { type: "boolean", name: "party.albedo_homuncular_nature" },
+      },
+      {
+        type: "static",
+        stats: { dmg_plunge: 30 },
+        condition: { type: "boolean", name: "party.albedo_descent_of_divinity" },
+      },
+      {
+        type: "static",
+        stats: { dmg_all: 17 },
+        condition: { type: "boolean", name: "party.albedo_dust_of_purification" },
+      },
+    ],
+  },
 };

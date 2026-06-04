@@ -216,4 +216,16 @@ export const qiqi: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // A4 "Life-Prolonging Methods" — +20% Healing Received (healing_recv is damage-inert).
+  // Block ported faithfully; no oracle rep (no damage delta).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Qiqi.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { healing_recv: 20 },
+        condition: { type: "boolean", name: "party.qiqi_life_prolonging_methods" },
+      },
+    ],
+  },
 };

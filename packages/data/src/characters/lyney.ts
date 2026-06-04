@@ -253,4 +253,15 @@ export const lyney: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C4 "Well-Versed, Well-Rehearsed" — enemy Pyro RES -20%.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Lyney.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { enemy_res_pyro: -20 },
+        condition: { type: "boolean", name: "party.lyney_well_versed_well_rehearsed" },
+      },
+    ],
+  },
 };

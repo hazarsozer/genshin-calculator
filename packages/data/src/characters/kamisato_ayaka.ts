@@ -236,4 +236,15 @@ export const kamisatoAyaka: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C4 "Ebb and Flow" — enemy DEF -30%.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Ayaka.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { enemy_def_reduce: 30 },
+        condition: { type: "boolean", name: "party.ayaka_eikyo_ryuuhan" },
+      },
+    ],
+  },
 };

@@ -274,4 +274,21 @@ export const huTao: DbObjectChar = {
   multipliers: [c2SkillHpMultiplier],
   postEffects: [hpToAtk],
   conditions: [paramita, c3SkillTalentBonus, c5BurstTalentBonus],
+  // A1 "Flutter By" — +12% CRIT Rate to nearby party.
+  // C4 "Garden of Eternal Rest" — +12% CRIT Rate to nearby party (on enemy killed by Hutao/ally).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Hutao.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { crit_rate: 12 },
+        condition: { type: "boolean", name: "party.hu_tao_flutter_by" },
+      },
+      {
+        type: "static",
+        stats: { crit_rate: 12 },
+        condition: { type: "boolean", name: "party.hu_tao_garden_of_eternal_rest" },
+      },
+    ],
+  },
 };

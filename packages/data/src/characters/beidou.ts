@@ -230,4 +230,15 @@ export const beidou: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C6 "Bane of Evil" — enemy Electro RES -15%.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Beidou.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { enemy_res_electro: -15 },
+        condition: { type: "boolean", name: "party.beidou_bane_of_the_evil" },
+      },
+    ],
+  },
 };

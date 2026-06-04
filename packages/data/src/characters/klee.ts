@@ -198,4 +198,21 @@ export const klee: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C2 "Explosive Frags" — enemy DEF -23%.
+  // C6 "Blazing Delight" — +10% Pyro DMG to party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Klee.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { enemy_def_reduce: 23 },
+        condition: { type: "boolean", name: "party.klee_explosive_frags" },
+      },
+      {
+        type: "static",
+        stats: { dmg_pyro: 10 },
+        condition: { type: "boolean", name: "party.klee_blazing_delight" },
+      },
+    ],
+  },
 };

@@ -208,4 +208,15 @@ export const amber: DbObjectChar = {
   // Auto-active at A6 (ConditionStatic gated only by ConditionAscensionChar),
   // so it is part of the baseline build. Raw: db/Char/Amber.js:289-300.
   baseStats: { crit_rate_amber: 10 },
+  // C6 "Wildfire" — +15% ATK and +15% Movement SPD to party (move_speed is display-only).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Amber.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { atk_percent: 15 },
+        condition: { type: "boolean", name: "party.amber_wildfire" },
+      },
+    ],
+  },
 };

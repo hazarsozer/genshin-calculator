@@ -208,4 +208,15 @@ export const emilie: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C2 "Lakelight Top Note" — enemy Dendro RES -30%.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Emilie.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { enemy_res_dendro: -30 },
+        condition: { type: "boolean", name: "party.emilie_lakelight_top_note" },
+      },
+    ],
+  },
 };
