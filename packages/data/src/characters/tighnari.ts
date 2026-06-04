@@ -276,7 +276,15 @@ export const tighnari: DbObjectChar = {
       {
         type: "static",
         stats: { mastery: 60 },
-        condition: { type: "boolean", name: "party.tighnari_withering_glimpsed_in_the_leaves_2" },
+        // Second stack requires the FIRST toggle also ON — her `_2` carries
+        // subConditions: [ConditionBoolean(..._1)] (raw Tighnari.js:432-434).
+        condition: {
+          type: "and",
+          items: [
+            { type: "boolean", name: "party.tighnari_withering_glimpsed_in_the_leaves_2" },
+            { type: "boolean", name: "party.tighnari_withering_glimpsed_in_the_leaves_1" },
+          ],
+        },
       },
     ],
   },
