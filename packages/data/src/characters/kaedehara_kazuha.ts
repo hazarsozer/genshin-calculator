@@ -334,4 +334,52 @@ export const kaedeharaKazuha: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket B batch 1).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Kazuha.js:685-813
+  partyData: {
+    loadStats: {
+      stats: ["mastery_total"],
+    },
+    conditions: [
+      // ConditionNumber: lifts teammate mastery_total into bag as 'kazuha_mastery'.
+      { type: "number", name: "kazuha_mastery", max: 10000 },
+      // ConditionBoolean: C2 "Yamaarashi Tailwind" — +200 Mastery.
+      // TODO(P3.5.2 variant): C2 mastery bonus — gated rep pending.
+      { type: "boolean", name: "kaedehara_kazuha_yamaarashi_tailwind",
+        stats: { mastery: 200 },
+      },
+    ],
+    postEffects: [
+      // A4 "Poetics of Fuubutsu": EM → elemental DMG% bonus.
+      // Each postEffect fires when the swirl-element dropdown equals the element.
+      // Oracle bakes 'party.kaedehara_kazuha_poetics_of_fuubutsu' as a string value;
+      // gated via dropdown-element consumer pattern (same as Venti C6 in venti.ts).
+      // ratio 0.04 = A4ElementalBonus per point of EM (raw TalentValues.A4ElementalBonus:0.04).
+      // Source: raw/genshin_calc_pub/src/js/db/Char/Kazuha.js:775-811
+      {
+        fromStat: "kazuha_mastery",
+        toStat: "dmg_cryo",
+        ratio: 0.04,
+        conditions: [{ type: "dropdown-element", name: "party.kaedehara_kazuha_poetics_of_fuubutsu", element: "cryo" }],
+      },
+      {
+        fromStat: "kazuha_mastery",
+        toStat: "dmg_electro",
+        ratio: 0.04,
+        conditions: [{ type: "dropdown-element", name: "party.kaedehara_kazuha_poetics_of_fuubutsu", element: "electro" }],
+      },
+      {
+        fromStat: "kazuha_mastery",
+        toStat: "dmg_hydro",
+        ratio: 0.04,
+        conditions: [{ type: "dropdown-element", name: "party.kaedehara_kazuha_poetics_of_fuubutsu", element: "hydro" }],
+      },
+      {
+        fromStat: "kazuha_mastery",
+        toStat: "dmg_pyro",
+        ratio: 0.04,
+        conditions: [{ type: "dropdown-element", name: "party.kaedehara_kazuha_poetics_of_fuubutsu", element: "pyro" }],
+      },
+    ],
+  },
 };

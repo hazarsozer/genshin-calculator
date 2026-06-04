@@ -300,4 +300,40 @@ export const bennett: DbObjectChar = {
   multipliers: [],
   postEffects: [fantasticVoyageAtk, fantasticVoyageC1Atk],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket B batch 1).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Bennet.js:573-709
+  partyData: {
+    loadStats: {
+      stats: ["atk_base"],
+      settings: ["char_skill_burst"],
+    },
+    conditions: [
+      // ConditionNumber: lifts teammate atk_base into recipient's stat bag as 'bennet_atk_base'.
+      { type: "number", name: "bennet_atk_base", max: 10000 },
+      // ConditionBoolean: Fantastic Voyage buff active toggle.
+      { type: "boolean", name: "party.bennet_fantastic_voyage" },
+      // ConditionBoolean: C1 "Grand Expectation" — adds +20% base ATK to buff.
+      { type: "boolean", name: "party.bennet_constellation_1",
+        stats: { bonus_bennet_atk: 20 },
+      },
+      // ConditionBoolean: C6 "Fire Ventures With Me" — pyro dmg+15%.
+      // TODO(P3.5.2 variant): C6 pyro dmg + infusion — gated rep pending.
+      { type: "boolean", name: "party.bennet_constellation_6",
+        stats: { text_percent: 15 },
+      },
+    ],
+    postEffects: [
+      // Fantastic Voyage ATK battery: atk_base × (burst atk_ratio capped at lvl 10 × 0.01).
+      // raw maxLevelSetting:10 caps base level at 10 before _bonus; without engine support
+      // for maxLevelSetting, uses fixed ratio at level 10 (= 1.008). C5 (+3 burst levels
+      // bumping effective level past 10 to 13) handled by a future variant rep.
+      // TODO(P3.5.2 variant): ratioFromTalent once engine supports maxLevelSetting.
+      {
+        fromStat: "bennet_atk_base",
+        toStat: "atk",
+        ratio: BennettTalents.s3.p4.getValue(10) * 0.01,  // 100.8 × 0.01 = 1.008
+        conditions: [{ type: "boolean", name: "party.bennet_fantastic_voyage" }],
+      },
+    ],
+  },
 };
