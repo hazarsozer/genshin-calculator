@@ -106,6 +106,11 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "plunge",
     element: "hydro",
+    // FeatureDamagePlungeCollision sets cannotReact (raw .../Feature2/Damage/Plunge/Collision.js:5):
+    // the descent-collision plunge does NOT trigger amplifying reactions, unlike plunge_low/high
+    // (FeatureDamagePlungeShockWave). Oracle: attack.plunge isReacted:false. Without this flag,
+    // vaporize would wrongly amplify it.
+    cannotReact: true,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
   },
   {

@@ -30,6 +30,8 @@
  */
 
 import {
+  AmplifyingVariant,
+  cAmplifyingFactor,
   cBaseDamage,
   cConst,
   cCritDmg,
@@ -74,6 +76,21 @@ const LEVELING_TO_SLOT: Readonly<Record<string, keyof TalentLevels>> = {
  * not per `baseDamageTerm` call (hot path across the armory loop).
  */
 const TOTAL_SCALING_STATS: ReadonlySet<string> = new Set(["atk", "hp", "def", "mastery"]);
+
+/**
+ * Amplifying-reaction variant policy: `${settings.reaction}_${hitElement}` → the
+ * Vaporize/Melt direction. Mirrors her `REACTION_MULTI` (raw/.../Feature2/Damage.js:13-18)
+ * exactly: hydro/cryo hits have one direction; pyro hits depend on the chosen reaction;
+ * every other element has no entry (→ un-amplified). The core owns the math
+ * (`cAmplifyingFactor`); the data layer owns this settings→variant policy, matching her
+ * layering (REACTION_MULTI lives in her feature layer).
+ */
+const AMPLIFYING_VARIANT: Readonly<Record<string, AmplifyingVariant>> = {
+  vaporize_hydro: AmplifyingVariant.VaporizeForward, // Hydro onto Pyro aura, ×2.0
+  vaporize_pyro: AmplifyingVariant.VaporizeReverse, // Pyro onto Hydro aura, ×1.5
+  melt_cryo: AmplifyingVariant.MeltReverse, // Cryo onto Pyro aura, ×1.5
+  melt_pyro: AmplifyingVariant.MeltForward, // Pyro onto Cryo aura, ×2.0
+};
 
 /** Talent levels for a build (1-indexed game talent levels). */
 export interface TalentLevels {
@@ -605,6 +622,23 @@ export function compileFeature(
   // Only the foam sets this; every normal hit falls through to the crit path below.
   if (feature.noCrit) {
     return cDamage({ items });
+  }
+
+  // Amplifying reaction (Vaporize/Melt): when `settings.reaction` is set, the hit can react
+  // (`!feature.cannotReact` — her canReact(), Damage.js:308), AND the hit's resolved element
+  // maps to a variant, append the amplifying factor to `items` — her getReactionMultipliers
+  // (Damage.js:195-219) pushed into getTree's items (Damage.js:286). The factor multiplies the
+  // whole hit (normal/crit/avg scale together). No `settings.reaction`, a cannotReact hit (Mona's
+  // plunge Collision), or a non-reacting element (physical/electro/anemo/geo/dendro) → nothing
+  // appended → un-amplified, byte-identical to before. Standalone reaction features
+  // (`feature.reaction`) and the noCrit foam path are excluded above. `dmg_reaction_<reaction>`
+  // (her getReactionBonuses) reads 0 unless a source grants it.
+  const reaction = ctx.settings["reaction"];
+  if (typeof reaction === "string" && !feature.cannotReact) {
+    const variant = AMPLIFYING_VARIANT[`${reaction}_${element}`];
+    if (variant !== undefined) {
+      items.push(cAmplifyingFactor({ variant, reactionBonusKeys: [`dmg_reaction_${reaction}`] }));
+    }
   }
 
   // Crit: the aggregated totals (buildStats folds crit_rate/_dmg in), PLUS the

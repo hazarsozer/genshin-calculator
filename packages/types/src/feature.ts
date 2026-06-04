@@ -266,6 +266,16 @@ export interface Feature {
   /** See group comment above (FeatureDamageClam suppression flags). */
   readonly ignoreEnemyDefence?: boolean;
   /**
+   * Excludes this hit from amplifying reactions (Vaporize/Melt) — her `FeatureDamage`
+   * `params.cannotReact` / `canReact()` (Damage.js:28,308). When true, `compileFeature`
+   * never appends the amplifying factor even if `settings.reaction` is set and the element
+   * matches. The systematic v5.8 user is `FeatureDamagePlungeCollision` (Plunge/Collision.js:5
+   * — the descent plunge, vs the reacting `plunge_low`/`plunge_high` ShockWave); a few chars
+   * also flag specific hits. Absent = reacts normally (and inert in every base build, where
+   * `settings.reaction` is unset).
+   */
+  readonly cannotReact?: boolean;
+  /**
    * Marks a standalone reaction feature (a separate damage instance keyed by its
    * reaction nature, NOT a `settings.reaction` toggle on a normal hit). When set,
    * `compileFeature` routes the feature to the matching `@genshin/core` reaction
