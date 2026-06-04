@@ -302,32 +302,27 @@ export const bennett: DbObjectChar = {
   conditions: constellationConditions,
   // partyData — teammate kit buffs (P3.5.2 Bucket B batch 1).
   // Source: raw/genshin_calc_pub/src/js/db/Char/Bennet.js:573-709
+  // Scope: the oracle-gated core only — the base ATK battery. Constellations/passives are
+  // deferred to the P3.5.2 variant-rep pass (ported together with their gated oracle reps):
+  //   C1 "Grand Expectation": +20% party ATK via the postEffect percentBonus + bonusCondition.
+  //   C5 "True Explorer": +3 burst levels — moot here (the atk_ratio is clamped to L10).
+  //   C6 "Fire Ventures With Me": dmg_pyro +15% + pyro infusion, gated on Fantastic Voyage.
   partyData: {
     loadStats: {
       stats: ["atk_base"],
-      settings: ["char_skill_burst"],
     },
     conditions: [
-      // ConditionNumber: lifts teammate atk_base into recipient's stat bag as 'bennet_atk_base'.
+      // ConditionNumber: lifts the teammate's atk_base into the recipient's stat bag.
       { type: "number", name: "bennet_atk_base", max: 10000 },
-      // ConditionBoolean: Fantastic Voyage buff active toggle.
+      // Fantastic Voyage master toggle (gates the ATK battery postEffect below).
       { type: "boolean", name: "party.bennet_fantastic_voyage" },
-      // ConditionBoolean: C1 "Grand Expectation" — adds +20% base ATK to buff.
-      { type: "boolean", name: "party.bennet_constellation_1",
-        stats: { bonus_bennet_atk: 20 },
-      },
-      // ConditionBoolean: C6 "Fire Ventures With Me" — pyro dmg+15%.
-      // TODO(P3.5.2 variant): C6 pyro dmg + infusion — gated rep pending.
-      { type: "boolean", name: "party.bennet_constellation_6",
-        stats: { text_percent: 15 },
-      },
     ],
     postEffects: [
-      // Fantastic Voyage ATK battery: atk_base × (burst atk_ratio capped at lvl 10 × 0.01).
-      // raw maxLevelSetting:10 caps base level at 10 before _bonus; without engine support
-      // for maxLevelSetting, uses fixed ratio at level 10 (= 1.008). C5 (+3 burst levels
-      // bumping effective level past 10 to 13) handled by a future variant rep.
-      // TODO(P3.5.2 variant): ratioFromTalent once engine supports maxLevelSetting.
+      // Fantastic Voyage ATK battery: atk_base × burst atk_ratio, clamped at talent L10
+      // (raw PostEffectStats.maxLevelSetting:10 → effective level = min(level, 10)). Pinned
+      // to the L10 table value (1.008) — exact for every realistic build: baked burst is ≥10,
+      // and C5's +3 only pushes it higher (still clamped to 10). Matches the capped-postEffect
+      // idiom of Bennett's own self-buff (fantasticVoyageAtk) + Itto/Sayu carries.
       {
         fromStat: "bennet_atk_base",
         toStat: "atk",

@@ -340,14 +340,11 @@ export const kaedeharaKazuha: DbObjectChar = {
     loadStats: {
       stats: ["mastery_total"],
     },
+    // C2 "Yamaarashi Tailwind" (+200 EM, gated on the C2 toggle) is deferred to the
+    // P3.5.2 variant-rep pass (ported together with its gated oracle rep).
     conditions: [
-      // ConditionNumber: lifts teammate mastery_total into bag as 'kazuha_mastery'.
+      // ConditionNumber: lifts the teammate's mastery_total into the bag as 'kazuha_mastery'.
       { type: "number", name: "kazuha_mastery", max: 10000 },
-      // ConditionBoolean: C2 "Yamaarashi Tailwind" — +200 Mastery.
-      // TODO(P3.5.2 variant): C2 mastery bonus — gated rep pending.
-      { type: "boolean", name: "kaedehara_kazuha_yamaarashi_tailwind",
-        stats: { mastery: 200 },
-      },
     ],
     postEffects: [
       // A4 "Poetics of Fuubutsu": EM → elemental DMG% bonus.
