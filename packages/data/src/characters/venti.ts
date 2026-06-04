@@ -265,8 +265,8 @@ export const venti: DbObjectChar = {
   //   cond[0]: venti_breeze (first stack).
   //   cond[1]: venti_breeze_2, gated on venti_breeze (second stack, same stats).
   // C6 "Storm of Defiance" part 1: venti_storm → enemy_res_anemo:-20.
-  //   Part 2 (venti_storm_element — ConditionDropdownElement, element-keyed string selector)
-  //   → engine gap (ConditionDropdownElement needs string-valued dropdown; deferred).
+  //   Part 2: venti_storm_element single-select dropdown → enemy_res_<el>:-20 (gated on
+  //   venti_storm), modeled via the dropdown-element consumer pattern below.
   //   Source: raw/genshin_calc_pub/src/js/db/Char/Venti.js partyData
   partyData: {
     conditions: [
@@ -289,8 +289,41 @@ export const venti: DbObjectChar = {
         name: "party.venti_storm",
         stats: { enemy_res_anemo: -20 },
       },
-      // C6 part 2: element RES shred via ConditionDropdownElement (string-valued selector).
-      // DEFERRED — needs engine support for string-keyed dropdown element stat providers.
+      // C6 part 2: per-element RES shred — the venti_storm_element single-select dropdown →
+      // enemy_res_<el>:-20, gated on venti_storm. Modeled with the dropdown-element consumer
+      // pattern (cf. ViridescentVenerer 4pc in characterConditions.ts). Raw Venti.js:500-544.
+      {
+        type: "static",
+        stats: { enemy_res_cryo: -20 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.venti_storm_element", element: "cryo" },
+          { type: "boolean", name: "party.venti_storm" },
+        ] },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_electro: -20 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.venti_storm_element", element: "electro" },
+          { type: "boolean", name: "party.venti_storm" },
+        ] },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_hydro: -20 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.venti_storm_element", element: "hydro" },
+          { type: "boolean", name: "party.venti_storm" },
+        ] },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_pyro: -20 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.venti_storm_element", element: "pyro" },
+          { type: "boolean", name: "party.venti_storm" },
+        ] },
+      },
     ],
   },
 };
