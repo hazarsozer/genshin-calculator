@@ -263,4 +263,21 @@ export const tighnari: DbObjectChar = {
   multipliers: [],
   conditions: constellationConditions,
   postEffects: a4PostEffects,
+  // C4 "Withering Glimpsed in the Leaves" — +60 EM on trigger; second stack (subCondition
+  // requires first toggle active) adds another +60 EM.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Tighnari.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { mastery: 60 },
+        condition: { type: "boolean", name: "party.tighnari_withering_glimpsed_in_the_leaves_1" },
+      },
+      {
+        type: "static",
+        stats: { mastery: 60 },
+        condition: { type: "boolean", name: "party.tighnari_withering_glimpsed_in_the_leaves_2" },
+      },
+    ],
+  },
 };

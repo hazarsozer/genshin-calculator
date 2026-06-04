@@ -40,8 +40,8 @@
     "description": "Teammate partyData KIT BUFFS applied to a recipient active char (the inverse of the buff-clean FILLER set — the teammate INTENTIONALLY leaks its kit via setPartyChars + baked setBuffsSettings). Reps span the mechanism buckets: A=static (Zhongli universal res-shred), B=postEffect (Bennett base-ATK->flat-ATK, Kazuha EM->elemental-dmg%), C=multiplier (Shenhe Icy Quill ATK-scaled cryo bonus). Each fixture = the recipient's damage with the teammate buff ON. RED until P3.5.2 models partyData (engine: Task 2; data: Tasks 3-5). Source: CalcObject/Buffs.js:149-209, DbObject/Char.js:56-97.",
     "id": "party-buffs"
   },
-  "featureTotal": 106,
-  "itemCount": 4,
+  "featureTotal": 382,
+  "itemCount": 13,
   "items": [
     {
       "derived": {
@@ -77,6 +77,108 @@
       "weapon": {
         "name": "weapon_name.alley_hunter",
         "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "collei",
+            "settings": {
+              "party.collei_gift_of_the_woods": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "collei-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "arataki_itto",
+            "settings": {
+              "party.itto_jailhouse_bread_and_butter": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "itto-atkdef-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 50,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "jean",
+            "settings": {
+              "party.jean_lands_of_dandelion": true
+            }
+          }
+        ]
+      },
+      "repKey": "Kazuha",
+      "repSlug": "kaedehara_kazuha",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "jean-anemores-on-kazuha",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
       }
     },
     {
@@ -123,6 +225,108 @@
         "level": 90,
         "res": 10
       },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "lisa",
+            "settings": {
+              "party.lisa_static_electricity_field": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "lisa-defshred-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "navia",
+            "settings": {
+              "party.navia_the_oathsworn_never_capitulate": true
+            }
+          }
+        ]
+      },
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "navia-geores-on-itto",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "sethos",
+            "settings": {
+              "sethos_beneficent_plumage": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "sethos-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
       "featureCount": 25,
       "kind": "party",
       "origin": "inazuma",
@@ -148,6 +352,110 @@
       "weapon": {
         "name": "weapon_name.the_alley_flash",
         "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "thoma",
+            "settings": {
+              "party.thoma_burning_heart": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "thoma-nacdmg-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "tighnari",
+            "settings": {
+              "party.tighnari_withering_glimpsed_in_the_leaves_1": true,
+              "party.tighnari_withering_glimpsed_in_the_leaves_2": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "tighnari-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "character": "xinyan",
+            "settings": {
+              "party.xinyan_now_thats_rock": true,
+              "party.xinyan_wildfire_rhythm": true
+            }
+          }
+        ]
+      },
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "xinyan-physbuff-on-eula",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
       }
     },
     {

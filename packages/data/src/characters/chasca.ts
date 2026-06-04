@@ -296,4 +296,6 @@ export const chasca: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Chasca.js (partyData: empty conditions)
+  partyData: {},
 };

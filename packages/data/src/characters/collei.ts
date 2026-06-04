@@ -198,4 +198,15 @@ export const collei: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C4 "Gift of the Woods" — +60 Elemental Mastery to party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Collei.js:101,313-320
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { mastery: 60 },
+        condition: { type: "boolean", name: "party.collei_gift_of_the_woods" },
+      },
+    ],
+  },
 };

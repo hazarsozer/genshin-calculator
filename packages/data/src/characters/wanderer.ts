@@ -209,4 +209,6 @@ export const wanderer: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Wanderer.js (partyData: empty conditions)
+  partyData: {},
 };

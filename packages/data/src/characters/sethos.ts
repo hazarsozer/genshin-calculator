@@ -203,4 +203,15 @@ export const sethos: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C4 "Beneficent Plumage" — +80 Elemental Mastery to party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Sethos.js:116,120,469-474
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { mastery: 80 },
+        condition: { type: "boolean", name: "sethos_beneficent_plumage" },
+      },
+    ],
+  },
 };

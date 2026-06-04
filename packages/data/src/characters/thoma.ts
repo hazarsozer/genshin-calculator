@@ -210,4 +210,15 @@ export const thoma: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C6 "Burning Heart" — +15% DMG to Normal / Charged / Plunge attacks.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Thoma.js (partyData condition)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { dmg_normal: 15, dmg_charged: 15, dmg_plunge: 15 },
+        condition: { type: "boolean", name: "party.thoma_burning_heart" },
+      },
+    ],
+  },
 };

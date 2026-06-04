@@ -235,4 +235,15 @@ export const aratakiItto: DbObjectChar = {
   multipliers: [a4ChargedDefMultiplier],
   postEffects: [defToAtk],
   conditions: [royalDescent, ...constellationConditions],
+  // C4 "Jailhouse Bread and Butter" — +20% DEF and +20% ATK to party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Itto.js:125-126,366-369,402-406
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { def_percent: 20, atk_percent: 20 },
+        condition: { type: "boolean", name: "party.itto_jailhouse_bread_and_butter" },
+      },
+    ],
+  },
 };
