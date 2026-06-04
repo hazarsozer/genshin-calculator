@@ -17,7 +17,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Sucrose)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Sucrose as SucroseStatTable } from "../generated/charTables.js";
 import { Sucrose as SucroseTalents } from "../generated/charTalentTables.js";
 
@@ -195,4 +195,33 @@ export const sucrose: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket B).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Sucrose.js:361-467
+  // Scope: oracle-gated core only — A4 "Mollis Favonius" EM share (20% of Sucrose EM).
+  // Deferred to the P3.5.2 variant-rep pass:
+  //   A1 "Catalyst Conversion": +50 EM to matching-element party (element-gated subConditions, needs
+  //     dropdown-element condition support in engine).
+  //   C6 "Chaotic Entropy": +20% elemental DMG per swirled element (ConditionDropdownElement).
+  partyData: {
+    loadStats: {
+      stats: ["mastery_total"],
+    },
+    conditions: [
+      // ConditionNumber: lifts the teammate's mastery_total into the recipient's stat bag.
+      { type: "number", name: "sucrose_mastery", max: 10000 },
+      // Mollis Favonius master toggle (A4 passive; gates the EM postEffect below).
+      { type: "boolean", name: "party.sucrose_mollis_favonius" },
+    ],
+    postEffects: [
+      // A4 "Mollis Favonius": shares 20% of Sucrose's EM with the party.
+      // Raw: percent: StatTable('mastery', [0.2])
+      // Source: raw/genshin_calc_pub/src/js/db/Char/Sucrose.js:442-449
+      {
+        fromStat: "sucrose_mastery",
+        toStat: "mastery",
+        ratio: 0.2,
+        conditions: [{ type: "boolean", name: "party.sucrose_mollis_favonius" }],
+      } satisfies CharPostEffect,
+    ],
+  },
 };
