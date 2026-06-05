@@ -264,17 +264,11 @@ export interface CharPostEffect {
   /**
    * A per-stack ADDITIVE term on the ratio: `ratio += table.getValue(settings[levelSetting]) ×
    * (settings[setting] || 0)`. Models her `PostEffectStats.percentBonus` × `bonusStackSettings`
-   * (Staff of the Scarlet Sands: EM→ATK = (base 0.52…1.04 + bonus 0.28…0.56 × stacks)) and the
-   * `stacksSetting` multiplier (the whole ratio scaled by a stack count). The stack count is the
-   * caller-supplied `settings[setting]`; absent → 0 → no contribution (base-safe).
+   * (Staff of the Scarlet Sands: EM→ATK = base 0.52…1.04 + bonus 0.28…0.56 × stacks). The stack
+   * count is the caller-supplied `settings[setting]`; absent → 0 → no contribution (base-safe).
+   * For a MULTIPLICATIVE whole-ratio stacks scale (`ratio *= stacks`), see `stacksSetting` instead.
    *
-   * NOTE: the fold uses `settings[setting] ?? 0` (absent → 0 stacks → no contribution), which
-   * diverges from her `PostEffectStats.getStacks` fallback of `settings[stacksSetting] || 1`
-   * (absent → 1). Harmless wherever the stack setting is always present (every v5.8 user — e.g.
-   * key_of_khaj_nisut sets `weapon_key_of_khaj_nisut: 3`); only matters if a future port relies
-   * on a `stacksSetting` post-effect applying once when the count is unset.
-   *
-   * Source: raw/.../classes/PostEffect/Stats.js (getStacks / percentBonus × bonusStackSettings).
+   * Source: raw/.../classes/PostEffect/Stats.js (percentBonus × bonusStackSettings).
    */
   readonly ratioPerStack?: {
     readonly setting: string;
@@ -286,7 +280,8 @@ export interface CharPostEffect {
    * getStacks → `CMulti([ratio, stacks])`, Stats.js:77-81): `ratio *= settings[stacksSetting]`
    * when that value is > 1; absent/≤1 ⇒ ratio unchanged (base-inert; her `getStacks` returns
    * `settings[stacksSetting] || 1`). Applied BEFORE `percentBonus` (her `(ratio × stacks) +
-   * bonus`). Source: raw/.../db/Char/Iansan.js (PostEffectStats stacksSetting).
+   * bonus`). Source: raw/.../classes/PostEffect/Stats.js:77-81 (getStacks / CMulti),
+   * raw/.../db/Char/Iansan.js (first PostEffectStats stacksSetting user).
    */
   readonly stacksSetting?: string;
   /**

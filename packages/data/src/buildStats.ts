@@ -420,7 +420,8 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       } else {
         ratio = effect.ratio ?? 0;
       }
-      // Per-stack additive on the ratio (her percentBonus × bonusStackSettings / stacksSetting):
+      // Per-stack ADDITIVE on the ratio (her percentBonus × bonusStackSettings; the
+      // MULTIPLICATIVE whole-ratio stacks is the separate `stacksSetting` branch below):
       // ratio += perStackTable(level) × settings[setting]. Absent setting → 0 → no change.
       if (effect.ratioPerStack !== undefined) {
         const { setting, table, levelSetting } = effect.ratioPerStack;
