@@ -254,8 +254,10 @@ export const gorou: DbObjectChar = {
       // — lifts Gorou's Elemental Skill level into `gorou_char_skill_elemental` so
       // standing_firm's level-indexed DEF table can read it. Number-lift idiom (mirrors
       // Shenhe's `shenhe_char_skill_elemental`). The level itself is read from the merged
-      // settings by static-level's getLevel; this entry contributes no stats — it documents
-      // the lift and keeps the input name in the schema.
+      // settings by static-level's getLevel; this entry re-emits the clamped value under
+      // `gorou_char_skill_elemental` but contributes no DAMAGE-relevant stat, so it is
+      // functionally a documentary/schema marker (mirrors Shenhe's lift; removing it leaves
+      // the rep green because static-level reads the level from the merged baked settings).
       // raw/genshin_calc_pub/src/js/db/Char/Gorou.js:439-444
       { type: "number", name: "gorou_char_skill_elemental" },
       // party.gorou_standing_firm (ConditionBooleanLevels) — flat DEF scaled by Gorou's
