@@ -234,4 +234,58 @@ export const travelerDendro: DbObjectChar = {
   multipliers: [],
   baseStats: BASE_STATS,
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A, A-straggler)
+  // A1 "Verdant Overgrowth": +6 EM per stack (max 10 → +60). Her ConditionStacks carries
+  //   subConditions:[ConditionAscensionChar(1)] — auto-true at A6, so the gate is DROPPED
+  //   (modeled always-on, like the other A6-fixed passives).
+  // C6 "Withering Aggregation" part 1: party.traveler_withering_aggregation_1 (boolean) →
+  //   dmg_dendro:+12.
+  //   part 2: a dropdown-element adding dmg_<el>:+12 for the chosen pyro/electro/hydro, gated
+  //   on part 1. NOTE: the raw setting name is literally the double-prefixed
+  //   "party.party.traveler_withering_aggregation_2" (a typo in her source) — ported VERBATIM.
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/TravelerDendro.js:449-532
+  partyData: {
+    conditions: [
+      // A1 "Verdant Overgrowth": +6 EM per stack (max 10).
+      // raw stats: new StatTable('mastery', [6]); subConditions ConditionAscensionChar(1) dropped.
+      {
+        type: "stacks",
+        name: "party.traveler_verdant_overgrowth",
+        maxStacks: 10,
+        stats: { mastery: 6 },
+      },
+      // C6 part 1: +12% dendro DMG.
+      {
+        type: "boolean",
+        name: "party.traveler_withering_aggregation_1",
+        stats: { dmg_dendro: 12 },
+      },
+      // C6 part 2: per-element +12% DMG — the (double-prefixed, verbatim) dropdown selection,
+      // gated on part 1. Modeled with the dropdown-element consumer pattern.
+      {
+        type: "static",
+        stats: { dmg_pyro: 12 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.party.traveler_withering_aggregation_2", element: "pyro" },
+          { type: "boolean", name: "party.traveler_withering_aggregation_1" },
+        ] },
+      },
+      {
+        type: "static",
+        stats: { dmg_electro: 12 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.party.traveler_withering_aggregation_2", element: "electro" },
+          { type: "boolean", name: "party.traveler_withering_aggregation_1" },
+        ] },
+      },
+      {
+        type: "static",
+        stats: { dmg_hydro: 12 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.party.traveler_withering_aggregation_2", element: "hydro" },
+          { type: "boolean", name: "party.traveler_withering_aggregation_1" },
+        ] },
+      },
+    ],
+  },
 };
