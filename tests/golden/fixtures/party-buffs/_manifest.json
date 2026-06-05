@@ -40,8 +40,8 @@
     "description": "Teammate partyData KIT BUFFS applied to a recipient active char (the inverse of the buff-clean FILLER set — the teammate INTENTIONALLY leaks its kit via setPartyChars + baked setBuffsSettings). Reps span the mechanism buckets: A=static (Zhongli universal res-shred), B=postEffect (Bennett base-ATK->flat-ATK, Kazuha EM->elemental-dmg%), C=multiplier (Shenhe Icy Quill ATK-scaled cryo bonus). Each fixture = the recipient's damage with the teammate buff ON. RED until P3.5.2 models partyData (engine: Task 2; data: Tasks 3-5). Source: CalcObject/Buffs.js:149-209, DbObject/Char.js:56-97.",
     "id": "party-buffs"
   },
-  "featureTotal": 1890,
-  "itemCount": 67,
+  "featureTotal": 1917,
+  "itemCount": 68,
   "items": [
     {
       "derived": {
@@ -382,6 +382,43 @@
       "weapon": {
         "name": "weapon_name.solar_pearl",
         "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "bennett",
+            "settings": {
+              "bennet_atk_base": 191,
+              "bennet_char_skill_burst": 13,
+              "party.bennet_constellation_1": true,
+              "party.bennet_fantastic_voyage": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "bennett-atk-c1-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
       }
     },
     {

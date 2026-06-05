@@ -428,6 +428,16 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
         const stacks = (settings[setting] as number | undefined) ?? 0;
         ratio += table.getValue(lvl) * stacks;
       }
+      // Conditional flat addend on the ratio (her percentBonus × bonusCondition,
+      // PostEffect/Stats.js:41-50,83-88): when the gate is absent or active, add `value`
+      // to the ratio BEFORE it multiplies the `from` stat (her CSum([value, bonus]) inside
+      // CMulti([…, base])). Absent → no addend (base-inert: 58k goldens byte-unchanged).
+      if (
+        effect.percentBonus !== undefined &&
+        (effect.percentBonus.condition === undefined || evaluate(effect.percentBonus.condition, settings))
+      ) {
+        ratio += effect.percentBonus.value;
+      }
       // Base stat: getTotal(fromStat), or max(getTotal(fromStat), getTotal(fromStatMax))
       // when fromStatMax is set. Mirrors PostEffectStatsNahida.getBaseValueTree which
       // returns CMax([makeStatTotalItem('mastery'), makeStatItem('party_max_mastery')]).

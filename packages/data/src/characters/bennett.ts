@@ -302,9 +302,10 @@ export const bennett: DbObjectChar = {
   conditions: constellationConditions,
   // partyData — teammate kit buffs (P3.5.2 Bucket B batch 1).
   // Source: raw/genshin_calc_pub/src/js/db/Char/Bennet.js:573-709
-  // Scope: the oracle-gated core only — the base ATK battery. Constellations/passives are
-  // deferred to the P3.5.2 variant-rep pass (ported together with their gated oracle reps):
-  //   C1 "Grand Expectation": +20% party ATK via the postEffect percentBonus + bonusCondition.
+  // Scope: the core ATK battery + C1 (P3.5.2 engine-ext pass — percentBonus field).
+  // Remaining constellations/passives deferred to the variant-rep pass (gated reps):
+  //   C1 "Grand Expectation": +20% party ATK — PORTED below via the postEffect percentBonus
+  //     + bonusCondition (party.bennet_constellation_1), oracle rep bennett-atk-c1-on-ganyu.
   //   C5 "True Explorer": +3 burst levels — moot here (the atk_ratio is clamped to L10).
   //   C6 "Fire Ventures With Me": dmg_pyro +15% + pyro infusion, gated on Fantastic Voyage.
   partyData: {
@@ -328,6 +329,11 @@ export const bennett: DbObjectChar = {
         toStat: "atk",
         ratio: BennettTalents.s3.p4.getValue(10) * 0.01,  // 100.8 × 0.01 = 1.008
         conditions: [{ type: "boolean", name: "party.bennet_fantastic_voyage" }],
+        // C1 "Grand Expectation": +20% added to the ATK ratio (her percentBonus
+        // ValueTable([C1BuffBonus=20 / 100]) + bonusCondition party.bennet_constellation_1,
+        // raw Bennet.js:698,704-706). Composes additively → atk_base × (1.008 + 0.20) at C1.
+        // Base-inert at C0 (toggle off): the C0 baseline rep is byte-unchanged.
+        percentBonus: { value: 0.2, condition: { type: "boolean", name: "party.bennet_constellation_1" } },
       },
     ],
   },
