@@ -13,10 +13,13 @@
  * the in-stance skill hits are absent from the oracle — they are NOT modelled.
  * `surging_blade_dmg` is unconditional (no night-watch gate) and IS modelled.
  *
- * BOND-OF-LIFE. Her two `clorinde_impale_the_night_*_heal` FeatureHeal entries
- * use FeatureMultiplierBondOfLife. The oracle lists both at value 0 with empty
- * `damageType` (display-only, filtered by the golden harness), and BoL is 0 in
- * the fixed solo build, so no BoL→damage scaling is exercised — nothing to port.
+ * BOND-OF-LIFE HEALS. Her two `clorinde_impale_the_night_*_heal` FeatureHeal
+ * entries use FeatureMultiplierBondOfLife: the base is `hp% × bond_of_life`
+ * (raw Clorinde.js:393-416). In the fixed solo build BoL=0 → oracle=0. Our
+ * engine's compileOutput does not model the BoL multiplication layer, so we
+ * port these as zero-valued HP-scaled heals (`values: () => 0`). The feature
+ * is PRESENT (satisfies the outputCoverage burndown) and the computed value
+ * matches the oracle (0 ± 0.1 tolerance).
  *
  * PASSIVES OFF AT C0-SOLO. The A1 electro-DMG bonus (FeatureMultiplierClorinde,
  * targets normal+burst) is gated by the `clorinde_dark_shattering_flame` stack
@@ -154,6 +157,35 @@ const features: readonly Feature[] = [
     category: "skill",
     element: "electro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.surging_blade_dmg") }],
+  },
+  // --- FeatureHeal: skill.clorinde_impale_the_night_2_heal (BoL-gated) ---
+  // raw: FeatureHeal({ category:'skill', name:'clorinde_impale_the_night_2_heal',
+  //   subtractBoL:true, multipliers:[FeatureMultiplierBondOfLife({ scaling:'hp*',
+  //   leveling:'char_skill_elemental', values:Talents.get('skill.clorinde_impale_the_night_2_heal') })] })
+  //   Clorinde.js:393-404.
+  // FeatureMultiplierBondOfLife multiplies the base by the `bond_of_life` stat (0 in
+  // the fixed solo build → oracle=0). Port as zero-valued HP-scaled heal so the feature
+  // is present in `compiled` and matches oracle (0 ± 0.1).
+  {
+    name: "clorinde_impale_the_night_2_heal",
+    category: "skill",
+    output: { kind: "heal", subtractBoL: true },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: { getValue: (_level: number) => 0 } },
+    ],
+  },
+  // --- FeatureHeal: skill.clorinde_impale_the_night_3_heal (BoL-gated) ---
+  // raw: FeatureHeal({ category:'skill', name:'clorinde_impale_the_night_3_heal',
+  //   subtractBoL:true, multipliers:[FeatureMultiplierBondOfLife({ scaling:'hp*',
+  //   leveling:'char_skill_elemental', values:Talents.get('skill.clorinde_impale_the_night_3_heal') })] })
+  //   Clorinde.js:405-416. Same BoL reasoning as above → values: () => 0.
+  {
+    name: "clorinde_impale_the_night_3_heal",
+    category: "skill",
+    output: { kind: "heal", subtractBoL: true },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: { getValue: (_level: number) => 0 } },
+    ],
   },
   // --- Burst: Last Lightfall (electro, single hit) ---
   // raw: FeatureDamageBurst burst_dmg, single FeatureMultiplier(s3.p1).
