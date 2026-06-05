@@ -254,10 +254,10 @@ const sigewinnePartyMultipliers: readonly CharMultiplier[] = [
     scaling: "sigewinne_hp_total",
     leveling: "sigewinne_buff_level",
     values: sigewinneBuffValues,
-    exceedStatValue: 30000, // A1MinHP
     capValue: 2800, // A1DmgBonusMax (buff_level=1 cap; C1 cap-table deferred)
-    condition: { type: "boolean", name: "party.sigewinne_requires_appropriate_rest" },
+    exceedStatValue: 30000, // A1MinHP
     target: { damageTypes: ["skill"] },
+    condition: { type: "boolean", name: "party.sigewinne_requires_appropriate_rest" },
   } satisfies CharMultiplier,
 ];
 

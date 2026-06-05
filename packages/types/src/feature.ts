@@ -131,7 +131,7 @@ export interface FeatureMultiplierEntry {
    * (her FeatureMultiplier.getTreeStatValue, Multiplier.js:281-301 — `CMax([CSubtract([stat,
    * exceedStatValue]), 0])`). Models a "scales off the stat ABOVE a threshold" buff
    * (Sigewinne: max HP above 30000). Absent ⇒ the plain `scalingStat` (base-inert).
-   * Source: raw/.../db/Char/Sigewinne.js (exceedStatValue: A1MinHP).
+   * Source: raw/.../db/Char/Sigewinne.js:533 (exceedStatValue: A1MinHP).
    */
   readonly exceedStatValue?: number;
   /**
