@@ -441,7 +441,18 @@ function dmgBonusKeys(
   damageType: string
 ): readonly string[] {
   const keys = ["dmg_all", `dmg_${dmgElementKey(element)}`];
-  if (damageType) keys.push(`dmg_${damageType}`);
+  if (damageType) {
+    keys.push(`dmg_${damageType}`);
+    // Composite type×element bonus — her getStatsDmgBonus also pushes
+    // `dmg_<damageType>_<element>` (Damage.js:58), a key that applies ONLY to a
+    // hit matching BOTH the type AND the (infusion-resolved) element. The element
+    // segment uses the SAME `dmgElementKey(element)` as the `dmg_<element>` push
+    // above (so physical → `dmg_<type>_phys`, faithful to her `getElement` which
+    // returns 'phys'). v5.8 source: Candace's prayer + A4 (`dmg_normal_<element>`).
+    // Absent for every build that sets no composite key → cStat reads 0 (the
+    // established `dmg_charged_enemy` pattern) → base-inert (58k goldens untouched).
+    keys.push(`dmg_${damageType}_${dmgElementKey(element)}`);
+  }
   // Charged attacks additionally pick up the enemy-vulnerability key
   // `dmg_charged_enemy` — her FeatureDamageCharged.getStatsDmgBonus override
   // (Charged.js:14-18) is the ONLY damage subclass that adds a `dmg_<type>_enemy`

@@ -104,6 +104,33 @@ const DMG_BONUS_TYPE_KEYS = [
 ] as const;
 
 /**
+ * Composite type×element DMG% bonus keys (`dmg_<type>_<element>`) a teammate
+ * buff can set — read by a hit matching BOTH the type AND the resolved element
+ * (her getStatsDmgBonus pushes `dmg_<damageType>_<element>`, Damage.js:58).
+ *
+ * The ONLY v5.8 producer is Candace's "Prayer of the Crimson Crown" + A4
+ * "Celestial Dome of Sand": both write `dmg_normal_<element>` for the seven
+ * non-physical elements (the prayer a flat 20, the A4 `0.0005 × HP`). Listed
+ * EXPLICITLY (not a type×element cross-product) — only the keys a ported buff
+ * actually sets, mirroring the explicit-emit discipline of every other dmg_*
+ * key list here. Emitted as a FRACTION only when set; absent for every build
+ * that names no Candace teammate → the key is never in the bag → the base
+ * golden suite + all existing fixtures are byte-unchanged.
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Candace.js:485-541 (the prayer
+ *         ConditionBoolean stats + the A4 PostEffectStatsHP percent tables).
+ */
+const DMG_BONUS_COMPOSITE_KEYS = [
+  "dmg_normal_anemo",
+  "dmg_normal_geo",
+  "dmg_normal_pyro",
+  "dmg_normal_electro",
+  "dmg_normal_hydro",
+  "dmg_normal_cryo",
+  "dmg_normal_dendro",
+] as const;
+
+/**
  * The damage TYPES whose per-type crit folds generically (her
  * getDefaultStatsCritRate / getDefaultStatsCritDamage push `crit_rate_<type>` /
  * `crit_dmg_<type>` for the hit's damageType — Damage.js:77/105). Emitted as
@@ -751,6 +778,18 @@ export function buildStats(input: BuildInput): BuildResult {
   }
   // Type DMG% bonuses + dmg_all → fractions, flat only (no `*` in her getStatsDmgBonus).
   for (const key of DMG_BONUS_TYPE_KEYS) {
+    if (raw.isSet(key)) out[key] = raw.get(key) / 100;
+  }
+  // Composite type×element DMG% bonuses → fractions, only when set (Candace's
+  // `dmg_normal_<element>`). Both the prayer condition (raw 20) and the A4
+  // postEffect (raw `0.0005 × HP`) accumulate into the SAME bag key as RAW
+  // percent, then a SINGLE /100 here — exactly her `processPercent` on the
+  // condition value summed with the post-effect's pre-divided getTree output
+  // (PostEffectStatsHP on a percent stat folds the isPercent /100 internally;
+  // our toPostEffect stores the raw scale instead, so the single emit /100
+  // reproduces it — the established Furina `dmg_skill_furina` idiom). Absent for
+  // every non-Candace build → no key → base golden + fixtures byte-unchanged.
+  for (const key of DMG_BONUS_COMPOSITE_KEYS) {
     if (raw.isSet(key)) out[key] = raw.get(key) / 100;
   }
   // Per-TYPE crit (her getDefaultStatsCritRate/CritDamage push crit_*_<type> for the
