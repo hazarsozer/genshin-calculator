@@ -11,9 +11,10 @@
  *   burst_dmg:         s3.p1 (HP%)
  *   candace_wave_dmg:  s3.p4 (HP%)
  *
- * The burst also emits candace_dmg_bonus (FeaturePostEffectValue, percent display)
- * and skill.shield (FeatureShield, HP-scaling) — both have empty damageType →
- * not tested by the golden suite.
+ * The burst also emits candace_dmg_bonus (FeaturePostEffectValue, percent display:
+ * A4 HP%→Normal DMG + flat 20%) and skill.shield (FeatureShield, HP-scaling) — both
+ * have empty damageType (filtered by the golden suite); modelled as output features
+ * (static / shield) for the P3.5.3 non-damage-output coverage gate.
  *
  * Burst infusion of PARTY normals is a party buff, NOT Candace's own damage.
  * candace_the_overflow_dmg is C6-gated (constellation 6, fixed 15% HP per hit).
@@ -207,6 +208,20 @@ const features: readonly Feature[] = [
         values: { getValue: (_level: number) => 15 },
         source: "constellation6",
       },
+    ],
+  },
+  // --- A4 "Sculptural Stratagem" static readout: burst.candace_dmg_bonus = HP%→Normal DMG + flat 20% ---
+  // FeaturePostEffectValue(PostEffectStatsHP, percent=StatTable('text_percent',[A4BonusScale=0.0005]),
+  // flatBonus=ValueTable([BaseDmgBonus/100=0.2])), format:'percent'. 'text_percent' is isPercent → her /100 and the
+  // format ×100 CANCEL, so displayed = 0.0005×hp_total + 20. values = A4BonusScale×100 = 0.05 → (0.05/100)×hp_total
+  // = 0.0005×hp_total; flatValues = BaseDmgBonus = 20 (the flatBonus /100 + format ×100 cancel). No cap. asc4 gates
+  // application not the readout → modelled without it. raw/genshin_calc_pub/src/js/db/Char/Candace.js:138-141,334-342.
+  {
+    name: "candace_dmg_bonus",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 0.05 }, flatValues: { getValue: () => 20 } },
     ],
   },
 ];
