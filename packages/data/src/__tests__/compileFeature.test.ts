@@ -133,6 +133,7 @@ describe("compileFeature — non-damage outputs (P3.5.3, compileOutput)", () => 
     const { result, hp } = run({ healing_recv: 0.3 }, { kind: "heal" });
     expect(result.normal).toBeCloseTo(hp * 1.3, 3);
     expect(result.crit).toBeCloseTo(hp * 1.3, 3); // non-crit (no critRateBonuses)
+    expect(result.avg).toBeCloseTo(hp * 1.3, 3);
   });
 
   it("heal subtractBoL: base − bond_of_life × hp_total", () => {

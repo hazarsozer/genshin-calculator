@@ -672,24 +672,36 @@ function compileOutput(
     return cDamage({ items: [base, cMultiplierBonus([cStat("shield")])] });
   }
 
+  // After crystallize/static/shield the only remaining kind is "heal" — assert
+  // exhaustiveness so a future FeatureOutput kind cannot silently fall through to the
+  // heal formula (becomes a compile error until the new kind is handled here).
+  if (output.kind !== "heal") {
+    const unhandled: never = output;
+    throw new Error(`compileOutput: unhandled output kind '${(unhandled as { kind: string }).kind}'`);
+  }
+
   // FeatureHeal: base × (1 + healing + healing_base + healing_recv), optionally
   // − bond_of_life × hp_total (her subtractBoL — Arlecchino). Non-crit unless the
   // feature carries `critRateBonuses` (her getStatsCritRate returns ONLY those).
-  const healCore = cMulti([
+  // `healing_recv` is always summed — her `ignore_healing_recv` display-toggle variant
+  // is not exercised by the base dump (out of scope — design §5).
+  const healItems: Block[] = [
     base,
     cMultiplierBonus([cStat("healing"), cStat("healing_base"), cStat("healing_recv")]),
-  ]);
-  const valueBlock = output.subtractBoL
-    ? cSubtract([healCore, cMulti([cStat("bond_of_life"), cStat("hp_total")])])
-    : healCore;
+  ];
+  // Flat items mirror the shield path + her CDamage([CBaseDamage, CMultiplierBonus]);
+  // the BoL case groups the product so the subtraction applies to the whole heal.
+  const items: Block[] = output.subtractBoL
+    ? [cSubtract([cMulti(healItems), cMulti([cStat("bond_of_life"), cStat("hp_total")])])]
+    : healItems;
   if (feature.critRateBonuses && feature.critRateBonuses.length > 0) {
     return cDamage({
-      items: [valueBlock],
+      items,
       critRate: cCritRate(feature.critRateBonuses.map((k) => cStat(k))),
       critDmg: cCritDmg((feature.critDamageBonuses ?? []).map((k) => cStat(k))),
     });
   }
-  return cDamage({ items: [valueBlock] });
+  return cDamage({ items });
 }
 
 /**
