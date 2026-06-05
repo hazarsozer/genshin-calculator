@@ -330,6 +330,21 @@ const features: readonly Feature[] = [
       critDmgKeys: LUNAR_CRIT_DMG_KEYS,
     },
   },
+  // --- A4 static readout: other.mastery_bonus = ATK→EM conversion value (A4EmScale% of ATK) ---
+  // FeaturePostEffectValue(PostEffectStatsAtk, percent=const A4EmScale/100=0.06), format="".
+  // The ineffa_panoramic toggle gates the post-effect's APPLICATION; the readout shows the ungated
+  // value (oracle nonzero at solo). raw/genshin_calc_pub/src/js/db/Char/Ineffa.js:134-137,320-324 (A4EmScale=6).
+  {
+    name: "mastery_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "atk", leveling: "", values: { getValue: () => 6 } },
+    ],
+  },
+  // DEFERRED → P3.5.5: other.ineffa_lunar_bonus (FeaturePostEffectValue(lunarPost), format:'percent') —
+  // the lunar-charged DMG-bonus readout (+ C1 ineffa_lunar_bonus_2). Percent-format lunar-reaction
+  // coefficient; not a plain stat-fraction. Left RED-by-design (honest deferral, NEVER faked).
 ];
 
 // ---------------------------------------------------------------------------
