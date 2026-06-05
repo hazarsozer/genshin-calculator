@@ -224,7 +224,7 @@ const constellationConditions: readonly Condition[] = [
 // Normal-Attack DMG bonus written to COMPOSITE keys `dmg_normal_<element>` (the
 // seven non-physical elements). Two layers land in the SAME bag keys:
 //   - the prayer ConditionBoolean: a flat `BaseDmgBonus = 20` per element.
-//   - the A4 "Celestial Dome of Sand" PostEffectStatsHP: `A4BonusScale × HP` per
+//   - the A4 "Celestial Dome of Sand" PostEffectStats (from:`candace_hp_total`): `A4BonusScale × HP` per
 //     element, gated on BOTH the prayer AND the dome toggles.
 // Her getStatsDmgBonus reads `dmg_normal_<element>` only on a Normal hit whose
 // RESOLVED element matches (Damage.js:58) → the composite-key engine extension.
@@ -243,14 +243,14 @@ const A4BonusScale = 0.0005; // A4 HP→Normal-DMG% scale (raw TalentValues.A4Bo
 
 // The prayer condition's flat stat bag: `dmg_normal_<element>: 20` for the 7 elements
 // (RAW percent — buildStats' composite emit applies the /100, exactly her processPercent).
-const prayerStats: Record<string, number> = Object.fromEntries(
+const prayerStats: Readonly<Record<string, number>> = Object.fromEntries(
   PRAYER_ELEMENTS.map((el) => [`dmg_normal_${el}`, BaseDmgBonus])
 );
 
-// A4 as 7 single-output CharPostEffects (her one multi-percent PostEffectStatsHP =
-// 7 entries sharing the SAME `candace_hp_total` input). `ratio` is the RAW scale
-// (NOT pre-/100'd) — toPostEffect stores it raw and buildStats' composite emit /100's
-// once, reproducing her PostEffectStatsHP.getTree on a percent stat. Gated on BOTH the
+// A4 as 7 single-output CharPostEffects (her one multi-percent PostEffectStats
+// (from:`candace_hp_total`) = 7 entries sharing the SAME input). `ratio` is the RAW
+// scale (NOT pre-/100'd) — toPostEffect stores it raw and buildStats' composite emit
+// /100's once, reproducing her PostEffectStats.getTree on a percent stat. Gated on BOTH the
 // prayer AND the dome toggles (raw conditions[]). Accumulates additively onto the
 // prayer's flat 20 in the same key. Base-inert when either toggle is off.
 const a4DomeBonuses: readonly CharPostEffect[] = PRAYER_ELEMENTS.map((el) => ({

@@ -118,7 +118,7 @@ const DMG_BONUS_TYPE_KEYS = [
  * golden suite + all existing fixtures are byte-unchanged.
  *
  * Source: raw/genshin_calc_pub/src/js/db/Char/Candace.js:485-541 (the prayer
- *         ConditionBoolean stats + the A4 PostEffectStatsHP percent tables).
+ *         ConditionBoolean stats + the A4 PostEffectStats (from:candace_hp_total) percent tables).
  */
 const DMG_BONUS_COMPOSITE_KEYS = [
   "dmg_normal_anemo",
@@ -785,7 +785,7 @@ export function buildStats(input: BuildInput): BuildResult {
   // postEffect (raw `0.0005 × HP`) accumulate into the SAME bag key as RAW
   // percent, then a SINGLE /100 here — exactly her `processPercent` on the
   // condition value summed with the post-effect's pre-divided getTree output
-  // (PostEffectStatsHP on a percent stat folds the isPercent /100 internally;
+  // (her PostEffectStats on a percent stat folds the isPercent /100 internally;
   // our toPostEffect stores the raw scale instead, so the single emit /100
   // reproduces it — the established Furina `dmg_skill_furina` idiom). Absent for
   // every non-Candace build → no key → base golden + fixtures byte-unchanged.
