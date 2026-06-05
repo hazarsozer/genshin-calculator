@@ -4,8 +4,11 @@
  * 5-hit normal combo (physical), physical aimed shot, cryo fully charged aimed
  * shot, plunge/low/high (physical), cryo skill (diona_claw_dmg), cryo burst
  * (burst_dmg + field_dmg).
- * Shield features (skill.shield_press, skill.shield_hold) and burst heal
- * (burst.heal_dot) have empty damageType and are display-only — skipped by the harness.
+ * Shields (output:{kind:"shield"}):
+ *   - skill.shield_press: HP-scaled (s2.p2 % HP + s2.p3 flat), C0 path.
+ *   - skill.shield_hold: HP-scaled × 1.75 (s2.p2*1.75 % HP + s2.p3*1.75 flat), C0 path.
+ *     raw TalentValues.ShieldHoldRatio = 1.75.
+ * Burst heal (burst.heal_dot) — deferred to P3.5.3 heal bucket.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Diona.js
@@ -37,7 +40,9 @@ const talents: TalentResolver = {
       if (name === "plunge_high")    return DionaTalents.s1.p11;
     }
     if (talent === "skill") {
-      if (name === "diona_claw_dmg") return DionaTalents.s2.p1;
+      if (name === "diona_claw_dmg")    return DionaTalents.s2.p1;
+      if (name === "shield_percent")    return DionaTalents.s2.p2;
+      if (name === "shield_flat")       return DionaTalents.s2.p3;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return DionaTalents.s3.p1;
@@ -125,6 +130,39 @@ const features: readonly Feature[] = [
     element: "cryo",
     damageBonuses: ["dmg_skill_diona"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.diona_claw_dmg") }],
+  },
+  // --- Shields (FeatureShield): skill.shield_press, skill.shield_hold ---
+  // FeatureMultiplierList: (percent/100 × hp_total) + flat, then × (1 + shield).
+  // Both scale from the same base table (s2.p2 % + s2.p3 flat); hold = 1.75× both.
+  // C0 (settings:{}) → ConditionNot[C2] branch active → use base tables.
+  // raw: FeatureShield{name:'shield_press', category:'skill', element:'cryo',
+  //   multipliers:[FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+  //     values:Talents.getList('skill.diona_base_shield_dmg_absorption'), condition:ConditionNot([C2])},...]}
+  // raw: FeatureShield{name:'shield_hold', category:'skill', element:'cryo',
+  //   multipliers:[FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+  //     values:Talents.getMulti({from:'skill.diona_base_shield_dmg_absorption',multi:1.75}),
+  //     condition:ConditionNot([C2])},...]}
+  // ShieldHoldRatio = 1.75 (raw/genshin_calc_pub/src/js/db/Char/Diona.js:129)
+  {
+    name: "shield_press",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
+    ],
+  },
+  {
+    name: "shield_hold",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: { getValue: (level: number) => 1.75 * DionaTalents.s2.p2.getValue(level) },
+        flatValues: { getValue: (level: number) => 1.75 * DionaTalents.s2.p3.getValue(level) },
+      },
+    ],
   },
   // --- Burst: Signature Mix (cryo) ---
   // raw/genshin_calc_pub/src/js/db/Char/Diona.js — FeatureDamageBurst burst_dmg + field_dmg
