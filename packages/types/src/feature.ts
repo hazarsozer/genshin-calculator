@@ -140,7 +140,8 @@ export interface FeatureMultiplierEntry {
    * .getValue(settings[bonusLeveling] || 1) / 100`. Mirrors her getValue (Multiplier.js:184-186)
    * = `values.getValue(level)/100 + bonusValues.getValue(getBonusLevel)/100`, getBonusLevel =
    * `getLevel(bonusLeveling) || 1` (:168-169) — the `|| 1` coerces an absent/0 stacks count to 1.
-   * Both absent ⇒ no bonus term (base-inert).
+   * (Our plain `settings[bonusLeveling]` omits the `_bonus` offsets her getLevel would add, but
+   * none exist for the only v5.8 key, so it is exact.) Both absent ⇒ no bonus term (base-inert).
    * Source: raw/.../db/Char/YunJin.js (yunjin_traditionalist_stacks → [2.5,5,7.5,11.5]).
    */
   readonly bonusLeveling?: string;

@@ -300,9 +300,11 @@ function baseDamageTerm(
   let talentPercent = (entry.values.getValue(talentLevel) / 100) * scalingFactor;
   // ADDITIVE bonus term keyed off a SEPARATE stacks level — her FeatureMultiplier.getValue
   // adds `bonusValues.getValue(getBonusLevel)/100` on top of the talent% fraction
-  // (Multiplier.js:184-186). `getBonusLevel = settings.getLevel(bonusLeveling) || 1` (:168-169):
-  // a PLAIN settings read with a `|| 1` fallback — NO `_bonus` offset (it is a stacks count,
-  // not a talent level). The sole v5.8 user is Yun Jin's NA-DMG teammate multiplier
+  // (Multiplier.js:184-186), `getBonusLevel = settings.getLevel(bonusLeveling) || 1` (:168-169).
+  // Her `getLevel` routes through getSkillLevelByName, which WOULD add `_bonus`/`_bonus_2`/
+  // `_bonus_party` offsets (Settings.js:49-57) — but no such offset setting exists for the only
+  // v5.8 bonusLeveling key, so it reduces to a plain settings read and our bare `ctx.settings[...]`
+  // read is exact here. The sole user is Yun Jin's NA-DMG teammate multiplier
   // (`yunjin_traditionalist_stacks` → [2.5,5,7.5,11.5]). Both fields absent ⇒ no term added ⇒
   // base-inert (the 58k-golden / armory surface is byte-unchanged).
   if (entry.bonusLeveling !== undefined && entry.bonusValues !== undefined) {
