@@ -24,7 +24,11 @@ export type FeatureCategory =
   | "burst"
   | "weapon"
   | "plunge"
-  | "reaction";
+  | "reaction"
+  // Her catch-all category for off-field / passive readouts (heal-over-time, devotion
+  // shields, buff-value statics) keyed `other.<name>`. `featureKey` already defaults an
+  // absent category to "other"; this lets a feature set it explicitly (P3.5.3 outputs).
+  | "other";
 
 /**
  * A multiplier entry within a Feature: scaling stat, talent level progression,
