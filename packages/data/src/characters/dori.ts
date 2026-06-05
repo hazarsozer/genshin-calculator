@@ -52,6 +52,8 @@ const talents: TalentResolver = {
     }
     if (talent === "burst") {
       if (name === "dori_connector_dmg") return DoriTalents.s3.p1;
+      if (name === "heal_dot_percent") return DoriTalents.s3.p2;
+      if (name === "heal_dot_flat")    return DoriTalents.s3.p3;
     }
     throw new Error(`dori talents: unknown path '${path}'`);
   },
@@ -176,6 +178,22 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.dori_connector_dmg") }],
   },
+  // --- Burst heal: burst.heal_dot = Connector per-tick heal (FeatureHeal, HP-scaled list) ---
+  // FeatureMultiplierList scaling:'hp*', getList('burst.heal_dot') = [s3.p2 (%), s3.p3 (flat)].
+  // No healing-bonus passive (EM ascension) → heal = base. raw/.../Char/Dori.js:95-102,315-325.
+  {
+    name: "heal_dot",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.heal_dot_percent"), flatValues: talents.get("burst.heal_dot_flat") },
+    ],
+  },
+  // --- DEFERRED: skill.dori_compound_interest (A4 energy-restore readout, fmt:"decimal", value 10) ---
+  // FeaturePostEffectValue(PostEffectStats percent=StatTable('',[5]) from an energy/count stat) — a flat ENERGY
+  // amount (not a heal/shield/static DMG value), fmt:"decimal". Not representable as a faithful damage-scaled
+  // output and the oracle can't validate it as a stat; deferred to a future energy/utility-readout sub-project.
+  // NEVER baked. raw/genshin_calc_pub/src/js/db/Char/Dori.js:282-290.
 ];
 
 // ---------------------------------------------------------------------------
