@@ -179,7 +179,7 @@ const constellationConditions: readonly Condition[] = [
 // A4AtkScale constant: 32 (TalentValues.A4AtkScale in raw/…/Faruzan.js:120)
 const A4_ATK_SCALE = 32;
 
-const partyMultipliers: readonly CharMultiplier[] = [
+const faruzanPartyMultipliers: readonly CharMultiplier[] = [
   // A4: faruzan_atk_base% × faruzan_atk_base added to each ANEMO hit of the recipient.
   // raw/genshin_calc_pub/src/js/db/Char/Faruzan.js:451-460
   {
@@ -217,6 +217,6 @@ export const faruzan: DbObjectChar = {
       // raw: ConditionNumber({name:'faruzan_atk_base', partyStat:'atk_base', max:10000}).
       { type: "number", name: "faruzan_atk_base", max: 10000 },
     ],
-    multipliers: partyMultipliers,
+    multipliers: faruzanPartyMultipliers,
   },
 };
