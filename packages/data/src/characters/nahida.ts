@@ -5,7 +5,7 @@
  * Dendro skill: press_dmg, hold_dmg, nahida_trikarma_purification_dmg
  * (dual ATK+EM multipliers; critRateBonuses/damageBonuses are burst-gated → OFF).
  * No burst damage asserted in fixture (burst is a party-buff only).
- * other.nahida_mastery_bonus: damageType="" → not asserted by harness.
+ * other.nahida_mastery_bonus: A1 EM→granted-EM readout, modelled as output:{kind:"static"} (P3.5.3).
  *
  * A4 passives (crit_rate_nahida, dmg_skill_nahida) require EM > 200 and are
  * driven by PostEffectStatsMastery with conditions — off at settings={} baseline
@@ -175,6 +175,21 @@ const features: readonly Feature[] = [
     multipliers: [
       { leveling: "", values: { getValue: (_level: number) => 200 }, source: "constellation6" },
       { scaling: "mastery*", leveling: "", values: { getValue: (_level: number) => 400 }, source: "constellation6" },
+    ],
+  },
+  // --- A1 "Compassion Illuminated" static readout: other.nahida_mastery_bonus = EM → granted EM (capped) ---
+  // masteryBuffPost = PostEffectStatsNahida (base = max(mastery_total, party_max_mastery) → mastery_total at solo),
+  // percent=StatTable('mastery',[A1MasteryRatio/100=0.25]), statCap=ValueTable([A1MasteryCap=250]). 'mastery' name
+  // not isPercent + fmt="" → displayed = min(0.25×mastery_total, 250). values = 0.25×100 = 25 → (25/100)×170.2 =
+  // 42.55; capValue = 250 (inert here). The asc1+compassion+illusory_heart toggles gate APPLICATION not the readout;
+  // party_max_mastery branch inert at solo. raw/genshin_calc_pub/src/js/db/Char/Nahida.js:154-170,320-325;
+  // PostEffect/Stats/Nahida.js (getBaseValueTree = CMax([mastery_total, party_max_mastery])).
+  {
+    name: "nahida_mastery_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "mastery", leveling: "", values: { getValue: () => 25 }, capValue: 250 },
     ],
   },
 ];
