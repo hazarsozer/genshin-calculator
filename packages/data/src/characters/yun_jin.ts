@@ -12,9 +12,11 @@
  * Off at the canonical C0 solo build (no party / flag off) → her own direct damage
  * features are unaffected.
  *
+ * Non-damage outputs (output: { kind: "shield" }):
+ *   - skill.shield — HP-scaled skill shield (s2.p1 % + s2.p2 flat)
+ *
  * Display-only features (damageType:"") — skipped:
  *   - burst.yunjin_dmg_bonus (PostEffectStatsDef display)
- *   - skill.shield (FeatureShield)
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/YunJin.js
@@ -50,6 +52,8 @@ const talents: TalentResolver = {
       if (name === "press_dmg") return YunJinTalents.s2.p3;
       if (name === "yunjin_charge_1_dmg") return YunJinTalents.s2.p4;
       if (name === "yunjin_charge_2_dmg") return YunJinTalents.s2.p5;
+      if (name === "shield_percent") return YunJinTalents.s2.p1;
+      if (name === "shield_flat")    return YunJinTalents.s2.p2;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return YunJinTalents.s3.p1;
@@ -188,6 +192,18 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "geo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
+  },
+  // --- Shield (FeatureShield): skill.shield ---
+  // FeatureMultiplierList: (percent/100 × hp_total) + flat, then × (1 + shield).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/YunJin.js:334-344 (FeatureShield)
+  // skill.shield: s2.p1 (% HP) + s2.p2 (flat)
+  {
+    name: "shield",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
+    ],
   },
 ];
 
