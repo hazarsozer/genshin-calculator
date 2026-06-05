@@ -6,8 +6,11 @@
  * dendro charged hit, plunge/low/high (dendro), dendro skill (skill_dmg), dendro
  * burst (baizu_spiritvein_dmg — note raw typo "baizu" not "baizhu").
  *
- * Heals/shields have empty damageType in the fixture → not damage triples; omitted:
- *   skill.heal, burst.baizhu_seamless_shield, burst.baizhu_seamless_heal.
+ * Non-damage outputs (output: { kind: "shield" }):
+ *   - burst.baizhu_seamless_shield — HP-scaled burst shield (s3.p1 % + s3.p2 flat)
+ *
+ * Heals/shields still omitted (not ported in this pass):
+ *   skill.heal, burst.baizhu_seamless_heal.
  * FeaturePostEffectValue outputs (bloom/quicken bonuses) also have empty damageType
  * → not damage triples; omitted: burst.baizhu_bloom_bonus, burst.baizhu_quicken_bonus.
  *
@@ -50,6 +53,8 @@ const talents: TalentResolver = {
     if (talent === "burst") {
       // raw: Talents.get('burst.baizu_spiritvein_dmg') → s3.p7
       if (name === "baizu_spiritvein_dmg") return BaizhuTalents.s3.p7;
+      if (name === "baizhu_seamless_shield_percent") return BaizhuTalents.s3.p1;
+      if (name === "baizhu_seamless_shield_flat")    return BaizhuTalents.s3.p2;
     }
     throw new Error(`baizhu talents: unknown path '${path}'`);
   },
@@ -171,6 +176,18 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "dendro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.baizu_spiritvein_dmg") }],
+  },
+  // --- Shield (FeatureShield): burst.baizhu_seamless_shield ---
+  // FeatureMultiplierList: (percent/100 × hp_total) + flat, then × (1 + shield).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Baizhu.js:339-350 (FeatureShield)
+  // baizhu_seamless_shield: s3.p1 (% HP) + s3.p2 (flat)
+  {
+    name: "baizhu_seamless_shield",
+    category: "burst",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.baizhu_seamless_shield_percent"), flatValues: talents.get("burst.baizhu_seamless_shield_flat") },
+    ],
   },
 ];
 
