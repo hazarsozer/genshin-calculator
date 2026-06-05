@@ -9,9 +9,8 @@
  *     "plunge" (so the dmg_<type> key is dmg_plunge, matching the fixture).
  *   - Burst: burst_dmg + xianyun_starwicker_dmg.
  *
- * Heals (burst.heal, burst.heal_dot, C4 mystery heals) carry empty damageType →
- * not asserted by the golden suite, and FeatureHeal is out of the TS feature model;
- * omitted.
+ * Heals (burst.heal, burst.heal_dot) modelled as output:{kind:"heal"} (ATK-scaled,
+ * P3.5.3). The 3 C4 "mystery" heals (ConditionConstellation(4)) stay omitted (solo C0).
  *
  * SOLO-C0 OFF passives (deliberately not folded):
  *   - A1 `xianyun_galefeather_pursuit` — a plunge crit-rate stacks condition
@@ -58,6 +57,10 @@ const talents: TalentResolver = {
     if (talent === "burst") {
       if (name === "burst_dmg")               return XianyunTalents.s3.p1;
       if (name === "xianyun_starwicker_dmg")  return XianyunTalents.s3.p2;
+      if (name === "heal_percent")     return XianyunTalents.s3.p4;
+      if (name === "heal_flat")        return XianyunTalents.s3.p3;
+      if (name === "heal_dot_percent") return XianyunTalents.s3.p6;
+      if (name === "heal_dot_flat")    return XianyunTalents.s3.p5;
     }
     throw new Error(`xianyun talents: unknown path '${path}'`);
   },
@@ -176,6 +179,26 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "anemo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.xianyun_starwicker_dmg") }],
+  },
+  // --- Burst heals (FeatureHeal) — ATK-scaled (her default), output:{kind:"heal"} ---
+  // burst.heal: cast heal — ATK% (s3.p4) + flat (s3.p3). burst.heal_dot: field per-tick — ATK% (s3.p6) + flat (s3.p5).
+  // raw/genshin_calc_pub/src/js/db/Char/Xianyun.js:264-283 (FeatureMultiplierList, char_skill_burst, partyHeal).
+  // The 3 C4 "mystery" heals (ConditionConstellation(4)) are gated OFF at C0 → omitted.
+  {
+    name: "heal",
+    category: "burst",
+    output: { kind: "heal", partyHeal: true },
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.heal_percent"), flatValues: talents.get("burst.heal_flat") },
+    ],
+  },
+  {
+    name: "heal_dot",
+    category: "burst",
+    output: { kind: "heal", partyHeal: true },
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.heal_dot_percent"), flatValues: talents.get("burst.heal_dot_flat") },
+    ],
   },
 ];
 
