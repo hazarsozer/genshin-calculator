@@ -8,7 +8,7 @@
  *   - skill.shield_press: HP-scaled (s2.p2 % HP + s2.p3 flat), C0 path.
  *   - skill.shield_hold: HP-scaled × 1.75 (s2.p2*1.75 % HP + s2.p3*1.75 flat), C0 path.
  *     raw TalentValues.ShieldHoldRatio = 1.75.
- * Burst heal (burst.heal_dot) — deferred to P3.5.3 heal bucket.
+ * Burst heal (output:{kind:"heal"}): burst.heal_dot — HP-scaled (s3.p3 % HP + s3.p4 flat).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Diona.js
@@ -47,6 +47,8 @@ const talents: TalentResolver = {
     if (talent === "burst") {
       if (name === "burst_dmg") return DionaTalents.s3.p1;
       if (name === "field_dmg") return DionaTalents.s3.p2;
+      if (name === "heal_dot_percent") return DionaTalents.s3.p3;
+      if (name === "heal_dot_flat")    return DionaTalents.s3.p4;
     }
     throw new Error(`diona talents: unknown path '${path}'`);
   },
@@ -177,6 +179,16 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "cryo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.field_dmg") }],
+  },
+  // --- Burst heal (FeatureHeal): burst.heal_dot — HP-scaled (s3.p3 % HP + s3.p4 flat) ---
+  // raw/genshin_calc_pub/src/js/db/Char/Diona.js:356-366 (FeatureMultiplierList scaling:'hp*', char_skill_burst)
+  {
+    name: "heal_dot",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.heal_dot_percent"), flatValues: talents.get("burst.heal_dot_flat") },
+    ],
   },
 ];
 
