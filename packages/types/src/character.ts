@@ -283,12 +283,13 @@ export interface CharPostEffect {
   };
   /**
    * Conditional flat addend to the resolved ratio (her PostEffectStats.percentBonus ×
-   * bonusCondition, Stats.js:41-50, 83-88): when `condition` is absent or evaluates true,
-   * `value` is ADDED to the ratio BEFORE it multiplies the `from` stat (and before any
-   * stacks multiply — her `CSum([value, bonus])` inside `CMulti([…, base])`). Absent ⇒
-   * no addend (base-inert). General by design: `condition` accepts ANY Condition (Iansan
-   * reuses this with a value-comparison gate, not just a boolean), evaluated via the same
-   * `evaluate` the gate `conditions` use. Source: raw/.../db/Char/Bennet.js:698-706
+   * bonusCondition, Stats.js:41-50, 77-88): when `condition` is absent or evaluates true,
+   * `value` is ADDED to the ratio AFTER any stacks multiply and BEFORE the ratio multiplies
+   * the `from` stat — her tree is `CSum([value × stacks, bonus])` inside `CMulti([…, base])`
+   * (so the addend is FLAT, not scaled by stacks). Absent ⇒ no addend (base-inert). General
+   * by design: `condition` accepts ANY Condition (Iansan reuses this with a value-comparison
+   * gate, not just a boolean), evaluated via the same `evaluate` the gate `conditions` use.
+   * Source: raw/.../db/Char/Bennet.js:698-706
    * (percentBonus ValueTable([C1BuffBonus=20 / 100]) + bonusCondition party.bennet_constellation_1).
    */
   readonly percentBonus?: { readonly value: number; readonly condition?: Condition };

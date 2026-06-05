@@ -429,9 +429,10 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
         ratio += table.getValue(lvl) * stacks;
       }
       // Conditional flat addend on the ratio (her percentBonus × bonusCondition,
-      // PostEffect/Stats.js:41-50,83-88): when the gate is absent or active, add `value`
-      // to the ratio BEFORE it multiplies the `from` stat (her CSum([value, bonus]) inside
-      // CMulti([…, base])). Absent → no addend (base-inert: 58k goldens byte-unchanged).
+      // PostEffect/Stats.js:41-50,77-88): when the gate is absent or active, add percentBonus.value
+      // to the ratio AFTER any stacks multiply and BEFORE it multiplies the `from` stat (her
+      // CSum([value × stacks, bonus]), bonus = percentBonus.value). Absent → no addend
+      // (base-inert: 58k goldens byte-unchanged).
       if (
         effect.percentBonus !== undefined &&
         (effect.percentBonus.condition === undefined || evaluate(effect.percentBonus.condition, settings))
