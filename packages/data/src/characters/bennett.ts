@@ -52,6 +52,8 @@ const talents: TalentResolver = {
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return BennettTalents.s3.p1;
+      if (name === "heal_dot_percent") return BennettTalents.s3.p2;
+      if (name === "heal_dot_flat") return BennettTalents.s3.p3;
     }
     throw new Error(`bennett talents: unknown path '${path}'`);
   },
@@ -231,6 +233,26 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
+  // --- Burst heal: burst.heal_dot = Fantastic Voyage per-tick HP regen (FeatureHeal, HP-scaled list) ---
+  // FeatureMultiplierList scaling:'hp*', leveling:'char_skill_burst', values=getList('burst.heal_dot') =
+  // [s3.p2 (% of HP), s3.p3 (flat)]. base = (s3.p2/100)×hp_total + s3.p3; no healing-bonus passive (ER ascension).
+  // raw/genshin_calc_pub/src/js/db/Char/Bennet.js:120-127,441-451.
+  {
+    name: "heal_dot",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.heal_dot_percent"), flatValues: talents.get("burst.heal_dot_flat") },
+    ],
+  },
+  // --- DEFERRED: burst.atk_bonus (Fantastic Voyage ATK-buff readout) ---
+  // selfBuffPost = PostEffectStats from:'atk_base' (white base ATK) × atk_ratio×0.01 → readout = atk_base×1.008
+  // (≈1695.6 = 1682.2×1.008). The ACTUAL buff stat IS modelled via the `fantasticVoyageAtk` CharPostEffect below
+  // (buildStats reads atk_base there). But a static OUTPUT scales on the EVAL-time bag, which does NOT expose
+  // atk_base (only atk_total/hp_total/…) — same blocker as kujou_sara's sara_atk_bonus. Faithfully modelling this
+  // readout needs an engine change to emit atk_base into the eval DamageContext → deferred to the focused atk_base
+  // eval-emission engine pass (golden-critical buildStats emit; out of this data-port's scope). NEVER baked.
+  // raw/genshin_calc_pub/src/js/db/Char/Bennet.js:156-175,453-457.
 ];
 
 // ---------------------------------------------------------------------------
