@@ -40,8 +40,8 @@
     "description": "Teammate partyData KIT BUFFS applied to a recipient active char (the inverse of the buff-clean FILLER set — the teammate INTENTIONALLY leaks its kit via setPartyChars + baked setBuffsSettings). Reps span the mechanism buckets: A=static (Zhongli universal res-shred), B=postEffect (Bennett base-ATK->flat-ATK, Kazuha EM->elemental-dmg%), C=multiplier (Shenhe Icy Quill ATK-scaled cryo bonus). Each fixture = the recipient's damage with the teammate buff ON. RED until P3.5.2 models partyData (engine: Task 2; data: Tasks 3-5). Source: CalcObject/Buffs.js:149-209, DbObject/Char.js:56-97.",
     "id": "party-buffs"
   },
-  "featureTotal": 1788,
-  "itemCount": 63,
+  "featureTotal": 1813,
+  "itemCount": 64,
   "items": [
     {
       "derived": {
@@ -585,6 +585,41 @@
         "resonance_element_1": "dendro"
       },
       "slug": "emilie-dendrores-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "escoffier",
+            "settings": {
+              "escoffier_atk_total": 2200,
+              "party_escoffier_fresh_fragrant_stew_is_an_art": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ayaka",
+      "repSlug": "kamisato_ayaka",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "escoffier-cryo-c2-on-ayaka",
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.the_alley_flash",
