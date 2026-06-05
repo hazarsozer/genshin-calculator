@@ -29,9 +29,11 @@
  * Recomputes per build — the previous code hardcoded the fixed build's
  * min(0.0007·28533.38835, 28) = 19.973371845, correct ONLY at that build.
  *
- * Display-only fixture rows skipped by the harness (empty damageType):
- *   furina_fanfare_dmg_bonus / heal_bonus (0 at 0 fanfare stacks in solo C0),
- *   furina_singers_of_the_streams_healing (skill heal), furina_heal_dot (A1 heal).
+ * Non-damage outputs modelled (P3.5.3):
+ *   furina_fanfare_dmg_bonus / heal_bonus — scale on the SELF `furina_fanfare_stacks` stat
+ *     (=0 in solo C0 → genuine 0; the raw s3.p5/s3.p6 ratio is inert here, never baked);
+ *   furina_singers_of_the_streams_healing (skill heal, s2.p9 % + s2.p10 flat),
+ *   furina_heal_dot (A1 "drain" heal = 2% Max HP, ValueTable[2], auto-active at A6). All HP-scaled.
  * Reactions (rupture / electrocharged / shatter) are auto-injected by the loader
  * from the hydro element.
  *
@@ -75,9 +77,13 @@ const talents: TalentResolver = {
       if (name === "furina_gentilhomme_usher_dmg") return FurinaTalents.s2.p3;
       if (name === "furina_surintendante_chevalmarin_dmg") return FurinaTalents.s2.p4;
       if (name === "furina_mademoiselle_crabaletta_dmg") return FurinaTalents.s2.p5;
+      if (name === "furina_singers_healing_percent") return FurinaTalents.s2.p9;
+      if (name === "furina_singers_healing_flat")    return FurinaTalents.s2.p10;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return FurinaTalents.s3.p1;
+      if (name === "furina_fanfare_dmg_ratio")  return FurinaTalents.s3.p5;
+      if (name === "furina_fanfare_heal_ratio")  return FurinaTalents.s3.p6;
     }
     throw new Error(`furina talents: unknown path '${path}'`);
   },
@@ -219,6 +225,49 @@ const features: readonly Feature[] = [
     element: "hydro",
     multipliers: [
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") },
+    ],
+  },
+  // --- Heals (FeatureHeal, HP-scaled) ---
+  // skill.furina_singers_of_the_streams_healing: Salon Solitaire per-tick heal — getList = [s2.p9 (%), s2.p10 (flat)].
+  // raw/genshin_calc_pub/src/js/db/Char/Furina.js:113-119,369-376. No healing-bonus passive (crit-rate ascension).
+  {
+    name: "furina_singers_of_the_streams_healing",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.furina_singers_healing_percent"), flatValues: talents.get("skill.furina_singers_healing_flat") },
+    ],
+  },
+  // other.furina_heal_dot: A1 "Endless Waltz"-adjacent drain heal — fixed 2% Max HP (ValueTable[2]), source
+  // ascension1, auto-active at A6. raw/genshin_calc_pub/src/js/db/Char/Furina.js:423-428.
+  {
+    name: "furina_heal_dot",
+    category: "other",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "ascension1", values: { getValue: () => 2 } },
+    ],
+  },
+  // --- Fanfare static readouts (burst.furina_fanfare_dmg_bonus / heal_bonus) ---
+  // fanfareDmgPost/HealingPost = PostEffectStats from:'furina_fanfare_stacks' (SELF fanfare count = 0 at solo),
+  // percent=getMulti('burst.furina_fanfare_dmg_ratio'→dmg_all) / ('...heal_ratio'→healing_recv), maxBase cap.
+  // Readout = ratio × furina_fanfare_stacks = 0 (the stat is 0 at C0 solo). Modelled as scaling on the 0-stat ×
+  // the raw ratio table (s3.p5/s3.p6, inert here); the genuine 0 comes from the 0-stat, never baked. The teammate
+  // version (party_furina_fanfare_stacks → dmg_all) is in partyData below. raw/.../Char/Furina.js:175-193,392-401.
+  {
+    name: "furina_fanfare_dmg_bonus",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "furina_fanfare_stacks", leveling: "char_skill_burst", values: talents.get("burst.furina_fanfare_dmg_ratio") },
+    ],
+  },
+  {
+    name: "furina_fanfare_heal_bonus",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "furina_fanfare_stacks", leveling: "char_skill_burst", values: talents.get("burst.furina_fanfare_heal_ratio") },
     ],
   },
 ];
