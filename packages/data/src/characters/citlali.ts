@@ -216,17 +216,17 @@ const constellationConditions: readonly Condition[] = [
 // Other partyData conditions (A1 res-shred, C2 EM share, C6 points) deferred to variant-rep pass.
 // ---------------------------------------------------------------------------
 
-// C1MasteryDmgBonus = 200 (Citlali.js:136).
-const CITLALI_C1_MASTERY_DMG_BONUS = 200; // raw Citlali.js:136
+// C1MasteryDmgBonus = 200 (raw/genshin_calc_pub/src/js/db/Char/Citlali.js:136)
+const C1_MASTERY_DMG_BONUS = 200;
 
 const citlaliPartyMultipliers: readonly CharMultiplier[] = [
-  // C1: citlali_mastery_total× 200% EM flat bonus added to every normal/charged/plunge/skill/burst hit.
+  // C1: citlali_mastery_total × 200% EM flat bonus added to every normal/charged/plunge/skill/burst hit.
   // No element filter (all elements). raw/genshin_calc_pub/src/js/db/Char/Citlali.js:497-505
   {
     source: "citlali",
     scaling: "citlali_mastery_total",
     leveling: "",
-    values: { getValue: (): number => CITLALI_C1_MASTERY_DMG_BONUS },
+    values: { getValue: (): number => C1_MASTERY_DMG_BONUS },
     condition: { type: "boolean", name: "party.citlali_radiant_blades_of_centzon_mimixcoah" },
     target: { damageTypes: ["normal", "charged", "plunge", "skill", "burst"] },
   } satisfies CharMultiplier,

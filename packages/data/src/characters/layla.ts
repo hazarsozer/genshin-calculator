@@ -210,8 +210,8 @@ const constellationConditions: readonly Condition[] = [
 // so it still needs a RAW_BAG_SCALING_KEYS entry.
 // ---------------------------------------------------------------------------
 
-// C4NormalBonus = 5 (raw/genshin_calc_pub/src/js/db/Char/Layla.js:127).
-const LAYLA_C4_NORMAL_BONUS = 5; // raw Layla.js:127
+// C4NormalBonus = 5 (raw/genshin_calc_pub/src/js/db/Char/Layla.js:127)
+const C4_NORMAL_BONUS = 5;
 
 const laylaPartyMultipliers: readonly CharMultiplier[] = [
   // C4: layla_max_hp × 5% flat normal/charged DMG bonus on recipient.
@@ -220,7 +220,7 @@ const laylaPartyMultipliers: readonly CharMultiplier[] = [
     source: "constellation4",
     scaling: "layla_max_hp",
     leveling: "",
-    values: { getValue: (): number => LAYLA_C4_NORMAL_BONUS },
+    values: { getValue: (): number => C4_NORMAL_BONUS },
     condition: { type: "boolean", name: "party.layla_starry_illumination" },
     target: { damageTypes: ["normal", "charged"] },
   } satisfies CharMultiplier,
