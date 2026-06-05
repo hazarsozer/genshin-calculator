@@ -45,6 +45,7 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "skill_dmg") return GorouTalents.s2.p1;
+      if (name === "gorou_def_bonus") return GorouTalents.s2.p2;
     }
     if (talent === "burst") {
       if (name === "burst_dmg")                   return GorouTalents.s3.p1;
@@ -181,6 +182,18 @@ const features: readonly Feature[] = [
     multipliers: [
       { leveling: "char_skill_burst", scaling: "def", values: talents.get("burst.gorou_crystal_collapse_dmg") },
       a4BurstDefTerm,
+    ],
+  },
+  // --- Skill static readout: skill.gorou_def_bonus = General's War Banner flat DEF bonus (raw talent value) ---
+  // FeatureStatic + FeatureMultiplierStatic (her getTreeStatValue = CConst(100) → term = talent value, NO stat
+  // scaling). Modelled as values:0 + flatValues:<talent> → base term = 0×stat + talent = the raw value.
+  // char_skill_elemental, format="". raw/genshin_calc_pub/src/js/db/Char/Gorou.js:235-245
+  {
+    name: "gorou_def_bonus",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      { leveling: "char_skill_elemental", values: { getValue: () => 0 }, flatValues: talents.get("skill.gorou_def_bonus") },
     ],
   },
 ];
