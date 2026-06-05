@@ -54,6 +54,8 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "skill_dmg") return IneffaTalents.s2.p1;
+      if (name === "shield_percent") return IneffaTalents.s2.p2;
+      if (name === "shield_flat") return IneffaTalents.s2.p3;
       if (name === "ineffa_birgitta_dmg") return IneffaTalents.s2.p4;
     }
     if (talent === "burst") {
@@ -183,6 +185,18 @@ const features: readonly Feature[] = [
     category: "skill",
     element: "electro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
+  },
+  // --- Shield: Carrier Frequency (ATK-scaled) ---
+  // raw: FeatureShield, category:'skill', FeatureMultiplierList (no scaling → ATK default).
+  // getList('skill.ineffa_base_shield_dmg_absorption') → [s2.p2 (%), s2.p3 (flat)].
+  // raw/genshin_calc_pub/src/js/db/Char/Ineffa.js:266-275
+  {
+    name: "ineffa_base_shield_dmg_absorption",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
+    ],
   },
   {
     name: "ineffa_birgitta_dmg",
