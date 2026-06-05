@@ -243,4 +243,39 @@ export const mavuika: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData (P3.5.2 A-straggler) — Mavuika's teammate buffs.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Mavuika.js:723-788.
+  partyData: {
+    conditions: [
+      // C2 "The Ashen Price" / C6 "Humanity's Name, Unfettered" — enemy DEF -20%,
+      // active if EITHER constellation toggle is on. raw: Condition{enemy_def_reduce:C2DefReduce,
+      // subConditions:[Or(party.mavuika_the_ashen_price, party.mavuika_humanitys_name_unfettered)]}.
+      {
+        type: "static",
+        stats: { enemy_def_reduce: 20 },
+        condition: {
+          type: "or",
+          items: [
+            { type: "boolean", name: "party.mavuika_the_ashen_price" },
+            { type: "boolean", name: "party.mavuika_humanitys_name_unfettered" },
+          ],
+        },
+      },
+      // A4 "Kiongozi" — shared all-DMG bonus, a slider keyed `party_mavuika_kiongozi`
+      // whose clamped value lands on `dmg_all` (her ConditionNumber `stat:'dmg_all'`,
+      // capped at BurstMaxBonus=40%). The text_* display stats are filtered (not modelled).
+      // raw: ConditionNumber{name:'party_mavuika_kiongozi', stat:'dmg_all', max:BurstMaxBonus}.
+      { type: "number", name: "party_mavuika_kiongozi", stat: "dmg_all", max: 40 },
+      // C4 "The Leader's Resolve" — a TOGGLE adding +10% all-DMG, only while Kiongozi is active.
+      // raw: ConditionBoolean{name:'mavuika_the_leaders_resolve', stats:{dmg_all:C4DmgBonus},
+      // subConditions:[Boolean(party_mavuika_kiongozi)]} — requires its OWN toggle ON (not just
+      // kiongozi>0). OFF in the rep → not applied (faithful: the oracle omits it at C0).
+      {
+        type: "boolean",
+        name: "mavuika_the_leaders_resolve",
+        stats: { dmg_all: 10 },
+        condition: { type: "boolean", name: "party_mavuika_kiongozi" },
+      },
+    ],
+  },
 };
