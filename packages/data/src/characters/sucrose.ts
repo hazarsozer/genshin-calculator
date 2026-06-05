@@ -6,10 +6,9 @@
  * anemoskill hits: pyro/hydro/cryo/electro each using the same anemoskill_dmg
  * multiplier but different element for resistance lookup).
  *
- * A4 "Mollis Favonius" shares 20% of Sucrose's EM with the party — this is a
- * PARTY buff and is NOT included in solo damage; the fixture key
- * other.sucrose_mastery_bonus has damageType="" so the golden harness filters
- * it automatically.
+ * A4 "Mollis Favonius" shares 20% of Sucrose's EM with the party. The self-readout
+ * other.sucrose_mastery_bonus (= 0.2 × her EM) is modelled as output:{kind:"static"}
+ * (P3.5.3); the teammate-buff side is in partyData.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Sucrose.js
@@ -156,6 +155,18 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "electro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.anemoskill_dmg") }],
+  },
+  // --- A4 "Mollis Favonius" static readout: other.sucrose_mastery_bonus = 20% of Sucrose's EM ---
+  // FeaturePostEffectValue(PostEffectStatsMastery, percent=const 0.2), auto-active at A6, format="" (no ×100).
+  // The TEAMMATE-buff side is modelled in partyData below; this is the self-readout value (0.2 × mastery_total).
+  // raw/genshin_calc_pub/src/js/db/Char/Sucrose.js:244-251
+  {
+    name: "sucrose_mastery_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "mastery", leveling: "", values: { getValue: () => 20 } },
+    ],
   },
 ];
 
