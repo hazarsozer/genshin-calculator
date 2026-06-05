@@ -3,7 +3,7 @@
  *
  * 4-hit normal combo, 2-hit charged (charged_hit_total parent + child hit_1/hit_2),
  * plunge/low/high, electro skill (skill_dmg + ring_dmg HP-plus-mastery-A4),
- * electro burst (HP-scaled), ring heal (not tested, empty damageType).
+ * electro burst (HP-scaled), ring heal (kuki_shinobu_ring_healing — HP + mastery-A4).
  *
  * A4 "Heart's Repose": adds 25% × mastery base damage to all skill hits (auto-active
  * at A6). Modelled as a second multiplier with scaling:'mastery' on each skill feature.
@@ -42,6 +42,8 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "skill_dmg") return KukiTalents.s2.p1;
+      if (name === "kuki_shinobu_ring_healing") return KukiTalents.s2.p2;
+      if (name === "kuki_shinobu_ring_healing_flat") return KukiTalents.s2.p3;
       if (name === "kuki_shinobu_ring_dmg") return KukiTalents.s2.p4;
     }
     if (talent === "burst") {
@@ -54,6 +56,11 @@ const talents: TalentResolver = {
 // A4 "Heart's Repose": constant 25% × mastery added to skill hits (auto-active A6).
 // raw: new ValueTable([A4MasteryDmg=25]) with source:'ascension4' → talentLevel=1.
 const a4MasteryValues = { getValue: (_level: number) => 25 };
+
+// A4 mastery-scaling term for the ring heal (auto-active A6).
+// raw: new FeatureMultiplier({ scaling:'mastery*', source:'ascension4', values:new ValueTable([75]) })
+// Kuki.js:284-289. ValueTable([75]) → getValue(1)=75.
+const a4MasteryHealValues = { getValue: (_level: number) => 75 };
 
 // ---------------------------------------------------------------------------
 // Features
@@ -141,6 +148,28 @@ const features: readonly Feature[] = [
       { leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") },
       // A4: 25% × mastery base term, always-active at A6 (Kuki.js:327-337)
       { scaling: "mastery", leveling: "ascension4", values: a4MasteryValues },
+    ],
+  },
+  // --- kuki_shinobu_ring_healing: HP-scaled + flat (FeatureMultiplierList) + A4 mastery ---
+  // raw: FeatureHeal({ name:'kuki_shinobu_ring_healing', category:'skill',
+  //   multipliers:[
+  //     FeatureMultiplierList({ scaling:'hp*', leveling:'char_skill_elemental',
+  //       values:[s2.p2 (% HP), s2.p3 (flat HP)] }),   ← values[0]=%, values[1]=flat
+  //     FeatureMultiplier({ scaling:'mastery*', source:'ascension4', values:[75],
+  //       condition:ConditionAscensionChar({ascension:4}) }),
+  //   ] }) — Kuki.js:275-291
+  {
+    name: "kuki_shinobu_ring_healing",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.kuki_shinobu_ring_healing"),
+        flatValues: talents.get("skill.kuki_shinobu_ring_healing_flat"),
+      },
+      { scaling: "mastery", leveling: "ascension4", values: a4MasteryHealValues },
     ],
   },
   // raw: FeatureDamageSkill kuki_shinobu_ring_dmg (Kuki.js:292-301) + A4 mastery term
