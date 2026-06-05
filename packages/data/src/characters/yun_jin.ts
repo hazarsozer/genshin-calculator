@@ -278,8 +278,10 @@ export const yunJin: DbObjectChar = {
   multipliers: [],
   conditions: constellationConditions,
   partyData: {
-    // loadStats mirrors raw YunJin.js:478-482 (def_total stat + char_skill_elemental setting —
-    // descriptive metadata only; the engine consumes the baked teammate settings directly).
+    // loadStats: raw YunJin.js:478-482 lists settings:['char_skill_elemental'], but that's a
+    // raw-side slip — the multiplier's leveling is yunjin_char_skill_burst, so we record
+    // char_skill_burst here. Descriptive metadata only; the engine consumes the baked
+    // teammate settings directly.
     loadStats: {
       stats: ["def_total"],
       settings: ["char_skill_burst"],

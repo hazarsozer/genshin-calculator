@@ -304,7 +304,7 @@ function baseDamageTerm(
   // (`yunjin_traditionalist_stacks` → [2.5,5,7.5,11.5]). Both fields absent ⇒ no term added ⇒
   // base-inert (the 58k-golden / armory surface is byte-unchanged).
   if (entry.bonusLeveling !== undefined && entry.bonusValues !== undefined) {
-    const bonusLevel = (ctx.settings[entry.bonusLeveling] as number | undefined) ?? 1;
+    const bonusLevel = (ctx.settings[entry.bonusLeveling] as number | undefined) || 1;
     talentPercent += entry.bonusValues.getValue(bonusLevel) / 100;
   }
 

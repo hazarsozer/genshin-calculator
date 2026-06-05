@@ -128,12 +128,14 @@ export interface FeatureMultiplierEntry {
   /**
    * Optional ADDITIVE bonus term on the talent% fraction, keyed off a SEPARATE stacks
    * level (her FeatureMultiplier.bonusLeveling/bonusValues): `talentPercent += bonusValues
-   * .getValue(settings[bonusLeveling] ?? 1) / 100`. Mirrors her getValue (Multiplier.js:184-186)
+   * .getValue(settings[bonusLeveling] || 1) / 100`. Mirrors her getValue (Multiplier.js:184-186)
    * = `values.getValue(level)/100 + bonusValues.getValue(getBonusLevel)/100`, getBonusLevel =
-   * `getLevel(bonusLeveling) || 1` (:168-169). Both absent ⇒ no bonus term (base-inert).
+   * `getLevel(bonusLeveling) || 1` (:168-169) — the `|| 1` coerces an absent/0 stacks count to 1.
+   * Both absent ⇒ no bonus term (base-inert).
    * Source: raw/.../db/Char/YunJin.js (yunjin_traditionalist_stacks → [2.5,5,7.5,11.5]).
    */
   readonly bonusLeveling?: string;
+  /** Companion per-stacks-level value table for {@link bonusLeveling} (1-indexed). */
   readonly bonusValues?: TalentTable;
   /**
    * CHAR-LEVEL multipliers only: which features this multiplier applies to.
