@@ -66,6 +66,8 @@ const talents: TalentResolver = {
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return ArlecchinoTalents.s3.p1;
+      if (name === "arlecchino_heal_atk") return ArlecchinoTalents.s3.p4;
+      if (name === "arlecchino_heal") return ArlecchinoTalents.s3.p3;
     }
     throw new Error(`arlecchino talents: unknown path '${path}'`);
   },
@@ -192,6 +194,27 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "pyro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
+  },
+  // --- arlecchino_heal: burst heal (FeatureHeal, subtractBoL:true) ---
+  // raw: FeatureHeal({ category:'burst', name:'arlecchino_heal', subtractBoL:true,
+  //   multipliers:[
+  //     new FeatureMultiplier({ leveling:'char_skill_burst',
+  //       values: Talents.get('burst.arlecchino_heal_atk') }),          ← ATK-scaled (s3.p4=150%)
+  //     new FeatureMultiplierBondOfLife({ scaling:'hp*', leveling:'char_skill_burst',
+  //       values: Talents.get('burst.arlecchino_heal') }),               ← HP-scaled × BoL%
+  //   ] })  Arlecchino.js:340-355.
+  // FeatureMultiplierBondOfLife adds treeBonus multiplier = bond_of_life stat.
+  // At BoL=0 in the canonical build the HP term = 150% × HP × 0 = 0; subtractBoL term is also 0.
+  // Only the ATK multiplier contributes (oracle = 150% × ATK_total = 3049.06).
+  // HP×BoL multiplier OMITTED — zero at the fixed build; engine has no FeatureMultiplierBondOfLife
+  // treeBonus concept. If BoL support is added in the future, port the second multiplier then.
+  {
+    name: "arlecchino_heal",
+    category: "burst",
+    output: { kind: "heal", subtractBoL: true },
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.arlecchino_heal_atk") },
+    ],
   },
 ];
 
