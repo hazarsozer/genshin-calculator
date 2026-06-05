@@ -185,11 +185,11 @@ export interface FeatureMultiplierEntry {
  *     Escoffier → `["cryo"]`). ABSENT/empty → no element constraint (base-inert).
  *
  * The chain is AND: a feature must satisfy every PRESENT filter. The remaining raw
- * fields (`damageTypesExclude`, `tags`, `options`) are unused by any in-scope v5.8
+ * fields (`damageTypesExclude`, `options`) are unused by any in-scope v5.8
  * char-level multiplier and are deferred until a source needs them.
  *
  * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Target.js
- *         (`isMatchFeature`: the damageTypes branch + the damageElements branch).
+ *         (`isMatchFeature`: the damageTypes + damageElements + tags branches).
  */
 export interface FeatureMultiplierTarget {
   /** Feature damage types this multiplier applies to (e.g. `["charged"]`, `["burst"]`). */
@@ -202,6 +202,14 @@ export interface FeatureMultiplierTarget {
    * armory multiplier sets it, so the new branch is never entered for them.
    */
   readonly damageElements?: readonly string[];
+  /**
+   * Feature TAGS this multiplier applies to (the only v5.8 tag is `"plunge_shockwave"`).
+   * When present and non-empty, the feature's {@link Feature.tags} must intersect it
+   * (her `isMatchFeature` tags branch, Target.js:41-53). Absent/empty → the tag filter
+   * is skipped (no constraint). The ONLY v5.8 setter is Xianyun's A4 teammate multiplier
+   * (`Xianyun.js:509-511`); no base/cons/armory multiplier sets it → base-inert.
+   */
+  readonly tags?: readonly string[];
 }
 
 /**
@@ -243,6 +251,16 @@ export interface Feature {
    * Source: raw/.../Feature2/Damage/Charged.js → damageType: 'charged'
    */
   readonly damageType?: string;
+  /**
+   * Structural tags on this feature, used by char-level multiplier targeting
+   * ({@link FeatureMultiplierTarget.tags}). The only v5.8 tag is `"plunge_shockwave"`,
+   * carried by every plunge-shockwave hit (her `FeatureDamagePlungeShockWave`
+   * constructor pushes it, `ShockWave.js:8`). Absent → no tags. Inert unless a
+   * multiplier targets a matching tag (only Xianyun's A4 teammate buff does).
+   *
+   * Source: raw/.../Feature2/Damage/Plunge/ShockWave.js:8 (`params.tags.push('plunge_shockwave')`)
+   */
+  readonly tags?: readonly string[];
   /** Overrides the character's innate element for this hit (e.g. Hu Tao Blood Blossom). */
   readonly element?: Element;
   /**

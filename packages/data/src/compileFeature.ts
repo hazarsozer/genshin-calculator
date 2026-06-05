@@ -420,6 +420,18 @@ function activeCharMultipliers(
     ) {
       return false;
     }
+    // Tag branch (Target.js:41-53): only constrains when present + non-empty. The feature
+    // matches iff its `tags` intersect the target's. The sole v5.8 tag is "plunge_shockwave"
+    // (Xianyun's A4 teammate multiplier targets it; the shockwave features carry it). No
+    // base/cons/armory multiplier sets target.tags → this branch is never entered for any
+    // solo golden build (base-inert: the 58k damage goldens stay byte-identical).
+    if (
+      m.target.tags !== undefined &&
+      m.target.tags.length > 0 &&
+      !(feature.tags ?? []).some((t) => m.target.tags!.includes(t))
+    ) {
+      return false;
+    }
     return m.condition === undefined || evaluate(m.condition, ctx.settings); // isActive
   });
 }

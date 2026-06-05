@@ -29,7 +29,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Xianyun)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Xianyun as XianyunStatTable } from "../generated/charTables.js";
 import { Xianyun as XianyunTalents } from "../generated/charTalentTables.js";
 
@@ -107,11 +107,13 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
   },
   // raw: FeatureDamagePlungeShockWave element='anemo' (plunge_low)
+  // tags:["plunge_shockwave"] — her ShockWave.js:8 constructor pushes it (target of her own A4 buff).
   {
     name: "plunge_low",
     category: "attack",
     element: "anemo",
     damageType: "plunge",
+    tags: ["plunge_shockwave"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   // raw: FeatureDamagePlungeShockWave element='anemo' (plunge_high)
@@ -120,6 +122,7 @@ const features: readonly Feature[] = [
     category: "attack",
     element: "anemo",
     damageType: "plunge",
+    tags: ["plunge_shockwave"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
   // --- Skill: White Clouds at Dawn (anemo) ---
@@ -138,6 +141,7 @@ const features: readonly Feature[] = [
     category: "skill",
     element: "anemo",
     damageType: "plunge",
+    tags: ["plunge_shockwave"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.xianyun_driftcloud_wave_1_dmg") }],
   },
   // raw: FeatureDamagePlungeShockWave (no name → xianyun_driftcloud_wave_2_dmg), category='skill'
@@ -146,6 +150,7 @@ const features: readonly Feature[] = [
     category: "skill",
     element: "anemo",
     damageType: "plunge",
+    tags: ["plunge_shockwave"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.xianyun_driftcloud_wave_2_dmg") }],
   },
   // raw: FeatureDamagePlungeShockWave (no name → xianyun_driftcloud_wave_3_dmg), category='skill'
@@ -154,6 +159,7 @@ const features: readonly Feature[] = [
     category: "skill",
     element: "anemo",
     damageType: "plunge",
+    tags: ["plunge_shockwave"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.xianyun_driftcloud_wave_3_dmg") }],
   },
   // --- Burst: Stars Gather at Dusk (anemo) ---
@@ -196,12 +202,11 @@ const constellationConditions: readonly Condition[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
-// partyData (Bucket C) DEFERRED: her plunge-DMG buff multiplier targets
-// tags:['plunge_shockwave'] (raw Xianyun.js + Feature2/Multiplier/Target.js
-// isMatchFeature). Our FeatureMultiplierTarget has no tags filter and our Feature
-// model carries no tags, so faithful targeting needs a feature-tags subsystem
-// (golden-critical) → engine-extension pass. damageTypes:['plunge'] can't
-// substitute (it would wrongly buff the plunge collision, not just the shockwave).
+// partyData (P3.5.2 Xianyun sub-pass) — her A4 "Consider, the Adeptus in Her Realm"
+// teammate buff: adds min(200% × Xianyun's ATK, 9000) plunge-SHOCKWAVE DMG to every party
+// member, targeted via tags:["plunge_shockwave"] (the feature-tags subsystem). NOT the
+// plunge collision — damageTypes:['plunge'] would wrongly buff it; only the tag discriminates.
+// Source: raw/genshin_calc_pub/src/js/db/Char/Xianyun.js:446-514.
 export const xianyun: DbObjectChar = {
   name: "xianyun",
   gameId: 10000093,
@@ -212,6 +217,36 @@ export const xianyun: DbObjectChar = {
   statTable: XianyunStatTable,
   talents,
   features,
+  // Xianyun's OWN A4 self-multiplier (Xianyun.js:319-328, also tags:['plunge_shockwave'])
+  // stays unported — pre-existing scope decision; her solo golden matches at HEAD without it.
   multipliers: [],
   conditions: constellationConditions,
+  partyData: {
+    loadStats: { stats: ["atk_total"] },
+    conditions: [
+      // Lift Xianyun's atk_total into the recipient bag as xianyun_atk_total (the multiplier's
+      // scaling). raw: ConditionNumber({name:'xianyun_atk_total', partyStat:'atk_total', max:10000}).
+      { type: "number", name: "xianyun_atk_total", max: 10000 },
+      // A4 master toggle gating the buff (raw: party.xianyun_consider_the_adeptus_in_her_realm).
+      { type: "boolean", name: "party.xianyun_consider_the_adeptus_in_her_realm" },
+    ],
+    multipliers: [
+      // A4: min(200% × xianyun_atk_total, 9000) summed into the base-damage term of every
+      // plunge-SHOCKWAVE hit (tags:["plunge_shockwave"]) of the recipient — NOT the plunge
+      // collision. damageTypes:[] = no type filter (the tag is the only constraint).
+      // C0/level-1 only: the C2 level-2 variant (400% × ATK capped 18000, via
+      // xianyun_a4_level_party=2) is DEFERRED — it needs a leveled values+capValue
+      // (cf. Sigewinne E5 level-indexed cap). The C0 rep is exact at 200% / cap 9000.
+      // raw/genshin_calc_pub/src/js/db/Char/Xianyun.js:501-512
+      {
+        source: "xianyun",
+        scaling: "xianyun_atk_total",
+        leveling: "",
+        values: { getValue: () => 200 },
+        capValue: 9000,
+        condition: { type: "boolean", name: "party.xianyun_consider_the_adeptus_in_her_realm" },
+        target: { damageTypes: [], tags: ["plunge_shockwave"] },
+      } satisfies CharMultiplier,
+    ],
+  },
 };

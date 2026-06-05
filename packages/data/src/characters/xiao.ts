@@ -127,6 +127,10 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }],
   },
   // --- Plunge attacks (physical in the fixed solo build) ---
+  // `plunge` = FeatureDamagePlungeCollision (NOT a shockwave → no plunge_shockwave tag).
+  // `plunge_low`/`plunge_high` = FeatureDamagePlungeShockWave → tags:["plunge_shockwave"]
+  // (her ShockWave.js:8 constructor pushes it). The tag is the target of Xianyun's A4
+  // teammate multiplier; inert without a tag-targeting multiplier in the roster.
   {
     name: "plunge",
     category: "attack",
@@ -137,12 +141,14 @@ const features: readonly Feature[] = [
     name: "plunge_low",
     category: "attack",
     damageType: "plunge",
+    tags: ["plunge_shockwave"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
     category: "attack",
     damageType: "plunge",
+    tags: ["plunge_shockwave"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
   // --- Skill: Lemniscatic Wind Cycling (anemo) ---

@@ -245,6 +245,7 @@ const RAW_BAG_SCALING_KEYS = [
   "citlali_mastery_total", // Citlali C1 EM-scaled all-type-DMG multiplier (P3.5.2 Bucket C)
   "layla_max_hp",         // Layla C4 HP-scaled normal/charged-DMG multiplier (P3.5.2 Bucket C)
   "sigewinne_hp_total",   // Sigewinne A1 max-HP-ABOVE-30000-scaled skill-DMG multiplier (P3.5.2 engine-ext; exceedStatValue)
+  "xianyun_atk_total",    // Xianyun A4 ATK-scaled plunge-SHOCKWAVE-DMG multiplier (P3.5.2 Xianyun sub-pass; tags target)
 ] as const;
 
 /**
