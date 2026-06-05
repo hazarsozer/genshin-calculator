@@ -227,6 +227,107 @@ describe("P2.3 char-level targeted multipliers — synthetic", () => {
 });
 
 // ===========================================================================
+// 1b. SYNTHETIC — the `damageElements` filter (C0: Shenhe Icy Quill substrate)
+// ===========================================================================
+//
+// Ports the element branch of her FeatureMultiplierTarget.isMatchFeature
+// (raw/.../Feature2/Multiplier/Target.js:37-39): when `target.damageElements`
+// is non-empty, the feature's RESOLVED element must be in it. Absent/empty →
+// no element constraint (base-inert). Proven on two same-type (skill) features
+// of different elements, plus an absent-filter control.
+
+describe("C0 char-level targeted multipliers — damageElements filter", () => {
+  // Two skill features, identical 100% ATK base, differing ONLY in element.
+  const cryoSkill: Feature = {
+    name: "synthetic_cryo_skill",
+    category: "skill",
+    element: "cryo",
+    multipliers: [{ leveling: "", values: constTable(100) }], // 1.0 × ATK
+  };
+  const geoSkill: Feature = {
+    name: "synthetic_geo_skill",
+    category: "skill",
+    element: "geo",
+    multipliers: [{ leveling: "", values: constTable(100) }], // 1.0 × ATK
+  };
+  const elemChar: DbObjectChar = {
+    name: "synthetic_elem",
+    gameId: 0,
+    rarity: 5,
+    element: "cryo",
+    weapon: "polearm",
+    origin: "test",
+    statTable: aratakiItto.statTable,
+    talents: aratakiItto.talents,
+    features: [cryoSkill, geoSkill],
+    multipliers: [],
+  };
+
+  function ctxWith(
+    charMultipliers: readonly CharMultiplier[]
+  ): { context: ReturnType<typeof buildStats>["context"]; compileCtx: CompileContext } {
+    const { context } = buildStats({
+      char: elemChar,
+      weaponStatTable: theBellStatTable,
+      statBlock: STAT_BLOCK,
+      levels: LEVELS,
+      enemy: ENEMY,
+      settings: {},
+    });
+    const compileCtx: CompileContext = {
+      charElement: "cryo",
+      talentLevels: TALENTS,
+      settings: {},
+      charLevel: LEVELS.charLevel,
+      charMultipliers,
+    };
+    return { context, compileCtx };
+  }
+
+  // An ATK-scaled skill-targeted multiplier filtered to cryo only.
+  const cryoMult: CharMultiplier = {
+    leveling: "",
+    scaling: "atk",
+    values: constTable(50), // 0.5 × ATK
+    target: { damageTypes: ["skill"], damageElements: ["cryo"] },
+  };
+  // Same multiplier, NO element filter — must apply to BOTH skills (base-inert control).
+  const noElemMult: CharMultiplier = {
+    leveling: "",
+    scaling: "atk",
+    values: constTable(50),
+    target: { damageTypes: ["skill"] },
+  };
+
+  it("applies to a feature whose element ∈ damageElements (cryo skill)", () => {
+    const baseline = ctxWith([]);
+    const withM = ctxWith([cryoMult]);
+    const base = compile(compileFeature(cryoSkill, baseline.compileCtx))(baseline.context).normal;
+    const got = compile(compileFeature(cryoSkill, withM.compileCtx))(withM.context).normal;
+    expect(got).toBeGreaterThan(base); // 0.5×ATK cryo term contributes
+  });
+
+  it("does NOT apply to a feature whose element ∉ damageElements (geo skill, same damageType)", () => {
+    const baseline = ctxWith([]);
+    const withM = ctxWith([cryoMult]);
+    const base = compile(compileFeature(geoSkill, baseline.compileCtx))(baseline.context).normal;
+    const got = compile(compileFeature(geoSkill, withM.compileCtx))(withM.context).normal;
+    expect(got).toBeCloseTo(base, 6); // element filter excludes geo → unchanged
+  });
+
+  it("an ABSENT damageElements filter is unconstrained (applies to BOTH elements) — base-inert", () => {
+    const baseline = ctxWith([]);
+    const withM = ctxWith([noElemMult]);
+    const baseCryo = compile(compileFeature(cryoSkill, baseline.compileCtx))(baseline.context).normal;
+    const gotCryo = compile(compileFeature(cryoSkill, withM.compileCtx))(withM.context).normal;
+    const baseGeo = compile(compileFeature(geoSkill, baseline.compileCtx))(baseline.context).normal;
+    const gotGeo = compile(compileFeature(geoSkill, withM.compileCtx))(withM.context).normal;
+    expect(gotCryo).toBeGreaterThan(baseCryo); // no filter → applies to cryo
+    expect(gotGeo).toBeGreaterThan(baseGeo); //  …and to geo (no element constraint)
+  });
+});
+
+// ===========================================================================
 // 2. ITTO — always-on A4, regression against the base oracle via the general form
 // ===========================================================================
 

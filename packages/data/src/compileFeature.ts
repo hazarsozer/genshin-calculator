@@ -358,9 +358,15 @@ function baseDamageTerm(
 
 /**
  * Select the char-level ("targeted") multipliers that apply to this feature:
- * those whose `target.damageTypes` includes the feature's resolved damage type
- * AND whose gate is active (`evaluate(condition)`; an absent condition is
- * always-on, per her `FeatureMultiplier.isActive`).
+ * those whose `target` MATCHES the feature AND whose gate is active
+ * (`evaluate(condition)`; an absent condition is always-on, per her
+ * `FeatureMultiplier.isActive`).
+ *
+ * `target.isMatchFeature` is an AND-chain of present filters (Target.js):
+ *   - `damageTypes` (always present): includes the feature's resolved damage type.
+ *   - `damageElements` (optional): includes the feature's RESOLVED element
+ *     (`element`, already infusion-resolved by the caller — her `feature.getElement(data)`).
+ *     Absent/empty → the element filter is skipped (no constraint, base-inert).
  *
  * Faithful to her `Feature2.getMultipliers` second loop (Feature2.js:121-125):
  * `for (item of data.multipliers) if (item.isActive(data) && item.isMatchFeature(this, data)) push`.
@@ -370,12 +376,22 @@ function baseDamageTerm(
 function activeCharMultipliers(
   feature: Feature,
   damageType: string,
+  element: Element,
   ctx: CompileContext
 ): readonly CharMultiplier[] {
   const all = ctx.charMultipliers;
   if (!all || all.length === 0) return [];
   return all.filter((m) => {
-    if (!m.target.damageTypes.includes(damageType)) return false; // isMatchFeature
+    // isMatchFeature — AND-chain of present filters (her Target.js:27-55).
+    if (!m.target.damageTypes.includes(damageType)) return false;
+    // Element branch (Target.js:37-39): only constrains when present + non-empty.
+    if (
+      m.target.damageElements !== undefined &&
+      m.target.damageElements.length > 0 &&
+      !m.target.damageElements.includes(element)
+    ) {
+      return false;
+    }
     return m.condition === undefined || evaluate(m.condition, ctx.settings); // isActive
   });
 }
@@ -582,7 +598,7 @@ export function compileFeature(
   // is either single-item (itemCount 1, no change) or has no active char-multiplier
   // targeting it (nothing to replicate) — a base multihit feature targeted by an active
   // char-multiplier would already be RED (short by the per-item amount), and none are.
-  const charMultipliers = activeCharMultipliers(feature, damageType, ctx);
+  const charMultipliers = activeCharMultipliers(feature, damageType, element, ctx);
   const itemCount = feature.items?.length ?? 1;
   const replicatedCharMultipliers: FeatureMultiplierEntry[] = [];
   for (let i = 0; i < itemCount; i++) replicatedCharMultipliers.push(...charMultipliers);

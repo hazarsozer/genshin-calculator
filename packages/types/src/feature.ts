@@ -152,19 +152,34 @@ export interface FeatureMultiplierEntry {
 /**
  * Targeting predicate for a char-level multiplier — which features it applies to.
  *
- * A faithful subset of her `FeatureMultiplierTarget` (Multiplier/Target.js). Only
- * `damageTypes` is modelled here: it is the field every v5.8 char-level targeted
- * multiplier uses (Itto A4 → charged, Albedo C2 → burst, …). `isMatchFeature`
- * keeps an entry iff `damageTypes` includes the feature's resolved damage type
- * (`damageTypeOf`). The remaining raw fields (`damageTypesExclude`,
- * `damageElements`, `tags`, `options`) are unused by any v5.8 character's
- * char-level multipliers and are deferred until a source needs them.
+ * A faithful subset of her `FeatureMultiplierTarget` (Multiplier/Target.js),
+ * modelling the AND-chain of `isMatchFeature` as each in-scope source needs it:
+ *   - `damageTypes` — the field every v5.8 char-level targeted multiplier uses
+ *     (Itto A4 → charged, Albedo C2 → burst, …): keep iff it includes the
+ *     feature's resolved damage type (`damageTypeOf`).
+ *   - `damageElements` — keep iff it includes the feature's RESOLVED element
+ *     (`resolveElement`). Used by Bucket-C teammate multipliers that buff one
+ *     element only (Shenhe's Icy Quill → `["cryo"]`, Faruzan → `["anemo"]`,
+ *     Escoffier → `["cryo"]`). ABSENT/empty → no element constraint (base-inert).
+ *
+ * The chain is AND: a feature must satisfy every PRESENT filter. The remaining raw
+ * fields (`damageTypesExclude`, `tags`, `options`) are unused by any in-scope v5.8
+ * char-level multiplier and are deferred until a source needs them.
  *
  * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Target.js
+ *         (`isMatchFeature`: the damageTypes branch + the damageElements branch).
  */
 export interface FeatureMultiplierTarget {
   /** Feature damage types this multiplier applies to (e.g. `["charged"]`, `["burst"]`). */
   readonly damageTypes: readonly string[];
+  /**
+   * Feature ELEMENTS this multiplier applies to (e.g. `["cryo"]`, `["anemo"]`).
+   * When present and non-empty, the feature's resolved element must be in it
+   * (her `isMatchFeature` element branch, Target.js:37-39). Absent/empty → the
+   * element filter is skipped (no constraint) — base-inert: no v5.8 base/cons/
+   * armory multiplier sets it, so the new branch is never entered for them.
+   */
+  readonly damageElements?: readonly string[];
 }
 
 /**
