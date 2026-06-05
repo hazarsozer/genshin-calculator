@@ -48,6 +48,10 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "kirara_flying_kick_dmg") return KiraraTalents.s2.p1;
+      if (name === "shield_percent")         return KiraraTalents.s2.p2;
+      if (name === "shield_flat")            return KiraraTalents.s2.p3;
+      if (name === "shield_max_percent")     return KiraraTalents.s2.p4;
+      if (name === "shield_max_flat")        return KiraraTalents.s2.p5;
       if (name === "kirara_urgent_neko_parcel_dmg") return KiraraTalents.s2.p7;
       if (name === "kirara_flipclaw_strike_dmg") return KiraraTalents.s2.p9;
     }
@@ -227,6 +231,27 @@ const features: readonly Feature[] = [
     element: "dendro",
     damageBonuses: ["dmg_burst_kirara"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.kirara_cat_grass_explosion_dmg") }],
+  },
+  // --- Shields (FeatureShield): skill.shield, skill.shield_max_absorption ---
+  // FeatureMultiplierList: (percent/100 × hp_total) + flat, then × (1 + shield).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Kirara.js:343-366 (two FeatureShield defs)
+  // skill.shield: s2.p2 (% HP) + s2.p3 (flat)
+  {
+    name: "shield",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
+    ],
+  },
+  // skill.shield_max_absorption: s2.p4 (% HP) + s2.p5 (flat)
+  {
+    name: "shield_max_absorption",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_max_percent"), flatValues: talents.get("skill.shield_max_flat") },
+    ],
   },
   // --- C1 "Material Circulation": extra burst explosion that scales with HP.
   // Raw: FeatureDamageBurst kirara_cat_grass_explosion_extra_dmg, FeatureMultiplierKiraraBurst
