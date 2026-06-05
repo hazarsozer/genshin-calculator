@@ -39,6 +39,8 @@ const talents: TalentResolver = {
       if (name === "plunge_high") return BeidouTalents.s1.p12;
     }
     if (talent === "skill") {
+      if (name === "shield_percent") return BeidouTalents.s2.p1;
+      if (name === "shield_flat")    return BeidouTalents.s2.p2;
       if (name === "skill_dmg") return BeidouTalents.s2.p3;
       if (name === "beidou_skill_dmg_bonus") return BeidouTalents.s2.p4;
     }
@@ -178,6 +180,17 @@ const features: readonly Feature[] = [
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") },
       { leveling: "char_skill_elemental", values: beidouBonus2Values },
+    ],
+  },
+  // --- Skill: Tidecaller shield ---
+  // FeatureShield: FeatureMultiplierList (s2.p1 % HP + s2.p2 flat), leveling:'char_skill_elemental'
+  // raw/genshin_calc_pub/src/js/db/Char/Beidou.js:250-261
+  {
+    name: "shield",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
     ],
   },
   // --- Burst: Stormbreaker ---
