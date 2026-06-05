@@ -212,6 +212,21 @@ const constellationConditions: readonly Condition[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// gorou_def_bonus talent table — General's War Banner's flat DEF bonus by skill
+// level (raw Gorou.js:76 `new StatTable('gorou_def_bonus', charTalentTables.Gorou.s2.p2)`).
+// standing_firm reads it via `getAlias('skill.gorou_def_bonus','def')` (Gorou.js:470),
+// i.e. these values are added under the `def` stat key, indexed by the skill level.
+// Inlined as a raw number[] because `static-level`'s `levelStats` consumes a value
+// array (StatTable.getValue semantics), not a TalentTable. Values mirror
+// GorouTalents.s2.p2 (generated/charTalentTables.ts → Gorou.s2.p2); level 1..15.
+// Source: raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Gorou s2.p2)
+// ---------------------------------------------------------------------------
+const GOROU_DEF_BONUS = [
+  206.16, 221.622, 237.084, 257.7, 273.162, 288.624, 309.24, 329.856, 350.472, 371.088, 391.704,
+  412.32, 438.09, 463.86, 489.63,
+] as const;
+
 export const gorou: DbObjectChar = {
   name: "gorou",
   gameId: 10000055,
@@ -224,4 +239,75 @@ export const gorou: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A, A-straggler). PARTIAL port:
+  // the clean A-level DEF core. The geo-element-count tiers (gorou_crunch dmg_geo,
+  // and ALL of C6 — fierce_as_fire / mountainous_fealty / the three crit_dmg_geo
+  // tiers) are DEFERRED — see the "Deferred conditions" block below.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Gorou.js:434-543
+  partyData: {
+    // Descriptive metadata mirroring her partyData.loadStats (the teammate's input
+    // contract). Gorou's loadStats declares only the skill level (Gorou.js:435-437);
+    // the engine consumes the inputs as explicit baked settings, not via loadStats.
+    loadStats: { settings: ["char_skill_elemental"] },
+    conditions: [
+      // gorou_char_skill_elemental (ConditionNumberTalent, partySetting:'char_skill_elemental')
+      // — lifts Gorou's Elemental Skill level into `gorou_char_skill_elemental` so
+      // standing_firm's level-indexed DEF table can read it. Number-lift idiom (mirrors
+      // Shenhe's `shenhe_char_skill_elemental`). The level itself is read from the merged
+      // settings by static-level's getLevel; this entry contributes no stats — it documents
+      // the lift and keeps the input name in the schema.
+      // raw/genshin_calc_pub/src/js/db/Char/Gorou.js:439-444
+      { type: "number", name: "gorou_char_skill_elemental" },
+      // party.gorou_standing_firm (ConditionBooleanLevels) — flat DEF scaled by Gorou's
+      // skill level, modelled as `static-level` over `gorou_char_skill_elemental` emitting
+      // the `def` stat from the gorou_def_bonus table. Her ConditionBooleanLevels extends
+      // ConditionBoolean, so isActive = (settings['party.gorou_standing_firm'] truthy) AND
+      // (.condition gate). We reproduce BOTH arms with an AND gate: the buff's OWN toggle
+      // (party.gorou_standing_firm — the Boolean-subtype's name-activeness, the same idiom
+      // as Lynette's same-setting gate) AND the master skill toggle
+      // (party.gorou_generals_war_banner — her `.condition`). getLevel maps level → the
+      // gorou_def_bonus value via StatTable.getValue, identical to her getValue path.
+      // raw/genshin_calc_pub/src/js/db/Char/Gorou.js:462-473
+      {
+        type: "static-level",
+        levelSetting: "gorou_char_skill_elemental",
+        levelStats: { def: GOROU_DEF_BONUS },
+        condition: {
+          type: "and",
+          items: [
+            { type: "boolean", name: "party.gorou_standing_firm" },
+            { type: "boolean", name: "party.gorou_generals_war_banner" },
+          ],
+        },
+      },
+      // party.gorou_heedless_of_the_wind_and_weather (A1, ConditionBoolean) — +25% DEF.
+      // A1DefBonus=25 (Gorou.js:122). A plain boolean toggle with a flat stat.
+      // raw/genshin_calc_pub/src/js/db/Char/Gorou.js:493-503
+      {
+        type: "boolean",
+        name: "party.gorou_heedless_of_the_wind_and_weather",
+        stats: { def_percent: 25 },
+      },
+    ],
+    // ── Deferred conditions (NOT ported — documented per the partial-port doctrine) ──
+    // The following Gorou.js:445-541 partyData conditions are intentionally omitted:
+    //   - party.gorou_generals_war_banner (ConditionBoolean, Gorou.js:455-461): the master
+    //     skill toggle. It carries NO stats of its own — it only GATES standing_firm/crunch/
+    //     impregnable. The gate above reads its baked setting directly (party.gorou_generals_
+    //     war_banner), so a standalone stat-less boolean condition would contribute nothing;
+    //     omitted (matches mavuika's toggle-only-boolean handling).
+    //   - gorou_impregnable (ConditionStatic, Gorou.js:474-481): display-only (text_* stats);
+    //     nothing to model.
+    //   - gorou_crunch (Gorou.js:482-492): dmg_geo +15 (SkillGeoBonus), gated by
+    //     generals_war_banner AND ConditionElementsCount(geo, 3).
+    //   - C6: party.gorou_fierce_as_fire (Gorou.js:445-454, +3 skill level), party.gorou_
+    //     mountainous_fealty (Gorou.js:504-512), and the three crit_dmg_geo tiers
+    //     (Gorou.js:513-541, C6CritDmgGeo1/2/3 = 10/10/20), the latter two gated by
+    //     ConditionElementsCount(geo, 2) / (geo, 3).
+    // DEFERRAL REASON: these need (a) a new `elements-count` core Condition variant — our
+    // union has none (`resonance` only fires at count>=2 hardcoded, not parameterized by
+    // element+count); and (b) a MULTI-teammate oracle rep — the geo>=2/>=3 tiers cannot be
+    // exercised by the single-teammate `partyBuffSourceItem` harness. Both are out of scope
+    // for this A-straggler DATA port; tracked for a future focused engine session.
+  },
 };
