@@ -11,8 +11,8 @@
  *   dehya_flame_manes_fist_dmg: s3.p1 (ATK%) + s3.p2 (HP%)
  *   dehya_incineration_drive_dmg: s3.p3 (ATK%) + s3.p4 (HP%)
  *
- * A4 heals (dehya_stalwart_and_true_heal, dehya_stalwart_and_true_dot_heal)
- * are HP-scaling heals with empty damageType → not tested by golden suite.
+ * A4 heals (dehya_stalwart_and_true_heal, dehya_stalwart_and_true_dot_heal):
+ * HP-scaled FeatureHeal (20% / 6% HP), auto-active at A6. Ported in P3.5.3.
  * C1 adds HP% bonus + HP→skill/burst multipliers (constellation-gated).
  * C4 heal: empty damageType, constellation-gated → not active at C0.
  *
@@ -187,6 +187,33 @@ const features: readonly Feature[] = [
     multipliers: [
       { leveling: "char_skill_burst", values: talents.get("burst.dehya_incineration_drive_dmg") },
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.dehya_incineration_drive_hp") },
+    ],
+  },
+  // --- FeatureHeal: A4 "Stalwart and True" heals (HP-scaled, auto-active at A6) ---
+  // raw: FeatureHeal({ name:'dehya_stalwart_and_true_heal', category:'other',
+  //   multipliers:[FeatureMultiplier({ scaling:'hp*', source:'ascension4',
+  //     values:new ValueTable([TalentValues.A4Heal=20]) })],
+  //   condition:ConditionAscensionChar({ascension:4}) })  Dehya.js:335-345.
+  // source:'ascension4' → leveling='ascension4'; getValue(1)=20. Auto-active at canonical A6.
+  {
+    name: "dehya_stalwart_and_true_heal",
+    category: "other",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "ascension4", values: { getValue: (_level: number) => 20 } },
+    ],
+  },
+  // raw: FeatureHeal({ name:'dehya_stalwart_and_true_dot_heal', category:'other',
+  //   multipliers:[FeatureMultiplier({ scaling:'hp*', source:'ascension4',
+  //     values:new ValueTable([TalentValues.A4HealDot=6]) })],
+  //   condition:ConditionAscensionChar({ascension:4}) })  Dehya.js:346-356.
+  // source:'ascension4' → leveling='ascension4'; getValue(1)=6. Auto-active at canonical A6.
+  {
+    name: "dehya_stalwart_and_true_dot_heal",
+    category: "other",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "ascension4", values: { getValue: (_level: number) => 6 } },
     ],
   },
 ];
