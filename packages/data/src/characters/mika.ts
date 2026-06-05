@@ -44,8 +44,14 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "mika_flowfrost_arrow_dmg") return MikaTalents.s2.p1;
-      if (name === "mika_rimestar_flare_dmg") return MikaTalents.s2.p2;
-      if (name === "mika_rimestar_shard_dmg") return MikaTalents.s2.p3;
+      if (name === "mika_rimestar_flare_dmg")  return MikaTalents.s2.p2;
+      if (name === "mika_rimestar_shard_dmg")  return MikaTalents.s2.p3;
+    }
+    if (talent === "burst") {
+      if (name === "heal_percent")          return MikaTalents.s3.p2;
+      if (name === "heal_flat")             return MikaTalents.s3.p1;
+      if (name === "mika_heal_dot_percent") return MikaTalents.s3.p4;
+      if (name === "mika_heal_dot_flat")    return MikaTalents.s3.p3;
     }
     throw new Error(`mika talents: unknown path '${path}'`);
   },
@@ -149,6 +155,35 @@ const features: readonly Feature[] = [
     category: "skill",
     element: "cryo",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.mika_rimestar_shard_dmg") }],
+  },
+  // --- FeatureHeal: burst heals — HP-scaled FeatureMultiplierList (Mika.js:281-303) ---
+  // heal: s3.p2 (% HP) + s3.p1 (flat). Mika.js:281-291. talent items table:[p2, p1] → getList[0]=p2 pct, [1]=p1 flat.
+  {
+    name: "heal",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_burst",
+        values: talents.get("burst.heal_percent"),
+        flatValues: talents.get("burst.heal_flat"),
+      },
+    ],
+  },
+  // mika_heal_dot: s3.p4 (% HP) + s3.p3 (flat). Mika.js:293-302. talent items table:[p4, p3].
+  {
+    name: "mika_heal_dot",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_burst",
+        values: talents.get("burst.mika_heal_dot_percent"),
+        flatValues: talents.get("burst.mika_heal_dot_flat"),
+      },
+    ],
   },
 ];
 
