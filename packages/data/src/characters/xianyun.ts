@@ -196,6 +196,12 @@ const constellationConditions: readonly Condition[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// partyData (Bucket C) DEFERRED: her plunge-DMG buff multiplier targets
+// tags:['plunge_shockwave'] (raw Xianyun.js + Feature2/Multiplier/Target.js
+// isMatchFeature). Our FeatureMultiplierTarget has no tags filter and our Feature
+// model carries no tags, so faithful targeting needs a feature-tags subsystem
+// (golden-critical) → engine-extension pass. damageTypes:['plunge'] can't
+// substitute (it would wrongly buff the plunge collision, not just the shockwave).
 export const xianyun: DbObjectChar = {
   name: "xianyun",
   gameId: 10000093,

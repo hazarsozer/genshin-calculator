@@ -208,6 +208,13 @@ const constellationConditions: readonly Condition[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// partyData (Bucket C) DEFERRED: her skill-DMG buff multiplier scales off
+// max(HP_total − 30000, 0) via exceedStatValue (A1MinHP) with a level-indexed
+// capValue ([A1,C1] tables); raw Sigewinne.js + Feature2/Multiplier.js
+// getTreeStatValue. Our CharMultiplier models neither exceedStatValue (a
+// Raiden-class stat-threshold scaling) nor a level-indexed cap (capValue is a
+// single number) → engine-extension pass. A full-HP or pre-subtracted stand-in
+// would game the gate.
 export const sigewinne: DbObjectChar = {
   name: "sigewinne",
   gameId: 10000095,
