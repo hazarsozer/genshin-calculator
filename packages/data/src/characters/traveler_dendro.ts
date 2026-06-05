@@ -179,6 +179,29 @@ const features: readonly Feature[] = [
     damageBonuses: ["dmg_burst_traveler_dendro"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.traveler_explosion_dmg") }],
   },
+  // --- A1/A4 EM static readouts (other.traveler_dendro_skill_bonus / _burst_bonus) ---
+  // FeaturePostEffectValue(skillDmgPost/burstDmgPost = PostEffectStatsMastery,
+  // percent=StatTable('dmg_skill_traveler_dendro',[0.15]) / ('dmg_burst_traveler_dendro',[0.1])), format:'percent'.
+  // Pattern 3 (dynamic, faithful to her PostEffectStatsMastery): (values/100)×mastery_total = the displayed %.
+  // values = coeff×100 = 15 / 10 → 0.15×110.128 = 16.5192, 0.10×110.128 = 11.0128 at the canonical EM. (The
+  // damage HITS read the same A4 via the baked BASE_STATS constants below; these readouts re-derive it from EM.)
+  // raw/genshin_calc_pub/src/js/db/Char/TravelerDendro.js:110-127,285-296.
+  {
+    name: "traveler_dendro_skill_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "mastery", leveling: "", values: { getValue: () => 15 } },
+    ],
+  },
+  {
+    name: "traveler_dendro_burst_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "mastery", leveling: "", values: { getValue: () => 10 } },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
