@@ -40,8 +40,8 @@
     "description": "Teammate partyData KIT BUFFS applied to a recipient active char (the inverse of the buff-clean FILLER set — the teammate INTENTIONALLY leaks its kit via setPartyChars + baked setBuffsSettings). Reps span the mechanism buckets: A=static (Zhongli universal res-shred), B=postEffect (Bennett base-ATK->flat-ATK, Kazuha EM->elemental-dmg%), C=multiplier (Shenhe Icy Quill ATK-scaled cryo bonus). Each fixture = the recipient's damage with the teammate buff ON. RED until P3.5.2 models partyData (engine: Task 2; data: Tasks 3-5). Source: CalcObject/Buffs.js:149-209, DbObject/Char.js:56-97.",
     "id": "party-buffs"
   },
-  "featureTotal": 2140,
-  "itemCount": 76,
+  "featureTotal": 2165,
+  "itemCount": 77,
   "items": [
     {
       "derived": {
@@ -1180,6 +1180,40 @@
       "weapon": {
         "name": "weapon_name.the_alley_flash",
         "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "kachina",
+            "settings": {
+              "party.kachina_more_foes_more_caution": 4
+            }
+          }
+        ]
+      },
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "kachina-defpct-on-itto",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
       }
     },
     {
