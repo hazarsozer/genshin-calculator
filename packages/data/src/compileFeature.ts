@@ -41,8 +41,10 @@ import {
   cDivide,
   cFloor,
   cLunarChargedDamage,
+  cMax,
   cMin,
   cMulti,
+  cSubtract,
   cMultiplierBonus,
   cMultiplierDefence,
   cMultiplierReaction,
@@ -357,7 +359,17 @@ function baseDamageTerm(
   if (entry.coefficientFromStat !== undefined) {
     factors.push(coefficientBlock(entry.coefficientFromStat));
   }
-  factors.push(cStat(scalingKey));
+  // Scaling factor = the (total or raw) stat read, OPTIONALLY floored at a threshold:
+  // her FeatureMultiplier.getTreeStatValue wraps the BARE stat read (not the talent% and
+  // not the coefficient) in `CMax([CSubtract([stat, exceedStatValue]), 0])` when
+  // `exceedStatValue` is set (Multiplier.js:281-301) — i.e. `max(scalingStat − threshold, 0)`.
+  // The sole v5.8 user is Sigewinne's teammate skill-DMG buff (max HP above 30000). Absent ⇒
+  // the plain `cStat(scalingKey)`, byte-identical to before (no other multiplier sets it).
+  let scalingStatBlock: Block = cStat(scalingKey);
+  if (entry.exceedStatValue !== undefined) {
+    scalingStatBlock = cMax([cSubtract([scalingStatBlock, cConst(entry.exceedStatValue)]), cConst(0)]);
+  }
+  factors.push(scalingStatBlock);
   const term = cMulti(factors);
   // Per-multiplier absolute cap (her FeatureMultiplier.capValue → CValueCap, a
   // Math.min wrapping the multiplier tree): `min(levelMult × scalingStat, capValue)`,

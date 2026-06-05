@@ -50,7 +50,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Sigewinne)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Sigewinne as SigewinneStatTable } from "../generated/charTables.js";
 import { Sigewinne as SigewinneTalents } from "../generated/charTalentTables.js";
 
@@ -208,13 +208,59 @@ const constellationConditions: readonly Condition[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
-// partyData (Bucket C) DEFERRED: her skill-DMG buff multiplier scales off
-// max(HP_total − 30000, 0) via exceedStatValue (A1MinHP) with a level-indexed
-// capValue ([A1,C1] tables); raw Sigewinne.js + Feature2/Multiplier.js
-// getTreeStatValue. Our CharMultiplier models neither exceedStatValue (a
-// Raiden-class stat-threshold scaling) nor a level-indexed cap (capValue is a
-// single number) → engine-extension pass. A full-HP or pre-subtracted stand-in
-// would game the gate.
+// ---------------------------------------------------------------------------
+// partyData — teammate kit buff (P3.5.2 engine-extension pass).
+// Source: raw/genshin_calc_pub/src/js/db/Char/Sigewinne.js:468-540
+// "Requires Appropriate Rest" (A1): a Skill-DMG bonus added to each SKILL hit of
+// the recipient, scaled off the teammate's max HP ABOVE a 30000 threshold —
+// `(buff% × max(HP_total − 30000, 0))`, capped. The threshold subtraction rides the
+// new FeatureMultiplierEntry.exceedStatValue field (her FeatureMultiplier
+// .getTreeStatValue → `CMax([CSubtract([HP, 30000]), 0])`, Multiplier.js:281-301).
+// Conditions ported = ONLY the HP-total lift the multiplier `scaling`-reads + the
+// gate it checks; constellation/passive booleans (C1 buff-level, C2 res-shred, A4/C6)
+// are deferred to the P3.5.2 variant-rep pass.
+//
+// PARTIAL PORT (capValue): her cap is a buff_level-indexed ValueTable([A1DmgBonusMax,
+// C1DmgBonusMax]) = [2800, 3500] (the C1 tier raises both the buff% AND its cap). Our
+// FeatureMultiplierEntry.capValue is a single NUMBER, so this ports the buff_level=1
+// tier only: `capValue: A1DmgBonusMax` (2800), and the rep bakes `sigewinne_buff_level: 1`
+// → `values.getValue(1)` (= A1DmgBonus/10 = 8%) + that cap are EXACT. The buff_level=2
+// (C1) case — a 10% ratio capped at 3500 — needs a level-indexed cap table
+// (a `capValueFromTable` field, a FUTURE engine extension); deferred, NOT faked here.
+// ---------------------------------------------------------------------------
+
+// values — her `new ValueTable([A1DmgBonus / 10, C1DmgBonus / 10])` = [8, 10], 1-indexed
+// by `sigewinne_buff_level` (1 = A1 tier, 2 = C1 tier). Replicates ValueTable.getValue
+// exactly (raw/.../classes/ValueTable.js): level <= 0 → 0; level > length → last; else
+// values[level-1]. baseDamageTerm reads `leveling: "sigewinne_buff_level"` from settings
+// (not a char-skill slot → the `settings[leveling]` path) and calls getValue on it.
+const SIGEWINNE_BUFF_VALUES = [8, 10] as const; // [A1DmgBonus/10, C1DmgBonus/10]
+const sigewinneBuffValues = {
+  getValue: (level: number): number =>
+    level > 0 ? SIGEWINNE_BUFF_VALUES[Math.min(level, SIGEWINNE_BUFF_VALUES.length) - 1]! : 0,
+};
+
+// "Requires Appropriate Rest": (buff% × max(HP_total − 30000, 0)) added to each SKILL hit
+// of the recipient, capped at A1DmgBonusMax (buff_level=1 tier). raw Sigewinne.js:526-538.
+//   scaling: 'sigewinne_hp_total'  (the lifted teammate max HP, read VERBATIM via cStat)
+//   exceedStatValue: A1MinHP (30000) → the scaling factor is max(HP − 30000, 0)
+//   leveling: 'sigewinne_buff_level' → values.getValue (8% at the baked level 1)
+//   capValue: A1DmgBonusMax (2800) — PARTIAL: buff_level=1 cap only (see note above)
+//   target: { damageTypes: ['skill'] }  (load-bearing — non-skill hits stay unbuffed)
+//   condition: ConditionBoolean('party.sigewinne_requires_appropriate_rest') master gate
+const sigewinnePartyMultipliers: readonly CharMultiplier[] = [
+  {
+    source: "sigewinne",
+    scaling: "sigewinne_hp_total",
+    leveling: "sigewinne_buff_level",
+    values: sigewinneBuffValues,
+    exceedStatValue: 30000, // A1MinHP
+    capValue: 2800, // A1DmgBonusMax (buff_level=1 cap; C1 cap-table deferred)
+    condition: { type: "boolean", name: "party.sigewinne_requires_appropriate_rest" },
+    target: { damageTypes: ["skill"] },
+  } satisfies CharMultiplier,
+];
+
 export const sigewinne: DbObjectChar = {
   name: "sigewinne",
   gameId: 10000095,
@@ -227,4 +273,22 @@ export const sigewinne: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  partyData: {
+    // Descriptive metadata mirroring her loadStats (the teammate input contract).
+    // raw Sigewinne.js:469-471 → stats:['hp_total'].
+    loadStats: {
+      stats: ["hp_total"],
+    },
+    conditions: [
+      // Lift Sigewinne's hp_total into the recipient bag as `sigewinne_hp_total` (a
+      // RAW_BAG_SCALING key) so the multiplier's `scaling` reads it verbatim via cStat.
+      // raw: ConditionNumber({name:'sigewinne_hp_total', partyStat:'hp_total', max:150000}).
+      { type: "number", name: "sigewinne_hp_total", max: 150000 },
+      // Master toggle the multiplier's gate checks. Carries no stats of its own (its
+      // display text_value_* are skipped). raw: ConditionBoolean({name:
+      // 'party.sigewinne_requires_appropriate_rest'}), Sigewinne.js:482-494.
+      { type: "boolean", name: "party.sigewinne_requires_appropriate_rest" },
+    ],
+    multipliers: sigewinnePartyMultipliers,
+  },
 };

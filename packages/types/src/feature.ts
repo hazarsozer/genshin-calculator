@@ -126,6 +126,15 @@ export interface FeatureMultiplierEntry {
    */
   readonly capValue?: number;
   /**
+   * Optional floor-at-zero threshold subtracted from the SCALING STAT before the
+   * talent% multiply: the scaling factor becomes `max(scalingStat − exceedStatValue, 0)`
+   * (her FeatureMultiplier.getTreeStatValue, Multiplier.js:281-301 — `CMax([CSubtract([stat,
+   * exceedStatValue]), 0])`). Models a "scales off the stat ABOVE a threshold" buff
+   * (Sigewinne: max HP above 30000). Absent ⇒ the plain `scalingStat` (base-inert).
+   * Source: raw/.../db/Char/Sigewinne.js (exceedStatValue: A1MinHP).
+   */
+  readonly exceedStatValue?: number;
+  /**
    * Optional ADDITIVE bonus term on the talent% fraction, keyed off a SEPARATE stacks
    * level (her FeatureMultiplier.bonusLeveling/bonusValues): `talentPercent += bonusValues
    * .getValue(settings[bonusLeveling] || 1) / 100`. Mirrors her getValue (Multiplier.js:184-186)
