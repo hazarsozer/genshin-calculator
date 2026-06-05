@@ -148,6 +148,23 @@ export interface FeatureMultiplierEntry {
   /** Companion per-stacks-level value table for {@link bonusLeveling} (1-indexed). */
   readonly bonusValues?: TalentTable;
   /**
+   * Optional FLAT additive term from `FeatureMultiplierList` (her `CConst(getValueFlat)`):
+   * a talent-level-indexed table whose value is added DIRECTLY to the base-damage term
+   * AFTER the `(talentPercent × scalingStat)` product — i.e. the term becomes
+   * `(talentPercent × scalingStat) + flatValues.getValue(talentLevel)`.
+   *
+   * Her `FeatureMultiplierList.getTree` is `CSum([CMulti([levelMult, statTotal]), CConst(flat)])`,
+   * so the flat component is an absolute number (not scaled by any stat) that varies with talent
+   * level. Used by every `FeatureMultiplierList`-backed shield (Thoma, Kirara, Xinyan, Citlali,
+   * Lan Yan, …) whose talent table carries two entries: `values[0]` = percent, `values[1]` = flat.
+   *
+   * Absent ⇒ no flat term (base-inert: every existing damage feature leaves it unset).
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/List.js:25-26,49-51
+   *         (`getValueFlat` / `CConst({value: this.getValueFlat(data)})`).
+   */
+  readonly flatValues?: TalentTable;
+  /**
    * CHAR-LEVEL multipliers only: which features this multiplier applies to.
    * When set (only on `char.multipliers` entries), the multiplier is summed into
    * a feature's base-damage term iff `target.damageTypes` includes the feature's

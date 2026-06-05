@@ -374,7 +374,15 @@ function baseDamageTerm(
     scalingStatBlock = cMax([cSubtract([scalingStatBlock, cConst(entry.exceedStatValue)]), cConst(0)]);
   }
   factors.push(scalingStatBlock);
-  const term = cMulti(factors);
+  let term: Block = cMulti(factors);
+  // Flat additive term from FeatureMultiplierList (her CConst(getValueFlat)):
+  // `(levelMult × stat) + flat` — the flat component is talent-level-indexed and added
+  // DIRECTLY (not scaled by any stat). Absent on every damage feature → base-inert.
+  // Source: raw/.../Feature2/Multiplier/List.js:18-31 (getTree, CSum([CMulti, CConst])).
+  if (entry.flatValues !== undefined) {
+    const flat = entry.flatValues.getValue(talentLevel);
+    term = cSum([term, cConst(flat)]);
+  }
   // Per-multiplier absolute cap (her FeatureMultiplier.capValue → CValueCap, a
   // Math.min wrapping the multiplier tree): `min(levelMult × scalingStat, capValue)`,
   // applied to THIS term before it enters the base-damage sum and before the
