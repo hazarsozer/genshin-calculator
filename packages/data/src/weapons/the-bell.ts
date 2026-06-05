@@ -8,18 +8,28 @@
  *     (text_percent_hp is a display stat; the damage engine ignores it — stat-only gate)
  *   Toggle (refine-scaled): all DMG +12/15/18/21/24% — ConditionBooleanRefine
  *
- * The raw Bell.js also carries a FeatureShield (bell_shield) which is a display shield value,
- * not a damage proc. DbObjectWeapon.features is `unknown[]` and unresolved by the engine at this
- * phase — omitted here; does not affect damage output.
+ * The raw Bell.js also carries a FeatureShield (bell_shield) — a non-damage shield OUTPUT
+ * (max-HP-scaled, refine-leveled), now modelled via `output: {kind:"shield"}` (P3.5.3). It is
+ * the canonical claymore in the oracle build, so every claymore char dumps `weapon.bell_shield`;
+ * the outputCoverage harness compiles the equipped weapon's features to reproduce it.
  *
  * Settings key: `weapon_bell` (boolean toggle)
  * serializeId: 71 (from raw DbObjectWeapon.serializeId)
- *
- * Stat-only passive — no damage proc features.
  */
 
-import type { DbObjectWeapon, ConditionStaticRefine, ConditionBooleanRefine } from "@genshin/types";
+import type {
+  DbObjectWeapon,
+  ConditionStaticRefine,
+  ConditionBooleanRefine,
+  Feature,
+  TalentTable,
+} from "@genshin/types";
 import { BellStatTable } from "../generated/weaponStatTables.js";
+
+/** Refine-indexed value table — `getValue(refine)` returns `values[refine-1]` (R1 default). */
+function refineValueTable(values: readonly number[]): TalentTable {
+  return { getValue: (refine: number): number => values[refine - 1] ?? values[0]! };
+}
 
 // Source: Bell.js:19-25 — ConditionStaticRefine, StatTable('text_percent_hp', [20, 23, 26, 29, 32])
 // text_percent_hp is display-only; engine ignores unknown stat keys.
@@ -52,6 +62,18 @@ const togglePassive: ConditionBooleanRefine = {
   ],
 };
 
+// Source: Bell.js:36-48 — FeatureShield('bell_shield'), FeatureMultiplier scaling 'hp*'
+// (max HP total), leveling weapon_refine, values [20,23,26,29,32] (% of max HP). The
+// shield-strength bonus (`shield`) multiplies it; add_shield_element is off in the base dump.
+const bellShield: Feature = {
+  name: "bell_shield",
+  category: "weapon",
+  output: { kind: "shield" },
+  multipliers: [
+    { scaling: "hp", leveling: "weapon_refine", values: refineValueTable([20, 23, 26, 29, 32]) },
+  ],
+};
+
 export const theBell: DbObjectWeapon = {
   name: "the_bell",
   serializeId: 71,
@@ -61,4 +83,5 @@ export const theBell: DbObjectWeapon = {
   // Reference the generated stat table by key — never re-transcribe values.
   statTable: BellStatTable,
   conditions: [shieldDisplayPassive, togglePassive],
+  features: [bellShield],
 };

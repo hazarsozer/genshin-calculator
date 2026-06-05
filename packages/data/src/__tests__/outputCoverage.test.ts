@@ -24,7 +24,8 @@ import {
   alleyHunterStatTable,
   solarPearlStatTable,
 } from "../generated/weaponStatTables.js";
-import type { DbObjectChar, StatTableEntry } from "@genshin/types";
+import type { DbObjectChar, Feature, StatTableEntry } from "@genshin/types";
+import { theBell } from "../weapons/the-bell.js";
 import { type FixtureEntry, isNonDamageOutput } from "./_fixtureEntry.js";
 
 // ---------------------------------------------------------------------------
@@ -88,6 +89,15 @@ const WEAPON_TABLE_BY_TYPE: Readonly<Record<string, readonly StatTableEntry[]>> 
   polearm: blackcliffPoleStatTable,
   bow: alleyHunterStatTable,
   catalyst: solarPearlStatTable,
+};
+
+// The oracle equips the canonical weapon per type and dumps ITS features too, so a
+// claymore char's fixture carries `weapon.bell_shield` (The Bell's shield output). The
+// ONLY canonical weapon with a non-damage feature is The Bell; compile its features as
+// `extraFeatures` so those outputs are reproduced. (Other canonical weapons carry no
+// non-damage feature → any future one would surface here as a fresh RED.)
+const CANONICAL_WEAPON_FEATURES_BY_TYPE: Readonly<Record<string, readonly Feature[]>> = {
+  claymore: theBell.features ?? [],
 };
 
 // Minimal local type for Vite's `import.meta.glob` so the typecheck gate passes
@@ -170,6 +180,7 @@ for (const { char, weaponStatTable, slug } of REPS) {
       talentLevels: TALENTS,
       settings: {},
       charLevel: LEVELS.charLevel,
+      extraFeatures: CANONICAL_WEAPON_FEATURES_BY_TYPE[char.weapon] ?? [],
     });
 
     const unmodelled = nonDamageKeys.filter((k) => !(k in compiled));
