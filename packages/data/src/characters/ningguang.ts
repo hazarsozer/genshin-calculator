@@ -35,6 +35,7 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "skill_dmg") return NingguangTalents.s2.p2;
+      if (name === "ningguang_jade_screen_hp") return NingguangTalents.s2.p3;
     }
     if (talent === "burst") {
       if (name === "ningguang_gem_dmg") return NingguangTalents.s3.p1;
@@ -109,6 +110,17 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "geo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.ningguang_gem_dmg") }],
+  },
+  // --- Skill static readout: skill.ningguang_jade_screen_hp = Jade Screen HP (talent% of Max HP) ---
+  // FeaturePostEffectValue(PostEffectStatsHP, percent=talent×0.01), char_skill_elemental, format="".
+  // raw/genshin_calc_pub/src/js/db/Char/Ningguang.js:174-187
+  {
+    name: "ningguang_jade_screen_hp",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.ningguang_jade_screen_hp") },
+    ],
   },
 ];
 
