@@ -139,6 +139,7 @@ const features: readonly Feature[] = [
   // absent from the fixed STAT_BLOCK so it reads 0 — a faithful no-op).
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     damageBonuses: ["dmg_plunge_shockwave"],
@@ -146,6 +147,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     damageBonuses: ["dmg_plunge_shockwave"],

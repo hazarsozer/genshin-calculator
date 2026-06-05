@@ -145,6 +145,7 @@ const features: readonly Feature[] = [
   // raw/genshin_calc_pub/src/js/db/Char/Dahlia.js:268-275
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
@@ -153,6 +154,7 @@ const features: readonly Feature[] = [
   // raw/genshin_calc_pub/src/js/db/Char/Dahlia.js:276-283
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],

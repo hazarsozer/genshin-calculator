@@ -96,6 +96,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave element='electro' (YaeMiko.js:171-178)
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "electro",
@@ -104,6 +105,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave element='electro' (YaeMiko.js:180-187)
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "electro",

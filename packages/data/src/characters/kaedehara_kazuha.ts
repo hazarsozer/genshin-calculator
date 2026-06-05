@@ -173,12 +173,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -193,6 +195,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "kazuha_plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "anemo",
@@ -200,6 +203,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "kazuha_plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "anemo",
@@ -208,6 +212,7 @@ const features: readonly Feature[] = [
   // A1 absorbed-element plunge shockwaves: flat 200% ATK, one per element.
   {
     name: "kazuha_plunge_hydro",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "hydro",
@@ -215,6 +220,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "kazuha_plunge_pyro",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "pyro",
@@ -222,6 +228,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "kazuha_plunge_cryo",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "cryo",
@@ -229,6 +236,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "kazuha_plunge_electro",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "electro",

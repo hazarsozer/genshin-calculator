@@ -178,6 +178,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     element: "cryo",
     damageType: "plunge",
@@ -185,6 +186,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     element: "cryo",
     damageType: "plunge",
