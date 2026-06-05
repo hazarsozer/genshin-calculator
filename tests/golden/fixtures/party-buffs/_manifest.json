@@ -40,8 +40,8 @@
     "description": "Teammate partyData KIT BUFFS applied to a recipient active char (the inverse of the buff-clean FILLER set — the teammate INTENTIONALLY leaks its kit via setPartyChars + baked setBuffsSettings). Reps span the mechanism buckets: A=static (Zhongli universal res-shred), B=postEffect (Bennett base-ATK->flat-ATK, Kazuha EM->elemental-dmg%), C=multiplier (Shenhe Icy Quill ATK-scaled cryo bonus). Each fixture = the recipient's damage with the teammate buff ON. RED until P3.5.2 models partyData (engine: Task 2; data: Tasks 3-5). Source: CalcObject/Buffs.js:149-209, DbObject/Char.js:56-97.",
     "id": "party-buffs"
   },
-  "featureTotal": 2165,
-  "itemCount": 77,
+  "featureTotal": 2192,
+  "itemCount": 78,
   "items": [
     {
       "derived": {
@@ -1485,6 +1485,44 @@
         "resonance_element_1": "electro"
       },
       "slug": "lisa-defshred-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 2,
+        "party_elements_different": 1,
+        "party_elements_different_total": 1,
+        "party_elements_same_inc": 1,
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "lynette",
+            "settings": {
+              "party.lynette_sophisticated_synergy": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "lynette-atkpct-on-ganyu",
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.alley_hunter",

@@ -271,4 +271,24 @@ export const lynette: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A, A-straggler)
+  // A1 "Sophisticated Synergy": team ATK% indexed by the party's distinct-element count
+  //   (party_elements_count_level, 1-4 → 8/12/16/20%), gated by the boolean
+  //   party.lynette_sophisticated_synergy. raw A1AtkBonus = [8,12,16,20] (Lynette.js:132,491).
+  //   Her ConditionBooleanLevels reads getLevel = settings[levelSetting] || 1 and indexes the
+  //   StatTable at that level. Our `static-level` with fromZero unset resolves level = raw || 1
+  //   (incl. the same _bonus offsets), so it is byte-faithful for any party (count_level ≥ 1).
+  //   The raw ConditionCalcElements({}) publisher needs no port — party_elements_count_level is
+  //   already published by buildPartyContext (partyContext.ts:77).
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Lynette.js:478-495
+  partyData: {
+    conditions: [
+      {
+        type: "static-level",
+        levelSetting: "party_elements_count_level",
+        levelStats: { atk_percent: [8, 12, 16, 20] },
+        condition: { type: "boolean", name: "party.lynette_sophisticated_synergy" },
+      },
+    ],
+  },
 };
