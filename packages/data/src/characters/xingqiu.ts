@@ -10,7 +10,7 @@
  * gated only by ConditionAscensionChar({ascension:4})). Folded into baseStats.
  *
  * A1 "Hydropathic" (heal on rain sword) and skill dmg_reduction (FeaturePostEffectValue)
- * are display-only (damageType: "") — not tested by golden harness; omitted here.
+ * are non-damage outputs (damageType: "") — modelled as output:{kind:"heal"/"static"} (P3.5.3).
  *
  * Skill hits (xingqiu_skill_1_dmg / xingqiu_skill_2_dmg) are isChild:true in raw →
  * they emit as standalone features; skill_dmg is the multihit parent total.
@@ -47,6 +47,7 @@ const talents: TalentResolver = {
     if (talent === "skill") {
       if (name === "xingqiu_skill_1_dmg") return XingqiuTalents.s2.p1;
       if (name === "xingqiu_skill_2_dmg") return XingqiuTalents.s2.p2;
+      if (name === "dmg_reduction") return XingqiuTalents.s2.p3;
     }
     if (talent === "burst") {
       if (name === "xingqiu_rain_sword") return XingqiuTalents.s3.p1;
@@ -195,6 +196,33 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "hydro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.xingqiu_rain_sword") }],
+  },
+  // --- Skill static readout: skill.dmg_reduction = Rain Swords DMG reduction ---
+  // FeaturePostEffectValue(PostEffectStats from='dmg_hydro', percent=StatTable('',[0.2]),
+  // flatBonus=getMulti('skill.dmg_reduction', multi:0.01)), format:'percent'. The '' percent-table name is NOT
+  // isPercent → no /100; with the format ×100 the displayed = 0.2×dmg_hydro_frac×100 + talent. Our bag stores
+  // dmg_hydro as a FRACTION (0.20 here, from baseStats dmg_hydro:20), so the term = (2000/100)×0.20 = 20×0.20 = 4;
+  // flatValues = s2.p3 talent (29). 4 + 29 = 33. (values=2000 = her 0.2 coeff × 100 from-fraction × 100 display.)
+  // raw/genshin_calc_pub/src/js/db/Char/Xingqiu.js:350-364 (PostEffectStats from dmg_hydro).
+  {
+    name: "dmg_reduction",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "dmg_hydro", leveling: "char_skill_elemental", values: { getValue: () => 2000 }, flatValues: talents.get("skill.dmg_reduction") },
+    ],
+  },
+  // --- A1 "Hydropathic" heal: skill.xingqiu_hydropathic = 6% Max HP (Rain Swords hit heal) ---
+  // FeatureHeal(FeatureMultiplier scaling:'hp*', source:'ascension1', values=StatTable('xingqiu_hydropathic',[6])),
+  // gated ConditionAscensionChar(1) → auto-active at A6. base = (6/100)×hp_total; no healing-bonus passive (ATK%
+  // ascension) so heal = base. raw/genshin_calc_pub/src/js/db/Char/Xingqiu.js:365-374.
+  {
+    name: "xingqiu_hydropathic",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "ascension1", values: { getValue: () => 6 } },
+    ],
   },
 ];
 
