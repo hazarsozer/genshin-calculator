@@ -201,6 +201,21 @@ const features: readonly Feature[] = [
     damageBonuses: ["dmg_burst_tighnari"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.tighnari_secondary_dmg") }],
   },
+  // --- A4 "Scholarly Blade" static readout: other.tighnari_charged_bonus (EM → charged/burst DMG%) ---
+  // FeaturePostEffectValue(chargedBuffPost = PostEffectStatsMastery, percent=StatTable('dmg_charged_tighnari',[0.06]),
+  // statCap=StatTable('',[60])), format:'percent'. Pattern 3: the readout = 0.06 × mastery_total, displayed as a
+  // percent; (values/100)×mastery = 0.06×EM matches the displayed % directly. values = 0.06×100 = 6.
+  // Cap: her statCap[60] → isPercent('dmg_charged_tighnari')→/100 internally → 0.6 = displayed +60% (binds only at
+  // EM≈1000); inert at the canonical EM=55 (0.06×55=3.3 ≪ 60). Same A4 the a4PostEffects block adds to the bag.
+  // raw/genshin_calc_pub/src/js/db/Char/Tighnari.js:113-123,293-300; PostEffect/Stats.js:58-107 (statCap path).
+  {
+    name: "tighnari_charged_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "mastery", leveling: "", values: { getValue: () => 6 }, capValue: 60 },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
