@@ -22,9 +22,12 @@
  * which are damageType 'skill') and the burst feature, as an extra `mastery*` multiplier
  * with a constant value. Auto-active at A6 (ConditionAscensionChar(4)).
  *
- * NOT modelled (correctly absent from the asserted damage triples):
- *   - skill.shield_absorption: a FeatureShield (damageType ""); the harness filters
- *     display-only rows (no damageType). No engine shield support is needed.
+ * Shield (output:{kind:"shield"}):
+ *   - skill.shield_absorption: HP-scaled shield (s2.p2 % ATK + s2.p3 flat).
+ *     raw: FeatureShield{category:'skill', element:'anemo',
+ *       multipliers:[FeatureMultiplierList{leveling:'char_skill_elemental',
+ *         values:Talents.get('skill.shield_absorption')}]}
+ *     FeatureMultiplierList default scaling = 'atk*' (raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier.js:23)
  *   - Transformative reactions (swirl variants, overload, superconduct, burning,
  *     burgeon, hyperbloom, electrocharged, rupture, shatter): emitted generically
  *     from the anemo element by `transformativeReactionFeatures`, not declared here.
@@ -68,6 +71,8 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "lanyan_feathermoon_ring_dmg") return LanYanTalents.s2.p1;
+      if (name === "shield_absorption")           return LanYanTalents.s2.p2;
+      if (name === "shield_absorption_flat")      return LanYanTalents.s2.p3;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return LanYanTalents.s3.p1;
@@ -223,6 +228,20 @@ const features: readonly Feature[] = [
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.lanyan_feathermoon_ring_dmg") },
       a4SkillMastery,
+    ],
+  },
+  // --- Shield (FeatureShield): skill.shield_absorption ---
+  // FeatureMultiplierList: (percent/100 × atk_total) + flat, then × (1 + shield).
+  // raw: FeatureShield{ category:'skill', element:'anemo',
+  //   multipliers:[FeatureMultiplierList{ leveling:'char_skill_elemental',
+  //     values:Talents.get('skill.shield_absorption') }] }
+  // No explicit scaling → default 'atk*'. s2.p2 (% ATK) + s2.p3 (flat).
+  {
+    name: "shield_absorption",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "atk", leveling: "char_skill_elemental", values: talents.get("skill.shield_absorption"), flatValues: talents.get("skill.shield_absorption_flat") },
     ],
   },
   // A1 absorbed-element variants: pyro / hydro / electro / cryo.
