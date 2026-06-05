@@ -192,6 +192,25 @@ const features: readonly Feature[] = [
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
+  // --- wriothesley_vaulting_fist_heal: A1 HP-scaling heal (leveling:'wriothesley_heal_level') ---
+  // raw: FeatureHeal({ name:'wriothesley_vaulting_fist_heal', category:'attack',
+  //   multipliers:[{ scaling:'hp*', source:'ascension1', leveling:'wriothesley_heal_level',
+  //     values: new ValueTable([30, 50]) }] })  Wriothesley.js:229-240.
+  // wriothesley_heal_level is set to 2 by ConditionStatic C4 (always-on at canonical A6):
+  //   Wriothesley.js:353-360: settings:{ wriothesley_heal_level:2 }, subConditions:[ConditionAscensionChar(1)].
+  // ValueTable([30, 50]): getValue(1)=30, getValue(2)=50. Level 2 → 50% HP.
+  {
+    name: "wriothesley_vaulting_fist_heal",
+    category: "attack",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "wriothesley_heal_level",
+        values: { getValue: (level: number) => (level >= 2 ? 50 : 30) },
+      },
+    ],
+  },
   // --- Burst: Darkgold Wolfbite (cryo) ---
   // damageBonuses: ['dmg_burst_wriothesley'] — C2 only, 0 at C0.
   {
