@@ -52,6 +52,8 @@ const talents: TalentResolver = {
       if (name === "plunge_high")    return CandaceTalents.s1.p10;
     }
     if (talent === "skill") {
+      if (name === "shield_percent")     return CandaceTalents.s2.p1;
+      if (name === "shield_flat")        return CandaceTalents.s2.p2;
       if (name === "candace_press_dmg") return CandaceTalents.s2.p3;
       if (name === "candace_hold_dmg")  return CandaceTalents.s2.p4;
     }
@@ -160,6 +162,17 @@ const features: readonly Feature[] = [
     category: "skill",
     element: "hydro",
     multipliers: [{ scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.candace_hold_dmg") }],
+  },
+  // --- Skill: Heron's Sanctum shield ---
+  // FeatureShield: FeatureMultiplierList (s2.p1 % HP + s2.p2 flat), leveling:'char_skill_elemental'
+  // raw/genshin_calc_pub/src/js/db/Char/Candace.js:286-297
+  {
+    name: "shield",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
+    ],
   },
   // --- Burst: Wagtail's Tide (hydro) ---
   // raw: FeatureDamageBurst burst_dmg, element='hydro', HP-scaling (s3.p1)
