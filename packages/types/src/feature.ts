@@ -126,6 +126,16 @@ export interface FeatureMultiplierEntry {
    */
   readonly capValue?: number;
   /**
+   * Optional ADDITIVE bonus term on the talent% fraction, keyed off a SEPARATE stacks
+   * level (her FeatureMultiplier.bonusLeveling/bonusValues): `talentPercent += bonusValues
+   * .getValue(settings[bonusLeveling] ?? 1) / 100`. Mirrors her getValue (Multiplier.js:184-186)
+   * = `values.getValue(level)/100 + bonusValues.getValue(getBonusLevel)/100`, getBonusLevel =
+   * `getLevel(bonusLeveling) || 1` (:168-169). Both absent ⇒ no bonus term (base-inert).
+   * Source: raw/.../db/Char/YunJin.js (yunjin_traditionalist_stacks → [2.5,5,7.5,11.5]).
+   */
+  readonly bonusLeveling?: string;
+  readonly bonusValues?: TalentTable;
+  /**
    * CHAR-LEVEL multipliers only: which features this multiplier applies to.
    * When set (only on `char.multipliers` entries), the multiplier is summed into
    * a feature's base-damage term iff `target.damageTypes` includes the feature's

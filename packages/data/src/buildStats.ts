@@ -214,6 +214,7 @@ const RAW_BAG_SCALING_KEYS = [
   "faruzan_atk_base",     // Faruzan A4 anemo-DMG teammate multiplier (P3.5.2 Bucket C)
   "escoffier_atk_total",  // Escoffier C2 cryo-DMG teammate multiplier (P3.5.2 Bucket C)
   "xilonen_def_total",    // Xilonen C4 normal/charged/plunge-DMG teammate multiplier (P3.5.2 Bucket C)
+  "yunjin_def_total",     // Yun Jin Flying Cloud Flag Formation DEF-scaled normal-DMG multiplier (P3.5.2 engine-ext)
   "citlali_mastery_total", // Citlali C1 EM-scaled all-type-DMG multiplier (P3.5.2 Bucket C)
   "layla_max_hp",         // Layla C4 HP-scaled normal/charged-DMG multiplier (P3.5.2 Bucket C)
 ] as const;

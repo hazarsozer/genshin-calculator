@@ -295,7 +295,18 @@ function baseDamageTerm(
     const stacks = typeof raw === "number" ? raw : 0;
     scalingFactor += entry.scalingOffset.perStack * Math.min(entry.scalingOffset.maxStacks, stacks);
   }
-  const talentPercent = (entry.values.getValue(talentLevel) / 100) * scalingFactor;
+  let talentPercent = (entry.values.getValue(talentLevel) / 100) * scalingFactor;
+  // ADDITIVE bonus term keyed off a SEPARATE stacks level — her FeatureMultiplier.getValue
+  // adds `bonusValues.getValue(getBonusLevel)/100` on top of the talent% fraction
+  // (Multiplier.js:184-186). `getBonusLevel = settings.getLevel(bonusLeveling) || 1` (:168-169):
+  // a PLAIN settings read with a `|| 1` fallback — NO `_bonus` offset (it is a stacks count,
+  // not a talent level). The sole v5.8 user is Yun Jin's NA-DMG teammate multiplier
+  // (`yunjin_traditionalist_stacks` → [2.5,5,7.5,11.5]). Both fields absent ⇒ no term added ⇒
+  // base-inert (the 58k-golden / armory surface is byte-unchanged).
+  if (entry.bonusLeveling !== undefined && entry.bonusValues !== undefined) {
+    const bonusLevel = (ctx.settings[entry.bonusLeveling] as number | undefined) ?? 1;
+    talentPercent += entry.bonusValues.getValue(bonusLevel) / 100;
+  }
 
   // Scaling stat key. Two paths, faithful to her FeatureMultiplier.getTreeStatValue
   // (Multiplier.js:281-288 → makeStatItem vs makeStatTotalItem):
