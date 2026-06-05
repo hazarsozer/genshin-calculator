@@ -9,10 +9,11 @@
  * Non-damage outputs (output: { kind: "shield" }):
  *   - burst.baizhu_seamless_shield — HP-scaled burst shield (s3.p1 % + s3.p2 flat)
  *
- * Heals/shields still omitted (not ported in this pass):
- *   skill.heal, burst.baizhu_seamless_heal.
- * FeaturePostEffectValue outputs (bloom/quicken bonuses) also have empty damageType
- * → not damage triples; omitted: burst.baizhu_bloom_bonus, burst.baizhu_quicken_bonus.
+ * Non-damage outputs also modelled (P3.5.3):
+ *   - skill.heal (party heal, s2.p2 % + s2.p3 flat) + burst.baizhu_seamless_heal (s3.p5 % + s3.p6 flat) — HP heals.
+ *   - burst.baizhu_bloom_bonus / baizhu_quicken_bonus — A4 "Seamless Flow" HP→reaction-DMG% readouts
+ *     (PostEffectStatsHP, NOT EM): 0.002×hp (cap 100) / 0.0008×hp (cap 40). The asc4+all_things toggle gates
+ *     APPLICATION not the readout → modelled without it (cf. emilie/itto).
  *
  * A1 "Five Fortunes Forever" is ConditionBoolean / ConditionStatic (conditional toggle
  * or text-only) → not auto-active at C0 solo; omitted.
@@ -49,12 +50,16 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "skill_dmg") return BaizhuTalents.s2.p1;
+      if (name === "heal_percent") return BaizhuTalents.s2.p2;
+      if (name === "heal_flat")    return BaizhuTalents.s2.p3;
     }
     if (talent === "burst") {
       // raw: Talents.get('burst.baizu_spiritvein_dmg') → s3.p7
       if (name === "baizu_spiritvein_dmg") return BaizhuTalents.s3.p7;
       if (name === "baizhu_seamless_shield_percent") return BaizhuTalents.s3.p1;
       if (name === "baizhu_seamless_shield_flat")    return BaizhuTalents.s3.p2;
+      if (name === "baizhu_seamless_heal_percent")   return BaizhuTalents.s3.p5;
+      if (name === "baizhu_seamless_heal_flat")      return BaizhuTalents.s3.p6;
     }
     throw new Error(`baizhu talents: unknown path '${path}'`);
   },
@@ -187,6 +192,49 @@ const features: readonly Feature[] = [
     output: { kind: "shield" },
     multipliers: [
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.baizhu_seamless_shield_percent"), flatValues: talents.get("burst.baizhu_seamless_shield_flat") },
+    ],
+  },
+  // --- Heals (FeatureHeal, HP-scaled lists) ---
+  // skill.heal: The Seamless transmission party heal — getList('skill.heal') = [s2.p2 (%), s2.p3 (flat)].
+  // raw/genshin_calc_pub/src/js/db/Char/Baizhu.js:80-84,295-305. No healing-bonus passive (HP% ascension).
+  {
+    name: "heal",
+    category: "skill",
+    output: { kind: "heal", partyHeal: true },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.heal_percent"), flatValues: talents.get("skill.heal_flat") },
+    ],
+  },
+  // burst.baizhu_seamless_heal: Gossamer Sprite per-tick heal — getList('burst.baizhu_seamless_heal') = [s3.p5, s3.p6].
+  // raw/genshin_calc_pub/src/js/db/Char/Baizhu.js:111-117,351-362.
+  {
+    name: "baizhu_seamless_heal",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.baizhu_seamless_heal_percent"), flatValues: talents.get("burst.baizhu_seamless_heal_flat") },
+    ],
+  },
+  // --- A4 "Seamless Flow" static readouts: Max HP → Bloom/Quicken DMG% (capped) ---
+  // buffBloom/buffQuicken = PostEffectStatsHP, percent=StatTable('dmg_reaction_bloom',[A4BloomBonus=0.002]) /
+  // ('dmg_reaction_quicken',[A4QuickenBonus=0.0008]), statCap=[100]/[40], format:'percent'. 'dmg_reaction_*' is
+  // isPercent → /100 and the format ×100 CANCEL → displayed = 0.002×hp (cap 100) / 0.0008×hp (cap 40). values =
+  // raw×100 = 0.2 / 0.08; capValue = the raw statCap. Caps inert at the canonical HP (≈68.45 / 27.38).
+  // raw/genshin_calc_pub/src/js/db/Char/Baizhu.js:136-159,364-373.
+  {
+    name: "baizhu_bloom_bonus",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 0.2 }, capValue: 100 },
+    ],
+  },
+  {
+    name: "baizhu_quicken_bonus",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 0.08 }, capValue: 40 },
     ],
   },
 ];
