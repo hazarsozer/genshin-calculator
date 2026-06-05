@@ -45,6 +45,8 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "skill_dmg") return NoelleTalents.s2.p6;
+      if (name === "shield_percent") return NoelleTalents.s2.p1;
+      if (name === "shield_flat") return NoelleTalents.s2.p7;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return NoelleTalents.s3.p1;
@@ -132,6 +134,30 @@ const features: readonly Feature[] = [
     element: "geo",
     multipliers: [
       { scaling: "def", leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") },
+    ],
+  },
+  // --- Shields ---
+  // raw: FeatureShield name:'shield', category:'skill', scaling:'def*', FeatureMultiplierList.
+  // getList('skill.shield') → [s2.p1 (%), s2.p7 (flat)].
+  // raw/genshin_calc_pub/src/js/db/Char/Noelle.js:248-259
+  {
+    name: "shield",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "def", leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
+    ],
+  },
+  // raw: FeatureShield name:'noelle_devotion_shield', category:'other', scaling:'def*'.
+  // Plain FeatureMultiplier: source:'ascension1', values: ValueTable([400]).
+  // ConditionAscensionChar({ascension:1}) → always active at canonical A6 build.
+  // raw/genshin_calc_pub/src/js/db/Char/Noelle.js:304-316
+  {
+    name: "noelle_devotion_shield",
+    category: "other",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "def", leveling: "ascension1", values: { getValue: (_level: number) => 400 } },
     ],
   },
   // --- Burst: Sweeping Time (geo ATK-scaled) ---
