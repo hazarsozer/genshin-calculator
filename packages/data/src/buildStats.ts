@@ -182,7 +182,7 @@ const REACTION_BONUS_PERCENT_KEYS = [
  * atk/hp/def/mastery) reads the bag value directly — her `makeStatItem(scaling)`
  * (Feature2/Compile/Helpers.js:11-19) → `stats.get(scaling)`, no `_total`, no `/100`.
  * These are flat numeric inputs a ConditionNumber injects (not percent stats), so they
- * are emitted RAW. The two v5.8 users (both ConditionNumber-driven scaling inputs):
+ * are emitted RAW. The v5.8 users (all ConditionNumber-driven scaling inputs):
  *   - `party_days_past_healing_recorded` — Song of Days Past 4pc (team): the recorded
  *     healing the team multiplier scales (≤15000).
  *   - `accumulated_healing` — Ocean-Hued Clam 4pc (self-worn): the healing accumulated
@@ -191,14 +191,27 @@ const REACTION_BONUS_PERCENT_KEYS = [
  *     input is > 0 (Condition/Number.js:8-11), so at the v5.8 standard 0 the key is never
  *     in the bag → never emitted → the foam reads 0 (the existing OceanHuedClam armory
  *     fixture, foam 0, is byte-unchanged).
+ *   - `shenhe_atk_total` — Shenhe's Icy Quill TEAMMATE multiplier (P3.5.2 Bucket C): her
+ *     `partyData` lifts the teammate's `atk_total` into the recipient bag via a
+ *     ConditionNumber (`partyStat:'atk_total', max:10000`), and the cryo-element teammate
+ *     FeatureMultiplier scales `shenhe_dmg_bonus% ×` that value into each cryo hit's base
+ *     term. Structurally identical to Song of Days Past's team-multiplier scaling input.
+ *     Set ONLY when a Shenhe teammate is in the roster (the lift condition fires); absent
+ *     for every solo / non-Shenhe build → key never emitted → byte-unchanged.
  * Absent for every build that sets no such input → key never emitted → multiplier reads
  * 0 → the base golden suite + all existing fixtures are byte-untouched.
  *
  * Source: raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:262-380 (Song of Days Past
  *         ConditionNumber + its FeatureMultiplier), db/Artifacts/Set/OceanHuedClam.js:35-67
- *         (Clam ConditionNumber + FeatureDamageClam), classes/Feature2/Multiplier.js:281-288.
+ *         (Clam ConditionNumber + FeatureDamageClam), db/Char/Shenhe.js:456-621 (Icy Quill
+ *         partyData ConditionNumber + teammate FeatureMultiplier),
+ *         classes/Feature2/Multiplier.js:281-288.
  */
-const RAW_BAG_SCALING_KEYS = ["party_days_past_healing_recorded", "accumulated_healing"] as const;
+const RAW_BAG_SCALING_KEYS = [
+  "party_days_past_healing_recorded",
+  "accumulated_healing",
+  "shenhe_atk_total",
+] as const;
 
 /**
  * Level/ascension parameters for base-stat assembly. (Talent levels are a
