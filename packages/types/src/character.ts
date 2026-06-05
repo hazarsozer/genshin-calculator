@@ -282,6 +282,14 @@ export interface CharPostEffect {
     readonly levelSetting: string;
   };
   /**
+   * Multiplicative stacks on the whole resolved ratio (her PostEffectStats.stacksSetting →
+   * getStacks → `CMulti([ratio, stacks])`, Stats.js:77-81): `ratio *= settings[stacksSetting]`
+   * when that value is > 1; absent/≤1 ⇒ ratio unchanged (base-inert; her `getStacks` returns
+   * `settings[stacksSetting] || 1`). Applied BEFORE `percentBonus` (her `(ratio × stacks) +
+   * bonus`). Source: raw/.../db/Char/Iansan.js (PostEffectStats stacksSetting).
+   */
+  readonly stacksSetting?: string;
+  /**
    * Conditional flat addend to the resolved ratio (her PostEffectStats.percentBonus ×
    * bonusCondition, Stats.js:41-50, 77-88): when `condition` is absent or evaluates true,
    * `value` is ADDED to the ratio AFTER any stacks multiply and BEFORE the ratio multiplies

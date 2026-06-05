@@ -26,7 +26,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Iansan s1/s2/s3)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Iansan as IansanStatTable } from "../generated/charTables.js";
 import { Iansan as IansanTalents } from "../generated/charTalentTables.js";
 
@@ -152,6 +152,53 @@ const constellationConditions: readonly Condition[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// partyData — Nightsoul-points-scaled ATK battery (P3.5.2 engine-ext pass).
+// Source: raw/genshin_calc_pub/src/js/db/Char/Iansan.js:385-471
+//
+// Her burst grants teammates +ATK = min((perPointRatio × points + 0.06@≥42) × atk_total,
+// iansan_bonus_max). perPointRatio = burst.iansan_conversion_low × 0.01 (her getMulti folds
+// the ×0.01 into the table; our ratioFromTalent multi:0.01 reproduces it exactly). The whole
+// per-point ratio is multiplied by the live Nightsoul-points count (her stacksSetting →
+// getStacks → CMulti), then the +0.06 percentBonus addend applies at ≥42 points (her
+// bonusCondition ConditionBooleanValue ge 42), then ×atk_total, then capped at the level-scaled
+// iansan_bonus_max (her statCap StatTable keyed by the teammate's burst level).
+//
+// This is the re-port that earlier got reverted (a7b5067) for baking party_iansan_points:1 — a
+// multiply-by-1 that DODGED the stacks scaling. Now the multiply is the CharPostEffect.stacksSetting
+// field and the oracle rep gates it at the real operating point (points=42), so the ×points term
+// is load-bearing.
+//
+// NOT ported (variant-rep pass / out of scope): A1 +20% ATK, C2 +30% ATK, C5 +3 burst,
+// C6 +25% dmg_all — her partyData conditions (:417-449) gated by party.* toggles / ascension /
+// constellation, all OFF at the C0 baseline rep. The energy/heal kit is non-damage (spec §6).
+const partyAtkPost: CharPostEffect = {
+  fromStat: "iansan_atk_total",
+  toStat: "atk",
+  // perPointRatio = burst.iansan_conversion_low (s3.p3) × 0.01 (her getMulti multi:0.01).
+  ratioFromTalent: {
+    table: IansanTalents.s3.p3,
+    levelSetting: "iansan_char_skill_burst",
+    multi: 0.01,
+  },
+  // Multiplicative Nightsoul points: ratio ×= party_iansan_points (her stacksSetting).
+  stacksSetting: "party_iansan_points",
+  // +0.06 flat addend to the ratio at ≥42 points (her percentBonus ValueTable([0.06]) +
+  // bonusCondition ConditionBooleanValue{setting:'party_iansan_points', cond:'ge', value:42}).
+  percentBonus: {
+    value: 0.06,
+    condition: { type: "boolean-value", setting: "party_iansan_points", cond: "ge", value: 42 },
+  },
+  // Absolute cap = iansan_bonus_max (s3.p4) at the teammate's burst level (her statCap StatTable).
+  capValueFromTalent: {
+    table: IansanTalents.s3.p4,
+    levelSetting: "iansan_char_skill_burst",
+  },
+  // Master gate: the burst battery is active only while Nightsoul points are present
+  // (her FeaturePostEffectValue condition ConditionBoolean{name:'party_iansan_points'}).
+  conditions: [{ type: "boolean", name: "party_iansan_points" }],
+};
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -167,4 +214,19 @@ export const iansan: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  partyData: {
+    loadStats: {
+      stats: ["atk_total"],
+      settings: ["char_skill_burst"],
+    },
+    conditions: [
+      // ConditionNumber: lifts the teammate's atk_total into the recipient's stat bag, read by
+      // the postEffect's `from` (her ConditionNumber{name:'iansan_atk_total', partyStat:'atk_total',
+      // max:10000}, raw Iansan.js:391-398). The burst-level and points inputs (iansan_char_skill_burst
+      // / party_iansan_points) flow as baked settings into the EvalContext, so the postEffect reads
+      // them via levelSetting/stacksSetting without a separate lift.
+      { type: "number", name: "iansan_atk_total", max: 10000 },
+    ],
+    postEffects: [partyAtkPost],
+  },
 };

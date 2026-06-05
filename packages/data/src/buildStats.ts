@@ -428,6 +428,13 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
         const stacks = (settings[setting] as number | undefined) ?? 0;
         ratio += table.getValue(lvl) * stacks;
       }
+      // Multiplicative stacks on the whole ratio (her getStacks → CMulti([ratio, stacks]),
+      // Stats.js:77-81): ratio *= settings[stacksSetting] (her `|| 1` ⇒ >1 only). Applied
+      // BEFORE percentBonus (her (ratio × stacks) + bonus). Absent → unchanged (base-inert).
+      if (effect.stacksSetting !== undefined) {
+        const stacks = (settings[effect.stacksSetting] as number | undefined) ?? 1;
+        if (stacks > 1) ratio *= stacks;
+      }
       // Conditional flat addend on the ratio (her percentBonus × bonusCondition,
       // PostEffect/Stats.js:41-50,77-88): when the gate is absent or active, add percentBonus.value
       // to the ratio AFTER any stacks multiply and BEFORE it multiplies the `from` stat (her
