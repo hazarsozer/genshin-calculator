@@ -290,4 +290,55 @@ export const travelerAnemo: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A, A-straggler)
+  // C6 "Intertwined Winds" RES shred (mirrors Venti's C6 shape):
+  //   part 1: party.traveler_intertwined_winds (boolean) → enemy_res_anemo:-20.
+  //   part 2: party.traveler_intertwined_winds_element single-select dropdown-element →
+  //     enemy_res_<el>:-20 for the chosen cryo/electro/hydro/pyro, gated on the part-1 boolean.
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/TravelerAnemo.js:507-562
+  partyData: {
+    conditions: [
+      // C6 part 1: -20% anemo res.
+      {
+        type: "boolean",
+        name: "party.traveler_intertwined_winds",
+        stats: { enemy_res_anemo: -20 },
+      },
+      // C6 part 2: per-element RES shred — the traveler_intertwined_winds_element single-select
+      // dropdown → enemy_res_<el>:-20, gated on traveler_intertwined_winds. Modeled with the
+      // dropdown-element consumer pattern (cf. Venti C6). Raw TravelerAnemo.js:520-560.
+      {
+        type: "static",
+        stats: { enemy_res_cryo: -20 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.traveler_intertwined_winds_element", element: "cryo" },
+          { type: "boolean", name: "party.traveler_intertwined_winds" },
+        ] },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_electro: -20 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.traveler_intertwined_winds_element", element: "electro" },
+          { type: "boolean", name: "party.traveler_intertwined_winds" },
+        ] },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_hydro: -20 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.traveler_intertwined_winds_element", element: "hydro" },
+          { type: "boolean", name: "party.traveler_intertwined_winds" },
+        ] },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_pyro: -20 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.traveler_intertwined_winds_element", element: "pyro" },
+          { type: "boolean", name: "party.traveler_intertwined_winds" },
+        ] },
+      },
+    ],
+  },
 };
