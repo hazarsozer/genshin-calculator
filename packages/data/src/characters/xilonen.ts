@@ -33,8 +33,9 @@
  * -45 in the constellations golden), retiring the former build-coupled enemy_res_geo:-45 fold.
  * Transcribed from raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js:5397.
  *
+ * Non-damage output: burst.heal_dot — DEF-scaled burst heal, modelled as output:{kind:"heal"}
+ *   (P3.5.3). The separate C6 `other` party heal (ConditionConstellation(6)) stays out (solo C0).
  * Skipped (display-only, empty damageType → not asserted by the golden harness):
- *   - burst.heal_dot, the C6 party heal (FeatureHeal, out of the TS feature model).
  *   - reaction.crystalize (geo shield/crystallize, damageType "").
  * Geo universals (reaction.electrocharged, reaction.shatter) are auto-emitted by
  * the engine from the element; they are not declared here.
@@ -76,6 +77,8 @@ const talents: TalentResolver = {
     if (talent === "burst") {
       if (name === "burst_dmg") return XilonenTalents.s3.p1;
       if (name === "xilonen_beat_dmg") return XilonenTalents.s3.p5;
+      if (name === "heal_dot_percent") return XilonenTalents.s3.p2;
+      if (name === "heal_dot_flat")    return XilonenTalents.s3.p3;
     }
     throw new Error(`xilonen talents: unknown path '${path}'`);
   },
@@ -172,6 +175,16 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "geo",
     multipliers: [{ scaling: "def", leveling: "char_skill_burst", values: talents.get("burst.xilonen_beat_dmg") }],
+  },
+  // --- Burst heal (FeatureHeal): burst.heal_dot — DEF-scaled (s3.p2 % DEF + s3.p3 flat) ---
+  // raw/genshin_calc_pub/src/js/db/Char/Xilonen.js:359-368 (FeatureMultiplierList scaling:'def*', char_skill_burst).
+  {
+    name: "heal_dot",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "def", leveling: "char_skill_burst", values: talents.get("burst.heal_dot_percent"), flatValues: talents.get("burst.heal_dot_flat") },
+    ],
   },
 ];
 
