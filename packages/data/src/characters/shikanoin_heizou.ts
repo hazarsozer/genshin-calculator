@@ -172,6 +172,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "anemo",
@@ -179,6 +180,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "anemo",
@@ -332,4 +334,15 @@ export const shikanoinHeizou: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // A4 "Penetrative Reasoning" — +80 EM to nearby party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Heizou.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { mastery: 80 },
+        condition: { type: "boolean", name: "party.shikanoin_heizou_penetrative_reasoning" },
+      },
+    ],
+  },
 };

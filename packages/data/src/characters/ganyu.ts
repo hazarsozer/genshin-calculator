@@ -142,12 +142,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -208,4 +210,28 @@ export const ganyu: DbObjectChar = {
   // No baseStats: Ganyu's A1 (+20% Frostflake crit) and A4 (+20% Cryo DMG) are both
   // ConditionBoolean toggles (default OFF), not auto-active passives — OFF in the fixed
   // canonical build (oracle-verified). Raw: db/Char/Ganyu.js:290-315.
+  // A4 "Harmony Between Heaven and Earth" — +20% Cryo DMG.
+  // C1 "Dew-Drinker" — enemy Cryo RES -15%.
+  // C4 "Westward Sojourn" — +5% DMG (stacks up to ×5 = +25% dmg_all).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Ganyu.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { dmg_cryo: 20 },
+        condition: { type: "boolean", name: "party.ganyu_harmony" },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_cryo: -15 },
+        condition: { type: "boolean", name: "party.ganyu_dew_drinker" },
+      },
+      {
+        type: "stacks",
+        name: "party.ganyu_westward_sojourn",
+        maxStacks: 5,
+        stats: { dmg_all: 5 },
+      },
+    ],
+  },
 };

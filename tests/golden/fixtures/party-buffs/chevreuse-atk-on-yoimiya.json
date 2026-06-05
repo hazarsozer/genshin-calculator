@@ -1,0 +1,264 @@
+{
+  "element": "pyro",
+  "features": {
+    "attack.aimed": {
+      "average": 2133.604097160347,
+      "category": "attack",
+      "crit": 3302.7927200624567,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1651.3963600312284
+    },
+    "attack.charged_aimed": {
+      "average": 5309.64728954229,
+      "category": "attack",
+      "crit": 8219.268250065465,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 4109.634125032732
+    },
+    "attack.normal_hit_1": {
+      "average": 2920.8966262993763,
+      "category": "attack",
+      "crit": 4521.511805416992,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2260.755902708496
+    },
+    "attack.normal_hit_1_1": {
+      "average": 1460.4483131496881,
+      "category": "attack",
+      "crit": 2260.755902708496,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1130.377951354248
+    },
+    "attack.normal_hit_2": {
+      "average": 2801.89713411681,
+      "category": "attack",
+      "crit": 4337.3020651963,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2168.65103259815
+    },
+    "attack.normal_hit_3": {
+      "average": 3642.466274351852,
+      "category": "attack",
+      "crit": 5638.49268475519,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2819.246342377595
+    },
+    "attack.normal_hit_4": {
+      "average": 3804.377704624497,
+      "category": "attack",
+      "crit": 5889.129573722132,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2944.564786861066
+    },
+    "attack.normal_hit_4_1": {
+      "average": 1902.1888523122484,
+      "category": "attack",
+      "crit": 2944.564786861066,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1472.282393430533
+    },
+    "attack.normal_hit_5": {
+      "average": 4338.072396837223,
+      "category": "attack",
+      "crit": 6715.282348045237,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3357.6411740226185
+    },
+    "attack.plunge": {
+      "average": 2395.8840047380713,
+      "category": "attack",
+      "crit": 3708.798768944383,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1854.3993844721915
+    },
+    "attack.plunge_high": {
+      "average": 5983.908839920873,
+      "category": "attack",
+      "crit": 9263.016780063272,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4631.508390031636
+    },
+    "attack.plunge_low": {
+      "average": 4790.752804389389,
+      "category": "attack",
+      "crit": 7416.026012986671,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3708.0130064933355
+    },
+    "attack.yoimiya_kindling_arrow_dmg": {
+      "average": 702.2436737781737,
+      "category": "attack",
+      "crit": 1087.064510492529,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 543.5322552462645
+    },
+    "burst.burst_dmg": {
+      "average": 7700.465112464113,
+      "category": "burst",
+      "crit": 11920.22463229739,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 5960.112316148695
+    },
+    "burst.yoimiya_aurous_blaze_dmg": {
+      "average": 7385.666224218725,
+      "category": "burst",
+      "crit": 11432.919851731773,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 5716.459925865886
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "stats.atk": {
+      "average": 3527.2680593601362,
+      "category": "stats",
+      "crit": 3527.2680593601362,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3527.2680593601362
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 29.2,
+      "category": "stats",
+      "crit": 29.2,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 29.2
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1490.843496,
+      "category": "stats",
+      "crit": 1490.843496,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1490.843496
+    },
+    "stats.hp": {
+      "average": 23390.1058884,
+      "category": "stats",
+      "crit": 23390.1058884,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23390.1058884
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Yoimiya",
+  "repSlug": "yoimiya",
+  "schema": 1,
+  "slug": "chevreuse-atk-on-yoimiya",
+  "weapon": "weapon_name.alley_hunter",
+  "weaponType": "bow"
+}

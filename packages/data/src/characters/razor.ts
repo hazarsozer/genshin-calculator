@@ -92,12 +92,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -175,4 +177,15 @@ export const razor: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C4 "Bite" — enemy DEF -15%.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Razor.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { enemy_def_reduce: 15 },
+        condition: { type: "boolean", name: "party.razor_bite" },
+      },
+    ],
+  },
 };

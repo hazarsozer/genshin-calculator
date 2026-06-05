@@ -131,6 +131,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low (s1.p8)
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
@@ -138,6 +139,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high (s1.p9)
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -210,4 +212,15 @@ export const thoma: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C6 "Burning Heart" — +15% DMG to Normal / Charged / Plunge attacks.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Thoma.js (partyData condition)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { dmg_normal: 15, dmg_charged: 15, dmg_plunge: 15 },
+        condition: { type: "boolean", name: "party.thoma_burning_heart" },
+      },
+    ],
+  },
 };

@@ -126,6 +126,28 @@ export interface FeatureMultiplierEntry {
    */
   readonly capValue?: number;
   /**
+   * Optional floor-at-zero threshold subtracted from the SCALING STAT before the
+   * talent% multiply: the scaling factor becomes `max(scalingStat − exceedStatValue, 0)`
+   * (her FeatureMultiplier.getTreeStatValue, Multiplier.js:281-301 — `CMax([CSubtract([stat,
+   * exceedStatValue]), 0])`). Models a "scales off the stat ABOVE a threshold" buff
+   * (Sigewinne: max HP above 30000). Absent ⇒ the plain `scalingStat` (base-inert).
+   * Source: raw/.../db/Char/Sigewinne.js:533 (exceedStatValue: A1MinHP).
+   */
+  readonly exceedStatValue?: number;
+  /**
+   * Optional ADDITIVE bonus term on the talent% fraction, keyed off a SEPARATE stacks
+   * level (her FeatureMultiplier.bonusLeveling/bonusValues): `talentPercent += bonusValues
+   * .getValue(settings[bonusLeveling] || 1) / 100`. Mirrors her getValue (Multiplier.js:184-186)
+   * = `values.getValue(level)/100 + bonusValues.getValue(getBonusLevel)/100`, getBonusLevel =
+   * `getLevel(bonusLeveling) || 1` (:168-169) — the `|| 1` coerces an absent/0 stacks count to 1.
+   * (Our plain `settings[bonusLeveling]` omits the `_bonus` offsets her getLevel would add, but
+   * none exist for the only v5.8 key, so it is exact.) Both absent ⇒ no bonus term (base-inert).
+   * Source: raw/.../db/Char/YunJin.js (yunjin_traditionalist_stacks → [2.5,5,7.5,11.5]).
+   */
+  readonly bonusLeveling?: string;
+  /** Companion per-stacks-level value table for {@link bonusLeveling} (1-indexed). */
+  readonly bonusValues?: TalentTable;
+  /**
    * CHAR-LEVEL multipliers only: which features this multiplier applies to.
    * When set (only on `char.multipliers` entries), the multiplier is summed into
    * a feature's base-damage term iff `target.damageTypes` includes the feature's
@@ -152,19 +174,42 @@ export interface FeatureMultiplierEntry {
 /**
  * Targeting predicate for a char-level multiplier — which features it applies to.
  *
- * A faithful subset of her `FeatureMultiplierTarget` (Multiplier/Target.js). Only
- * `damageTypes` is modelled here: it is the field every v5.8 char-level targeted
- * multiplier uses (Itto A4 → charged, Albedo C2 → burst, …). `isMatchFeature`
- * keeps an entry iff `damageTypes` includes the feature's resolved damage type
- * (`damageTypeOf`). The remaining raw fields (`damageTypesExclude`,
- * `damageElements`, `tags`, `options`) are unused by any v5.8 character's
- * char-level multipliers and are deferred until a source needs them.
+ * A faithful subset of her `FeatureMultiplierTarget` (Multiplier/Target.js),
+ * modelling the AND-chain of `isMatchFeature` as each in-scope source needs it:
+ *   - `damageTypes` — the field every v5.8 char-level targeted multiplier uses
+ *     (Itto A4 → charged, Albedo C2 → burst, …): keep iff it includes the
+ *     feature's resolved damage type (`damageTypeOf`).
+ *   - `damageElements` — keep iff it includes the feature's RESOLVED element
+ *     (`resolveElement`). Used by Bucket-C teammate multipliers that buff one
+ *     element only (Shenhe's Icy Quill → `["cryo"]`, Faruzan → `["anemo"]`,
+ *     Escoffier → `["cryo"]`). ABSENT/empty → no element constraint (base-inert).
+ *
+ * The chain is AND: a feature must satisfy every PRESENT filter. The remaining raw
+ * fields (`damageTypesExclude`, `options`) are unused by any in-scope v5.8
+ * char-level multiplier and are deferred until a source needs them.
  *
  * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Target.js
+ *         (`isMatchFeature`: the damageTypes + damageElements + tags branches).
  */
 export interface FeatureMultiplierTarget {
   /** Feature damage types this multiplier applies to (e.g. `["charged"]`, `["burst"]`). */
   readonly damageTypes: readonly string[];
+  /**
+   * Feature ELEMENTS this multiplier applies to (e.g. `["cryo"]`, `["anemo"]`).
+   * When present and non-empty, the feature's resolved element must be in it
+   * (her `isMatchFeature` element branch, Target.js:37-39). Absent/empty → the
+   * element filter is skipped (no constraint) — base-inert: no v5.8 base/cons/
+   * armory multiplier sets it, so the new branch is never entered for them.
+   */
+  readonly damageElements?: readonly string[];
+  /**
+   * Feature TAGS this multiplier applies to (the only v5.8 tag is `"plunge_shockwave"`).
+   * When present and non-empty, the feature's {@link Feature.tags} must intersect it
+   * (her `isMatchFeature` tags branch, Target.js:41-53). Absent/empty → the tag filter
+   * is skipped (no constraint). The ONLY v5.8 setter is Xianyun's A4 teammate multiplier
+   * (`Xianyun.js:509-511`); no base/cons/armory multiplier sets it → base-inert.
+   */
+  readonly tags?: readonly string[];
 }
 
 /**
@@ -206,6 +251,16 @@ export interface Feature {
    * Source: raw/.../Feature2/Damage/Charged.js → damageType: 'charged'
    */
   readonly damageType?: string;
+  /**
+   * Structural tags on this feature, used by char-level multiplier targeting
+   * ({@link FeatureMultiplierTarget.tags}). The only v5.8 tag is `"plunge_shockwave"`,
+   * carried by every plunge-shockwave hit (her `FeatureDamagePlungeShockWave`
+   * constructor pushes it, `ShockWave.js:8`). Absent → no tags. Inert unless a
+   * multiplier targets a matching tag (only Xianyun's A4 teammate buff does).
+   *
+   * Source: raw/.../Feature2/Damage/Plunge/ShockWave.js:8 (`params.tags.push('plunge_shockwave')`)
+   */
+  readonly tags?: readonly string[];
   /** Overrides the character's innate element for this hit (e.g. Hu Tao Blood Blossom). */
   readonly element?: Element;
   /**
@@ -265,6 +320,16 @@ export interface Feature {
   readonly noDamageBonus?: boolean;
   /** See group comment above (FeatureDamageClam suppression flags). */
   readonly ignoreEnemyDefence?: boolean;
+  /**
+   * Excludes this hit from amplifying reactions (Vaporize/Melt) — her `FeatureDamage`
+   * `params.cannotReact` / `canReact()` (Damage.js:28,308). When true, `compileFeature`
+   * never appends the amplifying factor even if `settings.reaction` is set and the element
+   * matches. The systematic v5.8 user is `FeatureDamagePlungeCollision` (Plunge/Collision.js:5
+   * — the descent plunge, vs the reacting `plunge_low`/`plunge_high` ShockWave); a few chars
+   * also flag specific hits. Absent = reacts normally (and inert in every base build, where
+   * `settings.reaction` is unset).
+   */
+  readonly cannotReact?: boolean;
   /**
    * Marks a standalone reaction feature (a separate damage instance keyed by its
    * reaction nature, NOT a `settings.reaction` toggle on a normal hit). When set,

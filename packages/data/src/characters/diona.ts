@@ -104,12 +104,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -189,4 +191,31 @@ export const diona: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // A1 "Cat's Tail Secret Menu" — move_speed/stamina_consume (display-only, damage-inert).
+  // C6 "Cat's Tail Closing Time" — two toggles:
+  //   _1: +200 EM (damage-affecting); _2: +30% Healing Received (damage-inert), gated by NOT _1.
+  //   healing_recv from _2 has no oracle rep; mastery from _1 does.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Diona.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { mastery: 200 },
+        condition: { type: "boolean", name: "party.diona_cats_tail_1" },
+      },
+      {
+        type: "static",
+        stats: { healing_recv: 30 },
+        // Gated: active only when _1 (EM buff) is NOT active.
+        // Source: raw ConditionNot([ConditionBoolean('party.diona_cats_tail_1')])
+        condition: {
+          type: "and",
+          items: [
+            { type: "boolean", name: "party.diona_cats_tail_2" },
+            { type: "not", items: [{ type: "boolean", name: "party.diona_cats_tail_1" }] },
+          ],
+        },
+      },
+    ],
+  },
 };

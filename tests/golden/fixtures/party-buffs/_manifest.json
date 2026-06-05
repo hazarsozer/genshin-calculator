@@ -1,0 +1,3067 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Teammate partyData KIT BUFFS applied to a recipient active char (the inverse of the buff-clean FILLER set — the teammate INTENTIONALLY leaks its kit via setPartyChars + baked setBuffsSettings). Reps span the mechanism buckets: A=static (Zhongli universal res-shred), B=postEffect (Bennett base-ATK->flat-ATK, Kazuha EM->elemental-dmg%), C=multiplier (Shenhe Icy Quill ATK-scaled cryo bonus). Each fixture = the recipient's damage with the teammate buff ON. RED until P3.5.2 models partyData (engine: Task 2; data: Tasks 3-5). Source: CalcObject/Buffs.js:149-209, DbObject/Char.js:56-97.",
+    "id": "party-buffs"
+  },
+  "featureTotal": 2453,
+  "itemCount": 87,
+  "items": [
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "albedo",
+            "settings": {
+              "party.albedo_dust_of_purification": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "albedo-dmgall-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "albedo",
+            "settings": {
+              "party.albedo_homuncular_nature": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "albedo-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "albedo",
+            "settings": {
+              "party.albedo_descent_of_divinity": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "albedo-plungedmg-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "alhaitham",
+            "settings": {
+              "party.alhaitham_elucidation": 3
+            }
+          }
+        ]
+      },
+      "repKey": "Collei",
+      "repSlug": "collei",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "alhaitham-em-on-collei",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "aloy",
+            "settings": {
+              "party.aloy_combat_override": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "aloy-atk-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "amber",
+            "settings": {
+              "party.amber_wildfire": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "amber-atk-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "kamisato_ayaka",
+            "settings": {
+              "party.ayaka_eikyo_ryuuhan": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "ayaka-defshred-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "character": "kamisato_ayato",
+            "settings": {
+              "ayato_char_skill_burst": 10,
+              "party.ayato_bloomwater_blades": true
+            }
+          }
+        ]
+      },
+      "repKey": "Razor",
+      "repSlug": "razor",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "ayato-normaldmg-on-razor",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "character": "barbara",
+            "settings": {
+              "party.barbara_vitality_burst": true
+            }
+          }
+        ]
+      },
+      "repKey": "Mona",
+      "repSlug": "mona",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "barbara-hydrodmg-on-mona",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "beidou",
+            "settings": {
+              "party.beidou_bane_of_the_evil": true
+            }
+          }
+        ]
+      },
+      "repKey": "YaeMiko",
+      "repSlug": "yae_miko",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "beidou-electrores-on-yaemiko",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "bennett",
+            "settings": {
+              "bennet_atk_base": 191,
+              "bennet_char_skill_burst": 13,
+              "party.bennet_constellation_1": true,
+              "party.bennet_fantastic_voyage": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "bennett-atk-c1-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "bennett",
+            "settings": {
+              "bennet_atk_base": 191,
+              "bennet_char_skill_burst": 13,
+              "party.bennet_fantastic_voyage": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "bennett-atk-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "character": "candace",
+            "settings": {
+              "candace_hp_total": 30000,
+              "party.candace_celestial_dome_of_sand": true,
+              "party.candace_prayer_of_the_crimson_crown": true
+            }
+          }
+        ]
+      },
+      "repKey": "Mona",
+      "repSlug": "mona",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "candace-normaldmg-on-mona",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "chevreuse",
+            "settings": {
+              "chevreuse_hp_total": 30000,
+              "party.chevreuse_force_coordination": true
+            }
+          }
+        ]
+      },
+      "repKey": "Yoimiya",
+      "repSlug": "yoimiya",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "chevreuse-atk-on-yoimiya",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "character": "chongyun",
+            "settings": {
+              "party.chongyun_layered_frost": true
+            }
+          }
+        ]
+      },
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "chongyun-cryoinfusion-on-eula",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "chongyun",
+            "settings": {
+              "party.chongyun_rimechaser_blade": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ayaka",
+      "repSlug": "kamisato_ayaka",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "chongyun-cryores-on-ayaka",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "citlali",
+            "settings": {
+              "citlali_mastery_total": 900,
+              "party.citlali_radiant_blades_of_centzon_mimixcoah": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "citlali-c1-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "collei",
+            "settings": {
+              "party.collei_gift_of_the_woods": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "collei-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "diona",
+            "settings": {
+              "party.diona_cats_tail_1": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "diona-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "emilie",
+            "settings": {
+              "party.emilie_lakelight_top_note": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "emilie-dendrores-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "escoffier",
+            "settings": {
+              "escoffier_atk_total": 2200,
+              "party_escoffier_fresh_fragrant_stew_is_an_art": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ayaka",
+      "repSlug": "kamisato_ayaka",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "escoffier-cryo-c2-on-ayaka",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "eula",
+            "settings": {
+              "eula_char_skill_elemental": 10,
+              "party.eula_icewhirl_brand": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "eula-resshred-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "faruzan",
+            "settings": {
+              "faruzan_atk_base": 800,
+              "party.faruzan_lost_wisdom_of_the_seven_caverns": true
+            }
+          }
+        ]
+      },
+      "repKey": "Wanderer",
+      "repSlug": "wanderer",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "faruzan-anemodmg-on-wanderer",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "furina",
+            "settings": {
+              "furina_char_skill_burst": 10,
+              "party_furina_fanfare_stacks": 400
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "furina-dmgall-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "ganyu",
+            "settings": {
+              "party.ganyu_harmony": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ayaka",
+      "repSlug": "kamisato_ayaka",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "ganyu-cryodmg-on-ayaka",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "ganyu",
+            "settings": {
+              "party.ganyu_dew_drinker": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ayaka",
+      "repSlug": "kamisato_ayaka",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "ganyu-cryores-on-ayaka",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "ganyu",
+            "settings": {
+              "party.ganyu_westward_sojourn": 5
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "ganyu-dmgall-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "gorou",
+            "settings": {
+              "gorou_char_skill_elemental": 10,
+              "party.gorou_generals_war_banner": true,
+              "party.gorou_heedless_of_the_wind_and_weather": true,
+              "party.gorou_standing_firm": true
+            }
+          }
+        ]
+      },
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "gorou-def-on-itto",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "shikanoin_heizou",
+            "settings": {
+              "party.shikanoin_heizou_penetrative_reasoning": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "heizou-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "hu_tao",
+            "settings": {
+              "party.hu_tao_flutter_by": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "hutao-critrate-a1-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "hu_tao",
+            "settings": {
+              "party.hu_tao_garden_of_eternal_rest": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "hutao-critrate-c4-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "iansan",
+            "settings": {
+              "iansan_atk_total": 1200,
+              "iansan_char_skill_burst": 10,
+              "party_iansan_points": 42
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "iansan-atk-points-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "ineffa",
+            "settings": {
+              "ineffa_atk_total": 2000,
+              "party.ineffa_panoramic_permutation_protocol": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "ineffa-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "arataki_itto",
+            "settings": {
+              "party.itto_jailhouse_bread_and_butter": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "itto-atkdef-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 50,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "jean",
+            "settings": {
+              "party.jean_lands_of_dandelion": true
+            }
+          }
+        ]
+      },
+      "repKey": "Kazuha",
+      "repSlug": "kaedehara_kazuha",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "jean-anemores-on-kazuha",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "kachina",
+            "settings": {
+              "party.kachina_more_foes_more_caution": 4
+            }
+          }
+        ]
+      },
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "kachina-defpct-on-itto",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "kaveh",
+            "settings": {
+              "kaveh_char_skill_burst": 10,
+              "party.kaveh_painted_dome": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "kaveh-bloomdmg-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "kaedehara_kazuha",
+            "settings": {
+              "kazuha_mastery": 900,
+              "party.kaedehara_kazuha_poetics_of_fuubutsu": "cryo"
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "kazuha-em-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "kirara",
+            "settings": {
+              "party.kirara_countless_sights_to_see": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "kirara-allelesdmg-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "klee",
+            "settings": {
+              "party.klee_explosive_frags": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "klee-defshred-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "klee",
+            "settings": {
+              "party.klee_blazing_delight": true
+            }
+          }
+        ]
+      },
+      "repKey": "Yoimiya",
+      "repSlug": "yoimiya",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "klee-pyrodmg-on-yoimiya",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "lan_yan",
+            "settings": {
+              "party.lanyan_with_drakefalcons_blood_pearls_adorned": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "lanyan-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "layla",
+            "settings": {
+              "layla_max_hp": 50000,
+              "party.layla_starry_illumination": true
+            }
+          }
+        ]
+      },
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "layla-c4-on-itto",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "lisa",
+            "settings": {
+              "party.lisa_static_electricity_field": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "lisa-defshred-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 2,
+        "party_elements_different": 1,
+        "party_elements_different_total": 1,
+        "party_elements_same_inc": 1,
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "lynette",
+            "settings": {
+              "party.lynette_sophisticated_synergy": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "lynette-atkpct-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "lyney",
+            "settings": {
+              "party.lyney_well_versed_well_rehearsed": true
+            }
+          }
+        ]
+      },
+      "repKey": "Yoimiya",
+      "repSlug": "yoimiya",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "lyney-pyrores-on-yoimiya",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "mavuika",
+            "settings": {
+              "mavuika_the_leaders_resolve": true,
+              "party.mavuika_the_ashen_price": true,
+              "party_mavuika_kiongozi": 40
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "mavuika-c4-dmgall-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "mavuika",
+            "settings": {
+              "party.mavuika_the_ashen_price": true,
+              "party_mavuika_kiongozi": 40
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "mavuika-dmgall-defshred-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "character": "mika",
+            "settings": {
+              "mika_suppressive_barrage": 5
+            }
+          }
+        ]
+      },
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "mika-physdmg-on-eula",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "mona",
+            "settings": {
+              "mona_char_skill_burst": 10,
+              "party.mona_omen": true,
+              "party.mona_prophecy_of_oblivion": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "mona-critrate-c4-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "mona",
+            "settings": {
+              "mona_char_skill_burst": 10,
+              "party.mona_omen": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "mona-omen-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "mona",
+            "settings": {
+              "mona_char_skill_burst": 10,
+              "party.mona_omen": true,
+              "party.mona_prophecy_of_submersion": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "mona-reactiondmg-c1-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "nahida",
+            "settings": {
+              "party.nahida_compassion_illuminated": true,
+              "party_max_mastery": 900
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "nahida-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "navia",
+            "settings": {
+              "party.navia_the_oathsworn_never_capitulate": true
+            }
+          }
+        ]
+      },
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "navia-geores-on-itto",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "ningguang",
+            "settings": {
+              "party.ningguang_strategic_reserve": true
+            }
+          }
+        ]
+      },
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "ningguang-geodmg-on-itto",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "ororon",
+            "settings": {
+              "ororon_ode_to_deep_springs": 3
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "ororon-atk-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "razor",
+            "settings": {
+              "party.razor_bite": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "razor-defshred-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "rosaria",
+            "settings": {
+              "party.rosaria_shadow_samaritan": true,
+              "rosaria_crit_rate_total": 80
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "rosaria-critrate-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "kujou_sara",
+            "settings": {
+              "party.sara_tengu_juurai": true,
+              "sara_atk_base": 800,
+              "sara_char_skill_elemental": 10
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "sara-atk-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "sethos",
+            "settings": {
+              "sethos_beneficent_plumage": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "sethos-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "shenhe",
+            "settings": {
+              "party.shenhe_icy_quill": true,
+              "shenhe_atk_total": 2000,
+              "shenhe_char_skill_elemental": 10
+            }
+          }
+        ]
+      },
+      "repKey": "Ayaka",
+      "repSlug": "kamisato_ayaka",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "shenhe-icyquill-on-ayaka",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "character": "sigewinne",
+            "settings": {
+              "party.sigewinne_requires_appropriate_rest": true,
+              "sigewinne_buff_level": 1,
+              "sigewinne_hp_total": 45000
+            }
+          }
+        ]
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "sigewinne-skilldmg-on-diluc",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "character": "skirk",
+            "settings": {
+              "party.skirk_mutual_weapons_mentorship": true
+            }
+          }
+        ]
+      },
+      "repKey": "Mona",
+      "repSlug": "mona",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "skirk-skilldmg-on-mona",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "sucrose",
+            "settings": {
+              "party.sucrose_mollis_favonius": true,
+              "sucrose_mastery": 900
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "sucrose-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "tartaglia",
+            "settings": {}
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "tartaglia-atktalent-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "thoma",
+            "settings": {
+              "party.thoma_burning_heart": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "thoma-nacdmg-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "tighnari",
+            "settings": {
+              "party.tighnari_withering_glimpsed_in_the_leaves_1": true,
+              "party.tighnari_withering_glimpsed_in_the_leaves_2": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "tighnari-em-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "traveler_anemo",
+            "settings": {
+              "party.traveler_intertwined_winds": true,
+              "party.traveler_intertwined_winds_element": "cryo"
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "traveler-anemo-resshred-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "traveler_dendro",
+            "settings": {
+              "party.traveler_verdant_overgrowth": 10,
+              "party.traveler_withering_aggregation_1": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "traveler-dendro-em-dmg-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "traveler_dendro",
+            "settings": {
+              "party.party.traveler_withering_aggregation_2": "pyro",
+              "party.traveler_withering_aggregation_1": true
+            }
+          }
+        ]
+      },
+      "repKey": "Yoimiya",
+      "repSlug": "yoimiya",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "traveler-dendro-pyrodmg-on-yoimiya",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "traveler_geo",
+            "settings": {
+              "party.traveler_invincible_stonewall": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "travelergeo-critrate-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "traveler_pyro",
+            "settings": {
+              "party.traveler_pyro_starfires_flowing_light": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "travelerpyro-dmgall-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "members": [
+          {
+            "character": "traveler_pyro",
+            "settings": {
+              "party.traveler_pyro_starfires_flowing_light": true,
+              "party.traveler_pyro_starfires_flowing_light_2": true
+            }
+          }
+        ]
+      },
+      "repKey": "Xilonen",
+      "repSlug": "xilonen",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "travelerpyro-nightsoul-dmgall-on-xilonen",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 50,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "venti",
+            "settings": {
+              "party.venti_breeze": true,
+              "party.venti_breeze_2": true
+            }
+          }
+        ]
+      },
+      "repKey": "Kazuha",
+      "repSlug": "kaedehara_kazuha",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "venti-breeze-stack2-on-kazuha",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "venti",
+            "settings": {
+              "party.venti_storm": true,
+              "party.venti_storm_element": "cryo"
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "venti-c6element-resshred-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 50,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "venti",
+            "settings": {
+              "party.venti_breeze": true
+            }
+          }
+        ]
+      },
+      "repKey": "Kazuha",
+      "repSlug": "kaedehara_kazuha",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "venti-resshred-on-kazuha",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "xiangling",
+            "settings": {
+              "party.xiangling_beware": true,
+              "party.xiangling_condensed_pyronado": true,
+              "party.xiangling_crispy": true
+            }
+          }
+        ]
+      },
+      "repKey": "Yoimiya",
+      "repSlug": "yoimiya",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "xiangling-all-on-yoimiya",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "xianyun",
+            "settings": {
+              "party.xianyun_consider_the_adeptus_in_her_realm": true,
+              "xianyun_atk_total": 2400
+            }
+          }
+        ]
+      },
+      "repKey": "Xiao",
+      "repSlug": "xiao",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "xianyun-plungeshockwave-on-xiao",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "xilonen",
+            "settings": {
+              "party.xilonen_suchitls_trance": true,
+              "xilonen_def_total": 3000
+            }
+          }
+        ]
+      },
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "xilonen-c4-on-itto",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "character": "xingqiu",
+            "settings": {
+              "party.xingqiu_rainbow_upon_the_azure_sky": true
+            }
+          }
+        ]
+      },
+      "repKey": "Mona",
+      "repSlug": "mona",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "xingqiu-hydrores-on-mona",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "character": "xinyan",
+            "settings": {
+              "party.xinyan_now_thats_rock": true,
+              "party.xinyan_wildfire_rhythm": true
+            }
+          }
+        ]
+      },
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "xinyan-physbuff-on-eula",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "yae_miko",
+            "settings": {
+              "party.miko_sakura_channeling": true
+            }
+          }
+        ]
+      },
+      "repKey": "Beidou",
+      "repSlug": "beidou",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "yaemiko-electrodmg-on-beidou",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "members": [
+          {
+            "character": "yaoyao",
+            "settings": {
+              "party.yaoyao_adeptus_tutelage": true
+            }
+          }
+        ]
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "yaoyao-dendrodmg-on-alhaitham",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "yelan",
+            "settings": {
+              "party.yelan_adapt_with_ease": 10
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "yelan-dmgall-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "yoimiya",
+            "settings": {
+              "party.yoimiya_summer_scorch": true,
+              "party.yoimiya_summer_scorch_stack": 5
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "yoimiya-atk-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 1,
+        "party_elements_different_total": 1,
+        "party_elements_same": 1,
+        "party_elements_same_inc": 2,
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "yun_jin",
+            "settings": {
+              "party.yunjin_flag": true,
+              "yunjin_char_skill_burst": 10,
+              "yunjin_def_total": 2500,
+              "yunjin_traditionalist_stacks": 4
+            }
+          }
+        ]
+      },
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "yunjin-normaldmg-stacks-on-itto",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "zhongli",
+            "settings": {
+              "party.zhongli_jade_shield": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "zhongli-resshred-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    }
+  ]
+}

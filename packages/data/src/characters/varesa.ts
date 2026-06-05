@@ -123,6 +123,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "electro",
@@ -130,6 +131,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "electro",
@@ -152,8 +154,10 @@ const features: readonly Feature[] = [
     ],
   },
   // Volcanic Collapse — burst-category PLUNGE shockwave (damageType "plunge").
+  // raw: FeatureDamagePlungeShockWave (Varesa.js:303) → tags:["plunge_shockwave"].
   {
     name: "varesa_volcanic_collapse_dmg",
+    tags: ["plunge_shockwave"],
     category: "burst",
     damageType: "plunge",
     element: "electro",

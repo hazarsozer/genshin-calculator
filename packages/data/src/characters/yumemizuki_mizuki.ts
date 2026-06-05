@@ -111,6 +111,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "anemo",
@@ -118,6 +119,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "anemo",
@@ -179,6 +181,12 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
+// partyData (Bucket C) DEFERRED — out of P3.5.2 DAMAGE scope (not an engine-
+// extension case): her teammate buff is a swirl-reaction bonus, its multiplier
+// targeting tags:['swirl'] options:['reaction_flat'] and emitting dmg_reaction_swirl
+// (raw Mizuki.js partyData), plus party_burst_energy_cost (energy). Transformative-
+// reaction outputs aren't a compared damage output here (cf. Baizhu/Nilou/Ifa), and
+// energy is its own sub-project → transformative-reaction sub-project, not this arc.
 export const yumemizukiMizuki: DbObjectChar = {
   name: "yumemizuki_mizuki",
   gameId: 10000109,

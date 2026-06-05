@@ -39,7 +39,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Citlali)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Citlali as CitlaliStatTable } from "../generated/charTables.js";
 import { Citlali as CitlaliTalents } from "../generated/charTalentTables.js";
 
@@ -119,6 +119,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low (element: 'cryo')
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "cryo",
@@ -127,6 +128,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high (element: 'cryo')
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "cryo",
@@ -207,6 +209,31 @@ const constellationConditions: readonly Condition[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// partyData — teammate kit buff (P3.5.2 Bucket C).
+// Source: raw/genshin_calc_pub/src/js/db/Char/Citlali.js:417-507
+// Scope: C1 "Radiant Blades of Centzon Mimixcoah" — EM-scaled all-type-DMG bonus.
+// Gated by party.citlali_radiant_blades_of_centzon_mimixcoah master toggle.
+// Conditions ported = ONLY the EM lift the multiplier reads + the master gate.
+// Other partyData conditions (A1 res-shred, C2 EM share, C6 points) deferred to variant-rep pass.
+// ---------------------------------------------------------------------------
+
+// C1MasteryDmgBonus = 200 (raw/genshin_calc_pub/src/js/db/Char/Citlali.js:136)
+const C1_MASTERY_DMG_BONUS = 200;
+
+const citlaliPartyMultipliers: readonly CharMultiplier[] = [
+  // C1: citlali_mastery_total × 200% EM flat bonus added to every normal/charged/plunge/skill/burst hit.
+  // No element filter (all elements). raw/genshin_calc_pub/src/js/db/Char/Citlali.js:497-505
+  {
+    source: "citlali",
+    scaling: "citlali_mastery_total",
+    leveling: "",
+    values: { getValue: (): number => C1_MASTERY_DMG_BONUS },
+    condition: { type: "boolean", name: "party.citlali_radiant_blades_of_centzon_mimixcoah" },
+    target: { damageTypes: ["normal", "charged", "plunge", "skill", "burst"] },
+  } satisfies CharMultiplier,
+];
+
 export const citlali: DbObjectChar = {
   name: "citlali",
   gameId: 10000107,
@@ -219,4 +246,18 @@ export const citlali: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  partyData: {
+    // loadStats mirrors raw Citlali.js:419-421 (mastery_total stat).
+    loadStats: {
+      stats: ["mastery_total"],
+    },
+    conditions: [
+      // Lift Citlali's mastery_total into recipient bag as `citlali_mastery_total`.
+      // raw: ConditionNumber({name:'citlali_mastery_total', partyStat:'mastery_total', max:10000}).
+      { type: "number", name: "citlali_mastery_total", max: 10000 },
+      // Master toggle — gates the C1 multiplier. raw: ConditionBoolean({name:'party.citlali_radiant_blades_of_centzon_mimixcoah'}).
+      { type: "boolean", name: "party.citlali_radiant_blades_of_centzon_mimixcoah" },
+    ],
+    multipliers: citlaliPartyMultipliers,
+  },
 };

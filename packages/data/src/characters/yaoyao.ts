@@ -115,6 +115,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave, name → 'plunge_low'
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
@@ -122,6 +123,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave, name → 'plunge_high'
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -202,4 +204,15 @@ export const yaoyao: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C1 "Adeptus Tutelage" — +15% Dendro DMG to party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Yaoyao.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { dmg_dendro: 15 },
+        condition: { type: "boolean", name: "party.yaoyao_adeptus_tutelage" },
+      },
+    ],
+  },
 };

@@ -132,12 +132,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -219,4 +221,15 @@ export const navia: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C4 "The Oathsworn Never Capitulate" — enemy Geo RES -20%.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Navia.js:128,437-443
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { enemy_res_geo: -20 },
+        condition: { type: "boolean", name: "party.navia_the_oathsworn_never_capitulate" },
+      },
+    ],
+  },
 };

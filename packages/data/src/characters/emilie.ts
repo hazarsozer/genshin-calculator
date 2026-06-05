@@ -102,12 +102,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -208,4 +210,15 @@ export const emilie: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C2 "Lakelight Top Note" — enemy Dendro RES -30%.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Emilie.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { enemy_res_dendro: -30 },
+        condition: { type: "boolean", name: "party.emilie_lakelight_top_note" },
+      },
+    ],
+  },
 };

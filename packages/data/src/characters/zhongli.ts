@@ -181,6 +181,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low. Zhongli.js:227-234
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [
@@ -191,6 +192,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high. Zhongli.js:235-242
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [
@@ -277,4 +279,25 @@ export const zhongli: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  partyData: {
+    conditions: [
+      // Jade Parcel shield — universal RES shred: all 7 elements + physical, -20% each.
+      // Gated by party.zhongli_jade_shield (boolean toggle in baked teammate settings).
+      // Source: raw/genshin_calc_pub/src/js/db/Char/Zhongli.js:445-463
+      {
+        type: "static",
+        stats: {
+          enemy_res_physical: -20,
+          enemy_res_anemo: -20,
+          enemy_res_geo: -20,
+          enemy_res_pyro: -20,
+          enemy_res_electro: -20,
+          enemy_res_hydro: -20,
+          enemy_res_cryo: -20,
+          enemy_res_dendro: -20,
+        },
+        condition: { type: "boolean", name: "party.zhongli_jade_shield" },
+      },
+    ],
+  },
 };

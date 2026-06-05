@@ -93,12 +93,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -165,4 +167,21 @@ export const jean: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C2 "People's Aegis" — +15% ATK speed + +15% movement speed (both damage-inert).
+  // C4 "Land's of Dandelion" — enemy Anemo RES -40%.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Jean.js:122,126-128,334-360,393-408
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { atk_speed_normal: 15, move_speed: 15 },
+        condition: { type: "boolean", name: "party.jean_peoples_aegis" },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_anemo: -40 },
+        condition: { type: "boolean", name: "party.jean_lands_of_dandelion" },
+      },
+    ],
+  },
 };

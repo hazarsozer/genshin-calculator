@@ -153,6 +153,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
@@ -160,6 +161,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],

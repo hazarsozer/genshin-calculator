@@ -137,12 +137,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -230,4 +232,15 @@ export const beidou: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C6 "Bane of Evil" — enemy Electro RES -15%.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Beidou.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { enemy_res_electro: -15 },
+        condition: { type: "boolean", name: "party.beidou_bane_of_the_evil" },
+      },
+    ],
+  },
 };

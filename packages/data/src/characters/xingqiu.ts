@@ -150,6 +150,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low. Xingqiu.js:265-272
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
@@ -157,6 +158,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high. Xingqiu.js:273-280
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -235,4 +237,15 @@ export const xingqiu: DbObjectChar = {
   // raw/genshin_calc_pub/src/js/db/Char/Xingqiu.js:406-416
   baseStats: { dmg_hydro: 20 },
   conditions: constellationConditions,
+  // C2 "Rainbow Upon the Azure Sky" — enemy Hydro RES -15%.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Xingqiu.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { enemy_res_hydro: -15 },
+        condition: { type: "boolean", name: "party.xingqiu_rainbow_upon_the_azure_sky" },
+      },
+    ],
+  },
 };

@@ -123,6 +123,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low (s1.p10)
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
@@ -130,6 +131,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high (s1.p11)
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -213,4 +215,20 @@ export const dori: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C4 "Discretionary Supplement" — +50% Healing Received, +30% Energy Recharge.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Dori.js:124,126-127 (TalentValues)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { healing_recv: 50 },
+        condition: { type: "boolean", name: "party.dori_discretionary_supplement_1" },
+      },
+      {
+        type: "static",
+        stats: { recharge: 30 },
+        condition: { type: "boolean", name: "party.dori_discretionary_supplement_2" },
+      },
+    ],
+  },
 };

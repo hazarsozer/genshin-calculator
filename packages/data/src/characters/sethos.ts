@@ -138,6 +138,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low. Sethos.js:331-338
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
@@ -145,6 +146,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high. Sethos.js:339-346
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -203,4 +205,15 @@ export const sethos: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C4 "Beneficent Plumage" — +80 Elemental Mastery to party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Sethos.js:116,120,469-474
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { mastery: 80 },
+        condition: { type: "boolean", name: "sethos_beneficent_plumage" },
+      },
+    ],
+  },
 };

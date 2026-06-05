@@ -101,6 +101,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "electro",
@@ -108,6 +109,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "electro",
@@ -197,4 +199,15 @@ export const lisa: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // A4 "Static Electricity Field" — enemy DEF -15%.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Lisa.js:112,292-294,367-369
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { enemy_def_reduce: 15 },
+        condition: { type: "boolean", name: "party.lisa_static_electricity_field" },
+      },
+    ],
+  },
 };

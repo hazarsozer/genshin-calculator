@@ -103,12 +103,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -193,4 +195,22 @@ export const xinyan: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // A4 "Now That's Rock 'N' Roll!" — +15% Physical DMG.
+  // C4 "Wildfire Rhythm" — enemy Physical RES -15%.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Xinyan.js (partyData conditions)
+  // Note: raw key `enemy_res_phys` → engine bag key `enemy_res_physical`.
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { dmg_phys: 15 },
+        condition: { type: "boolean", name: "party.xinyan_now_thats_rock" },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_physical: -15 },
+        condition: { type: "boolean", name: "party.xinyan_wildfire_rhythm" },
+      },
+    ],
+  },
 };

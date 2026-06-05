@@ -15,7 +15,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Escoffier)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Escoffier as EscoffierStatTable } from "../generated/charTables.js";
 import { Escoffier as EscoffierTalents } from "../generated/charTalentTables.js";
 
@@ -102,12 +102,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -188,6 +190,34 @@ const constellationConditions: readonly Condition[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// partyData — teammate kit buff (P3.5.2 Bucket C).
+// Source: raw/genshin_calc_pub/src/js/db/Char/Escoffier.js:420-486
+// Scope: C2 "Fresh Fragrant Stew is an Art" — Escoffier's ATK-scaled cryo-damage
+// bonus applied to the recipient's cryo hits. Condition ported = ONLY the lift the
+// multiplier reads + the master gate. Other conditions deferred to variant-rep pass.
+// ---------------------------------------------------------------------------
+
+// C2BonusDmg constant: 240 (raw/genshin_calc_pub/src/js/db/Char/Escoffier.js:132)
+const C2_BONUS_DMG = 240;
+
+const escoffierPartyMultipliers: readonly CharMultiplier[] = [
+  // C2: escoffier_atk_total% × escoffier_atk_total added to each CRYO hit of the
+  // recipient (normal/charged/plunge/skill/burst).
+  // raw/genshin_calc_pub/src/js/db/Char/Escoffier.js:474-484
+  {
+    source: "escoffier",
+    scaling: "escoffier_atk_total",
+    leveling: "",
+    values: { getValue: (): number => C2_BONUS_DMG },
+    condition: { type: "boolean", name: "party_escoffier_fresh_fragrant_stew_is_an_art" },
+    target: {
+      damageElements: ["cryo"],
+      damageTypes: ["normal", "charged", "plunge", "skill", "burst"],
+    },
+  } satisfies CharMultiplier,
+];
+
 export const escoffier: DbObjectChar = {
   name: "escoffier",
   gameId: 10000112,
@@ -209,4 +239,15 @@ export const escoffier: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  partyData: {
+    loadStats: {
+      stats: ["atk_total"],
+    },
+    conditions: [
+      // Lift Escoffier's atk_total (partyStat) into recipient bag as `escoffier_atk_total`.
+      // raw: ConditionNumber({name:'escoffier_atk_total', partyStat:'atk_total', max:10000}).
+      { type: "number", name: "escoffier_atk_total", max: 10000 },
+    ],
+    multipliers: escoffierPartyMultipliers,
+  },
 };

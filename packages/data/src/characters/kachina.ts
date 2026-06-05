@@ -140,6 +140,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
@@ -147,6 +148,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -238,4 +240,52 @@ export const kachina: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A, A-straggler)
+  // C4 "More Foes, More Caution": a numeric dropdown (party.kachina_more_foes_more_caution,
+  //   value 1-4 = nearby enemy count) granting DEF +8/12/16/20%.
+  //   raw constants C4Stack1..4 = 8/12/16/20 (Kachina.js:117-120, C4Values Kachina.js:124-141).
+  //   Her ConditionDropdown wraps a PLAIN ConditionStatic per option (new Condition({stats:…}),
+  //   NOT refine-scaled). Our `dropdown` condition type, by contrast, is weapon-centric: it
+  //   resolves each option through `refineBag`, which yields {} when `weapon_refine` is absent —
+  //   and a teammate buff applied to a recipient has NO weapon_refine in context, so a `dropdown`
+  //   here silently drops its stats. So this is modeled faithfully (and refine-independently) as
+  //   four `boolean-value` conditions, each active when the numeric selection equals its tier
+  //   (cond:"eq"). Exactly one fires for any single selection — identical to her single-select
+  //   dropdown semantics. Source: raw/genshin_calc_pub/src/js/db/Char/Kachina.js:404-416
+  partyData: {
+    conditions: [
+      // value 1 → +8% DEF (C4Stack1).
+      {
+        type: "boolean-value",
+        setting: "party.kachina_more_foes_more_caution",
+        cond: "eq",
+        value: 1,
+        stats: { def_percent: 8 },
+      },
+      // value 2 → +12% DEF (C4Stack2).
+      {
+        type: "boolean-value",
+        setting: "party.kachina_more_foes_more_caution",
+        cond: "eq",
+        value: 2,
+        stats: { def_percent: 12 },
+      },
+      // value 3 → +16% DEF (C4Stack3).
+      {
+        type: "boolean-value",
+        setting: "party.kachina_more_foes_more_caution",
+        cond: "eq",
+        value: 3,
+        stats: { def_percent: 16 },
+      },
+      // value 4 → +20% DEF (C4Stack4).
+      {
+        type: "boolean-value",
+        setting: "party.kachina_more_foes_more_caution",
+        cond: "eq",
+        value: 4,
+        stats: { def_percent: 20 },
+      },
+    ],
+  },
 };

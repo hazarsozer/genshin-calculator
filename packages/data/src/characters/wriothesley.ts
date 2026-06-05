@@ -178,6 +178,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     element: "cryo",
     damageType: "plunge",
@@ -185,6 +186,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     element: "cryo",
     damageType: "plunge",
@@ -248,4 +250,19 @@ export const wriothesley: DbObjectChar = {
   multipliers: [],
   baseStats,
   conditions: constellationConditions,
+  // C4 "Redemption for the Suffering" — +10% normal ATK speed (atk_speed_normal; display-only).
+  // No oracle rep (atk_speed_normal is damage-inert).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Wriothesley.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { atk_speed_normal: 10 },
+        condition: {
+          type: "boolean",
+          name: "party.wriothesley_redemption_for_the_suffering_2",
+        },
+      },
+    ],
+  },
 };

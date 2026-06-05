@@ -164,12 +164,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -263,4 +265,29 @@ export const tighnari: DbObjectChar = {
   multipliers: [],
   conditions: constellationConditions,
   postEffects: a4PostEffects,
+  // C4 "Withering Glimpsed in the Leaves" — +60 EM on trigger; second stack (subCondition
+  // requires first toggle active) adds another +60 EM.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Tighnari.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { mastery: 60 },
+        condition: { type: "boolean", name: "party.tighnari_withering_glimpsed_in_the_leaves_1" },
+      },
+      {
+        type: "static",
+        stats: { mastery: 60 },
+        // Second stack requires the FIRST toggle also ON — her `_2` carries
+        // subConditions: [ConditionBoolean(..._1)] (raw Tighnari.js:432-434).
+        condition: {
+          type: "and",
+          items: [
+            { type: "boolean", name: "party.tighnari_withering_glimpsed_in_the_leaves_2" },
+            { type: "boolean", name: "party.tighnari_withering_glimpsed_in_the_leaves_1" },
+          ],
+        },
+      },
+    ],
+  },
 };

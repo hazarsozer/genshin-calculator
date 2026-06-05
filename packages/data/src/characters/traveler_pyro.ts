@@ -121,12 +121,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -193,4 +195,31 @@ export const travelerPyro: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // C1 "Controlled Cremation": two ConditionBoolean buffs.
+  //   cond[0]: party.traveler_pyro_starfires_flowing_light → dmg_all:6 (C1DmgBonus=6).
+  //   cond[1]: party.traveler_pyro_starfires_flowing_light_2 → dmg_all:9 (C1DmgBonusNightsoul=9)
+  //     gated by and[cond[0], nightsoul].
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/TravelerPyro.js partyData
+  partyData: {
+    conditions: [
+      {
+        type: "boolean",
+        name: "party.traveler_pyro_starfires_flowing_light",
+        stats: { dmg_all: 6 },
+      },
+      {
+        type: "boolean",
+        name: "party.traveler_pyro_starfires_flowing_light_2",
+        stats: { dmg_all: 9 },
+        condition: {
+          type: "and",
+          items: [
+            { type: "boolean", name: "party.traveler_pyro_starfires_flowing_light" },
+            { type: "nightsoul" },
+          ],
+        },
+      },
+    ],
+  },
 };

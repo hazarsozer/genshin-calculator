@@ -141,12 +141,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -319,4 +321,19 @@ export const alhaitham: DbObjectChar = {
   multipliers: [],
   postEffects: a4PostEffects,
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // C4 "Elucidation": ConditionStacks(party.alhaitham_elucidation) maxStacks:3
+  //   → mastery:30 per stack (text_value_dendro/mastery display keys skipped).
+  //   C4Mastery=30.
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Alhaitham.js partyData.conditions[0]
+  partyData: {
+    conditions: [
+      {
+        type: "stacks",
+        name: "party.alhaitham_elucidation",
+        maxStacks: 3,
+        stats: { mastery: 30 },
+      },
+    ],
+  },
 };

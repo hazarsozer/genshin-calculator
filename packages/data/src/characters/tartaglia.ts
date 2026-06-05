@@ -167,12 +167,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.plunge_low")) }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.plunge_high")) }],
@@ -245,4 +247,16 @@ export const tartaglia: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // A1 "Master of Weaponry": always-active static.
+  //   settings: { char_skill_attack_bonus_2: 1 } → +1 normal attack talent level to party.
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Tartaglia.js partyData.conditions[0]
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        settings: { char_skill_attack_bonus_2: 1 },
+      },
+    ],
+  },
 };

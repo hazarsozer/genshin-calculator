@@ -173,6 +173,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
@@ -180,6 +181,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -304,4 +306,23 @@ export const kirara: DbObjectChar = {
   multipliers: [],
   conditions: constellationConditions,
   postEffects: [hpToSkillDmg, hpToBurstDmg],
+  // C6 "Countless Sights to See" — +12% ALL element DMG to party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Kirara.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: {
+          dmg_anemo: 12,
+          dmg_geo: 12,
+          dmg_pyro: 12,
+          dmg_electro: 12,
+          dmg_hydro: 12,
+          dmg_cryo: 12,
+          dmg_dendro: 12,
+        },
+        condition: { type: "boolean", name: "party.kirara_countless_sights_to_see" },
+      },
+    ],
+  },
 };

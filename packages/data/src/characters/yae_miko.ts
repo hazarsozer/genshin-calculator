@@ -96,6 +96,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave element='electro' (YaeMiko.js:171-178)
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "electro",
@@ -104,6 +105,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave element='electro' (YaeMiko.js:180-187)
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "electro",
@@ -213,4 +215,15 @@ export const yaeMiko: DbObjectChar = {
   multipliers: [],
   conditions: constellationConditions,
   postEffects: a4PostEffects,
+  // C4 "Sakura Channeling" — +20% Electro DMG to party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/YaeMiko.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { dmg_electro: 20 },
+        condition: { type: "boolean", name: "party.miko_sakura_channeling" },
+      },
+    ],
+  },
 };

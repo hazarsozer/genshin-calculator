@@ -48,7 +48,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Xilonen)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Xilonen as XilonenStatTable } from "../generated/charTables.js";
 import { Xilonen as XilonenTalents } from "../generated/charTalentTables.js";
 
@@ -139,12 +139,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ scaling: "def", leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ scaling: "def", leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -265,6 +267,31 @@ const skillResShredConditions: readonly Condition[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// partyData — teammate kit buff (P3.5.2 Bucket C).
+// Source: raw/genshin_calc_pub/src/js/db/Char/Xilonen.js:624-824
+// Scope: C4 "Suchitl's Trance" — Xilonen's DEF-scaled damage bonus applied to
+// the recipient's normal/charged/plunge hits. Conditions ported = ONLY the lift
+// the multiplier reads + the master gate. Other conditions deferred to variant-rep pass.
+// ---------------------------------------------------------------------------
+
+// C4DefDmgBonus constant: 65 (raw/genshin_calc_pub/src/js/db/Char/Xilonen.js:162)
+const C4_DEF_DMG_BONUS = 65;
+
+const xilonenPartyMultipliers: readonly CharMultiplier[] = [
+  // C4: xilonen_def_total% × xilonen_def_total added to each NORMAL/CHARGED/PLUNGE
+  // hit of the recipient (no element filter — any element qualifies).
+  // raw/genshin_calc_pub/src/js/db/Char/Xilonen.js:813-822
+  {
+    source: "xilonen",
+    scaling: "xilonen_def_total",
+    leveling: "",
+    values: { getValue: (): number => C4_DEF_DMG_BONUS },
+    condition: { type: "boolean", name: "party.xilonen_suchitls_trance" },
+    target: { damageTypes: ["normal", "charged", "plunge"] },
+  } satisfies CharMultiplier,
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -282,4 +309,16 @@ export const xilonen: DbObjectChar = {
   // Order is load-bearing: sampler availability + constellation settings (active sampler, C3
   // talent bonus) are published FIRST, then the res-shred staticLevel reads them (level + gate).
   conditions: [...geoSamplerSetup, ...constellationConditions, ...skillResShredConditions],
+  partyData: {
+    loadStats: {
+      stats: ["def_total"],
+      settings: ["char_skill_elemental"],
+    },
+    conditions: [
+      // Lift Xilonen's def_total (partyStat) into recipient bag as `xilonen_def_total`.
+      // raw: ConditionNumber({name:'xilonen_def_total', partyStat:'def_total', max:10000}).
+      { type: "number", name: "xilonen_def_total", max: 10000 },
+    ],
+    multipliers: xilonenPartyMultipliers,
+  },
 };

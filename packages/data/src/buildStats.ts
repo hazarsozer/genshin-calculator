@@ -47,6 +47,7 @@ import type {
 import { getArtifactSet } from "./artifacts/sets/index.js";
 import { CHARACTER_CONDITIONS, CHARACTER_MULTIPLIERS, CHARACTER_POST_EFFECTS } from "./characterConditions.js";
 import { buildPartyContext, type PartyInput, type ActiveCharFacts } from "./partyContext.js";
+import { buildPartyBuffs } from "./partyBuffs.js";
 
 /** The seven elements + physical, in the order the engine keys resistance. */
 const ELEMENTS: readonly Element[] = [
@@ -100,6 +101,33 @@ const DMG_BONUS_TYPE_KEYS = [
   // rest; Scion of the Blazing Sun's Sunfire Fan is the v5.8 source. 0 (unset) for
   // every build that contributes none → base golden untouched.
   "dmg_charged_enemy",
+] as const;
+
+/**
+ * Composite type×element DMG% bonus keys (`dmg_<type>_<element>`) a teammate
+ * buff can set — read by a hit matching BOTH the type AND the resolved element
+ * (her getStatsDmgBonus pushes `dmg_<damageType>_<element>`, Damage.js:58).
+ *
+ * The ONLY v5.8 producer is Candace's "Prayer of the Crimson Crown" + A4
+ * "Celestial Dome of Sand": both write `dmg_normal_<element>` for the seven
+ * non-physical elements (the prayer a flat 20, the A4 `0.0005 × HP`). Listed
+ * EXPLICITLY (not a type×element cross-product) — only the keys a ported buff
+ * actually sets, mirroring the explicit-emit discipline of every other dmg_*
+ * key list here. Emitted as a FRACTION only when set; absent for every build
+ * that names no Candace teammate → the key is never in the bag → the base
+ * golden suite + all existing fixtures are byte-unchanged.
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Candace.js:485-541 (the prayer
+ *         ConditionBoolean stats + the A4 PostEffectStats (from:candace_hp_total) percent tables).
+ */
+const DMG_BONUS_COMPOSITE_KEYS = [
+  "dmg_normal_anemo",
+  "dmg_normal_geo",
+  "dmg_normal_pyro",
+  "dmg_normal_electro",
+  "dmg_normal_hydro",
+  "dmg_normal_cryo",
+  "dmg_normal_dendro",
 ] as const;
 
 /**
@@ -181,7 +209,7 @@ const REACTION_BONUS_PERCENT_KEYS = [
  * atk/hp/def/mastery) reads the bag value directly — her `makeStatItem(scaling)`
  * (Feature2/Compile/Helpers.js:11-19) → `stats.get(scaling)`, no `_total`, no `/100`.
  * These are flat numeric inputs a ConditionNumber injects (not percent stats), so they
- * are emitted RAW. The two v5.8 users (both ConditionNumber-driven scaling inputs):
+ * are emitted RAW. The v5.8 users (all ConditionNumber-driven scaling inputs):
  *   - `party_days_past_healing_recorded` — Song of Days Past 4pc (team): the recorded
  *     healing the team multiplier scales (≤15000).
  *   - `accumulated_healing` — Ocean-Hued Clam 4pc (self-worn): the healing accumulated
@@ -190,14 +218,35 @@ const REACTION_BONUS_PERCENT_KEYS = [
  *     input is > 0 (Condition/Number.js:8-11), so at the v5.8 standard 0 the key is never
  *     in the bag → never emitted → the foam reads 0 (the existing OceanHuedClam armory
  *     fixture, foam 0, is byte-unchanged).
+ *   - `shenhe_atk_total` — Shenhe's Icy Quill TEAMMATE multiplier (P3.5.2 Bucket C): her
+ *     `partyData` lifts the teammate's `atk_total` into the recipient bag via a
+ *     ConditionNumber (`partyStat:'atk_total', max:10000`), and the cryo-element teammate
+ *     FeatureMultiplier scales `shenhe_dmg_bonus% ×` that value into each cryo hit's base
+ *     term. Structurally identical to Song of Days Past's team-multiplier scaling input.
+ *     Set ONLY when a Shenhe teammate is in the roster (the lift condition fires); absent
+ *     for every solo / non-Shenhe build → key never emitted → byte-unchanged.
  * Absent for every build that sets no such input → key never emitted → multiplier reads
  * 0 → the base golden suite + all existing fixtures are byte-untouched.
  *
  * Source: raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js:262-380 (Song of Days Past
  *         ConditionNumber + its FeatureMultiplier), db/Artifacts/Set/OceanHuedClam.js:35-67
- *         (Clam ConditionNumber + FeatureDamageClam), classes/Feature2/Multiplier.js:281-288.
+ *         (Clam ConditionNumber + FeatureDamageClam), db/Char/Shenhe.js:456-621 (Icy Quill
+ *         partyData ConditionNumber + teammate FeatureMultiplier),
+ *         classes/Feature2/Multiplier.js:281-288.
  */
-const RAW_BAG_SCALING_KEYS = ["party_days_past_healing_recorded", "accumulated_healing"] as const;
+const RAW_BAG_SCALING_KEYS = [
+  "party_days_past_healing_recorded",
+  "accumulated_healing",
+  "shenhe_atk_total",
+  "faruzan_atk_base",     // Faruzan A4 anemo-DMG teammate multiplier (P3.5.2 Bucket C)
+  "escoffier_atk_total",  // Escoffier C2 cryo-DMG teammate multiplier (P3.5.2 Bucket C)
+  "xilonen_def_total",    // Xilonen C4 normal/charged/plunge-DMG teammate multiplier (P3.5.2 Bucket C)
+  "yunjin_def_total",     // Yun Jin Flying Cloud Flag Formation DEF-scaled normal-DMG multiplier (P3.5.2 engine-ext)
+  "citlali_mastery_total", // Citlali C1 EM-scaled all-type-DMG multiplier (P3.5.2 Bucket C)
+  "layla_max_hp",         // Layla C4 HP-scaled normal/charged-DMG multiplier (P3.5.2 Bucket C)
+  "sigewinne_hp_total",   // Sigewinne A1 max-HP-ABOVE-30000-scaled skill-DMG multiplier (P3.5.2 engine-ext; exceedStatValue)
+  "xianyun_atk_total",    // Xianyun A4 ATK-scaled plunge-SHOCKWAVE-DMG multiplier (P3.5.2 Xianyun sub-pass; tags target)
+] as const;
 
 /**
  * Level/ascension parameters for base-stat assembly. (Talent levels are a
@@ -311,7 +360,7 @@ export interface BuildInput {
    * passing slug members causes a runtime throw. Callers using only
    * `{ element, origin? }` members can safely omit this.
    */
-  readonly partySlugResolver?: (slug: string) => ActiveCharFacts;
+  readonly partySlugResolver?: (slug: string) => DbObjectChar;
 }
 
 /** One equipped artifact set: its registry key + how many pieces are worn. */
@@ -401,13 +450,32 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       } else {
         ratio = effect.ratio ?? 0;
       }
-      // Per-stack additive on the ratio (her percentBonus × bonusStackSettings / stacksSetting):
+      // Per-stack ADDITIVE on the ratio (her percentBonus × bonusStackSettings; the
+      // MULTIPLICATIVE whole-ratio stacks is the separate `stacksSetting` branch below):
       // ratio += perStackTable(level) × settings[setting]. Absent setting → 0 → no change.
       if (effect.ratioPerStack !== undefined) {
         const { setting, table, levelSetting } = effect.ratioPerStack;
         const lvl = (settings[levelSetting] as number | undefined) ?? 1;
         const stacks = (settings[setting] as number | undefined) ?? 0;
         ratio += table.getValue(lvl) * stacks;
+      }
+      // Multiplicative stacks on the whole ratio (her getStacks → CMulti([ratio, stacks]),
+      // Stats.js:77-81): ratio *= settings[stacksSetting] (her `|| 1` ⇒ >1 only). Applied
+      // BEFORE percentBonus (her (ratio × stacks) + bonus). Absent → unchanged (base-inert).
+      if (effect.stacksSetting !== undefined) {
+        const stacks = (settings[effect.stacksSetting] as number | undefined) ?? 1;
+        if (stacks > 1) ratio *= stacks;
+      }
+      // Conditional flat addend on the ratio (her percentBonus × bonusCondition,
+      // PostEffect/Stats.js:41-50,77-88): when the gate is absent or active, add percentBonus.value
+      // to the ratio AFTER any stacks multiply and BEFORE it multiplies the `from` stat (her
+      // CSum([value × stacks, bonus]), bonus = percentBonus.value). Absent → no addend
+      // (base-inert: 58k goldens byte-unchanged).
+      if (
+        effect.percentBonus !== undefined &&
+        (effect.percentBonus.condition === undefined || evaluate(effect.percentBonus.condition, settings))
+      ) {
+        ratio += effect.percentBonus.value;
       }
       // Base stat: getTotal(fromStat), or max(getTotal(fromStat), getTotal(fromStatMax))
       // when fromStatMax is set. Mirrors PostEffectStatsNahida.getBaseValueTree which
@@ -559,19 +627,24 @@ export function buildStats(input: BuildInput): BuildResult {
   //
   // Party keys (party_*): derived from the optional PartyInput via the universal publisher.
   // Absent party → empty object → no party_* keys added (base-safety invariant).
+  const resolveChar = input.partySlugResolver;
   const partyKeys = input.party
     ? buildPartyContext(
         input.party,
         { element: input.char.element, origin: input.char.origin },
-        input.partySlugResolver
+        resolveChar ? (slug) => { const c = resolveChar(slug); return { element: c.element, origin: c.origin }; } : undefined
       )
     : {};
+  const partyBuffs = input.party && resolveChar
+    ? buildPartyBuffs(input.party, resolveChar)
+    : { conditions: [], postEffects: [], multipliers: [], settings: {} };
   const baseSettings: EvalContext = {
     weapon_type: input.char.weapon,
     char_origin: input.char.origin,
     char_name: input.char.name,
     char_element: input.char.element,
     ...partyKeys,
+    ...partyBuffs.settings,
   };
 
   const settings: EvalContext =
@@ -631,6 +704,9 @@ export function buildStats(input: BuildInput): BuildResult {
   // Source: raw/genshin_calc_pub/src/js/db/Conditions/Character.js
   //         raw/genshin_calc_pub/src/js/classes/Objects/Character.js (getConditions concat)
   for (const cond of CHARACTER_CONDITIONS) applyCondition(cond);
+  // Per-teammate kit conditions (her char.getPartyConditions() concat). A `number` condition
+  // (e.g. bennet_atk_base) lifts a baked setting into the stat bag for a post-effect to read.
+  for (const cond of partyBuffs.conditions) applyCondition(cond);
 
   // 3. Derive — condition-gated post-effects (reads RAW percents via getTotal).
   // Char post-effects, then the equipped WEAPON's post-effects (Staff of Homa /
@@ -654,6 +730,7 @@ export function buildStats(input: BuildInput): BuildResult {
     ...(input.weaponPostEffects ?? []),
     ...sets.postEffects,
     ...CHARACTER_POST_EFFECTS,
+    ...partyBuffs.postEffects, // per-teammate kit post-effects (her char.getPartyPostEffects())
   ].map(toPostEffect);
   applyPostEffects(raw, effects, merged);
 
@@ -703,6 +780,18 @@ export function buildStats(input: BuildInput): BuildResult {
   }
   // Type DMG% bonuses + dmg_all → fractions, flat only (no `*` in her getStatsDmgBonus).
   for (const key of DMG_BONUS_TYPE_KEYS) {
+    if (raw.isSet(key)) out[key] = raw.get(key) / 100;
+  }
+  // Composite type×element DMG% bonuses → fractions, only when set (Candace's
+  // `dmg_normal_<element>`). Both the prayer condition (raw 20) and the A4
+  // postEffect (raw `0.0005 × HP`) accumulate into the SAME bag key as RAW
+  // percent, then a SINGLE /100 here — exactly her `processPercent` on the
+  // condition value summed with the post-effect's pre-divided getTree output
+  // (her PostEffectStats on a percent stat folds the isPercent /100 internally;
+  // our toPostEffect stores the raw scale instead, so the single emit /100
+  // reproduces it — the established Furina `dmg_skill_furina` idiom). Absent for
+  // every non-Candace build → no key → base golden + fixtures byte-unchanged.
+  for (const key of DMG_BONUS_COMPOSITE_KEYS) {
     if (raw.isSet(key)) out[key] = raw.get(key) / 100;
   }
   // Per-TYPE crit (her getDefaultStatsCritRate/CritDamage push crit_*_<type> for the
@@ -824,5 +913,10 @@ export function buildStats(input: BuildInput): BuildResult {
     characterLevel: input.levels.charLevel,
   };
 
-  return { stats, context, settings: merged, characterMultipliers: CHARACTER_MULTIPLIERS };
+  return {
+    stats,
+    context,
+    settings: merged,
+    characterMultipliers: [...CHARACTER_MULTIPLIERS, ...partyBuffs.multipliers],
+  };
 }

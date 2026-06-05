@@ -18,7 +18,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Sara)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Sara as SaraStatTable } from "../generated/charTables.js";
 import { Sara as SaraTalents } from "../generated/charTalentTables.js";
 
@@ -115,12 +115,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -217,4 +219,37 @@ export const kujouSara: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket B).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Sara.js:357-422
+  // Scope: oracle-gated core only — the base Tengu Juurai ATK battery.
+  // Deferred to the P3.5.2 variant-rep pass:
+  //   C5 "Spellsinger": sara_char_skill_elemental_bonus:3 — bonus skill levels (moot; clamped to L10).
+  //   C6 "Sin of Pride": gated on kujou_sara_spellsinger + kujou_sara_sin_of_pride toggles; handled
+  //     by the constellation condition's crit_dmg_electro:60 already on constellationConditions.
+  partyData: {
+    loadStats: {
+      stats: ["atk_base"],
+    },
+    conditions: [
+      // ConditionNumber: lifts the teammate's atk_base into the recipient's stat bag.
+      { type: "number", name: "sara_atk_base", max: 10000 },
+      // ConditionNumberTalent: mirrors 'sara_char_skill_elemental' (the skill level setting).
+      { type: "number", name: "sara_char_skill_elemental", max: 15 },
+      // Tengu Juurai master toggle (gates the ATK battery postEffect below).
+      { type: "boolean", name: "party.sara_tengu_juurai" },
+    ],
+    postEffects: [
+      // Tengu Juurai ATK battery: atk_base × skill atk_bonus (Sara.s2.p2), clamped at L10
+      // (raw PostEffectStats.maxLevelSetting:10). Baked ratio = L10 table value × 0.01.
+      // Sara.s2.p2 at L10 = 77.328 → ratio = 0.77328. Matches the maxLevelSetting idiom
+      // of Bennett party ATK battery (capped at burst L10 = 1.008).
+      // Source: raw/genshin_calc_pub/src/js/db/Char/Sara.js:408-421
+      {
+        fromStat: "sara_atk_base",
+        toStat: "atk",
+        ratio: SaraTalents.s2.p2.getValue(10) * 0.01,
+        conditions: [{ type: "boolean", name: "party.sara_tengu_juurai" }],
+      } satisfies CharPostEffect,
+    ],
+  },
 };

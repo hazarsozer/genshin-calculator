@@ -102,6 +102,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low (element:'hydro')
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "hydro",
@@ -110,6 +111,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high (element:'hydro')
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "hydro",
@@ -194,4 +196,6 @@ export const sangonomiyaKokomi: DbObjectChar = {
   //   healing: 25 — heal bonus, does not affect damage features.
   // Source: raw/genshin_calc_pub/src/js/db/Char/Kokomi.js TalentValues.PassiveCritRate
   baseStats: { crit_rate: -100 },
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Kokomi.js (partyData: empty conditions)
+  partyData: {},
 };

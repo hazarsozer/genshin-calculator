@@ -225,12 +225,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -274,4 +276,21 @@ export const huTao: DbObjectChar = {
   multipliers: [c2SkillHpMultiplier],
   postEffects: [hpToAtk],
   conditions: [paramita, c3SkillTalentBonus, c5BurstTalentBonus],
+  // A1 "Flutter By" — +12% CRIT Rate to nearby party.
+  // C4 "Garden of Eternal Rest" — +12% CRIT Rate to nearby party (on enemy killed by Hutao/ally).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Hutao.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { crit_rate: 12 },
+        condition: { type: "boolean", name: "party.hu_tao_flutter_by" },
+      },
+      {
+        type: "static",
+        stats: { crit_rate: 12 },
+        condition: { type: "boolean", name: "party.hu_tao_garden_of_eternal_rest" },
+      },
+    ],
+  },
 };

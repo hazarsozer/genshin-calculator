@@ -85,6 +85,7 @@ import type {
   Element,
   EvalContext,
 } from "@genshin/types";
+import { type FixtureEntry, isDamageTripleEntry } from "./_fixtureEntry.js";
 
 // ---------------------------------------------------------------------------
 // Constants — mirror partyBurndown.test.ts / armory.test.ts
@@ -121,25 +122,8 @@ const FOLD_FAMILIES = [
 // Fixture types — verbatim from armory.test.ts (carries isReacted/format)
 // ---------------------------------------------------------------------------
 
-interface FixtureEntry {
-  readonly category: string;
-  readonly damageType: string | undefined;
-  readonly normal: number;
-  readonly crit: number;
-  readonly average: number;
-  readonly isReacted: boolean;
-  readonly format: string;
-}
-
 interface Fixture {
   readonly features: Record<string, FixtureEntry>;
-}
-
-/** Damage-triple predicate — verbatim from the templates. */
-function isDamageTripleEntry(entry: FixtureEntry): boolean {
-  if (entry.category === "stats") return false;
-  if (!entry.damageType) return false;
-  return true;
 }
 
 // ---------------------------------------------------------------------------

@@ -30,6 +30,8 @@
  */
 
 import {
+  AmplifyingVariant,
+  cAmplifyingFactor,
   cBaseDamage,
   cConst,
   cCritDmg,
@@ -39,8 +41,10 @@ import {
   cDivide,
   cFloor,
   cLunarChargedDamage,
+  cMax,
   cMin,
   cMulti,
+  cSubtract,
   cMultiplierBonus,
   cMultiplierDefence,
   cMultiplierReaction,
@@ -74,6 +78,21 @@ const LEVELING_TO_SLOT: Readonly<Record<string, keyof TalentLevels>> = {
  * not per `baseDamageTerm` call (hot path across the armory loop).
  */
 const TOTAL_SCALING_STATS: ReadonlySet<string> = new Set(["atk", "hp", "def", "mastery"]);
+
+/**
+ * Amplifying-reaction variant policy: `${settings.reaction}_${hitElement}` → the
+ * Vaporize/Melt direction. Mirrors her `REACTION_MULTI` (raw/.../Feature2/Damage.js:13-18)
+ * exactly: hydro/cryo hits have one direction; pyro hits depend on the chosen reaction;
+ * every other element has no entry (→ un-amplified). The core owns the math
+ * (`cAmplifyingFactor`); the data layer owns this settings→variant policy, matching her
+ * layering (REACTION_MULTI lives in her feature layer).
+ */
+const AMPLIFYING_VARIANT: Readonly<Record<string, AmplifyingVariant>> = {
+  vaporize_hydro: AmplifyingVariant.VaporizeForward, // Hydro onto Pyro aura, ×2.0
+  vaporize_pyro: AmplifyingVariant.VaporizeReverse, // Pyro onto Hydro aura, ×1.5
+  melt_cryo: AmplifyingVariant.MeltReverse, // Cryo onto Pyro aura, ×1.5
+  melt_pyro: AmplifyingVariant.MeltForward, // Pyro onto Cryo aura, ×2.0
+};
 
 /** Talent levels for a build (1-indexed game talent levels). */
 export interface TalentLevels {
@@ -278,7 +297,20 @@ function baseDamageTerm(
     const stacks = typeof raw === "number" ? raw : 0;
     scalingFactor += entry.scalingOffset.perStack * Math.min(entry.scalingOffset.maxStacks, stacks);
   }
-  const talentPercent = (entry.values.getValue(talentLevel) / 100) * scalingFactor;
+  let talentPercent = (entry.values.getValue(talentLevel) / 100) * scalingFactor;
+  // ADDITIVE bonus term keyed off a SEPARATE stacks level — her FeatureMultiplier.getValue
+  // adds `bonusValues.getValue(getBonusLevel)/100` on top of the talent% fraction
+  // (Multiplier.js:184-186), `getBonusLevel = settings.getLevel(bonusLeveling) || 1` (:168-169).
+  // Her `getLevel` routes through getSkillLevelByName, which WOULD add `_bonus`/`_bonus_2`/
+  // `_bonus_party` offsets (Settings.js:49-57) — but no such offset setting exists for the only
+  // v5.8 bonusLeveling key, so it reduces to a plain settings read and our bare `ctx.settings[...]`
+  // read is exact here. The sole user is Yun Jin's NA-DMG teammate multiplier
+  // (`yunjin_traditionalist_stacks` → [2.5,5,7.5,11.5]). Both fields absent ⇒ no term added ⇒
+  // base-inert (the 58k-golden / armory surface is byte-unchanged).
+  if (entry.bonusLeveling !== undefined && entry.bonusValues !== undefined) {
+    const bonusLevel = (ctx.settings[entry.bonusLeveling] as number | undefined) || 1;
+    talentPercent += entry.bonusValues.getValue(bonusLevel) / 100;
+  }
 
   // Scaling stat key. Two paths, faithful to her FeatureMultiplier.getTreeStatValue
   // (Multiplier.js:281-288 → makeStatItem vs makeStatTotalItem):
@@ -329,7 +361,17 @@ function baseDamageTerm(
   if (entry.coefficientFromStat !== undefined) {
     factors.push(coefficientBlock(entry.coefficientFromStat));
   }
-  factors.push(cStat(scalingKey));
+  // Scaling factor = the (total or raw) stat read, OPTIONALLY floored at a threshold:
+  // her FeatureMultiplier.getTreeStatValue wraps the BARE stat read (not the talent% and
+  // not the coefficient) in `CMax([CSubtract([stat, exceedStatValue]), 0])` when
+  // `exceedStatValue` is set (Multiplier.js:281-301) — i.e. `max(scalingStat − threshold, 0)`.
+  // The sole v5.8 user is Sigewinne's teammate skill-DMG buff (max HP above 30000). Absent ⇒
+  // the plain `cStat(scalingKey)`, byte-identical to before (no other multiplier sets it).
+  let scalingStatBlock: Block = cStat(scalingKey);
+  if (entry.exceedStatValue !== undefined) {
+    scalingStatBlock = cMax([cSubtract([scalingStatBlock, cConst(entry.exceedStatValue)]), cConst(0)]);
+  }
+  factors.push(scalingStatBlock);
   const term = cMulti(factors);
   // Per-multiplier absolute cap (her FeatureMultiplier.capValue → CValueCap, a
   // Math.min wrapping the multiplier tree): `min(levelMult × scalingStat, capValue)`,
@@ -341,9 +383,15 @@ function baseDamageTerm(
 
 /**
  * Select the char-level ("targeted") multipliers that apply to this feature:
- * those whose `target.damageTypes` includes the feature's resolved damage type
- * AND whose gate is active (`evaluate(condition)`; an absent condition is
- * always-on, per her `FeatureMultiplier.isActive`).
+ * those whose `target` MATCHES the feature AND whose gate is active
+ * (`evaluate(condition)`; an absent condition is always-on, per her
+ * `FeatureMultiplier.isActive`).
+ *
+ * `target.isMatchFeature` is an AND-chain of present filters (Target.js):
+ *   - `damageTypes` (always present): includes the feature's resolved damage type.
+ *   - `damageElements` (optional): includes the feature's RESOLVED element
+ *     (`element`, already infusion-resolved by the caller — her `feature.getElement(data)`).
+ *     Absent/empty → the element filter is skipped (no constraint, base-inert).
  *
  * Faithful to her `Feature2.getMultipliers` second loop (Feature2.js:121-125):
  * `for (item of data.multipliers) if (item.isActive(data) && item.isMatchFeature(this, data)) push`.
@@ -353,12 +401,37 @@ function baseDamageTerm(
 function activeCharMultipliers(
   feature: Feature,
   damageType: string,
+  element: Element,
   ctx: CompileContext
 ): readonly CharMultiplier[] {
   const all = ctx.charMultipliers;
   if (!all || all.length === 0) return [];
   return all.filter((m) => {
-    if (!m.target.damageTypes.includes(damageType)) return false; // isMatchFeature
+    // isMatchFeature — AND-chain of present filters (her Target.js:27-55).
+    // damageTypes branch: only constrains when present + non-empty (mirrors her
+    // `if (this.damageTypes.length && !this.damageTypes.includes(damageType))`).
+    // An empty array means "no type filter" (all types match) — e.g. Faruzan A4.
+    if (m.target.damageTypes.length > 0 && !m.target.damageTypes.includes(damageType)) return false;
+    // Element branch (Target.js:37-39): only constrains when present + non-empty.
+    if (
+      m.target.damageElements !== undefined &&
+      m.target.damageElements.length > 0 &&
+      !m.target.damageElements.includes(element)
+    ) {
+      return false;
+    }
+    // Tag branch (Target.js:41-53): only constrains when present + non-empty. The feature
+    // matches iff its `tags` intersect the target's. The sole v5.8 tag is "plunge_shockwave"
+    // (Xianyun's A4 teammate multiplier targets it; the shockwave features carry it). No
+    // base/cons/armory multiplier sets target.tags → this branch is never entered for any
+    // solo golden build (base-inert: the 58k damage goldens stay byte-identical).
+    if (
+      m.target.tags !== undefined &&
+      m.target.tags.length > 0 &&
+      !(feature.tags ?? []).some((t) => m.target.tags!.includes(t))
+    ) {
+      return false;
+    }
     return m.condition === undefined || evaluate(m.condition, ctx.settings); // isActive
   });
 }
@@ -394,7 +467,18 @@ function dmgBonusKeys(
   damageType: string
 ): readonly string[] {
   const keys = ["dmg_all", `dmg_${dmgElementKey(element)}`];
-  if (damageType) keys.push(`dmg_${damageType}`);
+  if (damageType) {
+    keys.push(`dmg_${damageType}`);
+    // Composite type×element bonus — her getStatsDmgBonus also pushes
+    // `dmg_<damageType>_<element>` (Damage.js:58), a key that applies ONLY to a
+    // hit matching BOTH the type AND the (infusion-resolved) element. The element
+    // segment uses the SAME `dmgElementKey(element)` as the `dmg_<element>` push
+    // above (so physical → `dmg_<type>_phys`, faithful to her `getElement` which
+    // returns 'phys'). v5.8 source: Candace's prayer + A4 (`dmg_normal_<element>`).
+    // Absent for every build that sets no composite key → cStat reads 0 (the
+    // established `dmg_charged_enemy` pattern) → base-inert (58k goldens untouched).
+    keys.push(`dmg_${damageType}_${dmgElementKey(element)}`);
+  }
   // Charged attacks additionally pick up the enemy-vulnerability key
   // `dmg_charged_enemy` — her FeatureDamageCharged.getStatsDmgBonus override
   // (Charged.js:14-18) is the ONLY damage subclass that adds a `dmg_<type>_enemy`
@@ -565,7 +649,7 @@ export function compileFeature(
   // is either single-item (itemCount 1, no change) or has no active char-multiplier
   // targeting it (nothing to replicate) — a base multihit feature targeted by an active
   // char-multiplier would already be RED (short by the per-item amount), and none are.
-  const charMultipliers = activeCharMultipliers(feature, damageType, ctx);
+  const charMultipliers = activeCharMultipliers(feature, damageType, element, ctx);
   const itemCount = feature.items?.length ?? 1;
   const replicatedCharMultipliers: FeatureMultiplierEntry[] = [];
   for (let i = 0; i < itemCount; i++) replicatedCharMultipliers.push(...charMultipliers);
@@ -605,6 +689,23 @@ export function compileFeature(
   // Only the foam sets this; every normal hit falls through to the crit path below.
   if (feature.noCrit) {
     return cDamage({ items });
+  }
+
+  // Amplifying reaction (Vaporize/Melt): when `settings.reaction` is set, the hit can react
+  // (`!feature.cannotReact` — her canReact(), Damage.js:308), AND the hit's resolved element
+  // maps to a variant, append the amplifying factor to `items` — her getReactionMultipliers
+  // (Damage.js:195-219) pushed into getTree's items (Damage.js:286). The factor multiplies the
+  // whole hit (normal/crit/avg scale together). No `settings.reaction`, a cannotReact hit (Mona's
+  // plunge Collision), or a non-reacting element (physical/electro/anemo/geo/dendro) → nothing
+  // appended → un-amplified, byte-identical to before. Standalone reaction features
+  // (`feature.reaction`) and the noCrit foam path are excluded above. `dmg_reaction_<reaction>`
+  // (her getReactionBonuses) reads 0 unless a source grants it.
+  const reaction = ctx.settings["reaction"];
+  if (typeof reaction === "string" && !feature.cannotReact) {
+    const variant = AMPLIFYING_VARIANT[`${reaction}_${element}`];
+    if (variant !== undefined) {
+      items.push(cAmplifyingFactor({ variant, reactionBonusKeys: [`dmg_reaction_${reaction}`] }));
+    }
   }
 
   // Crit: the aggregated totals (buildStats folds crit_rate/_dmg in), PLUS the

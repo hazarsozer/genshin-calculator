@@ -111,12 +111,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -204,4 +206,19 @@ export const ororon: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // C6 "Ode to Deep Springs": ConditionStacks(ororon_ode_to_deep_springs) maxStacks:3
+  //   → atk_percent:10 per stack.
+  //   C6AtkBonus=10, C6AtkBonusStacks=3.
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Ororon.js partyData.conditions[0]
+  partyData: {
+    conditions: [
+      {
+        type: "stacks",
+        name: "ororon_ode_to_deep_springs",
+        maxStacks: 3,
+        stats: { atk_percent: 10 },
+      },
+    ],
+  },
 };

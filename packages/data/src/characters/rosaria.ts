@@ -17,7 +17,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Rosaria)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Rosaria as RosariaStatTable } from "../generated/charTables.js";
 import { Rosaria as RosariaTalents } from "../generated/charTalentTables.js";
 
@@ -129,12 +129,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -240,4 +242,32 @@ export const rosaria: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket B).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Rosaria.js:470-535
+  // Scope: oracle-gated core only — A4 "Shadow Samaritan" crit-rate share.
+  // Deferred to the P3.5.2 variant-rep pass:
+  //   C6 "Divine Retribution": enemy_res_phys:-20 (static shred, separate oracle rep needed).
+  partyData: {
+    loadStats: {
+      stats: ["crit_rate_total"],
+    },
+    conditions: [
+      // ConditionNumber: lifts the teammate's crit_rate_total into the recipient's stat bag.
+      { type: "number", name: "rosaria_crit_rate_total", max: 100 },
+      // Shadow Samaritan master toggle (A4 passive; gates the crit-rate postEffect below).
+      { type: "boolean", name: "party.rosaria_shadow_samaritan" },
+    ],
+    postEffects: [
+      // A4 "Shadow Samaritan": shares 15% of Rosaria's crit rate, hard-capped at 15%.
+      // Raw: percent: StatTable('crit_rate', [0.15]), statCap: ValueTable([15])
+      // Source: raw/genshin_calc_pub/src/js/db/Char/Rosaria.js:523-532
+      {
+        fromStat: "rosaria_crit_rate_total",
+        toStat: "crit_rate",
+        ratio: 0.15,
+        capValue: 15,
+        conditions: [{ type: "boolean", name: "party.rosaria_shadow_samaritan" }],
+      } satisfies CharPostEffect,
+    ],
+  },
 };

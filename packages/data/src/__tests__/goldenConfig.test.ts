@@ -53,6 +53,7 @@ import {
 } from "../generated/weaponStatTables.js";
 import { SAMPLE_BLOCK, HIGH_ATK_HP_BLOCK } from "./_statBlocks.js";
 import type { DbObjectArtifactSet, DbObjectChar, DbObjectWeapon, EvalContext, StatTableEntry } from "@genshin/types";
+import { type FixtureEntry, isDamageTripleEntry } from "./_fixtureEntry.js";
 
 // ---------------------------------------------------------------------------
 // Constants — mirrors constellations.test.ts
@@ -75,23 +76,8 @@ const TOLERANCE = 0.1;
 // Fixture types — verbatim from constellations.test.ts
 // ---------------------------------------------------------------------------
 
-interface FixtureEntry {
-  readonly category: string;
-  readonly damageType: string | undefined;
-  readonly normal: number;
-  readonly crit: number;
-  readonly average: number;
-}
-
 interface Fixture {
   readonly features: Record<string, FixtureEntry>;
-}
-
-/** Damage-triple predicate — verbatim from constellations.test.ts. */
-function isDamageTripleEntry(entry: FixtureEntry): boolean {
-  if (entry.category === "stats") return false;
-  if (!entry.damageType) return false;
-  return true;
 }
 
 // ---------------------------------------------------------------------------

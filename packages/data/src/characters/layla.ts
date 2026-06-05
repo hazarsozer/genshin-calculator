@@ -23,7 +23,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Layla)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Layla as LaylaStatTable } from "../generated/charTables.js";
 import { Layla as LaylaTalents } from "../generated/charTalentTables.js";
 
@@ -120,6 +120,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
@@ -127,6 +128,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -200,6 +202,32 @@ const constellationConditions: readonly Condition[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// partyData — teammate kit buff (P3.5.2 Bucket C).
+// Source: raw/genshin_calc_pub/src/js/db/Char/Layla.js:425-468
+// Scope: C4 "Starry Illumination" — HP-scaled normal/charged-DMG bonus on recipient.
+// Gated by party.layla_starry_illumination master toggle.
+// Conditions ported = ONLY the HP lift the multiplier reads + the master gate.
+// Note: layla_max_hp is a teammate-namespaced bare key (not the recipient's hp total),
+// so it still needs a RAW_BAG_SCALING_KEYS entry.
+// ---------------------------------------------------------------------------
+
+// C4NormalBonus = 5 (raw/genshin_calc_pub/src/js/db/Char/Layla.js:127)
+const C4_NORMAL_BONUS = 5;
+
+const laylaPartyMultipliers: readonly CharMultiplier[] = [
+  // C4: layla_max_hp × 5% flat normal/charged DMG bonus on recipient.
+  // raw/genshin_calc_pub/src/js/db/Char/Layla.js:457-466
+  {
+    source: "constellation4",
+    scaling: "layla_max_hp",
+    leveling: "",
+    values: { getValue: (): number => C4_NORMAL_BONUS },
+    condition: { type: "boolean", name: "party.layla_starry_illumination" },
+    target: { damageTypes: ["normal", "charged"] },
+  } satisfies CharMultiplier,
+];
+
 export const layla: DbObjectChar = {
   name: "layla",
   gameId: 10000074,
@@ -212,4 +240,19 @@ export const layla: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  partyData: {
+    // loadStats mirrors raw Layla.js:427-429 (hp_total stat).
+    loadStats: {
+      stats: ["hp_total"],
+    },
+    conditions: [
+      // Lift Layla's hp_total (partyStat) into recipient bag as `layla_max_hp`.
+      // raw: ConditionNumber({name:'layla_max_hp', partyStat:'hp_total', max:150000}).
+      // CHARACTER_MAX_POSSIBLE_HP = 150000 (raw/genshin_calc_pub/src/js/db/Constants.js:1).
+      { type: "number", name: "layla_max_hp", max: 150000 },
+      // Master toggle — gates the C4 multiplier. raw: ConditionBoolean({name:'party.layla_starry_illumination'}).
+      { type: "boolean", name: "party.layla_starry_illumination" },
+    ],
+    multipliers: laylaPartyMultipliers,
+  },
 };

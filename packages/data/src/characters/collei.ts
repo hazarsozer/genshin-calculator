@@ -107,12 +107,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -170,7 +172,8 @@ const features: readonly Feature[] = [
 // C1 "Deepwood Patrol": ConditionBoolean toggle (recharge:20) → SKIP.
 // C2 "Through Hill and Copse": ConditionStatic display-only (text_percent:40) → SKIP.
 // C3: +3 levels to Floral Brush (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
-// C4 "Gift of the Woods": ConditionStatic display-only (text_value:60) → SKIP.
+// C4 "Gift of the Woods": the SELF cons is ConditionStatic display-only (text_value:60) → SKIP;
+//   the real +60 EM is a PARTY buff to teammates — see partyData below.
 // C5: +3 levels to Trump-Card Kitty (burst). Raw cons[4] settings char_skill_burst_bonus:3.
 // C6 "Forest of Falling Arrows": ConditionStatic display-only in cons array → SKIP.
 //   The actual C6 damage comes from collei_forest_of_falling_arrows_dmg feature above.
@@ -198,4 +201,15 @@ export const collei: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C4 "Gift of the Woods" — +60 Elemental Mastery to party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Collei.js:101,313-320
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { mastery: 60 },
+        condition: { type: "boolean", name: "party.collei_gift_of_the_woods" },
+      },
+    ],
+  },
 };

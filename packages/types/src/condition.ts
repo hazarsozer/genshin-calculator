@@ -149,6 +149,16 @@ export interface ConditionNumber extends ConditionBase {
   readonly type: "number";
   readonly min?: number;
   readonly max?: number;
+  /**
+   * Optional target stat key for the clamped value. Her ConditionNumber.getStats
+   * writes `min(ctx[name], max)` under `params.stat || params.name` (Number.js:58-70);
+   * when `stat` is set, the dynamic value lands on a DIFFERENT key than the toggle's
+   * `name` — e.g. Mavuika's A4 Kiongozi (`name:'party_mavuika_kiongozi'` →
+   * `stat:'dmg_all'`): the slider is keyed by name, the +DMG% bonus by `dmg_all`.
+   * Absent → the value is keyed by `name` (the prior behavior; base-inert — no
+   * existing number condition sets `stat`).
+   */
+  readonly stat?: string;
 }
 
 /**

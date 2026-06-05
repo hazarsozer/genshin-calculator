@@ -65,6 +65,7 @@ import {
 } from "../generated/weaponStatTables.js";
 import type { DbObjectChar } from "@genshin/types";
 import type { StatTableEntry } from "@genshin/types";
+import { type FixtureEntry, isDamageTripleEntry } from "./_fixtureEntry.js";
 
 // ---------------------------------------------------------------------------
 // FIXED canonical build (verbatim from _manifest.json / characters.test.ts)
@@ -118,16 +119,6 @@ const TOLERANCE = 0.1;
 // ---------------------------------------------------------------------------
 // Fixture types
 // ---------------------------------------------------------------------------
-
-interface FixtureEntry {
-  readonly category: string;
-  readonly damageType: string | undefined;
-  readonly normal: number;
-  readonly crit: number;
-  readonly average: number;
-  readonly isReacted: boolean;
-  readonly format: string;
-}
 
 interface Fixture {
   readonly features: Record<string, FixtureEntry>;
@@ -231,23 +222,6 @@ const REPS: readonly Rep[] = Object.entries(CHAR_MODULES)
 // ---------------------------------------------------------------------------
 // Golden harness
 // ---------------------------------------------------------------------------
-
-/**
- * Returns true if a fixture entry should be asserted as a damage triple.
- * Filters out:
- *  - category "stats"  — stat readouts, not damage hits
- *  - entries with no `damageType` — display-only rows (heal / ATK-bonus / shield
- *    magnitudes, etc.); her engine sets a non-empty damageType for real damage hits.
- *    (Filter is on `damageType` alone — some display rows carry a large non-zero
- *    `normal`, e.g. `skill.hutao_max_hp_bonus`, so we do NOT also test for zero.)
- */
-function isDamageTripleEntry(entry: FixtureEntry): boolean {
-  if (entry.category === "stats") return false;
-  // Display-only entries have no damageType AND zero (or near-zero) normal value.
-  // We gate on damageType being non-empty (her engine sets this for real damage hits).
-  if (!entry.damageType) return false;
-  return true;
-}
 
 // Belt-and-suspenders guard: the glob must discover EVERY character file on disk.
 // If import.meta.glob ever under-matches, this fails loudly rather than silently

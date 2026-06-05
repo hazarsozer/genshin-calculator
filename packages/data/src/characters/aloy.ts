@@ -139,6 +139,7 @@ const features: readonly Feature[] = [
   // absent from the fixed STAT_BLOCK so it reads 0 — a faithful no-op).
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     damageBonuses: ["dmg_plunge_shockwave"],
@@ -146,6 +147,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     damageBonuses: ["dmg_plunge_shockwave"],
@@ -188,4 +190,18 @@ export const aloy: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // A1 "Combat Override": ConditionBoolean(party.aloy_combat_override) → atk_percent:8.
+  //   text_percent_1/text_percent_2 are display-only, skipped.
+  //   TalentValues.A1AtkOther=8, TalentValues.A1AtkSelf=16 (self-only, display).
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Aloy.js partyData.conditions[0]
+  partyData: {
+    conditions: [
+      {
+        type: "boolean",
+        name: "party.aloy_combat_override",
+        stats: { atk_percent: 8 },
+      },
+    ],
+  },
 };

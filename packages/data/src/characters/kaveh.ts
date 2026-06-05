@@ -109,6 +109,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low (s1.p10)
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
@@ -116,6 +117,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high (s1.p11)
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -192,4 +194,34 @@ export const kaveh: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A)
+  // C3 "Profferings of Dur Untash" toggle: ConditionBoolean → settings burst talent +3.
+  // Burst "Painted Dome" (BooleanLevels): ConditionBooleanLevels(party.kaveh_painted_dome)
+  //   → dmg_reaction_rupture per burst talent level.
+  //   Level from kaveh_char_skill_burst (baked via sourceSettings).
+  //   Values hardcoded in raw: [27.49,29.55,31.61,34.36,36.42,38.48,41.23,43.98,46.73,49.48,
+  //                             52.23,54.98,58.41,61.85,65.28]
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Kaveh.js partyData
+  partyData: {
+    conditions: [
+      // C3 toggle: +3 burst talent levels.
+      {
+        type: "boolean",
+        name: "party.kaveh_profferings_of_dur_untash",
+        settings: { kaveh_char_skill_burst_bonus: 3 },
+      },
+      // Burst "Painted Dome": bloom dmg_reaction_rupture per burst talent level.
+      {
+        type: "static-level",
+        levelSetting: "kaveh_char_skill_burst",
+        levelStats: {
+          dmg_reaction_rupture: [
+            27.49, 29.55, 31.61, 34.36, 36.42, 38.48, 41.23,
+            43.98, 46.73, 49.48, 52.23, 54.98, 58.41, 61.85, 65.28,
+          ],
+        },
+        condition: { type: "boolean", name: "party.kaveh_painted_dome" },
+      },
+    ],
+  },
 };

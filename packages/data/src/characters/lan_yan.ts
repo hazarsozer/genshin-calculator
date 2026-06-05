@@ -199,6 +199,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low (s1.p10)
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "anemo",
@@ -207,6 +208,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high (s1.p11)
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     element: "anemo",
@@ -314,4 +316,15 @@ export const lanYan: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // C4 "With Drakefalcon's Blood, Pearls Adorned" — +60 EM to party.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/LanYan.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "static",
+        stats: { mastery: 60 },
+        condition: { type: "boolean", name: "party.lanyan_with_drakefalcons_blood_pearls_adorned" },
+      },
+    ],
+  },
 };

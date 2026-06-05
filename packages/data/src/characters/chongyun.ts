@@ -90,12 +90,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -165,4 +167,41 @@ export const chongyun: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // Teammate buffs (Chonghua's Frost Field):
+  //
+  //  - CRYO MELEE-INFUSION (Layered Frost): her field infuses melee teammates'
+  //    normal/charged/plunge with cryo. Raw splits this into ALLOWED-infusion
+  //    (Condition{ settings:{allowed_infusion_cryo:1} } gated by a melee weapon-type
+  //    sub-condition) + APPLIED-infusion (ConditionBoolean party.chongyun_layered_frost
+  //    { settings:{attack_infusion_cryo:1} }, the field toggle). Raw Chongyun.js partyData
+  //    conditions[0]+[1].
+  //    Bridge: our infusion model is a SINGLE `attack_infusion` STRING — resolveElement
+  //    (compileFeature.ts:178) returns it for an un-elemented attack/plunge feature, else
+  //    "physical". Her per-element flags (allowed_infusion_cryo + attack_infusion_cryo)
+  //    have no analogue. So we collapse ALLOWED+APPLIED into one condition that sets
+  //    attack_infusion:"cryo", gated by the RECIPIENT's weapon type (buildStats injects
+  //    weapon_type:input.char.weapon → the weapon-type condition gates on it). Faithful
+  //    for a single-teammate rep: the gate IS her allowed(melee) check; the field toggle
+  //    is assumed on (the buff only exists when her field is active).
+  //  - A4 "Rimechaser Blade": enemy Cryo RES -10% (the second damage-affecting stat).
+  //
+  // Damage-inert (no fixture delta; ported as-is or omitted with reason):
+  //   - Frost Field A1: atk_speed_normal (Steady Breathing) — display-only, SKIP.
+  //   - C2 "Atmospheric Revolution": recovery/text_percent_cd — display-only, SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Chongyun.js (partyData conditions)
+  partyData: {
+    conditions: [
+      {
+        type: "boolean",
+        name: "party.chongyun_layered_frost",
+        settings: { attack_infusion: "cryo" },
+        condition: { type: "weapon-type", types: ["sword", "claymore", "polearm"] },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_cryo: -10 },
+        condition: { type: "boolean", name: "party.chongyun_rimechaser_blade" },
+      },
+    ],
+  },
 };

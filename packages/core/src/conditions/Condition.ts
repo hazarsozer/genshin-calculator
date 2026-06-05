@@ -239,7 +239,9 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
       const clamped = max !== undefined
         ? Math.min(max, Math.max(min, rawNum))
         : Math.max(min, rawNum);
-      return { ...base, [condition.name]: clamped };
+      // Key the clamped value by `stat || name` (her `params.stat || params.name`).
+      // Absent `stat` → keyed by `name` (prior behavior, base-inert).
+      return { ...base, [condition.stat ?? condition.name]: clamped };
     }
     default: {
       // Exhaustiveness tripwire: a new Condition variant must be handled above,

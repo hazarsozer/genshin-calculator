@@ -133,12 +133,14 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
   },
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -260,4 +262,70 @@ export const venti: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket A, partial)
+  // C2 "Breeze of Reminiscence" (2 booleans): anemo -12% + phys -12% RES for the group.
+  //   cond[0]: venti_breeze (first stack).
+  //   cond[1]: venti_breeze_2, gated on venti_breeze (second stack, same stats).
+  // C6 "Storm of Defiance" part 1: venti_storm → enemy_res_anemo:-20.
+  //   Part 2: venti_storm_element single-select dropdown → enemy_res_<el>:-20 (gated on
+  //   venti_storm), modeled via the dropdown-element consumer pattern below.
+  //   Source: raw/genshin_calc_pub/src/js/db/Char/Venti.js partyData
+  partyData: {
+    conditions: [
+      // C2 breeze stack 1: -12% anemo res, -12% phys res.
+      {
+        type: "boolean",
+        name: "party.venti_breeze",
+        stats: { enemy_res_anemo: -12, enemy_res_physical: -12 },
+      },
+      // C2 breeze stack 2: additional -12% anemo res, -12% phys res (gated on stack 1).
+      {
+        type: "boolean",
+        name: "party.venti_breeze_2",
+        stats: { enemy_res_anemo: -12, enemy_res_physical: -12 },
+        condition: { type: "boolean", name: "party.venti_breeze" },
+      },
+      // C6 part 1: -20% anemo res.
+      {
+        type: "boolean",
+        name: "party.venti_storm",
+        stats: { enemy_res_anemo: -20 },
+      },
+      // C6 part 2: per-element RES shred — the venti_storm_element single-select dropdown →
+      // enemy_res_<el>:-20, gated on venti_storm. Modeled with the dropdown-element consumer
+      // pattern (cf. ViridescentVenerer 4pc in characterConditions.ts). Raw Venti.js:500-544.
+      {
+        type: "static",
+        stats: { enemy_res_cryo: -20 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.venti_storm_element", element: "cryo" },
+          { type: "boolean", name: "party.venti_storm" },
+        ] },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_electro: -20 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.venti_storm_element", element: "electro" },
+          { type: "boolean", name: "party.venti_storm" },
+        ] },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_hydro: -20 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.venti_storm_element", element: "hydro" },
+          { type: "boolean", name: "party.venti_storm" },
+        ] },
+      },
+      {
+        type: "static",
+        stats: { enemy_res_pyro: -20 },
+        condition: { type: "and", items: [
+          { type: "dropdown-element", name: "party.venti_storm_element", element: "pyro" },
+          { type: "boolean", name: "party.venti_storm" },
+        ] },
+      },
+    ],
+  },
 };

@@ -20,7 +20,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Chevreuse)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Chevreuse as ChevreuseStatTable } from "../generated/charTables.js";
 import { Chevreuse as ChevreuseTalents } from "../generated/charTalentTables.js";
 
@@ -120,6 +120,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_low
   {
     name: "plunge_low",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
@@ -127,6 +128,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamagePlungeShockWave plunge_high
   {
     name: "plunge_high",
+    tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
@@ -239,4 +241,38 @@ export const chevreuse: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // partyData — teammate kit buffs (P3.5.2 Bucket B).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Chevreuse.js:471-541
+  // Scope: oracle-gated core only — A4 "Vertical Force Coordination" HP→atk_percent battery.
+  // Deferred to the P3.5.2 variant-rep pass:
+  //   A1 "Vanguard's Coordinated Tactics": enemy_res_pyro/electro:-15 (display keys, no separate
+  //     party rep needed — it's a static ConditionBoolean stats block, covered by Bucket A).
+  //   C6 "In Pursuit of Ending Evil": stacks → dmg_pyro/electro (Bucket B variant rep).
+  partyData: {
+    loadStats: {
+      stats: ["hp_total"],
+    },
+    conditions: [
+      // ConditionNumber: lifts the teammate's hp_total into the recipient's stat bag.
+      { type: "number", name: "chevreuse_hp_total", max: 150000 },
+      // A4 master toggle (gates the ATK% postEffect below).
+      { type: "boolean", name: "party.chevreuse_force_coordination" },
+    ],
+    postEffects: [
+      // A4 "Vertical Force Coordination": hp_total × AtkBuffValue/1000 = 0.001 → atk_percent,
+      // hard-capped at AtkBuffCap=40 (flat percent cap matching statCap ValueTable([40])).
+      // Also requires active char to be pyro or electro (ConditionBooleanCharElement gate).
+      // Source: raw/genshin_calc_pub/src/js/db/Char/Chevreuse.js:530-539
+      {
+        fromStat: "chevreuse_hp_total",
+        toStat: "atk_percent",
+        ratio: 0.001,  // AtkBuffValue=1 / 1000
+        capValue: 40,  // AtkBuffCap=40
+        conditions: [
+          { type: "boolean", name: "party.chevreuse_force_coordination" },
+          { type: "char-element", elements: ["pyro", "electro"] },
+        ],
+      } satisfies CharPostEffect,
+    ],
+  },
 };

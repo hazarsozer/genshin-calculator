@@ -6,7 +6,7 @@
  *   raw/genshin_calc_pub/src/js/db/Char/Hutao.js
  */
 
-import type { Feature, FeatureMultiplierEntry } from "./feature.js";
+import type { Feature, FeatureMultiplierEntry, CharMultiplier } from "./feature.js";
 import type { Condition } from "./condition.js";
 
 // ---------------------------------------------------------------------------
@@ -264,23 +264,38 @@ export interface CharPostEffect {
   /**
    * A per-stack ADDITIVE term on the ratio: `ratio += table.getValue(settings[levelSetting]) ×
    * (settings[setting] || 0)`. Models her `PostEffectStats.percentBonus` × `bonusStackSettings`
-   * (Staff of the Scarlet Sands: EM→ATK = (base 0.52…1.04 + bonus 0.28…0.56 × stacks)) and the
-   * `stacksSetting` multiplier (the whole ratio scaled by a stack count). The stack count is the
-   * caller-supplied `settings[setting]`; absent → 0 → no contribution (base-safe).
+   * (Staff of the Scarlet Sands: EM→ATK = base 0.52…1.04 + bonus 0.28…0.56 × stacks). The stack
+   * count is the caller-supplied `settings[setting]`; absent → 0 → no contribution (base-safe).
+   * For a MULTIPLICATIVE whole-ratio stacks scale (`ratio *= stacks`), see `stacksSetting` instead.
    *
-   * NOTE: the fold uses `settings[setting] ?? 0` (absent → 0 stacks → no contribution), which
-   * diverges from her `PostEffectStats.getStacks` fallback of `settings[stacksSetting] || 1`
-   * (absent → 1). Harmless wherever the stack setting is always present (every v5.8 user — e.g.
-   * key_of_khaj_nisut sets `weapon_key_of_khaj_nisut: 3`); only matters if a future port relies
-   * on a `stacksSetting` post-effect applying once when the count is unset.
-   *
-   * Source: raw/.../classes/PostEffect/Stats.js (getStacks / percentBonus × bonusStackSettings).
+   * Source: raw/.../classes/PostEffect/Stats.js (percentBonus × bonusStackSettings).
    */
   readonly ratioPerStack?: {
     readonly setting: string;
     readonly table: TalentTable;
     readonly levelSetting: string;
   };
+  /**
+   * Multiplicative stacks on the whole resolved ratio (her PostEffectStats.stacksSetting →
+   * getStacks → `CMulti([ratio, stacks])`, Stats.js:77-81): `ratio *= settings[stacksSetting]`
+   * when that value is > 1; absent/≤1 ⇒ ratio unchanged (base-inert; her `getStacks` returns
+   * `settings[stacksSetting] || 1`). Applied BEFORE `percentBonus` (her `(ratio × stacks) +
+   * bonus`). Source: raw/.../classes/PostEffect/Stats.js:77-81 (getStacks / CMulti),
+   * raw/.../db/Char/Iansan.js (first PostEffectStats stacksSetting user).
+   */
+  readonly stacksSetting?: string;
+  /**
+   * Conditional flat addend to the resolved ratio (her PostEffectStats.percentBonus ×
+   * bonusCondition, Stats.js:41-50, 77-88): when `condition` is absent or evaluates true,
+   * `value` is ADDED to the ratio AFTER any stacks multiply and BEFORE the ratio multiplies
+   * the `from` stat — her tree is `CSum([value × stacks, bonus])` inside `CMulti([…, base])`
+   * (so the addend is FLAT, not scaled by stacks). Absent ⇒ no addend (base-inert). General
+   * by design: `condition` accepts ANY Condition (Iansan reuses this with a value-comparison
+   * gate, not just a boolean), evaluated via the same `evaluate` the gate `conditions` use.
+   * Source: raw/.../db/Char/Bennet.js:698-706
+   * (percentBonus ValueTable([C1BuffBonus=20 / 100]) + bonusCondition party.bennet_constellation_1).
+   */
+  readonly percentBonus?: { readonly value: number; readonly condition?: Condition };
   /**
    * When true, the stat-relative `cap` reads the BASE stat (`capStat + '_base'`)
    * × `capRatio` rather than `getTotal(capStat)` × `capRatio`.
@@ -361,8 +376,23 @@ export interface DbObjectChar {
   readonly conditions?: readonly Condition[];
   /** Constellation data. */
   readonly constellation?: CharConstellation;
-  /** Party (external) conditions the character provides. */
-  readonly partyData?: { readonly conditions: readonly Condition[] };
+  /**
+   * Party (external) buffs this character provides to teammates when in the roster —
+   * her `partyData` block (raw/.../db/Char/<Char>.js), read by `getPartyConditions/
+   * Multipliers/PostEffects` (DbObject/Char.js:56-97). `buildPartyBuffs` resolves a
+   * `{character}` teammate to this block and appends each list to the active char's
+   * buff channels. `loadStats` is descriptive metadata (the teammate's input contract);
+   * the engine consumes the inputs as explicit baked settings, not via loadStats.
+   */
+  readonly partyData?: {
+    readonly loadStats?: {
+      readonly stats?: readonly string[];
+      readonly settings?: readonly string[];
+    };
+    readonly conditions?: readonly Condition[];
+    readonly postEffects?: readonly CharPostEffect[];
+    readonly multipliers?: readonly CharMultiplier[];
+  };
   /**
    * True for a character whose data enables Lunar-Charged by default (her
    * `allowed_lunarcharged: 1` — Ineffa only, as of v5.8). Suppresses the generic
