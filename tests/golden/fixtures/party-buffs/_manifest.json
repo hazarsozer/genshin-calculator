@@ -40,8 +40,8 @@
     "description": "Teammate partyData KIT BUFFS applied to a recipient active char (the inverse of the buff-clean FILLER set — the teammate INTENTIONALLY leaks its kit via setPartyChars + baked setBuffsSettings). Reps span the mechanism buckets: A=static (Zhongli universal res-shred), B=postEffect (Bennett base-ATK->flat-ATK, Kazuha EM->elemental-dmg%), C=multiplier (Shenhe Icy Quill ATK-scaled cryo bonus). Each fixture = the recipient's damage with the teammate buff ON. RED until P3.5.2 models partyData (engine: Task 2; data: Tasks 3-5). Source: CalcObject/Buffs.js:149-209, DbObject/Char.js:56-97.",
     "id": "party-buffs"
   },
-  "featureTotal": 2274,
-  "itemCount": 81,
+  "featureTotal": 2453,
+  "itemCount": 87,
   "items": [
     {
       "derived": {
@@ -1651,6 +1651,42 @@
           {
             "character": "mavuika",
             "settings": {
+              "mavuika_the_leaders_resolve": true,
+              "party.mavuika_the_ashen_price": true,
+              "party_mavuika_kiongozi": 40
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "mavuika-c4-dmgall-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "mavuika",
+            "settings": {
               "party.mavuika_the_ashen_price": true,
               "party_mavuika_kiongozi": 40
             }
@@ -1721,6 +1757,42 @@
             "character": "mona",
             "settings": {
               "mona_char_skill_burst": 10,
+              "party.mona_omen": true,
+              "party.mona_prophecy_of_oblivion": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "mona-critrate-c4-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "mona",
+            "settings": {
+              "mona_char_skill_burst": 10,
               "party.mona_omen": true
             }
           }
@@ -1732,6 +1804,42 @@
         "resonance_element_1": "hydro"
       },
       "slug": "mona-omen-on-ganyu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "mona",
+            "settings": {
+              "mona_char_skill_burst": 10,
+              "party.mona_omen": true,
+              "party.mona_prophecy_of_submersion": true
+            }
+          }
+        ]
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {
+        "resonance_element_1": "hydro"
+      },
+      "slug": "mona-reactiondmg-c1-on-ganyu",
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.alley_hunter",
@@ -2090,6 +2198,40 @@
       "derived": {
         "party_size": 2
       },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "character": "skirk",
+            "settings": {
+              "party.skirk_mutual_weapons_mentorship": true
+            }
+          }
+        ]
+      },
+      "repKey": "Mona",
+      "repSlug": "mona",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "skirk-skilldmg-on-mona",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
       "element": "dendro",
       "enemy": {
         "level": 90,
@@ -2393,6 +2535,76 @@
       "weapon": {
         "name": "weapon_name.alley_hunter",
         "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "members": [
+          {
+            "character": "traveler_pyro",
+            "settings": {
+              "party.traveler_pyro_starfires_flowing_light": true,
+              "party.traveler_pyro_starfires_flowing_light_2": true
+            }
+          }
+        ]
+      },
+      "repKey": "Xilonen",
+      "repSlug": "xilonen",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "travelerpyro-nightsoul-dmgall-on-xilonen",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 50,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "venti",
+            "settings": {
+              "party.venti_breeze": true,
+              "party.venti_breeze_2": true
+            }
+          }
+        ]
+      },
+      "repKey": "Kazuha",
+      "repSlug": "kaedehara_kazuha",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "venti-breeze-stack2-on-kazuha",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
       }
     },
     {
