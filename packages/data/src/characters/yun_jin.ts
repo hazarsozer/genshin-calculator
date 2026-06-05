@@ -21,7 +21,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (YunJin)
  */
 
-import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { YunJin as YunJinStatTable } from "../generated/charTables.js";
 import { YunJin as YunJinTalents } from "../generated/charTalentTables.js";
 
@@ -51,10 +51,7 @@ const talents: TalentResolver = {
       if (name === "yunjin_charge_2_dmg") return YunJinTalents.s2.p5;
     }
     if (talent === "burst") {
-      if (name === "burst_dmg")        return YunJinTalents.s3.p1;
-      // DMG Bonus % per stack (Flying Cloud Flag Formation): DEF-scaled flat normal DMG.
-      // raw/genshin_calc_pub/src/js/db/Char/YunJin.js:124-126, s3.p2.
-      if (name === "yunjin_dmg_bonus") return YunJinTalents.s3.p2;
+      if (name === "burst_dmg") return YunJinTalents.s3.p1;
     }
     throw new Error(`yun_jin talents: unknown path '${path}'`);
   },
@@ -211,52 +208,11 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
-// ---------------------------------------------------------------------------
-// partyData — teammate kit buff (P3.5.2 Bucket C).
-// Source: raw/genshin_calc_pub/src/js/db/Char/YunJin.js:477-582
-// Scope: Flying Cloud Flag Formation — burst-level-scaled, DEF-based flat additive
-// to each NORMAL hit of the recipient. Gated by party.yunjin_flag master toggle.
-// Conditions ported = ONLY the two lifts the multiplier reads + the master gate.
-// Constellation/passive booleans deferred to the P3.5.2 variant-rep pass.
-// ---------------------------------------------------------------------------
-
-// Flying Cloud Flag Formation: DEF-based flat normal DMG bonus,
-// scaled by burst talent level (s3.p2 table, % × yunjin_def_total).
-// raw/genshin_calc_pub/src/js/db/Char/YunJin.js:565-581
-//
-// The raw FeatureMultiplier also carries bonusLeveling:'yunjin_traditionalist_stacks' +
-// bonusValues:ValueTable([2.5, 5, 7.5, 11.5]) — an additive bonus % per traditionalist-
-// stacks level (element-diversity count). The raw engine defaults the stack level to 1
-// via getSkillLevelByName's `|| 1` fallback even when no yunjin_traditionalist condition
-// is active, so the minimum bonus (2.5% at level=1) is ALWAYS applied.
-// This bonus is modelled as a SECOND constant-bonus entry at the minimum (stacks=1, 2.5%)
-// so the oracle rep (baked at stacks=1) is oracle-correct. Full multi-stack support
-// deferred to the variant-rep pass.
-// raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier.js:184-186 (getValue).
-// raw/genshin_calc_pub/src/js/classes/Build/Settings.js:50 (|| 1 fallback).
-const YUNJIN_TRAD_BONUS_STACKS_1 = 2.5; // bonusValues[0] = 2.5% at level 1 (raw || 1 fallback)
-const yunjinPartyMultipliers: readonly CharMultiplier[] = [
-  // Main term: burst-level-scaled DEF% per normal hit.
-  {
-    source: "yun_jin",
-    scaling: "yunjin_def_total",
-    leveling: "yunjin_char_skill_burst",
-    values: talents.get("burst.yunjin_dmg_bonus"),
-    condition: { type: "boolean", name: "party.yunjin_flag" },
-    target: { damageTypes: ["normal"] },
-  } satisfies CharMultiplier,
-  // Traditionalist stacks bonus: 2.5% of DEF at stacks=1 (raw engine's || 1 fallback).
-  // Only correct for stacks=1 (the oracle rep's baked sourceSettings).
-  // Higher stacks (5%, 7.5%, 11.5%) deferred to the variant-rep pass.
-  {
-    source: "yun_jin",
-    scaling: "yunjin_def_total",
-    leveling: "",
-    values: { getValue: (): number => YUNJIN_TRAD_BONUS_STACKS_1 },
-    condition: { type: "boolean", name: "party.yunjin_flag" },
-    target: { damageTypes: ["normal"] },
-  } satisfies CharMultiplier,
-];
+// partyData (Bucket C) DEFERRED: her NA-DMG buff multiplier carries bonusLeveling/
+// bonusValues (yunjin_traditionalist_stacks → [2.5,5,7.5,11.5]% of DEF by party-element
+// count; raw YunJin.js + Feature2/Multiplier.js getValue). Our CharMultiplier lacks a
+// bonus-by-stacks term, so a faithful port needs an engine extension (cf. reverted Iansan
+// ratioPerStack.multi) → engine-extension pass. Modeling it as a constant would game the gate.
 
 export const yunJin: DbObjectChar = {
   name: "yun_jin",
@@ -270,23 +226,4 @@ export const yunJin: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
-  partyData: {
-    // loadStats mirrors raw YunJin.js:479-482 (def_total stat + char_skill_burst setting).
-    loadStats: {
-      stats: ["def_total"],
-      settings: ["char_skill_burst"],
-    },
-    conditions: [
-      // Lift Yun Jin's def_total into recipient bag as `yunjin_def_total`.
-      // raw: ConditionNumber({name:'yunjin_def_total', partyStat:'def_total', max:10000}).
-      { type: "number", name: "yunjin_def_total", max: 10000 },
-      // Lift Yun Jin's burst talent level (baked teammate setting) → `yunjin_char_skill_burst`.
-      // raw: ConditionNumberTalent({name:'yunjin_char_skill_burst', partySetting:'char_skill_burst'}).
-      // The leveling key is read from settings[yunjin_char_skill_burst] in compileFeature.
-      { type: "number", name: "yunjin_char_skill_burst" },
-      // Master toggle — gates the multiplier. raw: ConditionBoolean({name:'party.yunjin_flag'}).
-      { type: "boolean", name: "party.yunjin_flag" },
-    ],
-    multipliers: yunjinPartyMultipliers,
-  },
 };
