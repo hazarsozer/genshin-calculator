@@ -20,9 +20,11 @@
  *   - spiritbreath_thorn_dmg — ATK-scaling talent%, cannotReact (no effect on the
  *     non-reacted golden path).
  *
+ * NON-DAMAGE outputs:
+ *   - skill.traveler_spotless_waters_heal — A1 heal (7% HP, auto-active at A6). Ported P3.5.3.
+ *
  * SKIPPED (not C0-unconditional damage triples → excluded by the golden harness,
  * which only asserts non-empty-damageType fixture entries):
- *   - skill.traveler_spotless_waters_heal — A1 heal (FeatureHeal, empty damageType).
  *   - the C4 Pouring Descent shield (ConditionConstellation 4, OFF at C0; non-damage).
  *
  * No always-on passive ATK/crit/DMG bonuses fold in: the A1 marker is a heal,
@@ -169,6 +171,19 @@ const features: readonly Feature[] = [
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.traveler_dewdrop_dmg") },
       { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.traveler_suffusion_dmg_bonus") },
+    ],
+  },
+  // --- A1 "Spotless Waters": traveler_spotless_waters_heal (7% HP, auto-active at A6) ---
+  // raw: FeatureHeal({ category:'skill', multipliers:[{ scaling:'hp*', source:'ascension1',
+  //   values: new StatTable('traveler_spotless_waters_heal', [dew_heal=7]) }],
+  //   condition:ConditionAscensionChar({ascension:1}) })
+  // source:'ascension1' → leveling='ascension1'; getValue(1)=7. Auto-active at canonical A6 build.
+  {
+    name: "traveler_spotless_waters_heal",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "ascension1", values: { getValue: () => 7 } },
     ],
   },
   // Spiritbreath Thorn: ATK-scaling talent% (cannotReact has no effect on the non-reacted path).
