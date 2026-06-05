@@ -4,7 +4,7 @@
  * 4-hit normal combo (hydro catalyst, always hydro), hydro charged hit,
  * hydro plunge/low/high, hydro skill (barbara_droplet_dmg).
  * Heal features (skill.heal_normal_atk, skill.heal_charged_atk, skill.heal_dot,
- * burst.heal) have empty damageType and are display-only — skipped by the harness.
+ * burst.heal) — HP-scaled FeatureHeal, ported in P3.5.3.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Barbara.js
@@ -34,7 +34,15 @@ const talents: TalentResolver = {
       if (name === "plunge_high")  return BarbaraTalents.s1.p9;
     }
     if (talent === "skill") {
-      if (name === "barbara_droplet_dmg") return BarbaraTalents.s2.p5;
+      if (name === "heal_normal_atk_percent") return BarbaraTalents.s2.p3;
+      if (name === "heal_normal_atk_flat")    return BarbaraTalents.s2.p4;
+      if (name === "heal_dot_percent")        return BarbaraTalents.s2.p1;
+      if (name === "heal_dot_flat")           return BarbaraTalents.s2.p2;
+      if (name === "barbara_droplet_dmg")     return BarbaraTalents.s2.p5;
+    }
+    if (talent === "burst") {
+      if (name === "heal_percent") return BarbaraTalents.s3.p1;
+      if (name === "heal_flat")    return BarbaraTalents.s3.p2;
     }
     throw new Error(`barbara talents: unknown path '${path}'`);
   },
@@ -111,6 +119,66 @@ const features: readonly Feature[] = [
     category: "skill",
     element: "hydro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.barbara_droplet_dmg") }],
+  },
+  // --- FeatureHeal: skill heals — HP-scaled FeatureMultiplierList (Barbara.js:214-251) ---
+  // heal_normal_atk: s2.p3 (% HP) + s2.p4 (flat). Barbara.js:214-224.
+  {
+    name: "heal_normal_atk",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.heal_normal_atk_percent"),
+        flatValues: talents.get("skill.heal_normal_atk_flat"),
+      },
+    ],
+  },
+  // heal_charged_atk: getMulti(heal_normal_atk × 4) → s2.p3×4 (% HP) + s2.p4×4 (flat).
+  // raw: Talents.getMulti({name:'heal_charged_atk', from:'skill.heal_normal_atk', multi:4}).
+  // Barbara.js:226-241. TalentValues.ChargedHealRatio = 4.
+  {
+    name: "heal_charged_atk",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: { getValue: (level: number) => talents.get("skill.heal_normal_atk_percent").getValue(level) * 4 },
+        flatValues: { getValue: (level: number) => talents.get("skill.heal_normal_atk_flat").getValue(level) * 4 },
+      },
+    ],
+  },
+  // heal_dot: s2.p1 (% HP) + s2.p2 (flat). Barbara.js:242-251.
+  {
+    name: "heal_dot",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.heal_dot_percent"),
+        flatValues: talents.get("skill.heal_dot_flat"),
+      },
+    ],
+  },
+  // --- FeatureHeal: burst heal — HP-scaled FeatureMultiplierList (Barbara.js:263-274) ---
+  // heal: s3.p1 (% HP) + s3.p2 (flat).
+  {
+    name: "heal",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_burst",
+        values: talents.get("burst.heal_percent"),
+        flatValues: talents.get("burst.heal_flat"),
+      },
+    ],
   },
 ];
 
