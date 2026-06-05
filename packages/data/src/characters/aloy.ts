@@ -20,9 +20,10 @@
  * None fold into baseStats/critRateBonuses/damageBonuses.
  *
  * skill.aloy_atk_decrease is a FeatureStatic (format: percent, damageType: "")
- * — a display row, not a damage triple; the harness filters it, so it is not
- * modelled. The cryo transformative reactions (superconduct, electrocharged,
- * shatter) are emitted generically from the cryo element by the loader.
+ * — an enemy-ATK-decrease readout, modelled as output:{kind:"static"} (P3.5.3,
+ * raw-talent value via FeatureMultiplierStatic). The cryo transformative reactions
+ * (superconduct, electrocharged, shatter) are emitted generically from the cryo
+ * element by the loader.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Aloy.js
@@ -58,6 +59,7 @@ const talents: TalentResolver = {
     if (talent === "skill") {
       if (name === "aloy_freeze_bomb_dmg") return AloyTalents.s2.p1;
       if (name === "aloy_chillwater_bomblets") return AloyTalents.s2.p2;
+      if (name === "aloy_atk_decrease") return AloyTalents.s2.p3;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return AloyTalents.s3.p1;
@@ -172,6 +174,19 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "cryo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
+  },
+  // --- Skill static readout: skill.aloy_atk_decrease = Frozen Wilds enemy-ATK decrease (raw talent value) ---
+  // FeatureStatic + FeatureMultiplierStatic (her getTreeStatValue = CConst(100) → term = talent value, NO stat
+  // scaling). Pattern 2: values:0 + flatValues:<talent> → base = 0×stat + talent. leveling char_skill_elemental,
+  // format="" (the % display is hers; our static value == the talent number, 15 at the canonical skill level).
+  // raw/genshin_calc_pub/src/js/db/Char/Aloy.js:282-293 (FeatureStatic, multiplier values Talents skill.aloy_atk_decrease).
+  {
+    name: "aloy_atk_decrease",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      { leveling: "char_skill_elemental", values: { getValue: () => 0 }, flatValues: talents.get("skill.aloy_atk_decrease") },
+    ],
   },
 ];
 
