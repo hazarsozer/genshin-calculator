@@ -232,6 +232,36 @@ export interface CharMultiplier extends FeatureMultiplierEntry {
 }
 
 /**
+ * A NON-DAMAGE feature output — her `FeatureHeal` / `FeatureShield` /
+ * `FeatureStatic` / `FeatureReactionCrystallize`. When a {@link Feature} carries
+ * `output`, `compileFeature` routes to `compileOutput` (the non-crit-triple path,
+ * `normal == crit == avg`) instead of the damage tree. The base scaling stays in
+ * `feature.multipliers` (heal/shield/static); crystallize needs no multipliers
+ * (its base is the per-level `reactionShieldValues` constant).
+ *
+ * Her CHeal/CShield/CStaticValue compile to the SAME thing — Π(items) emitted as
+ * a triple — so all four kinds are `cDamage({items})` with a kind-specific item
+ * list (spec §2). Discriminated by `kind`:
+ *   - `heal`   — `base × (1 + healing + healing_base + healing_recv)`; optional
+ *     `− bond_of_life × hp_total` (`subtractBoL`, Arlecchino); crit only if the
+ *     feature carries `critRateBonuses`. `partyHeal` is informational.
+ *   - `shield` — `base × (1 + shield)`; `add_shield_element` (off in the base
+ *     dump) would multiply by `elementBonus ?? (geo ? 1.5 : 2.5)`.
+ *   - `static` — the bare base term (buff-value readouts).
+ *   - `crystallize` — `reactionShieldValues[level] × (1 + shield) ×
+ *     (1 + 4.44·EM/(EM+1400))`.
+ *
+ * Absent on every damage feature → inert for the 58k damage goldens.
+ *
+ * Source: raw/.../classes/Feature2/{Heal,Shield,Static,Reaction/Crystallize}.js
+ */
+export type FeatureOutput =
+  | { readonly kind: "heal"; readonly subtractBoL?: boolean; readonly partyHeal?: boolean }
+  | { readonly kind: "shield"; readonly element?: Element; readonly elementBonus?: number }
+  | { readonly kind: "static" }
+  | { readonly kind: "crystallize" };
+
+/**
  * Structural shape of a Feature2 feature declaration.
  * Faithfully captures the fields present on FeatureDamage* / FeatureHeal subclasses.
  *
@@ -340,6 +370,15 @@ export interface Feature {
    * Source: raw/.../Feature2/Reaction/Transformative/Lunar/*.js
    */
   readonly reaction?: FeatureReaction;
+  /**
+   * Marks a NON-DAMAGE output feature (heal/shield/static/crystallize). When set,
+   * `compileFeature` routes to `compileOutput` (the non-crit-triple path) instead of
+   * the damage tree. Mutually exclusive with `reaction`. Absent on every damage
+   * feature → inert for the 58k damage goldens. See {@link FeatureOutput}.
+   *
+   * Source: raw/.../classes/Feature2/{Heal,Shield,Static,Reaction/Crystallize}.js
+   */
+  readonly output?: FeatureOutput;
   /**
    * Optional gate on whether this feature is PRODUCED at all. When present,
    * `compileCharacter` emits the feature only if `evaluate(condition, settings)` is

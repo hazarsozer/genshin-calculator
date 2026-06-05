@@ -72,6 +72,7 @@ export type {
   FeatureMultiplierTarget,
   CharMultiplier,
   Feature,
+  FeatureOutput,
   FeatureReaction,
   CompiledFeature,
 } from "./feature.js";

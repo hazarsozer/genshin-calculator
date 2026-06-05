@@ -17,7 +17,7 @@
 
 import { describe, it, expect } from "vitest";
 import { compile } from "@genshin/core";
-import type { DamageContext, Feature, FeatureMultiplierEntry } from "@genshin/types";
+import type { DamageContext, Feature, FeatureMultiplierEntry, FeatureOutput } from "@genshin/types";
 import { buildStats } from "../buildStats.js";
 import { compileFeature, type CompileContext } from "../compileFeature.js";
 import { minimalHuTao, blackcliffPoleStatTable } from "./fixtures/hu-tao.js";
@@ -86,6 +86,59 @@ describe("compileFeature — Hu Tao normal_hit_1 end-to-end", () => {
       settings: {},
     });
     expect(block.kind).toBe("damage");
+  });
+});
+
+describe("compileFeature — non-damage outputs (P3.5.3, compileOutput)", () => {
+  const compileCtx: CompileContext = {
+    charElement: minimalHuTao.element,
+    talentLevels: { attack: 10, elemental: 10, burst: 10 },
+    settings: {},
+    charLevel: 90,
+  };
+
+  // A synthetic non-damage feature: 100% of max HP (scaling 'hp', constant 100% so
+  // the base term is exactly hp_total — isolates the kind-specific factor).
+  function outputFeature(output: FeatureOutput): Feature {
+    return {
+      name: "synthetic_output",
+      category: "skill",
+      output,
+      multipliers: [{ scaling: "hp", leveling: "", values: constTable(100) }],
+    };
+  }
+
+  function run(extraStats: Record<string, number>, output: FeatureOutput) {
+    const { context } = buildHuTao();
+    const ctx: DamageContext = { ...context, stats: { ...context.stats, ...extraStats } };
+    const hp = ctx.stats.hp_total as number;
+    const result = compile(compileFeature(outputFeature(output), compileCtx))(ctx);
+    return { result, hp };
+  }
+
+  it("static: bare base term, emitted as a non-crit triple (= 100% of hp_total)", () => {
+    const { result, hp } = run({}, { kind: "static" });
+    expect(result.normal).toBeCloseTo(hp, 3);
+    expect(result.crit).toBeCloseTo(hp, 3); // non-crit: crit == normal
+    expect(result.avg).toBeCloseTo(hp, 3);
+  });
+
+  it("shield: base × (1 + shield)", () => {
+    const { result, hp } = run({ shield: 0.5 }, { kind: "shield" });
+    expect(result.normal).toBeCloseTo(hp * 1.5, 3);
+    expect(result.avg).toBeCloseTo(hp * 1.5, 3);
+  });
+
+  it("heal: base × (1 + healing + healing_base + healing_recv)", () => {
+    const { result, hp } = run({ healing_recv: 0.3 }, { kind: "heal" });
+    expect(result.normal).toBeCloseTo(hp * 1.3, 3);
+    expect(result.crit).toBeCloseTo(hp * 1.3, 3); // non-crit (no critRateBonuses)
+  });
+
+  it("heal subtractBoL: base − bond_of_life × hp_total", () => {
+    // healing bonuses 0 → base(hp) − 0.5·hp = 0.5·hp (her Arlecchino heal shape)
+    const { result, hp } = run({ bond_of_life: 0.5 }, { kind: "heal", subtractBoL: true });
+    expect(result.normal).toBeCloseTo(hp * 0.5, 3);
   });
 });
 

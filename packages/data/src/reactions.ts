@@ -129,7 +129,8 @@ const ELEMENT_REACTIONS: Readonly<Record<Element, readonly string[]>> = {
     "swirl_pyro", "swirl_hydro", "swirl_electro", "swirl_cryo",
     "burning", "superconduct", "overloaded", "rupture", "burgeon", "hyperbloom",
   ],
-  // geo triggers only crystallize (a shield, out of scope) + the universals
+  // geo triggers only crystallize (a non-damage shield output, emitted separately
+  // below as CRYSTALLIZE_FEATURE — P3.5.3) + the universals
   geo: [],
   // burning(dendro), rupture(dendro) — Reactions.js
   dendro: ["burning", "rupture"],
@@ -153,10 +154,26 @@ export interface TransformativeReactionOptions {
 }
 
 /**
+ * Crystallize — geo's reaction is a non-damage SHIELD output (`reaction.crystalize`),
+ * not a transformative damage instance. Her shared element-gated definition
+ * (`db/Features/Reactions.js:155`, `FeatureReactionCrystallize`, element 'shield',
+ * gated by `ConditionBooleanCharElement({element:['geo']})`) routes through the
+ * Shield compile path + the reaction mastery curve. `compileOutput` owns the formula;
+ * here we only emit the feature for geo chars. Key lands as `reaction.crystalize`
+ * (one 'l', matching her name + the fixtures). (P3.5.3.)
+ */
+const CRYSTALLIZE_FEATURE: Feature = {
+  name: "crystalize",
+  category: "reaction",
+  output: { kind: "crystallize" },
+};
+
+/**
  * Build the standard transformative-reaction contribution `Feature[]` for a
- * character of the given innate element. Each feature carries a `reaction`
- * descriptor (`variant: "transformative"`) that `compileFeature` routes to
+ * character of the given innate element. Each transformative feature carries a
+ * `reaction` descriptor (`variant: "transformative"`) that `compileFeature` routes to
  * `cTransformativeDamage`. Keys land as `reaction.<name>`, matching the fixtures.
+ * Geo additionally emits the non-damage `crystalize` shield output (P3.5.3).
  */
 export function transformativeReactionFeatures(
   element: Element,
@@ -169,7 +186,7 @@ export function transformativeReactionFeatures(
     ? names.filter((n) => n !== "electrocharged")
     : names;
 
-  return filtered.map((name) => {
+  const features: Feature[] = filtered.map((name) => {
     const def = REACTION_DEFS[name]!;
     return {
       name: def.name,
@@ -185,4 +202,8 @@ export function transformativeReactionFeatures(
       },
     } satisfies Feature;
   });
+
+  // Geo's crystallize is a non-damage shield output, appended alongside the
+  // transformative contributions (its `output` routes through compileOutput).
+  return element === "geo" ? [...features, CRYSTALLIZE_FEATURE] : features;
 }
