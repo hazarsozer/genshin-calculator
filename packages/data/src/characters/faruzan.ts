@@ -15,7 +15,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Faruzan)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Faruzan as FaruzanStatTable } from "../generated/charTables.js";
 import { Faruzan as FaruzanTalents } from "../generated/charTalentTables.js";
 
@@ -167,6 +167,34 @@ const constellationConditions: readonly Condition[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// partyData — teammate kit buff (P3.5.2 Bucket C).
+// Source: raw/genshin_calc_pub/src/js/db/Char/Faruzan.js:370-462
+// Scope: A4 "Lost Wisdom of the Seven Caverns" — Faruzan's ATK-scaled anemo-damage
+// bonus applied to the recipient's anemo hits when Faruzan's wind_benefit burst buff
+// is active. Condition ported = ONLY the lift the multiplier reads + the master gate.
+// The many constellation/passive boolean conditions are deferred to the variant-rep pass.
+// ---------------------------------------------------------------------------
+
+// A4AtkScale constant: 32 (TalentValues.A4AtkScale in raw/…/Faruzan.js:120)
+const A4_ATK_SCALE = 32;
+
+const partyMultipliers: readonly CharMultiplier[] = [
+  // A4: faruzan_atk_base% × faruzan_atk_base added to each ANEMO hit of the recipient.
+  // raw/genshin_calc_pub/src/js/db/Char/Faruzan.js:451-460
+  {
+    source: "ascension4",
+    scaling: "faruzan_atk_base",
+    leveling: "",
+    values: { getValue: (): number => A4_ATK_SCALE },
+    condition: { type: "boolean", name: "party.faruzan_lost_wisdom_of_the_seven_caverns" },
+    // target: damageTypes:[] means no type filter (all types match, mirroring her
+    // `FeatureMultiplierTarget` with empty damageTypes — Target.js:29, length check).
+    // damageElements:['anemo'] restricts to anemo hits only.
+    target: { damageTypes: [], damageElements: ["anemo"] },
+  } satisfies CharMultiplier,
+];
+
 export const faruzan: DbObjectChar = {
   name: "faruzan",
   gameId: 10000076,
@@ -179,4 +207,16 @@ export const faruzan: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  partyData: {
+    loadStats: {
+      stats: ["atk_base"],
+      settings: ["char_skill_burst"],
+    },
+    conditions: [
+      // Lift Faruzan's atk_base (partyStat) into the recipient bag as `faruzan_atk_base`.
+      // raw: ConditionNumber({name:'faruzan_atk_base', partyStat:'atk_base', max:10000}).
+      { type: "number", name: "faruzan_atk_base", max: 10000 },
+    ],
+    multipliers: partyMultipliers,
+  },
 };

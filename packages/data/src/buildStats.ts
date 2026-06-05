@@ -211,6 +211,7 @@ const RAW_BAG_SCALING_KEYS = [
   "party_days_past_healing_recorded",
   "accumulated_healing",
   "shenhe_atk_total",
+  "faruzan_atk_base",     // Faruzan A4 anemo-DMG teammate multiplier (P3.5.2 Bucket C)
 ] as const;
 
 /**

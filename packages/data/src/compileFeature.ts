@@ -383,7 +383,10 @@ function activeCharMultipliers(
   if (!all || all.length === 0) return [];
   return all.filter((m) => {
     // isMatchFeature — AND-chain of present filters (her Target.js:27-55).
-    if (!m.target.damageTypes.includes(damageType)) return false;
+    // damageTypes branch: only constrains when present + non-empty (mirrors her
+    // `if (this.damageTypes.length && !this.damageTypes.includes(damageType))`).
+    // An empty array means "no type filter" (all types match) — e.g. Faruzan A4.
+    if (m.target.damageTypes.length > 0 && !m.target.damageTypes.includes(damageType)) return false;
     // Element branch (Target.js:37-39): only constrains when present + non-empty.
     if (
       m.target.damageElements !== undefined &&
