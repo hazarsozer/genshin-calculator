@@ -293,6 +293,20 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.anemoskill_elemental_dmg") }],
   },
+  // --- A4 "Poetics of Fuubutsu" static readout: other.kazuha_elemental_bonus = EM-scaled elemental DMG% ---
+  // FeaturePostEffectValue(PostEffectStatsMastery, percent=StatTable('dmg_cryo',[A4ElementalBonus=0.04])),
+  // format:'percent'. The percent StatTable is a percent-stat (isPercent→/100) → effective per-EM coeff 0.0004;
+  // ×EM then ×100 (percent display) nets to displayed% = 0.04×EM. Modelled scaling:mastery, values=
+  // A4ElementalBonus×100=4 → term = (4/100)×mastery = 0.04×EM = the displayed value.
+  // raw/genshin_calc_pub/src/js/db/Char/Kazuha.js:489-492,132 (A4ElementalBonus=0.04)
+  {
+    name: "kazuha_elemental_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "mastery", leveling: "", values: { getValue: () => 4 } },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
