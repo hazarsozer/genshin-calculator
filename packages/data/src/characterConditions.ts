@@ -404,6 +404,47 @@ const setViridescentVenerer4SwirlConditions: readonly Condition[] =
   }));
 
 /**
+ * Archaic Petra 4pc — on absorbing a Crystallize shard, the wearer gains +35% `dmg_<element>`
+ * for the absorbed element. Faithful port of `ConditionArchaic`
+ * (raw/genshin_calc_pub/src/js/classes/Condition/Archaic.js:4-17) gated by
+ * raw/.../db/Buffs/Artifacts.js:131-142:
+ *   OR(
+ *     AND(ConditionBoolean('set_bonus.archaic_petra_4'), PiecesCount('ArchaicPetra', 4)),
+ *     ConditionBoolean('set_other.archaic_petra_4')
+ *   )
+ * ALLOWED = {cryo, electro, hydro, pyro} — geo is EXCLUDED (Archaic.js:4). Always +35, no scaling.
+ *
+ * One condition per allowed element (like VV4 above): each emits `dmg_<el>: 35`, gated by an
+ * OR of the self-worn arm (dropdown value + 4 pieces) and the team-buff arm (`set_other` dropdown
+ * value). The OR fires once even when both arms select the same element — additively summing the
+ * two paths would double to +70 (wrong); her raw reads a single `element` and adds once.
+ * (Raw's lookup precedence is `set_other` then `set_bonus` at Archaic.js:14; modeling each element
+ * as one OR-gated emit is equivalent because both keys map to the same element token here.)
+ */
+const ARCHAIC_PETRA_ELEMENTS = ["cryo", "electro", "hydro", "pyro"] as const;
+
+const setArchaicPetra4DmgConditions: readonly Condition[] =
+  ARCHAIC_PETRA_ELEMENTS.map((el) => ({
+    type: "static" as const,
+    stats: { [`dmg_${el}`]: 35 },
+    condition: {
+      type: "or" as const,
+      items: [
+        // Self-worn arm: wearer selected this element AND has Archaic Petra 4pc equipped.
+        {
+          type: "and" as const,
+          items: [
+            { type: "dropdown-element" as const, name: "set_bonus.archaic_petra_4", element: el },
+            { type: "pieces-count" as const, setName: "ArchaicPetra", count: 4 },
+          ],
+        },
+        // Team-buff arm: a teammate wears Archaic Petra 4pc and selected this element.
+        { type: "dropdown-element" as const, name: "set_other.archaic_petra_4", element: el },
+      ],
+    },
+  }));
+
+/**
  * Scroll of the Hero of Cinder City 4pc — tier 1: +12% to all elemental DMG types.
  * Source: Buffs/Artifacts.js:317-337 — OR(AND(set.scroll_..._4_1, piecesCount ScrollOfTheEmberedCitysHero≥4),
  * set_other.scroll_..._4_1). Physical absent (Scroll does not buff physical). Fires once.
@@ -752,6 +793,7 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
   setOtherTenacityOfTheMillelith4,
   setOtherInstructor4,
   ...setViridescentVenerer4SwirlConditions,
+  ...setArchaicPetra4DmgConditions,
   setOtherScrollCinderCity4Tier1,
   setOtherScrollCinderCity4Tier2,
   // Song of Days Past 4pc (team) — the healing-recorded INPUT (the multiplier is in

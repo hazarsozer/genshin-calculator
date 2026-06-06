@@ -40,9 +40,75 @@
     "description": "Party-composition effects on representative active chars exercising each effect's scaling: 6 elemental resonances + none, the 3 two-element gates (Chevreuse/Nilou/Skirk), GildedDreams 4pc (same 1-3 / different 1-3), BlizzardStrayer 4pc (cryo / cryo+frozen), ViridescentVenerer 4pc (per swirl element), all v5.8 set_other team buffs, bond-of-life, Nahida party-pyro-2, CalcOrigin counts (same/different), and the four inert party-element weapons. Fillers are buff-clean (probe-verified) so only the active char's own party-reading conditions move.",
     "id": "party"
   },
-  "featureTotal": 1252,
-  "itemCount": 42,
+  "featureTotal": 1335,
+  "itemCount": 45,
   "items": [
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "ArchaicPetra"
+          }
+        ],
+        "settings": {
+          "set_bonus.archaic_petra_4": "cryo"
+        }
+      },
+      "repKey": "Ayaka",
+      "repSlug": "kamisato_ayaka",
+      "resonanceElements": {},
+      "slug": "archaic-petra-self-cryo",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "setBonuses": [
+          {
+            "pieces": 4,
+            "setKey": "ArchaicPetra"
+          }
+        ],
+        "settings": {
+          "set_bonus.archaic_petra_4": "pyro"
+        }
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {},
+      "slug": "archaic-petra-self-pyro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
     {
       "derived": {
         "party_size": 1
@@ -1049,6 +1115,33 @@
       "repSlug": "arataki_itto",
       "resonanceElements": {},
       "slug": "set-other-archaic-petra-4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "settings": {
+          "set_other.archaic_petra_4": "pyro"
+        }
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {},
+      "slug": "set-other-archaic-petra-4-pyro",
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.the_bell",
