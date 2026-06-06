@@ -245,14 +245,25 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.heal_dot_percent"), flatValues: talents.get("burst.heal_dot_flat") },
     ],
   },
-  // --- DEFERRED: burst.atk_bonus (Fantastic Voyage ATK-buff readout) ---
-  // selfBuffPost = PostEffectStats from:'atk_base' (white base ATK) × atk_ratio×0.01 → readout = atk_base×1.008
-  // (≈1695.6 = 1682.2×1.008). The ACTUAL buff stat IS modelled via the `fantasticVoyageAtk` CharPostEffect below
-  // (buildStats reads atk_base there). But a static OUTPUT scales on the EVAL-time bag, which does NOT expose
-  // atk_base (only atk_total/hp_total/…) — same blocker as kujou_sara's sara_atk_bonus. Faithfully modelling this
-  // readout needs an engine change to emit atk_base into the eval DamageContext → deferred to the focused atk_base
-  // eval-emission engine pass (golden-critical buildStats emit; out of this data-port's scope). NEVER baked.
-  // raw/genshin_calc_pub/src/js/db/Char/Bennet.js:156-175,453-457.
+  // --- burst.atk_bonus: Fantastic Voyage ATK-buff readout (FeaturePostEffectValue → static) ---
+  // Raw Bennet.js:156-175,453-457 — selfBuffPost = PostEffectStats{ from:'atk_base',
+  // percent:getMulti(burst.atk_ratio, 0.01) }, exposed as a FeaturePostEffectValue. The buff =
+  // white base ATK × (burst atk_ratio @L10 × 0.01) = atk_base × 1.008 (the same ratio the live
+  // `fantasticVoyageAtk` CharPostEffect applies — reused here, not hardcoded). The atk_base scaling
+  // now resolves via the eval-bag atk_base emit (buildStats). The selfBuffPost carries NO
+  // application gate (no toggle/asc/cons), so the readout is the canonical C0 value. The C1
+  // percentBonus (+20% ATK, ValueTable([C1BuffBonus/100]) gated by char_constellation≥1) is ABSENT
+  // at C0 → omitted (matches the C0-canonical oracle). The engine divides values.getValue()/100, so
+  // getValue() returns the raw burst atk_ratio table value (100.8) — /100 → 1.008. NEVER baked.
+  {
+    name: "atk_bonus",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      // scaling atk_base × (BennettTalents.s3.p4@L10 / 100) = atk_base × 1.008.
+      { scaling: "atk_base", leveling: "", values: { getValue: () => BennettTalents.s3.p4.getValue(10) } },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
