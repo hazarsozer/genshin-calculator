@@ -1,0 +1,107 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "User-settable INPUT → stat bag → dmg_* postEffect, two per-entity DAMAGE gaps unmodeled today. clorinde-c4: Clorinde C4 PostEffectStats dmg_burst_clorinde += min(bond_of_life × 2.0, 2.0) (Clorinde.js:508-517; both ratio StatTable([200]) and cap ValueTable([200]) fold /100 since dmg_burst_clorinde is a percent key → 2.0/2.0). bond_of_life enters via ConditionBoLStat (Buffs/Static.js:28: stats.bond_of_life = settings['common.bond_of_life']) AND is percent-folded so the BAG value = common.bond_of_life/100 (verified: setting 50 → bag 0.5). makeStatItem reads that folded bag value as the base. Gate char_constellation≥4 (set constellation 4; A4 ascension gate dropped per every-build-is-A6). common.bond_of_life:50 → bag 0.5 → min(0.5×2.0=1.0, 2.0)=1.0 UNCAPPED (+100% burst); the 2.0 cap binds only at common.bond_of_life≥100. neuvillette-a4: Neuvillette A4 PostEffectStatsNeuvillette dmg_hydro += min(max(0, pct−30) × 0.006, 0.3) (Neuvillette.js:326-335 + PostEffect/Stats/Neuvillette.js:7-20; ratio A4HydroBonus 0.6→0.006 and cap A4HydroBonusCap 30→0.3 via the dmg_hydro percent fold), pct=(slider>100)? 100·slider/hp_total : slider. Slider = neuvillette_the_high_arbitrators_discipline (ConditionNumber, emits stats[name]=value when >0, Condition/Number.js:58-70; bag is RAW, not percent-folded — verified setting 30000 → bag 30000). At slider 30000, hp_total≈27921 → pct≈107.4 → max(0,77.4)×0.006=0.4646 capped to 0.3 (+30% hydro). Fixtures carry the deltas; bolStatBurndown burns them RED until the engine ports each (Task B).",
+    "id": "bol-stat"
+  },
+  "featureTotal": 51,
+  "itemCount": 2,
+  "items": [
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "bondOfLife": 50,
+        "constellation": 4,
+        "settings": {
+          "char_constellation": 4,
+          "common.bond_of_life": 50
+        }
+      },
+      "repKey": "Clorinde",
+      "repSlug": "clorinde",
+      "resonanceElements": {},
+      "slug": "clorinde-c4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "charSettings": {
+          "neuvillette_the_high_arbitrators_discipline": 30000
+        },
+        "settings": {
+          "neuvillette_the_high_arbitrators_discipline": 30000
+        }
+      },
+      "repKey": "Neuvillette",
+      "repSlug": "neuvillette",
+      "resonanceElements": {},
+      "slug": "neuvillette-a4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    }
+  ]
+}
