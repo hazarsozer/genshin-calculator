@@ -52,6 +52,7 @@ import {
   cStat,
   cSum,
   cTransformativeDamage,
+  REACTION_LEVEL_MULTIPLIERS,
   evaluate,
   type Block,
   type DamageBlock,
@@ -258,11 +259,53 @@ function coefficientBlock(
   return cMin([raw, cConst(spec.cap)]);
 }
 
+/**
+ * Catalyze EM curve: `5 × mastery_total / (mastery_total + 1200)`.
+ *
+ * Her `FeatureMultiplierReactionQuicken.getMasteryMultiplier` (Quicken.js:21-33):
+ * `CMulti([5, CDivide([masteryTotal, CSum([masteryTotal, 1200])])])`, using
+ * `makeStatTotalItem('mastery')` → the aggregate `mastery_total`. Mirrors
+ * `lunarEmBonusTerm`, but the catalyze coefficient is 5 (not 6) over (EM + 1200)
+ * (not + 2000), and reads the TOTAL (not the raw `mastery`).
+ */
+function catalyzeEmCurve(): Block {
+  const em = cStat("mastery_total");
+  return cDivide([cMulti([cConst(5), em]), cSum([em, cConst(1200)])]);
+}
+
 /** Build the base-damage term for one multiplier: talent% × scalingStatTotal. */
 function baseDamageTerm(
   entry: FeatureMultiplierEntry,
   ctx: CompileContext
 ): Block {
+  // Catalyze (Spread/Aggravate) term — present ONLY on the two global catalyze
+  // multipliers. This is NOT a talent% × scalingStat product; it is her
+  // `FeatureMultiplierReactionQuicken.getTree` (Quicken.js:73-83):
+  //   prefactor × REACTION_LEVEL_MULTIPLIERS[charLevel-1]
+  //             × (1 + 5·EM/(EM+1200) + Σ dmg_reaction_*)
+  // summed into cBaseDamage BEFORE dmg%/crit/res/def (so it inherits the hit's
+  // crit/DMG%/res/def). prefactor is her getReactionMultiplier (Spread 1.25 /
+  // Aggravate 1.15); the level multiplier is her getBaseValue =
+  // `reactionDamageValues.getValue(char_level)` (1-indexed → `[charLevel-1]`). The
+  // bonus keys are PLAIN bag reads (her getReactionBonuses → makeStatItem, not _total).
+  // Routed first so none of the scaling/talent machinery below applies. Base-inert:
+  // no existing entry sets `catalyze` ⇒ the 58k damage goldens are byte-identical.
+  if (entry.catalyze !== undefined) {
+    if (ctx.charLevel === undefined) {
+      throw new Error(
+        `baseDamageTerm: catalyze multiplier needs ctx.charLevel (the reaction level table lookup)`
+      );
+    }
+    const levelMult = REACTION_LEVEL_MULTIPLIERS[ctx.charLevel - 1]!;
+    return cMulti([
+      cConst(entry.catalyze.prefactor),
+      cConst(levelMult),
+      cMultiplierReaction([
+        catalyzeEmCurve(),
+        ...entry.catalyze.bonusKeys.map((k) => cStat(k)),
+      ]),
+    ]);
+  }
   // Resolve the base level her `FeatureMultiplier.getLevel` reads
   // (`settings.getLevel(leveling)` → `getSkillLevelByName`, Build/Settings.js:49-50:
   // `settings[name] || 1`). For the three char-skill slots that is the build's talent

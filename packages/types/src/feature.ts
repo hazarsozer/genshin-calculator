@@ -31,6 +31,18 @@ export type FeatureCategory =
   | "other";
 
 /**
+ * Catalyze (Spread/Aggravate) term spec — see {@link FeatureMultiplierEntry.catalyze}.
+ * `prefactor` is the per-direction reaction multiplier (Spread 1.25 / Aggravate 1.15);
+ * `bonusKeys` are the plain-bag `dmg_reaction_*` keys summed inside the `(1 + …)` factor.
+ */
+export interface CatalyzeSpec {
+  /** Her `getReactionMultiplier`: 1.25 (Spread/dendro) | 1.15 (Aggravate/electro). */
+  readonly prefactor: number;
+  /** Plain-bag reaction-bonus keys (`dmg_reaction_quicken` + `_spread`/`_aggravate`). */
+  readonly bonusKeys: readonly string[];
+}
+
+/**
  * A multiplier entry within a Feature: scaling stat, talent level progression,
  * and the percent-of-scaling-stat values per talent level.
  */
@@ -151,6 +163,33 @@ export interface FeatureMultiplierEntry {
   readonly bonusLeveling?: string;
   /** Companion per-stacks-level value table for {@link bonusLeveling} (1-indexed). */
   readonly bonusValues?: TalentTable;
+  /**
+   * Catalyze (Spread/Aggravate) term spec — present ONLY on the two global catalyze
+   * multipliers (`catalyzeMultipliers()` in `reactions.ts`). When set, this entry's
+   * base-damage term is NOT the talent% × scalingStat product; it is the catalyze term
+   * summed into a Dendro/Electro hit's base damage when `settings.reaction == 'quicken'`:
+   *
+   *   prefactor × REACTION_LEVEL_MULTIPLIERS[charLevel-1]
+   *             × (1 + 5·EM/(EM+1200) + Σ bonusKeys)
+   *
+   * `prefactor` is her per-direction reaction multiplier (Spread 1.25 / Aggravate 1.15,
+   * her `getReactionMultiplier`). The EM curve reads `mastery_total` (her
+   * `makeStatTotalItem('mastery')`, the aggregate); `bonusKeys` are PLAIN bag reads (her
+   * `makeStatItem`, NOT `_total`) — `dmg_reaction_quicken` + `dmg_reaction_{spread|aggravate}`.
+   * The term is summed into `cBaseDamage` BEFORE the dmg%/crit/res/def factors, so it
+   * inherits the hit's crit/DMG%/res/def — exactly her `FeatureMultiplierReactionQuicken`
+   * (a base-term multiplier merged via `getMultipliers`).
+   *
+   * When set, the talent% / scaling / `scalingMultiplier` / `scalingOffset` /
+   * `coefficientFromStat` / `exceedStatValue` / `flatValues` / `capValue` machinery is
+   * bypassed (a catalyze multiplier carries none of those). Absent ⇒ the normal base-term
+   * path; no existing entry sets it ⇒ the 58k damage goldens are byte-identical.
+   *
+   * Source: raw/.../classes/Feature2/Multiplier/Reaction/Quicken.js (getTree),
+   *         Quicken/Spread.js + Quicken/Aggravate.js (the 1.25 / 1.15 + bonus keys),
+   *         raw/.../db/CalcData/Multipliers.js (the two `reaction == 'quicken'`-gated entries).
+   */
+  readonly catalyze?: CatalyzeSpec;
   /**
    * Optional FLAT additive term from `FeatureMultiplierList` (her `CConst(getValueFlat)`):
    * a talent-level-indexed table whose value is added DIRECTLY to the base-damage term
