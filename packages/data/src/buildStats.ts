@@ -507,9 +507,17 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       // returns CMax([makeStatTotalItem('mastery'), makeStatItem('party_max_mastery')]).
       // Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/Nahida.js:6-11
       const fromTotal0 = readStats.getTotal(effect.fromStat);
-      const fromTotal = effect.fromStatMax !== undefined
+      const fromTotal1 = effect.fromStatMax !== undefined
         ? Math.max(fromTotal0, readStats.getTotal(effect.fromStatMax))
         : fromTotal0;
+      // HP-ratio transform (her PostEffectStatsNeuvillette.getBaseValueTree): when the
+      // raw `from` value is an ABSOLUTE HP amount (> 100), convert it to a percentage of
+      // the divisor stat — `100 · from / getTotal(fromStatDivide)`. A value already given
+      // as a percentage (<= 100) passes through. Applied BEFORE the offset/floor below.
+      // Absent fromStatDivide → unchanged (base-inert). Source: PostEffect/Stats/Neuvillette.js:7-20.
+      const fromTotal = effect.fromStatDivide !== undefined && fromTotal1 > 100
+        ? fromTotal1 / (readStats.getTotal(effect.fromStatDivide) / 100)
+        : fromTotal1;
       const fromValue = effect.offset !== undefined ? Math.max(0, fromTotal - effect.offset) : fromTotal;
       let bonus = fromValue * ratio;
       if (effect.cap !== undefined) {

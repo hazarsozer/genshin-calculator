@@ -767,6 +767,81 @@ const weaponOtherFreedomSworn: Condition = {
 };
 
 /**
+ * Bond of Life → bag stat — faithful port of her GLOBAL `ConditionBoLStat`
+ * (db/Buffs/Static.js:28, the `static` buff appended to every character):
+ *   getStats(settings) → { bond_of_life: settings['common.bond_of_life'] || 0 }
+ * gated by `ConditionBoolean({name:'common.bond_of_life'})`.
+ *
+ * Modelled as a `number` condition keyed by `common.bond_of_life`, writing the
+ * (clamped) value to the bag under `bond_of_life` (her `stat ?? name`). The
+ * `number` variant's `isActive` (Condition/Number.js:8-11) requires the setting
+ * `> 0` — exactly her ConditionBoolean gate (a truthy `common.bond_of_life`) — so
+ * an absent/0 input contributes nothing (base-inert). The `common.bond_of_life`
+ * setting is published by `partyContext` (`party.bondOfLife`, partyContext.ts:97)
+ * or supplied directly in settings.
+ *
+ * The emitted `bond_of_life` is RAW (= the setting, e.g. 50) — identical to
+ * ConditionBoLStat, which emits the un-folded `common.bond_of_life`. (Her engine's
+ * `processPercent` later folds the isPercent `bond_of_life` /100 before the C4
+ * post-effect reads it; in our port the post-effect instead carries the raw
+ * `C4BurstBonus`/`C4BurstBonusCap` and the single emit-time /100 reproduces the
+ * fold — see clorinde.ts.) Read ONLY from the internal `raw` Stats by the Clorinde
+ * C4 post-effect (`fromStat:"bond_of_life"`); never copied to the emitted `out`
+ * bag, so it does not touch any damage golden (and the deferred Clorinde BoL *heal*
+ * `cStat("bond_of_life")` — which reads `out` — stays unchanged at 0).
+ *
+ * ⚠️ FUTURE-PASS TRAP: when the deferred Clorinde/Lyney BoL *heal* is modeled, it must
+ * emit `bond_of_life` to `out` as a FRACTION (`raw.get("bond_of_life") / 100`, since
+ * `isPercent("bond_of_life")` is true) — NOT a raw copy. `raw` holds the un-folded 50;
+ * the heal/`subtractBoL` terms read `out` via `cStat` expecting the 0.5 fraction. Copying
+ * raw→out verbatim (like RAW_BAG_SCALING_KEYS) would be a 100× heal bug.
+ *
+ * Base-inert: no golden sets `common.bond_of_life` → the `number` condition is
+ * inactive → `{}` → 58k goldens byte-unchanged.
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/BoLStat.js:4-8
+ *         raw/genshin_calc_pub/src/js/db/Buffs/Static.js:28-30 (global `static` buff)
+ *         raw/genshin_calc_pub/src/js/classes/Stats.js:332 (isPercent bond_of_life)
+ */
+const bondOfLifeStat: Condition = {
+  type: "number",
+  name: "common.bond_of_life",
+  stat: "bond_of_life",
+};
+
+/**
+ * Neuvillette A4 input slider → bag stat — faithful port of her per-character
+ * `ConditionNumber` `neuvillette_the_high_arbitrators_discipline`
+ * (db/Char/Neuvillette.js:309-324). Her `ConditionNumber.getStats`
+ * (Condition/Number.js:58-70) clamps the raw settings value to [0, max] and adds it
+ * to the bag under the condition's `name` (no `stat`/`noStat` override → keyed by
+ * `name`); `isActive` requires it `> 0` (Number.js:8-11). The A4 PostEffectStats
+ * then reads this bag value via `makeStatItem(from)` and converts it to a damage-%
+ * pct (the HP-ratio branch when > 100).
+ *
+ * The bag value is RAW (NOT percent-folded): `isPercent('neuvillette_the_high…')` is
+ * false (it has no isPercent prefix), so her `processPercent` leaves it untouched —
+ * verified empirically (setting 30000 → bag 30000). `max` mirrors her
+ * `CHARACTER_MAX_POSSIBLE_HP` ceiling; we use a large constant (no build can exceed
+ * it) so the clamp never binds here. Although her DB instance carries the A4
+ * `ConditionAscensionChar(4)` gate, every build is A6 and we do not thread an
+ * ascension type (Mizuki/Emilie precedent) — the slider being `> 0` is the real
+ * gate. This is a NEUVILLETTE-only input but lives in the global registry (like the
+ * BoL stat) so the setting→stat emit is shared infra, decoupled from the
+ * post-effect; it is gated on its own char-specific setting → inert for every other
+ * character and every golden.
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Neuvillette.js:309-324 (ConditionNumber)
+ *         raw/genshin_calc_pub/src/js/classes/Condition/Number.js:58-70 (getStats)
+ *         raw/genshin_calc_pub/src/js/classes/Stats.js:327-336 (isPercent — no match)
+ */
+const neuvilletteDisciplineSlider: Condition = {
+  type: "number",
+  name: "neuvillette_the_high_arbitrators_discipline",
+  max: 1_000_000,
+};
+
+/**
  * All global character conditions, in source order (imaginarium_theatre, then the Elemental
  * Resonance buffs in ElementalResonance.js order, then set_other team buffs from
  * Buffs/Artifacts.js, then weapon_other off-field weapon team buffs from Buffs/Weapons.js).
@@ -813,6 +888,11 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
   weaponOtherElegyForTheEnd,
   weaponOtherSongOfBrokenPines,
   weaponOtherFreedomSworn,
+  // BoL/stat input emits (ConditionBoLStat + Neuvillette's A4 slider) — global
+  // setting→stat conditions read by per-char post-effects (Clorinde C4 / Neuvillette
+  // A4). Each gated on its own input being > 0 → inert for every golden.
+  bondOfLifeStat,
+  neuvilletteDisciplineSlider,
 ];
 
 // ===========================================================================
