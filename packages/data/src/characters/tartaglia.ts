@@ -131,6 +131,7 @@ const features: readonly Feature[] = [
   // aimed: physical charged shot
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.aimed")) }],
@@ -138,6 +139,7 @@ const features: readonly Feature[] = [
   // charged_aimed: fully-charged hydro arrow
   {
     name: "charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "hydro",

@@ -99,6 +99,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamageChargedAimed aimed (physical). Sethos.js:276-286
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
@@ -106,6 +107,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamageChargedAimed charged_aimed (electro). Sethos.js:287-297
   {
     name: "charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "electro",

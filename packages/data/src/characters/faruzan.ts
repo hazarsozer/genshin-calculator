@@ -79,6 +79,7 @@ const features: readonly Feature[] = [
   // aimed: physical uncharged aimed shot (FeatureDamageChargedAimed → damageType="charged")
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
@@ -86,6 +87,7 @@ const features: readonly Feature[] = [
   // charged_aimed: fully charged anemo aimed shot
   {
     name: "charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "anemo",

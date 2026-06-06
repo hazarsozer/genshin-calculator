@@ -136,12 +136,14 @@ const features: readonly Feature[] = [
   // --- Charged attacks (bow: aimed = tap shot physical, charged_aimed = anemo) ---
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
   },
   {
     name: "charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "anemo",

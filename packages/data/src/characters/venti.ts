@@ -113,12 +113,14 @@ const features: readonly Feature[] = [
   // raw: FeatureDamageChargedAimed (category='attack', damageType='charged')
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
   },
   {
     name: "charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "anemo",
@@ -151,6 +153,7 @@ const features: readonly Feature[] = [
   // scalingSource:'constellation1', condition:ConditionConstellation({constellation:1}).
   {
     name: "second_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     condition: { type: "constellation", constellation: 1 },
@@ -165,6 +168,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "second_charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "anemo",

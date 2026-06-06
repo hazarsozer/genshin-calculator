@@ -111,6 +111,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamageChargedAimed aimed (physical, ATK-scaled, damageType charged)
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
@@ -118,6 +119,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamageChargedAimed charged_aimed (hydro, ATK-scaled, charged)
   {
     name: "charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "hydro",

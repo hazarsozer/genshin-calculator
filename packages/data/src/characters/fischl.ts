@@ -117,6 +117,7 @@ const features: readonly Feature[] = [
   // aimed: physical charged shot
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
@@ -124,6 +125,7 @@ const features: readonly Feature[] = [
   // charged_aimed: fully charged electro arrow
   {
     name: "charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "electro",
@@ -134,6 +136,7 @@ const features: readonly Feature[] = [
   // raw/genshin_calc_pub/src/js/db/Char/Fischl.js:198-210
   {
     name: "fischl_stellar_predator",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "electro",

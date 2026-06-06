@@ -354,6 +354,24 @@ export interface Feature {
   /** Overrides the character's innate element for this hit (e.g. Hu Tao Blood Blossom). */
   readonly element?: Element;
   /**
+   * Marks an AIMED-shot feature — one whose raw class is `FeatureDamageChargedAimed`
+   * (`raw/.../classes/Feature2/Damage/Charged/Aimed.js`), as opposed to a plain
+   * `FeatureDamageCharged`. The ONLY behavioural difference of that subclass is its
+   * `getCritRateBlock` override: when `settings.enemy_weak_shot` is set it returns a
+   * flat 100% crit (`CCritRate([CConst(1)])`, Aimed.js:5-13). There is no faithful
+   * existing discriminator — `damageType: "charged"` is shared with non-aimed charged
+   * hits (Ganyu's frostflake_bloom, Tighnari's clusterbloom, Lyney/Yelan extra
+   * charged), and `category` is `"attack"` for both — so this flag tags exactly the
+   * aimed features. The override is NOT bow-restricted (the `Enemy.js` weapon
+   * `hideCondition` is a cosmetic UI gate); every `FeatureDamageChargedAimed` instance
+   * gets it. Absent ⇒ the normal crit block; and even when present it only changes the
+   * crit block when `settings.enemy_weak_shot` is truthy (unset in all 58k goldens) →
+   * base-inert.
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Damage/Charged/Aimed.js:5-13
+   */
+  readonly isAimed?: boolean;
+  /**
    * Per-feature multiplier entries (talent scaling terms). Entries here apply
    * ONLY to this feature and must NOT set `target` or `condition` — those fields
    * are ignored on per-feature entries and are meaningful ONLY on char-level

@@ -100,6 +100,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamageChargedAimed aimed (physical, no element)
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
@@ -107,6 +108,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamageChargedAimed charged_aimed (hydro full-charge)
   {
     name: "charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "hydro",
@@ -116,6 +118,7 @@ const features: readonly Feature[] = [
   // Yelan.js: scaling:'hp*', leveling:'char_skill_attack', values:s1.p7
   {
     name: "yelan_breakthrough_barb_dmg",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "hydro",
