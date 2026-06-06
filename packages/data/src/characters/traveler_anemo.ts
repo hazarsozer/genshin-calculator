@@ -21,9 +21,10 @@
  * four absorbed-element variants anemoskill_<elem>_dmg, each the FULL anemoskill
  * talent table (s3.p2, no 0.25×), exactly like Venti's burst absorbs.
  *
+ * NON-DAMAGE outputs:
+ *   - skill.heal_dot: A4 "Second Wind" heal (2% max HP, auto-active at A6). Ported in P3.5.3.
+ *
  * NOT MODELLED (faithful to fixed solo C0/A6 build):
- *   - skill.heal_dot: A4 "Second Wind" heal (2% max HP). Empty damageType in the
- *     fixture → a display-only row, not a damage triple → excluded by the harness.
  *   - The A1 condition's `text_percent_dmg:60` is a display-only `text_*` string,
  *     not a real dmg bonus (same as Traveler-Geo's A4); the 60% lives only in the
  *     slitting_wind feature's own multiplier, never in the stat bag.
@@ -225,6 +226,18 @@ const features: readonly Feature[] = [
       })
     )
   ),
+  // --- A4 "Second Wind": heal_dot (2% max HP, active at A6) ---
+  // raw: FeatureHeal({ category:'skill', multipliers:[{ scaling:'hp*', source:'ascension4',
+  //   values: new StatTable('heal_dot', [2]) }], condition:ConditionAscensionChar({ascension:4}) })
+  // source:'ascension4' → leveling='ascension4'; getValue(1)=2. Auto-active at canonical A6 build.
+  {
+    name: "heal_dot",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "ascension4", values: { getValue: () => 2 } },
+    ],
+  },
   // --- Burst: Gust Surge (anemo) ---
   // raw: FeatureDamageBurst traveler_tornado_dmg (anemo, char_skill_burst)
   {

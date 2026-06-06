@@ -5,19 +5,19 @@
  *
  * Skill:
  *   kokomi_ripple_dmg — hydro skill (ATK-scaled, char_skill_elemental, s2.p3)
- *   heal_dot — skill heal (damageType:"", skipped by harness)
+ *   heal_dot — skill heal (HP-scaled, output:{kind:"heal"}, P3.5.3)
  *
  * Burst:
  *   burst_dmg — hydro burst (HP-scaled, scaling:'hp*', s3.p1)
- *   kokomi_burst_heal — burst heal (damageType:"", skipped by harness)
+ *   kokomi_burst_heal — burst heal (HP-scaled, output:{kind:"heal"}, P3.5.3)
  *
  * Passive "Flawless Strategy" (ConditionStatic, ALWAYS active):
  *   healing: 25, crit_rate: -100
  *   → fold into baseStats. The -100 crit_rate causes crit_rate_total to be
  *     negative (clamped to 0), making average = normal for all damage features.
  *
- * A1/A4 passives (ConditionStatic display text only, or A4 healing bonus) —
- * healing bonus does not affect damage. Omit from baseStats.
+ * The "Flawless Strategy" healing +25% (ConditionStatic) IS applied to her heal
+ * outputs (baseStats.healing); it does not affect damage. Other A1/A4 text is display-only.
  * "Ceremonial Garment" burst toggle (ConditionBoolean) — off in fixed build.
  *
  * Sources:
@@ -48,9 +48,13 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "kokomi_ripple_dmg") return KokomiTalents.s2.p3;
+      if (name === "heal_dot_percent") return KokomiTalents.s2.p1;
+      if (name === "heal_dot_flat")    return KokomiTalents.s2.p2;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return KokomiTalents.s3.p1;
+      if (name === "kokomi_burst_heal_percent") return KokomiTalents.s3.p2;
+      if (name === "kokomi_burst_heal_flat")    return KokomiTalents.s3.p3;
     }
     throw new Error(`sangonomiya_kokomi talents: unknown path '${path}'`);
   },
@@ -125,7 +129,17 @@ const features: readonly Feature[] = [
     element: "hydro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.kokomi_ripple_dmg") }],
   },
-  // heal_dot: FeatureHeal (category:'skill', damageType:"" → skipped by harness). Omit.
+  // skill.heal_dot: FeatureHeal — HP-scaled (s2.p1 % HP + s2.p2 flat), char_skill_elemental.
+  // raw/genshin_calc_pub/src/js/db/Char/Kokomi.js:234-253. (The C2 conditional multiplier —
+  // ConditionConstellation(2) AND kokomi_clouds_like_waves — is gated OFF at C0; omitted.)
+  {
+    name: "heal_dot",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.heal_dot_percent"), flatValues: talents.get("skill.heal_dot_flat") },
+    ],
+  },
   // --- Burst: Nereid's Ascension (hydro, HP-scaled) ---
   // raw: FeatureDamageBurst burst_dmg (element:'hydro', scaling:'hp*', s3.p1)
   {
@@ -134,7 +148,16 @@ const features: readonly Feature[] = [
     element: "hydro",
     multipliers: [{ scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
-  // kokomi_burst_heal: FeatureHeal (category:'burst', damageType:"" → skipped). Omit.
+  // burst.kokomi_burst_heal: FeatureHeal — HP-scaled (s3.p2 % HP + s3.p3 flat), char_skill_burst.
+  // raw/genshin_calc_pub/src/js/db/Char/Kokomi.js:265-285. (C2 conditional multiplier gated OFF at C0.)
+  {
+    name: "kokomi_burst_heal",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.kokomi_burst_heal_percent"), flatValues: talents.get("burst.kokomi_burst_heal_flat") },
+    ],
+  },
   // --- C1 "At Water's Edge": cons-added HP-scaling "other" hit (30% Max HP, fixed).
   // Raw FeatureDamage (base class → damageType:""), category:'other', element:'hydro',
   // scaling:'hp*', leveling:'char_skill_attack', values: ValueTable([30]) (C1AttackDmg=30).
@@ -193,9 +216,10 @@ export const sangonomiyaKokomi: DbObjectChar = {
   conditions: constellationConditions,
   // "Flawless Strategy" (ConditionStatic, always active):
   //   crit_rate: -100 → crit_rate_total becomes negative, clamped to 0 by engine.
-  //   healing: 25 — heal bonus, does not affect damage features.
+  //   healing: 25 → +25% outgoing healing, applied to her heal outputs (P3.5.3);
+  //     read by compileOutput's heal CMultiplierBonus, inert for the damage tree.
   // Source: raw/genshin_calc_pub/src/js/db/Char/Kokomi.js TalentValues.PassiveCritRate
-  baseStats: { crit_rate: -100 },
+  baseStats: { crit_rate: -100, healing: 25 },
   // Source: raw/genshin_calc_pub/src/js/db/Char/Kokomi.js (partyData: empty conditions)
   partyData: {},
 };

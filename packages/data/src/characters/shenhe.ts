@@ -5,8 +5,8 @@
  * charged hit, plunge/low/high (physical polearm), cryo skill (press_dmg +
  * hold_dmg), cryo burst (burst_dmg + dot_dmg).
  *
- * Icy Quill (shenhe_dmg_bonus, skill.shenhe_dmg_bonus): display-only PostEffectValue
- * with damageType: "" → filtered by golden harness; not modelled on the SELF kit.
+ * Icy Quill (shenhe_dmg_bonus, skill.shenhe_dmg_bonus): the self-readout VALUE (talent% × ATK)
+ * is modelled as output:{kind:"static"} (P3.5.3).
  * The Icy Quill flat-cryo-DMG buff IS a TEAMMATE buff — ported as a Bucket-C
  * `partyData.multipliers` entry (see § partyData below): an ATK-scaled, cryo-element
  * damage-instance bonus on the recipient's hits, gated by party.shenhe_icy_quill.
@@ -164,6 +164,18 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "cryo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.dot_dmg") }],
+  },
+  // --- Skill static readout: skill.shenhe_dmg_bonus = Icy Quill flat-DMG-bonus value (talent% × ATK) ---
+  // FeaturePostEffectValue(PostEffectStatsAtk, percent=talent×0.01), char_skill_elemental, format="" (no ×100).
+  // Self-readout of the quill value; the teammate-buff APPLICATION is the partyData multiplier below.
+  // raw/genshin_calc_pub/src/js/db/Char/Shenhe.js:266-280
+  {
+    name: "shenhe_dmg_bonus",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "atk", leveling: "char_skill_elemental", values: talents.get("skill.shenhe_dmg_bonus") },
+    ],
   },
 ];
 

@@ -62,8 +62,10 @@ import type {
   EvalContext,
   Feature,
   FeatureMultiplierEntry,
+  FeatureOutput,
   FeatureReaction,
 } from "@genshin/types";
+import { reactionShieldValues } from "./generated/elementScale.js";
 
 /** Maps a multiplier's `leveling` key to the talent-level slot it reads. */
 const LEVELING_TO_SLOT: Readonly<Record<string, keyof TalentLevels>> = {
@@ -372,7 +374,15 @@ function baseDamageTerm(
     scalingStatBlock = cMax([cSubtract([scalingStatBlock, cConst(entry.exceedStatValue)]), cConst(0)]);
   }
   factors.push(scalingStatBlock);
-  const term = cMulti(factors);
+  let term: Block = cMulti(factors);
+  // Flat additive term from FeatureMultiplierList (her CConst(getValueFlat)):
+  // `(levelMult × stat) + flat` — the flat component is talent-level-indexed and added
+  // DIRECTLY (not scaled by any stat). Absent on every damage feature → base-inert.
+  // Source: raw/.../Feature2/Multiplier/List.js:18-31 (getTree, CSum([CMulti, CConst])).
+  if (entry.flatValues !== undefined) {
+    const flat = entry.flatValues.getValue(talentLevel);
+    term = cSum([term, cConst(flat)]);
+  }
   // Per-multiplier absolute cap (her FeatureMultiplier.capValue → CValueCap, a
   // Math.min wrapping the multiplier tree): `min(levelMult × scalingStat, capValue)`,
   // applied to THIS term before it enters the base-damage sum and before the
@@ -612,6 +622,97 @@ function compileReaction(
 }
 
 /**
+ * Compile a NON-DAMAGE output feature (heal / shield / static / crystallize).
+ *
+ * Her CHeal / CShield / CStaticValue all compile to the SAME thing — Π(items)
+ * emitted as a non-crit triple `[v, v, v]`; her FeatureHeal uses CDamage with crit
+ * blocks that are zero unless `critRateBonuses` exist. So every kind is
+ * `cDamage({items})` (which collapses to a non-crit triple when no crit blocks are
+ * passed — the same chance-0 path the noCrit foam uses) with a kind-specific item
+ * list. Reuses `activeOwnMultipliers` + `baseDamageTerm` — the identical base-term
+ * compilation as damage features.
+ *
+ * Sources: raw/.../Feature2/{Heal,Shield,Static}.js, Reaction/Crystallize.js,
+ *          Compile/Types/Damage.js (CHeal/CShield/CStaticValue == non-crit triple).
+ */
+function compileOutput(
+  feature: Feature,
+  output: FeatureOutput,
+  ctx: CompileContext
+): DamageBlock {
+  // Crystallize: base is the per-level constant (her reactionRate 1 ×
+  // reactionShieldValues[level]) × (1 + shield) × (1 + 4.44·EM/(EM+1400)).
+  // Carries no talent multipliers.
+  if (output.kind === "crystallize") {
+    if (ctx.charLevel === undefined) {
+      throw new Error(
+        `compileOutput: crystallize feature '${feature.name}' needs ctx.charLevel (the level table lookup)`
+      );
+    }
+    const masteryCurve = cMulti([
+      cConst(4.44),
+      cDivide([cStat("mastery_total"), cSum([cStat("mastery_total"), cConst(1400)])]),
+    ]);
+    return cDamage({
+      items: [
+        cBaseDamage([cConst(reactionShieldValues.getValue(ctx.charLevel))]),
+        cMultiplierBonus([cStat("shield")]),
+        cMultiplierReaction([masteryCurve]),
+      ],
+    });
+  }
+
+  // Heal / shield / static share the base term = Σ active own multipliers
+  // (her getMultipliers → CBaseDamage). Multihit `items` flatten in, mirroring
+  // the damage path.
+  const ownMultipliers: readonly FeatureMultiplierEntry[] =
+    feature.multipliers ?? (feature.items ?? []).flatMap((item) => item.multipliers);
+  const base = cBaseDamage(activeOwnMultipliers(ownMultipliers, ctx).map((m) => baseDamageTerm(m, ctx)));
+
+  // FeatureStatic: the bare base term (buff-value readouts).
+  if (output.kind === "static") {
+    return cDamage({ items: [base] });
+  }
+
+  // FeatureShield: base × (1 + shield). `add_shield_element` is off in the base
+  // dump, so the element-bonus factor is not applied.
+  if (output.kind === "shield") {
+    return cDamage({ items: [base, cMultiplierBonus([cStat("shield")])] });
+  }
+
+  // After crystallize/static/shield the only remaining kind is "heal" — assert
+  // exhaustiveness so a future FeatureOutput kind cannot silently fall through to the
+  // heal formula (becomes a compile error until the new kind is handled here).
+  if (output.kind !== "heal") {
+    const unhandled: never = output;
+    throw new Error(`compileOutput: unhandled output kind '${(unhandled as { kind: string }).kind}'`);
+  }
+
+  // FeatureHeal: base × (1 + healing + healing_base + healing_recv), optionally
+  // − bond_of_life × hp_total (her subtractBoL — Arlecchino). Non-crit unless the
+  // feature carries `critRateBonuses` (her getStatsCritRate returns ONLY those).
+  // `healing_recv` is always summed — her `ignore_healing_recv` display-toggle variant
+  // is not exercised by the base dump (out of scope — design §5).
+  const healItems: Block[] = [
+    base,
+    cMultiplierBonus([cStat("healing"), cStat("healing_base"), cStat("healing_recv")]),
+  ];
+  // Flat items mirror the shield path + her CDamage([CBaseDamage, CMultiplierBonus]);
+  // the BoL case groups the product so the subtraction applies to the whole heal.
+  const items: Block[] = output.subtractBoL
+    ? [cSubtract([cMulti(healItems), cMulti([cStat("bond_of_life"), cStat("hp_total")])])]
+    : healItems;
+  if (feature.critRateBonuses && feature.critRateBonuses.length > 0) {
+    return cDamage({
+      items,
+      critRate: cCritRate(feature.critRateBonuses.map((k) => cStat(k))),
+      critDmg: cCritDmg((feature.critDamageBonuses ?? []).map((k) => cStat(k))),
+    });
+  }
+  return cDamage({ items });
+}
+
+/**
  * Compile a `Feature` into an executable `DamageBlock`.
  *
  * The returned block is a CDamage root; pass it to `compile(block)` for the
@@ -627,6 +728,11 @@ export function compileFeature(
 ): DamageBlock {
   if (feature.reaction !== undefined) {
     return compileReaction(feature, feature.reaction, ctx);
+  }
+  // Non-damage outputs (heal/shield/static/crystallize) route to the non-crit-triple
+  // path — her FeatureHeal/Shield/Static/ReactionCrystallize subclasses (P3.5.3).
+  if (feature.output !== undefined) {
+    return compileOutput(feature, feature.output, ctx);
   }
 
   const element = resolveElement(feature, ctx);

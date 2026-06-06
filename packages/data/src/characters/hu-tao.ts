@@ -257,6 +257,32 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.hutao_burst_dmg_lowhp") }],
   },
+  // --- Burst heals (FeatureHeal, HP-scaled, % only) ---
+  // burst.heal: Spirit Soother heal (s3.p3 % HP); burst.hutao_heal_lowhp: low-HP variant (s3.p4 % HP).
+  // No healing-bonus passive (crit-DMG ascension) → heal = base. raw/.../Char/Hutao.js:346-367.
+  {
+    name: "heal",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.heal") },
+    ],
+  },
+  {
+    name: "hutao_heal_lowhp",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.hutao_heal_lowhp") },
+    ],
+  },
+  // --- DEFERRED: skill.hutao_atk_bonus + skill.hutao_max_hp_bonus (Guide to Afterlife ATK readouts) ---
+  // Both scale on `atk_base` (white base ATK) — hutao_atk_bonus = min(hutao_atk_bonus%×Max HP, 4×atk_base);
+  // hutao_max_hp_bonus = the same capped ATK gain. atk_base is NOT in the eval-time stats bag (only atk_total/
+  // hp_total/…), so a static OUTPUT can't read it — same blocker as bennett/sara. The actual ATK buff IS modelled
+  // via the atkBuffPost CharPostEffect (buildStats reads atk_base + capUsesBase). Faithful readouts need an
+  // atk_base eval-emission engine pass (golden-critical buildStats emit) → deferred. NEVER baked.
+  // raw/genshin_calc_pub/src/js/db/Char/Hutao.js:144-158,305-325.
 ];
 
 // ---------------------------------------------------------------------------

@@ -17,9 +17,10 @@
  *     Raw: Ganyu.js:303-315.
  * Both omitted → no baseStats, no critRateBonuses on the Frostflake hits.
  *
+ * Non-damage output:
+ *   - skill.ganyu_lotus_hp — Ice Lotus HP (talent% of Max HP), modelled as
+ *     output:{kind:"static"} (PostEffectStatsHP, P3.5.3).
  * Display-only / non-modelled (skipped, matching the harness):
- *   - skill.ganyu_lotus_hp — a PostEffectStatsHP value row (empty damageType);
- *     the golden harness skips empty-damageType entries (like Barbara's heals).
  *   - reaction.{superconduct,electrocharged,shatter} — auto-emitted for every cryo
  *     character by compileCharacter's transformativeReactionFeatures(element).
  *
@@ -57,6 +58,7 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "skill_dmg") return GanyuTalents.s2.p2;
+      if (name === "ganyu_lotus_hp") return GanyuTalents.s2.p1;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return GanyuTalents.s3.p1;
@@ -160,6 +162,17 @@ const features: readonly Feature[] = [
     category: "skill",
     element: "cryo",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
+  },
+  // --- Skill static readout: skill.ganyu_lotus_hp = Ice Lotus HP (talent% of Max HP) ---
+  // FeaturePostEffectValue(PostEffectStatsHP, percent=talent×0.01), char_skill_elemental, format="" (no ×100).
+  // raw/genshin_calc_pub/src/js/db/Char/Ganyu.js:266-277
+  {
+    name: "ganyu_lotus_hp",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.ganyu_lotus_hp") },
+    ],
   },
   // --- Burst: Celestial Shower (cryo) ---
   {

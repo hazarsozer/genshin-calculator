@@ -6,14 +6,6 @@
  * cryo burst (ice storm + spiritvessel skull). All damage features are plain
  * ATK-scaled cryo hits at the fixed solo C0 build.
  *
- * --- Fixture features NOT modelled ---
- * skill.shield_absorption — a FeatureShield (raw Shield.js) whose value is
- *   (skillLevel% × mastery_total + flatBase) × (1 + shield%), with NO crit / RES /
- *   DEF. The harness's isDamageTripleEntry FILTERS it out (damageType: "" → display
- *   row), so it is not asserted. It is also unsupported infra: the FeatureShield
- *   shape (FeatureMultiplierList: levelMult×EM PLUS a second flat ValueTable, wrapped
- *   in CShield with the 'shield' bonus only) cannot be expressed through the generic
- *   compileFeature damage tree (no flat-add term, no shield category). Omitted.
  *
  * --- Conditional bonuses OFF in the fixed solo C0 build (omitted) ---
  *   - A4 "Itzpapalotl's Star Garments" (citlali_itzpapalotls_star_garments) — a
@@ -34,7 +26,6 @@
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Citlali.js
- *   raw/genshin_calc_pub/src/js/classes/Feature2/Shield.js (shield shape; omitted)
  *   raw/genshin_calc_pub/src/js/db/generated/CharTables.js (Citlali)
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Citlali)
  */
@@ -61,6 +52,8 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "citlali_obsidian_tzitzimitl_dmg") return CitlaliTalents.s2.p1;
+      if (name === "shield_percent")                  return CitlaliTalents.s2.p2;
+      if (name === "shield_flat")                     return CitlaliTalents.s2.p3;
       if (name === "citlali_frostfall_storm_dmg")     return CitlaliTalents.s2.p5;
     }
     if (talent === "burst") {
@@ -149,6 +142,18 @@ const features: readonly Feature[] = [
     category: "skill",
     element: "cryo",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.citlali_frostfall_storm_dmg") }],
+  },
+  // --- Shield (FeatureShield): skill.shield_absorption ---
+  // FeatureMultiplierList: (percent/100 × mastery_total) + flat, then × (1 + shield).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Citlali.js:247-257 (FeatureShield)
+  // shield_absorption: s2.p2 (% EM) + s2.p3 (flat)
+  {
+    name: "shield_absorption",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "mastery", leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
+    ],
   },
   // --- Burst: Edict of Entwined Splendor (cryo) ---
   // raw: FeatureDamageBurst citlali_ice_storm_dmg (element: 'cryo')

@@ -7,7 +7,8 @@
  * anemo burst (sayu_burst_dmg, sayu_mujimuji_dmg).
  *
  * Heals (sayu_heal, sayu_mujimuji_heal, sayu_mujimuji_add_heal, sayu_mujimuji_swirl_heal)
- * have empty damageType → not tested by golden suite.
+ * modelled as output:{kind:"heal"} (P3.5.3). The C6 mastery multipliers on the two
+ * mujimuji heals are constellation-gated → omitted at solo C0.
  *
  * sayu_mujimuji_dmg uses a FeatureMultiplierSayuBurst second multiplier conditional on
  * constellation 6 — inactive at C0; only s3.p4 contributes.
@@ -54,6 +55,10 @@ const talents: TalentResolver = {
     if (talent === "burst") {
       if (name === "sayu_burst_dmg")    return SayuTalents.s3.p1;
       if (name === "sayu_mujimuji_dmg") return SayuTalents.s3.p4;
+      if (name === "sayu_heal_percent")          return SayuTalents.s3.p3;
+      if (name === "sayu_heal_flat")             return SayuTalents.s3.p2;
+      if (name === "sayu_mujimuji_heal_percent") return SayuTalents.s3.p6;
+      if (name === "sayu_mujimuji_heal_flat")    return SayuTalents.s3.p5;
     }
     throw new Error(`sayu talents: unknown path '${path}'`);
   },
@@ -262,6 +267,52 @@ const features: readonly Feature[] = [
         coefficientFromStat: { stat: "mastery", ratio: 0.002, cap: 4 },
         source: "constellation6",
         condition: { type: "constellation", constellation: 6 },
+      },
+    ],
+  },
+  // --- Heals (FeatureHeal): 4 burst/swirl heals, output:{kind:"heal"} ---
+  // burst.sayu_heal: cast party heal — ATK% (s3.p3) + flat (s3.p2). raw Sayu.js:390-398 (partyHeal).
+  {
+    name: "sayu_heal",
+    category: "burst",
+    output: { kind: "heal", partyHeal: true },
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.sayu_heal_percent"), flatValues: talents.get("burst.sayu_heal_flat") },
+    ],
+  },
+  // burst.sayu_mujimuji_heal: Fuufuu Windwheel per-tick heal — ATK% (s3.p6) + flat (s3.p5).
+  // raw Sayu.js:400-416 (the C6 mastery multiplier — ConditionConstellation(6) — is gated OFF at C0; omitted).
+  {
+    name: "sayu_mujimuji_heal",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.sayu_mujimuji_heal_percent"), flatValues: talents.get("burst.sayu_mujimuji_heal_flat") },
+    ],
+  },
+  // other.sayu_mujimuji_swirl_heal: A4 swirl heal — EM-scaled (const 120% EM + 300 flat), auto-active at A6.
+  // raw Sayu.js:417-431 (FeatureMultiplierList scaling:'mastery*', source:'ascension1', [ValueTable([120]), ValueTable([300])]).
+  {
+    name: "sayu_mujimuji_swirl_heal",
+    category: "other",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "mastery", leveling: "ascension1", values: { getValue: () => 120 }, flatValues: { getValue: () => 300 } },
+    ],
+  },
+  // burst.sayu_mujimuji_add_heal: A4 additional heal = 0.2× the mujimuji_heal tree (her scalingMultiplier:0.2,
+  // applied to BOTH the ATK% term AND the flat — List.getTree wraps CSum([%×atk, flat]) in CMulti([…, 0.2]);
+  // the engine has no scalingMultiplier field, so wrap both tables by 0.2). raw Sayu.js:432-448.
+  // (C6 mastery multiplier gated OFF at C0; omitted.)
+  {
+    name: "sayu_mujimuji_add_heal",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        leveling: "char_skill_burst",
+        values: { getValue: (level: number) => 0.2 * SayuTalents.s3.p6.getValue(level) },
+        flatValues: { getValue: (level: number) => 0.2 * SayuTalents.s3.p5.getValue(level) },
       },
     ],
   },

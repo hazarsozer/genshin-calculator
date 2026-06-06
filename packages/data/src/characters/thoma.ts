@@ -14,9 +14,10 @@
  *   2. HP-scaled (A4 "Flaming Assault": 2.2% HP, ConditionAscensionChar{ascension:4})
  *      Auto-active at canonical A6 build → include unconditionally.
  *
- * Non-damage features (damageType: "" in fixture, not tested):
- *   - skill.shield / skill.shield_max_absorption — HP-scaled shields
- *   - burst.shield — HP-scaled burst shield
+ * Non-damage outputs (output: { kind: "shield" }):
+ *   - skill.shield — HP-scaled skill shield (s2.p2 % + s2.p3 flat)
+ *   - skill.shield_max_absorption — HP-scaled max shield (s2.p5 % + s2.p6 flat)
+ *   - burst.shield — HP-scaled burst shield (s3.p3 % + s3.p4 flat)
  *
  * Reactions (5 auto-generated from pyro element):
  *   burgeon, burning, electrocharged, overloaded, shatter
@@ -49,11 +50,17 @@ const talents: TalentResolver = {
       if (name === "plunge_high")  return ThomaTalents.s1.p9;
     }
     if (talent === "skill") {
-      if (name === "skill_dmg") return ThomaTalents.s2.p1;
+      if (name === "skill_dmg")              return ThomaTalents.s2.p1;
+      if (name === "shield_percent")         return ThomaTalents.s2.p2;
+      if (name === "shield_flat")            return ThomaTalents.s2.p3;
+      if (name === "shield_max_percent")     return ThomaTalents.s2.p5;
+      if (name === "shield_max_flat")        return ThomaTalents.s2.p6;
     }
     if (talent === "burst") {
       if (name === "burst_dmg")                  return ThomaTalents.s3.p1;
       if (name === "thoma_fiery_collapse_dmg")   return ThomaTalents.s3.p2;
+      if (name === "burst_shield_percent")       return ThomaTalents.s3.p3;
+      if (name === "burst_shield_flat")          return ThomaTalents.s3.p4;
     }
     throw new Error(`thoma talents: unknown path '${path}'`);
   },
@@ -170,6 +177,36 @@ const features: readonly Feature[] = [
     multipliers: [
       { leveling: "char_skill_burst", values: talents.get("burst.thoma_fiery_collapse_dmg") },
       a4HpTerm,
+    ],
+  },
+  // --- Shields (FeatureShield): skill.shield, skill.shield_max_absorption, burst.shield ---
+  // FeatureMultiplierList: (percent/100 × hp_total) + flat, then × (1 + shield).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Thoma.js:240-296 (three FeatureShield defs)
+  // skill.shield: s2.p2 (% HP) + s2.p3 (flat)
+  {
+    name: "shield",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
+    ],
+  },
+  // skill.shield_max_absorption: s2.p5 (% HP) + s2.p6 (flat)
+  {
+    name: "shield_max_absorption",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_max_percent"), flatValues: talents.get("skill.shield_max_flat") },
+    ],
+  },
+  // burst.shield: s3.p3 (% HP) + s3.p4 (flat)
+  {
+    name: "shield",
+    category: "burst",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.burst_shield_percent"), flatValues: talents.get("burst.burst_shield_flat") },
     ],
   },
 ];

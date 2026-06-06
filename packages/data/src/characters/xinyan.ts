@@ -41,8 +41,14 @@ const talents: TalentResolver = {
       if (name === "plunge_high") return XinyanTalents.s1.p11;
     }
     if (talent === "skill") {
-      if (name === "swing_dmg") return XinyanTalents.s2.p1;
-      if (name === "dot_dmg") return XinyanTalents.s2.p8;
+      if (name === "swing_dmg")               return XinyanTalents.s2.p1;
+      if (name === "shield_level_1_percent")  return XinyanTalents.s2.p2;
+      if (name === "shield_level_1_flat")     return XinyanTalents.s2.p3;
+      if (name === "shield_level_2_percent")  return XinyanTalents.s2.p4;
+      if (name === "shield_level_2_flat")     return XinyanTalents.s2.p5;
+      if (name === "shield_level_3_percent")  return XinyanTalents.s2.p6;
+      if (name === "shield_level_3_flat")     return XinyanTalents.s2.p7;
+      if (name === "dot_dmg")                 return XinyanTalents.s2.p8;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return XinyanTalents.s3.p1;
@@ -131,6 +137,36 @@ const features: readonly Feature[] = [
     category: "skill",
     element: "pyro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.dot_dmg") }],
+  },
+  // --- Shields (FeatureShield): skill.xinyan_shield_level_{1,2,3} ---
+  // FeatureMultiplierList: (percent/100 × def_total) + flat, then × (1 + shield).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:243-275 (three FeatureShield defs)
+  // xinyan_shield_level_1: s2.p2 (% DEF) + s2.p3 (flat)
+  {
+    name: "xinyan_shield_level_1",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "def", leveling: "char_skill_elemental", values: talents.get("skill.shield_level_1_percent"), flatValues: talents.get("skill.shield_level_1_flat") },
+    ],
+  },
+  // xinyan_shield_level_2: s2.p4 (% DEF) + s2.p5 (flat)
+  {
+    name: "xinyan_shield_level_2",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "def", leveling: "char_skill_elemental", values: talents.get("skill.shield_level_2_percent"), flatValues: talents.get("skill.shield_level_2_flat") },
+    ],
+  },
+  // xinyan_shield_level_3: s2.p6 (% DEF) + s2.p7 (flat)
+  {
+    name: "xinyan_shield_level_3",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "def", leveling: "char_skill_elemental", values: talents.get("skill.shield_level_3_percent"), flatValues: talents.get("skill.shield_level_3_flat") },
+    ],
   },
   // --- Burst: Riff Revolution ---
   // burst_dmg: PHYSICAL (FeatureDamageBurstXinyan has no element param → phys)

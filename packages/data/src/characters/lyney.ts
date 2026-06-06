@@ -12,10 +12,14 @@
  * Reactions (overloaded/burning/burgeon/electrocharged/shatter) are auto-emitted
  * by `compileCharacter` from the pyro element — not declared here.
  *
- * SKIPPED (display-only / out of scope):
- *   - `lyney_hat_hp` (FeaturePostEffectValue / PostEffectStatsHP — HP-magnitude
- *     readout; fixture damageType "", not a damage triple).
- *   - `lyney_hp_regeneration` (FeatureHeal; fixture all-zero, damageType "").
+ * NON-DAMAGE OUTPUTS:
+ *   - `lyney_hat_hp` (FeaturePostEffectValue / PostEffectStatsHP — Grin-Malkin Hat HP)
+ *     modelled as output:{kind:"static"} (P3.5.3): (attack.lyney_hat_hp talent/100)×hp_total.
+ *   - `lyney_hp_regeneration` (FeatureHeal) — DEFERRED: stacksLeveling:'lyney_surplus_stacks'
+ *     scales the heal by the Prop-Surplus stack count (0 at solo → fixture 0). Our engine has
+ *     no pure-×stacks factor for a heal multiplier (scalingOffset is 1+perStack×stacks, not
+ *     ×stacks), so a faithful "0 at 0 stacks" can't be expressed without an engine-ext. NEVER
+ *     baked to 0. raw/genshin_calc_pub/src/js/db/Char/Lyney.js:341-351.
  *
  * CONDITIONAL BONUSES — ALL OFF in the fixed C0 / settings:{} build, so none folded:
  *   - skill_dmg's second multiplier `lyney_skill_dmg_bonus` is `stacksLeveling:
@@ -56,6 +60,7 @@ const talents: TalentResolver = {
       if (name === "aimed")                        return LyneyTalents.s1.p9;
       if (name === "lyney_charged_dmg")            return LyneyTalents.s1.p10;
       if (name === "lyney_prop_arrow_dmg")         return LyneyTalents.s1.p11;
+      if (name === "lyney_hat_hp")                 return LyneyTalents.s1.p13;
       if (name === "lyney_pyrotechnic_strike_dmg")          return LyneyTalents.s1.p15;
       if (name === "lyney_pyrotechnic_strike_reprised_dmg") return LyneyTalents.s1.p15;
       if (name === "spiritbreath_thorn_dmg")                return LyneyTalents.s1.p16;
@@ -220,6 +225,20 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.lyney_explosive_firework_dmg") }],
   },
+  // --- Attack static readout: attack.lyney_hat_hp = Grin-Malkin Hat HP (HP-scaled) ---
+  // FeaturePostEffectValue(PostEffectStatsHP, levelSetting char_skill_attack,
+  // percent=getMulti('attack.lyney_hat_hp', multi:0.01)). 'lyney_hat_hp' name not isPercent + fmt="" → displayed =
+  // (talent×0.01)×hp_total. values = talents.get('attack.lyney_hat_hp') (s1.p13) → (s1.p13/100)×hp_total.
+  // raw/genshin_calc_pub/src/js/db/Char/Lyney.js:72-79,272-284.
+  {
+    name: "lyney_hat_hp",
+    category: "attack",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_attack", values: talents.get("attack.lyney_hat_hp") },
+    ],
+  },
+  // lyney_hp_regeneration — DEFERRED (stacks-scaled heal, 0 at solo; see file header). NOT modelled here.
 ];
 
 // ---------------------------------------------------------------------------

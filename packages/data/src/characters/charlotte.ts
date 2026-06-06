@@ -46,8 +46,12 @@ const talents: TalentResolver = {
       if (name === "charlotte_focused_impression_mark_dmg") return CharlotteTalents.s2.p6;
     }
     if (talent === "burst") {
-      if (name === "burst_dmg") return CharlotteTalents.s3.p3;
-      if (name === "charlotte_kamera_dmg") return CharlotteTalents.s3.p6;
+      if (name === "heal_percent")              return CharlotteTalents.s3.p1;
+      if (name === "heal_flat")                 return CharlotteTalents.s3.p2;
+      if (name === "burst_dmg")                 return CharlotteTalents.s3.p3;
+      if (name === "charlotte_kamera_heal_percent") return CharlotteTalents.s3.p4;
+      if (name === "charlotte_kamera_heal_flat")    return CharlotteTalents.s3.p5;
+      if (name === "charlotte_kamera_dmg")      return CharlotteTalents.s3.p6;
     }
     throw new Error(`charlotte talents: unknown path '${path}'`);
   },
@@ -179,6 +183,35 @@ const features: readonly Feature[] = [
         leveling: "char_skill_burst",
         values: { getValue: (_level: number) => 180 },
         source: "constellation6",
+      },
+    ],
+  },
+  // --- FeatureHeal: burst heals — ATK-scaled FeatureMultiplierList (Charlotte.js:293-328) ---
+  // heal: s3.p1 (% ATK) + s3.p2 (flat). Charlotte.js:293-301. No scaling: key → default atk*.
+  {
+    name: "heal",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        scaling: "atk",
+        leveling: "char_skill_burst",
+        values: talents.get("burst.heal_percent"),
+        flatValues: talents.get("burst.heal_flat"),
+      },
+    ],
+  },
+  // charlotte_kamera_heal: s3.p4 (% ATK) + s3.p5 (flat). Charlotte.js:319-327. Same default atk*.
+  {
+    name: "charlotte_kamera_heal",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        scaling: "atk",
+        leveling: "char_skill_burst",
+        values: talents.get("burst.charlotte_kamera_heal_percent"),
+        flatValues: talents.get("burst.charlotte_kamera_heal_flat"),
       },
     ],
   },

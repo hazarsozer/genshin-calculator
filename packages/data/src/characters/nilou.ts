@@ -21,9 +21,10 @@
  *   Raw: Nilou.js:153-163 (PostEffectStatsHP: exceed=30000, percent=[0.009],
  *   statCap=[400], conditions=[AscensionChar(4), NilouParty(), Boolean(stance_bonus)]).
  *   Active only in the party fixture (hydro+dendro, stance_bonus ON); inert solo.
- *   The FeaturePostEffectValue "other.nilou_bloom_bonus" display feature is NOT
- *   modelled (empty damageType → excluded from assertions). The post-effect itself
- *   IS modelled here (it adds real dmg_reaction_rupture).
+ *   The FeaturePostEffectValue "other.nilou_bloom_bonus" readout IS modelled as
+ *   output:{kind:"static"} (P3.5.3): 0.009×max(hp_total−30000,0) capped 400. Its
+ *   party/stance conditions gate APPLICATION (the real dmg_reaction_rupture add),
+ *   not the readout, so the readout is computed unconditionally (nonzero even solo).
  *
  * NOT MODELLED (intentional):
  *   - reaction.rupture / electrocharged / shatter — emitted GENERICALLY by the
@@ -215,6 +216,22 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "hydro",
     multipliers: [{ scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.nilou_lingering_aeon") }],
+  },
+  // --- A4 "Dreamy Dance" static readout: other.nilou_bloom_bonus = HP-above-30000 → Bloom DMG% (capped) ---
+  // FeaturePostEffectValue(bloomDmgPost = PostEffectStatsHP, exceed=30000,
+  // percent=StatTable('dmg_reaction_rupture',[A4BloomBonus/1000=0.009]), statCap=StatTable('',[A4BloomBonusMax=400])),
+  // format:'percent'. 'dmg_reaction_rupture' is isPercent → her /100 and the format ×100 CANCEL → displayed =
+  // 0.009×max(hp_total−30000,0) capped at 400. values = 0.009×100 = 0.9; exceedStatValue = 30000 (her exceed →
+  // max(hp−30000,0)); capValue = 400 (raw statCap, inert at the canonical HP, ≈59.34). The party(hydro+dendro)+
+  // stance conditions gate APPLICATION not the readout → modelled without them (cf. itto/ineffa; nonzero even solo).
+  // raw/genshin_calc_pub/src/js/db/Char/Nilou.js:142-143,153-163,440-448; PostEffect/Stats.js:58-107.
+  {
+    name: "nilou_bloom_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 0.9 }, exceedStatValue: 30000, capValue: 400 },
+    ],
   },
 ];
 

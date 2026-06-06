@@ -3,8 +3,8 @@
  *
  * 5-hit normal combo (physical sword), charged hit, plunge/low/high (physical),
  * anemo skill (skill_dmg), anemo burst (burst_dmg + field_dmg).
- * Also has heal features (party_heal_on_hit, heal, heal_dot) but those have
- * empty damageType and are display-only — skipped by the harness.
+ * Heals (attack.party_heal_on_hit, burst.heal, burst.heal_dot) modelled as
+ * output:{kind:"heal"} (ATK-scaled, P3.5.3).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Jean.js
@@ -40,6 +40,10 @@ const talents: TalentResolver = {
     if (talent === "burst") {
       if (name === "burst_dmg") return JeanTalents.s3.p1;
       if (name === "field_dmg") return JeanTalents.s3.p2;
+      if (name === "heal_percent")     return JeanTalents.s3.p3;
+      if (name === "heal_flat")        return JeanTalents.s3.p4;
+      if (name === "heal_dot_percent") return JeanTalents.s3.p5;
+      if (name === "heal_dot_flat")    return JeanTalents.s3.p6;
     }
     throw new Error(`jean talents: unknown path '${path}'`);
   },
@@ -126,6 +130,37 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "anemo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.field_dmg") }],
+  },
+  // --- Heals (FeatureHeal) — ATK-scaled (her default scaling), output:{kind:"heal"} ---
+  // attack.party_heal_on_hit: A1 "Wind Companion" — flat A1Heal=15% ATK, auto-active at A6.
+  // raw/genshin_calc_pub/src/js/db/Char/Jean.js:189-200,123 (source:'ascension1', ValueTable([15]), partyHeal)
+  {
+    name: "party_heal_on_hit",
+    category: "attack",
+    output: { kind: "heal", partyHeal: true },
+    multipliers: [
+      { leveling: "ascension1", values: { getValue: () => 15 } },
+    ],
+  },
+  // burst.heal: Dandelion Breeze cast heal — ATK% (s3.p3) + flat (s3.p4).
+  // raw/genshin_calc_pub/src/js/db/Char/Jean.js:268-277 (FeatureMultiplierList, char_skill_burst, partyHeal)
+  {
+    name: "heal",
+    category: "burst",
+    output: { kind: "heal", partyHeal: true },
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.heal_percent"), flatValues: talents.get("burst.heal_flat") },
+    ],
+  },
+  // burst.heal_dot: Dandelion Field per-tick heal — ATK% (s3.p5) + flat (s3.p6).
+  // raw/genshin_calc_pub/src/js/db/Char/Jean.js:279-288 (FeatureMultiplierList, char_skill_burst)
+  {
+    name: "heal_dot",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.heal_dot_percent"), flatValues: talents.get("burst.heal_dot_flat") },
+    ],
   },
 ];
 

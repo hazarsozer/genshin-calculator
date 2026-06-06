@@ -10,7 +10,8 @@
  * port, every feature gets an explicit name matching the fixture key.
  *
  * Heals (yaoyao_radish_heal, yaoyao_in_others_shoes_heal, yaoyao_white_radish_heal)
- * and other.mastery_bonus have empty damageType → not tested by golden suite.
+ * and other.mastery_bonus are non-damage outputs (empty damageType) → modelled as
+ * output:{kind:"heal"/"static"} (P3.5.3). All HP-scaled (no healing-bonus passive).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Yaoyao.js
@@ -42,10 +43,14 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "yaoyao_radish_dmg") return YaoyaoTalents.s2.p1;
+      if (name === "yaoyao_radish_heal_percent") return YaoyaoTalents.s2.p2;
+      if (name === "yaoyao_radish_heal_flat") return YaoyaoTalents.s2.p3;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return YaoyaoTalents.s3.p4;
       if (name === "yaoyao_white_radish_dmg") return YaoyaoTalents.s3.p1;
+      if (name === "yaoyao_white_radish_heal_percent") return YaoyaoTalents.s3.p2;
+      if (name === "yaoyao_white_radish_heal_flat") return YaoyaoTalents.s3.p3;
     }
     throw new Error(`yaoyao talents: unknown path '${path}'`);
   },
@@ -166,6 +171,51 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "dendro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.yaoyao_white_radish_dmg") }],
+  },
+  // --- Heals (FeatureHeal): skill radish + A4 in-others-shoes + burst white-radish (all HP-scaled) ---
+  // skill.yaoyao_radish_heal: FeatureMultiplierList scaling hp*, getList = [s2.p2 (%), s2.p3 (flat)].
+  // raw/genshin_calc_pub/src/js/db/Char/Yaoyao.js:75-82,275-284.
+  {
+    name: "yaoyao_radish_heal",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.yaoyao_radish_heal_percent"), flatValues: talents.get("skill.yaoyao_radish_heal_flat") },
+    ],
+  },
+  // skill.yaoyao_in_others_shoes_heal: A4 "Adeptal Legacy" — fixed 0.8% Max HP (ValueTable[0.8]), source
+  // ascension4, auto-active at A6. raw/genshin_calc_pub/src/js/db/Char/Yaoyao.js:296-308.
+  {
+    name: "yaoyao_in_others_shoes_heal",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "ascension4", values: { getValue: () => 0.8 } },
+    ],
+  },
+  // burst.yaoyao_white_radish_heal: party heal, FeatureMultiplierList scaling hp*, getList = [s3.p2 (%), s3.p3 (flat)].
+  // raw/genshin_calc_pub/src/js/db/Char/Yaoyao.js:108-115,325-334.
+  {
+    name: "yaoyao_white_radish_heal",
+    category: "burst",
+    output: { kind: "heal", partyHeal: true },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.yaoyao_white_radish_heal_percent"), flatValues: talents.get("burst.yaoyao_white_radish_heal_flat") },
+    ],
+  },
+  // --- A4 "Adeptal Legacy" static readout: other.mastery_bonus = Max HP → EM (capped 120) ---
+  // FeaturePostEffectValue(masteryBonusPost = PostEffectStatsHP, percent=StatTable('mastery',[0.003]),
+  // statCap=StatTable('',[120])). 'mastery' name is NOT isPercent → no /100; fmt="" → no ×100; so displayed =
+  // 0.003×hp_total capped at 120. values = 0.003×100 = 0.3 → (0.3/100)×hp_total = 0.003×hp_total (≈94.9). The
+  // C4+winsome conditions gate APPLICATION not the readout → modelled without them (cf. emilie/itto).
+  // raw/genshin_calc_pub/src/js/db/Char/Yaoyao.js:134-141,336-341.
+  {
+    name: "mastery_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 0.3 }, capValue: 120 },
+    ],
   },
 ];
 

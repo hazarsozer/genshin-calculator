@@ -35,6 +35,7 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "explosion_dmg") return AmberTalents.s2.p2;
+      if (name === "amber_baron_hp") return AmberTalents.s2.p1;
     }
     if (talent === "burst") {
       if (name === "wave_dmg") return AmberTalents.s3.p1;
@@ -171,6 +172,17 @@ const features: readonly Feature[] = [
     element: "pyro",
     critRateBonuses: ["crit_rate_amber"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.wave_dmg") }],
+  },
+  // --- Skill static readout: skill.amber_baron_hp = Baron Bunny HP (talent% of Max HP) ---
+  // FeatureStatic + plain FeatureMultiplier(scaling:'hp*'), char_skill_elemental, format="".
+  // raw/genshin_calc_pub/src/js/db/Char/Amber.js:264-275
+  {
+    name: "amber_baron_hp",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.amber_baron_hp") },
+    ],
   },
 ];
 

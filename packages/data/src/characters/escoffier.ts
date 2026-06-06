@@ -7,8 +7,9 @@
  * plunge/low/high.
  * Cryo skill: skill_dmg + escoffier_frozen_parfait_attack_dmg + surging_blade_dmg.
  * Cryo burst: burst_dmg.
- * burst.heal (FeatureMultiplierList) and other.escoffier_rehab_diet_heal
- * (FeatureHeal) both have damageType="" → not asserted by golden harness; omit.
+ * Heals ported in P3.5.3:
+ *   burst.heal — ATK-scaled FeatureMultiplierList (s3.p2 percent + s3.p3 flat).
+ *   other.escoffier_rehab_diet_heal — constant 138.24 ATK-scaled A1 heal, crit-bearing.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Escoffier.js
@@ -141,8 +142,48 @@ const features: readonly Feature[] = [
     element: "cryo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
-  // burst.heal (FeatureMultiplierList, HP-based heal, damageType="") — SKIP: not asserted.
-  // other.escoffier_rehab_diet_heal (FeatureHeal, constant heal, damageType="") — SKIP.
+  // --- FeatureHeal: burst.heal (ATK-scaled FeatureMultiplierList, auto-active) ---
+  // raw: FeatureHeal({ category:'burst', multipliers:[FeatureMultiplierList({
+  //   leveling:'char_skill_burst', values:Talents.getList('burst.heal') })] })
+  //   Escoffier.js:276-283. Talents.getList('burst.heal') → [s3.p2, s3.p3].
+  //   FeatureMultiplierList.getValue divides values[0] by 100 (percent); getValueFlat = values[1].
+  //   Default scaling = 'atk*' (no override) → ATK total.
+  {
+    name: "heal",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        leveling: "char_skill_burst",
+        values: EscoffierTalents.s3.p2,
+        flatValues: EscoffierTalents.s3.p3,
+      },
+    ],
+  },
+  // --- FeatureHeal: other.escoffier_rehab_diet_heal (A1, constant ATK-scaled, crit-bearing) ---
+  // raw: FeatureHeal({ name:'escoffier_rehab_diet_heal', category:'other',
+  //   critRateBonuses:['crit_rate_base','crit_rate'],
+  //   critDamageBonuses:['crit_dmg_escofier_heal'],
+  //   multipliers:[FeatureMultiplier({ source:'ascension1',
+  //     values:new ValueTable([A1Heal=138.24]) })],
+  //   condition:ConditionAscensionChar({ascension:1}) })  Escoffier.js:285-296.
+  // No scaling field → default 'atk*' (ATK total). Source 'ascension1' → leveling.
+  // crit_dmg_escofier_heal=0 at C0, so all three values equal (no critting in base build).
+  // Auto-active at canonical A6 (ConditionAscensionChar(1) satisfied).
+  {
+    name: "escoffier_rehab_diet_heal",
+    category: "other",
+    output: { kind: "heal" },
+    critRateBonuses: ["crit_rate_base", "crit_rate"],
+    critDamageBonuses: ["crit_dmg_escofier_heal"],
+    multipliers: [
+      {
+        leveling: "ascension1",
+        values: { getValue: (_level: number) => 138.24 },
+        source: "ascension1",
+      },
+    ],
+  },
   // --- C6 "Tea Parties Bursting with Color": cons-added cryo damage hit (500% ATK,
   // fixed, not talent-leveled). Raw class is FeatureDamageSkill → damageType:"skill".
   // Raw category:'other' → OMIT category (loader derives "other." prefix from absent

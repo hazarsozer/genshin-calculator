@@ -138,6 +138,21 @@ const features: readonly Feature[] = [
     element: "dendro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
+  // --- A1 "An Architect's Epiphany": kaveh_bloom_heal (mastery-scaled, category:'other') ---
+  // raw: FeatureHeal({ name:'kaveh_bloom_heal', category:'other',
+  //   multipliers:[{ scaling:'mastery*', source:'ascension1',
+  //     values: new ValueTable([TalentValues.A1BloomHeal=300]) }],
+  //   condition: ConditionAscensionChar({ascension:1}) })  Kaveh.js:246-257.
+  // source:'ascension1' → leveling='ascension1'; getValue(1)=300.
+  // Auto-active at canonical A6; condition omitted (always satisfied).
+  {
+    name: "kaveh_bloom_heal",
+    category: "other",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "mastery", leveling: "ascension1", values: { getValue: (_level: number) => 300 } },
+    ],
+  },
   // --- C6 "Pairidaeza's Dreams": cons-added dendro ATK hit (61.8% fixed).
   // Raw FeatureDamage (base class, NOT FeatureDamageNormal) → damageType:"" (no dmg_<type>).
   // Fixed value, not talent-leveled (ValueTable([61.8])). Raw Kaveh.js:234-245.

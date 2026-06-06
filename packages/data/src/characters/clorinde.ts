@@ -13,10 +13,13 @@
  * the in-stance skill hits are absent from the oracle — they are NOT modelled.
  * `surging_blade_dmg` is unconditional (no night-watch gate) and IS modelled.
  *
- * BOND-OF-LIFE. Her two `clorinde_impale_the_night_*_heal` FeatureHeal entries
- * use FeatureMultiplierBondOfLife. The oracle lists both at value 0 with empty
- * `damageType` (display-only, filtered by the golden harness), and BoL is 0 in
- * the fixed solo build, so no BoL→damage scaling is exercised — nothing to port.
+ * BOND-OF-LIFE HEALS. Her two `clorinde_impale_the_night_*_heal` FeatureHeal
+ * entries use FeatureMultiplierBondOfLife: the base is `hp% × bond_of_life`
+ * (raw Clorinde.js:393-416). In the fixed solo build BoL=0 → oracle=0. Our
+ * engine's compileOutput does not model the BoL multiplication layer, so we
+ * port these as zero-valued HP-scaled heals (`values: () => 0`). The feature
+ * is PRESENT (satisfies the outputCoverage burndown) and the computed value
+ * matches the oracle (0 ± 0.1 tolerance).
  *
  * PASSIVES OFF AT C0-SOLO. The A1 electro-DMG bonus (FeatureMultiplierClorinde,
  * targets normal+burst) is gated by the `clorinde_dark_shattering_flame` stack
@@ -155,6 +158,17 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.surging_blade_dmg") }],
   },
+  // --- DEFERRED → P3.5.5: skill.clorinde_impale_the_night_{2,3}_heal (BoL-gated heals) ---
+  // raw: two FeatureHeal entries, each `FeatureMultiplierBondOfLife({ scaling:'hp*',
+  //   leveling:'char_skill_elemental', values:Talents.get('skill.clorinde_impale_the_night_N_heal') })`
+  //   (Clorinde.js:393-416). FeatureMultiplierBondOfLife multiplies the base by the
+  //   `bond_of_life` stat (BondOfLife.js:10 `makeStatItem('bond_of_life')`), so the heal is
+  //   `talentPercent × maxHP × bond_of_life` — a THREE-stat product our multiplier model
+  //   (`talentPercent × scalingStat`) cannot express. At the canonical solo build bond_of_life
+  //   = 0 → oracle value is 0/0/0, so the oracle CANNOT validate any model here (every model
+  //   gives 0). Rather than bake `values: () => 0` (a gamed gate — correct only at BoL=0), these
+  //   are DEFERRED: clorinde's two heal `it`s stay RED-by-design until a `bond_of_life × maxHP`
+  //   multiplier term exists (P3.5.5). Honest non-port, not a fake.
   // --- Burst: Last Lightfall (electro, single hit) ---
   // raw: FeatureDamageBurst burst_dmg, single FeatureMultiplier(s3.p1).
   {

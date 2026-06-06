@@ -13,12 +13,14 @@
  *     toggle (raw Iansan.js:269-283) → OFF at baseline → not folded. The fixture
  *     `stats.atk` (2325.40) confirms only the A6 atk% (24) + the build's atk% (18)
  *     are applied, not the A1 20%.
- *   - `burst.iansan_bonus_max` / `burst.atk_bonus` — FeaturePostEffectValue ATK
- *     readouts (display-only: empty damageType, not a damage triple). The golden
- *     harness filters these (isDamageTripleEntry); the engine's loader does not
- *     emit value/post-effect features. Skipped.
- *   - `other.iansan_heal` — A4 heal magnitude (display-only). Skipped.
+ *   - `burst.atk_bonus` — gated by ConditionNumber(iansan_points); at solo points=0
+ *     the FEATURE is not produced (condition gates production) → absent from the fixture.
  *   - Constellations C0 build → skipped.
+ *
+ * Modelled as non-damage outputs (P3.5.3):
+ *   - `burst.iansan_bonus_max` — PostEffectStats from 'atk*', percent 0.27, statCap
+ *     burst.iansan_bonus_max (s3.p4) → min(0.27×atk_total, 690) (cap inert: 627.86<690).
+ *   - `other.iansan_heal` — A4 heal = 60% ATK (ValueTable[A4Heal=60]), auto-active at A6.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Iansan.js
@@ -128,6 +130,33 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "electro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
+  },
+  // --- Burst static readout: burst.iansan_bonus_max = MAX ATK battery bonus (the cap value) ---
+  // FeaturePostEffectValue(PostEffectStats from:'atk*', percent=StatTable('',[0.27]),
+  // statCap=Talents.get('burst.iansan_bonus_max')=s3.p4). '' name not isPercent + fmt="" → displayed =
+  // min(0.27×atk_total, s3.p4). values = 0.27×100 = 27 → (27/100)×atk_total = 0.27×atk_total (≈627.86);
+  // capValue = 690 = s3.p4 @ burst lv10 ONLY. FeatureMultiplierEntry has no level-indexed cap (unlike the partyData
+  // path's capValueFromTalent), so it is hardcoded to the canonical build's burst level — inert + faithful here
+  // (627.86 < 690), but off by the table delta for an off-build burst lv1-9 (a future capValueFromTable engine-ext,
+  // same deferral as Sigewinne's level-cap). raw/genshin_calc_pub/src/js/db/Char/Iansan.js:259-269.
+  {
+    name: "iansan_bonus_max",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "atk", leveling: "char_skill_burst", values: { getValue: () => 27 }, capValue: 690 },
+    ],
+  },
+  // --- A4 heal: other.iansan_heal = 60% ATK (FeatureHeal, ValueTable[A4Heal=60], source ascension4, auto at A6) ---
+  // base = (60/100)×atk_total; no healing-bonus passive (atk% ascension) → heal = base.
+  // raw/genshin_calc_pub/src/js/db/Char/Iansan.js:122,270-282.
+  {
+    name: "iansan_heal",
+    category: "other",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "atk", leveling: "ascension4", values: { getValue: () => 60 } },
+    ],
   },
 ];
 

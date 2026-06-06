@@ -46,6 +46,7 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "skill_dmg") return IttoTalents.s2.p1;
+      if (name === "itto_hurls_ushi_hp") return IttoTalents.s2.p2;
     }
     if (talent === "burst") {
       if (name === "itto_atk_bonus") return IttoTalents.s3.p2;
@@ -194,6 +195,29 @@ const features: readonly Feature[] = [
     category: "skill",
     element: "geo",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
+  },
+  // --- Skill static readout: skill.itto_hurls_ushi_hp = Ushi HP (talent% of Max HP) ---
+  // FeaturePostEffectValue(PostEffectStatsHP, percent=talent×0.01), char_skill_elemental, format="".
+  // raw/genshin_calc_pub/src/js/db/Char/Itto.js:254-265
+  {
+    name: "itto_hurls_ushi_hp",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.itto_hurls_ushi_hp") },
+    ],
+  },
+  // --- Burst static readout: burst.atk_bonus = Royal Descent DEF→ATK conversion value (talent% of DEF) ---
+  // FeaturePostEffectValue(PostEffectStatsDef, percent=talent×0.01), char_skill_burst, format="".
+  // The itto_royal_descent toggle gates the post-effect's APPLICATION; the readout shows the ungated value
+  // (oracle nonzero at solo) → modelled without the condition. raw/.../Itto.js:130-142,266-270
+  {
+    name: "atk_bonus",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "def", leveling: "char_skill_burst", values: talents.get("burst.itto_atk_bonus") },
+    ],
   },
 ];
 

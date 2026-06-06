@@ -53,7 +53,9 @@ const talents: TalentResolver = {
       if (name === "skill_dmg") return DahliaTalents.s2.p1;
     }
     if (talent === "burst") {
-      if (name === "burst_dmg") return DahliaTalents.s3.p1;
+      if (name === "burst_dmg")               return DahliaTalents.s3.p1;
+      if (name === "shield_percent")          return DahliaTalents.s3.p3;
+      if (name === "shield_flat")             return DahliaTalents.s3.p2;
     }
     throw new Error(`dahlia talents: unknown path '${path}'`);
   },
@@ -176,6 +178,18 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "hydro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
+  },
+  // --- Burst: Shield of Sacred Favor ---
+  // FeatureShield: FeatureMultiplierList (s3.p3 % HP + s3.p2 flat), leveling:'char_skill_burst'
+  // raw/genshin_calc_pub/src/js/db/Char/Dahlia.js:302-312
+  // getName() → values[0].getName() = 'dahlia_base_shield_dmg_absorption' → fixture key = burst.dahlia_base_shield_dmg_absorption
+  {
+    name: "dahlia_base_shield_dmg_absorption",
+    category: "burst",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.shield_percent"), flatValues: talents.get("burst.shield_flat") },
+    ],
   },
 ];
 

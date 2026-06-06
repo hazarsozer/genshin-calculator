@@ -10,7 +10,7 @@
  * — adds dmg_skill_gaming +20% (ConditionStatic + ConditionNot(gaming_air_of_prosperity)).
  * This is applied via damageBonuses on the skill plunge feature.
  *
- * Heals (gaming_dance_of_amity_heal, burst.heal) have empty damageType → not tested.
+ * Heals (skill.gaming_dance_of_amity_heal, burst.heal) modelled as output:{kind:"heal"} (P3.5.3).
  * C6 crit bonuses (crit_rate_gaming, crit_dmg_gaming) need constellation 6 → not active
  * in the C0 build; A4SkillBonus=20 is unconditional via static conditions.
  *
@@ -47,6 +47,7 @@ const talents: TalentResolver = {
     }
     if (talent === "burst") {
       if (name === "gaming_suanni_man_dmg") return GamingTalents.s3.p1;
+      if (name === "heal") return GamingTalents.s3.p2;
     }
     throw new Error(`gaming talents: unknown path '${path}'`);
   },
@@ -149,6 +150,27 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "pyro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.gaming_suanni_man_dmg") }],
+  },
+  // --- Skill heal (FeatureHeal): skill.gaming_dance_of_amity_heal — A1 "Plunging Attack" heal ---
+  // Flat A1Heal = 1.5% Max HP (ValueTable constant), HP-scaled, auto-active at A6.
+  // raw/genshin_calc_pub/src/js/db/Char/Gaming.js:228-239,112 (scaling:'hp*', ValueTable([A1Heal=1.5]))
+  {
+    name: "gaming_dance_of_amity_heal",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: { getValue: () => 1.5 } },
+    ],
+  },
+  // --- Burst heal (FeatureHeal): burst.heal — HP-scaled (s3.p2), single FeatureMultiplier (no flat) ---
+  // raw/genshin_calc_pub/src/js/db/Char/Gaming.js:250-260 (scaling:'hp*', char_skill_burst)
+  {
+    name: "heal",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.heal") },
+    ],
   },
 ];
 

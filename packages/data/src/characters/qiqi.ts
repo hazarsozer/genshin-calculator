@@ -4,8 +4,8 @@
  * 5-hit normal combo (physical sword), n3 and n4 each a 2-hit multihit with
  * child _3_1 / _4_1. Charged: 2x same multiplier (charged_hit_total parent +
  * charged_hit child). Plunge/low/high physical. Cryo skill (skill_dmg +
- * herald_of_frost dot). Heals (party_heal_on_hit, heal_dot, burst heal) have
- * no damageType, skipped by the harness. Cryo burst (burst_dmg).
+ * herald_of_frost dot). Heals (skill.party_heal_on_hit, skill.heal_dot, burst.heal)
+ * modelled as output:{kind:"heal"} (ATK-scaled, P3.5.3). Cryo burst (burst_dmg).
  *
  * A1 "Life-Prolonging Methods" is a conditional toggle (ConditionBoolean) →
  * not active in the fixed solo build; omitted.
@@ -44,9 +44,15 @@ const talents: TalentResolver = {
     if (talent === "skill") {
       if (name === "skill_dmg") return QiqiTalents.s2.p8;
       if (name === "qiqi_herald_of_frost") return QiqiTalents.s2.p5;
+      if (name === "party_heal_on_hit_percent") return QiqiTalents.s2.p1;
+      if (name === "party_heal_on_hit_flat")    return QiqiTalents.s2.p2;
+      if (name === "heal_dot_percent")          return QiqiTalents.s2.p3;
+      if (name === "heal_dot_flat")             return QiqiTalents.s2.p4;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return QiqiTalents.s3.p3;
+      if (name === "heal_percent") return QiqiTalents.s3.p1;
+      if (name === "heal_flat")    return QiqiTalents.s3.p2;
     }
     throw new Error(`qiqi talents: unknown path '${path}'`);
   },
@@ -174,6 +180,37 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "cryo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
+  },
+  // --- Heals (FeatureHeal) — ATK-scaled (her default scaling), output:{kind:"heal"} ---
+  // skill.party_heal_on_hit: Herald of Frost on-hit party heal — ATK% (s2.p1) + flat (s2.p2).
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:313-322 (FeatureMultiplierList, char_skill_elemental, partyHeal)
+  {
+    name: "party_heal_on_hit",
+    category: "skill",
+    output: { kind: "heal", partyHeal: true },
+    multipliers: [
+      { leveling: "char_skill_elemental", values: talents.get("skill.party_heal_on_hit_percent"), flatValues: talents.get("skill.party_heal_on_hit_flat") },
+    ],
+  },
+  // skill.heal_dot: Herald of Frost per-tick heal — ATK% (s2.p3) + flat (s2.p4).
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:324-333 (FeatureMultiplierList, char_skill_elemental)
+  {
+    name: "heal_dot",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      { leveling: "char_skill_elemental", values: talents.get("skill.heal_dot_percent"), flatValues: talents.get("skill.heal_dot_flat") },
+    ],
+  },
+  // burst.heal: Preserver of Fortune heal — ATK% (s3.p1) + flat (s3.p2).
+  // raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:344-353 (FeatureMultiplierList, char_skill_burst)
+  {
+    name: "heal",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.heal_percent"), flatValues: talents.get("burst.heal_flat") },
+    ],
   },
 ];
 

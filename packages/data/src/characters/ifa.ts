@@ -15,14 +15,13 @@
  * in element (Venti burst-absorb pattern). Pyro/Hydro/Cryo share the same triple
  * (no relevant dmg_<elem> bonus); Electro differs (STAT_BLOCK dmg_electro=2).
  *
- * NOT modelled (display-only / out of C0 solo baseline):
- *   - skill.ifa_tonicshot_heal (FeatureHeal, damageType="") — harness skips empty
- *     damageType entries; display-only, not asserted.
- *   - other.ifa_reaction_bonus / _2 (FeaturePostEffectValue, damageType="") — the A1
- *     "Field Medic's Vision" swirl/EC/lunar-charged reaction-DMG bonuses are gated
- *     behind common.nightsoul_blessing_state + ifa_field_medics_vision + A1, all OFF
- *     at settings={} → 0 in fixture, display-only, not asserted.
- *   - C6 ifa_tonicshot_add_dmg (constellation 6) — C0 build, omitted.
+ * NON-DAMAGE OUTPUTS modelled (P3.5.3):
+ *   - skill.ifa_tonicshot_heal (FeatureHeal mastery*, getList s2.p2 % + s2.p3 flat) — EM-scaled.
+ *   - other.ifa_reaction_bonus / _2 (FeaturePostEffectValue) — A1 "Field Medic's Vision"
+ *     swirl/EC/lunar-charged reaction-DMG% from the `ifa_field_medics_vision` stat (a Nightsoul
+ *     value, =0 at solo settings={}) → readout 0. Modelled as scaling:"ifa_field_medics_vision"
+ *     (=0) × the raw A1 ratio (1.5 / 0.2, inert here); the genuine 0 comes from the 0-stat, never baked.
+ *   - NOT modelled: C6 ifa_tonicshot_add_dmg (constellation 6) — C0 build, omitted.
  *   - A4 ifa_mutual_aid_agreement (+80 EM) is a ConditionBoolean toggle, OFF by
  *     default → no baseStats fold. Mastery secondary (A6 +96) is already in the
  *     stat table (fixture stats.mastery=151=96+55).
@@ -57,6 +56,8 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "ifa_tonicshot_dmg") return IfaTalents.s2.p1;
+      if (name === "ifa_tonicshot_heal_percent") return IfaTalents.s2.p2;
+      if (name === "ifa_tonicshot_heal_flat")    return IfaTalents.s2.p3;
     }
     if (talent === "burst") {
       if (name === "burst_dmg")            return IfaTalents.s3.p1;
@@ -183,6 +184,38 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "electro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.ifa_sedation_mark_dmg") }],
+  },
+  // --- Skill heal: skill.ifa_tonicshot_heal = Tonic Shot heal (FeatureHeal, EM-scaled list) ---
+  // FeatureMultiplierList scaling:'mastery*', getList('skill.ifa_tonicshot_heal') = [s2.p2 (%), s2.p3 (flat)].
+  // base = (s2.p2/100)×mastery_total + s2.p3. raw/genshin_calc_pub/src/js/db/Char/Ifa.js:68-74,241-248.
+  {
+    name: "ifa_tonicshot_heal",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "mastery", leveling: "char_skill_elemental", values: talents.get("skill.ifa_tonicshot_heal_percent"), flatValues: talents.get("skill.ifa_tonicshot_heal_flat") },
+    ],
+  },
+  // --- A1 "Field Medic's Vision" reaction-DMG% readouts (other.ifa_reaction_bonus / _2) ---
+  // reactionDmgPost/Post2 = PostEffectStats from:'ifa_field_medics_vision' (a Nightsoul stat = 0 at solo),
+  // percent=StatTable('dmg_reaction_swirl/_electrocharged',[A1ReactionDmg=1.5]) / ('dmg_reaction_lunarcharged',
+  // [A1MoonReactionDmg=0.2]), format:'percent'. Readout = ratio × field_medics_vision = 0 (the stat is 0); modelled
+  // as scaling on the 0-stat × the raw ratio×100 (1.5→150 / 0.2→20, inert here). raw/.../Char/Ifa.js:111-141,273-285.
+  {
+    name: "ifa_reaction_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "ifa_field_medics_vision", leveling: "", values: { getValue: () => 150 } },
+    ],
+  },
+  {
+    name: "ifa_reaction_bonus_2",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "ifa_field_medics_vision", leveling: "", values: { getValue: () => 20 } },
+    ],
   },
 ];
 

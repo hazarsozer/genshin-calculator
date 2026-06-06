@@ -39,12 +39,15 @@ const talents: TalentResolver = {
       if (name === "plunge_high") return BeidouTalents.s1.p12;
     }
     if (talent === "skill") {
+      if (name === "shield_percent") return BeidouTalents.s2.p1;
+      if (name === "shield_flat")    return BeidouTalents.s2.p2;
       if (name === "skill_dmg") return BeidouTalents.s2.p3;
       if (name === "beidou_skill_dmg_bonus") return BeidouTalents.s2.p4;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return BeidouTalents.s3.p1;
       if (name === "beidou_lightning_dmg") return BeidouTalents.s3.p2;
+      if (name === "dmg_reduction") return BeidouTalents.s3.p3;
     }
     throw new Error(`beidou talents: unknown path '${path}'`);
   },
@@ -180,6 +183,17 @@ const features: readonly Feature[] = [
       { leveling: "char_skill_elemental", values: beidouBonus2Values },
     ],
   },
+  // --- Skill: Tidecaller shield ---
+  // FeatureShield: FeatureMultiplierList (s2.p1 % HP + s2.p2 flat), leveling:'char_skill_elemental'
+  // raw/genshin_calc_pub/src/js/db/Char/Beidou.js:250-261
+  {
+    name: "shield",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
+    ],
+  },
   // --- Burst: Stormbreaker ---
   // raw/genshin_calc_pub/src/js/db/Char/Beidou.js:302-321
   {
@@ -193,6 +207,19 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "electro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.beidou_lightning_dmg") }],
+  },
+  // --- Burst static readout: burst.dmg_reduction = Stormbreaker DMG reduction (raw talent value) ---
+  // FeatureStatic + FeatureMultiplierStatic (her getTreeStatValue = CConst(100) → term = talent value, NO stat
+  // scaling). Pattern 2: values:0 + flatValues:<talent> → base = 0×stat + talent. leveling char_skill_burst,
+  // format="" (the % display is hers; our static value == the talent number, 34 at the canonical burst level).
+  // raw/genshin_calc_pub/src/js/db/Char/Beidou.js:322-333 (FeatureStatic, multiplier values Talents burst.dmg_reduction).
+  {
+    name: "dmg_reduction",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      { leveling: "char_skill_burst", values: { getValue: () => 0 }, flatValues: talents.get("burst.dmg_reduction") },
+    ],
   },
 ];
 

@@ -13,13 +13,14 @@
  * rupture, burgeon, hyperbloom, + universal electrocharged/shatter) are emitted
  * generically from element:'anemo' by the loader — not declared here.
  *
- * OMITTED (damageType:"" → display-only, filtered by the golden harness):
- *   - mizuki_snack_other_heal / mizuki_snack_self_heal: FeatureHeal (mastery*),
- *     fixture damageType:"" → skipped.
- *   - mizuki_swirl_bonus: FeaturePostEffectValue (the Dreamdrifter swirl-EM% buff),
- *     fixture format:"percent", damageType:"" → skipped. Gated on the
- *     `mizuki_dreamdrifter` ConditionBoolean (OFF at the solo settings={} baseline).
- *   - mizuki_elemental_bonus: C2 display row (constellation-gated, C0 build).
+ * NON-DAMAGE OUTPUTS modelled (P3.5.3 — all EM-scaled):
+ *   - mizuki_snack_other_heal: FeatureHeal mastery*, getList = [s3.p3 (%), s3.p7 (flat)].
+ *   - mizuki_snack_self_heal: 2× the snack heal (her scalingMultiplier:2 doubles the WHOLE
+ *     List → both % and flat ×2; fixture self = 2×other exactly).
+ *   - mizuki_swirl_bonus: A-passive Dreamdrifter swirl-DMG% from EM — PostEffectStatsMastery,
+ *     percent=getAlias('skill.mizuki_em_buff'→dmg_reaction_swirl). em_buff(s2.p2)=0.45 per EM →
+ *     0.45×mastery_total (≈76.59). The mizuki_dreamdrifter toggle gates APPLICATION not the readout.
+ * OMITTED: mizuki_elemental_bonus (C2 display row, constellation-gated, C0 build).
  *
  * STANCE / PASSIVES (all conditional → OFF in the fixed solo C0 build):
  *   - "Dreamdrifter" (ConditionBoolean) toggles the swirl-EM buff + C1/C2/C6 riders.
@@ -61,6 +62,8 @@ const talents: TalentResolver = {
     if (talent === "burst") {
       if (name === "burst_dmg")                  return MizukiTalents.s3.p1;
       if (name === "mizuki_munen_shockwave_dmg") return MizukiTalents.s3.p2;
+      if (name === "mizuki_snack_heal_percent")  return MizukiTalents.s3.p3;
+      if (name === "mizuki_snack_heal_flat")     return MizukiTalents.s3.p7;
     }
     throw new Error(`yumemizuki_mizuki talents: unknown path '${path}'`);
   },
@@ -152,6 +155,46 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "anemo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.mizuki_munen_shockwave_dmg") }],
+  },
+  // --- Heals (FeatureHeal, EM-scaled): Snacks party heal + 2× self heal ---
+  // burst.mizuki_snack_other_heal: scaling mastery*, getList('burst.mizuki_snack_heal') = [s3.p3 (%), s3.p7 (flat)].
+  // base = (s3.p3/100)×mastery_total + s3.p7; no healing-bonus passive. raw/.../Char/Mizuki.js:101-106,261-273.
+  {
+    name: "mizuki_snack_other_heal",
+    category: "burst",
+    output: { kind: "heal", partyHeal: true },
+    multipliers: [
+      { scaling: "mastery", leveling: "char_skill_burst", values: talents.get("burst.mizuki_snack_heal_percent"), flatValues: talents.get("burst.mizuki_snack_heal_flat") },
+    ],
+  },
+  // burst.mizuki_snack_self_heal: her scalingMultiplier:2 (scalingSource mizuki_selfheal) doubles the WHOLE List
+  // → both % and flat ×2 (fixture self = 2×other exactly). raw/.../Char/Mizuki.js:274-285.
+  {
+    name: "mizuki_snack_self_heal",
+    category: "burst",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        scaling: "mastery",
+        leveling: "char_skill_burst",
+        values: { getValue: (lv: number) => MizukiTalents.s3.p3.getValue(lv) * 2 },
+        flatValues: { getValue: (lv: number) => MizukiTalents.s3.p7.getValue(lv) * 2 },
+      },
+    ],
+  },
+  // --- A-passive static readout: skill.mizuki_swirl_bonus = EM → Swirl DMG% (Dreamdrifter) ---
+  // buffSwirl = PostEffectStatsMastery, levelSetting char_skill_elemental, percent=getAlias('skill.mizuki_em_buff'
+  // → 'dmg_reaction_swirl'). 'dmg_reaction_swirl' isPercent → /100 and the format ×100 CANCEL → displayed =
+  // em_buff × mastery_total. em_buff (s2.p2) = 0.45 per EM at skill lv10 (level-scaled) → values = em_buff×100 (=45
+  // at lv10) → (values/100)×mastery = 0.45×170.2 = 76.59. dreamdrifter toggle gates APPLICATION not the readout.
+  // raw/genshin_calc_pub/src/js/db/Char/Mizuki.js:129-135,285-291.
+  {
+    name: "mizuki_swirl_bonus",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "mastery", leveling: "char_skill_elemental", values: { getValue: (lv: number) => MizukiTalents.s2.p2.getValue(lv) * 100 } },
+    ],
   },
 ];
 

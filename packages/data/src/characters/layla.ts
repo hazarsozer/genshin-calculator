@@ -15,7 +15,12 @@
  * damageBonuses: ['dmg_burst_layla'] — from C6 constellation (C6ShieldBonus:40),
  * inactive at C0, reads 0 from context.
  *
- * Shield (layla_base_shield_dmg_absorption) has empty damageType → not tested.
+ * Shield (output:{kind:"shield"}):
+ *   - skill.layla_base_shield_dmg_absorption: HP-scaled shield (s2.p3 % HP + s2.p4 flat).
+ *     At C0 (settings:{}) the non-C1 FeatureMultiplierList branch fires: plain hp* × p3 + p4 flat.
+ *     raw: FeatureShield{ name:'layla_base_shield_dmg_absorption', category:'skill',
+ *       multipliers:[FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+ *         values:Talents.getList('skill.layla_base_shield_dmg_absorption')},...] }
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Layla.js
@@ -45,8 +50,10 @@ const talents: TalentResolver = {
       if (name === "plunge_high") return LaylaTalents.s1.p9;
     }
     if (talent === "skill") {
-      if (name === "skill_dmg") return LaylaTalents.s2.p1;
-      if (name === "layla_shooting_star_dmg") return LaylaTalents.s2.p2;
+      if (name === "skill_dmg")                               return LaylaTalents.s2.p1;
+      if (name === "layla_shooting_star_dmg")                 return LaylaTalents.s2.p2;
+      if (name === "layla_base_shield_dmg_absorption")        return LaylaTalents.s2.p3;
+      if (name === "layla_base_shield_dmg_absorption_flat")   return LaylaTalents.s2.p4;
     }
     if (talent === "burst") {
       if (name === "layla_starlight_slug_dmg") return LaylaTalents.s3.p1;
@@ -153,6 +160,20 @@ const features: readonly Feature[] = [
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.layla_shooting_star_dmg") },
       { scaling: "hp", leveling: "char_skill_elemental", values: a4HpScale },
+    ],
+  },
+  // --- Shield (FeatureShield): skill.layla_base_shield_dmg_absorption ---
+  // FeatureMultiplierList: (percent/100 × hp_total) + flat, then × (1 + shield).
+  // raw: FeatureShield{ name:'layla_base_shield_dmg_absorption', category:'skill',
+  //   multipliers:[FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+  //     values:Talents.getList('skill.layla_base_shield_dmg_absorption')},...] }
+  // C0 (settings:{}) → the ConditionNot[C1] branch is the only active entry → s2.p3 % + s2.p4 flat.
+  {
+    name: "layla_base_shield_dmg_absorption",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.layla_base_shield_dmg_absorption"), flatValues: talents.get("skill.layla_base_shield_dmg_absorption_flat") },
     ],
   },
   // --- Burst: Dream of the Star-Stream Shaker (cryo) ---

@@ -131,6 +131,17 @@ const features: readonly Feature[] = [
     element: "cryo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
+  // --- A1 "Cold-Blooded Strike" heal: skill.kaeya_coldblooded_strike = 15% of ATK (FeatureHeal) ---
+  // FeatureMultiplier source:'ascension1', ValueTable([A1Heal=15]), no scaling → ATK-default, auto-active at A6.
+  // raw/genshin_calc_pub/src/js/db/Char/Kaeya.js:259-270,107
+  {
+    name: "kaeya_coldblooded_strike",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      { leveling: "ascension1", values: { getValue: () => 15 } },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------

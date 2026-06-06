@@ -24,10 +24,10 @@
  * Burst (Super Saturated Syringing):
  *   burst_dmg — hydro, HP-scaled (scaling:'hp*', s3.p1)
  *
- * Non-damage fixture features (empty damageType → not damage-triple asserted, not
- * modelled): the two skill heals (sigewinne_bolstering_bubblebalm_heal,
- * sigewinne_bounce_end_heal) and other.sigewinne_hp_buff (A1 party-HP→hydro-DMG
- * display value). cf. neuvillette: heals not declared on the character.
+ * Non-damage outputs modelled (P3.5.3): the two skill heals
+ * (sigewinne_bolstering_bubblebalm_heal — s2.p2 % + s2.p3 flat; sigewinne_bounce_end_heal —
+ * s2.p4 % only) and other.sigewinne_hp_buff (A1 HYDRO-DMG% she grants, driven by her OWN
+ * hp_total above 30000: min(0.08×max(hp_total−30000,0), 2800) at the A1 tier).
  *
  * Conditions/post-effects OFF at the canonical solo-C0 build (omitted):
  *   - A1 "Requires Appropriate Rest" — a ConditionBoolean toggle granting
@@ -74,6 +74,9 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "sigewinne_bolstering_bubblebalm_dmg")   return SigewinneTalents.s2.p1;
+      if (name === "sigewinne_bolstering_bubblebalm_heal_percent") return SigewinneTalents.s2.p2;
+      if (name === "sigewinne_bolstering_bubblebalm_heal_flat")    return SigewinneTalents.s2.p3;
+      if (name === "sigewinne_bounce_end_heal")             return SigewinneTalents.s2.p4;
       if (name === "surging_blade_dmg")                     return SigewinneTalents.s2.p7;
     }
     if (talent === "burst") {
@@ -171,6 +174,40 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "hydro",
     multipliers: [{ scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
+  },
+  // --- Skill heals (FeatureHeal, HP-scaled) ---
+  // sigewinne_bolstering_bubblebalm_heal: party heal (noSelfHeal), getList = [s2.p2 (%), s2.p3 (flat)].
+  // raw/genshin_calc_pub/src/js/db/Char/Sigewinne.js:74-80,235-246. No healing-bonus passive (HP% ascension).
+  {
+    name: "sigewinne_bolstering_bubblebalm_heal",
+    category: "skill",
+    output: { kind: "heal", partyHeal: true },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.sigewinne_bolstering_bubblebalm_heal_percent"), flatValues: talents.get("skill.sigewinne_bolstering_bubblebalm_heal_flat") },
+    ],
+  },
+  // sigewinne_bounce_end_heal: end-of-bounce heal, % of HP only (s2.p4). raw/.../Char/Sigewinne.js:247-256.
+  {
+    name: "sigewinne_bounce_end_heal",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.sigewinne_bounce_end_heal") },
+    ],
+  },
+  // --- A1 "Targeted Treatment" static readout: other.sigewinne_hp_buff = HP-above-30000 → Hydro DMG% (capped) ---
+  // FeaturePostEffectValue(PostEffectStatsHP, exceed=A1MinHP=30000, percent=StatTable('',[A1DmgBonus/1000=0.08,
+  // C1DmgBonus/1000]), statCap=ValueTable([A1DmgBonusMax=2800, C1DmgBonusMax]), levelSetting sigewinne_buff_level).
+  // '' name not isPercent + fmt="" → displayed = min(0.08×max(hp_total−30000,0), 2800) at buff_level 0 (A1 tier; C1
+  // off at C0). values = 0.08×100 = 8; exceedStatValue = 30000; capValue = 2800 (A1 cap; the level-indexed C1 tier /
+  // capValueFromTable is the deferred E5 extension, inert at C0). raw/.../Char/Sigewinne.js:124-131,278-290.
+  {
+    name: "sigewinne_hp_buff",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 8 }, exceedStatValue: 30000, capValue: 2800 },
+    ],
   },
 ];
 

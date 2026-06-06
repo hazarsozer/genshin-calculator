@@ -12,9 +12,12 @@
  * Off at the canonical C0 solo build (no party / flag off) → her own direct damage
  * features are unaffected.
  *
- * Display-only features (damageType:"") — skipped:
- *   - burst.yunjin_dmg_bonus (PostEffectStatsDef display)
- *   - skill.shield (FeatureShield)
+ * Non-damage outputs (output: { kind: "shield" }):
+ *   - skill.shield — HP-scaled skill shield (s2.p1 % + s2.p2 flat)
+ *
+ * Non-damage outputs also modelled (P3.5.3):
+ *   - burst.yunjin_dmg_bonus (PostEffectStatsDef): Flying Cloud NA-DMG bonus = (s3.p2×0.01 +
+ *     traditionalist-stacks bonusValues)×DEF (her own def_total), via bonusLeveling/bonusValues.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/YunJin.js
@@ -50,6 +53,8 @@ const talents: TalentResolver = {
       if (name === "press_dmg") return YunJinTalents.s2.p3;
       if (name === "yunjin_charge_1_dmg") return YunJinTalents.s2.p4;
       if (name === "yunjin_charge_2_dmg") return YunJinTalents.s2.p5;
+      if (name === "shield_percent") return YunJinTalents.s2.p1;
+      if (name === "shield_flat")    return YunJinTalents.s2.p2;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return YunJinTalents.s3.p1;
@@ -59,6 +64,16 @@ const talents: TalentResolver = {
     }
     throw new Error(`yun_jin talents: unknown path '${path}'`);
   },
+};
+
+// bonusValues — her `new ValueTable([2.5, 5, 7.5, 11.5])` (the Traditionalist stacks bonus,
+// 1-indexed by `yunjin_traditionalist_stacks`). Replicates ValueTable.getValue exactly
+// (raw/.../classes/ValueTable.js): level <= 0 → 0; level > length → last; else values[level-1].
+// Used by BOTH the teammate NA-DMG multiplier (partyData) AND the self burst.yunjin_dmg_bonus readout.
+const YUNJIN_TRAD_BONUS_VALUES = [2.5, 5, 7.5, 11.5] as const;
+const yunjinTradBonus = {
+  getValue: (level: number): number =>
+    level > 0 ? YUNJIN_TRAD_BONUS_VALUES[Math.min(level, YUNJIN_TRAD_BONUS_VALUES.length) - 1]! : 0,
 };
 
 // ---------------------------------------------------------------------------
@@ -189,6 +204,39 @@ const features: readonly Feature[] = [
     element: "geo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
+  // --- Shield (FeatureShield): skill.shield ---
+  // FeatureMultiplierList: (percent/100 × hp_total) + flat, then × (1 + shield).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/YunJin.js:334-344 (FeatureShield)
+  // skill.shield: s2.p1 (% HP) + s2.p2 (flat)
+  {
+    name: "shield",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
+    ],
+  },
+  // --- Burst static readout: burst.yunjin_dmg_bonus = Flying Cloud NA-DMG bonus (DEF×% + element-count) ---
+  // FeaturePostEffectValue(PostEffectStatsDef, percent=getMulti('burst.yunjin_dmg_bonus' multi:0.01),
+  // percentBonus=StatTable('',[0.025,0.05,0.075,0.115]) keyed by yunjin_traditionalist_stacks). '' name not isPercent
+  // + fmt="" → displayed = (s3.p2×0.01 + bonusValues[stacks])×def_total. Same DEF×%+stacks form as the teammate
+  // multiplier → reuses bonusLeveling/bonusValues. At solo traditionalist_stacks=0→bonusLevel 1→2.5 (1-element tier):
+  // (57.888/100 + 2.5/100)×def_total(1610.39) = 972.48. Scales on Yun Jin's OWN def (scaling "def" → def_total).
+  // raw/genshin_calc_pub/src/js/db/Char/YunJin.js:354-368.
+  {
+    name: "yunjin_dmg_bonus",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      {
+        scaling: "def",
+        leveling: "char_skill_burst",
+        values: talents.get("burst.yunjin_dmg_bonus"),
+        bonusLeveling: "yunjin_traditionalist_stacks",
+        bonusValues: yunjinTradBonus,
+      },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -227,15 +275,6 @@ const constellationConditions: readonly Condition[] = [
 // constellation/passive booleans (myriad/decorous/traditionalist stat effects) are deferred
 // to the P3.5.2 variant-rep pass.
 // ---------------------------------------------------------------------------
-
-// bonusValues — her `new ValueTable([2.5, 5, 7.5, 11.5])` (the Traditionalist stacks bonus,
-// 1-indexed by `yunjin_traditionalist_stacks`). Replicates ValueTable.getValue exactly
-// (raw/.../classes/ValueTable.js): level <= 0 → 0; level > length → last; else values[level-1].
-const YUNJIN_TRAD_BONUS_VALUES = [2.5, 5, 7.5, 11.5] as const;
-const yunjinTradBonus = {
-  getValue: (level: number): number =>
-    level > 0 ? YUNJIN_TRAD_BONUS_VALUES[Math.min(level, YUNJIN_TRAD_BONUS_VALUES.length) - 1]! : 0,
-};
 
 // Flying Cloud Flag Formation: DEF-scaled flat normal DMG bonus.
 // raw/genshin_calc_pub/src/js/db/Char/YunJin.js:565-581 (the FeatureMultiplier).

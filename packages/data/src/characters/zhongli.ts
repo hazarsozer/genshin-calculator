@@ -48,6 +48,8 @@ const talents: TalentResolver = {
       if (name === "zhongli_stele_dmg") return ZhongliTalents.s2.p1;
       if (name === "zhongli_resonance_dmg") return ZhongliTalents.s2.p2;
       if (name === "hold_dmg") return ZhongliTalents.s2.p4;
+      if (name === "shield_percent") return ZhongliTalents.s2.p6;
+      if (name === "shield_flat") return ZhongliTalents.s2.p5;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return ZhongliTalents.s3.p1;
@@ -229,6 +231,18 @@ const features: readonly Feature[] = [
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.hold_dmg") },
       hpSkill,
+    ],
+  },
+  // --- Shield: Jade Shield (HP-scaled) ---
+  // raw: FeatureShield, category:'skill', scaling:'hp*', FeatureMultiplierList.
+  // getList('skill.shield') → [s2.p6 (%), s2.p5 (flat)] (table array order: p6 first, then p5).
+  // raw/genshin_calc_pub/src/js/db/Char/Zhongli.js:286-296
+  {
+    name: "shield",
+    category: "skill",
+    output: { kind: "shield" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
     ],
   },
   // --- Burst: Planet Befall (geo) ---

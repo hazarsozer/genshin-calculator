@@ -249,6 +249,22 @@ const RAW_BAG_SCALING_KEYS = [
 ] as const;
 
 /**
+ * Heal-bonus percent stats — her `FeatureHeal.getStatsHealBonus` (Feature2/Heal.js:38-45)
+ * returns `['healing', 'healing_base', 'healing_recv']`, each read by `makeStatItem` and
+ * summed into the heal's `CMultiplierBonus` = `(1 + healing + healing_base + healing_recv)`.
+ *   - `healing_base` — the character's ASCENSION healing-bonus secondary, carried in
+ *     `charTables` (e.g. Jean / Qiqi 22.15% at A6; 0 for non-healing-secondary chars).
+ *   - `healing` / `healing_recv` — outgoing-healing-bonus and healing-received, arriving
+ *     from artifacts / weapons / conditions (e.g. Maiden Beloved, Diona C6 healing_recv).
+ * All match her `isPercent` (`/^healing/`) → processPercent /100 → emitted here as FRACTIONS.
+ * Read ONLY by `compileOutput`'s heal path; the damage tree never touches them → base-inert
+ * for the 58k damage goldens. (Heals were unmodelled pre-P3.5.3, so these were never emitted —
+ * which silently dropped the ascension healing bonus from every heal output. P3.5.3 fix.)
+ * Source: raw/.../Feature2/Heal.js:38-45,90-95 (getStatsHealBonus + CMultiplierBonus base).
+ */
+const HEAL_BONUS_KEYS = ["healing", "healing_base", "healing_recv"] as const;
+
+/**
  * Level/ascension parameters for base-stat assembly. (Talent levels are a
  * compileFeature concern — they pick the talent-table row, not a base stat — so
  * they live on CompileContext, not here.)
@@ -837,6 +853,15 @@ export function buildStats(input: BuildInput): BuildResult {
   for (const key of collectFeatureBonusKeys(input.char.features)) {
     if (!raw.isSet(key)) continue;
     out[key] = raw.get(key) / 100;
+  }
+
+  // Heal-bonus stats (her FeatureHeal.getStatsHealBonus → healing/healing_base/healing_recv),
+  // read DIRECTLY (makeStatItem, not a base+flat total) and summed in the heal's
+  // CMultiplierBonus. `healing_base` is the ascension healing-bonus secondary from charTables;
+  // all three are percent stats → emit as FRACTIONS. Read ONLY by compileOutput's heal path →
+  // base-inert for the damage goldens (P3.5.3 — see HEAL_BONUS_KEYS doc).
+  for (const key of HEAL_BONUS_KEYS) {
+    if (raw.isSet(key)) out[key] = raw.get(key) / 100;
   }
 
   // Reaction-RATE scaling keys the reaction factories read inside their

@@ -161,6 +161,20 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.miko_thunderbolt_dmg") }],
   },
+  // --- A4 "Enlightened Blessing" static readout: other.yae_miko_skill_bonus (EM → skill DMG%) ---
+  // FeaturePostEffectValue(skillDmgPost = PostEffectStatsMastery, percent=StatTable('dmg_skill_yaemiko',[0.15]),
+  // no statCap), format:'percent'. Pattern 3: readout = 0.15 × mastery_total displayed as % →
+  // (values/100)×mastery = 0.15×EM. values = 0.15×100 = 15 (0.15×55 = 8.25 at the canonical EM). Same A4 the
+  // a4PostEffects block adds to the bag. Auto-active at A6 (ConditionAscensionChar(4) satisfied) → no gate.
+  // raw/genshin_calc_pub/src/js/db/Char/YaeMiko.js:106-112,249-256.
+  {
+    name: "yae_miko_skill_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "mastery", leveling: "", values: { getValue: () => 15 } },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------

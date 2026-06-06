@@ -8,8 +8,9 @@
  *
  * A4 "Vertical Force Coordination": HP→atk_percent post-effect gated by
  * ConditionBoolean('chevreuse_force_coordination') — OFF at canonical build
- * (no settings toggle). The other.atk_bonus FeaturePostEffectValue also has
- * empty damageType → not tested. No baseStats needed.
+ * (no settings toggle), so no atk% is applied. Its readout other.atk_bonus IS
+ * still emitted (the condition gates APPLICATION, not the display) → modelled as
+ * output:{kind:"static"} (P3.5.3). skill.heal_dot (FeatureHeal) also modelled.
  *
  * C2 'chevreuse_chain_explosion_dmg' is C2-gated → not active at C0, omit.
  * C6 party heals are C6-gated → omit.
@@ -46,6 +47,8 @@ const talents: TalentResolver = {
       if (name === "press_dmg") return ChevreuseTalents.s2.p1;
       if (name === "hold_dmg") return ChevreuseTalents.s2.p2;
       if (name === "chevreuse_overcharge_dmg") return ChevreuseTalents.s2.p3;
+      if (name === "heal_dot_percent") return ChevreuseTalents.s2.p5;
+      if (name === "heal_dot_flat") return ChevreuseTalents.s2.p6;
       if (name === "surging_blade_dmg") return ChevreuseTalents.s2.p7;
     }
     if (talent === "burst") {
@@ -193,6 +196,32 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "pyro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.chevreuse_secondary_explosive_dmg") }],
+  },
+  // --- Skill heal: skill.heal_dot = Overcharged Ball per-tick heal (FeatureHeal, HP-scaled list) ---
+  // FeatureMultiplierList scaling:'hp*', leveling:'char_skill_elemental', values=getList('skill.heal_dot') =
+  // [s2.p5 (% of HP), s2.p6 (flat)]. base = (s2.p5/100)×hp_total + s2.p6; no healing-bonus passive (HP% ascension).
+  // raw/genshin_calc_pub/src/js/db/Char/Chevreuse.js:88-94,314-323.
+  {
+    name: "heal_dot",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.heal_dot_percent"), flatValues: talents.get("skill.heal_dot_flat") },
+    ],
+  },
+  // --- A4 "Vertical Force Coordination" static readout: other.atk_bonus = HP → ATK% (capped) ---
+  // FeaturePostEffectValue(atkBuffPost = PostEffectStatsHP, percent=StatTable('atk_percent',[AtkBuffValue/1000=0.001]),
+  // statCap=StatTable('',[AtkBuffCap=40])), format:'percent'. 'atk_percent' is isPercent → /100 and the format ×100
+  // CANCEL → displayed = 0.001×hp_total capped at 40. values = 0.001×100 = 0.1 → (0.1/100)×hp_total = 0.001×hp_total;
+  // capValue = 40 (inert at the canonical HP, ≈31.23). asc4+force_coordination gate APPLICATION not the readout.
+  // raw/genshin_calc_pub/src/js/db/Char/Chevreuse.js (TalentValues AtkBuffValue:1, AtkBuffCap:40; atkBuffPost:145-152,368-373).
+  {
+    name: "atk_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 0.1 }, capValue: 40 },
+    ],
   },
 ];
 

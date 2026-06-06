@@ -9,6 +9,8 @@
  * skill hit, damageType "none", auto-active at A6 (ConditionAscensionChar asc1).
  * A4 "Rectification": atkBuffPost converts ATK → dmg_all (conditional on
  * enemy_burning toggle — OFF at canonical build, so no postEffects needed here).
+ * Its readout other.emilie_dmg_bonus IS still emitted (the post-effect CONDITION
+ * gates APPLICATION, not the display) → modelled as output:{kind:"static"} (P3.5.3).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Emilie.js
@@ -167,6 +169,21 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "dendro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.emilie_lumidouce_case_3_dmg") }],
+  },
+  // --- A4 "Rectification" static readout: other.emilie_dmg_bonus = ATK → DMG% (capped) ---
+  // FeaturePostEffectValue(atkBuffPost = PostEffectStatsAtk, percent=StatTable('dmg_all',[A4DamageBonus/1000=0.015]),
+  // statCap=ValueTable([A4DamageBonusMax=36])), format:'percent'. The percent stat 'dmg_all' is isPercent → her /100
+  // and the format ×100 CANCEL, so the displayed value = 0.015×atk_total capped at 36. Pattern: values = raw×100 =
+  // 1.5 → (1.5/100)×atk_total = 0.015×atk_total; capValue = raw statCap = 36 (inert at the canonical ATK, ≈30.36).
+  // The enemy_burning + asc4 conditions gate APPLICATION not the readout → modelled without them (cf. itto/ineffa).
+  // raw/genshin_calc_pub/src/js/db/Char/Emilie.js:121-122,129-135,290-298; PostEffect/Stats.js:58-107.
+  {
+    name: "emilie_dmg_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "atk", leveling: "", values: { getValue: () => 1.5 }, capValue: 36 },
+    ],
   },
 ];
 
