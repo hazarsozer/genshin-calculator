@@ -6,9 +6,11 @@
  * (sara_titanbreaker_dmg + sara_stormcluster_dmg).
  *
  * Non-damage features in fixture (skipped by golden harness — no damageType):
- *   skill.sara_atk_bonus   — ATK% flat buff display (PostEffectStats / conditional toggle)
- *   skill.sara_decorum     — A4 ER recharge readout (PostEffectStatsRecharge, A4-gated)
- * Both are conditional-off in the fixed solo C0 build; no feature modelling needed.
+ *   skill.sara_atk_bonus   — Tengu Juurai self-ATK-buff readout (atk_base × skill atk_bonus);
+ *     MODELLED below as a FeatureStatic (scaling:"atk_base") now the eval bag emits atk_base.
+ *   skill.sara_decorum     — A4 ER recharge readout (PostEffectStatsRecharge, A4-gated);
+ *     DEFERRED — recharge-stat readout, a separate non-ATK eval-emission concern (no
+ *     recharge_base in the eval bag), out of this atk_base pass's scope. Raw Sara.js:240-249.
  *
  * C2 sara_dark_wings_dmg is constellation-gated (C2); not modelled at C0.
  *
@@ -177,6 +179,24 @@ const features: readonly Feature[] = [
     element: "electro",
     critDamageBonuses: ["crit_dmg_electro"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.sara_stormcluster_dmg") }],
+  },
+  // --- skill.sara_atk_bonus: Tengu Juurai self-ATK-buff readout (FeaturePostEffectValue → static) ---
+  // Raw Sara.js:107-118,235-239 — atkBuffPost = PostEffectStats{ from:'atk_base' (the wielder's
+  // own white base ATK), percent:getMulti(skill.sara_atk_bonus, 0.01) }, exposed as a
+  // FeaturePostEffectValue. The buff = atk_base × (SaraTalents.s2.p2 @L10 × 0.01) = atk_base ×
+  // 0.77328 (the SAME ratio the partyData Tengu Juurai battery applies — reused below, not
+  // hardcoded). The atk_base scaling now resolves via the eval-bag atk_base emit. The readout is
+  // modelled WITHOUT the atkBuffPost's `sara_tengu_juurai` application gate → the canonical value
+  // the oracle dumps. The engine divides values.getValue()/100, so getValue() returns the raw
+  // skill atk_bonus table value (77.328; /100 → 0.77328). NEVER baked.
+  {
+    name: "sara_atk_bonus",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      // scaling atk_base × (SaraTalents.s2.p2@L10 / 100) = atk_base × 0.77328.
+      { scaling: "atk_base", leveling: "", values: { getValue: () => SaraTalents.s2.p2.getValue(10) } },
+    ],
   },
 ];
 
