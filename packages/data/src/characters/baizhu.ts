@@ -27,7 +27,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Baizhu)
  */
 
-import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Baizhu as BaizhuStatTable } from "../generated/charTables.js";
 import { Baizhu as BaizhuTalents } from "../generated/charTalentTables.js";
 
@@ -126,6 +126,12 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "plunge",
     element: "dendro",
+    // FeatureDamagePlungeCollision sets cannotReact (raw .../Feature2/Damage/Plunge/Collision.js:5):
+    // the descent-collision plunge does NOT trigger reactions, unlike plunge_low/high
+    // (FeatureDamagePlungeShockWave). Oracle: attack.plunge isReacted:false. Without this flag the
+    // dendro catalyze (Spread) multiplier would wrongly catalyze it (her Quicken.isMatchFeature
+    // excludes !canReact hits). Inert on amplifying (dendro has no amplifying variant) → byte-safe.
+    cannotReact: true,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
   },
   // raw: FeatureDamagePlungeShockWave plunge_low (element: 'dendro')
@@ -273,6 +279,25 @@ const charMultipliers: readonly CharMultiplier[] = [
   },
 ];
 
+// A4 "Seamless Flow" — buffQuicken (Baizhu.js:152-159): PostEffectStatsHP writes
+// dmg_reaction_quicken = 0.0008 × hp_total, capped at 40 (display/percent units, /100'd
+// at emit). Gated by the `baizhu_all_things_are_of_the_earth` toggle (the ascension-4
+// condition is auto-met at the A6 canonical build, so it is dropped — the Tighnari A4 idiom).
+// This feeds the Spread catalyze Σ (dmg_reaction_quicken) on Baizhu's direct dendro hits; the
+// SAME value is mirrored by the `baizhu_quicken_bonus` static readout above (a display, not a
+// bag write). Inert unless `reaction == 'quicken'` makes the catalyze multiplier read it, and
+// only fires when the toggle is on → the 58k damage goldens are byte-unchanged.
+// raw/genshin_calc_pub/src/js/db/Char/Baizhu.js:138-139,152-159.
+const a4PostEffects: readonly CharPostEffect[] = [
+  {
+    fromStat: "hp",
+    toStat: "dmg_reaction_quicken",
+    ratio: 0.0008,
+    capValue: 40,
+    conditions: [{ type: "boolean", name: "baizhu_all_things_are_of_the_earth" }],
+  },
+];
+
 // ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
@@ -289,6 +314,7 @@ export const baizhu: DbObjectChar = {
   features,
   multipliers: charMultipliers,
   conditions: constellationConditions,
+  postEffects: a4PostEffects,
   // A1 "Five Fortunes Forever" — auto-active at A6 under canonical solo C0 build:
   // ConditionStatic with subConditions [ConditionAscensionChar(1), ConditionNot([bool toggle])].
   // Since the boolean 'baizhu_five_fortunes_forever' is OFF by default, the NOT fires → +25% dendro DMG.

@@ -196,7 +196,16 @@ const REACTION_BONUS_PERCENT_KEYS = [
   "dmg_reaction_hyperbloom",
   "dmg_reaction_burgeon",
   "dmg_reaction_rupture",
-  "dmg_reaction_aggravate",
+  "dmg_reaction_aggravate",  // ALSO the third member of Aggravate's catalyze Σ (below); ThunderingFury 4pc:20 is its v5.8 producer
+  // Catalyze (Spread/Aggravate) reaction-DMG-bonus keys read by the catalyze base term's
+  // `(1 + 5·EM/(EM+1200) + Σ)` factor (compileFeature). `dmg_reaction_quicken` is Baizhu's A4
+  // `buffQuicken` post-effect (HP→quicken%, an isPercent stat → its post-effect getTree writes a
+  // RAW percent into the bag, /100'd here like every sibling). `dmg_reaction_spread` has no live
+  // v5.8 producer (no source grants it), so it reads 0 — present for the Spread Σ's completeness
+  // and forward-safety. Source: raw/.../db/Char/Baizhu.js:136-159 (A4 buffQuicken),
+  //         raw/.../Feature2/Multiplier/Reaction/Quicken/Spread.js (getStatsDmgBonus).
+  "dmg_reaction_quicken",
+  "dmg_reaction_spread",
   "dmg_reaction_vaporize",
   "dmg_reaction_melt",
   "dmg_reaction_lunarcharged",
