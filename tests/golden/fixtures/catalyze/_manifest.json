@@ -1,0 +1,111 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "characterCount": 2,
+  "characters": [
+    {
+      "artifactSets": {
+        "ThunderingFury": 4
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 9,
+      "key": "Fischl",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "fischl",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.alley_hunter",
+        "passiveToggles": {},
+        "refine": 1
+      }
+    },
+    {
+      "artifactSets": {},
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {
+        "baizhu_all_things_are_of_the_earth": true
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "id": 70,
+      "key": "Baizhu",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "baizhu",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.solar_pearl",
+        "passiveToggles": {},
+        "refine": 1
+      }
+    }
+  ],
+  "config": {
+    "description": "Catalyze (Spread/Aggravate) ON — settings.reaction == 'quicken' via buffs bag (CalcSet.js:155 setBuffsSettings→setCommonSettings). NOT REACTION_MULTI (vaporize/melt-only); a global multiplier (db/CalcData/Multipliers.js) gated by hit element: Spread on dendro (×1.25), Aggravate on electro (×1.15), each adding reactionBase×(1+5·EM/(EM+1200)+Σ) into base damage. Baizhu: Spread (native dendro features) + A4 baizhu_all_things_are_of_the_earth ON → dmg_reaction_quicken Σ non-inert. Fischl: Aggravate (native electro skill/burst) + ThunderingFury 4pc → dmg_reaction_aggravate:20 Σ non-inert. Each rep has a NONZERO Σ so Task-B catalyzeBurndown proves the Σ term is load-bearing. Fixtures are CATALYZED vs base (term inherits crit); catalyzeBurndown burns them down RED until our engine wires catalyze.",
+    "id": "catalyze"
+  },
+  "featureTotal": 56
+}
