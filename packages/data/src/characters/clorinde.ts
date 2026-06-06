@@ -35,7 +35,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Clorinde)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Clorinde as ClorindeStatTable } from "../generated/charTables.js";
 import { Clorinde as ClorindeTalents } from "../generated/charTalentTables.js";
 
@@ -207,7 +207,8 @@ const features: readonly Feature[] = [
 // C2 "Now As We Face...": ConditionStatic (clorinde_electro_dmg_max cap +900) → display/cap only → SKIP.
 // C3 "+3 to Hunter's Vigil (skill)". Raw cons[2] settings char_skill_elemental_bonus:3.
 // C4 "To Enshrine Tears...": ConditionStatic display-only (bond-of-life burst bonus shown) → SKIP.
-//    C4 PostEffectStats already in postEffects (dmg_burst_clorinde). No extra cond needed.
+//    The C4 BoL → burst-DMG bonus is the PostEffectStats below (c4PostEffects), gated
+//    ConditionConstellation(4). (Distinct from the C4 BoL *heal* — DEFERRED, see L160-170.)
 // C5 "+3 to Last Lightfall (burst)". Raw cons[4] settings char_skill_burst_bonus:3.
 // C6 "And So Shall I Never Despair": ConditionBoolean toggle (crit_rate:10, crit_dmg:70) → SKIP (toggle).
 //    clorinde_glimbright_shade_dmg feature is cons-gated (ConditionConstellation 6) → ported above.
@@ -217,6 +218,37 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Last Lightfall (elemental burst).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
+// Post-effects
+// ---------------------------------------------------------------------------
+// C4 "To Enshrine Tears and Bygone Days": Bond of Life raises Last Lightfall (burst)
+// DMG by 200% of the current BoL value, capped at +200%. Faithful port of her C4
+// PostEffectStats (Clorinde.js:508-517):
+//   from: 'bond_of_life',
+//   percent: StatTable('dmg_burst_clorinde', [C4BurstBonus*100 = 200]),
+//   statCap: ValueTable([C4BurstBonusCap = 200]),
+//   conditions: [ConditionConstellation(4)].
+// `dmg_burst_clorinde` IS a percent stat, so her getTree (PostEffect/Stats.js:63-66)
+// folds BOTH the percent value (200/100 = 2.0) and the cap (200/100 = 2.0) before
+// multiplying the (processPercent-folded) `bond_of_life`. Our port instead carries the
+// RAW constants and applies the single isPercent /100 at emit (the Furina
+// `dmg_skill_furina` idiom, buildStats.ts:443-445): `bond_of_life` lands in the bag
+// RAW (= common.bond_of_life, e.g. 50), `ratio = C4BurstBonus = 2.0`,
+// `capValue = C4BurstBonusCap = 200` (the RAW-percent ceiling, like Furina's
+// `capValue: 28`), so the post-effect writes `min(50 × 2.0, 200) = 100` into
+// `dmg_burst_clorinde`, and collectFeatureBonusKeys' /100 emit yields the +1.0 (+100%)
+// fraction the burst feature folds (its damageBonuses already lists dmg_burst_clorinde).
+// Gated ConditionConstellation(4); inert below C4 / with bond_of_life 0.
+const c4PostEffects: readonly CharPostEffect[] = [
+  {
+    fromStat: "bond_of_life",
+    toStat: "dmg_burst_clorinde",
+    ratio: 2.0, // C4BurstBonus
+    capValue: 200, // C4BurstBonusCap (RAW percent ceiling; /100 at emit)
+    conditions: [{ type: "constellation", constellation: 4 }],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -235,4 +267,5 @@ export const clorinde: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  postEffects: c4PostEffects,
 };
