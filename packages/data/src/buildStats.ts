@@ -768,6 +768,21 @@ export function buildStats(input: BuildInput): BuildResult {
   for (const stat of SCALING_TOTAL_STATS) {
     out[`${stat}_total`] = raw.getTotal(stat);
   }
+  // WHITE base ATK — her `makeStatItem('atk_base')` = `stats.get('atk_base')`, the
+  // accumulated base ATK (char base + weapon base + any flat `atk_base` bonus), read
+  // VERBATIM with NO `/100` (it is flat ATK, not a percent stat — `isPercent('atk_base')`
+  // is false). Distinct from `atk_total` (= base×(1+%)+flat): this is the pre-%, pre-flat
+  // white base that the ATK-buff readouts and the Hu Tao cap scale on. `atk_base` was used
+  // ONLY internally before (Stats.getTotal('atk') and the Hu Tao `capUsesBase` term) and
+  // never copied into the bag — so a `scaling:"atk_base"` static OUTPUT read undefined.
+  // Emitted now so those readouts (bennett.burst.atk_bonus, kujou_sara.skill.sara_atk_bonus,
+  // hu_tao.skill.{hutao_atk_bonus(cap term),hutao_max_hp_bonus}) resolve. Read ONLY by a
+  // multiplier whose scaling key is exactly `atk_base` (resolveStatKey passes it verbatim —
+  // it is NOT in TOTAL_SCALING_STATS={atk,hp,def,mastery}), and NO damage feature opts in →
+  // base-inert for the 58k damage goldens (mirrors the healing_base emission, commit 8e101ea,
+  // minus the /100). Source: raw/.../Feature2/Compile/Helpers.js makeStatItem,
+  //         raw/.../classes/Stats.js isPercent (no atk_base branch).
+  if (raw.isSet("atk_base")) out["atk_base"] = raw.get("atk_base");
   // Flat totals read as numbers (mastery, recharge).
   for (const stat of FLAT_TOTAL_STATS) {
     out[`${stat}_total`] = raw.getTotal(stat);
