@@ -35,7 +35,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Mizuki)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Mizuki as MizukiStatTable } from "../generated/charTables.js";
 import { Mizuki as MizukiTalents } from "../generated/charTalentTables.js";
 
@@ -203,6 +203,33 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
+// Post-effects (Dreamdrifter EM → Swirl DMG% — APPLIED buff)
+// ---------------------------------------------------------------------------
+// Her A-passive "buffSwirl" (Mizuki.js:129-135) is a PostEffectStatsMastery that
+// writes dmg_reaction_swirl = mastery_total × em_buff, gated by the dreamdrifter
+// toggle. em_buff is the s2.p2 talent table (getAlias('skill.mizuki_em_buff',
+// 'dmg_reaction_swirl'), Mizuki.js:80) — level-scaled by char_skill_elemental
+// (so C3's +3 skill levels lift it: 0.45 @lv10 → 0.54 @lv13). PostEffectStatsMastery
+// derives its base from getTotal('mastery') (PostEffect/Stats/Mastery.js). The
+// mizuki_swirl_bonus FEATURE above is the display READOUT of this same value; this
+// post-effect is its APPLICATION (the toggle gates application, not the readout).
+// `multi:1` → ratio = s2.p2.getValue(level); bonus = mastery_total × ratio lands as
+// a RAW percent in the bag (e.g. 170.2 × 0.54 = 91.908), then /100'd by buildStats'
+// REACTION_BONUS_PERCENT_KEYS emit loop (dmg_reaction_swirl is listed there) → the
+// 0.91908 fraction the 4 swirl reaction defs read. Base-inert: gated on
+// mizuki_dreamdrifter (OFF in every golden + the constellations fixture).
+// raw/genshin_calc_pub/src/js/db/Char/Mizuki.js:80,129-135;
+// raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/Mastery.js.
+const postEffects: readonly CharPostEffect[] = [
+  {
+    fromStat: "mastery",
+    toStat: "dmg_reaction_swirl",
+    ratioFromTalent: { table: MizukiTalents.s2.p2, levelSetting: "char_skill_elemental", multi: 1 },
+    conditions: [{ type: "boolean", name: "mizuki_dreamdrifter" }],
+  },
+];
+
+// ---------------------------------------------------------------------------
 // Constellations (P2.C Wave-1)
 // ---------------------------------------------------------------------------
 // C1: ConditionBoolean toggle ("mizuki_in_mist_like_waters", Swirl DMG bonus gated
@@ -214,14 +241,31 @@ const features: readonly Feature[] = [
 // C4: ConditionStatic display-only → SKIP.
 // C5 "Sleep Awaits" — +3 Burst talent levels.
 //   raw/genshin_calc_pub/src/js/db/Char/Mizuki.js:393-400 (constellation[4]).
-// C6: ConditionStatic{crit_rate_swirl, crit_dmg_swirl} gated by ConditionBoolean
-//   (dreamdrifter) subCondition — toggle OFF in fixed build → SKIP.
+// C6 "The Heart Lingers Long" — ConditionStatic{crit_rate_swirl:30, crit_dmg_swirl:100}
+//   gated by a ConditionBoolean(dreamdrifter) subCondition (consts C6SwirlCritRate=30 /
+//   C6SwirlCritDmg=100, Mizuki.js:126-127; entry Mizuki.js:402-416). Fires only at
+//   char_constellation>=6 AND mizuki_dreamdrifter=true → both crit keys feed all 4 swirl
+//   instances. Modeled as a `static` condition gated on an `and` of the C6 constellation
+//   and the dreamdrifter toggle. (Her party-path variant Mizuki.js:491-501 is partyData
+//   scope — not this task.)
 
 const constellationConditions: readonly Condition[] = [
   // C3 — char_skill_elemental_bonus +3 (skill talent level up).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5 — char_skill_burst_bonus +3 (burst talent level up).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // C6 — swirl crit (raw Mizuki.js:402-416, consts :126-127), gated C6 AND dreamdrifter.
+  {
+    type: "static",
+    stats: { crit_rate_swirl: 30, crit_dmg_swirl: 100 },
+    condition: {
+      type: "and",
+      items: [
+        { type: "constellation", constellation: 6 },
+        { type: "boolean", name: "mizuki_dreamdrifter" },
+      ],
+    },
+  },
 ];
 
 // partyData (Bucket C) DEFERRED — out of P3.5.2 DAMAGE scope (not an engine-
@@ -241,5 +285,6 @@ export const yumemizukiMizuki: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  postEffects,
   conditions: constellationConditions,
 };

@@ -58,10 +58,11 @@ interface TransformativeReactionDef {
   readonly reactionBonusKeys: readonly string[];
   /**
    * Reaction-specific crit keys — her per-reaction `getStatsCritRate`/
-   * `getStatsCritDamage` overrides. Only Burning (`crit_rate_burning`) and the
-   * Bloom family (Bloom/Rupture/Hyperbloom/Burgeon all inherit `crit_rate_bloom`)
-   * declare them; every other reaction is non-crit. Keys read 0 unless a source
-   * grants them (Nahida C2) → crit === normal === avg.
+   * `getStatsCritDamage` overrides. Burning (`crit_rate_burning`), the Bloom family
+   * (Bloom/Rupture/Hyperbloom/Burgeon all inherit `crit_rate_bloom`), and Swirl
+   * (`crit_rate_swirl`, Swirl.js:9-22) declare them; every other reaction is non-crit.
+   * Keys read 0 unless a source grants them (Nahida C2 for bloom/burning; Mizuki C6 +
+   * dreamdrifter for swirl) → crit === normal === avg.
    */
   readonly critRateKeys?: readonly string[];
   readonly critDmgKeys?: readonly string[];
@@ -104,10 +105,13 @@ const REACTION_DEFS: Readonly<Record<string, TransformativeReactionDef>> = {
   // getReactionRate 2 (Bloom default) — Reaction/Transformative/Rupture.js (+ Bloom parent key + inherited `_bloom` crit)
   rupture: { name: "rupture", element: "dendro", rate: 2, reactionBonusKeys: ["dmg_reaction_bloom", "dmg_reaction_rupture"], critRateKeys: ["crit_rate_bloom"], critDmgKeys: ["crit_dmg_bloom"] },
   // getReactionRate 0.6 — Reaction/Transformative/Swirl.js:4, key :29. Element-specific instances.
-  swirl_pyro: { name: "swirl_pyro", element: "pyro", rate: 0.6, reactionBonusKeys: ["dmg_reaction_swirl"] },
-  swirl_hydro: { name: "swirl_hydro", element: "hydro", rate: 0.6, reactionBonusKeys: ["dmg_reaction_swirl"] },
-  swirl_electro: { name: "swirl_electro", element: "electro", rate: 0.6, reactionBonusKeys: ["dmg_reaction_swirl"] },
-  swirl_cryo: { name: "swirl_cryo", element: "cryo", rate: 0.6, reactionBonusKeys: ["dmg_reaction_swirl"] },
+  // Swirl crit keys: FeatureReactionSwirl.getStatsCritRate()->['crit_rate_swirl'] /
+  // getStatsCritDamage()->['crit_dmg_swirl'] (Swirl.js:9-22). Read 0 for everyone except
+  // Mizuki C6+dreamdrifter (the only source of crit_*_swirl) → crit === normal === avg elsewhere.
+  swirl_pyro: { name: "swirl_pyro", element: "pyro", rate: 0.6, reactionBonusKeys: ["dmg_reaction_swirl"], critRateKeys: ["crit_rate_swirl"], critDmgKeys: ["crit_dmg_swirl"] },
+  swirl_hydro: { name: "swirl_hydro", element: "hydro", rate: 0.6, reactionBonusKeys: ["dmg_reaction_swirl"], critRateKeys: ["crit_rate_swirl"], critDmgKeys: ["crit_dmg_swirl"] },
+  swirl_electro: { name: "swirl_electro", element: "electro", rate: 0.6, reactionBonusKeys: ["dmg_reaction_swirl"], critRateKeys: ["crit_rate_swirl"], critDmgKeys: ["crit_dmg_swirl"] },
+  swirl_cryo: { name: "swirl_cryo", element: "cryo", rate: 0.6, reactionBonusKeys: ["dmg_reaction_swirl"], critRateKeys: ["crit_rate_swirl"], critDmgKeys: ["crit_dmg_swirl"] },
 };
 
 /**
