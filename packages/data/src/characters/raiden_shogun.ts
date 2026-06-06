@@ -25,9 +25,9 @@
  * independent single-hit rows so they emit and match the fixture's per-sub-hit keys.
  *
  * NON-DAMAGE readouts (modelled as FeatureStatic outputs; the harness asserts these):
- *   other.burst_dmg_bonus    — energy→Burst-DMG (scaling:"burst_energy_cost") = 27
- *   other.electro_dmg_bonus  — ER→Electro-DMG  (scaling:"recharge_total", exceedStatValue) = 52.8
  *   burst.baal_energy_recharge — ER readout (const term + recharge term, format decimal) = 4.48
+ *   other.electro_dmg_bonus  — ER→Electro-DMG  (scaling:"recharge_total", exceedStatValue) = 52.8
+ *   other.burst_dmg_bonus    — energy→Burst-DMG (scaling:"burst_energy_cost") = 27
  * Each modelled WITHOUT its application gate (oracle dumps the canonical-active value).
  * Constellations (C0 build) skipped. Reactions emitted generically from element.
  *

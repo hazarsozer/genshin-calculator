@@ -793,6 +793,8 @@ export function buildStats(input: BuildInput): BuildResult {
   // = 0.3% per energy × 90 = 27) resolves. Read ONLY by a multiplier whose scaling key is exactly
   // `burst_energy_cost` (resolveStatKey passes it verbatim — NOT in TOTAL_SCALING_STATS={atk,hp,def,mastery}),
   // and NO damage feature opts in → base-inert for the 58k damage goldens (mirrors the atk_base emit above).
+  // (The akuoumaru/wavebreakers-fin/mouuns-moon weapon postEffects also reference burst_energy_cost, but via
+  //  `fromStat`→`raw.getTotal` on the internal Stats object, NOT this `out` bag — independent of this emit.)
   // Source: raw/.../Feature2/Compile/Helpers.js makeStatItem, raw/.../classes/Stats.js isPercent (no `energy` branch),
   //         raw/.../db/generated/CharTables.js (constEntry burst_energy_cost).
   if (raw.isSet("burst_energy_cost")) out["burst_energy_cost"] = raw.get("burst_energy_cost");
