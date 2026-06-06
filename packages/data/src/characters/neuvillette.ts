@@ -43,7 +43,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Neuvillette)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Neuvillette as NeuvilletteStatTable } from "../generated/charTables.js";
 import { Neuvillette as NeuvilletteTalents } from "../generated/charTalentTables.js";
 
@@ -216,6 +216,47 @@ const constellationConditions: readonly Condition[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Post-effects
+// ---------------------------------------------------------------------------
+// A4 "Discipline of the Supreme Arbitration": for every 1% of current HP above
+// 30%, Neuvillette gains +0.6% Hydro DMG, capped at +30%. Faithful port of her A4
+// PostEffectStatsNeuvillette (Neuvillette.js:326-335):
+//   from: 'neuvillette_the_high_arbitrators_discipline',  // the HP-input slider
+//   percent: StatTable('dmg_hydro', [A4HydroBonus = 0.6]),
+//   exceed: 30,
+//   statCap: ValueTable([A4HydroBonusCap = 30]),
+//   conditions: [ConditionAscensionChar(4)].
+// Her PostEffectStatsNeuvillette.getBaseValueTree (PostEffect/Stats/Neuvillette.js:7-20)
+// first turns the slider into a pct: `pct = (slider > 100) ? slider/(hp_total/100) : slider`
+// — modelled by `fromStatDivide: "hp"` (the >100 HP-ratio branch in buildStats). Then
+// `exceed:30` ⇒ `max(0, pct − 30)` (the `offset`), `× ratio` (A4HydroBonus 0.6),
+// capped at A4HydroBonusCap (30). `dmg_hydro` IS a percent stat: her getTree folds the
+// ratio (0.6) and cap (30) /100 internally; our port carries the RAW A4HydroBonus/Cap
+// and applies the single isPercent /100 at emit (the established percent-key idiom —
+// dmg_hydro is in DMG_BONUS_ELEMENT_KEYS, /100'd in buildStats), so the post-effect
+// writes `min(max(0, pct−30) × 0.6, 30)` RAW into `dmg_hydro` and the emit yields the
+// fraction every hydro feature folds.
+//   slider 30000, hp_total 27921.09 → pct = 107.45 → max(0, 77.45) × 0.6 = 46.47 → cap
+//   30 (raw %) → /100 → +0.30 hydro DMG.
+// A4 ascension gate dropped (every build is A6; Mizuki/Emilie/Furina-A4 precedent). The
+// effect is instead gated on the slider being SET (> 0) — her ConditionNumber.isActive —
+// so it stays fully inert (`contribute` returns {}, never a spurious dmg_hydro:0) for
+// every build that does not set the slider (all 58k goldens).
+const a4PostEffects: readonly CharPostEffect[] = [
+  {
+    fromStat: "neuvillette_the_high_arbitrators_discipline",
+    fromStatDivide: "hp", // pct = 100·slider/hp_total when slider > 100 (absolute-HP input)
+    offset: 30, // exceed: only HP% above 30 counts
+    ratio: 0.6, // A4HydroBonus
+    capValue: 30, // A4HydroBonusCap (RAW percent ceiling; /100 at emit)
+    toStat: "dmg_hydro",
+    conditions: [
+      { type: "boolean-value", setting: "neuvillette_the_high_arbitrators_discipline", cond: "gt", value: 0 },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -231,4 +272,5 @@ export const neuvillette: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  postEffects: a4PostEffects,
 };
