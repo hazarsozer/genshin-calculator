@@ -9,8 +9,8 @@
  *   skill.sara_atk_bonus   — Tengu Juurai self-ATK-buff readout (atk_base × skill atk_bonus);
  *     MODELLED below as a FeatureStatic (scaling:"atk_base") now the eval bag emits atk_base.
  *   skill.sara_decorum     — A4 ER recharge readout (PostEffectStatsRecharge, A4-gated);
- *     DEFERRED — recharge-stat readout, a separate non-ATK eval-emission concern (no
- *     recharge_base in the eval bag), out of this atk_base pass's scope. Raw Sara.js:240-249.
+ *     MODELLED below as a FeatureStatic (scaling:"recharge_total") — the recharge total now
+ *     resolves via the eval bag. Raw Sara.js:240-249.
  *
  * C2 sara_dark_wings_dmg is constellation-gated (C2); not modelled at C0.
  *
@@ -196,6 +196,22 @@ const features: readonly Feature[] = [
     multipliers: [
       // scaling atk_base × (SaraTalents.s2.p2@L10 / 100) = atk_base × 0.77328.
       { scaling: "atk_base", leveling: "", values: { getValue: () => SaraTalents.s2.p2.getValue(10) } },
+    ],
+  },
+  // --- skill.sara_decorum: A4 "Decorum" ER recharge readout (FeaturePostEffectValue → static) ---
+  // Raw Sara.js:240-249 — PostEffectStatsRecharge({ percent: StatTable('', [1.2]) }), format:'decimal'.
+  // Her getTree: value(=1.2) × recharge_total_DECIMAL (makeStatTotalItem('recharge') → percent flag →
+  // recharge/100), and isPercent('') is FALSE so value is NOT /100'd; format:'decimal' applies NO ×100.
+  // In our engine the term is (getValue/100) × recharge_total, where recharge_total is the PERCENT form
+  // (e.g. 200). So getValue/100 × recharge_percent = 1.2/100 × recharge_percent reproduces her
+  // 1.2 × recharge_decimal exactly → getValue = the raw StatTable constant 1.2 (recharge absorbs the ×100).
+  // Modelled WITHOUT the A4 application gate (canonical-active value the oracle dumps). NEVER baked.
+  {
+    name: "sara_decorum",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "recharge_total", leveling: "", values: { getValue: () => 1.2 } },
     ],
   },
 ];

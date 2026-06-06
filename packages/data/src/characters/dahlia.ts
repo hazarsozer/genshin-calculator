@@ -11,12 +11,13 @@
  * 260-283, 284-292, 293-301). Their fixture keys match the talent-table path names
  * used in the talent items. We assign explicit names here to match the oracle.
  *
- * Shield display (burst.dahlia_base_shield_dmg_absorption) and ATK-speed bonus display
- * (burst.dahlia_atk_speed_bonus) have empty damageType → not damage triples; omitted.
+ * Shield display (burst.dahlia_base_shield_dmg_absorption) is modelled as a shield output.
+ * ATK-speed bonus display (burst.dahlia_atk_speed_bonus) is modelled below as a FeatureStatic
+ * (scaling:"hp"); the harness DOES assert it (non-damage output, oracle dumps the ungated value).
  *
  * A1 "The Wind's Gentle Grace": ConditionStatic display-only → no stats.
- * A4 "Prayer of Well-Wrought Joy": PostEffectStatsHP (HP→atk_speed%) gated by
- * ConditionBoolean → requires toggle; NOT auto-active at canonical solo C0 build.
+ * A4 "Prayer of Well-Wrought Joy": PostEffectStatsHP (HP→atk_speed%) gated by ConditionBoolean —
+ * the buff APPLICATION needs the toggle, but the readout shows the ungated value (oracle nonzero).
  * C2 shield bonus: ConditionBoolean C2-gated → omit.
  * C6 atk_speed: ConditionBoolean C6-gated → omit.
  *
@@ -189,6 +190,21 @@ const features: readonly Feature[] = [
     output: { kind: "shield" },
     multipliers: [
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.shield_percent"), flatValues: talents.get("burst.shield_flat") },
+    ],
+  },
+  // --- burst.dahlia_atk_speed_bonus: A4 "Prayer of Well-Wrought Joy" HP→ATK-speed readout (static) ---
+  // Raw Dahlia.js:120-132,314-318 — buffAtkSpeed = PostEffectStatsHP({ percent: StatTable('atk_speed',
+  // [A4AtkSpd=0.0005]), statCap: StatTable('', [A4AtkSpdCap=20]) }), format:'percent'. Her getTree:
+  // value(=0.0005)/100 (isPercent('atk_speed')) × hp_total (REAL_TOTAL → full magnitude) × 100 (format:'percent')
+  // = 0.0005 × hp_total, capped at 20. In our engine (getValue/100) × hp_total, so getValue = A4AtkSpd × 100 =
+  // 0.0005 × 100 = 0.05 folds the percent-format ×100 in. capValue = raw A4AtkSpdCap 20 (display units; inert here).
+  // Modelled WITHOUT the prayer toggle gate (ungated readout the oracle dumps). NEVER baked.
+  {
+    name: "dahlia_atk_speed_bonus",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 0.0005 * 100 }, capValue: 20 },
     ],
   },
 ];

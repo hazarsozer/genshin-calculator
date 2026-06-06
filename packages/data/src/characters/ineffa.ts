@@ -342,9 +342,23 @@ const features: readonly Feature[] = [
       { scaling: "atk", leveling: "", values: { getValue: () => 6 } },
     ],
   },
-  // DEFERRED → P3.5.5: other.ineffa_lunar_bonus (FeaturePostEffectValue(lunarPost), format:'percent') —
-  // the lunar-charged DMG-bonus readout (+ C1 ineffa_lunar_bonus_2). Percent-format lunar-reaction
-  // coefficient; not a plain stat-fraction. Left RED-by-design (honest deferral, NEVER faked).
+  // --- other.ineffa_lunar_bonus: lunar-charged DMG-bonus readout (FeaturePostEffectValue(lunarPost) → static) ---
+  // Raw Ineffa.js:139-142,325-328 — lunarPost = PostEffectStatsAtk({ percent: StatTable('lunarcharged_multi',
+  // [PassiveLunarScale/100 = 0.007]), statCap: ValueTable([PassiveLunarScaleCap=14]) }), format:'percent'.
+  // Her getTree: value(=0.007)/100 (isPercent('…_multi')) × atk_total (REAL_TOTAL → full magnitude) × 100
+  // (format:'percent') = 0.007 × atk_total, capped at 14. In our engine (getValue/100) × atk_total, so
+  // getValue = (PassiveLunarScale/100) × 100 = PassiveLunarScale = 0.7 folds the percent-format ×100 in.
+  // capValue = raw PassiveLunarScaleCap 14 (display units; the cap BINDS at this solo build → output 14.0).
+  // Same PostEffectStatsAtk shape as the green sibling mastery_bonus above. Modelled WITHOUT the
+  // ineffa_panoramic application gate (ungated readout the oracle dumps). NEVER baked.
+  {
+    name: "ineffa_lunar_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "atk", leveling: "", values: { getValue: () => PASSIVE_LUNAR_SCALE }, capValue: PASSIVE_LUNAR_SCALE_CAP },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------

@@ -7,13 +7,13 @@
  * Falling Thunder hits). Normals/charged/plunge are physical (sword, no innate
  * infusion); skill + burst are electro.
  *
+ * skill.traveler_electro_recharge_bonus — A4 "Resounding Roar" ER→Burst-DMG readout;
+ * MODELLED below as a FeatureStatic (scaling:"recharge_total" + flat bonus). The
+ * harness asserts it (non-damage output); modelled WITHOUT the amulet gate (the
+ * oracle dumps the A4-active value, 40).
+ *
  * SKIPPED (not C0-unconditional damage triples, so excluded by the golden
  * harness which only asserts non-empty-damageType fixture entries):
- *   - skill.traveler_electro_recharge_bonus — a FeaturePostEffectValue percent
- *     display (format:"percent", empty damageType), gated on the
- *     `traveler_abundance_amulet` boolean toggle. Not a damage hit and not
- *     expressible by the Feature model (no static-value field). The fixture
- *     entry is display-only → filtered out.
  *   - traveler_falling_thunder_bonus_dmg — C6-gated (ConditionConstellation 6),
  *     OFF at C0.
  *
@@ -175,6 +175,23 @@ const features: readonly Feature[] = [
         scalingMultiplier: 2,
         source: "constellation6",
       },
+    ],
+  },
+  // --- skill.traveler_electro_recharge_bonus: A4 "Resounding Roar" ER→Burst-DMG readout (static) ---
+  // Raw TravelerElectro.js:143-150,329-334 — rechargePostA4Post = PostEffectStatsRecharge({
+  // percent: StatTable('recharge', [10]), flatBonus: ValueTable([0.2]) }), format:'percent'.
+  // Her getTree: percent value(=10)/100 (isPercent('recharge')) × recharge_DECIMAL, PLUS flatBonus(=0.2)
+  // added raw, then ×100 (format:'percent') = 10 × recharge_decimal + 0.2×100.
+  // In our engine (getValue/100) × recharge_total(PERCENT) + flatValues = getValue × recharge_decimal + flatValues,
+  // so getValue = raw percent constant 10 (recharge absorbs the ×100) and flatValues = raw flatBonus 0.2 × 100 = 20
+  // (the flatBonus is NOT a stat scale → its ×100 percent-format fold IS expressed here). Modelled WITHOUT the
+  // amulet gate (A4-active value the oracle dumps). NEVER baked.
+  {
+    name: "traveler_electro_recharge_bonus",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "recharge_total", leveling: "", values: { getValue: () => 10 }, flatValues: { getValue: () => 0.2 * 100 } },
     ],
   },
 ];

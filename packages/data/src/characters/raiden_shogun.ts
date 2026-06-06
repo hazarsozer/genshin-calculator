@@ -24,9 +24,11 @@
  * sub-hits `normal_hit_4_1`/`normal_hit_4_2` (raw `isChild`) are modelled as
  * independent single-hit rows so they emit and match the fixture's per-sub-hit keys.
  *
- * SKIPPED (display-only / not damage triples — harness filters `damageType: ""`):
- *   other.burst_dmg_bonus, other.electro_dmg_bonus  (FeaturePostEffectValue)
- *   burst.baal_energy_recharge                       (FeatureStatic, format decimal)
+ * NON-DAMAGE readouts (modelled as FeatureStatic outputs; the harness asserts these):
+ *   burst.baal_energy_recharge — ER readout (const term + recharge term, format decimal) = 4.48
+ *   other.electro_dmg_bonus  — ER→Electro-DMG  (scaling:"recharge_total", exceedStatValue) = 52.8
+ *   other.burst_dmg_bonus    — energy→Burst-DMG (scaling:"burst_energy_cost") = 27
+ * Each modelled WITHOUT its application gate (oracle dumps the canonical-active value).
  * Constellations (C0 build) skipped. Reactions emitted generically from element.
  *
  * ALWAYS-ON PASSIVE (A4 Enlightened One → dynamic Electro DMG%):
@@ -189,6 +191,64 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "electro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.baal_musou_no_hitotachi_dmg") }],
+  },
+  // --- burst.baal_energy_recharge: A4 "Wishes Unnumbered" ER readout (FeatureStatic, format:'decimal') ---
+  // Raw RaidenShogun.js:597-616 — TWO multipliers, summed:
+  //   (1) FeatureMultiplierStatic(ValueTable([1])) → her getTreeStatValue = CConst(100) → const term = 1.
+  //       Modelled as the gorou const-term idiom: 0×stat + flatValues(=1).
+  //   (2) FeatureMultiplier({ scaling:'recharge*', leveling:'char_skill_elemental',
+  //       values: getMulti({ from:'burst.baal_energy_recharge'(=s3.p17), multi:60 }) }).
+  //       Her value = talent(L) × 60 (getMulti maps each table value × multi); at L10: 2.5 × 60 = 150.
+  //       Her term = value/100 × recharge_DECIMAL (makeStatTotalItem('recharge') → percent flag → /100).
+  //       In our engine (getValue/100) × recharge_total(PERCENT, 232), so getValue = talent(10) × 60 / 100 = 1.5:
+  //       the extra /100 compensates for our recharge_total carrying the percent (×100) factor her decimal lacks.
+  //       NEVER baked — derived from s3.p17@L10 × the raw multi 60. format:'decimal' → no further ×100.
+  // Total = 1 + 1.5/100 × 232 = 4.48. Modelled WITHOUT the A4 gate (canonical value the oracle dumps).
+  {
+    name: "baal_energy_recharge",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      { leveling: "", values: { getValue: () => 0 }, flatValues: { getValue: () => 1 } },
+      {
+        scaling: "recharge_total",
+        leveling: "",
+        values: { getValue: () => (RaidenShogunTalents.s3.p17.getValue(10) * 60) / 100 },
+      },
+    ],
+  },
+  // --- other.electro_dmg_bonus: A4 "Enlightened One" ER→Electro-DMG readout (FeaturePostEffectValue → static) ---
+  // Raw RaidenShogun.js:194-198,623-628 — electroDmgPost = PostEffectStatsExceedRecharge({
+  // percent: StatTable('dmg_electro', [40]) }), format:'percent'. ExceedRecharge base = max(recharge_DECIMAL − 1, 0)
+  // (ExceedRecharge.js:6-14). Her getTree: value(=40)/100 (isPercent('dmg_electro')) × max(recharge_decimal − 1, 0)
+  // × 100 (format:'percent') = 40 × max(recharge_decimal − 1, 0). In our engine (getValue/100) ×
+  // max(recharge_total − exceedStatValue, 0) with recharge_total PERCENT (232): getValue = raw constant 40
+  // (recharge absorbs the ×100), exceedStatValue = 100 = her −1 decimal threshold in percent units (mirrors the
+  // existing engulfing-lightning offset:100 and this char's A4 dmg_electro postEffect offset:100).
+  // = 40/100 × max(232 − 100, 0) = 0.4 × 132 = 52.8. Modelled WITHOUT the A4 gate (canonical value). NEVER baked.
+  {
+    name: "electro_dmg_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "recharge_total", leveling: "", values: { getValue: () => 40 }, exceedStatValue: 100 },
+    ],
+  },
+  // --- other.burst_dmg_bonus: "Eye of Stormy Judgment" energy→Burst-DMG readout (FeaturePostEffectValue → static) ---
+  // Raw RaidenShogun.js:185-192,617-622 — burstDmgPost = PostEffectStats({ from:'burst_energy_cost',
+  // levelSetting:'char_skill_elemental', percent: getAlias('skill.baal_burst_bonus'(=s2.p4), 'dmg_burst') }),
+  // format:'percent'. Her getTree: value(=s2.p4@L10=0.3)/100 (isPercent('dmg_burst')) × burst_energy_cost(=90,
+  // makeStatItem verbatim, not percent → no /100) × 100 (format:'percent') = 0.3 × 90 = 27. In our engine
+  // (getValue/100) × burst_energy_cost(=90, from the new bag emit): getValue = s2.p4@L10 × 100 = 0.3 × 100 = 30
+  // (the percent-format ×100 folds into getValue; the energy count is read raw). = 30/100 × 90 = 27.
+  // s2.p4 (9-entry table) clamps to 0.3 for levels ≥ 9. Modelled WITHOUT the eye-of-judgment gate. NEVER baked.
+  {
+    name: "burst_dmg_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "burst_energy_cost", leveling: "", values: { getValue: () => RaidenShogunTalents.s2.p4.getValue(10) * 100 } },
+    ],
   },
 ];
 

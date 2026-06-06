@@ -6,7 +6,8 @@
  * A1 "Come 'n' Get Me, Hag!" grants mona_phantom_explosion_dmg = 50% of
  * explosion_dmg (auto-active at ascension 1+; build is A6 so always on).
  * Hydro burst: burst_dmg.
- * other.hydro_dmg_bonus: damageType="" → display-only, not asserted by harness.
+ * other.hydro_dmg_bonus: A4 ER→Hydro-DMG% readout, MODELLED below as a FeatureStatic
+ *   (scaling:"recharge_total"); the harness DOES assert it (non-damage output).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Mona.js
@@ -169,6 +170,21 @@ const features: readonly Feature[] = [
     element: "hydro",
     condition: { type: "constellation", constellation: 2 },
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }],
+  },
+  // --- other.hydro_dmg_bonus: A4 "Waterborne Destiny" ER→Hydro-DMG readout (FeaturePostEffectValue → static) ---
+  // Raw Mona.js:126,287-293 — hydroDmgPost = PostEffectStatsRecharge({ percent: StatTable('dmg_hydro',
+  // [A4HydroDmgRatio=20]) }), format:'percent'. Her getTree: value(=20)/100 (isPercent('dmg_hydro')) ×
+  // recharge_total_DECIMAL (recharge/100), then ×100 (format:'percent') = 20 × recharge_decimal × (1/100 × 100)
+  // = 20 × recharge_decimal. In our engine the term is (getValue/100) × recharge_total (PERCENT form, e.g. 232),
+  // i.e. getValue/100 × recharge_percent = getValue × recharge_decimal → getValue = raw A4HydroDmgRatio = 20
+  // (recharge-scaled: the ×100 percent-format fold is "free"). Modelled WITHOUT the A4 gate. NEVER baked.
+  {
+    name: "hydro_dmg_bonus",
+    category: "other",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "recharge_total", leveling: "", values: { getValue: () => 20 } },
+    ],
   },
 ];
 

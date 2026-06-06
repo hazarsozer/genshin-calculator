@@ -5,7 +5,8 @@
  * → children _5_1/_5_2), cryo charged hit, plunge/low/high, cryo skill
  * (stab + slash, both as children with skill_dmg as multihit parent),
  * cryo burst (swing + lance_dmg children + ice lance periodoic, burst_dmg parent),
- * burst display-only rosaria_crit_dmg_buff (no damageType, skipped by harness).
+ * burst rosaria_crit_dmg_buff readout (A4 crit-rate share) — MODELLED below as a
+ * FeatureStatic (scaling:"crit_rate_total"); the harness asserts it (non-damage output).
  *
  * No always-on passive ATK/crit bonuses: A1 is ConditionBoolean (toggle), A4 is
  * ConditionStatic text_only. The cryo stat bonus from the ascension passive is
@@ -200,6 +201,28 @@ const features: readonly Feature[] = [
     category: "burst",
     element: "cryo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.rosaria_ice_lance") }],
+  },
+  // --- burst.rosaria_crit_dmg_buff: A4 "Shadow Samaritan" crit-rate-share readout (static) ---
+  // Raw Rosaria.js:371-379 — PostEffectStats({ from:'crit_rate*', percent: StatTable('crit_rate', [15]),
+  // statCap: ValueTable([15]) }), format:'percent'. (Despite the "crit_dmg" name, it scales off crit_rate —
+  // it shows 15% of Rosaria's crit rate; this StatTable's [15] is distinct from the partyData A4's [0.15].)
+  //
+  // UNITS TRAP — getValue = 15 × 100 = 1500:
+  //   Her getTree: value(=15)/100 (isPercent('crit_rate')) × crit_rate_DECIMAL (makeStatTotalItem('crit_rate*')
+  //   → percent flag → crit_rate/100, a FRACTION e.g. 0.10) × 100 (format:'percent') = 15 × 0.10 = 1.5.
+  //   In our engine crit_rate_total is ALREADY a FRACTION (buildStats /100's it, e.g. 0.10) and our path does
+  //   NOT apply the percent-format ×100. So (getValue/100) × crit_rate_total = (1500/100) × 0.10 = 15 × 0.10 = 1.5
+  //   ⇒ getValue = raw StatTable constant 15 × 100 = 1500 (the ×100 folds in the absent percent-format multiply;
+  //   the 15 is NOT a bare baked number — it is the raw [15] × the percent fold). capValue = raw statCap 15 in
+  //   display units (the 1.5 term is well below → inert). Modelled WITHOUT the samaritan gate. NEVER baked.
+  //   (Do NOT emit a percent-form crit-rate stat — rejected as net-new surface for one readout.)
+  {
+    name: "rosaria_crit_dmg_buff",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "crit_rate_total", leveling: "", values: { getValue: () => 15 * 100 }, capValue: 15 },
+    ],
   },
 ];
 
