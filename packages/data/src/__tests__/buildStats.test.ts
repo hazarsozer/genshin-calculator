@@ -77,6 +77,16 @@ describe("buildStats — Hu Tao totals vs oracle (hu_tao.json stats.*)", () => {
     expect(stats.mastery_total).toBeCloseTo(55, 3);
   });
 
+  it("emits atk_base = white base ATK (char+weapon base + flat-atk_base bonus), NOT a percent", () => {
+    // The eval-time bag exposes the WHITE base ATK her makeStatItem('atk_base') reads —
+    // char base + weapon base + the build's flat atk_base contribution (871 here). NOT
+    // /100 (it is flat ATK, not a percent stat). Hutao char 106.4343801 + Blackcliff Pole
+    // 509.605949 + 871 = 1487.0403291. Read VERBATIM (no base×(1+%) total). Consumed by
+    // the hutao/bennett/sara ATK-buff readouts (scaling:"atk_base").
+    const { stats } = buildHuTao();
+    expect(stats.atk_base).toBeCloseTo(1487.0403291, 4);
+  });
+
   it("crit_dmg / crit_rate totals are emitted as FRACTIONS for the engine", () => {
     const { stats } = buildHuTao();
     // hu_tao.json: stats.crit_dmg = 193.528(%), stats.crit_rate = 10(%)
