@@ -55,7 +55,11 @@ const STAT_BLOCK = {
   def_base: 876,
   dmg_burst: 64,
   dmg_charged: 16,
-  dmg_electro: 2,
+  // Fischl's oracle build wears ThunderingFury 4pc — which also grants the 2pc `dmg_electro: 15`
+  // (raw/.../db/Artifacts/Set/ThunderingFury.js:2pc). The base substat `dmg_electro: 2` + the 2pc
+  // 15 = 17 total, exactly the oracle's effective electro DMG% (the catalyze term inherits it, as
+  // does every electro hit). Baizhu has no electro hit (pure dendro) → this is Baizhu-inert.
+  dmg_electro: 17,
   dmg_normal: 8,
   dmg_phys: 4,
   dmg_skill: 32,
@@ -64,7 +68,7 @@ const STAT_BLOCK = {
   recharge_base: 100,
   // Fischl's Aggravate Σ (ThunderingFury 4pc, dmg_reaction_aggravate:20). Inert for Baizhu's
   // dendro/Spread (Spread sums dmg_reaction_quicken + dmg_reaction_spread, not aggravate). Present
-  // so Task B's catalyze wiring folds the SAME Σ the oracle used → this suite goes GREEN unedited.
+  // so Task B's catalyze wiring folds the SAME Σ the oracle used.
   dmg_reaction_aggravate: 20,
 } as const;
 

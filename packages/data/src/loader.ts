@@ -25,7 +25,7 @@ import type {
   Feature,
 } from "@genshin/types";
 import { compileFeature, type CompileContext } from "./compileFeature.js";
-import { transformativeReactionFeatures } from "./reactions.js";
+import { catalyzeMultipliers, transformativeReactionFeatures } from "./reactions.js";
 
 /** The "<category>.<name>" key for a feature (matches the oracle fixtures). */
 export function featureKey(feature: Feature): string {
@@ -58,6 +58,15 @@ export function compileCharacter(
     ...(ctx.charMultipliers ??
       char.multipliers.filter((m): m is CharMultiplier => m.target !== undefined)),
     ...(ctx.extraMultipliers ?? []),
+    // Global catalyze (Spread/Aggravate) multipliers — her `db/CalcData/Multipliers.js`.
+    // Merged ONLY when `settings.reaction == 'quicken'` (her two entries' shared
+    // `ConditionBooleanValue({setting:'reaction', cond:'eq', value:'quicken'})` gate). The
+    // gate lives here (a single string compare) rather than as a per-entry condition because
+    // our `ConditionBooleanValue` is numeric-only — it cannot express a string `value:'quicken'`.
+    // Inert in every golden build (none set `reaction: 'quicken'`) → the 58k damage goldens
+    // are byte-identical; the per-hit element filter (dendro/electro) still gates which hits
+    // the term reaches. Source: raw/.../db/CalcData/Multipliers.js.
+    ...(ctx.settings["reaction"] === "quicken" ? catalyzeMultipliers() : []),
   ];
   const featureCtx: CompileContext = { ...ctx, charMultipliers };
 

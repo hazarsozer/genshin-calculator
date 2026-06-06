@@ -43,7 +43,7 @@
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Reaction/Transformative/<Reaction>.js (each getReactionRate + dmg_reaction_<kind>)
  */
 
-import type { Element, Feature } from "@genshin/types";
+import type { CharMultiplier, Element, Feature } from "@genshin/types";
 
 /**
  * One transformative reaction's invariant data. `name` is the feature/fixture key
@@ -206,4 +206,44 @@ export function transformativeReactionFeatures(
   // Geo's crystallize is a non-damage shield output, appended alongside the
   // transformative contributions (its `output` routes through compileOutput).
   return element === "geo" ? [...features, CRYSTALLIZE_FEATURE] : features;
+}
+
+/**
+ * The two GLOBAL catalyze (Spread/Aggravate) multipliers — her `db/CalcData/Multipliers.js`.
+ *
+ * Each is a char-level (`CharMultiplier`-shaped) multiplier whose `catalyze` spec drives a
+ * special base-damage term (see `FeatureMultiplierEntry.catalyze` / `baseDamageTerm`):
+ *   prefactor × REACTION_LEVEL_MULTIPLIERS[charLevel-1] × (1 + 5·EM/(EM+1200) + Σ bonusKeys)
+ * summed into the matching hit's base damage (so it inherits the hit's crit/DMG%/res/def).
+ *
+ * The HIT'S ELEMENT decides the direction, exactly as her two entries target
+ * `damageElements: ['dendro']` (Spread, ×1.25) / `['electro']` (Aggravate, ×1.15). Both fire
+ * ONLY when `settings.reaction == 'quicken'`; that gate is applied at the MERGE point (the
+ * loader merges these into `charMultipliers` only when `reaction === 'quicken'`), mirroring her
+ * `ConditionBooleanValue({setting:'reaction', cond:'eq', value:'quicken'})`. `damageTypes: []`
+ * = no type filter (the multiplier applies to every dendro/electro hit, regardless of type).
+ *
+ * The bonus keys are her per-direction `getStatsDmgBonus`: Spread = `dmg_reaction_quicken` +
+ * `dmg_reaction_spread`; Aggravate = `dmg_reaction_quicken` + `dmg_reaction_aggravate`.
+ *
+ * Source: raw/.../db/CalcData/Multipliers.js (the two entries + the reaction=='quicken' gate),
+ *         raw/.../classes/Feature2/Multiplier/Reaction/Quicken/{Spread,Aggravate}.js.
+ */
+export function catalyzeMultipliers(): readonly CharMultiplier[] {
+  return [
+    // Spread — dendro hits, ×1.25.
+    {
+      leveling: "",
+      values: { getValue: () => 0 },
+      catalyze: { prefactor: 1.25, bonusKeys: ["dmg_reaction_quicken", "dmg_reaction_spread"] },
+      target: { damageTypes: [], damageElements: ["dendro"] },
+    },
+    // Aggravate — electro hits, ×1.15.
+    {
+      leveling: "",
+      values: { getValue: () => 0 },
+      catalyze: { prefactor: 1.15, bonusKeys: ["dmg_reaction_quicken", "dmg_reaction_aggravate"] },
+      target: { damageTypes: [], damageElements: ["electro"] },
+    },
+  ];
 }

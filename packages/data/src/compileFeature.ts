@@ -485,6 +485,14 @@ function activeCharMultipliers(
     ) {
       return false;
     }
+    // canReact branch — CATALYZE multipliers only. Her `FeatureMultiplierReactionQuicken
+    // .isMatchFeature` (Quicken.js:13-16) returns false for `!feature.canReact()`, so a
+    // `cannotReact` hit (the descent FeatureDamagePlungeCollision) is NOT catalyzed even
+    // when its element matches (e.g. Baizhu's dendro `plunge`: oracle isReacted:false).
+    // Guarded on `m.catalyze` so it applies ONLY to the two global catalyze entries — a
+    // normal char multiplier (Itto A4, …) has no canReact constraint. Inert for every
+    // non-catalyze multiplier and every reacting hit. Source: raw/.../Quicken.js:13-16.
+    if (m.catalyze !== undefined && feature.cannotReact) return false;
     return m.condition === undefined || evaluate(m.condition, ctx.settings); // isActive
   });
 }
