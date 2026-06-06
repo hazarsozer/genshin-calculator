@@ -233,15 +233,15 @@ export function catalyzeMultipliers(): readonly CharMultiplier[] {
   return [
     // Spread — dendro hits, ×1.25.
     {
-      leveling: "",
-      values: { getValue: () => 0 },
+      leveling: "", // required by FeatureMultiplierEntry but NEVER read — baseDamageTerm
+      values: { getValue: () => 0 }, // returns early on `catalyze`, bypassing the talent%/scaling path
       catalyze: { prefactor: 1.25, bonusKeys: ["dmg_reaction_quicken", "dmg_reaction_spread"] },
       target: { damageTypes: [], damageElements: ["dendro"] },
     },
     // Aggravate — electro hits, ×1.15.
     {
-      leveling: "",
-      values: { getValue: () => 0 },
+      leveling: "", // required by FeatureMultiplierEntry but NEVER read — baseDamageTerm
+      values: { getValue: () => 0 }, // returns early on `catalyze`, bypassing the talent%/scaling path
       catalyze: { prefactor: 1.15, bonusKeys: ["dmg_reaction_quicken", "dmg_reaction_aggravate"] },
       target: { damageTypes: [], damageElements: ["electro"] },
     },

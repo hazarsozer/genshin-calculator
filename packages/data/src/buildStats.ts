@@ -196,7 +196,7 @@ const REACTION_BONUS_PERCENT_KEYS = [
   "dmg_reaction_hyperbloom",
   "dmg_reaction_burgeon",
   "dmg_reaction_rupture",
-  "dmg_reaction_aggravate",
+  "dmg_reaction_aggravate",  // ALSO the third member of Aggravate's catalyze Σ (below); ThunderingFury 4pc:20 is its v5.8 producer
   // Catalyze (Spread/Aggravate) reaction-DMG-bonus keys read by the catalyze base term's
   // `(1 + 5·EM/(EM+1200) + Σ)` factor (compileFeature). `dmg_reaction_quicken` is Baizhu's A4
   // `buffQuicken` post-effect (HP→quicken%, an isPercent stat → its post-effect getTree writes a
