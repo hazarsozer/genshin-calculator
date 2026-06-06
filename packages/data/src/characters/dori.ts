@@ -189,11 +189,21 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.heal_dot_percent"), flatValues: talents.get("burst.heal_dot_flat") },
     ],
   },
-  // --- DEFERRED: skill.dori_compound_interest (A4 energy-restore readout, fmt:"decimal", value 10) ---
-  // FeaturePostEffectValue(PostEffectStats percent=StatTable('',[5]) from an energy/count stat) — a flat ENERGY
-  // amount (not a heal/shield/static DMG value), fmt:"decimal". Not representable as a faithful damage-scaled
-  // output and the oracle can't validate it as a stat; deferred to a future energy/utility-readout sub-project.
-  // NEVER baked. raw/genshin_calc_pub/src/js/db/Char/Dori.js:282-290.
+  // --- skill.dori_compound_interest: A4 "Compound Interest" ER recharge readout (FeaturePostEffectValue → static) ---
+  // Raw Dori.js:281-291 — PostEffectStatsRecharge({ percent: StatTable('', [5]), statCap: ValueTable([15]) }),
+  // format:'decimal'. It's a RECHARGE-scaled static (value × recharge_total_decimal), not an energy stat: her
+  // getTree = value(=5) × recharge_decimal (isPercent('') FALSE → no /100; decimal format → no ×100), capped at 15.
+  // In our engine (getValue/100) × recharge_total(PERCENT, e.g. 200) = 5/100 × recharge_percent = 5 × recharge_decimal
+  // → getValue = raw StatTable constant 5; capValue = raw statCap 15 (display units, inert here). Modelled WITHOUT
+  // the A4 gate (canonical value the oracle dumps). NEVER baked. (Reclassified from energy sub-project.)
+  {
+    name: "dori_compound_interest",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      { scaling: "recharge_total", leveling: "", values: { getValue: () => 5 }, capValue: 15 },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
