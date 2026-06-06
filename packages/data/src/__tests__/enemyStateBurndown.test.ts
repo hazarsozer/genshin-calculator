@@ -56,6 +56,7 @@ const STAT_BLOCK = {
   def_base: 876,
   dmg_burst: 64,
   dmg_charged: 16,
+  dmg_electro: 2,
   dmg_normal: 8,
   dmg_phys: 4,
   dmg_skill: 32,
