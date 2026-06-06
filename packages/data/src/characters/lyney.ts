@@ -121,6 +121,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamageChargedAimed aimed (physical, no element) — Lyney.js:243-251
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
@@ -128,6 +129,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamageChargedAimed lyney_charged_dmg (pyro full-charge) — Lyney.js:252-261
   {
     name: "lyney_charged_dmg",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "pyro",

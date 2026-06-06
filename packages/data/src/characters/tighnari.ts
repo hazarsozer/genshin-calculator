@@ -93,6 +93,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamageChargedAimed aimed — physical aimed shot (Tighnari.js:189-197)
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     damageBonuses: ["dmg_charged_tighnari"],
@@ -104,6 +105,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamageChargedAimed tighnari_charged_dmg — dendro charged (Tighnari.js:198-207)
   {
     name: "tighnari_charged_dmg",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "dendro",
@@ -116,6 +118,7 @@ const features: readonly Feature[] = [
   // raw: FeatureDamageChargedAimed tighnari_wreath_arrow_dmg — dendro wreath arrow (Tighnari.js:208-217)
   {
     name: "tighnari_wreath_arrow_dmg",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "dendro",

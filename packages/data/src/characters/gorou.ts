@@ -112,6 +112,7 @@ const features: readonly Feature[] = [
   // raw/genshin_calc_pub/src/js/db/Char/Gorou.js:192-209
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
@@ -120,6 +121,7 @@ const features: readonly Feature[] = [
   // raw/genshin_calc_pub/src/js/db/Char/Gorou.js:210-220
   {
     name: "charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "geo",

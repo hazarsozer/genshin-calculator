@@ -7,9 +7,11 @@
  *
  * A1 "Lingering Fragrance": emilie_cleardew_cologne_dmg — fixed 600% ATK dendro
  * skill hit, damageType "none", auto-active at A6 (ConditionAscensionChar asc1).
- * A4 "Rectification": atkBuffPost converts ATK → dmg_all (conditional on
- * enemy_burning toggle — OFF at canonical build, so no postEffects needed here).
- * Its readout other.emilie_dmg_bonus IS still emitted (the post-effect CONDITION
+ * A4 "Rectification": atkBuffPost converts ATK → dmg_all (0.015 × total ATK,
+ * capped at 36), gated on the enemy_burning toggle (+ ascension 4, satisfied at
+ * the canonical A6 build). Ported as a `dmg_all` postEffect below (P3.5 enemy-state):
+ * base-inert because enemy_burning is unset in every v5.8 golden.
+ * Its readout other.emilie_dmg_bonus is ALSO emitted (the post-effect CONDITION
  * gates APPLICATION, not the display) → modelled as output:{kind:"static"} (P3.5.3).
  *
  * Sources:
@@ -227,6 +229,25 @@ export const emilie: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // A4 "Rectification": dmg_all += total ATK × (A4DamageBonus/1000 = 15/1000 = 0.015),
+  // capped at A4DamageBonusMax = 36 (in dmg_all percent units). Gated by the enemy_burning
+  // toggle; the raw ConditionAscensionChar({ascension:4}) is satisfied at the canonical A6
+  // build (our engine has no ascension axis), so only the load-bearing boolean is kept.
+  // PostEffectStatsAtk.getBase reads total ATK (base + flat + base×percent) = getTotal('atk').
+  // Base-inert: enemy_burning is unset in every v5.8 golden. At the burning-emilie fixture the
+  // bonus is ≈30.36 (atk_total ≈ 2024 × 0.015), BELOW the 36 cap → the cap is faithful but does
+  // NOT bind here.
+  // raw/genshin_calc_pub/src/js/db/Char/Emilie.js:119-137 (TalentValues + atkBuffPost);
+  // raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/Atk.js:5-15 (getBase/getBaseValueTree).
+  postEffects: [
+    {
+      fromStat: "atk",
+      toStat: "dmg_all",
+      ratio: 0.015,
+      capValue: 36,
+      conditions: [{ type: "boolean", name: "enemy_burning" }],
+    },
+  ],
   // C2 "Lakelight Top Note" — enemy Dendro RES -30%.
   // Source: raw/genshin_calc_pub/src/js/db/Char/Emilie.js (partyData conditions)
   partyData: {

@@ -873,16 +873,28 @@ export function compileFeature(
   // not yet generically folded). Mirrors her getDefaultStatsCritRate /
   // getDefaultStatsCritDamage (Damage.js:72-122): generic set (incl. the per-type
   // push), then `this.critRateBonuses` / `this.critDamageBonuses` concatenated.
-  const critRateBase = cCritRate([
-    cStat("crit_rate_total"),
-    // Enemy-vulnerability crit rate — her getDefaultStatsCritRate ALWAYS includes
-    // `crit_rate_enemy` (Feature2/Damage.js:73). buildStats emits it as a fraction only
-    // when a source sets it (Cryo Resonance / BlizzardStrayer 4pc); 0 otherwise → no-op
-    // for every build that has no enemy-status crit debuff (base golden untouched).
-    cStat("crit_rate_enemy"),
-    ...critBonusTypeKeys("rate", damageType).map((k) => cStat(k)),
-    ...(feature.critRateBonuses ?? []).map((k) => cStat(k)),
-  ]);
+  // Aimed weak-shot → 100% crit. Her FeatureDamageChargedAimed.getCritRateBlock
+  // (raw/.../Feature2/Damage/Charged/Aimed.js:5-13) returns `CCritRate([CConst(1)])`
+  // (a flat 100% crit) when `data.settings.enemy_weak_shot` is set, ELSE the normal
+  // crit block. NOT bow-restricted (the db/Conditions/Enemy.js weapon hideCondition is
+  // a cosmetic UI gate); every aimed feature gets it. Two independent guards keep this
+  // base-inert: it fires only when `enemy_weak_shot` is truthy (unset in all 58k
+  // goldens) AND only on a feature flagged `isAimed` (a FeatureDamageChargedAimed). The
+  // downstream Royal-passive wrap is applied to this block exactly as in raw, where the
+  // royalCrit wrap (Damage.js:298) sits on top of getCritRateBlock's result.
+  const critRateBase =
+    ctx.settings["enemy_weak_shot"] && feature.isAimed
+      ? cCritRate([cConst(1)])
+      : cCritRate([
+          cStat("crit_rate_total"),
+          // Enemy-vulnerability crit rate — her getDefaultStatsCritRate ALWAYS includes
+          // `crit_rate_enemy` (Feature2/Damage.js:73). buildStats emits it as a fraction only
+          // when a source sets it (Cryo Resonance / BlizzardStrayer 4pc); 0 otherwise → no-op
+          // for every build that has no enemy-status crit debuff (base golden untouched).
+          cStat("crit_rate_enemy"),
+          ...critBonusTypeKeys("rate", damageType).map((k) => cStat(k)),
+          ...(feature.critRateBonuses ?? []).map((k) => cStat(k)),
+        ]);
   // Royal-passive AVERAGE crit transform — wrap the clamped chance ONLY when the
   // Royal-weapon toggle `weapon_royal_avg_crit_rate` is set (her Damage.js:298 gate)
   // AND this is a single-hit feature. Affects ONLY the avg (cDamage feeds `chance`

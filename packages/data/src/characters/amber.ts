@@ -79,6 +79,7 @@ const features: readonly Feature[] = [
   // aimed: physical charged shot (FeatureDamageChargedAimed → damageType="charged")
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
@@ -86,6 +87,7 @@ const features: readonly Feature[] = [
   // charged_aimed: fully charged pyro arrow
   {
     name: "charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "pyro",
@@ -117,6 +119,7 @@ const features: readonly Feature[] = [
   // numeric scalingMultiplier on the same aimed/charged-aimed talent. Raw Amber.js:180-214.
   {
     name: "second_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     condition: { type: "constellation", constellation: 1 },
@@ -131,6 +134,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "second_charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "pyro",

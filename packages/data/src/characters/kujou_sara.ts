@@ -91,6 +91,7 @@ const features: readonly Feature[] = [
   // raw/genshin_calc_pub/src/js/db/Char/Sara.js:172-180
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
@@ -99,6 +100,7 @@ const features: readonly Feature[] = [
   // raw/genshin_calc_pub/src/js/db/Char/Sara.js:181-189
   {
     name: "charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "electro",

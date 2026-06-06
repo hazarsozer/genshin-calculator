@@ -118,6 +118,7 @@ const features: readonly Feature[] = [
   // aimed: untargeted aim shot — physical (no element override). raw Yoimiya.js:355-362
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
@@ -125,6 +126,7 @@ const features: readonly Feature[] = [
   // charged_aimed: fully-charged aim shot — pyro. raw Yoimiya.js:363-371
   {
     name: "charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "pyro",

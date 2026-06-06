@@ -107,6 +107,7 @@ const features: readonly Feature[] = [
   // aimed: physical charged shot (FeatureDamageChargedAimed → damageType="charged")
   {
     name: "aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
@@ -114,6 +115,7 @@ const features: readonly Feature[] = [
   // charged_aimed: fully-charged cryo arrow
   {
     name: "charged_aimed",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "cryo",
@@ -122,6 +124,7 @@ const features: readonly Feature[] = [
   // ganyu_frostflake: Frostflake Arrow itself (cryo). A1 crit bonus is a toggle, OFF here.
   {
     name: "ganyu_frostflake",
+    isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "cryo",
