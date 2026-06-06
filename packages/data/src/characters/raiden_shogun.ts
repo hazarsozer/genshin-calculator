@@ -190,6 +190,31 @@ const features: readonly Feature[] = [
     element: "electro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.baal_musou_no_hitotachi_dmg") }],
   },
+  // --- burst.baal_energy_recharge: A4 "Wishes Unnumbered" ER readout (FeatureStatic, format:'decimal') ---
+  // Raw RaidenShogun.js:597-616 — TWO multipliers, summed:
+  //   (1) FeatureMultiplierStatic(ValueTable([1])) → her getTreeStatValue = CConst(100) → const term = 1.
+  //       Modelled as the gorou const-term idiom: 0×stat + flatValues(=1).
+  //   (2) FeatureMultiplier({ scaling:'recharge*', leveling:'char_skill_elemental',
+  //       values: getMulti({ from:'burst.baal_energy_recharge'(=s3.p17), multi:60 }) }).
+  //       Her value = talent(L) × 60 (getMulti maps each table value × multi); at L10: 2.5 × 60 = 150.
+  //       Her term = value/100 × recharge_DECIMAL (makeStatTotalItem('recharge') → percent flag → /100).
+  //       In our engine (getValue/100) × recharge_total(PERCENT, 232), so getValue = talent(10) × 60 / 100 = 1.5:
+  //       the extra /100 compensates for our recharge_total carrying the percent (×100) factor her decimal lacks.
+  //       NEVER baked — derived from s3.p17@L10 × the raw multi 60. format:'decimal' → no further ×100.
+  // Total = 1 + 1.5/100 × 232 = 4.48. Modelled WITHOUT the A4 gate (canonical value the oracle dumps).
+  {
+    name: "baal_energy_recharge",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      { leveling: "", values: { getValue: () => 0 }, flatValues: { getValue: () => 1 } },
+      {
+        scaling: "recharge_total",
+        leveling: "",
+        values: { getValue: () => (RaidenShogunTalents.s3.p17.getValue(10) * 60) / 100 },
+      },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
