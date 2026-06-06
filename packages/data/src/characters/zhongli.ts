@@ -12,7 +12,7 @@
  * hp-scaling multiplier on every relevant feature.
  *
  * Display-only features (damageType:"") — NOT tested by golden harness:
- *   - attack/skill/burst.zhongli_additional_dmg (PostEffectStatsHP)
+ *   - attack/skill/burst.zhongli_additional_dmg (PostEffectStatsHP) — MODELLED (P3.5.3)
  *   - skill.shield (FeatureShield)
  *
  * Sources:
@@ -254,6 +254,38 @@ const features: readonly Feature[] = [
     multipliers: [
       { leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") },
       hpBurst,
+    ],
+  },
+  // --- A4 "Dominance of Earth" display-only readouts (FeaturePostEffectValue) ---
+  // PostEffectStatsHP({ percent: new StatTable('', [X]) }) — stat='' → non-percent in her math;
+  // engine applies getValue()/100 so getValue() returns X×100 to recover X×hp_total.
+  // ConditionAscensionChar({ascension:4}) satisfied at canonical A6 → modelled without gate.
+  // raw/genshin_calc_pub/src/js/db/Char/Zhongli.js:243-250 (attack), 286-293 (skill), 306-313 (burst)
+  {
+    name: "zhongli_additional_dmg",
+    category: "attack",
+    output: { kind: "static" },
+    multipliers: [
+      // StatTable('', [0.0139]) → getValue() = 0.0139×100 = 1.39; engine: 1.39/100 × hp_total = 0.0139 × hp_total
+      { scaling: "hp", leveling: "", values: { getValue: () => 1.39 } },
+    ],
+  },
+  {
+    name: "zhongli_additional_dmg",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      // StatTable('', [0.019]) → getValue() = 0.019×100 = 1.9; engine: 1.9/100 × hp_total = 0.019 × hp_total
+      { scaling: "hp", leveling: "", values: { getValue: () => 1.9 } },
+    ],
+  },
+  {
+    name: "zhongli_additional_dmg",
+    category: "burst",
+    output: { kind: "static" },
+    multipliers: [
+      // StatTable('', [0.33]) → getValue() = 0.33×100 = 33; engine: 33/100 × hp_total = 0.33 × hp_total
+      { scaling: "hp", leveling: "", values: { getValue: () => 33 } },
     ],
   },
 ];
