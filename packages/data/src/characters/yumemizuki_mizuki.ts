@@ -241,14 +241,31 @@ const postEffects: readonly CharPostEffect[] = [
 // C4: ConditionStatic display-only → SKIP.
 // C5 "Sleep Awaits" — +3 Burst talent levels.
 //   raw/genshin_calc_pub/src/js/db/Char/Mizuki.js:393-400 (constellation[4]).
-// C6: ConditionStatic{crit_rate_swirl, crit_dmg_swirl} gated by ConditionBoolean
-//   (dreamdrifter) subCondition — toggle OFF in fixed build → SKIP.
+// C6 "The Heart Lingers Long" — ConditionStatic{crit_rate_swirl:30, crit_dmg_swirl:100}
+//   gated by a ConditionBoolean(dreamdrifter) subCondition (consts C6SwirlCritRate=30 /
+//   C6SwirlCritDmg=100, Mizuki.js:126-127; entry Mizuki.js:402-416). Fires only at
+//   char_constellation>=6 AND mizuki_dreamdrifter=true → both crit keys feed all 4 swirl
+//   instances. Modeled as a `static` condition gated on an `and` of the C6 constellation
+//   and the dreamdrifter toggle. (Her party-path variant Mizuki.js:491-501 is partyData
+//   scope — not this task.)
 
 const constellationConditions: readonly Condition[] = [
   // C3 — char_skill_elemental_bonus +3 (skill talent level up).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5 — char_skill_burst_bonus +3 (burst talent level up).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // C6 — swirl crit (raw Mizuki.js:402-416, consts :126-127), gated C6 AND dreamdrifter.
+  {
+    type: "static",
+    stats: { crit_rate_swirl: 30, crit_dmg_swirl: 100 },
+    condition: {
+      type: "and",
+      items: [
+        { type: "constellation", constellation: 6 },
+        { type: "boolean", name: "mizuki_dreamdrifter" },
+      ],
+    },
+  },
 ];
 
 // partyData (Bucket C) DEFERRED — out of P3.5.2 DAMAGE scope (not an engine-

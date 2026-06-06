@@ -945,11 +945,17 @@ export function buildStats(input: BuildInput): BuildResult {
     if (raw.isSet(key)) out[key] = raw.get(key) / 100;
   }
 
-  // Condition-contributed reaction CRIT (Nahida C2 makes burning/bloom crittable) →
-  // fractions. Read by cTransformativeDamage's reaction-specific crit keys; absent →
-  // unset (engine reads 0) so every non-crit reaction and every char without the grant
-  // is unchanged (crit === normal === avg).
-  for (const key of ["crit_rate_burning", "crit_dmg_burning", "crit_rate_bloom", "crit_dmg_bloom"]) {
+  // Condition-contributed reaction CRIT (Nahida C2 makes burning/bloom crittable;
+  // Mizuki C6+dreamdrifter makes swirl crittable) → fractions. Read by
+  // cTransformativeDamage's reaction-specific crit keys; absent → unset (engine reads 0)
+  // so every non-crit reaction and every char without the grant is unchanged
+  // (crit === normal === avg). crit_*_swirl is sourced ONLY by Mizuki's C6 ConditionStatic
+  // (raw Mizuki.js:402-416) → base-inert for every other build.
+  for (const key of [
+    "crit_rate_burning", "crit_dmg_burning",
+    "crit_rate_bloom", "crit_dmg_bloom",
+    "crit_rate_swirl", "crit_dmg_swirl",
+  ]) {
     if (raw.isSet(key)) out[key] = raw.get(key) / 100;
   }
 
