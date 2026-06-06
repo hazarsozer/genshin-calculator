@@ -790,6 +790,12 @@ const weaponOtherFreedomSworn: Condition = {
  * bag, so it does not touch any damage golden (and the deferred Clorinde BoL *heal*
  * `cStat("bond_of_life")` — which reads `out` — stays unchanged at 0).
  *
+ * ⚠️ FUTURE-PASS TRAP: when the deferred Clorinde/Lyney BoL *heal* is modeled, it must
+ * emit `bond_of_life` to `out` as a FRACTION (`raw.get("bond_of_life") / 100`, since
+ * `isPercent("bond_of_life")` is true) — NOT a raw copy. `raw` holds the un-folded 50;
+ * the heal/`subtractBoL` terms read `out` via `cStat` expecting the 0.5 fraction. Copying
+ * raw→out verbatim (like RAW_BAG_SCALING_KEYS) would be a 100× heal bug.
+ *
  * Base-inert: no golden sets `common.bond_of_life` → the `number` condition is
  * inactive → `{}` → 58k goldens byte-unchanged.
  *
