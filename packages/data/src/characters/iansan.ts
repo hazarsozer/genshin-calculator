@@ -135,7 +135,10 @@ const features: readonly Feature[] = [
   // FeaturePostEffectValue(PostEffectStats from:'atk*', percent=StatTable('',[0.27]),
   // statCap=Talents.get('burst.iansan_bonus_max')=s3.p4). '' name not isPercent + fmt="" → displayed =
   // min(0.27×atk_total, s3.p4). values = 0.27×100 = 27 → (27/100)×atk_total = 0.27×atk_total (≈627.86);
-  // capValue = 690 (s3.p4 @ burst lv10, inert here: 627.86 < 690). raw/genshin_calc_pub/src/js/db/Char/Iansan.js:259-269.
+  // capValue = 690 = s3.p4 @ burst lv10 ONLY. FeatureMultiplierEntry has no level-indexed cap (unlike the partyData
+  // path's capValueFromTalent), so it is hardcoded to the canonical build's burst level — inert + faithful here
+  // (627.86 < 690), but off by the table delta for an off-build burst lv1-9 (a future capValueFromTable engine-ext,
+  // same deferral as Sigewinne's level-cap). raw/genshin_calc_pub/src/js/db/Char/Iansan.js:259-269.
   {
     name: "iansan_bonus_max",
     category: "burst",
