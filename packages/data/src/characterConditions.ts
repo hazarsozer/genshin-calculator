@@ -774,6 +774,45 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
 ];
 
 // ===========================================================================
+// Global ENEMY conditions — faithfully ported from
+// raw/genshin_calc_pub/src/js/db/Conditions/Enemy.js (the stat-bearing entries).
+//
+// In her engine the Enemy CalcObject's getConditions() does
+// `result = result.concat(DB.Conditions.Enemy)` (CalcObject/Enemy.js:71-77), and
+// CalcSet.getBaseStats folds EVERY object's conditions — char, weapon, artifacts,
+// ENEMY, … — into the same base-stats bag (CalcSet.js:357-363). So these are
+// "appended to every build", gated by their own boolean `name`, exactly like
+// CHARACTER_CONDITIONS (which mirror DB.Conditions.Character). They are a DISTINCT
+// source file, so they live in their own registry here.
+//
+// Only ONE Enemy condition carries stats: `enemy.superconduct → enemy_res_phys:-40`
+// (Superconduct lowers the enemy's Physical RES by 40%). The others
+// (common.enemy_status, enemy_frozen, enemy_burning, enemy_weak_shot) carry no
+// `stats` (their effects are applied elsewhere: enemy_status/frozen via set/char
+// conditions that GATE on them; burning via Emilie's A4 postEffect; weak_shot via
+// the aimed crit branch in compileFeature), so they are not represented here.
+//
+// KEY MAPPING: her `enemy_res_phys` is `enemy_res_physical` in our bag — our engine
+// keys physical resistance by the full element name (see compileFeature.ts
+// dmgElementKey note + the ELEMENTS loop in buildStats), exactly as Deepwood's
+// `enemy_res_dendro:-30` shred does. The -40 accumulates into the same
+// `enemy_res_physical` value the resistance multiplier reads.
+//
+// Base-inert: gated on `enemy.superconduct`, unset in all 58k goldens → folds {}.
+//
+// Source: raw/genshin_calc_pub/src/js/db/Conditions/Enemy.js:65-73
+//         raw/genshin_calc_pub/src/js/classes/CalcObject/Enemy.js:71-77 (getConditions concat)
+//         raw/genshin_calc_pub/src/js/classes/CalcSet.js:357-363 (getBaseStats folds enemy conds)
+// ===========================================================================
+export const ENEMY_CONDITIONS: readonly Condition[] = [
+  {
+    type: "boolean",
+    name: "enemy.superconduct",
+    stats: { enemy_res_physical: -40 },
+  },
+];
+
+// ===========================================================================
 // Global character MULTIPLIERS — the team-buff analogue of CHARACTER_CONDITIONS,
 // for set_other buffs whose effect is a FeatureMultiplier (a base-damage-term
 // bonus) rather than a stat-bag condition. In her engine these live in the same

@@ -45,7 +45,7 @@ import type {
   StatTableEntry,
 } from "@genshin/types";
 import { getArtifactSet } from "./artifacts/sets/index.js";
-import { CHARACTER_CONDITIONS, CHARACTER_MULTIPLIERS, CHARACTER_POST_EFFECTS } from "./characterConditions.js";
+import { CHARACTER_CONDITIONS, CHARACTER_MULTIPLIERS, CHARACTER_POST_EFFECTS, ENEMY_CONDITIONS } from "./characterConditions.js";
 import { buildPartyContext, type PartyInput, type ActiveCharFacts } from "./partyContext.js";
 import { buildPartyBuffs } from "./partyBuffs.js";
 
@@ -729,6 +729,13 @@ export function buildStats(input: BuildInput): BuildResult {
   // Source: raw/genshin_calc_pub/src/js/db/Conditions/Character.js
   //         raw/genshin_calc_pub/src/js/classes/Objects/Character.js (getConditions concat)
   for (const cond of CHARACTER_CONDITIONS) applyCondition(cond);
+  // Global ENEMY conditions (DB.Conditions.Enemy). Her Enemy CalcObject concats these
+  // (CalcObject/Enemy.js:71-77) and CalcSet.getBaseStats folds every object's conditions —
+  // including the enemy's — into the same base-stats bag (CalcSet.js:357-363). The only
+  // stat-bearing entry is `enemy.superconduct → enemy_res_physical:-40`; gated on its own
+  // boolean toggle, so inert for every build that does not set it (all 58k goldens).
+  // Source: raw/genshin_calc_pub/src/js/db/Conditions/Enemy.js:65-73
+  for (const cond of ENEMY_CONDITIONS) applyCondition(cond);
   // Per-teammate kit conditions (her char.getPartyConditions() concat). A `number` condition
   // (e.g. bennet_atk_base) lifts a baked setting into the stat bag for a post-effect to read.
   for (const cond of partyBuffs.conditions) applyCondition(cond);
