@@ -158,6 +158,18 @@ const hpToAtk: CharPostEffect = {
   conditions: [paramita],
 };
 
+/**
+ * SkillMaxBonus — the 400(%) constant her TalentValues.SkillMaxBonus carries
+ * (Hutao.js:136). Two roles, both on `atk_base`:
+ *   1. The ATK-gain CAP: 4 × atk_base (atk_percent[400]/100) — modelled by `hpToAtk`'s
+ *      capRatio:4 above (the Paramita HP→ATK fold's saturation ceiling).
+ *   2. The hutao_max_hp_bonus READOUT (below): the Max-HP SATURATION BREAKPOINT — the
+ *      Max HP at which the 0.06256×HP conversion exactly hits that 4×atk_base cap, i.e.
+ *      atk_base × 400 / (hutao_atk_bonus_ratio_as_percent). NOT an ATK gain.
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Hutao.js:136.
+ */
+const HUTAO_SKILL_MAX_BONUS = 400;
+
 // ---------------------------------------------------------------------------
 // Features
 // ---------------------------------------------------------------------------
@@ -276,13 +288,51 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.hutao_heal_lowhp") },
     ],
   },
-  // --- DEFERRED: skill.hutao_atk_bonus + skill.hutao_max_hp_bonus (Guide to Afterlife ATK readouts) ---
-  // Both scale on `atk_base` (white base ATK) — hutao_atk_bonus = min(hutao_atk_bonus%×Max HP, 4×atk_base);
-  // hutao_max_hp_bonus = the same capped ATK gain. atk_base is NOT in the eval-time stats bag (only atk_total/
-  // hp_total/…), so a static OUTPUT can't read it — same blocker as bennett/sara. The actual ATK buff IS modelled
-  // via the atkBuffPost CharPostEffect (buildStats reads atk_base + capUsesBase). Faithful readouts need an
-  // atk_base eval-emission engine pass (golden-critical buildStats emit) → deferred. NEVER baked.
-  // raw/genshin_calc_pub/src/js/db/Char/Hutao.js:144-158,305-325.
+  // --- skill.hutao_atk_bonus: Guide to Afterlife ATK gain (FeaturePostEffectValue → static) ---
+  // Raw Hutao.js:145-159,308-312 — atkBuffPost = PostEffectStatsHP{ percent:getMulti(
+  // skill.hutao_atk_bonus, 0.01) }. PostEffectStatsHP scales on MAX HP (from:'hp'), so the ATK
+  // gained = min(hutao_atk_bonus_ratio × Max HP, 4×atk_base) = min(0.06256 × hp_total, 4×atk_base).
+  // Modelled as the UNCAPPED term: scaling:"hp" (→hp_total), values.getValue()=HutaoTalents.s2.p2@L10
+  // (=6.256; engine /100 → 0.06256) — the SAME ratio the live hpToAtk post-effect applies (reused, not
+  // hardcoded). At the canonical build 0.06256×hp_total = 1800.37 < 4×atk_base = 5948.16, so the cap is
+  // INERT here and at every realistic build (it binds only above ~95k Max HP — see hutao_max_hp_bonus,
+  // the breakpoint). DEFER the 4×atk_base cap: the cap base is atk_base-RELATIVE, but FeatureMultiplierEntry
+  // has no cap-from-stat field (only a constant `capValue`; the atk_base-relative `capUsesBase` lives on
+  // CharPostEffect, not on a feature multiplier). Faithful at canonical & all reachable Max HP — same class
+  // as the merged iansan/sigewinne level-cap deferrals. NEVER baked. Cite Hutao.js:155-158.
+  {
+    name: "hutao_atk_bonus",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      // scaling hp_total × (HutaoTalents.s2.p2@L10 / 100) = hp_total × 0.06256 (UNCAPPED — see above).
+      { scaling: "hp", leveling: "", values: { getValue: () => HutaoTalents.s2.p2.getValue(10) } },
+    ],
+  },
+  // --- skill.hutao_max_hp_bonus: Max-HP SATURATION BREAKPOINT (FeaturePostEffectValue → static) ---
+  // Raw Hutao.js:313-325 — PostEffectStats{ from:'atk_base', percent:getDivide(skill.hutao_atk_bonus,
+  // multi:SkillMaxBonus=400) }. getDivide → percent = 400 / (hutao_atk_bonus_ratio_as_percent) = 400/6.256,
+  // applied to atk_base → atk_base × 63.9386. This is NOT an ATK gain (the previous comment here was WRONG):
+  // it is the Max HP at which Hu Tao's 0.06256×HP conversion exactly saturates the 4×atk_base cap, i.e.
+  // atk_base × SkillMaxBonus / (hutao_atk_bonus ratio as percent). Derived from HUTAO_SKILL_MAX_BONUS (400,
+  // Hutao.js:136) and HutaoTalents.s2.p2@L10 (=6.256, the hutao_atk_bonus ratio) — NEVER hardcode 95079 or
+  // 63.9386. The StatTable name 'hutao_max_hp_bonus' is non-percent (isPercent false: it ends 'bonus', not
+  // 'bonus_'), so her engine applies the value raw; our getValue() returns SkillMaxBonus×100 / ratio
+  // (=6393.86) and the engine /100 → 63.9386 × atk_base. scaling:"atk_base", leveling:"".
+  {
+    name: "hutao_max_hp_bonus",
+    category: "skill",
+    output: { kind: "static" },
+    multipliers: [
+      // scaling atk_base × (HUTAO_SKILL_MAX_BONUS×100 / HutaoTalents.s2.p2@L10 / 100)
+      // = atk_base × (400 / 6.256) = atk_base × 63.9386 (the HP saturation breakpoint).
+      {
+        scaling: "atk_base",
+        leveling: "",
+        values: { getValue: () => (HUTAO_SKILL_MAX_BONUS * 100) / HutaoTalents.s2.p2.getValue(10) },
+      },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
