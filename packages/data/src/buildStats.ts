@@ -776,7 +776,8 @@ export function buildStats(input: BuildInput): BuildResult {
   // ONLY internally before (Stats.getTotal('atk') and the Hu Tao `capUsesBase` term) and
   // never copied into the bag — so a `scaling:"atk_base"` static OUTPUT read undefined.
   // Emitted now so those readouts (bennett.burst.atk_bonus, kujou_sara.skill.sara_atk_bonus,
-  // hu_tao.skill.{hutao_atk_bonus(cap term),hutao_max_hp_bonus}) resolve. Read ONLY by a
+  // hu_tao.skill.hutao_max_hp_bonus) resolve — hutao_atk_bonus scales on hp_total, not this key
+  // (only its DEFERRED 4×atk_base cap is atk_base-relative). Read ONLY by a
   // multiplier whose scaling key is exactly `atk_base` (resolveStatKey passes it verbatim —
   // it is NOT in TOTAL_SCALING_STATS={atk,hp,def,mastery}), and NO damage feature opts in →
   // base-inert for the 58k damage goldens (mirrors the healing_base emission, commit 8e101ea,
