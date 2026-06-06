@@ -784,6 +784,18 @@ export function buildStats(input: BuildInput): BuildResult {
   // minus the /100). Source: raw/.../Feature2/Compile/Helpers.js makeStatItem,
   //         raw/.../classes/Stats.js isPercent (no atk_base branch).
   if (raw.isSet("atk_base")) out["atk_base"] = raw.get("atk_base");
+  // BURST ENERGY COST — her `makeStatItem('burst_energy_cost')` = `stats.get('burst_energy_cost')`,
+  // the char's burst energy requirement (a `constEntry` in CharTables, e.g. Raiden 90), read VERBATIM
+  // with NO `/100` (it is a flat energy count, not a percent — `isPercent('burst_energy_cost')` is false:
+  // the prefix list has `enemy_`, not `energy`). Used ONLY internally before (her burst-DMG/energy
+  // post-effects) and never copied into the bag — so a `scaling:"burst_energy_cost"` static OUTPUT read
+  // undefined. Emitted now so the Raiden A4 burst-DMG readout (raiden_shogun.other.burst_dmg_bonus,
+  // = 0.3% per energy × 90 = 27) resolves. Read ONLY by a multiplier whose scaling key is exactly
+  // `burst_energy_cost` (resolveStatKey passes it verbatim — NOT in TOTAL_SCALING_STATS={atk,hp,def,mastery}),
+  // and NO damage feature opts in → base-inert for the 58k damage goldens (mirrors the atk_base emit above).
+  // Source: raw/.../Feature2/Compile/Helpers.js makeStatItem, raw/.../classes/Stats.js isPercent (no `energy` branch),
+  //         raw/.../db/generated/CharTables.js (constEntry burst_energy_cost).
+  if (raw.isSet("burst_energy_cost")) out["burst_energy_cost"] = raw.get("burst_energy_cost");
   // Flat totals read as numbers (mastery, recharge).
   for (const stat of FLAT_TOTAL_STATS) {
     out[`${stat}_total`] = raw.getTotal(stat);
