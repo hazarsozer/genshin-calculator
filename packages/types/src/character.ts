@@ -173,6 +173,22 @@ export interface CharPostEffect {
    * Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/Nahida.js
    */
   readonly fromStatMax?: string;
+  /**
+   * Optional HP-ratio transform on the base, applied BEFORE `offset`/`ratio`/cap.
+   * When set AND the raw `getTotal(fromStat)` exceeds 100, the base is converted to a
+   * percentage of the divisor stat's total:
+   *   `base = getTotal(fromStat) / (getTotal(fromStatDivide) / 100)`  (= 100·from/divisor)
+   * Otherwise (`fromStatDivide` absent, or `from <= 100`) the base is `getTotal(fromStat)`
+   * unchanged. Mirrors `PostEffectStatsNeuvillette.getBaseValueTree` (Neuvillette A4):
+   *   `pct = CIfGreater(from, 100, CDivide(from, CDivide(hp_total, 100)), from)`
+   * i.e. when the user's HP slider is given as an ABSOLUTE HP value (> 100) it becomes
+   * `100·slider/hp_total` (a 0..100 %); a slider already given as a percentage (<= 100)
+   * passes through. The subsequent `offset` (exceed) then subtracts on this pct.
+   * Base-inert (no other entry sets it).
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/Neuvillette.js:7-20
+   */
+  readonly fromStatDivide?: string;
   /** Stat the bonus is written TO (e.g. `atk`). */
   readonly toStat: string;
   /**
