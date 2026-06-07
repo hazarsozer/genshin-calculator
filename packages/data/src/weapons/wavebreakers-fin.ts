@@ -3,8 +3,9 @@
  *
  * Identical "Watatsumi Wavewalker" mechanic to Akuoumaru / Mouun's Moon: Elemental Burst DMG +=
  * 0.12/0.15/0.18/0.21/0.24% of the party's combined Max Energy, capped at 40/50/60/70/80%
- * (refine-scaled). `PostEffectPartyEnergy` → `fromStat: "burst_energy_cost"` (solo; party term 0,
- * deferred to ②) → `dmg_burst`, refine-scaled cap via `capValueFromTalent`.
+ * (refine-scaled). `PostEffectPartyEnergy` → base = `fromStat: "burst_energy_cost"` (wielder) +
+ * `fromStatAddend: "party_burst_energy_cost"` (party-summed teammate energy, buildPartyBuffs) →
+ * `dmg_burst`, refine-scaled cap via `capValueFromTalent`. Both raw energy ints, no fold.
  *
  * serializeId: 115. UI markers omitted. Sources: raw/.../Weapon/Polearm/WavebreakersFin.js,
  *   raw/.../classes/PostEffect/Stats/PartyEnergy.js.
@@ -20,6 +21,7 @@ function refineRatioTable(values: readonly number[]): TalentTable {
 const energyToBurst: CharPostEffect = {
   priority: 1,
   fromStat: "burst_energy_cost",
+  fromStatAddend: "party_burst_energy_cost",
   toStat: "dmg_burst",
   ratioFromTalent: {
     table: refineRatioTable([0.12, 0.15, 0.18, 0.21, 0.24]),
