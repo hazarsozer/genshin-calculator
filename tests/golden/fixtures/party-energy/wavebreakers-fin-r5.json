@@ -1,0 +1,282 @@
+{
+  "element": "pyro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3231.537925446176,
+      "category": "attack",
+      "crit": 5875.523500811229,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2937.7617504056143
+    },
+    "attack.normal_hit_1": {
+      "average": 1042.313716730484,
+      "category": "attack",
+      "crit": 1895.1158486008796,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 947.5579243004398
+    },
+    "attack.normal_hit_2": {
+      "average": 1044.4452376235934,
+      "category": "attack",
+      "crit": 1898.991341133806,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 949.495670566903
+    },
+    "attack.normal_hit_3": {
+      "average": 1291.7016612242805,
+      "category": "attack",
+      "crit": 2348.548474953237,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1174.2742374766185
+    },
+    "attack.normal_hit_3_1": {
+      "average": 645.8508306121403,
+      "category": "attack",
+      "crit": 1174.2742374766185,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 587.1371187383093
+    },
+    "attack.normal_hit_4": {
+      "average": 1398.2777058797494,
+      "category": "attack",
+      "crit": 2542.3231015995443,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1271.1615507997722
+    },
+    "attack.normal_hit_4_1": {
+      "average": 349.56942646993735,
+      "category": "attack",
+      "crit": 635.5807753998861,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 317.79038769994304
+    },
+    "attack.normal_hit_5": {
+      "average": 1760.6362577083428,
+      "category": "attack",
+      "crit": 3201.1568321969867,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1600.5784160984933
+    },
+    "attack.plunge": {
+      "average": 1471.3888725134009,
+      "category": "attack",
+      "crit": 2675.2524954789105,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1337.6262477394553
+    },
+    "attack.plunge_high": {
+      "average": 3674.909496362162,
+      "category": "attack",
+      "crit": 6681.653629749385,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3340.8268148746924
+    },
+    "attack.plunge_low": {
+      "average": 2942.154857303626,
+      "category": "attack",
+      "crit": 5349.3724678247745,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2674.6862339123873
+    },
+    "burst.xiangling_pyronado": {
+      "average": 5055.466024127645,
+      "category": "burst",
+      "crit": 9191.756407504809,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4595.878203752404
+    },
+    "burst.xiangling_swing_hit_1": {
+      "average": 3249.9424440820576,
+      "category": "burst",
+      "crit": 5908.986261967377,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2954.4931309836884
+    },
+    "burst.xiangling_swing_hit_2": {
+      "average": 3972.151876100292,
+      "category": "burst",
+      "crit": 7222.094320182349,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3611.0471600911746
+    },
+    "burst.xiangling_swing_hit_3": {
+      "average": 4947.13460932491,
+      "category": "burst",
+      "crit": 8994.790198772564,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4497.395099386282
+    },
+    "reaction.burgeon": {
+      "average": 8294.284436610877,
+      "category": "reaction",
+      "crit": 8294.284436610877,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8294.284436610877
+    },
+    "reaction.burning": {
+      "average": 691.1903697175732,
+      "category": "reaction",
+      "crit": 691.1903697175732,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 691.1903697175732
+    },
+    "reaction.electrocharged": {
+      "average": 5529.522957740585,
+      "category": "reaction",
+      "crit": 5529.522957740585,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5529.522957740585
+    },
+    "reaction.overloaded": {
+      "average": 7603.094066893304,
+      "category": "reaction",
+      "crit": 7603.094066893304,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7603.094066893304
+    },
+    "reaction.shatter": {
+      "average": 8294.284436610877,
+      "category": "reaction",
+      "crit": 8294.284436610877,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8294.284436610877
+    },
+    "skill.skill_dmg": {
+      "average": 2959.962460529735,
+      "category": "skill",
+      "crit": 5381.749928235881,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2690.8749641179406
+    },
+    "stats.atk": {
+      "average": 2261.6086209886403,
+      "category": "stats",
+      "crit": 2261.6086209886403,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2261.6086209886403
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1544.8710945,
+      "category": "stats",
+      "crit": 1544.8710945,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1544.8710945
+    },
+    "stats.hp": {
+      "average": 24100.914859,
+      "category": "stats",
+      "crit": 24100.914859,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 24100.914859
+    },
+    "stats.mastery": {
+      "average": 151,
+      "category": "stats",
+      "crit": 151,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 151
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.burst_dmg_bonus": {
+      "average": 60,
+      "category": "weapon",
+      "crit": 60,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 60
+    }
+  },
+  "kind": "party",
+  "repChar": "Xiangling",
+  "repSlug": "xiangling",
+  "schema": 1,
+  "slug": "wavebreakers-fin-r5",
+  "weapon": "weapon_name.wavebreakers_fin",
+  "weaponType": "polearm"
+}

@@ -1,0 +1,299 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "The 3 combined-party-energy burst weapons (Akuoumaru/Mouun's Moon/Wavebreaker's Fin), byte-identical: dmg_burst += min(coeff[R] × (burst_energy_cost + party_burst_energy_cost), cap[R]); coeff=StatTable('dmg_burst',[.12,.15,.18,.21,.24]) / cap=StatTable('',[40,50,60,70,80]) over weapon_refine (raw lines 9-11 of Claymore/Akoumaru.js, Bow/MouunsMoon.js, Polearm/WavebreakersFin.js). Energy is a RAW INT on both terms (only dmg_burst folds /100). party_burst_energy_cost = SUM of teammates' burst costs (Char.js:74-89, wielder excluded). 6 fixtures (3 weapons × {R1,R5}) on 80-cost reps (Eula/Kujou Sara/Xiangling); teammates chosen so 3 are CAPPED (base 340: Raiden90+Yae90+80 — their partyData kit is gated off so the delta is purely the energy sum) and 3 are LINEAR (base 250: Mona60+Fischl60+Nahida50). RED until Task B sums party_burst_energy_cost (buildPartyContext emits none today).",
+    "id": "party-energy"
+  },
+  "featureTotal": 178,
+  "itemCount": 6,
+  "items": [
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "character": "raiden_shogun"
+          },
+          {
+            "character": "yae_miko"
+          },
+          {
+            "character": "xiangling"
+          }
+        ],
+        "refine": 1,
+        "weaponName": "Akoumaru",
+        "weaponType": "claymore"
+      },
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "resonanceElements": {
+        "resonance_element_1": "electro",
+        "resonance_element_2": "electro",
+        "resonance_element_3": "pyro"
+      },
+      "slug": "akuoumaru-r1",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.akuoumaru",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "members": [
+          {
+            "character": "mona"
+          },
+          {
+            "character": "fischl"
+          },
+          {
+            "character": "nahida"
+          }
+        ],
+        "refine": 5,
+        "weaponName": "Akoumaru",
+        "weaponType": "claymore"
+      },
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "resonanceElements": {
+        "resonance_element_1": "hydro",
+        "resonance_element_2": "electro",
+        "resonance_element_3": "dendro"
+      },
+      "slug": "akuoumaru-r5",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.akuoumaru",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "mona"
+          },
+          {
+            "character": "fischl"
+          },
+          {
+            "character": "nahida"
+          }
+        ],
+        "refine": 1,
+        "weaponName": "MouunsMoon",
+        "weaponType": "bow"
+      },
+      "repKey": "Sara",
+      "repSlug": "kujou_sara",
+      "resonanceElements": {
+        "resonance_element_1": "hydro",
+        "resonance_element_2": "electro",
+        "resonance_element_3": "dendro"
+      },
+      "slug": "mouuns-moon-r1",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.mouuns_moon",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "members": [
+          {
+            "character": "raiden_shogun"
+          },
+          {
+            "character": "yae_miko"
+          },
+          {
+            "character": "xiangling"
+          }
+        ],
+        "refine": 5,
+        "weaponName": "MouunsMoon",
+        "weaponType": "bow"
+      },
+      "repKey": "Sara",
+      "repSlug": "kujou_sara",
+      "resonanceElements": {
+        "resonance_element_1": "electro",
+        "resonance_element_2": "electro",
+        "resonance_element_3": "pyro"
+      },
+      "slug": "mouuns-moon-r5",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.mouuns_moon",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "raiden_shogun"
+          },
+          {
+            "character": "yae_miko"
+          },
+          {
+            "character": "diona"
+          }
+        ],
+        "refine": 1,
+        "weaponName": "WavebreakersFin",
+        "weaponType": "polearm"
+      },
+      "repKey": "Xiangling",
+      "repSlug": "xiangling",
+      "resonanceElements": {
+        "resonance_element_1": "electro",
+        "resonance_element_2": "electro",
+        "resonance_element_3": "cryo"
+      },
+      "slug": "wavebreakers-fin-r1",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.wavebreakers_fin",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "members": [
+          {
+            "character": "mona"
+          },
+          {
+            "character": "fischl"
+          },
+          {
+            "character": "nahida"
+          }
+        ],
+        "refine": 5,
+        "weaponName": "WavebreakersFin",
+        "weaponType": "polearm"
+      },
+      "repKey": "Xiangling",
+      "repSlug": "xiangling",
+      "resonanceElements": {
+        "resonance_element_1": "hydro",
+        "resonance_element_2": "electro",
+        "resonance_element_3": "dendro"
+      },
+      "slug": "wavebreakers-fin-r5",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.wavebreakers_fin",
+        "type": "polearm"
+      }
+    }
+  ]
+}
