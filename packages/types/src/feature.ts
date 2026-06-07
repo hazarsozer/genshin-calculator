@@ -208,6 +208,28 @@ export interface FeatureMultiplierEntry {
    */
   readonly flatValues?: TalentTable;
   /**
+   * When true, append the eval-time `bond_of_life` stat as an EXTRA factor in this
+   * term's product — `talent% × scalingStat × bond_of_life` (a three-factor base term,
+   * summed additively into `cBaseDamage`, NOT a `(1 + Σ)` layer). Ports her
+   * `FeatureMultiplierBondOfLife.getTreeBonusMultiplier`, which pushes
+   * `makeStatItem('bond_of_life')` into the multiplier's `CMulti` items
+   * (raw/.../classes/Feature2/Multiplier/BondOfLife.js:9-11).
+   *
+   * THE SCALE: `bond_of_life` reads `out["bond_of_life"]`, which `buildStats` emits as a
+   * FRACTION (`raw/100`, e.g. setting 50 → 0.5) — mirroring her `Stats.processPercent`
+   * fold of the percent stat before eval. (The `raw` bag keeps it un-folded at 50; that
+   * bag feeds Clorinde's C4 post-effect, a DIFFERENT reader — do not conflate.)
+   *
+   * The two v5.8 users are Arlecchino's masque (a char-level NORMAL multiplier, gated
+   * `common.bond_of_life ≥ 30`) and Clorinde's `_{2,3}_heal` (an `hp*` heal multiplier,
+   * ungated). Absent ⇒ no extra factor; and even when set, `out["bond_of_life"]` reads 0
+   * for every build with no BoL (all 58k goldens) → the factor is ×0 → the term vanishes,
+   * so the gated masque never adds and an ungated heal is 0 — base-inert.
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/BondOfLife.js:9-11
+   */
+  readonly bondOfLifeFactor?: boolean;
+  /**
    * CHAR-LEVEL multipliers only: which features this multiplier applies to.
    * When set (only on `char.multipliers` entries), the multiplier is summed into
    * a feature's base-damage term iff `target.damageTypes` includes the feature's
