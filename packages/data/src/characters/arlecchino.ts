@@ -4,20 +4,19 @@
  * Pure ATK scaler. Normal/charged/plunge attacks are PHYSICAL by default;
  * skill (spike / cleave / blooddebt) and burst are pyro.
  *
- * BOND-OF-LIFE NOTE (load-bearing, why this is a plain ATK port):
- *   Her Balemoon Bivouac "masque" (`FeatureMultiplierBondOfLife`, char-level
- *   multiplier scaling normals by `masque% × BoL`) and her Masque-of-the-Red-Death
- *   ConditionStatic (attack_infusion → pyro, gated on `common.bond_of_life >= 30`)
- *   only fire when BoL is built up. Under the canonical golden build
- *   (`settings: {}`) `common.bond_of_life` is 0, so:
- *     - the masque condition (BoL ≥ 30) is OFF → no BoL term added to normals,
- *     - the infusion ConditionStatic is OFF → attacks stay physical,
+ * BOND-OF-LIFE NOTE (load-bearing):
+ *   Her Balemoon Bivouac "masque" is a char-level FeatureMultiplierBondOfLife scaling
+ *   NORMALS by `masque% × atk_total × bond_of_life`, gated `common.bond_of_life ≥ 30`
+ *   (Arlecchino.js:357-372). PORTED (P3.5 bol-multiplier) as the `charMultipliers` entry
+ *   below (bondOfLifeFactor + the ≥30 boolean-value gate + C1 bonusValues). Under the
+ *   canonical golden build (`settings: {}`) `common.bond_of_life` is 0, so:
+ *     - the masque gate (BoL ≥ 30) is OFF AND `bond_of_life` reads 0 → no term on normals,
+ *     - the Masque-of-the-Red-Death pyro infusion ConditionStatic is OFF → attacks physical,
  *     - the Cinders ConditionBoolean (+40% pyro DMG, toggle) is OFF.
- *   Verified numerically against the fixture to 10 decimals: every normal hit
- *   matches the plain physical, no-BoL, no-Cinders computation exactly
- *   (e.g. normal_hit_1 normal = 961.9496874451365 = 0.938961·ATK · 1.12 · res · def).
- *   The engine's char-level `multipliers` (the masque) is not consumed by the
- *   loader, and BoL is absent — so a plain ATK port reproduces the oracle.
+ *   → every normal hit matches the plain physical, no-BoL computation exactly (the 58k
+ *   damage goldens are byte-identical). The masque's BoL≥30 pyro infusion is a settings
+ *   contribution a condition can't express; a real BoL≥30 build needs the user to set
+ *   `attack_infusion:'pyro'` (see the charMultipliers comment — documented fidelity gap).
  *
  * SKIPPED (off in solo C0): the C2 `arlecchino_balemoon_bloodfire_dmg` feature
  * (constellation-gated), the `arlecchino_heal` burst heal (a FeatureHeal, not a
@@ -36,7 +35,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Arlecchino s1/s2/s3)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Arlecchino as ArlecchinoStatTable } from "../generated/charTables.js";
 import { Arlecchino as ArlecchinoTalents } from "../generated/charTalentTables.js";
 
@@ -58,6 +57,8 @@ const talents: TalentResolver = {
       if (name === "plunge") return ArlecchinoTalents.s1.p9;
       if (name === "plunge_low") return ArlecchinoTalents.s1.p10;
       if (name === "plunge_high") return ArlecchinoTalents.s1.p11;
+      // Masque of the Red Death — the BoL-multiplier talent (s1.p12 = 238% @L10).
+      if (name === "arlecchino_masque") return ArlecchinoTalents.s1.p12;
     }
     if (talent === "skill") {
       if (name === "arlecchino_spike_dmg") return ArlecchinoTalents.s2.p1;
@@ -242,6 +243,42 @@ const constellationConditions: readonly Condition[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Char-level multipliers
+// ---------------------------------------------------------------------------
+// Balemoon Bivouac "masque": her NORMAL attacks get an ADDITIVE base-damage term
+// `+ masque% × atk_total × bond_of_life`, gated `common.bond_of_life ≥ 30`. Faithful
+// port of her char-level FeatureMultiplierBondOfLife (raw Arlecchino.js:357-372):
+//   - leveling char_skill_attack, values attack.arlecchino_masque (s1.p12 → 238% @L10),
+//   - bondOfLifeFactor:true → the `bond_of_life` (out-fraction) third factor,
+//   - target.damageTypes:['normal'] → NORMALS ONLY (charged/plunge/skill/burst excluded),
+//   - condition boolean-value common.bond_of_life ≥ 30 (BondOfLifeThreshold),
+//   - C1 lever: bonusLeveling 'arlecchino_all_reprisals' + bonusValues [0, C1BonusScale=100]
+//     (her ValueTable). At C0 the stack setting is unset → bonusLevel 1 → values[0] = 0 (off);
+//     at C1 the ConditionStatic sets arlecchino_all_reprisals:2 → values[1] = 100 → +100% masque.
+// Base-inert: at BoL=0 the gate (≥30) is off AND `bond_of_life` reads 0 → no term added →
+// the 58k damage goldens are byte-identical. The BoL≥30 pyro infusion (her ConditionStatic
+// attack_infusion:'pyro', Arlecchino.js:377-390) is a SEPARATE settings-contribution a
+// condition can't express; a real BoL≥30 build needs the user to set `attack_infusion:'pyro'`
+// (the oracle fixture sets it explicitly — documented fidelity gap, same class as Candace's
+// attack_infusion_hydro). The masque DAMAGE term is the validated correctness gain.
+const ARLECCHINO_C1_BONUS = [0, 100] as const; // her ValueTable([0, C1BonusScale=100])
+const charMultipliers: readonly CharMultiplier[] = [
+  {
+    scaling: "atk",
+    leveling: "char_skill_attack",
+    values: talents.get("attack.arlecchino_masque"),
+    bondOfLifeFactor: true,
+    bonusLeveling: "arlecchino_all_reprisals",
+    bonusValues: {
+      getValue: (level: number): number =>
+        level > 0 ? ARLECCHINO_C1_BONUS[Math.min(level, ARLECCHINO_C1_BONUS.length) - 1]! : 0,
+    },
+    condition: { type: "boolean-value", setting: "common.bond_of_life", cond: "ge", value: 30 },
+    target: { damageTypes: ["normal"] },
+  },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -255,6 +292,6 @@ export const arlecchino: DbObjectChar = {
   statTable: ArlecchinoStatTable,
   talents,
   features,
-  multipliers: [],
+  multipliers: charMultipliers,
   conditions: constellationConditions,
 };
