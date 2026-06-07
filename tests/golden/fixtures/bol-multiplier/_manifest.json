@@ -1,0 +1,104 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Two per-entity gaps where the bond_of_life BAG STAT is a damage/heal MULTIPLIER FACTOR via FeatureMultiplierBondOfLife (raw/.../classes/Feature2/Multiplier/BondOfLife.js:9-11 makeStatItem('bond_of_life') treeBonus) — distinct from bol-weapons (per-weapon UI setting weapon_*_bol) and bol-stat clorinde-c4 (dmg_burst_clorinde postEffect). bond_of_life enters via ConditionBoLStat (Buffs/Static.js:28) AND is percent-folded → BAG = common.bond_of_life/100 (setting 50 → bag 0.5). arlecchino-masque: char-level FeatureMultiplierBondOfLife (leveling char_skill_attack, values attack.arlecchino_masque s1.p12 → 238% @talent10) gated ConditionBooleanValue{common.bond_of_life ge BondOfLifeThreshold=30}, target damageTypes:['normal'] (Arlecchino.js:357-372) → each NORMAL += masque% × atk_total × bond_of_life = +2.38×atk×0.5 (C0 → bonusValues:[0,C1BonusScale=100] OFF). BoL≥30 also infuses pyro (ConditionStatic attack_infusion:'pyro', Arlecchino.js:377-390); fixture sets attack_infusion:'pyro' so our already-pyro normals isolate the masque RED. Cinders toggle (dmg_pyro:40) left OFF. clorinde-bol-heal: two FeatureHeal{subtractBoL:true} (UNGATED, no night_watch cond), each FeatureMultiplierBondOfLife{scaling:'hp*', leveling:'char_skill_elemental', values:skill.clorinde_impale_the_night_{2,3}_heal s2.p6=104%/s2.p8=110%} (Clorinde.js:393-416); subtractBoL (Heal.js:88-99) → heal = talent%×hp×bond_of_life − bond_of_life×hp = at bag 0.5: heal_2 0.02×hp, heal_3 0.05×hp (both positive). These FeatureHeal features are ABSENT from our port (characters/clorinde.ts DEFERRED) → RED-by-absence; at BASE clorinde.json BoL=0 both heals=0 (the outputCoverage clorinde RED). RED until Task B wires the masque multiplier + the two heals.",
+    "id": "bol-multiplier"
+  },
+  "featureTotal": 57,
+  "itemCount": 2,
+  "items": [
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "fontain",
+      "party": {
+        "bondOfLife": 50,
+        "settings": {
+          "attack_infusion": "pyro",
+          "common.bond_of_life": 50
+        }
+      },
+      "repKey": "Arlecchino",
+      "repSlug": "arlecchino",
+      "resonanceElements": {},
+      "slug": "arlecchino-masque",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "bondOfLife": 50,
+        "settings": {
+          "common.bond_of_life": 50
+        }
+      },
+      "repKey": "Clorinde",
+      "repSlug": "clorinde",
+      "resonanceElements": {},
+      "slug": "clorinde-bol-heal",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    }
+  ]
+}
