@@ -204,6 +204,21 @@ export interface CharPostEffect {
    * Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/PartyEnergy.js:5-12
    */
   readonly fromStatAddend?: string;
+  /**
+   * Optional SETTING-sourced percent factor on the base, with the `/100` intrinsic.
+   * When set, the base is multiplied by `(settings[fromStatFactorSetting] ?? 0) / 100`
+   * AFTER `fromStatAddend` and BEFORE `offset`/`ratio`/cap. Unlike `fromStat`/
+   * `fromStatAddend` (which read `getTotal(stat)` from the bag), this reads a UI SETTING
+   * directly — mirroring `PostEffectStatsBondOfLife.getBolValue` (BondOfLife.js:6-8):
+   *   `getBolValue = (settings[bolSettingName] || 0) / 100`,  base = hp_total × getBolValue.
+   * The two Bond-of-Life weapons (Flowing Purity `dmg_<el>` / Finale of the Deep `atk`)
+   * scale their bonus off `hp_total × (settings[weapon_*_bol] / 100)`. Both fold /100, so
+   * this is a bare `string` (no divisor param). Absent → unchanged (base-inert: sole users
+   * are the two BoL-scaling weapons).
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/BondOfLife.js:6-15
+   */
+  readonly fromStatFactorSetting?: string;
   /** Stat the bonus is written TO (e.g. `atk`). */
   readonly toStat: string;
   /**
