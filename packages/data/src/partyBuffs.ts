@@ -50,7 +50,7 @@ export function buildPartyBuffs(
     // postEffect to sum. Read from the `burst_energy_cost` constEntry in the teammate's statTable
     // (= her `talents.get('burst.energy_cost').getValue(1)`). Multiple teammates → multiple
     // always-active static conditions → buildStats' applyCondition concats them additively.
-    const energyCost = resolved.statTable.find((e) => e.getName() === "burst_energy_cost")?.getValue(1, 0) ?? 0;
+    const energyCost = resolved.statTable?.find((e) => e.getName() === "burst_energy_cost")?.getValue(1, 0) ?? 0;
     if (energyCost) {
       conditions.push({ type: "static", stats: { party_burst_energy_cost: energyCost } });
     }
