@@ -528,7 +528,16 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       const fromBase = effect.fromStatAddend !== undefined
         ? fromTotal + readStats.getTotal(effect.fromStatAddend)
         : fromTotal;
-      const fromValue = effect.offset !== undefined ? Math.max(0, fromBase - effect.offset) : fromBase;
+      // SETTING-sourced percent factor (her PostEffectStatsBondOfLife.getBolValue:
+      // base = hp_total × (settings[bolSettingName] || 0) / 100). The `/100` is intrinsic —
+      // the setting is a UI percent (the Bond-of-Life slider), NOT a getTotal stat. Applied
+      // AFTER fromStatAddend, BEFORE offset/ratio/cap. Absent → unchanged (base-inert: sole
+      // users are the two BoL-scaling weapons Flowing Purity / Finale of the Deep).
+      // Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/BondOfLife.js:6-15.
+      const fromFactored = effect.fromStatFactorSetting !== undefined
+        ? fromBase * ((settings[effect.fromStatFactorSetting] as number | undefined ?? 0) / 100)
+        : fromBase;
+      const fromValue = effect.offset !== undefined ? Math.max(0, fromFactored - effect.offset) : fromFactored;
       let bonus = fromValue * ratio;
       if (effect.cap !== undefined) {
         const capBase = effect.capUsesBase
