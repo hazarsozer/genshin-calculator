@@ -189,6 +189,21 @@ export interface CharPostEffect {
    * Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/Neuvillette.js:7-20
    */
   readonly fromStatDivide?: string;
+  /**
+   * Optional second stat ADDED to the base before offset/ratio/cap. When set, the
+   * base becomes `getTotal(fromStat) + getTotal(fromStatAddend)` (a CSum of two stat
+   * items) — distinct from `fromStatMax` (a max, not a sum). Mirrors
+   * `PostEffectPartyEnergy.getBaseValueTree` (PartyEnergy.js:5-12) which returns
+   * `CSum([makeStatItem('burst_energy_cost'), makeStatItem('party_burst_energy_cost')])`
+   * — the wielder's own burst energy plus the party-summed teammate energy (each
+   * teammate's cost injected as a `party_burst_energy_cost` stat by getPartyConditions,
+   * Char.js:74-89). Applied AFTER `fromStatMax`/`fromStatDivide`, BEFORE `offset`/`ratio`/cap.
+   * Both terms are raw energy integers (not percent keys → no fold). Absent → unchanged
+   * (base-inert: sole user is the 3 combined-party-energy burst weapons).
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/PartyEnergy.js:5-12
+   */
+  readonly fromStatAddend?: string;
   /** Stat the bonus is written TO (e.g. `atk`). */
   readonly toStat: string;
   /**

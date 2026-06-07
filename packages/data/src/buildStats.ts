@@ -518,7 +518,17 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       const fromTotal = effect.fromStatDivide !== undefined && fromTotal1 > 100
         ? fromTotal1 / (readStats.getTotal(effect.fromStatDivide) / 100)
         : fromTotal1;
-      const fromValue = effect.offset !== undefined ? Math.max(0, fromTotal - effect.offset) : fromTotal;
+      // ADD a second stat into the base (her PostEffectPartyEnergy.getBaseValueTree:
+      // CSum([makeStatItem('burst_energy_cost'), makeStatItem('party_burst_energy_cost')])).
+      // The addend is read on the SAME scale as `fromStat` and summed BEFORE offset/ratio/cap —
+      // no extra fold (both energy terms are raw integers; only the dmg_burst output folds /100
+      // at emit, exactly as the self-only term already does for the solo goldens). Absent
+      // fromStatAddend → unchanged (base-inert: sole user = the 3 party-energy burst weapons).
+      // Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/PartyEnergy.js:5-12.
+      const fromBase = effect.fromStatAddend !== undefined
+        ? fromTotal + readStats.getTotal(effect.fromStatAddend)
+        : fromTotal;
+      const fromValue = effect.offset !== undefined ? Math.max(0, fromBase - effect.offset) : fromBase;
       let bonus = fromValue * ratio;
       if (effect.cap !== undefined) {
         const capBase = effect.capUsesBase
