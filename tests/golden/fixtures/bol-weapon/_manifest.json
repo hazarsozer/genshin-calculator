@@ -1,0 +1,175 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Two BoL-scaling weapons (Flowing Purity catalyst / Finale of the Deep sword), wielder-self: toStat += min(ratio[R] × hp_total × (settings[weapon_*_bol]/100), cap[R]) via PostEffectStatsBondOfLife (raw/.../classes/PostEffect/Stats/BondOfLife.js + the two weapon files). Flowing Purity: 7×dmg_<el> ratio [.002,.0025,.003,.0035,.004] cap [12,15,18,21,24] (StatTable '', cap NOT percent-folded; dmg_<el> IS so value+cap fold /100 → human-% = min(ratio×hp×BoL/100, cap)); only the WIELDER's own element binds on direct hits (Klee=pyro). Finale: atk ratio [.024,.03,.036,.042,.048] cap [150,187.5,225,262.5,300] (flat ATK, no fold; lifts ALL ATK-scaling damage). BoL is a per-weapon UI setting folded /100 in getBolValue (NOT common.bond_of_life); weaponPassiveOn sets the flat-refine CHECKBOX but SKIPS the BoL ConditionNumberLevels, so each item binds weapon_*_bol via setBuffsSettings (else BoL=0 → gamed gate). 4 fixtures (2 weapons × {R1,R5}) on sampleStats reps (Klee/Keqing): {FP-R1 BoL10=4.70% LINEAR, FP-R5 BoL50=24% CAPPED, Finale-R1 BoL10=63.19atk LINEAR, Finale-R5 BoL30=300atk CAPPED}. RED until Task B wires the BoL post-effect (the TS weapon files carry no postEffects today).",
+    "id": "bol-weapon"
+  },
+  "featureTotal": 116,
+  "itemCount": 4,
+  "items": [
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 34,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "refine": 1,
+        "settings": {
+          "weapon_finale_of_the_deep_1": true,
+          "weapon_finale_of_the_deep_bol": 10,
+          "weapon_refine": 1
+        },
+        "weaponName": "FinaleOfTheDeep",
+        "weaponType": "sword"
+      },
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "resonanceElements": {},
+      "slug": "finale-of-the-deep-r1",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.finale_of_the_deep",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 34,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "refine": 5,
+        "settings": {
+          "weapon_finale_of_the_deep_1": true,
+          "weapon_finale_of_the_deep_bol": 30,
+          "weapon_refine": 5
+        },
+        "weaponName": "FinaleOfTheDeep",
+        "weaponType": "sword"
+      },
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "resonanceElements": {},
+      "slug": "finale-of-the-deep-r5",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.finale_of_the_deep",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "refine": 1,
+        "settings": {
+          "weapon_flowing_purity_1": true,
+          "weapon_flowing_purity_bol": 10,
+          "weapon_refine": 1
+        },
+        "weaponName": "FlowingPurity",
+        "weaponType": "catalyst"
+      },
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "resonanceElements": {},
+      "slug": "flowing-purity-r1",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.flowing_purity",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "refine": 5,
+        "settings": {
+          "weapon_flowing_purity_1": true,
+          "weapon_flowing_purity_bol": 50,
+          "weapon_refine": 5
+        },
+        "weaponName": "FlowingPurity",
+        "weaponType": "catalyst"
+      },
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "resonanceElements": {},
+      "slug": "flowing-purity-r5",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.flowing_purity",
+        "type": "catalyst"
+      }
+    }
+  ]
+}
