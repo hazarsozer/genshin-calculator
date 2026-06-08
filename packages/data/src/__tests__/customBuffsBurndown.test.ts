@@ -28,8 +28,11 @@
  *
  * Three reps span the three OUTPUT KINDS:
  *   - custom-buffs-damage (Diluc): a clean ATK-scaling pyro DPS with normal-attack + pyro skill/burst
- *     damage features. Drives the six already-emitted DAMAGE lanes (flat-scaling / percent-scaling /
- *     crit-fraction / element-DMG / type-DMG / enemy-def). EVERY lane already emits in our buildStats,
+ *     damage features. Drives 7 keys across the six already-emitted DAMAGE lanes — flat-scaling
+ *     (`atk`) / percent-scaling (`atk_percent`; both fold into the SAME atk_total lane) / crit-rate /
+ *     crit-dmg / element-DMG (`dmg_pyro`) / type-DMG (`dmg_normal`) / enemy-def (`enemy_def_ignore`).
+ *     (crit-rate + crit-dmg are listed as one "crit-fraction" lane below; counted as two distinct
+ *     emit sites they make six lanes total.) EVERY lane already emits in our buildStats,
  *     so the RED here is driven PURELY by the MISSING CONDITION (no custom_buffs.* ever reaches the
  *     bag) — every damage triple shifts. Asserted as the full triple of each damage feature in our
  *     port (filtered by `k in compiled` — the features DO exist, just without the bonus → honest, not
@@ -244,8 +247,8 @@ for (const item of manifest.items) {
     // ---------------------------------------------------------------------
     // DAMAGE-triple assertions (the custom-buffs-damage rep — RED).
     //
-    // The damage rep drives six already-emitted DAMAGE lanes; without the condition NONE of the
-    // custom_buffs.* keys reach the bag, so EVERY damage feature undershoots (atk/atk_percent lift the
+    // The damage rep drives 7 keys across six already-emitted DAMAGE lanes; without the condition NONE
+    // of the custom_buffs.* keys reach the bag, so EVERY damage feature undershoots (atk/atk_percent lift the
     // base; crit_rate/crit_dmg lift the crit; dmg_pyro lifts pyro skill/burst; dmg_normal lifts normals;
     // enemy_def_ignore lifts all). Assert the full triple (normal/crit/avg) of each damage feature.
     // Filtered by `k in compiled` because these features DO exist in our port (just without the bonus)
@@ -293,9 +296,16 @@ for (const item of manifest.items) {
     // likewise reads cStat('shield')); heal rep → her FeatureHeal outputs (heal_dot + kokomi_burst_heal,
     // read cStat('healing')). These features EXIST in our port, so they are asserted via `k in compiled`
     // + a VALUE check (single-valued: normal == crit == average). The value FAILS today: shield because
-    // out['shield'] is not emitted (genuinely-new code, Task B), heal because the condition that would
-    // inject the `healing` bonus is missing — so each undershoots by its full bonus. Restricted to the
-    // shield/heal reps (the damage rep's deliverable is the damage triples above).
+    // the `shield` BAG STAT (not the feature) is unemitted — out['shield'] is absent → cStat('shield')=0
+    // (genuinely-new emit, Task B2); heal because the condition that would inject the `healing` bonus is
+    // missing (Task B1) — so each undershoots by its full bonus. Restricted to the shield/heal reps (the
+    // damage rep's deliverable is the damage triples above).
+    //
+    // Why these gates are NOT vacuous: the shield/heal FEATURES are present in `compiled` (the
+    // `k in compiled` filter holds), and the values fail only because a BAG STAT they read is
+    // absent — shield because buildStats emits no `out['shield']` yet (genuinely-new code, Task B2),
+    // heal because the condition that would inject the `healing` bonus is missing (Task B1). Each
+    // output undershoots by exactly its full bonus (shield/heal × (1 + bonus) with bonus omitted).
     // ---------------------------------------------------------------------
     const nonDamageKeys =
       item.slug === "custom-buffs-shield" || item.slug === "custom-buffs-heal"

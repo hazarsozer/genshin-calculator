@@ -919,6 +919,13 @@ export function buildStats(input: BuildInput): BuildResult {
   // 0 for every base build (no source sets BoL → raw.isSet false → key absent), so the 58k
   // damage goldens are byte-identical.
   if (raw.isSet("bond_of_life")) out["bond_of_life"] = raw.get("bond_of_life") / 100;
+  // Shield-strength bonus → fraction. isPercent('shield') is true (Stats.js:332 `.*shield`) → her
+  // processPercent /100 (setting 50 → 0.5), read by the FeatureShield `(1 + shield)` term
+  // (compileFeature.ts:720,741). Sourced by the shield-strength weapons (Summit Shaper / Vortex
+  // Vanquisher / The Unforged / Memory of Dust — always-on `refine` condition) and custom_buffs.shield.
+  // base-inert for the corpus: a green goldenConfig proves no compared shield output pairs a
+  // shield-strength source (else it'd already be RED) — the byte-identity gate is the proof.
+  if (raw.isSet("shield")) out["shield"] = raw.get("shield") / 100;
   // Royal-passive crit-rate stat — emitted VERBATIM (RAW, NOT /100) for the
   // Royal-weapon series' average-crit transform (cRoyalCritRate). Her
   // `makeStatItem('royal_crit_rate')` reads `stats.royal_crit_rate` directly, and
