@@ -229,15 +229,19 @@ export interface CharPostEffect {
   readonly ratio?: number;
   /**
    * Talent-scaled ratio — when present, supersedes `ratio`. The effective
-   * talent level is resolved at runtime as:
-   *   `effectiveLevel = settings[levelSetting] + (settings[levelSetting + '_bonus'] ?? 0)`
+   * talent level is resolved at runtime EXACTLY as her `PostEffect.getLevel`:
+   *   `base = settings[levelSetting] || 1`
+   *   if `maxLevelSetting > 1`: `base = min(base, maxLevelSetting)`   // clamp the BASE only
+   *   `effectiveLevel = base + (settings[levelSetting + '_bonus'] ?? 0) + (settings[levelSetting + '_bonus_2'] ?? 0)`
    *   `ratio = table.getValue(effectiveLevel) * multi`
    *
-   * Mirrors her `PostEffect.getLevel` (PostEffect.js) + `Talents.getMulti`
+   * Mirrors her `PostEffect.getLevel` (PostEffect.js:45-55) + `Talents.getMulti`
    * (DbObjectTalents.js). The `levelSetting` key must be present in the merged
    * settings when the post-effect fires (inject the base talent levels via
    * `BuildInput.talentLevels`). The constellation `_bonus` offset is already
-   * propagated into the merged settings by the keystone (P2.C).
+   * propagated into the merged settings by the keystone (P2.C). The `_bonus`
+   * offsets are added AFTER the clamp (her order), so a constellation talent
+   * boost can push the effective level past `maxLevelSetting` — faithful to raw.
    *
    * Source: raw/genshin_calc_pub/src/js/classes/PostEffect.js (getLevel),
    *         raw/genshin_calc_pub/src/js/db/Char/Hutao.js:145-158 (atkBuffPost).
@@ -249,6 +253,15 @@ export interface CharPostEffect {
     readonly levelSetting: string;
     /** Divisor/multiplier applied to the table value (e.g. `0.01` for a percent→fraction fold). */
     readonly multi: number;
+    /**
+     * Her `PostEffect.maxLevelSetting`: when `> 1`, the BASE talent level is clamped
+     * to this cap BEFORE the `_bonus` offsets are added (raw getLevel:48-50). Omit when
+     * the raw post-effect sets no `maxLevelSetting` (e.g. Hu Tao / Mizuki / Iansan party
+     * batteries) — the eval then applies no clamp, exactly as her engine. Bennett / Sara /
+     * Furina party batteries set `maxLevelSetting: 10` (raw Bennet.js:692, Sara.js:411,
+     * Furina.js:624).
+     */
+    readonly maxLevelSetting?: number;
   };
   /**
    * Optional talent-table bonus contributed directly to `toStat`, without

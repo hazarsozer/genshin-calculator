@@ -354,15 +354,23 @@ export const bennett: DbObjectChar = {
       { type: "boolean", name: "party.bennet_fantastic_voyage" },
     ],
     postEffects: [
-      // Fantastic Voyage ATK battery: atk_base × burst atk_ratio, clamped at talent L10
-      // (raw PostEffectStats.maxLevelSetting:10 → effective level = min(level, 10)). Pinned
-      // to the L10 table value (1.008) — exact for every realistic build: baked burst is ≥10,
-      // and C5's +3 only pushes it higher (still clamped to 10). Matches the capped-postEffect
-      // idiom of Bennett's own self-buff (fantasticVoyageAtk) + Itto/Sayu carries.
+      // Fantastic Voyage ATK battery: atk_base × burst atk_ratio, scaled with the BUFFER'S
+      // burst talent and clamped at L10 (raw PostEffectStats.maxLevelSetting:10 → effective
+      // level = min(burst, 10), then + any _bonus). ratioFromTalent reads the buffer's burst
+      // setting (bennet_char_skill_burst) so the buff scales below L10 instead of baking the
+      // L10 table value — the parity-audit found the baked-L10 form OVER-buffs teammates when
+      // Bennett's burst < 10. multi:0.01 reproduces her getMulti(multi:0.01). C5's +3 (a
+      // _bonus offset) still applies AFTER the clamp, exactly as her getLevel.
+      // Source: raw/genshin_calc_pub/src/js/db/Char/Bennet.js:689-697.
       {
         fromStat: "bennet_atk_base",
         toStat: "atk",
-        ratio: BennettTalents.s3.p4.getValue(10) * 0.01,  // 100.8 × 0.01 = 1.008
+        ratioFromTalent: {
+          table: BennettTalents.s3.p4,
+          levelSetting: "bennet_char_skill_burst",
+          multi: 0.01,
+          maxLevelSetting: 10,
+        },
         conditions: [{ type: "boolean", name: "party.bennet_fantastic_voyage" }],
         // C1 "Grand Expectation": +20% added to the ATK ratio (her percentBonus
         // ValueTable([C1BuffBonus=20 / 100]) + bonusCondition party.bennet_constellation_1,
