@@ -45,7 +45,7 @@ import type {
   StatTableEntry,
 } from "@genshin/types";
 import { getArtifactSet } from "./artifacts/sets/index.js";
-import { CHARACTER_CONDITIONS, CHARACTER_MULTIPLIERS, CHARACTER_POST_EFFECTS, ENEMY_CONDITIONS } from "./characterConditions.js";
+import { CHARACTER_CONDITIONS, CHARACTER_MULTIPLIERS, CHARACTER_POST_EFFECTS, CUSTOM_BUFFS_CONDITION, ENEMY_CONDITIONS } from "./characterConditions.js";
 import { buildPartyContext, type PartyInput, type ActiveCharFacts } from "./partyContext.js";
 import { buildPartyBuffs } from "./partyBuffs.js";
 
@@ -763,6 +763,11 @@ export function buildStats(input: BuildInput): BuildResult {
   // boolean toggle, so inert for every build that does not set it (all 58k goldens).
   // Source: raw/genshin_calc_pub/src/js/db/Conditions/Enemy.js:65-73
   for (const cond of ENEMY_CONDITIONS) applyCondition(cond);
+  // The universal manual-buff escape-hatch (her always-present ConditionCustomBuffs in
+  // DB.Buffs.ElementalResonance). Loops `custom_buffs.<key>` settings → injects each suffix as a
+  // RAW stat into `raw`. Folds {} unless a `custom_buffs.*` setting is present → inert for every
+  // build that doesn't set one (all 58k goldens). Source: raw/.../classes/Condition/CustomBuffs.js
+  applyCondition(CUSTOM_BUFFS_CONDITION);
   // Per-teammate kit conditions (her char.getPartyConditions() concat). A `number` condition
   // (e.g. bennet_atk_base) lifts a baked setting into the stat bag for a post-effect to read.
   for (const cond of partyBuffs.conditions) applyCondition(cond);
@@ -914,6 +919,13 @@ export function buildStats(input: BuildInput): BuildResult {
   // 0 for every base build (no source sets BoL → raw.isSet false → key absent), so the 58k
   // damage goldens are byte-identical.
   if (raw.isSet("bond_of_life")) out["bond_of_life"] = raw.get("bond_of_life") / 100;
+  // Shield-strength bonus → fraction. isPercent('shield') is true (Stats.js:332 `.*shield`) → her
+  // processPercent /100 (setting 50 → 0.5), read by the FeatureShield `(1 + shield)` term
+  // (compileFeature.ts:720,741). Sourced by the shield-strength weapons (Summit Shaper / Vortex
+  // Vanquisher / The Unforged / Memory of Dust — always-on `refine` condition) and custom_buffs.shield.
+  // base-inert for the corpus: a green goldenConfig proves no compared shield output pairs a
+  // shield-strength source (else it'd already be RED) — the byte-identity gate is the proof.
+  if (raw.isSet("shield")) out["shield"] = raw.get("shield") / 100;
   // Royal-passive crit-rate stat — emitted VERBATIM (RAW, NOT /100) for the
   // Royal-weapon series' average-crit transform (cRoyalCritRate). Her
   // `makeStatItem('royal_crit_rate')` reads `stats.royal_crit_rate` directly, and

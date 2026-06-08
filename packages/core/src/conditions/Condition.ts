@@ -43,6 +43,7 @@ import type {
   ConditionStaticLevel,
   ConditionBooleanCharElement,
   ConditionDropdownElement,
+  ConditionCustomBuffs,
   ConditionStats,
   EvalContext,
 } from "@genshin/types";
@@ -91,6 +92,8 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return !condition.items.every((item) => evaluate(item, ctx));
     case "lithic":
       return true; // always active; publishes weapon_lithic_stacks via conditionSettings
+    case "custom-buffs":
+      return true; // her ConditionCustomBuffs has no isActive gate (inherits base → checkSubconditions → true)
     case "boolean-char":
       return evaluateBooleanChar(condition, ctx);
     case "nightsoul":
@@ -243,6 +246,12 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
       // Absent `stat` → keyed by `name` (prior behavior, base-inert).
       return { ...base, [condition.stat ?? condition.name]: clamped };
     }
+    case "custom-buffs":
+      // The universal manual-buff escape-hatch: strip the `custom_buffs.` prefix from each
+      // truthy numeric setting and inject the suffix as a RAW stat (percent /100 happens at
+      // emit, not here). Her ConditionCustomBuffs is the ONLY condition reading settings
+      // generically — every other reads a fixed `params.stats`.
+      return customBuffsBag(condition, ctx);
     default: {
       // Exhaustiveness tripwire: a new Condition variant must be handled above,
       // not silently fall through to `cond.stats`.
@@ -299,6 +308,37 @@ export function conditionSettings(
 // ---------------------------------------------------------------------------
 // Stat-resolution helpers (internal)
 // ---------------------------------------------------------------------------
+
+/**
+ * Port of `ConditionCustomBuffs.getData` — the universal manual-buff escape-hatch. Loops the
+ * settings, regex-strips the `custom_buffs.` prefix from each truthy numeric key, and injects the
+ * suffix as a RAW stat (her `result.stats.add(m[1], settings[key])`). Returns `{}` when no
+ * `custom_buffs.*` key is present → inert for every build that doesn't set one. The percent fold
+ * (`/100` for `isPercent` keys) happens once downstream at emit, NOT here (mirroring her single
+ * `processPercent` over the whole bag, Stats.js:119-125), so values are emitted RAW.
+ *
+ * `condition` is unused (her `getData` ignores `this`) but kept in the signature to mirror her
+ * instance method and to discriminate the variant. The regex is anchored (`^custom_buffs\.(.+)$`)
+ * — her `/custom_buffs.(.*)+/` is unanchored with an unescaped `.`, but the only real keys are
+ * literally `custom_buffs.<key>`, so anchoring is a faithful modernisation. Skips 0/non-number
+ * values, matching her `if (m && settings[key])` (0 is falsy).
+ *
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/CustomBuffs.js:9-23
+ */
+function customBuffsBag(
+  condition: ConditionCustomBuffs,
+  ctx: EvalContext
+): Record<string, number> {
+  void condition;
+  const out: Record<string, number> = {};
+  for (const key of Object.keys(ctx)) {
+    const m = key.match(/^custom_buffs\.(.+)$/);
+    if (m === null) continue;
+    const v = ctx[key];
+    if (typeof v === "number" && v !== 0) out[m[1]!] = v;
+  }
+  return out;
+}
 
 /** Coerce a possibly-undefined ConditionStats bag into a plain number record. */
 function toNumberBag(stats: ConditionStats | undefined): Record<string, number> {

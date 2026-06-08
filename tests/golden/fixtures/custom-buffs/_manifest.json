@@ -1,0 +1,134 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "The universal MANUAL-BUFF escape-hatch (custom_buffs.<key>) via the buffs bag (setBuffsSettings — the no-teammate passthrough enemy-state uses). Her always-present ConditionCustomBuffs (CustomBuffs.js:9-23, registered db/Buffs/ElementalResonance.js:70-74) regex-strips `custom_buffs.` and ADDITIVELY injects the suffix as a RAW stat (stats.add); processPercent (Stats.js:119-125,327-337) folds percent keys /100 once over the bag. Loop is KEY-GENERIC → one key per emit-LANE proves the lane (one element proves all 8 dmg_<element>). Three reps span the three OUTPUT KINDS: custom-buffs-damage (Diluc) drives atk:500 (flat — bare atk is NOT percent) / atk_percent:40 (0.40) / crit_rate:30 (0.30) / crit_dmg:60 (0.60) / dmg_pyro:50 (0.50, lifts pyro skill/burst) / dmg_normal:25 (0.25, lifts normals) / enemy_def_ignore:20 (0.20, lifts all) — six already-emitted lanes, RED driven by the missing condition (every damage triple shifts). custom-buffs-shield (Noelle skill shield) shield:50 (.*shield → 0.50) — the ANTI-HOLLOW-GREEN key: RED until BOTH the condition AND the genuinely-new out['shield'] emit land (our buildStats emits no shield today → undershoots 50%). custom-buffs-heal (Sangonomiya Kokomi heal_dot+kokomi_burst_heal, read cStat('healing')) healing:30 (^healing → 0.30) — the healing lane already emits (HEAL_BONUS_KEYS), RED driven by the missing condition (undershoots 30%). customBuffsBurndown burns them RED until Task B ports the condition + shield emit.",
+    "id": "custom-buffs"
+  },
+  "featureTotal": 78,
+  "itemCount": 3,
+  "items": [
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "settings": {
+          "custom_buffs.atk": 500,
+          "custom_buffs.atk_percent": 40,
+          "custom_buffs.crit_dmg": 60,
+          "custom_buffs.crit_rate": 30,
+          "custom_buffs.dmg_normal": 25,
+          "custom_buffs.dmg_pyro": 50,
+          "custom_buffs.enemy_def_ignore": 20
+        }
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {},
+      "slug": "custom-buffs-damage",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 22,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "settings": {
+          "custom_buffs.healing": 30
+        }
+      },
+      "repKey": "Kokomi",
+      "repSlug": "sangonomiya_kokomi",
+      "resonanceElements": {},
+      "slug": "custom-buffs-heal",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "settings": {
+          "custom_buffs.shield": 50
+        }
+      },
+      "repKey": "Noelle",
+      "repSlug": "noelle",
+      "resonanceElements": {},
+      "slug": "custom-buffs-shield",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    }
+  ]
+}

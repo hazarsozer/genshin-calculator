@@ -895,6 +895,15 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
   neuvilletteDisciplineSlider,
 ];
 
+/**
+ * The universal manual-buff escape-hatch. Her DB.Buffs.ElementalResonance carries one always-present
+ * ConditionCustomBuffs that loops `custom_buffs.<key>` settings and additively injects each suffix as
+ * a RAW stat into the bag. Applied like CHARACTER_CONDITIONS (a global on every build); folds {}
+ * unless a `custom_buffs.*` setting is present, so it is inert for every base build.
+ * Source: raw/.../db/Buffs/ElementalResonance.js:70-74, raw/.../classes/Condition/CustomBuffs.js
+ */
+export const CUSTOM_BUFFS_CONDITION: Condition = { type: "custom-buffs" };
+
 // ===========================================================================
 // Global ENEMY conditions — faithfully ported from
 // raw/genshin_calc_pub/src/js/db/Conditions/Enemy.js (the stat-bearing entries).
