@@ -230,6 +230,28 @@ export interface FeatureMultiplierEntry {
    */
   readonly bondOfLifeFactor?: boolean;
   /**
+   * PURE-×stacks factor: append `min(settings[setting], maxStacks)` as an EXTRA factor in this
+   * term's product — `talent% × scalingStat × min(stacks, maxStacks)` (a multiplicative factor on
+   * the base term, NOT a `1 + perStack×stacks` offset). Ports her `FeatureMultiplier.getStackMultiplier`
+   * → `getTree` pushes `CConst(min(settings[stacksLeveling] ?? 0, maxStacks))` into the multiplier's
+   * `CMulti` items IFF `stacksLeveling` is set (raw/.../classes/Feature2/Multiplier.js:196-211,228-230).
+   *
+   * THE DEFAULT: 0 stacks ⇒ the factor is `cConst(0)` ⇒ the whole term is ×0 (vanishes). This is the
+   * faithful "0 at 0 stacks" her engine yields — distinct from {@link scalingOffset}
+   * (`1 + perStack×stacks`, which can't reach 0) and from `CharPostEffect.stacksSetting` (the
+   * party-path `×(stacks||1)`, wrong default). Shared by the DAMAGE base-term path AND the HEAL
+   * base-term path (`compileOutput` reuses `baseDamageTerm`).
+   *
+   * The two v5.8 users are both Lyney's Prop-Surplus stacks (`lyney_surplus_stacks`, maxStacks 5):
+   * his `skill.lyney_hp_regeneration` HEAL (`hp*`) and his `skill.skill_dmg`'s 2nd multiplier
+   * (ATK-scaled). Absent ⇒ no factor; and even when set, every existing build leaves the setting
+   * absent ⇒ `cConst(0)` ⇒ the term vanishes (heal stays 0, skill_dmg stays base-only) — base-inert
+   * (the 58k damage goldens + goldenConfig are byte-identical).
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier.js:196-211,228-230
+   */
+  readonly stacksFactor?: { readonly setting: string; readonly maxStacks: number };
+  /**
    * CHAR-LEVEL multipliers only: which features this multiplier applies to.
    * When set (only on `char.multipliers` entries), the multiplier is summed into
    * a feature's base-damage term iff `target.damageTypes` includes the feature's
