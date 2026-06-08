@@ -107,5 +107,6 @@ export type {
   ConditionStaticLevel,
   ConditionBooleanCharElement,
   ConditionDropdownElement,
+  ConditionCustomBuffs,
   Condition,
 } from "./condition.js";

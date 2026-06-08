@@ -532,6 +532,16 @@ export interface ConditionDropdownElement extends ConditionBase {
   readonly stats?: never;
 }
 
+/**
+ * The universal manual-buff escape-hatch. Her always-present `ConditionCustomBuffs`
+ * (Condition/CustomBuffs.js, registered in db/Buffs/ElementalResonance.js:70-74) loops
+ * every `custom_buffs.<key>` setting and additively injects the suffix as a RAW stat.
+ * No gate, no `.stats`, no `.settings` — the injection is computed in `conditionStats`.
+ */
+export interface ConditionCustomBuffs extends ConditionBase {
+  readonly type: "custom-buffs";
+}
+
 /** Discriminated union of all condition types. */
 export type Condition =
   | ConditionBoolean
@@ -557,6 +567,7 @@ export type Condition =
   | ConditionOr
   | ConditionStaticLevel
   | ConditionBooleanCharElement
-  | ConditionDropdownElement;
+  | ConditionDropdownElement
+  | ConditionCustomBuffs;
 
 export type { AscensionLevel, ConstellationLevel, Refinement };
