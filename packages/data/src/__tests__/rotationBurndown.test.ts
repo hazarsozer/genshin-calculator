@@ -23,7 +23,17 @@
  *     normals at ~10%. The crit rates DIFFER → a wrong avg=blend(Σnormal,Σcrit) fails. THE guard.
  *   - rotation-keqing-simple (Keqing): [normal_hit_1×3] — a simple count>1 single-element seq.
  *   - rotation-fischl-repeat (Fischl): [repeat ×3 of [normal_hit_1×1]] — repeat == 3× single.
- *   - rotation-fischl-mixed-block (Fischl, enemy_weak_shot): [charged_aimed, repeat×2, aimed].
+ *   - rotation-fischl-mixed-block (Fischl, enemy_weak_shot): [charged_aimed, repeat×2, aimed] —
+ *     a loose-feature/repeat/loose-feature mix; reorderItems defers the repeat after the loose
+ *     features but the SUM is order-independent here (no conditions), so the total is unchanged.
+ *
+ * Anti-gaming (verified, not encoded — the burndown is the live guard):
+ *   - Phase 1 (mixed crit): computing avg = blend(Σnormal, Σcrit) at a single crit rate makes
+ *     ONLY the two mixed-crit reps fail on `average` (off by ~3039 / ~4239); the equal-crit reps
+ *     stay green → the Σ-per-hit-avg accumulation is load-bearing.
+ *   - Phase 2 (repeat count): neutralizing the repeat `count` factor (folding 1× instead of
+ *     count×) makes ONLY the two repeat reps fail on ALL THREE components (fischl-repeat at exactly
+ *     1× = ⅓ of the oracle); the non-repeat reps stay green → the count factor is load-bearing.
  *
  * Until compileRotation + the loader.ts branch land, compileCharacter emits no rotation.total →
  * the key is absent → RED (the family-exists guard + each rep's missing-key assertion). Wiring it
