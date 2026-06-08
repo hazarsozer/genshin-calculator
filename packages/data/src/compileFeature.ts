@@ -65,6 +65,7 @@ import type {
   FeatureMultiplierEntry,
   FeatureOutput,
   FeatureReaction,
+  Rotation,
 } from "@genshin/types";
 import { reactionShieldValues } from "./generated/elementScale.js";
 
@@ -153,6 +154,15 @@ export interface CompileContext {
    * multipliers only.
    */
   readonly extraMultipliers?: readonly CharMultiplier[];
+  /**
+   * OPTIONAL rotation spec (R3). When present, `compileCharacter` composes the char's
+   * per-feature damage triples into a `rotation.total` output (her `compileRotation` →
+   * `FeatureRotation`). Absent on every standard build → no rotation output is emitted
+   * (the branch is never taken; the 58k damage goldens are byte-identical). The
+   * composition reads the SAME compiled feature closures the char already produces — it
+   * adds no engine-core surface.
+   */
+  readonly rotation?: Rotation;
 }
 
 /**
