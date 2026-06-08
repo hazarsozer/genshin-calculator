@@ -245,6 +245,13 @@ const REACTION_BONUS_PERCENT_KEYS = [
  */
 const RAW_BAG_SCALING_KEYS = [
   "party_days_past_healing_recorded",
+  "days_past_healing_recorded", // Song of Days Past 4pc SELF-WORN multiplier (R4d): the set's
+                                // bonus[4] ConditionNumber (max 15000) injects the recorded healing
+                                // into the bag, and the self-worn FeatureMultiplier scales 8% × it
+                                // into each normal/charged/plunge/skill/burst base term. Distinct
+                                // from the TEAM key (party_*) above and from Clam's accumulated_healing
+                                // below. Unset on every build that omits the input → key never emitted
+                                // → byte-unchanged (the sets-4pc SoDP fixture has it unset → 0).
   "accumulated_healing",
   "shenhe_atk_total",
   "faruzan_atk_base",     // Faruzan A4 anemo-DMG teammate multiplier (P3.5.2 Bucket C)

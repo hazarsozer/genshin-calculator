@@ -9,13 +9,17 @@
  *   ("set.song_of_days_past_4"). The text_percent_dmg and text_value_hp stats in the
  *   raw boolean are display-only → OMIT.
  *   The real effect is a FeatureMultiplier (set-level `multipliers`): each hit of type
- *   normal/charged/plunge/skill/burst gets +<accumulated_healing × 8%> (her ValueTable([8]),
- *   scale "accumulated_healing", source "artifacts"). Gated by the boolean toggle.
- *   At the oracle default (accumulated_healing = 0): multiplier × 0 = 0 → contributes 0,
- *   matching the fixture (sigewinne rep). BIND at toggle-on; INERT at zero healing.
+ *   normal/charged/plunge/skill/burst gets +<days_past_healing_recorded × 8%> (her ValueTable([8]),
+ *   scale "days_past_healing_recorded", source "artifacts"). Gated by the boolean toggle.
+ *   The self-worn scaling key is `days_past_healing_recorded` (raw SongOfDaysPast.js:59) — NOT
+ *   `accumulated_healing` (that is Ocean-Hued Clam's key, raw OceanHuedClam.js:61) nor the TEAM
+ *   key `party_days_past_healing_recorded`. At the sets-4pc oracle default
+ *   (days_past_healing_recorded unset = 0): multiplier × 0 = 0 → contributes 0, matching the
+ *   fixture (sigewinne rep). BIND at toggle-on; INERT at zero recorded healing.
  *
  * Note on fixture: setToggles {"set.song_of_days_past_4": true} — toggle is on, but
- * accumulated_healing defaults to 0 in the build config → net multiplier contribution = 0.
+ * days_past_healing_recorded defaults to 0 in the sets-4pc build config → net multiplier
+ * contribution = 0. The sodp-self fixture drives it at 15000 (R4d) to exercise the multiplier.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Artifacts/Set/SongOfDaysPast.js
@@ -26,11 +30,14 @@
 
 import type { CharMultiplier, DbObjectArtifactSet } from "@genshin/types";
 
-// 4pc — per-hit multiplier: +8% of accumulated_healing on all normal/charged/plunge/skill/burst.
-// The scaling "accumulated_healing" reads the ConditionNumber input from the context.
-// At 0 healing this contributes 0 — exact match to the v5.8 sigewinne fixture.
+// 4pc — per-hit multiplier: +8% of days_past_healing_recorded on all normal/charged/plunge/skill/burst.
+// The scaling "days_past_healing_recorded" reads the self-worn ConditionNumber input from the bag (the
+// set's bonus[4] ConditionNumber injects it; buildStats emits it via RAW_BAG_SCALING_KEYS). NOT
+// "accumulated_healing" (Ocean-Hued Clam's key) — that was a wrong-key bug that silently computed 0 at
+// any non-zero recorded healing (R4d). At 0 recorded healing this contributes 0 — exact match to the
+// sets-4pc sigewinne fixture (recorded unset).
 const healingMultiplier: CharMultiplier = {
-  scaling: "accumulated_healing",
+  scaling: "days_past_healing_recorded",
   source: "artifacts",
   leveling: "",
   values: { getValue: (): number => 8 },
