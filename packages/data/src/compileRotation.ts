@@ -20,11 +20,14 @@
  * the settings mid-rotation, so they recompile the affected features under MERGED settings
  * via the `recompile` seam (her engine resolves reaction + stats at COMPILE time, so a
  * per-node settings change requires recompiling, not just re-evaluating). `uptime` (Phase 4)
- * is a LATER dispatch — see its barrier below.
+ * is the linear blend: `total += weight·(base·(1−p) + buffed·p)` componentwise on all three
+ * accumulators, where base = its features WITHOUT its conditions and buffed = the same features
+ * WITH the conditions overlaid (reusing the same `applyCondition`/seam path) — each leg computed
+ * in isolation and folded up (Tree.js:214-262).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Rotation/Tree.js (processBlock — the accumulators;
- *     :8,60,306-308 reaction-tagging; :137-188 condition overlay; :320-347 reorderItems)
+ *     :8,60,306-308 reaction-tagging; :137-188 condition overlay; :214-262 uptime blend; :320-347 reorderItems)
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Compile/Types/Damage.js:108-126 (a feature's triple)
  *   raw/genshin_calc_pub/src/js/classes/RotationCompiler.js:45-102 (processConditions — the Stats.diff delta)
  */
@@ -171,6 +174,24 @@ function addFeature(
 }
 
 /**
+ * Fold a fully-accumulated sub-block (`sub`, its own three accumulators) into `total` scaled by
+ * `factor`, componentwise on ALL THREE (normal/crit/avg). This is her uptime leg's
+ * `CMulti([ratio, repNormal/repCrit/repAverage])` increase (Tree.js:236-241,254-259) — a leg
+ * computes its sub-block in ISOLATION (a fresh sub-accumulator) then multiplies the resulting
+ * triple by the leg ratio and adds it to the outer total. The ratio scales every component
+ * identically (never just avg — that is the Phase-4 anti-gaming trap).
+ */
+function foldScaled(
+  sub: RotationTotal,
+  factor: number,
+  total: RotationTotal
+): void {
+  total.normal += factor * sub.normal;
+  total.crit += factor * sub.crit;
+  total.avg += factor * sub.avg;
+}
+
+/**
  * Accumulate one block's nodes into `total` at `weight` (the product of enclosing `repeat`
  * counts), against `slice` (the currently-active {compiled, context} — the base slice at the
  * top level, or a condition-overlaid slice after a `condition` node fires in THIS block).
@@ -239,11 +260,51 @@ function accumulateBlock(
       active = condSlice;
       activeSettings = merged;
     } else if (node.type === "uptime") {
-      // Phase 4: blend the sub-block compiled base vs buffed (conditions applied),
-      // base·(1−p)+buffed·p componentwise. Not in this dispatch — fail loud.
-      throw new Error(
-        "compileRotation: 'uptime' nodes are handled in a later pass (Phase 4), not this dispatch"
-      );
+      // Phase 4 — the linear blend (Tree.js:214-262): total += weight · (base·(1−p) + buffed·p),
+      // componentwise on ALL THREE accumulators. `p = percent/100` (Tree.js:226). The two legs
+      // are computed in ISOLATION — each is a fresh sub-accumulator over `node.features`, scaled
+      // by its leg ratio and folded up — so the uptime's overlay NEVER leaks to nodes after it
+      // (her processBlock runs each leg as its own `processBlock(...features..., data.clone)` and
+      // only the multiplied result increases the outer total; the enclosing `active`/
+      // `activeSettings` here are untouched). Both legs inherit the block's CURRENT slice +
+      // settings (a condition that fired earlier in this block overlays both legs), matching her
+      // `data` clone carrying prior addSettings.
+      const p = node.percent / 100;
+
+      // base leg (Tree.js:246-262): `item.features` WITHOUT the uptime's conditions, at (1−p).
+      // Emitted only when `percent < 100` (her guard) — p=100 ⇒ buffed-only.
+      if (p < 1) {
+        const baseSub: RotationTotal = { normal: 0, crit: 0, avg: 0 };
+        accumulateBlock(node.features, 1, ctx, active, activeSettings, baseSub);
+        foldScaled(baseSub, weight * (1 - p), total);
+      }
+
+      // buffed leg (Tree.js:225-243): `[...conditions, ...features]` WITH the conditions applied,
+      // at p. Emitted only when `percent > 0` (her guard) — p=0 ⇒ base-only. The conditions
+      // overlay the buffed leg ONLY: chain `applyCondition` over the active settings (reusing the
+      // Phase-3 overlay machinery), recompile the slice under the merged settings via the seam,
+      // then accumulate the features against THAT overlaid slice. This is exactly her buffed
+      // sub-block `processBlock([...conditions, ...features])`: the compiled condition nodes
+      // prepend the features, so the features see the overlay (Tree.js:227-230,137-188).
+      if (p > 0) {
+        let buffedSettings = activeSettings;
+        for (const cond of node.conditions) {
+          buffedSettings = applyCondition(buffedSettings, cond);
+        }
+        const buffedSlice =
+          node.conditions.length > 0
+            ? resolveSlice(
+                ctx,
+                buffedSettings,
+                `uptime buffed leg (${node.conditions
+                  .map(describeCondition)
+                  .join(", ")})`
+              )
+            : active;
+        const buffedSub: RotationTotal = { normal: 0, crit: 0, avg: 0 };
+        accumulateBlock(node.features, 1, ctx, buffedSlice, buffedSettings, buffedSub);
+        foldScaled(buffedSub, weight * p, total);
+      }
     } else {
       // Exhaustiveness: a new node variant must be handled explicitly (compile-time error
       // until then), never fall through to a silent skip.
