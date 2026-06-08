@@ -368,13 +368,15 @@ function baseDamageTerm(
   //     Sethos, …) byte-for-byte: each maps to `<stat>_total`, exactly as before.
   //   - RAW-BAG scaling (`stats.get(scaling)` verbatim): a scaling key that is NOT one of
   //     the total stats reads the RAW value the bag carries under that exact key — her
-  //     `makeStatItem(scaling)` with no `*`. The only v5.8 user is Song of Days Past's
-  //     team multiplier, scaling `party_days_past_healing_recorded` (a ConditionNumber
-  //     adds the recorded healing — 15000 — directly to the stats bag). Base-safe: the
-  //     other non-total key any data file carries is `accumulated_healing` (Song of Days
-  //     Past self-worn), absent from every build's bag → 0 either way; no base/cons/armory
-  //     fixture exercises a non-total scaling that resolves nonzero, so this branch leaves
-  //     goldenConfig / constellations / armory byte-unchanged.
+  //     `makeStatItem(scaling)` with no `*`. The v5.8 users are Song of Days Past's two
+  //     multipliers — the TEAM one scaling `party_days_past_healing_recorded` and the
+  //     SELF-WORN one scaling `days_past_healing_recorded` (each a ConditionNumber adding
+  //     the recorded healing — ≤15000 — directly to the stats bag) — and Ocean-Hued Clam's
+  //     foam scaling `accumulated_healing` (Clam's own ConditionNumber, raw OceanHuedClam.js:61).
+  //     Base-safe: every such key is absent from a build's bag unless that build sets the
+  //     ConditionNumber input → 0 either way; no base/cons/armory fixture exercises a
+  //     non-total scaling that resolves nonzero, so this branch leaves goldenConfig /
+  //     constellations / armory byte-unchanged.
   const scalingKey = resolveStatKey(entry.scaling ?? "atk");
 
   // M1 coefficient: a THIRD, mutually-exclusive factor beside scalingMultiplier /
