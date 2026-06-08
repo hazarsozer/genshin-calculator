@@ -158,14 +158,17 @@ let totalNonDamage = 0;
 let totalUnmodelled = 0;
 
 for (const { char, weaponStatTable, slug } of REPS) {
+  const fixture = loadFixture(slug);
+  const nonDamageKeys = Object.entries(fixture.features)
+    .filter(([, e]) => isNonDamageOutput(e))
+    .map(([k]) => k);
+
+  // Chars with no non-damage outputs need no suite — creating an empty `describe` makes vitest
+  // report "No test found in suite" (a file-level failure with 0 assertion failures). Skip them
+  // so the suite runs cleanly green.
+  if (nonDamageKeys.length === 0) continue;
+
   describe(`output-coverage: ${slug}`, () => {
-    const fixture = loadFixture(slug);
-    const nonDamageKeys = Object.entries(fixture.features)
-      .filter(([, e]) => isNonDamageOutput(e))
-      .map(([k]) => k);
-
-    if (nonDamageKeys.length === 0) return; // char emits no non-damage outputs — nothing to burn down
-
     const { context } = buildStats({
       char,
       weaponStatTable,
