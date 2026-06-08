@@ -16,7 +16,9 @@
  * Each rep's fixture (tests/golden/fixtures/infusion/) carries her engine's INFUSED triples; this
  * suite threads the SAME infusion toggle (the manifest's party.settings) into both buildStats and
  * compileCharacter and asserts every infused damage triple (normal/crit/avg) — the FULL triple,
- * because the element change shifts all three (DMG-bonus + RES + crit-spread):
+ * because the element change shifts all three (DMG-bonus + RES + crit-spread) — unlike
+ * foodBurndown/enemyStateBurndown which assert avg-only; cf. lyneySurplusBurndown, which also
+ * asserts the full triple for the same reason:
  *
  *   - infusion-diluc (Diluc): {diluc_dawn:true} → his Dawn ConditionBoolean publishes
  *     attack_infusion:'pyro' (raw Diluc.js:287-294, attack_infusion_pyro:1 collapsed to the single
