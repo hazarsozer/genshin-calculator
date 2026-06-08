@@ -904,6 +904,16 @@ export function buildStats(input: BuildInput): BuildResult {
   // every base build (no C0 source sets it; Razor C2's is a gated-off toggle) → base
   // golden untouched; only the resonance-cryo / blizzard party fixtures exercise it.
   if (raw.isSet("crit_rate_enemy")) out["crit_rate_enemy"] = raw.get("crit_rate_enemy") / 100;
+  // Bond-of-Life as a damage/heal MULTIPLIER factor (her FeatureMultiplierBondOfLife reads
+  // `bond_of_life` via makeStatItem) — emitted as a FRACTION, mirroring her `Stats.processPercent`
+  // which folds the percent stat /100 before the compiled fn runs (`bond_of_life ∈ isPercent`,
+  // Stats.js:119-124): setting 50 → 0.5. This `out` fraction is read by `bondOfLifeFactor`
+  // (Arlecchino masque, Clorinde heals) and the `subtractBoL` heal term. DISTINCT from the RAW
+  // `bond_of_life` the bag carries for Clorinde's C4 post-effect (`fromStat:"bond_of_life"` reads
+  // raw 50 with a compensating raw ratio/cap) — a different reader; do NOT unify (raw→out = 100×).
+  // 0 for every base build (no source sets BoL → raw.isSet false → key absent), so the 58k
+  // damage goldens are byte-identical.
+  if (raw.isSet("bond_of_life")) out["bond_of_life"] = raw.get("bond_of_life") / 100;
   // Royal-passive crit-rate stat — emitted VERBATIM (RAW, NOT /100) for the
   // Royal-weapon series' average-crit transform (cRoyalCritRate). Her
   // `makeStatItem('royal_crit_rate')` reads `stats.royal_crit_rate` directly, and

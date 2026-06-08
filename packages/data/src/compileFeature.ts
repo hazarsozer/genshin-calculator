@@ -417,6 +417,16 @@ function baseDamageTerm(
     scalingStatBlock = cMax([cSubtract([scalingStatBlock, cConst(entry.exceedStatValue)]), cConst(0)]);
   }
   factors.push(scalingStatBlock);
+  // Bond-of-Life factor — her FeatureMultiplierBondOfLife.getTreeBonusMultiplier pushes
+  // makeStatItem('bond_of_life') into the multiplier's CMulti (BondOfLife.js:9-11), so the
+  // term becomes `talent% × scalingStat × bond_of_life`. `cStat("bond_of_life")` reads the
+  // FRACTION buildStats emits (`raw/100`, e.g. 0.5 at setting 50) — the processPercent-folded
+  // value, NOT the raw `bond_of_life` Clorinde's C4 post-effect reads. The two v5.8 users are
+  // Arlecchino's masque + Clorinde's heals. Absent ⇒ no factor; and when set, `out` reads 0 for
+  // every BoL-free build (all 58k goldens) → ×0 → the term vanishes (base-inert).
+  if (entry.bondOfLifeFactor) {
+    factors.push(cStat("bond_of_life"));
+  }
   let term: Block = cMulti(factors);
   // Flat additive term from FeatureMultiplierList (her CConst(getValueFlat)):
   // `(levelMult × stat) + flat` — the flat component is talent-level-indexed and added
