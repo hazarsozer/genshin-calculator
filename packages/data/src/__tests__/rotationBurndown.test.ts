@@ -183,51 +183,57 @@ for (const item of manifest.items) {
       return;
     }
 
-    // The rotation was dumped under these settings (enemy_weak_shot for the mixed-crit reps); pass
-    // them to BOTH buildStats (the bag) and compileCharacter (compileFeature's crit branch reads
-    // ctx.settings.enemy_weak_shot). Absent → empty (the no-toggle reps).
+    // The rotation was dumped under these settings (enemy_weak_shot for the mixed-crit reps); the
+    // no-toggle reps default to empty. The condition rep has none — its overlay is INTERNAL.
     const settings: EvalContext = item.party.settings ?? {};
 
-    const { context } = buildStats({
-      char,
-      weaponStatTable: WEAPON_TABLE_BY_TYPE[char.weapon]!,
-      statBlock: STAT_BLOCK,
-      levels: LEVELS,
-      enemy: ENEMY,
-      settings,
-    });
-
-    // The recompile seam (Phase 5a reaction tags + Phase 3 condition overlays): re-derive
-    // {compiled, context} under fully-merged settings via a read-only buildStats +
-    // compileCharacter re-call. This is exactly how a real caller (loader.ts) would wire it —
-    // the mid-rotation settings change (per-node reaction, or a condition's diff) recompiles
-    // the affected hits, since her engine resolves reaction + stats at COMPILE time. The
-    // re-call must NOT pass `rotation` (no recursion — it only needs the feature map). A pure
-    // feature/repeat rep never invokes this; the reaction/condition reps do.
-    const rotationRecompile = (merged: Readonly<Record<string, unknown>>) => {
-      const { context: mergedContext } = buildStats({
+    // Canonical derive (mirrors goldenConfig.test.ts): buildStats with talentLevels (so
+    // talent-scaled post-effects — Hu Tao's Paramita HP→ATK reads char_skill_attack — resolve)
+    // → return the bag context AND the PROPAGATED settings (buildStats merges each active
+    // condition's `.settings`, e.g. Paramita's `attack_infusion:'pyro'`). compileCharacter is
+    // then called under the PROPAGATED settings so infusions/talent offsets land. Returns the
+    // pieces the closures need. This is the seam's body too: the SAME re-derive a real caller
+    // (loader.ts) wires for a mid-rotation change.
+    const derive = (s: EvalContext) => {
+      const { context: ctx, settings: propagated } = buildStats({
         char,
         weaponStatTable: WEAPON_TABLE_BY_TYPE[char.weapon]!,
         statBlock: STAT_BLOCK,
         levels: LEVELS,
         enemy: ENEMY,
-        settings: merged,
+        settings: s,
+        talentLevels: TALENTS,
       });
-      const mergedCompiled = compileCharacter(char, {
+      return { context: ctx, propagated };
+    };
+
+    const { context, propagated } = derive(settings);
+
+    // The recompile seam (Phase 5a reaction tags + Phase 3 condition overlays): re-derive
+    // {compiled, context} under fully-merged settings (her engine resolves reaction + stats at
+    // COMPILE time, so a per-node settings change recompiles the affected hits). The re-call
+    // must NOT pass `rotation` (no recursion — it only needs the feature map). A pure
+    // feature/repeat rep never invokes this; the reaction/condition reps do.
+    const rotationRecompile = (merged: Readonly<Record<string, unknown>>) => {
+      const { context: ctx, propagated: prop } = derive(merged as EvalContext);
+      const comp = compileCharacter(char, {
         charElement: char.element,
         talentLevels: TALENTS,
-        settings: merged,
+        settings: prop,
         charLevel: LEVELS.charLevel,
       });
-      return { compiled: mergedCompiled, context: mergedContext };
+      return { compiled: comp, context: ctx };
     };
 
     // Thread the reconstructed rotation spec as ctx.rotation → loader.ts composes the char's
-    // per-feature triples into rotation.total. The spec is EXACTLY the one the oracle dumped.
+    // per-feature triples into rotation.total, with the seam for any settings-changing node.
+    // Pass the PROPAGATED settings so the base feature map (loader's `out`, used as the base
+    // slice) AND `context` agree on the same bag. loader.ts forwards these as baseSettings the
+    // overlay merges onto (idempotent — re-deriving under them yields the same propagation).
     const compiled = compileCharacter(char, {
       charElement: char.element,
       talentLevels: TALENTS,
-      settings,
+      settings: propagated,
       charLevel: LEVELS.charLevel,
       rotation: item.party.rotation,
       rotationRecompile,

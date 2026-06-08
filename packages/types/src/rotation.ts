@@ -53,17 +53,34 @@ export interface RotationRepeatNode {
 /**
  * A `condition` node: a mid-rotation stat/settings overlay applied forward to the
  * following nodes in the same block (her `Stats.diff` two-stage overlay,
- * RotationCompiler.processConditions:45-102). DECLARED for extensibility — handled in
- * a LATER pass (Phase 3), not by the P0/feature/repeat dispatch. The shape mirrors her
- * deserialized condition item (Rotation.js:352-380): a subtype + the resolved
- * itemId/conditionId/value the compiler resolves against a live build.
+ * RotationCompiler.processConditions:45-102; Tree.js:137-188). Handled in Phase 3.
+ *
+ * Her engine resolves a condition by NUMERIC ids (`itemId` = the object, `conditionId` =
+ * the condition's `serializeId`) against a LIVE build, then writes
+ * `settings[cond.getName()] = value` (or `cond.getValueById(value)` for a dropdown). The
+ * port has no live `CalcSet` registry to map those numeric ids → a name, so it carries the
+ * ALREADY-RESOLVED form: `setting` (= `cond.getName()`, the settings key the overlay writes)
+ * and `value`. The port merges `{[setting]: value}` onto the running settings and re-derives
+ * the bag + closures under it (a read-only `buildStats` + `compileCharacter`), reproducing
+ * her two-stage diff. A `value` of `undefined` REMOVES the setting (her `diffSettings` emits
+ * `undefined` for a key dropped by the overlay).
+ *
+ * `subtype` documents the provenance (which object the condition is from); the port does not
+ * branch on it (it only merges the setting). The numeric `itemId`/`conditionId` are her
+ * serialization detail — carried optionally for the oracle-faithful round-trip, NOT read by
+ * the port (which uses `setting`).
  */
 export interface RotationConditionNode {
   readonly type: "condition";
   readonly subtype: "char" | "weapon" | "artifacts" | "enemy" | "party" | "buffs";
+  /** The RESOLVED settings key the overlay writes (= her `cond.getName()`). Read by the port. */
+  readonly setting: string;
+  /** The value the overlay assigns (checkbox → true; stacks/number → the count; dropdown → resolved). `undefined` removes the key. */
+  readonly value?: number | string | boolean;
+  /** Her numeric object id (oracle serialization detail; not read by the port). */
   readonly itemId?: number;
+  /** Her condition `serializeId` (oracle serialization detail; not read by the port). */
   readonly conditionId?: number;
-  readonly value?: number | string;
 }
 
 /**

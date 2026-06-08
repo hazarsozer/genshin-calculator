@@ -15,18 +15,18 @@
  * normal). No crit-rate re-exposure is needed — the per-feature `avg` already carries it.
  *
  * `hitMulti` defaults to 1 (the 4 overrides — Yoimiya/Mona/Yanfei/Clam — are OUT of this
- * dispatch). The un-tagged `feature` and `repeat` node types compose under the SINGLE base
- * settings; a `reaction`-tagged feature node (Phase 5a) DOES change the settings for that hit
- * (`data.settings.reaction = <name>`), so it RECOMPILES that feature under merged settings via
- * the `recompile` seam (her engine resolves reaction at COMPILE time, so a per-node settings
- * change requires recompiling, not just re-evaluating). `condition`/`uptime` (which change
- * stats mid-block) are LATER passes — see the barriers below.
+ * dispatch). The `feature` and `repeat` node types compose under the SINGLE base settings;
+ * `reaction`-tagged feature nodes (Phase 5a) and `condition` overlays (Phase 3) DO change
+ * the settings mid-rotation, so they recompile the affected features under MERGED settings
+ * via the `recompile` seam (her engine resolves reaction + stats at COMPILE time, so a
+ * per-node settings change requires recompiling, not just re-evaluating). `uptime` (Phase 4)
+ * is a LATER dispatch — see its barrier below.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Rotation/Tree.js (processBlock — the accumulators;
- *     :8,60,306-308 reaction-tagging)
+ *     :8,60,306-308 reaction-tagging; :137-188 condition overlay; :320-347 reorderItems)
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Compile/Types/Damage.js:108-126 (a feature's triple)
- *   raw/genshin_calc_pub/src/js/classes/RotationCompiler.js (node → compiled item)
+ *   raw/genshin_calc_pub/src/js/classes/RotationCompiler.js:45-102 (processConditions — the Stats.diff delta)
  */
 
 import type {
@@ -34,6 +34,7 @@ import type {
   DamageContext,
   DamageResult,
   Rotation,
+  RotationConditionNode,
   RotationNode,
 } from "@genshin/types";
 
@@ -47,12 +48,12 @@ interface RotationTotal {
 /**
  * A recompiled slice: the feature closures under some merged settings PLUS the
  * `DamageContext` (stat bag) they must be evaluated against. Both move together because a
- * settings change can shift the compiled closures (the amplifying factor is baked at compile
- * time) AND, for a condition (Phase 3), the bag. The `recompile` seam returns this bundle so
- * the caller owns the read-only re-derive (`buildStats` + `compileCharacter` under merged
- * settings) and `compileRotation` only composes triples. For a `reaction` tag the bag is
- * unchanged (her `buildStats` ignores `settings.reaction`), so `context` equals the base
- * context; it is still returned uniformly.
+ * settings change can shift the bag (a `condition` re-runs `buildStats`) AND the compiled
+ * closures (the amplifying factor / infusion is baked at compile time). The `recompile`
+ * seam returns this bundle so the caller owns the read-only re-derive (`buildStats` +
+ * `compileCharacter` under merged settings) and `compileRotation` only composes triples.
+ * For a `reaction` tag the bag is unchanged (her `buildStats` ignores `settings.reaction`),
+ * so `context` equals the base context; it is still returned uniformly.
  */
 export interface RecompiledSlice {
   readonly compiled: Readonly<Record<string, CompiledFeature>>;
@@ -66,21 +67,22 @@ export interface RecompiledSlice {
  *   name (`attack.normal_hit_1`). This is exactly `compileCharacter(char, ctx)`'s output;
  *   the un-tagged `feature`/`repeat` passes read directly from it (every hit shares the base
  *   bag).
- * - `recompile` — the re-derivation seam for a mid-rotation settings change (Phase 5a reaction
- *   tags; Phase 3 condition overlays reuse it). Given a fully-merged settings object it returns
- *   a {compiled, context} slice (a read-only `buildStats` + `compileCharacter` re-call).
- *   Threaded as a dependency (not pre-applied) so `compileRotation` never owns the build.
- *   REQUIRED only when the rotation actually changes settings (a `reaction>0` feature node); a
- *   pure `feature`/`repeat` rotation never calls it. Absent + a settings-changing node → a loud
- *   throw (never a silent un-amplified fallthrough).
+ * - `recompile` — the re-derivation seam for mid-rotation settings changes (Phase 5a
+ *   reaction tags + Phase 3 condition overlays). Given a fully-merged settings object it
+ *   returns a {compiled, context} slice (a read-only `buildStats` + `compileCharacter`
+ *   re-call). Threaded as a dependency (not pre-applied) so `compileRotation` never owns the
+ *   build. REQUIRED only when the rotation actually changes settings (a `reaction>0` feature
+ *   node or any `condition` node); a pure `feature`/`repeat` rotation never calls it. Absent
+ *   + a settings-changing node → a loud throw (never a silent un-amplified fallthrough).
  */
 export interface RotationDeps {
   readonly compiled: Readonly<Record<string, CompiledFeature>>;
   /**
-   * The settings the base build was compiled under — the substrate a reaction tag merges onto
-   * (her `data.settings`). REQUIRED whenever `recompile` is supplied (the seam recompiles
-   * against the COMPLETE merged object, so the base must be known). Defaults to `{}` when
-   * absent (a rotation with no settings-changing nodes never reads it).
+   * The settings the base build was compiled under — the substrate a reaction tag /
+   * condition overlay merges onto (her `data.settings`). REQUIRED whenever `recompile` is
+   * supplied (the seam recompiles against the COMPLETE merged object, so the base must be
+   * known). Defaults to `{}` when absent (a rotation with no settings-changing nodes never
+   * reads it).
    */
   readonly baseSettings?: Readonly<Record<string, unknown>>;
   /**
@@ -105,14 +107,12 @@ export interface RotationDeps {
 const REACTION_INDEX = ["", "melt", "vaporize", "quicken"] as const;
 
 /**
- * The shared (block-invariant) compile context: the recompile seam, the base settings a
- * reaction tag merges onto, + a memo of the slices the seam produced. The PER-BLOCK weight is
- * a recursion-frame parameter (`accumulateBlock`'s `weight`); only the seam + cache + base
- * settings, which are global to one evaluation, live here.
+ * The shared (block-invariant) compile context: the recompile seam + a memo of the slices it
+ * produced. The PER-BLOCK active slice + settings are threaded as recursion-frame parameters
+ * (`accumulateBlock`'s `slice`/`baseSettings`) so a sub-block's overlay never leaks back out;
+ * only the seam + cache, which are global, live here.
  */
 interface RotationCtx {
-  /** The base settings a reaction overlay merges onto (her `data.settings`). */
-  readonly baseSettings: Readonly<Record<string, unknown>>;
   /** The recompile seam (see RotationDeps). */
   readonly recompile?: (
     mergedSettings: Readonly<Record<string, unknown>>
@@ -130,7 +130,7 @@ function settingsKey(settings: Readonly<Record<string, unknown>>): string {
 /**
  * Resolve (memoized) the recompiled slice for `mergedSettings` via the seam. Throws if the
  * seam is absent — a settings-changing node MUST have a re-derive (never silently fall back
- * to the base, un-overlaid slice, which would drop the amplification).
+ * to the base, un-overlaid slice, which would drop the amplification/overlay).
  */
 function resolveSlice(
   ctx: RotationCtx,
@@ -172,51 +172,75 @@ function addFeature(
 
 /**
  * Accumulate one block's nodes into `total` at `weight` (the product of enclosing `repeat`
- * counts), against the base `slice`. Recursive: a `repeat` node folds its sub-block at
- * `weight × count` (Tree.js:200-213 — `count × subAccumulator` componentwise).
+ * counts), against `slice` (the currently-active {compiled, context} — the base slice at the
+ * top level, or a condition-overlaid slice after a `condition` node fires in THIS block).
+ * Recursive: a `repeat` node folds its sub-block at `weight × count` (Tree.js:200-213).
  *
- * A `feature` node with `reaction>0` (Phase 5a) is compiled under `{...baseSettings, reaction}`
- * via the seam and evaluated against THAT slice; `reaction:0` (the common case) stays on the
- * base slice — no recompile, no perf cost. `condition`/`uptime` are LATER passes (the barriers
- * below).
+ * Block scope (Tree.js:46,137-188): each block clones the running data; a `condition` mutates
+ * THIS block's data forward (subsequent loose features in the block read the overlay) but a
+ * sub-block (`repeat`/`uptime`) starts from the current slice and its internal changes do not
+ * leak back out (the recursion passes the current slice DOWN by value, never up). The
+ * overlay therefore persists to the block's end and is inherited by — but isolated within —
+ * nested sub-blocks.
+ *
+ * `reorderItems` (Tree.js:320-347): within a block, loose `feature` nodes keep their order
+ * but `repeat`/`uptime` blocks are DEFERRED after them, and a `condition` flushes (loose
+ * features accumulated so far go in, then the condition). We replicate this so a
+ * `condition` after a loose feature applies only to the features AFTER it AND to the deferred
+ * sub-blocks (which her reorder pushes past the condition only if they preceded it — see
+ * `reorder`). Without a condition the SUM is order-independent, so reorder is a no-op for
+ * Phase 1/2 reps.
  */
 function accumulateBlock(
   nodes: readonly RotationNode[],
   weight: number,
   ctx: RotationCtx,
   slice: RecompiledSlice,
+  baseSettings: Readonly<Record<string, unknown>>,
   total: RotationTotal
 ): void {
-  for (const node of nodes) {
+  // Replicate her reorderItems: loose features stay in order; repeat/uptime are deferred
+  // after the loose run they appear in; a condition flushes the deferred run before it.
+  const ordered = reorder(nodes);
+
+  // The active slice + settings evolve as `condition` nodes fire forward in THIS block.
+  let active = slice;
+  let activeSettings = baseSettings;
+
+  for (const node of ordered) {
     if (node.type === "feature") {
       const factor = weight * node.count;
       const reaction = REACTION_INDEX[node.reaction ?? 0];
       if (reaction !== undefined && reaction !== "") {
-        // Reaction-tagged (Phase 5a): compile THIS hit under {...baseSettings, reaction}. The
-        // amplifying/catalyze path (already shipped) applies ×1.5/2.0(+EM) or the quicken
-        // multiplier. Her Tree.js:60 sets data.settings.reaction = <name> per-node before
-        // compiling, so the recompile reproduces exactly that hit.
-        const merged = { ...ctx.baseSettings, reaction };
+        // Reaction-tagged (Phase 5a): compile THIS hit under {...activeSettings, reaction}.
+        // The amplifying/catalyze path (already shipped) applies ×1.5/2.0(+EM) or the
+        // quicken multiplier. Merges onto the ACTIVE settings so a reaction tag inside a
+        // condition-overlaid block stacks with the overlay (her data.settings carries both).
+        const merged = { ...activeSettings, reaction };
         const reactSlice = resolveSlice(ctx, merged, `reaction '${reaction}'`);
         addFeature(reactSlice, node.feature, factor, total);
       } else {
-        addFeature(slice, node.feature, factor, total);
+        addFeature(active, node.feature, factor, total);
       }
     } else if (node.type === "repeat") {
-      // count × (sub-block's three accumulators), componentwise — her CVarIncrease of
-      // `count × repAccumulator` per component (Tree.js:200-213). Recurse with the count
-      // folded into the weight so nested repeats multiply through.
-      accumulateBlock(node.items, weight * node.count, ctx, slice, total);
+      // count × (sub-block's three accumulators), componentwise (Tree.js:200-213). Recurse
+      // with the count folded into the weight; pass the CURRENT (possibly-overlaid) slice +
+      // settings down — the sub-block inherits the overlay but its own changes are isolated
+      // (a fresh `active`/`activeSettings` in the recursive frame, never written back here).
+      accumulateBlock(node.items, weight * node.count, ctx, active, activeSettings, total);
     } else if (node.type === "condition") {
-      // Phase 3: a condition re-derives the stat bag under merged settings and recompiles
-      // the following features (her two-stage Stats.diff overlay). Not in this dispatch's
-      // reps — fail loud so it can never silently no-op.
-      throw new Error(
-        "compileRotation: 'condition' nodes are handled in a later pass (Phase 3), not this dispatch"
-      );
+      // Phase 3: a condition re-derives the stat bag + closures under merged settings and
+      // applies forward to the following nodes IN THIS BLOCK (her Stats.diff overlay,
+      // RotationCompiler.processConditions:45-102 → Tree.js:137-188). Drive the SAME condition
+      // the char already has: the overlay = its resolved `{setting: value}` merged onto the
+      // active settings, then a read-only recompile under it (her two-stage addSettings → diff).
+      const merged = applyCondition(activeSettings, node);
+      const condSlice = resolveSlice(ctx, merged, `condition (${describeCondition(node)})`);
+      active = condSlice;
+      activeSettings = merged;
     } else if (node.type === "uptime") {
       // Phase 4: blend the sub-block compiled base vs buffed (conditions applied),
-      // base·(1−p)+buffed·p componentwise. Not in this dispatch's reps — fail loud.
+      // base·(1−p)+buffed·p componentwise. Not in this dispatch — fail loud.
       throw new Error(
         "compileRotation: 'uptime' nodes are handled in a later pass (Phase 4), not this dispatch"
       );
@@ -232,20 +256,90 @@ function accumulateBlock(
 }
 
 /**
+ * Her `reorderItems` (Tree.js:320-347): within a block, loose `feature` nodes keep order;
+ * `repeat`/`uptime` blocks accumulate and are flushed AFTER the loose run — a `condition`
+ * flushes the accumulated blocks before itself, and any still-accumulated blocks flush at the
+ * end. Net effect: in a `[feat, condition, repeat]` block the repeat lands after the
+ * condition (so it IS overlaid); in a `[feat, repeat, condition, feat]` block the repeat is
+ * flushed BEFORE the condition (so it is NOT overlaid). We reproduce this exactly.
+ */
+function reorder(items: readonly RotationNode[]): readonly RotationNode[] {
+  const result: RotationNode[] = [];
+  let accum: RotationNode[] = [];
+  for (const item of items) {
+    if (item.type === "feature") {
+      result.push(item);
+    } else if (item.type === "condition") {
+      if (accum.length > 0) {
+        result.push(...accum);
+        accum = [];
+      }
+      result.push(item);
+    } else {
+      // repeat / uptime — deferred after the loose features of their run.
+      accum.push(item);
+    }
+  }
+  if (accum.length > 0) result.push(...accum);
+  return result;
+}
+
+/**
+ * Turn a `condition` node into the MERGED settings it contributes, layered onto `settings`.
+ *
+ * Her `processConditions` (RotationCompiler.js:45-102) resolves the node against a live build:
+ * for a dropdown it stores `cond.getValueById(value)`, otherwise the raw `value`, keyed by the
+ * condition's NAME (`cond.getName()`). The port has no live `CalcSet` registry, so it carries
+ * the ALREADY-RESOLVED `setting` (= that name) + `value` (see `RotationConditionNode`) and
+ * merges `{[setting]: value}` onto the running settings. The downstream read-only recompile
+ * re-runs `buildStats` + `compileCharacter` under this merged settings, reproducing her
+ * two-stage `Stats.diff` (the bag + closures shift exactly as the live `addSettings` would).
+ * A `value` of `undefined` REMOVES the setting (her `diffSettings` emits `undefined` for a key
+ * present in the base but absent after — setting removal).
+ *
+ * FIDELITY NOTE (documented deferral): this merges the resolved `{setting: value}` overlay. It
+ * faithfully covers the dominant case — a char's own checkbox/stacks/value condition whose
+ * effect is entirely captured by re-running the build under the toggled setting (infusions,
+ * stat conditions, talent offsets). It does NOT reproduce her `Rotation.getConditionData`
+ * numeric-id → value indirection (the burndown resolves the name/value when it builds the spec)
+ * nor postEffect-overlay-only conditions that contribute NO stat/setting diff (her
+ * `processConditions` can also carry `postEffects`; a condition whose ENTIRE effect is a
+ * post-effect with no settings handle would need a different seam). Both are out of this
+ * dispatch's reps; see the plan's Phase 3 §reorderItems/postEffects deferral.
+ */
+function applyCondition(
+  settings: Readonly<Record<string, unknown>>,
+  node: RotationConditionNode
+): Readonly<Record<string, unknown>> {
+  if (node.value === undefined) {
+    // Setting removal (diffSettings: a key in base but undefined after → emit undefined).
+    const next = { ...settings };
+    delete next[node.setting];
+    return next;
+  }
+  return { ...settings, [node.setting]: node.value };
+}
+
+/** A short human-readable description of a condition node (for error messages / cache hints). */
+function describeCondition(node: RotationConditionNode): string {
+  return `${node.subtype}:${node.setting}=${String(node.value ?? "(remove)")}`;
+}
+
+/**
  * Compile a rotation into a `(context) => {normal,crit,avg}` closure keyed `rotation.total`.
  *
  * The closure walks the node tree at eval time, composing the per-feature triples
  * componentwise into the three accumulators. Evaluation is deferred (not folded at compile
  * time) because the per-feature closures read the live `DamageContext` stat bag — exactly
  * as her `FeatureRotation.getResult` executes the compiled tree against `data`. The
- * eval-time `context` argument IS the base slice's context; a reaction slice carries its own
- * context (from the seam) and is evaluated against it.
+ * eval-time `context` argument IS the base slice's context; reaction/condition slices carry
+ * their own context (from the seam) and are evaluated against it.
  *
- * Performance: an un-tagged rotation (no `reaction>0`) never calls the seam — the common case
- * is a pure compose over the base closures with zero re-derive. Reaction slices are memoized
- * per distinct merged-settings within one evaluation (and the caller may cache across
- * evaluations), so the read-only `buildStats`/`compileCharacter` re-call runs at most once
- * per distinct settings.
+ * Performance: an un-tagged rotation (no `reaction>0`, no `condition`) never calls the seam —
+ * the common case is a pure compose over the base closures with zero re-derive. Reaction +
+ * condition slices are memoized per distinct merged-settings within one evaluation (and the
+ * caller may cache across evaluations), so the read-only `buildStats`/`compileCharacter`
+ * re-call runs at most once per distinct settings.
  *
  * Returns `null` for an empty rotation (no nodes) — her `compileRotation` returns null when
  * `featuresTotal == 0` and nothing is added (base-inert). The caller (`compileCharacter`)
@@ -261,14 +355,13 @@ export function compileRotation(
     const base: RecompiledSlice = { compiled, context };
     // Conditional-spread `recompile` (omit when absent) — `exactOptionalPropertyTypes`
     // rejects an explicit `undefined` on the optional field. An absent seam + a
-    // settings-changing node throws in `resolveSlice` (never a silent fallthrough).
+    // settings-changing node (reaction tag / condition) throws in `resolveSlice`.
     const ctx: RotationCtx = {
-      baseSettings,
       cache: new Map(),
       ...(recompile !== undefined ? { recompile } : {}),
     };
     const total: RotationTotal = { normal: 0, crit: 0, avg: 0 };
-    accumulateBlock(rotation.items, 1, ctx, base, total);
+    accumulateBlock(rotation.items, 1, ctx, base, baseSettings, total);
     return { normal: total.normal, crit: total.crit, avg: total.avg };
   };
 }
