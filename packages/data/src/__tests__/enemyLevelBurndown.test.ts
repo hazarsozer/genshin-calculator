@@ -79,6 +79,8 @@ const ENEMY_LEVEL_DIR = join(
 );
 
 // The `enemy-level` config is a CHAR config (one rep, Eula), so the fixture is keyed by the char slug.
+// Single-rep assumption: if reps are added to the config, refactor to the manifest-glob loop pattern
+// (cf. enemyStateBurndown) instead of this direct slug import.
 const FIXTURE_SLUG = "eula";
 
 const fixture: Fixture | undefined = existsSync(join(ENEMY_LEVEL_DIR, `${FIXTURE_SLUG}.json`))
