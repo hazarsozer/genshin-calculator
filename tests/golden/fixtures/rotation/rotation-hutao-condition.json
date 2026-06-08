@@ -199,6 +199,33 @@
       "isReacted": false,
       "normal": 2185.0452900215714
     },
+    "rotation.total_normal": {
+      "average": 2607.912734908866,
+      "category": "rotation",
+      "crit": 6413.719738894518,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2185.0452900215714
+    },
+    "rotation.total_phys": {
+      "average": 882.9411771245052,
+      "category": "rotation",
+      "crit": 2171.4443049430074,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 739.7741629224494
+    },
+    "rotation.total_pyro": {
+      "average": 1724.9715577843608,
+      "category": "rotation",
+      "crit": 4242.27543395151,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1445.271127099122
+    },
     "skill.hutao_atk_bonus": {
       "average": 1800.370862122176,
       "category": "skill",

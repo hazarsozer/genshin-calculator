@@ -502,6 +502,53 @@ export interface Feature {
    */
   readonly output?: FeatureOutput;
   /**
+   * Per-feature ROTATION weight — her `Feature2.rotationHitCount` (default 1,
+   * `Feature2.js:40,242-244`). When this feature appears as a rotation `feature` node,
+   * `compileRotation` scales its contribution to the rotation total by this factor.
+   *
+   * Her `Tree.js:83-90` pushes a scalar `rotationHitCount != 1` as a `CConst` into
+   * `varNormal`, and ALL THREE rotation accumulators (normal/crit/avg) are linear in
+   * `varNormal` (`Tree.js:92,95-100,116-136`) — so the weight scales the hit's WHOLE
+   * triple, not just normal. It models a fractional-uptime / activation-chance hit
+   * (a hit that lands `< 1` time per rotation cycle).
+   *
+   * The v5.8 scalar users are Mona's C2 `mona_charged_hit` (0.2 = `C2ChargedProb/100`,
+   * `Mona.js:204`) and Yoimiya's 7 C6 `yoimiya_normal_hit_*` features (0.5,
+   * `Yoimiya.js:222,…`). Absent ⇒ 1 (no rotation rescaling). Inert outside a rotation
+   * (only `compileRotation` reads it) and inert in the 58k damage goldens (none set a
+   * rotation) → byte-identical. The OBJECT branch of her `getRotationHitMiltiplier`
+   * (Yanfei's crit-rate weight) is a SEPARATE field — see the follow-up brief.
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2.js:40,242-244 (rotationHitCount);
+   *         raw/genshin_calc_pub/src/js/classes/Feature2/Rotation/Tree.js:83-90 (the push)
+   */
+  readonly rotationHitMulti?: number;
+  /**
+   * The OBJECT branch of her `getRotationHitMiltiplier` (Tree.js:83-85): instead of a
+   * scalar, this feature's rotation weight IS its per-hit crit rate. The only v5.8 user
+   * is Yanfei's A4 charged follow-up (`yanfei_blazing_eye`), a `FeatureDamageChargedYanfei`
+   * whose `getRotationHitMiltiplier` returns `getCritRateBlock(data)` (a `CCritRate`,
+   * `Charged/Yanfei.js:4-6`) pushed DIRECTLY into `varNormal` (`Tree.js:84-85`, the
+   * `typeof hitMulti === 'object'` arm). Since all three rotation accumulators are linear
+   * in `varNormal`, the contribution = `critRate × {normal,crit,avg}_base` — i.e. the
+   * feature's whole triple scaled by its crit rate.
+   *
+   * When set, `compileRotation` ignores `rotationHitMulti` and folds the feature's CLAMPED
+   * crit rate (summed from the active stat bag) into its rotation weight instead. The rate
+   * is the SAME clamped value her `CCritRate.compile` produces (`Math.max(0, Math.min(1, …))`,
+   * `Compile/Types/Damage.js:6-11`) — NOT the unclamped sum: her object factor is itself a
+   * clamped `CCritRate`, so an unclamped weight would over-count above 100% crit and diverge
+   * from her oracle. Mutually exclusive with `rotationHitMulti` in practice (she returns
+   * exactly one of object/scalar). Absent ⇒ no crit-rate weighting. Inert outside a rotation
+   * and in the 58k damage goldens (none set a rotation) → byte-identical.
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Damage/Charged/Yanfei.js:3-6
+   *         (FeatureDamageChargedYanfei.getRotationHitMiltiplier → getCritRateBlock);
+   *         raw/genshin_calc_pub/src/js/classes/Feature2/Damage.js:72-94 (getDefaultStatsCritRate);
+   *         raw/genshin_calc_pub/src/js/classes/Feature2/Rotation/Tree.js:83-85 (the object push)
+   */
+  readonly rotationHitMultiFromCritRate?: boolean;
+  /**
    * Optional gate on whether this feature is PRODUCED at all. When present,
    * `compileCharacter` emits the feature only if `evaluate(condition, settings)` is
    * true (absent = always produced). This is how a CONSTELLATION-added damage feature

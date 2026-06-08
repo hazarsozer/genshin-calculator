@@ -163,6 +163,42 @@
       "isReacted": false,
       "normal": 9636.969869872406
     },
+    "rotation.total_charged": {
+      "average": 6752.616757780529,
+      "category": "rotation",
+      "crit": 6752.616757780529,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3376.3083788902645
+    },
+    "rotation.total_electro": {
+      "average": 6752.616757780529,
+      "category": "rotation",
+      "crit": 6752.616757780529,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3376.3083788902645
+    },
+    "rotation.total_normal": {
+      "average": 6886.727640080357,
+      "category": "rotation",
+      "crit": 12521.322981964284,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 6260.661490982142
+    },
+    "rotation.total_phys": {
+      "average": 6886.727640080357,
+      "category": "rotation",
+      "crit": 12521.322981964284,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 6260.661490982142
+    },
     "skill.fischl_oz_dmg": {
       "average": 3020.2915205235204,
       "category": "skill",

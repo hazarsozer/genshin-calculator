@@ -24,7 +24,13 @@ import type {
   DbObjectChar,
   Feature,
 } from "@genshin/types";
-import { compileFeature, type CompileContext } from "./compileFeature.js";
+import {
+  compileFeature,
+  damageTypeOf,
+  dmgElementKey,
+  resolveElement,
+  type CompileContext,
+} from "./compileFeature.js";
 import { compileRotation } from "./compileRotation.js";
 import { catalyzeMultipliers, transformativeReactionFeatures } from "./reactions.js";
 
@@ -44,6 +50,11 @@ export function compileCharacter(
   ctx: CompileContext
 ): Readonly<Record<string, CompiledFeature>> {
   const out: Record<string, CompiledFeature> = {};
+  // Per-feature DECLARATIONS keyed identically to `out` — the rotation compiler reads
+  // per-feature metadata (her `Feature2.rotationHitCount`) from these (the compiled closure
+  // does not expose it). Built in lockstep with `out` (same list, same gate) so a node's
+  // declaration always matches its compiled closure. Only consumed when `ctx.rotation` is set.
+  const featureDecls: Record<string, Feature> = {};
 
   // Char-level ("targeted") multipliers — her `char.getMultipliers()`. Only the
   // entries carrying a `target` are char-level multipliers that match-by-damage-type
@@ -95,7 +106,9 @@ export function compileCharacter(
     // base build (no base feature sets `.condition`) → the C0 golden suite is untouched.
     if (feature.condition !== undefined && !evaluate(feature.condition, ctx.settings)) continue;
     const block = compileFeature(feature, featureCtx);
-    out[featureKey(feature)] = compile(block);
+    const key = featureKey(feature);
+    out[key] = compile(block);
+    featureDecls[key] = feature;
   }
 
   // Rotation total (R3) — ONE optional branch: when a rotation spec is supplied, compose
@@ -111,12 +124,38 @@ export function compileCharacter(
     // so a settings-changing rotation must be given a `rotationRecompile` closure (else any
     // reaction/condition node throws rather than silently un-amplifying). A pure feature/repeat
     // rotation needs neither.
-    const rotationTotal = compileRotation(ctx.rotation, {
+    //
+    // Filtered sub-totals (T3): resolve each feature's `{element, type}` filter bucket in her short
+    // form (`phys`/`<element>` + the static type) under a node's ACTIVE settings. Element is
+    // infusion-RESOLVED (a condition overlay flips it) so it's settings-dependent — splice the
+    // active settings into the compile context; type is static. `compileFeature.ts` owns
+    // `resolveElement`/`damageTypeOf`/`dmgElementKey`; the loader owns the `CompileContext`, so it
+    // builds the resolver here. Source: raw/.../Feature2/Damage.js:225-233 (getElement) +
+    // Feature2.js:45-47 (getDamageType) + Rotation.js:139-195 (getDisplaySettings).
+    const resolveBucket = (
+      feature: Feature,
+      activeSettings: Readonly<Record<string, unknown>>
+    ): { element: string; type: string } => {
+      const ctxAtSettings: CompileContext = {
+        ...featureCtx,
+        settings: activeSettings as CompileContext["settings"],
+      };
+      return {
+        element: dmgElementKey(resolveElement(feature, ctxAtSettings)),
+        type: damageTypeOf(feature),
+      };
+    };
+
+    const rotationFeatures = compileRotation(ctx.rotation, {
       compiled: out,
+      features: featureDecls,
       baseSettings: ctx.settings,
+      resolveBucket,
       ...(ctx.rotationRecompile !== undefined ? { recompile: ctx.rotationRecompile } : {}),
     });
-    if (rotationTotal !== null) out["rotation.total"] = rotationTotal;
+    // Assign the bare `rotation.total` + every `rotation.total_<value>` sub-total into `out`. An
+    // empty map (empty rotation) adds nothing → byte-identical to no-rotation builds.
+    for (const [key, fn] of Object.entries(rotationFeatures)) out[key] = fn;
   }
   return out;
 }

@@ -67,6 +67,7 @@ import type {
   FeatureMultiplierEntry,
   FeatureOutput,
   FeatureReaction,
+  RecompiledSlice,
   Rotation,
 } from "@genshin/types";
 import { reactionShieldValues } from "./generated/elementScale.js";
@@ -170,15 +171,17 @@ export interface CompileContext {
    * overlay). A rotation whose nodes change settings mid-sequence — a `reaction>0` feature
    * tag or any `condition` node — needs the affected hits RECOMPILED under merged settings
    * (her engine resolves reaction + stats at compile time). The caller supplies a closure
-   * that re-derives `{compiled, context}` under fully-merged settings (a read-only
-   * `buildStats` + `compileCharacter` re-call). `compileCharacter` forwards it (+ `settings`
-   * as the base) to `compileRotation`. Absent → a pure `feature`/`repeat` rotation still
-   * composes; a settings-changing node without it throws (never a silent un-amplified
+   * that re-derives `{compiled, context, settings}` under fully-merged settings (a read-only
+   * `buildStats` + `compileCharacter` re-call). `settings` is the PROPAGATED settings the
+   * re-derive produced (post-`buildStats` condition-settings merge) — required for the T3 filtered
+   * sub-totals' infusion-resolved element bucketing. `compileCharacter` forwards the seam (+
+   * `settings` as the base) to `compileRotation`. Absent → a pure `feature`/`repeat` rotation
+   * still composes; a settings-changing node without it throws (never a silent un-amplified
    * fallthrough). Out of every standard build → no rotation, no seam, byte-identical goldens.
    */
   readonly rotationRecompile?: (
     mergedSettings: Readonly<Record<string, unknown>>
-  ) => { compiled: Readonly<Record<string, CompiledFeature>>; context: DamageContext };
+  ) => RecompiledSlice;
 }
 
 /**
@@ -186,8 +189,13 @@ export interface CompileContext {
  * (`dmg_phys`); every other element matches its name. Resistance keys, by
  * contrast, use the full element name the buildStats bag emits
  * (`enemy_res_physical`), so the two are kept distinct on purpose.
+ *
+ * EXPORTED for the rotation filtered sub-totals (compileRotation, T3): her
+ * `FeatureDamage.getElement` returns the SHORT form (`phys`, Damage.js:26,228), and
+ * `getDisplaySettings`/the `rotation_include` filter key off exactly that, so a sub-total
+ * bucket value is `dmgElementKey(resolveElement(...))` (the resolved element in her short form).
  */
-function dmgElementKey(element: Element): string {
+export function dmgElementKey(element: Element): string {
   return element === "physical" ? "phys" : element;
 }
 
@@ -197,8 +205,14 @@ function dmgElementKey(element: Element): string {
  * Ports FeatureDamage.getElement + getInfusionElement: a feature that allows
  * infusion and is otherwise physical takes `settings.attack_infusion` when set.
  * Skills/bursts carry an explicit element on the Feature.
+ *
+ * EXPORTED for compileRotation's filtered sub-totals (T3): the per-hit element bucket is
+ * settings-DEPENDENT (an infusion overlay flips a physical attack to its infused element), so the
+ * rotation resolver calls this with the node's ACTIVE (overlaid) settings spliced into a thin
+ * CompileContext (the bucket value is then `dmgElementKey(...)`, her short form). Her
+ * `getDisplaySettings`/`rotation_include` gate read exactly this resolved element (Damage.js:225-233).
  */
-function resolveElement(feature: Feature, ctx: CompileContext): Element {
+export function resolveElement(feature: Feature, ctx: CompileContext): Element {
   if (feature.element !== undefined) return feature.element;
 
   // Attacks (no explicit element) are physical unless infused.
@@ -217,8 +231,12 @@ function resolveElement(feature: Feature, ctx: CompileContext): Element {
  * If the Feature carries an explicit `damageType` field, it takes precedence
  * (needed for charged attacks: category="attack" but damageType="charged" so
  * the `dmg_charged` bonus is applied correctly).
+ *
+ * EXPORTED for compileRotation's filtered sub-totals (T3): the per-hit TYPE bucket. Unlike the
+ * element bucket, the type is STATIC — her `Feature2.getDamageType()` takes no `data` arg
+ * (Feature2.js:45-47), so it is settings-INDEPENDENT (an infusion overlay never changes it).
  */
-function damageTypeOf(feature: Feature): string {
+export function damageTypeOf(feature: Feature): string {
   if (feature.damageType !== undefined) return feature.damageType;
   switch (feature.category) {
     case "attack":

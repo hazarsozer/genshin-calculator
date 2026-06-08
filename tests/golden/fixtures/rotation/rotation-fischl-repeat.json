@@ -163,6 +163,24 @@
       "isReacted": false,
       "normal": 3756.396894589285
     },
+    "rotation.total_normal": {
+      "average": 4132.036584048214,
+      "category": "rotation",
+      "crit": 7512.79378917857,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3756.396894589285
+    },
+    "rotation.total_phys": {
+      "average": 4132.036584048214,
+      "category": "rotation",
+      "crit": 7512.79378917857,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3756.396894589285
+    },
     "skill.fischl_oz_dmg": {
       "average": 3020.2915205235204,
       "category": "skill",

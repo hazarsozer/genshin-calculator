@@ -40,6 +40,22 @@
  * GREEN is the new compileRotation.ts composing the per-feature triples. The spec reconstructed
  * per rep is EXACTLY the spec the oracle dumped, so this suite goes GREEN with NO edits here.
  *
+ * FILTERED SUB-TOTALS (T3): each fixture ALSO carries one rotation.total_<element> / _<type> per
+ * element+type PRESENT in the rotation (her getDisplaySettings, Rotation.js:139-195 — the filtered
+ * re-walk that elides feature nodes whose RESOLVED element AND STATIC type both differ from the
+ * filter; Tree.js:47,66-73). For EVERY ^rotation\.total_ key in a fixture we assert the matching
+ * compiled[key] closure within tolerance (compileRotation now returns one closure per present
+ * bucket; loader.ts assigns them all). Two anti-gaming partitions on rotation-fischl-mixed-block
+ * (electro charged + phys normals + phys aimed): total_electro + total_phys == total AND
+ * total_charged + total_normal == total (two INDEPENDENT partitions both reconstruct the bare
+ * total — a no-op filter fails ≠-total, an element-only filter fails the type keys, a type-only
+ * filter fails the element keys), plus total_electro ≠ total and total_charged ≠ total (the filter
+ * excludes something). And the Mona-vaporize reaction-bucket: total_hydro == total (both hits
+ * hydro, incl. the amplified explosion — getElement ignores settings.reaction) and total_skill ==
+ * the amplified explosion contribution only. The Hu Tao condition/uptime fixtures carry BOTH
+ * total_phys (hit1, base) AND total_pyro (hit2, Paramita-infused) — the per-key assertion locks
+ * that the port buckets each hit under its ACTIVE (overlaid) settings, not the base.
+ *
  * GUARD — HONESTY RULES (verbatim from foodBurndown.test.ts): NO it.skip, NO it.todo, NO it.fails,
  * NO loosened tolerance, NO hard-coded overrides. The RED is by design pending compileRotation.
  */
@@ -222,7 +238,10 @@ for (const item of manifest.items) {
         settings: prop,
         charLevel: LEVELS.charLevel,
       });
-      return { compiled: comp, context: ctx };
+      // Return the PROPAGATED settings (post-buildStats condition-settings merge) so the rotation's
+      // filtered sub-totals (T3) can resolve an overlay's infused element (e.g. Paramita → pyro),
+      // which lives only in the propagation, not the raw overlay.
+      return { compiled: comp, context: ctx, settings: prop };
     };
 
     // Thread the reconstructed rotation spec as ctx.rotation → loader.ts composes the char's
@@ -262,6 +281,91 @@ for (const item of manifest.items) {
           Math.abs(ours - oracle[component]),
           `${item.slug}/rotation.total ${component}: ours=${ours.toFixed(2)}, oracle=${oracle[component].toFixed(2)}`
         ).toBeLessThanOrEqual(TOLERANCE);
+      });
+    }
+
+    // FILTERED SUB-TOTALS (T3) — every rotation.total_<element>/<type> the oracle dumped must have
+    // a matching compiled closure within tolerance. The oracle key set = her getDisplaySettings
+    // present-bucket enumeration; the port emits one closure per present bucket (loader assigns
+    // them all into `compiled`). A missing key (port emits none) or a wrong value → RED.
+    const subTotalKeys = Object.keys(fixture.features)
+      .filter((k) => k.startsWith("rotation.total_"))
+      .sort();
+    for (const key of subTotalKeys) {
+      const sub = fixture.features[key]!;
+      for (const component of ["normal", "crit", "average"] as const) {
+        it(`${item.slug}/${key} ${component} within ${TOLERANCE}`, () => {
+          const fn = compiled[key];
+          expect(fn, `compiled output is missing ${key} for ${item.slug}`).toBeDefined();
+          const result = fn!(context);
+          const ours = component === "average" ? result.avg : result[component];
+          expect(
+            Math.abs(ours - sub[component]),
+            `${item.slug}/${key} ${component}: ours=${ours.toFixed(2)}, oracle=${sub[component].toFixed(2)}`
+          ).toBeLessThanOrEqual(TOLERANCE);
+        });
+      }
+    }
+
+    // ── anti-gaming: the Fischl mixed-block partition (the decisive guard) ──────────────────
+    // rotation-fischl-mixed-block = [charged_aimed (electro, charged), repeat×2[normal_hit_1 (phys,
+    // normal)], aimed (phys, charged)]. TWO independent partitions must BOTH reconstruct the bare
+    // total, and each filter must EXCLUDE something:
+    //   element: total_electro + total_phys == total   (a type-only filter would fail this)
+    //   type:    total_charged + total_normal == total (an element-only filter would fail this)
+    //   total_electro ≠ total AND total_charged ≠ total (a no-op filter would fail these)
+    // These are oracle-grounded (verified against the dumped fixture), not mere sanity — a wrong
+    // bucketing (no-op / element-only / type-only / double-count) fails at least one.
+    if (item.slug === "rotation-fischl-mixed-block") {
+      for (const component of ["normal", "crit", "average"] as const) {
+        const comp = (k: string): number => {
+          const fn = compiled[k];
+          if (!fn) throw new Error(`missing compiled ${k}`);
+          const r = fn(context);
+          return component === "average" ? r.avg : r[component];
+        };
+        it(`fischl-mixed-block: element partition (electro + phys == total) [${component}]`, () => {
+          const total = comp("rotation.total");
+          const sum = comp("rotation.total_electro") + comp("rotation.total_phys");
+          expect(Math.abs(sum - total), `electro+phys=${sum.toFixed(2)} vs total=${total.toFixed(2)}`).toBeLessThanOrEqual(TOLERANCE);
+        });
+        it(`fischl-mixed-block: type partition (charged + normal == total) [${component}]`, () => {
+          const total = comp("rotation.total");
+          const sum = comp("rotation.total_charged") + comp("rotation.total_normal");
+          expect(Math.abs(sum - total), `charged+normal=${sum.toFixed(2)} vs total=${total.toFixed(2)}`).toBeLessThanOrEqual(TOLERANCE);
+        });
+      }
+      it("fischl-mixed-block: total_electro ≠ total (the filter excludes the phys hits)", () => {
+        const total = compiled["rotation.total"]!(context).normal;
+        const electro = compiled["rotation.total_electro"]!(context).normal;
+        expect(Math.abs(electro - total), `electro=${electro.toFixed(2)} must differ from total=${total.toFixed(2)}`).toBeGreaterThan(1);
+      });
+      it("fischl-mixed-block: total_charged ≠ total (the filter excludes the normal hits)", () => {
+        const total = compiled["rotation.total"]!(context).normal;
+        const charged = compiled["rotation.total_charged"]!(context).normal;
+        expect(Math.abs(charged - total), `charged=${charged.toFixed(2)} must differ from total=${total.toFixed(2)}`).toBeGreaterThan(1);
+      });
+    }
+
+    // ── anti-gaming: Mona-vaporize reaction bucketing ──────────────────────────────────────
+    // [skill.explosion_dmg (reaction:2 → vaporize ×2.0, hydro, skill), normal_hit_1 (hydro, normal)].
+    // total_hydro == total (BOTH hits are hydro, including the AMPLIFIED explosion — her getElement
+    // ignores settings.reaction, so the amplified magnitude buckets under the unchanged element),
+    // and total_skill == the amplified explosion contribution ONLY (< total; the normal is the rest).
+    if (item.slug === "rotation-mona-vaporize") {
+      it("mona-vaporize: total_hydro == total (amplified explosion buckets under hydro)", () => {
+        for (const component of ["normal", "crit", "average"] as const) {
+          const total = component === "average" ? compiled["rotation.total"]!(context).avg : compiled["rotation.total"]!(context)[component];
+          const hydro = component === "average" ? compiled["rotation.total_hydro"]!(context).avg : compiled["rotation.total_hydro"]!(context)[component];
+          expect(Math.abs(hydro - total), `${component}: hydro=${hydro.toFixed(2)} vs total=${total.toFixed(2)}`).toBeLessThanOrEqual(TOLERANCE);
+        }
+      });
+      it("mona-vaporize: total_skill == the amplified explosion only (< total)", () => {
+        const total = compiled["rotation.total"]!(context).normal;
+        const skill = compiled["rotation.total_skill"]!(context).normal;
+        // The oracle dumped skill ≈ 8346 < total ≈ 9271; assert it equals the oracle skill value
+        // (already covered by the per-key loop) AND is strictly less than the bare total.
+        expect(skill, `skill=${skill.toFixed(2)} must be strictly < total=${total.toFixed(2)}`).toBeLessThan(total - 1);
       });
     }
   });
