@@ -1,0 +1,134 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Aspirine's Food subsystem (full-parity R1) — a PURE FLAT-STAT additive layer (CalcObjectFood, raw/.../classes/CalcObject/Food.js:43-75): 3 slots {Attack,Defence,Potion}, 43 items, NO conditions/postEffects/settings. A selected food's getStats(tier) (DbObjectFood.getStats, Food.js:96-109 → StatTable.getValue, StatTable.js:11-20: 1-indexed quality TIER, clamp-to-last, 0-floor, `if (value)` skip) is concat'd into the bag in CalcSet.getBaseStats; processPercent then folds percent keys /100. Driven via build.setFood(type, item, tier) (CalcSet.js:181) on the no-teammate passthrough (bol-stat's axis). 3 reps, each value-checking on DAMAGE triples: food-attack-keqing setFood('Attack', AdeptusTemptation, 3) → atk+372 + crit_rate+12 lifts every Keqing damage triple (base + crit); food-potion-diluc setFood('Potion', FlamingEssentialOil, 1) → dmg_pyro+25 lifts Diluc's pyro skill/burst (DMG_BONUS_ELEMENT_KEYS → fraction; one element proves all 7 oils); food-defence-albedo setFood('Defence', CallaLilySeafoodSoup, 4) → def+282 lifts Albedo's DEF-scaled skill.albedo_blossom + burst.albedo_fatal_blossom (his ATK normals untouched → the DEF lane is the RED→GREEN driver). Food keys are Aspirine-native (dmg_phys/hp_percent/crit_rate, NOT GOOD) → ALL already emitted by buildStats's read loop, so the ONLY hole is the missing bag concat: foodBurndown burns the reps RED until buildStats merges input.food (Task B). _manifest.json records {type,key,tier} so the burndown reconstructs the flat stats from generated/foodTables.ts (no raw import).",
+    "id": "food"
+  },
+  "featureTotal": 88,
+  "itemCount": 3,
+  "items": [
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "food": {
+          "key": "AdeptusTemptation",
+          "tier": 3,
+          "type": "Attack"
+        }
+      },
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "resonanceElements": {},
+      "slug": "food-attack-keqing",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "food": {
+          "key": "CallaLilySeafoodSoup",
+          "tier": 4,
+          "type": "Defence"
+        }
+      },
+      "repKey": "Albedo",
+      "repSlug": "albedo",
+      "resonanceElements": {},
+      "slug": "food-defence-albedo",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "food": {
+          "key": "FlamingEssentialOil",
+          "tier": 1,
+          "type": "Potion"
+        }
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {},
+      "slug": "food-potion-diluc",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    }
+  ]
+}
