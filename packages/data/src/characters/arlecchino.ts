@@ -19,10 +19,13 @@
  *   `attack_infusion:'pyro'` (see the charMultipliers comment — documented fidelity gap).
  *
  * SKIPPED (off in solo C0): the C2 `arlecchino_balemoon_bloodfire_dmg` feature
- * (constellation-gated), the `arlecchino_heal` burst heal (a FeatureHeal, not a
- * damage triple — display-only, no `damageType`). Transformative reactions
+ * (constellation-gated). Transformative reactions
  * (overloaded/burning/burgeon/electrocharged/shatter) and the stat readouts are
  * emitted generically by the harness, not declared here.
+ *
+ * MODELLED: the `arlecchino_heal` burst heal (a FeatureHeal, not a damage triple —
+ * display-only, no `damageType`) with BOTH multipliers (ATK term + HP×BoL term);
+ * see its block below.
  *
  * Multihit: `normal_hit_4` is a 2-hit aggregate (modelled as two identical items
  * → engine sums them, doubling). `normal_hit_4_1` is the single per-hit value,
@@ -200,25 +203,32 @@ const features: readonly Feature[] = [
   // raw: FeatureHeal({ category:'burst', name:'arlecchino_heal', subtractBoL:true,
   //   multipliers:[
   //     new FeatureMultiplier({ leveling:'char_skill_burst',
-  //       values: Talents.get('burst.arlecchino_heal_atk') }),          ← ATK-scaled (s3.p4=150%)
+  //       values: Talents.get('burst.arlecchino_heal_atk') }),          ← M1: ATK-scaled (s3.p4=150%)
   //     new FeatureMultiplierBondOfLife({ scaling:'hp*', leveling:'char_skill_burst',
-  //       values: Talents.get('burst.arlecchino_heal') }),               ← HP-scaled × BoL%
+  //       values: Talents.get('burst.arlecchino_heal') }),               ← M2: HP-scaled × BoL% (s3.p3=150%)
   //   ] })  Arlecchino.js:340-355.
-  // FeatureMultiplierBondOfLife adds treeBonus multiplier = bond_of_life stat.
-  // At BoL=0 in the canonical build the HP term = 150% × HP × 0 = 0; subtractBoL term is also 0.
-  // Only the ATK multiplier contributes (oracle = 150% × ATK_total = 3049.06).
-  // HP×BoL multiplier OMITTED — untested (no oracle for a BoL>0 burst-heal build). The
-  // `bondOfLifeFactor` engine field now EXISTS (added for the masque + Clorinde heals), but
-  // adding it here is NOT a clean fix: with only the single ATK multiplier + `subtractBoL`, at
-  // BoL>0 this port nets NEGATIVE (the −BoL×HP subtract with no counterbalancing +heal%×HP×BoL
-  // positive term). The ATK-only term is the honest, tested value (oracle = 150% × ATK_total at
-  // BoL=0). Port the HP×BoL multiplier when a BoL>0 burst-heal fixture exists (healing track).
+  // Both multipliers are now ported. Her FeatureHeal is the sum of the two base-damage terms times
+  // the healing-bonus factor, minus the subtractBoL pool (Feature2/Heal.js:88-99):
+  //   heal = [ 1.5×ATK_total + 1.5×HP_total×BoL ] × (1 + healing + healing_base + healing_recv)
+  //          − BoL × HP_total
+  // M2's `bondOfLifeFactor:true` adds the `bond_of_life` treeBonus factor (BondOfLife.js:9-11),
+  // reading the `out` 0.5 FRACTION (setting 50 → 0.5) — the SAME factor the masque/Clorinde heals
+  // read. subtractBoL (compileFeature.ts:763-765) is her DISTINCT `−BoL×HP` term, NOT a duplicate.
+  // Base-inert: at BoL=0 → M2 = 0 AND subtract = 0 → only M1 (1.5×ATK_total = 3049.06) contributes;
+  // the base arlecchino.json heal + 58k goldens are byte-identical. At BoL 50 the oracle gains the
+  // net-positive HP×BoL term (masque fixture: 9631.34) — the partial-port negative-heal bug is closed.
   {
     name: "arlecchino_heal",
     category: "burst",
     output: { kind: "heal", subtractBoL: true },
     multipliers: [
       { leveling: "char_skill_burst", values: talents.get("burst.arlecchino_heal_atk") },
+      {
+        scaling: "hp*",
+        leveling: "char_skill_burst",
+        values: talents.get("burst.arlecchino_heal"),
+        bondOfLifeFactor: true,
+      },
     ],
   },
 ];

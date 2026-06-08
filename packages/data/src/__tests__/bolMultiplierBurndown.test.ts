@@ -277,43 +277,41 @@ for (const item of manifest.items) {
     }
 
     // ---------------------------------------------------------------------
-    // NON-DAMAGE OUTPUT assertions (Clorinde's BoL heals — RED-BY-ABSENCE).
+    // NON-DAMAGE OUTPUT assertions (BoL heals — RED-BY-ABSENCE / partial-port).
     //
-    // SCOPE: this pass's non-damage deliverable is the Clorinde BoL HEALS (the two
-    // clorinde_impale_the_night_{2,3}_heal). The Arlecchino rep's deliverable here is the NORMAL
-    // masque (a DAMAGE delta, asserted above) — its `burst.arlecchino_heal` is a SEPARATE,
-    // BoL-independent heal that already lives in the BASE arlecchino.json (value 3049 at BoL 0) and is
-    // owned by the healing / outputCoverage track (P3.5.3/.5), NOT by this masque-multiplier pass.
-    // Asserting it here would gate this suite on a heal Task B's masque+Clorinde-heal engine fix does
-    // not touch. So the non-damage assertions run ONLY on the Clorinde slug (the BoL heals); the
-    // arlecchino-masque slug has no in-scope non-damage output. This is NOT a `k in compiled` skip of
-    // an absent key — it is the pass declaring which rep owns the heal gap.
+    // SCOPE: BoL-as-MULTIPLIER heal terms on both reps.
+    //   - clorinde-bol-heal: the two clorinde_impale_the_night_{2,3}_heal (added by the
+    //     bol-multiplier pass; here as a NO-REGRESSION guard).
+    //   - arlecchino-masque: the burst `arlecchino_heal` (the masque rep's ONLY non-damage
+    //     output). Her FeatureHeal carries TWO multipliers — an ATK term (modelled) AND an
+    //     HP×BoL term (`FeatureMultiplierBondOfLife`, s3.p3=150%). The arlecchino-burst-heal pass
+    //     ADDS the missing HP×BoL multiplier (`bondOfLifeFactor:true`). Until it lands the port
+    //     omits M2 but keeps the `subtractBoL` `−BoL×HP` term, so at BoL 50 it nets NEGATIVE
+    //     (undershoots the oracle 9631.34) → RED. At BoL 0 the term is 0 → the base arlecchino.json
+    //     heal (3049 @ BoL 0) is unchanged (outputCoverage untouched).
     //
-    // CRITICAL (within the Clorinde slug): these are NOT guarded by `k in compiled`. The two
-    // FeatureHeal outputs are ABSENT from our port, so a `k in compiled` filter would silently SKIP
-    // them → the heal gate would pass VACUOUSLY. Instead we assert, per heal key: (1) the key is
-    // PRESENT in `compiled`, AND (2) its value matches the oracle. (1) FAILS today (the feature isn't
-    // ported) → the gate is genuinely RED. Once Task B adds the two FeatureHeal features, both
-    // clauses pass (heal_2 0.02×hp, heal_3 0.05×hp at BoL 50). Non-damage outputs are single-valued
-    // (normal == crit == average).
+    // CRITICAL: these are NOT guarded by `k in compiled`. For Clorinde the heal features were
+    // absent until ported (a `k in compiled` filter would silently SKIP → pass VACUOUSLY); for
+    // Arlecchino the heal feature IS present but its VALUE is wrong pre-M2. So we assert, per heal
+    // key: (1) the key is PRESENT in `compiled`, AND (2) its value matches the oracle. Clause (2)
+    // FAILS for arlecchino-masque today (M2 missing) → the gate is genuinely RED. Once M2 is added
+    // both clauses pass (Arlecchino burst heal 9631.34 at BoL 50). Non-damage outputs are
+    // single-valued (normal == crit == average).
     // ---------------------------------------------------------------------
-    const nonDamageKeys =
-      item.slug === "clorinde-bol-heal"
-        ? Object.entries(fixture.features)
-            .filter(([, e]) => isNonDamageOutput(e))
-            .map(([k]) => k)
-        : [];
+    const nonDamageKeys = Object.entries(fixture.features)
+      .filter(([, e]) => isNonDamageOutput(e))
+      .map(([k]) => k);
 
     for (const key of nonDamageKeys) {
       const oracle = fixture.features[key]!;
 
-      it(`${item.slug}/${key} present + value within ${TOLERANCE} (RED-by-absence until ported)`, () => {
-        // (1) the heal feature must be MODELLED — fails today (DEFERRED in characters/clorinde.ts).
+      it(`${item.slug}/${key} present + value within ${TOLERANCE}`, () => {
+        // (1) the heal feature must be MODELLED (not absent → would skip vacuously under `k in compiled`).
         expect(
           key in compiled,
-          `${item.slug}/${key}: heal feature ABSENT from our port (P3.5 bol-multiplier Task B must add the FeatureHeal); oracle=${oracle.average.toFixed(4)}`
+          `${item.slug}/${key}: heal feature ABSENT from our port; oracle=${oracle.average.toFixed(4)}`
         ).toBe(true);
-        // (2) once present, the value must match (heal = talent%×hp×0.5 − 0.5×hp at BoL 50).
+        // (2) the value must match (Clorinde: talent%×hp×0.5 − 0.5×hp; Arlecchino: ATK + HP×BoL terms − 0.5×hp at BoL 50).
         const result = compiled[key]!(context);
         expect(
           Math.abs(result.avg - oracle.average),
