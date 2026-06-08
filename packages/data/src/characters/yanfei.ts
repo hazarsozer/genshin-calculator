@@ -131,11 +131,19 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.yanfei_charged_4") }],
   },
   // --- A4 Blazing Eye: flat 80% ATK charged follow-up ---
+  // ROTATION object-branch hitMulti: her A4 feature is a `FeatureDamageChargedYanfei`, whose
+  // `getRotationHitMiltiplier` returns `getCritRateBlock(data)` (a CCritRate, Charged/Yanfei.js:4-6)
+  // pushed DIRECTLY into varNormal (Tree.js:84-85). So in a rotation this hit's whole triple is
+  // scaled by its (CLAMPED) crit rate, modelling the A4 proc whose chance == the charged crit rate
+  // (raw `rotationHitDescription: 'talent_activation_chance'`, YanFei.js:225). compileRotation reads
+  // this flag and folds the bag's clamped crit-rate sum into the weight. The other Yanfei charged
+  // features (charged_hit / yanfei_charged_1..4) are plain FeatureDamageCharged → inherited weight 1.
   {
     name: "yanfei_blazing_eye",
     category: "attack",
     damageType: "charged",
     element: "pyro",
+    rotationHitMultiFromCritRate: true,
     multipliers: [{ leveling: "ascension4", values: blazingEyeValues }],
   },
   // --- Plunge attacks (pyro catalyst) ---

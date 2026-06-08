@@ -524,6 +524,31 @@ export interface Feature {
    */
   readonly rotationHitMulti?: number;
   /**
+   * The OBJECT branch of her `getRotationHitMiltiplier` (Tree.js:83-85): instead of a
+   * scalar, this feature's rotation weight IS its per-hit crit rate. The only v5.8 user
+   * is Yanfei's A4 charged follow-up (`yanfei_blazing_eye`), a `FeatureDamageChargedYanfei`
+   * whose `getRotationHitMiltiplier` returns `getCritRateBlock(data)` (a `CCritRate`,
+   * `Charged/Yanfei.js:4-6`) pushed DIRECTLY into `varNormal` (`Tree.js:84-85`, the
+   * `typeof hitMulti === 'object'` arm). Since all three rotation accumulators are linear
+   * in `varNormal`, the contribution = `critRate × {normal,crit,avg}_base` — i.e. the
+   * feature's whole triple scaled by its crit rate.
+   *
+   * When set, `compileRotation` ignores `rotationHitMulti` and folds the feature's CLAMPED
+   * crit rate (summed from the active stat bag) into its rotation weight instead. The rate
+   * is the SAME clamped value her `CCritRate.compile` produces (`Math.max(0, Math.min(1, …))`,
+   * `Compile/Types/Damage.js:6-11`) — NOT the unclamped sum: her object factor is itself a
+   * clamped `CCritRate`, so an unclamped weight would over-count above 100% crit and diverge
+   * from her oracle. Mutually exclusive with `rotationHitMulti` in practice (she returns
+   * exactly one of object/scalar). Absent ⇒ no crit-rate weighting. Inert outside a rotation
+   * and in the 58k damage goldens (none set a rotation) → byte-identical.
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Damage/Charged/Yanfei.js:3-6
+   *         (FeatureDamageChargedYanfei.getRotationHitMiltiplier → getCritRateBlock);
+   *         raw/genshin_calc_pub/src/js/classes/Feature2/Damage.js:72-94 (getDefaultStatsCritRate);
+   *         raw/genshin_calc_pub/src/js/classes/Feature2/Rotation/Tree.js:83-85 (the object push)
+   */
+  readonly rotationHitMultiFromCritRate?: boolean;
+  /**
    * Optional gate on whether this feature is PRODUCED at all. When present,
    * `compileCharacter` emits the feature only if `evaluate(condition, settings)` is
    * true (absent = always produced). This is how a CONSTELLATION-added damage feature

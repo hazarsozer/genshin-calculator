@@ -14,14 +14,17 @@
  * when hits have different crit rates (e.g. a 100%-crit aimed shot beside a 5%-crit
  * normal). No crit-rate re-exposure is needed — the per-feature `avg` already carries it.
  *
- * A feature's rotation weight is her `Feature2.rotationHitCount` (default 1): a SCALAR `!= 1`
- * scales the whole hit triple (it enters `varNormal`, in which all three accumulators are
- * linear — Tree.js:83-90). The scalar overrides (Mona's C2 `mona_charged_hit` = 0.2; Yoimiya's
- * C6 `yoimiya_normal_hit_*` = 0.5) are read from each feature's `rotationHitMulti` field and
- * folded into `factor` here. Yanfei's OBJECT-branch crit-rate weight is a SEPARATE follow-up
- * (the unclamped crit-rate sum); Ocean-Hued-Clam / Arlecchino override only `getDisplay…` (a
- * display-path weight, no gateable output) → OUT. The `feature` and `repeat` node types compose
- * under the SINGLE base settings;
+ * A feature's rotation weight is her `getRotationHitMiltiplier(data)` (default 1), folded into
+ * `factor` (it enters `varNormal`, in which all three accumulators are linear — Tree.js:83-90, so
+ * it scales the whole hit triple). Two branches, mutually exclusive in v5.8:
+ *   - SCALAR (`rotationHitMulti` field): Mona's C2 `mona_charged_hit` = 0.2 / Yoimiya's C6
+ *     `yoimiya_normal_hit_*` = 0.5 (Tree.js:86-90 `CConst` arm).
+ *   - OBJECT (`rotationHitMultiFromCritRate` flag): the hit's CLAMPED crit rate — Yanfei's A4
+ *     `yanfei_blazing_eye`, a `FeatureDamageChargedYanfei` whose `getRotationHitMiltiplier`
+ *     returns `getCritRateBlock(data)` pushed directly into `varNormal` (Tree.js:84-85 object
+ *     arm). See `critRateWeight`. (Her `CCritRate` clamps, so we clamp too — NOT an unclamped sum.)
+ * Ocean-Hued-Clam / Arlecchino override only `getDisplay…` (a display-path weight, no gateable
+ * output) → OUT. The `feature` and `repeat` node types compose under the SINGLE base settings;
  * `reaction`-tagged feature nodes (Phase 5a) and `condition` overlays (Phase 3) DO change
  * the settings mid-rotation, so they recompile the affected features under MERGED settings
  * via the `recompile` seam (her engine resolves reaction + stats at COMPILE time, so a
@@ -35,9 +38,6 @@
  *   - `rotation.total_<element>/<type>` filtered sub-totals (Phase 5b) are NOT emitted; only the
  *     bare `rotation.total` is. Her engine computes them by re-running under `settings.rotation_include`
  *     (Feature2/Rotation.js:52,139-195), a separate dump — a future small pass.
- *   - The OBJECT branch of her `getRotationHitMiltiplier` (Yanfei's crit-rate-weighted charged hits)
- *     is NOT modelled — only the SCALAR `rotationHitMulti` is folded (Yoimiya 0.5 / Mona 0.2). A
- *     follow-up adds the unclamped crit-rate weight. Clam/Arlecchino are display-only (OUT).
  *   - `condition` covers the settings-handle case (re-derive under merged settings); a postEffect-only
  *     condition with no settings diff is a no-op here (see the FIDELITY NOTE on `applyCondition`).
  *
@@ -208,6 +208,44 @@ function addFeature(
 }
 
 /**
+ * The OBJECT-branch rotation weight (`feature.rotationHitMultiFromCritRate`): the feature's
+ * per-hit CLAMPED crit rate, summed from the ACTIVE slice's stat bag. A faithful local port of
+ * her `getCritRateBlock` → `getDefaultStatsCritRate` (Feature2.js:134-140, Damage.js:72-94): she
+ * sums `crit_rate_base + crit_rate + crit_rate_enemy + crit_rate_<element> + crit_rate_<type> +
+ * crit_rate_<element>_<type> + …critRateBonuses` then CLAMPS to [0,1] (her `CCritRate.compile`,
+ * Compile/Types/Damage.js:6-11). In our bag `crit_rate_base + crit_rate` is pre-summed as the
+ * fraction `crit_rate_total`; the rest are fraction keys (absent ⇒ 0). The clamp is the decisive
+ * fidelity point — her object factor is itself a clamped `CCritRate`, so an UNCLAMPED sum would
+ * over-count above 100% crit and diverge from her oracle.
+ *
+ * Element/type are the feature's DECLARED values: the only v5.8 object-branch feature is Yanfei's
+ * A4 `yanfei_blazing_eye`, innately pyro/charged with no infusion path, so the declared element IS
+ * the resolved element (her `getElement(data)` would return the same). A general infusion-resolved
+ * bucket belongs to the Task-3 resolver; no object-branch feature is infusable here, so this is
+ * correctness-complete. Mirrors `compileFeature.ts`'s per-type crit fold + `critRateBonuses`.
+ */
+function critRateWeight(
+  feature: Feature,
+  stats: Readonly<Record<string, number>>
+): number {
+  const element = feature.element;
+  const damageType = feature.damageType ?? "";
+  const keys = [
+    "crit_rate_total", // = crit_rate_base + crit_rate (her pair), pre-summed as a fraction
+    "crit_rate_enemy",
+    `crit_rate_${element}`,
+    ...(damageType
+      ? [`crit_rate_${damageType}`, `crit_rate_${element}_${damageType}`]
+      : []),
+    ...(feature.critRateBonuses ?? []),
+  ];
+  let sum = 0;
+  for (const k of keys) sum += stats[k] ?? 0;
+  // Her CCritRate.compile clamp (Compile/Types/Damage.js:9).
+  return Math.max(0, Math.min(1, sum));
+}
+
+/**
  * Fold a fully-accumulated sub-block (`sub`, its own three accumulators) into `total` scaled by
  * `factor`, componentwise on ALL THREE (normal/crit/avg). This is her uptime leg's
  * `CMulti([ratio, repNormal/repCrit/repAverage])` increase (Tree.js:236-241,254-259) — a leg
@@ -264,25 +302,33 @@ function accumulateBlock(
 
   for (const node of ordered) {
     if (node.type === "feature") {
-      // Her `Feature2.rotationHitCount` (default 1) — a SCALAR weight on the hit, folded
-      // into `factor` BEFORE the reaction/non-reaction split so a REACTED weighted hit gets
-      // it too (Tree.js:83-90: the multiplier enters `varNormal`, in which all three
-      // accumulators are linear, so it scales the whole triple). Looked up from the feature's
-      // declaration; absent ⇒ 1 (base-inert).
-      const hitMulti = ctx.features[node.feature]?.rotationHitMulti ?? 1;
-      const factor = weight * node.count * hitMulti;
+      const decl = ctx.features[node.feature];
+      // Resolve the slice this hit is evaluated against FIRST (her Tree.js:60-83 reads `data`
+      // — incl. the per-node reaction merge — before getRotationHitMiltiplier). The crit-rate
+      // object weight (below) reads THIS slice's bag.
       const reaction = REACTION_INDEX[node.reaction ?? 0];
+      let slice = active;
       if (reaction !== undefined && reaction !== "") {
         // Reaction-tagged (Phase 5a): compile THIS hit under {...activeSettings, reaction}.
         // The amplifying/catalyze path (already shipped) applies ×1.5/2.0(+EM) or the
         // quicken multiplier. Merges onto the ACTIVE settings so a reaction tag inside a
         // condition-overlaid block stacks with the overlay (her data.settings carries both).
         const merged = { ...activeSettings, reaction };
-        const reactSlice = resolveSlice(ctx, merged, `reaction '${reaction}'`);
-        addFeature(reactSlice, node.feature, factor, total);
-      } else {
-        addFeature(active, node.feature, factor, total);
+        slice = resolveSlice(ctx, merged, `reaction '${reaction}'`);
       }
+      // Her per-feature rotation weight (her `getRotationHitMiltiplier(data)`, Tree.js:83-90),
+      // folded into `factor` (the multiplier enters `varNormal`, in which all three accumulators
+      // are linear, so it scales the whole triple). TWO branches, mutually exclusive in v5.8:
+      //   - OBJECT (`rotationHitMultiFromCritRate`): the hit's CLAMPED crit rate, summed from THIS
+      //     slice's bag (Yanfei's A4 `yanfei_blazing_eye`; Tree.js:84-85 object arm).
+      //   - SCALAR (`rotationHitMulti`, default 1): a constant `!= 1` (Mona-C2 0.2 / Yoimiya-C6
+      //     0.5; Tree.js:86-90).
+      // Absent both ⇒ 1 (base-inert).
+      const hitMulti = decl?.rotationHitMultiFromCritRate
+        ? critRateWeight(decl, slice.context.stats)
+        : (decl?.rotationHitMulti ?? 1);
+      const factor = weight * node.count * hitMulti;
+      addFeature(slice, node.feature, factor, total);
     } else if (node.type === "repeat") {
       // count × (sub-block's three accumulators), componentwise (Tree.js:200-213). Recurse
       // with the count folded into the weight; pass the CURRENT (possibly-overlaid) slice +
