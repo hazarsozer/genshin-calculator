@@ -35,8 +35,6 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
 import { describe, it, expect } from "vitest";
-import { buildStats } from "../buildStats.js";
-import { compileCharacter } from "../loader.js";
 import {
   theAlleyFlash,
   solarPearl,
@@ -54,23 +52,23 @@ import {
 import { SAMPLE_BLOCK, HIGH_ATK_HP_BLOCK } from "./_statBlocks.js";
 import type { DbObjectArtifactSet, DbObjectChar, DbObjectWeapon, EvalContext, StatTableEntry } from "@genshin/types";
 import { type FixtureEntry, isDamageTripleEntry } from "./_fixtureEntry.js";
+// Shared port-side reconstruction (the load-bearing settings-merge + buildStats/compileCharacter
+// assembly). Extracted so the differential parity harness (tools/oracle/diff-parity.mjs) drives
+// the IDENTICAL reconstruction; this suite's continued green is the proof the extraction is faithful.
+import {
+  LEVELS,
+  TALENTS,
+  TOLERANCE,
+  reconstructSettings,
+  reconstructPort,
+} from "./_reconstruct.js";
 
 // ---------------------------------------------------------------------------
-// Constants — mirrors constellations.test.ts
+// Constants — LEVELS / TALENTS / TOLERANCE now come from _reconstruct.ts (shared
+// with the parity harness). ENEMY is the canonical 90/10 the three families share.
 // ---------------------------------------------------------------------------
-
-const LEVELS = {
-  charLevel: 90,
-  ascension: 6,
-  weaponLevel: 90,
-  weaponAscension: 6,
-} as const;
 
 const ENEMY = { level: 90, resistance: 10 } as const;
-
-const TALENTS = { attack: 10, elemental: 10, burst: 10 } as const;
-
-const TOLERANCE = 0.1;
 
 // ---------------------------------------------------------------------------
 // Fixture types — verbatim from constellations.test.ts
@@ -284,14 +282,13 @@ function resolveStatBlock(key: string): Readonly<Record<string, number>> {
 // ---------------------------------------------------------------------------
 
 function buildEntrySettings(entry: ManifestEntry): EvalContext {
-  const { charToggles, setToggles, weapon } = entry;
-  return {
-    ...charToggles,
-    ...setToggles,
-    ...weapon.passiveToggles,
-    char_constellation: entry.char.constellation,
-    weapon_refine: weapon.refine,
-  };
+  return reconstructSettings({
+    charToggles: entry.charToggles,
+    setToggles: entry.setToggles,
+    passiveToggles: entry.weapon.passiveToggles,
+    constellation: entry.char.constellation,
+    refine: entry.weapon.refine,
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -341,39 +338,23 @@ for (const family of FAMILIES) {
       // --- Settings: merge all toggles + constellation + refine ---
       const inputSettings = buildEntrySettings(entry);
 
-      // --- Weapon passive: feed as extraConditions when passiveToggles is non-empty ---
-      const hasPassive = Object.keys(entry.weapon.passiveToggles).length > 0;
-      const extraConditions = hasPassive ? (weapon.conditions ?? []) : [];
+      // --- Weapon passive: ON when passiveToggles is non-empty ---
+      const passiveOn = Object.keys(entry.weapon.passiveToggles).length > 0;
 
-      // --- setBonuses: map the artifact set entries ---
-      const setBonuses = Object.entries(entry.artifactSets).map(([setKey, pieces]) => ({
-        setKey,
-        pieces,
-      }));
-
-      // --- buildStats: propagates condition .settings (C3/C5 talent bumps, infusions) ---
-      // Pass talentLevels so talent-scaled post-effects (e.g. hu_tao's HP→ATK ratio)
-      // can read char_skill_<slot> from the merged settings and resolve the effective
-      // level (base + constellation _bonus) at runtime.
-      const { context, settings } = buildStats({
+      // --- Reconstruct the port build via the shared helper (buildStats → compileCharacter).
+      // Propagates condition .settings (C3/C5 talent bumps, infusions) + threads talent _bonus.
+      const { context, compiled } = reconstructPort({
         char,
+        weapon,
         weaponStatTable,
         statBlock,
-        levels: LEVELS,
-        enemy: ENEMY,
         settings: inputSettings,
-        extraConditions,
-        setBonuses,
+        passiveOn,
+        artifactSets: entry.artifactSets,
         setRegistry: SET_REGISTRY,
-        talentLevels: TALENTS,
-      });
-
-      // --- compileCharacter: thread the propagated settings so talent _bonus offsets resolve ---
-      const compiled = compileCharacter(char, {
-        charElement: char.element,
-        talentLevels: TALENTS,
-        settings,
-        charLevel: LEVELS.charLevel,
+        levels: LEVELS,
+        talents: TALENTS,
+        enemy: ENEMY,
       });
 
       // --- Key sets ---
