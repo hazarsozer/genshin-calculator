@@ -40,9 +40,36 @@
     "description": "Conditional attack-infusion (full-parity R4e) — a char's infusion ConditionBoolean publishes `attack_infusion:'<element>'` into the settings bag, which buildStats merges (Condition.js:290-305 conditionSettings → buildStats.ts:755-768,1068) and compileFeature.resolveElement reads (compileFeature.ts:175-186) so normal/charged/plunge resolve the infused element (the RES key flips physical→element ⇒ different damage). infusion-diluc (Dawn ON, mergeCharSettings diluc_dawn:true → pyro, raw Diluc.js:287-294 attack_infusion_pyro:1 collapsed to the single string + his A4 +20% pyro) gates the already-wired-but-untoggled SELF chain → GREEN-on-arrival (Part A coverage). infusion-arlecchino (added Part B) drives common.bond_of_life:50 (≥30) with NO hardcoded attack_infusion → her BoL≥30 ConditionStatic infuses pyro (raw Arlecchino.js:377-390) — RED before the port wires the BoL≥30 infusion condition, GREEN after (Part B: the real gap). Hu Tao EXCLUDED (her Paramita toggle also activates an un-ported HP→ATK postEffect → not infusion-isolatable); Chongyun teammate-infusion already covered GREEN by party-buffs (chongyun-cryoinfusion-on-eula).",
     "id": "infusion"
   },
-  "featureTotal": 29,
-  "itemCount": 1,
+  "featureTotal": 58,
+  "itemCount": 2,
   "items": [
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "fontain",
+      "party": {
+        "settings": {
+          "common.bond_of_life": 50
+        }
+      },
+      "repKey": "Arlecchino",
+      "repSlug": "arlecchino",
+      "resonanceElements": {},
+      "slug": "infusion-arlecchino",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
     {
       "derived": {
         "party_size": 1

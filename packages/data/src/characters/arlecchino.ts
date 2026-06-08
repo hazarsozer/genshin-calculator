@@ -14,9 +14,13 @@
  *     - the Masque-of-the-Red-Death pyro infusion ConditionStatic is OFF → attacks physical,
  *     - the Cinders ConditionBoolean (+40% pyro DMG, toggle) is OFF.
  *   → every normal hit matches the plain physical, no-BoL computation exactly (the 58k
- *   damage goldens are byte-identical). The masque's BoL≥30 pyro infusion is a settings
- *   contribution a condition can't express; a real BoL≥30 build needs the user to set
- *   `attack_infusion:'pyro'` (see the charMultipliers comment — documented fidelity gap).
+ *   damage goldens are byte-identical). The masque's BoL≥30 pyro infusion IS expressible as a
+ *   condition: a `boolean-value` `common.bond_of_life ≥ 30` condition carrying
+ *   `settings:{attack_infusion:'pyro'}` (the `bolInfusion` entry below). conditionSettings
+ *   propagates an active condition's `.settings` (Condition.ts:290-305), buildStats folds them
+ *   into the compile settings (buildStats.ts:755-768,1068), and compileFeature.resolveElement
+ *   reads `attack_infusion` (compileFeature.ts:175-186) → attacks infuse pyro at BoL≥30. Inert at
+ *   BoL=0 (the gate fails → no settings → physical normals), so the goldens stay byte-identical.
  *
  * SKIPPED (off in solo C0): the C2 `arlecchino_balemoon_bloodfire_dmg` feature
  * (constellation-gated). Transformative reactions
@@ -256,6 +260,23 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
+// Masque-of-the-Red-Death pyro infusion: while Bond-of-Life ≥ 30, her normal/charged/plunge
+// attacks infuse PYRO. Raw Arlecchino.js:377-390 is a ConditionStatic{settings:{attack_infusion:
+// 'pyro'}, subConditions:[ConditionBooleanValue(common.bond_of_life ≥ 30)]}. Modelled as a
+// `boolean-value` condition (the SAME gate shape the masque multiplier uses, line ~294) carrying
+// `settings:{attack_infusion:'pyro'}`: conditionSettings propagates an active condition's `.settings`
+// (Condition.ts:290-305), buildStats folds them into the compile settings (buildStats.ts:755-768,1068),
+// and compileFeature.resolveElement reads `attack_infusion` (compileFeature.ts:175-186) → attacks
+// resolve pyro. Base-inert: at BoL=0 the ≥30 gate fails → conditionSettings returns {} → physical
+// normals → the 58k goldens are byte-identical.
+const bolInfusion: Condition = {
+  type: "boolean-value",
+  setting: "common.bond_of_life",
+  cond: "ge",
+  value: 30,
+  settings: { attack_infusion: "pyro" },
+};
+
 // ---------------------------------------------------------------------------
 // Char-level multipliers
 // ---------------------------------------------------------------------------
@@ -271,10 +292,11 @@ const constellationConditions: readonly Condition[] = [
 //     at C1 the ConditionStatic sets arlecchino_all_reprisals:2 → values[1] = 100 → +100% masque.
 // Base-inert: at BoL=0 the gate (≥30) is off AND `bond_of_life` reads 0 → no term added →
 // the 58k damage goldens are byte-identical. The BoL≥30 pyro infusion (her ConditionStatic
-// attack_infusion:'pyro', Arlecchino.js:377-390) is a SEPARATE settings-contribution a
-// condition can't express; a real BoL≥30 build needs the user to set `attack_infusion:'pyro'`
-// (the oracle fixture sets it explicitly — documented fidelity gap, same class as Candace's
-// attack_infusion_hydro). The masque DAMAGE term is the validated correctness gain.
+// attack_infusion:'pyro', Arlecchino.js:377-390) is ALSO ported — NOT as a separate user
+// setting but as the `bolInfusion` boolean-value condition below: an active condition's
+// `.settings` propagate through conditionSettings → buildStats → compileFeature.resolveElement
+// (the SAME mechanism Diluc/Hu Tao use), so it shares the EXACT BoL≥30 gate the masque term uses.
+// The masque DAMAGE term + the BoL≥30 infusion are the two validated correctness gains.
 const ARLECCHINO_C1_BONUS = [0, 100] as const; // her ValueTable([0, C1BonusScale=100])
 const charMultipliers: readonly CharMultiplier[] = [
   {
@@ -307,5 +329,5 @@ export const arlecchino: DbObjectChar = {
   talents,
   features,
   multipliers: charMultipliers,
-  conditions: constellationConditions,
+  conditions: [...constellationConditions, bolInfusion],
 };
