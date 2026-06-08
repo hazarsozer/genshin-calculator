@@ -25,6 +25,14 @@
  * WITH the conditions overlaid (reusing the same `applyCondition`/seam path) — each leg computed
  * in isolation and folded up (Tree.js:214-262).
  *
+ * DEFERRED (documented, out of this surface — see the plan's R3 §deferrals):
+ *   - `rotation.total_<element>/<type>` filtered sub-totals (Phase 5b) are NOT emitted; only the
+ *     bare `rotation.total` is. Her engine computes them by re-running under `settings.rotation_include`
+ *     (Feature2/Rotation.js:52,139-195), a separate dump — a future small pass.
+ *   - `hitMulti` is fixed at 1 (the 4 `rotationHitCount`/method overrides — Yoimiya/Mona-C2/Yanfei/Clam).
+ *   - `condition` covers the settings-handle case (re-derive under merged settings); a postEffect-only
+ *     condition with no settings diff is a no-op here (see the FIDELITY NOTE on `applyCondition`).
+ *
  * Sources:
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Rotation/Tree.js (processBlock — the accumulators;
  *     :8,60,306-308 reaction-tagging; :137-188 condition overlay; :214-262 uptime blend; :320-347 reorderItems)
@@ -255,6 +263,10 @@ function accumulateBlock(
       // RotationCompiler.processConditions:45-102 → Tree.js:137-188). Drive the SAME condition
       // the char already has: the overlay = its resolved `{setting: value}` merged onto the
       // active settings, then a read-only recompile under it (her two-stage addSettings → diff).
+      // FIDELITY LIMIT: if the overlay produces no settings diff (a postEffect-only condition with
+      // no settings handle), the re-derive returns the same slice → a no-op here, not a throw (see
+      // the FIDELITY NOTE on `applyCondition`). No oracle rep exercises that case; a future spec
+      // that needs it would extend the seam to carry a resolved postEffect overlay.
       const merged = applyCondition(activeSettings, node);
       const condSlice = resolveSlice(ctx, merged, `condition (${describeCondition(node)})`);
       active = condSlice;
