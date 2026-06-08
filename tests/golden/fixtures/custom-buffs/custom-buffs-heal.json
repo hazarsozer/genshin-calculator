@@ -1,0 +1,210 @@
+{
+  "element": "hydro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3315.186968473458,
+      "category": "attack",
+      "crit": 6630.373936946916,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3315.186968473458
+    },
+    "attack.normal_hit_1": {
+      "average": 1443.8747985069738,
+      "category": "attack",
+      "crit": 2887.7495970139476,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1443.8747985069738
+    },
+    "attack.normal_hit_2": {
+      "average": 1299.487084026387,
+      "category": "attack",
+      "crit": 2598.974168052774,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1299.487084026387
+    },
+    "attack.normal_hit_3": {
+      "average": 1991.4223593239235,
+      "category": "attack",
+      "crit": 3982.844718647847,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1991.4223593239235
+    },
+    "attack.plunge": {
+      "average": 1240.8007906221032,
+      "category": "attack",
+      "crit": 2481.6015812442065,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1240.8007906221032
+    },
+    "attack.plunge_high": {
+      "average": 3098.9976162874086,
+      "category": "attack",
+      "crit": 6197.995232574817,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3098.9976162874086
+    },
+    "attack.plunge_low": {
+      "average": 2481.075818197333,
+      "category": "attack",
+      "crit": 4962.151636394666,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2481.075818197333
+    },
+    "burst.burst_dmg": {
+      "average": 4342.575492250068,
+      "category": "burst",
+      "crit": 8685.150984500136,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4342.575492250068
+    },
+    "burst.kokomi_burst_heal": {
+      "average": 864.5419850089696,
+      "category": "burst",
+      "crit": 864.5419850089696,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 864.5419850089696
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.heal_dot": {
+      "average": 4722.210694405279,
+      "category": "skill",
+      "crit": 4722.210694405279,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 4722.210694405279
+    },
+    "skill.kokomi_ripple_dmg": {
+      "average": 2710.2553169988473,
+      "category": "skill",
+      "crit": 5420.510633997695,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2710.2553169988473
+    },
+    "stats.atk": {
+      "average": 1905.7008559719998,
+      "category": "stats",
+      "crit": 1905.7008559719998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1905.7008559719998
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": -62.436,
+      "category": "stats",
+      "crit": -62.436,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": -62.436
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1533.1135494,
+      "category": "stats",
+      "crit": 1533.1135494,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1533.1135494
+    },
+    "stats.hp": {
+      "average": 26696.501828,
+      "category": "stats",
+      "crit": 26696.501828,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26696.501828
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Kokomi",
+  "repSlug": "sangonomiya_kokomi",
+  "schema": 1,
+  "slug": "custom-buffs-heal",
+  "weapon": "weapon_name.solar_pearl",
+  "weaponType": "catalyst"
+}
