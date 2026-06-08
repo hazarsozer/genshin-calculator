@@ -34,10 +34,14 @@
  * WITH the conditions overlaid (reusing the same `applyCondition`/seam path) — each leg computed
  * in isolation and folded up (Tree.js:214-262).
  *
+ * FILTERED SUB-TOTALS (T3): the bare `rotation.total` is accompanied by one
+ * `rotation.total_<element>/<type>` per element/type PRESENT in the rotation (her getDisplaySettings
+ * re-walk under `settings.rotation_include`, Rotation.js:52,139-195 + the Tree.js:47,66-73 skip
+ * gate). Emitted only when the caller supplies a `resolveBucket` resolver; element is
+ * infusion-RESOLVED under each node's ACTIVE settings, type is STATIC, and the include is an OR over
+ * the two (see `compileRotation`/`collectBuckets`/the `filter` gate in `accumulateBlock`).
+ *
  * DEFERRED (documented, out of this surface — see the plan's R3 §deferrals):
- *   - `rotation.total_<element>/<type>` filtered sub-totals (Phase 5b) are NOT emitted; only the
- *     bare `rotation.total` is. Her engine computes them by re-running under `settings.rotation_include`
- *     (Feature2/Rotation.js:52,139-195), a separate dump — a future small pass.
  *   - `condition` covers the settings-handle case (re-derive under merged settings); a postEffect-only
  *     condition with no settings diff is a no-op here (see the FIDELITY NOTE on `applyCondition`).
  *
@@ -67,17 +71,26 @@ interface RotationTotal {
 
 /**
  * A recompiled slice: the feature closures under some merged settings PLUS the
- * `DamageContext` (stat bag) they must be evaluated against. Both move together because a
- * settings change can shift the bag (a `condition` re-runs `buildStats`) AND the compiled
- * closures (the amplifying factor / infusion is baked at compile time). The `recompile`
- * seam returns this bundle so the caller owns the read-only re-derive (`buildStats` +
- * `compileCharacter` under merged settings) and `compileRotation` only composes triples.
- * For a `reaction` tag the bag is unchanged (her `buildStats` ignores `settings.reaction`),
- * so `context` equals the base context; it is still returned uniformly.
+ * `DamageContext` (stat bag) they must be evaluated against, PLUS the fully-PROPAGATED settings
+ * the slice was built under. The first two move together because a settings change can shift the
+ * bag (a `condition` re-runs `buildStats`) AND the compiled closures (the amplifying factor /
+ * infusion is baked at compile time). The `recompile` seam returns this bundle so the caller owns
+ * the read-only re-derive (`buildStats` + `compileCharacter` under merged settings) and
+ * `compileRotation` only composes triples. For a `reaction` tag the bag is unchanged (her
+ * `buildStats` ignores `settings.reaction`), so `context` equals the base context; it is still
+ * returned uniformly.
+ *
+ * `settings` is the PROPAGATED settings (post-`buildStats` condition-settings merge), NOT the raw
+ * overlay the seam was called with. It is required for the T3 filtered-sub-total element bucketing:
+ * a `condition`/`uptime` infusion overlay (Hu Tao Paramita) publishes `attack_infusion:'pyro'` only
+ * through `buildStats`'s propagation, so the rotation's RAW overlay (`{hutao_paramita_papilio:true}`)
+ * is insufficient to resolve the infused element — the resolver must read the slice's propagated
+ * settings. The base slice's `settings` is `baseSettings` (already propagated by the caller).
  */
 export interface RecompiledSlice {
   readonly compiled: Readonly<Record<string, CompiledFeature>>;
   readonly context: DamageContext;
+  readonly settings: Readonly<Record<string, unknown>>;
 }
 
 /**
@@ -89,11 +102,13 @@ export interface RecompiledSlice {
  *   bag).
  * - `recompile` — the re-derivation seam for mid-rotation settings changes (Phase 5a
  *   reaction tags + Phase 3 condition overlays). Given a fully-merged settings object it
- *   returns a {compiled, context} slice (a read-only `buildStats` + `compileCharacter`
- *   re-call). Threaded as a dependency (not pre-applied) so `compileRotation` never owns the
- *   build. REQUIRED only when the rotation actually changes settings (a `reaction>0` feature
- *   node or any `condition` node); a pure `feature`/`repeat` rotation never calls it. Absent
- *   + a settings-changing node → a loud throw (never a silent un-amplified fallthrough).
+ *   returns a {compiled, context, settings} slice (a read-only `buildStats` + `compileCharacter`
+ *   re-call; `settings` = the PROPAGATED settings, needed for the T3 sub-totals' infused-element
+ *   bucketing). Threaded as a dependency (not pre-applied) so `compileRotation` never owns the
+ *   build. REQUIRED whenever the rotation changes settings — a `reaction>0` feature node, any
+ *   `condition` node, OR (when sub-totals are requested) a `condition`/`uptime` overlay whose
+ *   bucket walk must re-derive propagated settings; a pure `feature`/`repeat` rotation never calls
+ *   it. Absent + a settings-changing node → a loud throw (never a silent un-amplified fallthrough).
  */
 export interface RotationDeps {
   readonly compiled: Readonly<Record<string, CompiledFeature>>;
@@ -125,6 +140,20 @@ export interface RotationDeps {
   readonly recompile?: (
     mergedSettings: Readonly<Record<string, unknown>>
   ) => RecompiledSlice;
+  /**
+   * Resolve a feature's filter bucket — its `{element, type}` in HER short form — under a node's
+   * ACTIVE (overlaid) settings (T3, the filtered sub-totals). `element` is her
+   * `FeatureDamage.getElement` in the `phys`/`<element>` short form (settings-DEPENDENT — an
+   * infusion overlay flips it); `type` is her static `getDamageType()` (settings-INDEPENDENT). The
+   * loader builds this from `resolveElement`+`damageTypeOf`+`dmgElementKey` (it owns the
+   * `CompileContext`). Absent ⇒ no sub-totals are emitted (only the bare `rotation.total`), so the
+   * existing pure-`rotation.total` reps + the 58k goldens are byte-identical. Source:
+   * raw/.../Feature2/Rotation/Tree.js:66-73 (the skip gate) + Rotation.js:139-195 (getDisplaySettings).
+   */
+  readonly resolveBucket?: (
+    feature: Feature,
+    activeSettings: Readonly<Record<string, unknown>>
+  ) => { readonly element: string; readonly type: string };
 }
 
 /**
@@ -155,6 +184,15 @@ interface RotationCtx {
    * so it lives here rather than as a recursion-frame parameter. Empty when absent → weight 1.
    */
   readonly features: Readonly<Record<string, Feature>>;
+  /**
+   * The filter-bucket resolver (see RotationDeps.resolveBucket), or `undefined` when sub-totals
+   * are not requested. Block-invariant, used by the `filter` skip gate in `accumulateBlock`'s
+   * feature-node branch and by `collectBuckets`.
+   */
+  readonly resolveBucket?: (
+    feature: Feature,
+    activeSettings: Readonly<Record<string, unknown>>
+  ) => { readonly element: string; readonly type: string };
 }
 
 /** A stable key for a merged-settings object (sorted keys → deterministic memo lookup). */
@@ -265,7 +303,7 @@ function foldScaled(
 
 /**
  * Accumulate one block's nodes into `total` at `weight` (the product of enclosing `repeat`
- * counts), against `slice` (the currently-active {compiled, context} — the base slice at the
+ * counts), against `slice` (the currently-active {compiled, context, settings} — the base slice at the
  * top level, or a condition-overlaid slice after a `condition` node fires in THIS block).
  * Recursive: a `repeat` node folds its sub-block at `weight × count` (Tree.js:200-213).
  *
@@ -290,7 +328,8 @@ function accumulateBlock(
   ctx: RotationCtx,
   slice: RecompiledSlice,
   baseSettings: Readonly<Record<string, unknown>>,
-  total: RotationTotal
+  total: RotationTotal,
+  filter: string | undefined
 ): void {
   // Replicate her reorderItems: loose features stay in order; repeat/uptime are deferred
   // after the loose run they appear in; a condition flushes the deferred run before it.
@@ -303,6 +342,21 @@ function accumulateBlock(
   for (const node of ordered) {
     if (node.type === "feature") {
       const decl = ctx.features[node.feature];
+      // Filtered sub-total skip gate (T3, her Tree.js:66-73): when a `filter` (a rotation_include
+      // value) is active, elide this hit unless the filter matches its RESOLVED element OR its
+      // STATIC type (an OR include). Element resolves under the ACTIVE SLICE's PROPAGATED settings
+      // (`active.settings`) — a condition overlay's infusion (e.g. Paramita → pyro) lives there
+      // post-`buildStats`, not in the raw overlay; the reaction tag never changes the element (her
+      // getElement ignores settings.reaction → an amplified hit buckets under its unchanged
+      // element, so we resolve BEFORE the reaction merge). `decl` is always present for an active
+      // feature (the loader builds the map in lockstep with `compiled`); a missing decl ⇒ no bucket
+      // ⇒ skip when filtering. The bare total (filter === undefined) never enters this branch →
+      // byte-identical to today.
+      if (filter !== undefined) {
+        if (decl === undefined || ctx.resolveBucket === undefined) continue;
+        const bucket = ctx.resolveBucket(decl, active.settings);
+        if (filter !== bucket.element && filter !== bucket.type) continue;
+      }
       // Resolve the slice this hit is evaluated against FIRST (her Tree.js:60-83 reads `data`
       // — incl. the per-node reaction merge — before getRotationHitMiltiplier). The crit-rate
       // object weight (below) reads THIS slice's bag.
@@ -333,8 +387,10 @@ function accumulateBlock(
       // count × (sub-block's three accumulators), componentwise (Tree.js:200-213). Recurse
       // with the count folded into the weight; pass the CURRENT (possibly-overlaid) slice +
       // settings down — the sub-block inherits the overlay but its own changes are isolated
-      // (a fresh `active`/`activeSettings` in the recursive frame, never written back here).
-      accumulateBlock(node.items, weight * node.count, ctx, active, activeSettings, total);
+      // (a fresh `active`/`activeSettings` in the recursive frame, never written back here). The
+      // `filter` propagates into the sub-block (her processBlock reads rotation_include at every
+      // level — Tree.js:47), so a repeat's hits are filtered too.
+      accumulateBlock(node.items, weight * node.count, ctx, active, activeSettings, total, filter);
     } else if (node.type === "condition") {
       // Phase 3: a condition re-derives the stat bag + closures under merged settings and
       // applies forward to the following nodes IN THIS BLOCK (her Stats.diff overlay,
@@ -365,7 +421,7 @@ function accumulateBlock(
       // Emitted only when `percent < 100` (her guard) — p=100 ⇒ buffed-only.
       if (p < 1) {
         const baseSub: RotationTotal = { normal: 0, crit: 0, avg: 0 };
-        accumulateBlock(node.features, 1, ctx, active, activeSettings, baseSub);
+        accumulateBlock(node.features, 1, ctx, active, activeSettings, baseSub, filter);
         foldScaled(baseSub, weight * (1 - p), total);
       }
 
@@ -392,7 +448,7 @@ function accumulateBlock(
               )
             : active;
         const buffedSub: RotationTotal = { normal: 0, crit: 0, avg: 0 };
-        accumulateBlock(node.features, 1, ctx, buffedSlice, buffedSettings, buffedSub);
+        accumulateBlock(node.features, 1, ctx, buffedSlice, buffedSettings, buffedSub, filter);
         foldScaled(buffedSub, weight * p, total);
       }
     } else {
@@ -477,43 +533,151 @@ function describeCondition(node: RotationConditionNode): string {
 }
 
 /**
- * Compile a rotation into a `(context) => {normal,crit,avg}` closure keyed `rotation.total`.
+ * Collect the present filter-bucket VALUES (her getDisplaySettings, Rotation.js:139-195) — the set
+ * of `rotation_include` keys the sub-totals are emitted under. This runs at COMPILE time: a bucket
+ * value depends only on a feature's element (settings-dependent) + type (static), both resolvable
+ * from the node tree + settings WITHOUT the eval-time stat bag, so the emitted key set is fixed at
+ * compile time (matching her UI, which lists buckets before any number is computed).
  *
- * The closure walks the node tree at eval time, composing the per-feature triples
- * componentwise into the three accumulators. Evaluation is deferred (not folded at compile
- * time) because the per-feature closures read the live `DamageContext` stat bag — exactly
- * as her `FeatureRotation.getResult` executes the compiled tree against `data`. The
- * eval-time `context` argument IS the base slice's context; reaction/condition slices carry
- * their own context (from the seam) and are evaluated against it.
+ * Mirrors her getDisplaySettings.processBlock — and note it does NOT reorderItems (unlike the
+ * accumulation walk): it processes nodes in order, a `condition` overlays forward (re-deriving the
+ * PROPAGATED settings via the seam — so an infusion the condition toggles, e.g. Paramita → pyro,
+ * is visible), a `repeat` recurses its items, and an `uptime` walks BOTH legs (the base `features`
+ * AND `[...conditions, ...features]`) so an infusion-switching uptime contributes both its base
+ * element and its buffed element (Hu Tao: phys + pyro). Each active feature node adds its resolved
+ * element (her short form, resolved under the ACTIVE SLICE's propagated settings) AND its static
+ * type to the set. A reaction tag is irrelevant here (her getDisplaySettings ignores `reaction`).
+ *
+ * Settings propagation needs the seam (a condition's infused element lives in `buildStats`'s
+ * propagated diff, not the raw overlay), so this walks WITH slices exactly like `accumulateBlock`:
+ * `resolveSlice` re-derives a `{compiled, context, settings}` bundle per overlay (cached). A
+ * settings-changing node without a seam throws there (never a silent wrong-bucket fallthrough).
+ */
+function collectBuckets(
+  nodes: readonly RotationNode[],
+  settings: Readonly<Record<string, unknown>>,
+  ctx: RotationCtx,
+  out: Set<string>
+): void {
+  // The PROPAGATED settings overlays evolve into (a condition's infused element lives here). For a
+  // condition/uptime overlay we re-derive via the seam and read its propagated `.settings`; the
+  // seam result's `compiled`/`context` are unused here (bucket = element+type, settings-only).
+  let active = settings;
+  for (const node of nodes) {
+    if (node.type === "feature") {
+      const decl = ctx.features[node.feature];
+      if (decl === undefined || ctx.resolveBucket === undefined) continue;
+      const bucket = ctx.resolveBucket(decl, active);
+      out.add(bucket.element);
+      out.add(bucket.type);
+    } else if (node.type === "condition") {
+      const merged = applyCondition(active, node);
+      active = resolveSlice(ctx, merged, `condition (${describeCondition(node)})`).settings;
+    } else if (node.type === "repeat") {
+      collectBuckets(node.items, active, ctx, out);
+    } else if (node.type === "uptime") {
+      // Base leg: features WITHOUT conditions (resolved under the current settings).
+      collectBuckets(node.features, active, ctx, out);
+      // Buffed leg: features WITH conditions overlaid — so an infusion the uptime toggles
+      // contributes its post-overlay (propagated) element too (her getDisplaySettings walks both).
+      let buffedSettings = active;
+      for (const cond of node.conditions) buffedSettings = applyCondition(buffedSettings, cond);
+      const buffed =
+        node.conditions.length > 0
+          ? resolveSlice(
+              ctx,
+              buffedSettings,
+              `uptime buffed leg (${node.conditions.map(describeCondition).join(", ")})`
+            ).settings
+          : active;
+      collectBuckets(node.features, buffed, ctx, out);
+    } else {
+      const unhandled: never = node;
+      throw new Error(
+        `compileRotation: unhandled rotation node type '${(unhandled as { type: string }).type}' (collectBuckets)`
+      );
+    }
+  }
+}
+
+/**
+ * Compile a rotation into a map of `(context) => {normal,crit,avg}` closures: the bare
+ * `rotation.total` PLUS one filtered sub-total `rotation.total_<value>` per element/type PRESENT in
+ * the rotation (T3). Each closure walks the node tree at eval time, composing the per-feature
+ * triples componentwise into the three accumulators; evaluation is deferred (not folded at compile
+ * time) because the per-feature closures read the live `DamageContext` stat bag — exactly as her
+ * `FeatureRotation.getResult` executes the compiled tree against `data`. The eval-time `context`
+ * argument IS the base slice's context; reaction/condition slices carry their own context (from
+ * the seam) and are evaluated against it.
+ *
+ * Filtered sub-totals (her getDisplaySettings + the `rotation_include` re-walk, Rotation.js:52,
+ * 139-195 + Tree.js:47,66-73): the present bucket VALUES are enumerated once at compile time
+ * (`collectBuckets`); each sub-total closure re-walks the SAME tree with a `filter`, eliding any
+ * feature node whose resolved element AND static type both differ from it (an OR include). This is
+ * her N+1 filtered re-walks; the controller-verified equivalence to a single multi-accumulator
+ * walk holds (the filter only SKIPS), but the per-filter re-walk mirrors her `Tree.js` gate 1:1
+ * and keeps the bare path byte-identical. Emitted only when a `resolveBucket` resolver is supplied
+ * (the loader provides it); absent ⇒ ONLY `rotation.total` (the 58k goldens + the pure-total reps
+ * are untouched — no golden sets a rotation, and a sub-total-less caller is byte-identical).
  *
  * Performance: an un-tagged rotation (no `reaction>0`, no `condition`) never calls the seam —
  * the common case is a pure compose over the base closures with zero re-derive. Reaction +
  * condition slices are memoized per distinct merged-settings within one evaluation (and the
  * caller may cache across evaluations), so the read-only `buildStats`/`compileCharacter`
- * re-call runs at most once per distinct settings.
+ * re-call runs at most once per distinct settings. The N sub-total re-walks reuse that same
+ * per-evaluation memo (a fresh `ctx`/cache per closure call, like the bare total).
  *
- * Returns `null` for an empty rotation (no nodes) — her `compileRotation` returns null when
- * `featuresTotal == 0` and nothing is added (base-inert). The caller (`compileCharacter`)
- * only assigns `rotation.total` when this is non-null.
+ * Returns `{}` for an empty rotation (no nodes) — her `compileRotation` returns null when
+ * `featuresTotal == 0` and nothing is added (base-inert). The caller (`compileCharacter`) assigns
+ * each returned key into `out`, so an empty map adds nothing.
  */
 export function compileRotation(
   rotation: Rotation,
   deps: RotationDeps
-): CompiledFeature | null {
-  if (rotation.items.length === 0) return null;
-  const { compiled, recompile, baseSettings = {}, features = {} } = deps;
-  return (context: DamageContext): DamageResult => {
-    const base: RecompiledSlice = { compiled, context };
-    // Conditional-spread `recompile` (omit when absent) — `exactOptionalPropertyTypes`
-    // rejects an explicit `undefined` on the optional field. An absent seam + a
-    // settings-changing node (reaction tag / condition) throws in `resolveSlice`.
-    const ctx: RotationCtx = {
-      cache: new Map(),
-      features,
-      ...(recompile !== undefined ? { recompile } : {}),
+): Record<string, CompiledFeature> {
+  if (rotation.items.length === 0) return {};
+  const { compiled, recompile, baseSettings = {}, features = {}, resolveBucket } = deps;
+
+  // The shared compile context (per closure call a fresh `cache` is allocated, like before).
+  const makeCtx = (): RotationCtx => ({
+    cache: new Map(),
+    features,
+    // Conditional-spread the optional seams (`exactOptionalPropertyTypes` rejects explicit
+    // `undefined`). An absent `recompile` + a settings-changing node throws in `resolveSlice`.
+    ...(recompile !== undefined ? { recompile } : {}),
+    ...(resolveBucket !== undefined ? { resolveBucket } : {}),
+  });
+
+  // One closure per filter (undefined = the bare total; a value = its sub-total). Each re-walks
+  // the tree at eval time. Defining them via a single factory keeps the bare path byte-identical
+  // to the sub-total path (same accumulation, only the `filter` arg differs).
+  const makeClosure =
+    (filter: string | undefined): CompiledFeature =>
+    (context: DamageContext): DamageResult => {
+      // The base slice carries `baseSettings` (already PROPAGATED by the caller — the loader passes
+      // `ctx.settings`), so a top-level (un-overlaid) hit resolves its element under them.
+      const base: RecompiledSlice = { compiled, context, settings: baseSettings };
+      const ctx = makeCtx();
+      const total: RotationTotal = { normal: 0, crit: 0, avg: 0 };
+      accumulateBlock(rotation.items, 1, ctx, base, baseSettings, total, filter);
+      return { normal: total.normal, crit: total.crit, avg: total.avg };
     };
-    const total: RotationTotal = { normal: 0, crit: 0, avg: 0 };
-    accumulateBlock(rotation.items, 1, ctx, base, baseSettings, total);
-    return { normal: total.normal, crit: total.crit, avg: total.avg };
+
+  const out: Record<string, CompiledFeature> = {
+    "rotation.total": makeClosure(undefined),
   };
+
+  // Filtered sub-totals: only when the loader supplied a bucket resolver. The present bucket set is
+  // fixed at compile time (element/type resolve from the tree + settings, not the stat bag); a
+  // condition/uptime overlay's infused element needs the seam, so collectBuckets re-derives the
+  // propagated settings per overlay (cached). The base walk starts from the propagated baseSettings.
+  if (resolveBucket !== undefined) {
+    const buckets = new Set<string>();
+    collectBuckets(rotation.items, baseSettings, makeCtx(), buckets);
+    for (const value of buckets) {
+      out[`rotation.total_${value}`] = makeClosure(value);
+    }
+  }
+
+  return out;
 }

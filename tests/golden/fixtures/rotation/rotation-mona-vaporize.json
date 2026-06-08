@@ -127,6 +127,33 @@
       "isReacted": false,
       "normal": 9271.425775667332
     },
+    "rotation.total_hydro": {
+      "average": 12754.14415403901,
+      "category": "rotation",
+      "crit": 18542.851551334665,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 9271.425775667332
+    },
+    "rotation.total_normal": {
+      "average": 1272.9286124404657,
+      "category": "rotation",
+      "crit": 1850.6711238993714,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 925.3355619496857
+    },
+    "rotation.total_skill": {
+      "average": 11481.215541598543,
+      "category": "rotation",
+      "crit": 16692.180427435294,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 8346.090213717647
+    },
     "skill.dot_dmg": {
       "average": 1251.7388626357572,
       "category": "skill",

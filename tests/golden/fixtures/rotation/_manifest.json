@@ -37,10 +37,10 @@
     }
   },
   "config": {
-    "description": "Rotation subsystem (full-parity R3, the capstone — ALL node types: feature/repeat/reaction/condition/uptime). A rotation is a tree of nodes composing already-gated per-hit DAMAGE features into a sequence; its rotation.total output is THREE independent componentwise accumulators (Tree.js:36-44,110-136): total_normal=Σ count·perFeatureNormal, total_crit=Σ count·perFeatureCrit, total_average=Σ count·perFeatureAverage (each hit blended AT ITS OWN crit rate, THEN summed — NEVER blend(total_normal,total_crit) at one rate). build.setRotation(new DB.__Rotation({items})) (CalcSet.js:173) → getFeaturesList calls compileRotation() (CalcSet.js:453-459) → getFeaturesHash keys it rotation.total → FeatureRotation.getResult dumps a normal {normal,crit,average} triple (category rotation). 9 reps: rotation-fischl-mixed-crit (Fischl, enemy_weak_shot ON: charged_aimed [electro AIMED → 100% crit] + normal_hit_1×5 [physical → ~5% crit] — the crit rates DIFFER, so avg=blend(Σnormal,Σcrit) fails: THE mixed-crit guard) / rotation-keqing-simple (Keqing normal_hit_1×3, a simple count>1 sequence) / rotation-fischl-repeat (repeat ×3 of [normal_hit_1] — repeated block == 3× single) / rotation-fischl-mixed-block (charged_aimed + repeat×2[normal_hit_1] + aimed, weak_shot ON — reorderItems defers the repeat after loose features but the SUM is order-independent) / rotation-mona-vaporize (skill.explosion_dmg reaction:2 + normal_hit_1 — per-node reaction tag amplifies ONLY the tagged hit) / rotation-hutao-condition (normal_hit_1, condition(paramita), normal_hit_1 — mid-rotation overlay buffs the 2nd hit only) / rotation-hutao-uptime-{50,75,100} (uptime blend base·(1−p)+buffed·p, base=normal, buffed=paramita-infused normal; p=50 the genuine blend, p=75 NON-symmetric catches p↔1−p swap, p=100 endpoint locks the percent<100 guard) / rotation-mona-c2-hitmulti (Mona C2: mona_charged_hit [rotationHitCount 0.2] + un-weighted charged_hit — IDENTICAL hits, so total = 1.2× a single charged hit, isolating the scalar hitMulti; a no-op weight 1 → 2× → RED). rotationBurndown reconstructs each spec from partyRecord.rotation, compiles via compileRotation, asserts rotation.total normal/crit/avg within 0.1.",
+    "description": "Rotation subsystem (full-parity R3, the capstone — ALL node types: feature/repeat/reaction/condition/uptime). A rotation is a tree of nodes composing already-gated per-hit DAMAGE features into a sequence; its rotation.total output is THREE independent componentwise accumulators (Tree.js:36-44,110-136): total_normal=Σ count·perFeatureNormal, total_crit=Σ count·perFeatureCrit, total_average=Σ count·perFeatureAverage (each hit blended AT ITS OWN crit rate, THEN summed — NEVER blend(total_normal,total_crit) at one rate). build.setRotation(new DB.__Rotation({items})) (CalcSet.js:173) → getFeaturesList calls compileRotation() (CalcSet.js:453-459) → getFeaturesHash keys it rotation.total → FeatureRotation.getResult dumps a normal {normal,crit,average} triple (category rotation). 9 reps: rotation-fischl-mixed-crit (Fischl, enemy_weak_shot ON: charged_aimed [electro AIMED → 100% crit] + normal_hit_1×5 [physical → ~5% crit] — the crit rates DIFFER, so avg=blend(Σnormal,Σcrit) fails: THE mixed-crit guard) / rotation-keqing-simple (Keqing normal_hit_1×3, a simple count>1 sequence) / rotation-fischl-repeat (repeat ×3 of [normal_hit_1] — repeated block == 3× single) / rotation-fischl-mixed-block (charged_aimed + repeat×2[normal_hit_1] + aimed, weak_shot ON — reorderItems defers the repeat after loose features but the SUM is order-independent) / rotation-mona-vaporize (skill.explosion_dmg reaction:2 + normal_hit_1 — per-node reaction tag amplifies ONLY the tagged hit) / rotation-hutao-condition (normal_hit_1, condition(paramita), normal_hit_1 — mid-rotation overlay buffs the 2nd hit only) / rotation-hutao-uptime-{50,75,100} (uptime blend base·(1−p)+buffed·p, base=normal, buffed=paramita-infused normal; p=50 the genuine blend, p=75 NON-symmetric catches p↔1−p swap, p=100 endpoint locks the percent<100 guard) / rotation-mona-c2-hitmulti (Mona C2: mona_charged_hit [rotationHitCount 0.2] + un-weighted charged_hit — IDENTICAL hits, so total = 1.2× a single charged hit, isolating the scalar hitMulti; a no-op weight 1 → 2× → RED). FILTERED SUB-TOTALS (T3): each fixture ALSO carries rotation.total_<element>/<type> — her getDisplaySettings (Rotation.js:139-195) enumerates the elements+types PRESENT in the rotation, each re-run under settings.rotation_include with a skip gate (Tree.js:47,66-73) eliding feature nodes whose RESOLVED element AND STATIC type both differ from the filter (an OR include). Dumped via a FRESH FeatureRotation per rotation_include (the Feature2.compile this.compiled memo trap, Feature2.js:102-103,150-153). Anti-gaming substrate = fischl-mixed-block: total_electro+total_phys == total AND total_charged+total_normal == total (two independent partitions), total_electro≠total, total_charged≠total; mona-vaporize: total_hydro==total (amplified explosion buckets under hydro), total_skill==the explosion only; hutao-condition/uptime carry BOTH total_phys AND total_pyro (the overlay flips hit2's resolved element → bucket under ACTIVE settings). rotationBurndown reconstructs each spec from partyRecord.rotation, compiles via compileRotation, asserts rotation.total + every rotation.total_* within 0.1.",
     "id": "rotation"
   },
-  "featureTotal": 331,
+  "featureTotal": 362,
   "itemCount": 11,
   "items": [
     {
@@ -52,7 +52,7 @@
         "level": 90,
         "res": 10
       },
-      "featureCount": 29,
+      "featureCount": 33,
       "kind": "party",
       "origin": "mondstadt",
       "party": {
@@ -107,7 +107,7 @@
         "level": 90,
         "res": 10
       },
-      "featureCount": 29,
+      "featureCount": 33,
       "kind": "party",
       "origin": "mondstadt",
       "party": {
@@ -150,7 +150,7 @@
         "level": 90,
         "res": 10
       },
-      "featureCount": 29,
+      "featureCount": 31,
       "kind": "party",
       "origin": "mondstadt",
       "party": {
@@ -190,7 +190,7 @@
         "level": 90,
         "res": 10
       },
-      "featureCount": 33,
+      "featureCount": 36,
       "kind": "party",
       "origin": "liyue",
       "party": {
@@ -236,7 +236,7 @@
         "level": 90,
         "res": 10
       },
-      "featureCount": 33,
+      "featureCount": 36,
       "kind": "party",
       "origin": "liyue",
       "party": {
@@ -284,7 +284,7 @@
         "level": 90,
         "res": 10
       },
-      "featureCount": 33,
+      "featureCount": 36,
       "kind": "party",
       "origin": "liyue",
       "party": {
@@ -332,7 +332,7 @@
         "level": 90,
         "res": 10
       },
-      "featureCount": 33,
+      "featureCount": 36,
       "kind": "party",
       "origin": "liyue",
       "party": {
@@ -380,7 +380,7 @@
         "level": 90,
         "res": 10
       },
-      "featureCount": 34,
+      "featureCount": 36,
       "kind": "party",
       "origin": "liyue",
       "party": {
@@ -414,7 +414,7 @@
         "level": 90,
         "res": 10
       },
-      "featureCount": 26,
+      "featureCount": 28,
       "kind": "party",
       "origin": "mondstadt",
       "party": {
@@ -457,7 +457,7 @@
         "level": 90,
         "res": 10
       },
-      "featureCount": 25,
+      "featureCount": 28,
       "kind": "party",
       "origin": "mondstadt",
       "party": {
@@ -497,7 +497,7 @@
         "level": 90,
         "res": 10
       },
-      "featureCount": 27,
+      "featureCount": 29,
       "kind": "party",
       "origin": "liyue",
       "party": {

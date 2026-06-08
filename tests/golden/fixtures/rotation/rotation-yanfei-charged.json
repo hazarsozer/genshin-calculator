@@ -163,6 +163,24 @@
       "isReacted": false,
       "normal": 362.0462800158666
     },
+    "rotation.total_charged": {
+      "average": 498.04534464102676,
+      "category": "rotation",
+      "crit": 724.0925600317332,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 362.0462800158666
+    },
+    "rotation.total_pyro": {
+      "average": 498.04534464102676,
+      "category": "rotation",
+      "crit": 724.0925600317332,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 362.0462800158666
+    },
     "skill.skill_dmg": {
       "average": 5637.700257910778,
       "category": "skill",

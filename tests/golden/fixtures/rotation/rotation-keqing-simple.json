@@ -199,6 +199,24 @@
       "isReacted": false,
       "normal": 2624.3402246710743
     },
+    "rotation.total_normal": {
+      "average": 2987.5489117655516,
+      "category": "rotation",
+      "crit": 6256.4270956158425,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2624.3402246710743
+    },
+    "rotation.total_phys": {
+      "average": 2987.5489117655516,
+      "category": "rotation",
+      "crit": 6256.4270956158425,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2624.3402246710743
+    },
     "skill.keqing_skill_clap_dmg": {
       "average": 2221.595750147523,
       "category": "skill",

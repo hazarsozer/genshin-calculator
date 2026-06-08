@@ -136,6 +136,24 @@
       "isReacted": false,
       "normal": 4650.6237109513895
     },
+    "rotation.total_charged": {
+      "average": 6397.584001733168,
+      "category": "rotation",
+      "crit": 9301.247421902779,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 4650.6237109513895
+    },
+    "rotation.total_hydro": {
+      "average": 6397.584001733168,
+      "category": "rotation",
+      "crit": 9301.247421902779,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 4650.6237109513895
+    },
     "skill.dot_dmg": {
       "average": 1251.7388626357572,
       "category": "skill",
