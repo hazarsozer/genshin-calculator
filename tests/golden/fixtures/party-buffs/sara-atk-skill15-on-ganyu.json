@@ -1,0 +1,255 @@
+{
+  "element": "cryo",
+  "features": {
+    "attack.aimed": {
+      "average": 1703.407064203128,
+      "category": "attack",
+      "crit": 3567.219291163262,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1496.316816763113
+    },
+    "attack.charged_aimed": {
+      "average": 4239.066991608614,
+      "category": "attack",
+      "crit": 8877.315274064422,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3723.706071335747
+    },
+    "attack.ganyu_frostflake": {
+      "average": 4375.811088112118,
+      "category": "attack",
+      "crit": 9163.68028290521,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3843.825622023997
+    },
+    "attack.ganyu_frostflake_bloom": {
+      "average": 7438.878849790601,
+      "category": "attack",
+      "crit": 15578.256480938857,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 6534.503557440795
+    },
+    "attack.normal_hit_1": {
+      "average": 1150.3007704148183,
+      "category": "attack",
+      "crit": 2408.922203679662,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1010.4539444965022
+    },
+    "attack.normal_hit_2": {
+      "average": 1290.5813521727227,
+      "category": "attack",
+      "crit": 2702.693204128401,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1133.6800352887585
+    },
+    "attack.normal_hit_3": {
+      "average": 1649.0761722207017,
+      "category": "attack",
+      "crit": 3453.441316386291,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1448.591156202303
+    },
+    "attack.normal_hit_4": {
+      "average": 1649.0761722207017,
+      "category": "attack",
+      "crit": 3453.441316386291,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1448.591156202303
+    },
+    "attack.normal_hit_5": {
+      "average": 1748.8312525818785,
+      "category": "attack",
+      "crit": 3662.3451389276165,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1536.218598543463
+    },
+    "attack.normal_hit_6": {
+      "average": 2088.621995062136,
+      "category": "attack",
+      "crit": 4373.923784459007,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1834.6995740180396
+    },
+    "attack.plunge": {
+      "average": 1912.803665925562,
+      "category": "attack",
+      "crit": 4005.7307972299195,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1680.2562068917446
+    },
+    "attack.plunge_high": {
+      "average": 4777.3776789399935,
+      "category": "attack",
+      "crit": 10004.627887028237,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4196.572100263522
+    },
+    "attack.plunge_low": {
+      "average": 3824.79682182319,
+      "category": "attack",
+      "crit": 8009.764250901691,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3359.8004408144675
+    },
+    "burst.burst_dmg": {
+      "average": 3396.38385456261,
+      "category": "burst",
+      "crit": 7112.595844410806,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2983.4714112461434
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.ganyu_lotus_hp": {
+      "average": 49729.094173440004,
+      "category": "skill",
+      "crit": 49729.094173440004,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 49729.094173440004
+    },
+    "skill.skill_dmg": {
+      "average": 5134.97658939019,
+      "category": "skill",
+      "crit": 10753.499814745444,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4510.696231017384
+    },
+    "stats.atk": {
+      "average": 3196.028913586896,
+      "category": "stats",
+      "crit": 3196.028913586896,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3196.028913586896
+    },
+    "stats.crit_dmg": {
+      "average": 138.4,
+      "category": "stats",
+      "crit": 138.4,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 138.4
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1506.2145834,
+      "category": "stats",
+      "crit": 1506.2145834,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1506.2145834
+    },
+    "stats.hp": {
+      "average": 23022.728784,
+      "category": "stats",
+      "crit": 23022.728784,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23022.728784
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Ganyu",
+  "repSlug": "ganyu",
+  "schema": 1,
+  "slug": "sara-atk-skill15-on-ganyu",
+  "weapon": "weapon_name.alley_hunter",
+  "weaponType": "bow"
+}

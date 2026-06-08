@@ -277,15 +277,22 @@ export const kujouSara: DbObjectChar = {
       { type: "boolean", name: "party.sara_tengu_juurai" },
     ],
     postEffects: [
-      // Tengu Juurai ATK battery: atk_base × skill atk_bonus (Sara.s2.p2), clamped at L10
-      // (raw PostEffectStats.maxLevelSetting:10). Baked ratio = L10 table value × 0.01.
-      // Sara.s2.p2 at L10 = 77.328 → ratio = 0.77328. Matches the maxLevelSetting idiom
-      // of Bennett party ATK battery (capped at burst L10 = 1.008).
-      // Source: raw/genshin_calc_pub/src/js/db/Char/Sara.js:408-421
+      // Tengu Juurai ATK battery: atk_base × skill atk_bonus (Sara.s2.p2), scaled with the
+      // BUFFER'S skill talent and clamped at L10 (raw PostEffectStats.maxLevelSetting:10).
+      // ratioFromTalent reads the buffer's skill setting (sara_char_skill_elemental, already
+      // lifted into the bag by the ConditionNumber above) so the buff scales below L10 instead
+      // of baking the L10 table value — the parity-audit found the baked-L10 form OVER-buffs
+      // teammates when Sara's skill < 10. multi:0.01 reproduces her getMulti(multi:0.01).
+      // Source: raw/genshin_calc_pub/src/js/db/Char/Sara.js:409-417
       {
         fromStat: "sara_atk_base",
         toStat: "atk",
-        ratio: SaraTalents.s2.p2.getValue(10) * 0.01,
+        ratioFromTalent: {
+          table: SaraTalents.s2.p2,
+          levelSetting: "sara_char_skill_elemental",
+          multi: 0.01,
+          maxLevelSetting: 10,
+        },
         conditions: [{ type: "boolean", name: "party.sara_tengu_juurai" }],
       } satisfies CharPostEffect,
     ],

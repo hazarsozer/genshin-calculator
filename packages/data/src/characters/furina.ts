@@ -359,21 +359,29 @@ export const furina: DbObjectChar = {
       // C3 "Rejoice…" +3 burst levels — deferred (moot under L10 cap; variant-rep pass).
     ],
     postEffects: [
-      // "Let the People Rejoice" fanfare → dmg_all% per stack, pinned at burst L10.
+      // "Let the People Rejoice" fanfare → dmg_all% per stack, scaled with the BUFFER'S burst
+      // talent and clamped at L10.
       // Raw: from:'party_furina_fanfare_stacks', maxBase:400, levelSetting:'furina_char_skill_burst',
       //      maxLevelSetting:10, percent:getAlias('burst.furina_fanfare_dmg_ratio','dmg_all').
-      // ratio = FurinaTalents.s3.p5.getValue(10) × 0.01 as raw percent = 0.25 × 0.01 = 0.0025?
-      //   No: our engine stores dmg_all as raw percent (not fraction) in the bag, and buildStats
-      //   emits /100 at output. The raw table value 0.25 IS the per-stack percent (already small);
-      //   isPercent divides by 100 in the raw bag → 0.0025/stack fraction. Our bag is percent
-      //   (not fraction), so ratio = 0.25 → bonus = stacks × 0.25 (percent units) → /100 = fraction.
+      // ratioFromTalent reads the buffer's burst setting (furina_char_skill_burst, already lifted
+      //   into the bag by the ConditionNumber above) so the per-stack dmg_all scales below L10
+      //   instead of baking the L10 table value — the parity-audit found the baked-L10 form
+      //   OVER-buffs teammates when Furina's burst < 10. multi:1 (getAlias has no getMulti fold).
+      //   Our engine stores dmg_all as raw percent (not fraction) in the bag and emits /100 at
+      //   output; the raw table value (0.25 at L10) IS the per-stack percent → bonus = stacks ×
+      //   ratio (percent units) → /100 = fraction. So multi stays 1 (no ×0.01).
       // Fanfare stacks gate: ConditionBoolean on name 'party_furina_fanfare_stacks' — truthy
       //   (Boolean(400)=true) when stacks are set.
       // healing_recv output DEFERRED (damage-inert, P3.5.2 scope).
       {
         fromStat: "party_furina_fanfare_stacks",
         toStat: "dmg_all",
-        ratio: FurinaTalents.s3.p5.getValue(10),  // 0.25 at L10
+        ratioFromTalent: {
+          table: FurinaTalents.s3.p5,
+          levelSetting: "furina_char_skill_burst",
+          multi: 1,
+          maxLevelSetting: 10,
+        },
         conditions: [{ type: "boolean", name: "party_furina_fanfare_stacks" }],
       },
     ],

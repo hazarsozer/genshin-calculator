@@ -483,9 +483,18 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       // Resolve ratio: talent-scaled (dynamic) or fixed constant.
       let ratio: number;
       if (effect.ratioFromTalent !== undefined) {
-        const { table, levelSetting, multi } = effect.ratioFromTalent;
-        // Mirror her PostEffect.getLevel: base || 1, then add _bonus and _bonus_2.
-        const base = (settings[levelSetting] as number | undefined) ?? 1;
+        const { table, levelSetting, multi, maxLevelSetting } = effect.ratioFromTalent;
+        // Mirror her PostEffect.getLevel (raw PostEffect.js:45-55) EXACTLY: base || 1, then
+        // clamp the BASE to maxLevelSetting (only when > 1), THEN add _bonus and _bonus_2.
+        // The clamp precedes the bonuses (her order: getLevel:48-50 clamps, 51-52 add), so a
+        // constellation talent boost can push the effective level past the cap — faithful to raw.
+        // Absent maxLevelSetting → no clamp (base-inert for Hu Tao / Mizuki / Iansan party buffs,
+        // whose raw post-effects set no maxLevelSetting). maxLevelSetting:10 on Bennett / Sara /
+        // Furina batteries pins the buffer-talent ratio at L10, scaling correctly for talent < 10.
+        let base = (settings[levelSetting] as number | undefined) ?? 1;
+        if (maxLevelSetting !== undefined && maxLevelSetting > 1) {
+          base = Math.min(base, maxLevelSetting);
+        }
         const bonus1 = (settings[`${levelSetting}_bonus`] as number | undefined) ?? 0;
         const bonus2 = (settings[`${levelSetting}_bonus_2`] as number | undefined) ?? 0;
         const effectiveLevel = base + bonus1 + bonus2;
