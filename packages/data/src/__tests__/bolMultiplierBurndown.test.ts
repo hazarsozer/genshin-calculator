@@ -25,7 +25,9 @@
  *     base-damage term `+ masque% × atk_total × bond_of_life` = +2.38 × atk × 0.5 (C0; the
  *     `bonusValues:[0, C1BonusScale=100]` C1 lever is OFF at C0). At BoL≥30 her normals ALSO infuse
  *     PYRO via a ConditionStatic{attack_infusion:'pyro'} subgated on BoL≥30 (Arlecchino.js:377-390);
- *     the fixture sets attack_infusion:'pyro' EXPLICITLY (the dump is a natural BoL≥30 build).
+ *     the fixture sets attack_infusion:'pyro' EXPLICITLY (belt-and-suspenders — since R4e the
+ *     port's `bolInfusion` boolean-value condition ALSO injects it idempotently at BoL≥30; the
+ *     explicit set is retained here for isolation clarity and is now redundant, not load-bearing).
  *     resolveElement reads settings.attack_infusion, and OUR port ALREADY reads it → our normals are
  *     pyro at this fixture too, so the RED delta isolates EXACTLY the missing masque term (NOT an
  *     element mismatch). Our port omits the masque char-level multiplier (characters/arlecchino.ts

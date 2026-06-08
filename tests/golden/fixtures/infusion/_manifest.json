@@ -1,0 +1,101 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Conditional attack-infusion (full-parity R4e) — a char's infusion ConditionBoolean publishes `attack_infusion:'<element>'` into the settings bag, which buildStats merges (Condition.js:290-305 conditionSettings → buildStats.ts:755-768,1068) and compileFeature.resolveElement reads (compileFeature.ts:175-186) so normal/charged/plunge resolve the infused element (the RES key flips physical→element ⇒ different damage). infusion-diluc (Dawn ON, mergeCharSettings diluc_dawn:true → pyro, raw Diluc.js:287-294 attack_infusion_pyro:1 collapsed to the single string + his A4 +20% pyro) gates the already-wired-but-untoggled SELF chain → GREEN-on-arrival (Part A coverage). infusion-arlecchino (added Part B) drives common.bond_of_life:50 (≥30) with NO hardcoded attack_infusion → her BoL≥30 ConditionStatic infuses pyro (raw Arlecchino.js:377-390) — RED before the port wires the BoL≥30 infusion condition, GREEN after (Part B: the real gap). Hu Tao EXCLUDED (her Paramita toggle also activates an un-ported HP→ATK postEffect → not infusion-isolatable); Chongyun teammate-infusion already covered GREEN by party-buffs (chongyun-cryoinfusion-on-eula).",
+    "id": "infusion"
+  },
+  "featureTotal": 58,
+  "itemCount": 2,
+  "items": [
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "fontain",
+      "party": {
+        "settings": {
+          "common.bond_of_life": 50
+        }
+      },
+      "repKey": "Arlecchino",
+      "repSlug": "arlecchino",
+      "resonanceElements": {},
+      "slug": "infusion-arlecchino",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "settings": {
+          "diluc_dawn": true
+        }
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {},
+      "slug": "infusion-diluc",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    }
+  ]
+}
