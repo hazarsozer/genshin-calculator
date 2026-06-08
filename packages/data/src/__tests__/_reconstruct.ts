@@ -30,6 +30,8 @@
 import { buildStats } from "../buildStats.js";
 import { compileCharacter } from "../loader.js";
 import type {
+  CharMultiplier,
+  CharPostEffect,
   CompiledFeature,
   Condition,
   DamageContext,
@@ -37,6 +39,7 @@ import type {
   DbObjectChar,
   DbObjectWeapon,
   EvalContext,
+  Feature,
   StatTableEntry,
 } from "@genshin/types";
 
@@ -122,21 +125,63 @@ export interface ReconstructResult {
 }
 
 /**
- * Reconstruct the port build (buildStats → compileCharacter) from already-resolved inputs,
- * exactly as goldenConfig.test.ts does per manifest entry:
- *   - weapon passive ON ⇒ extraConditions = weapon.conditions (else []);
- *   - artifactSets ⇒ setBonuses [{setKey,pieces}];
- *   - propagate buildStats' returned `settings` into compileCharacter (talent _bonus offsets).
+ * Reconstruct the port build (buildStats → compileCharacter) from already-resolved inputs.
+ *
+ * This MUST wire every equipped-object effect channel exactly as the armory consumer gate
+ * (`packages/data/src/__tests__/armory.test.ts`, which gates all 202 weapons + 55 sets green)
+ * does — otherwise the harness's port side silently drops weapon/set damage contributions and
+ * reports them as the PORT's divergence when the gap is in the reconstruction. The channels:
+ *
+ *   WEAPON (armory.test.ts:422,426,439-441 — weapons-r1/r5 path):
+ *     - weapon.conditions  → buildStats `extraConditions`  (UNCONDITIONAL — armory passes
+ *       `weapon.conditions ?? []` regardless of any toggle; always-on `ConditionStaticRefine`
+ *       HP%/DEF% passives — Homa/JadeCutter/KhajNisut — apply whenever the weapon is equipped,
+ *       exactly as her engine treats a static/nameless condition: always-on, no toggle to set).
+ *     - weapon.postEffects → buildStats `weaponPostEffects` (HP→ATK / crit-from-HP folds).
+ *     - weapon.features    → compileCharacter `extraFeatures`   (weapon damage procs).
+ *     - weapon.multipliers → compileCharacter `extraMultipliers` (Redhorn def→normal/charged).
+ *
+ *   SET (armory.test.ts:515,530-531 — sets-2pc/4pc path):
+ *     - set conditions resolve INTERNALLY in buildStats via `setBonuses` + `setRegistry`
+ *       (the piece-count gate + each condition's own gate) — NOT via extraConditions.
+ *     - set.features    → compileCharacter `extraFeatures`    (Ocean-Hued Clam's Foam).
+ *     - set.multipliers → compileCharacter `extraMultipliers` (Echoes' ValleyRite normal-DMG
+ *       variant). Each equipped set's slice is harvested from the registry and concatenated.
+ *
+ * Then propagate buildStats' returned `settings` into compileCharacter (talent _bonus offsets).
+ *
+ * `input.passiveOn` is retained on the interface for caller-signature stability but is no longer
+ * consulted: weapon.conditions are wired unconditionally to mirror armory (conditional passives
+ * still only fire when their own gate — a toggle in `settings` — holds, so OFF passives stay off).
  */
 export function reconstructPort(input: ReconstructInput): ReconstructResult {
-  const extraConditions: readonly Condition[] = input.passiveOn
-    ? (input.weapon.conditions ?? [])
-    : [];
-
   const setBonuses = Object.entries(input.artifactSets).map(([setKey, pieces]) => ({
     setKey,
     pieces,
   }));
+
+  // Harvest each EQUIPPED set's char-level effect slices from the registry (same objects
+  // buildStats resolves for conditions). Sets contribute features (Clam Foam) + multipliers
+  // (Echoes ValleyRite) into the SAME compileCharacter channels as the weapon's, exactly as
+  // armory's set path. A set absent from the registry contributes nothing (treated unported).
+  const equippedSets: readonly DbObjectArtifactSet[] = Object.keys(input.artifactSets)
+    .map((setKey) => input.setRegistry[setKey])
+    .filter((s): s is DbObjectArtifactSet => s !== undefined);
+
+  // WEAPON conditions are wired unconditionally (armory.test.ts:422), NOT gated on passiveOn.
+  const extraConditions: readonly Condition[] = input.weapon.conditions ?? [];
+
+  const weaponPostEffects: readonly CharPostEffect[] = input.weapon.postEffects ?? [];
+
+  // compileCharacter's char-level slices: the equipped weapon's + every equipped set's.
+  const extraFeatures: readonly Feature[] = [
+    ...(input.weapon.features ?? []),
+    ...equippedSets.flatMap((s) => s.features ?? []),
+  ];
+  const extraMultipliers: readonly CharMultiplier[] = [
+    ...(input.weapon.multipliers ?? []),
+    ...equippedSets.flatMap((s) => s.multipliers ?? []),
+  ];
 
   const { context, settings } = buildStats({
     char: input.char,
@@ -146,6 +191,7 @@ export function reconstructPort(input: ReconstructInput): ReconstructResult {
     enemy: { level: input.enemy.level, resistance: input.enemy.resistance },
     settings: input.settings,
     extraConditions,
+    weaponPostEffects,
     setBonuses,
     setRegistry: input.setRegistry,
     talentLevels: input.talents,
@@ -156,6 +202,8 @@ export function reconstructPort(input: ReconstructInput): ReconstructResult {
     talentLevels: input.talents,
     settings,
     charLevel: input.levels.charLevel,
+    extraFeatures,
+    extraMultipliers,
   });
 
   return { compiled, context };
