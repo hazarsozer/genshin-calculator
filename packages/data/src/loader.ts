@@ -105,7 +105,17 @@ export function compileCharacter(
   // null for an empty spec → no key added. Absent on every standard build → byte-identical
   // (the 58k damage goldens never set a rotation). Source: raw/.../CalcSet.js:453-459.
   if (ctx.rotation !== undefined) {
-    const rotationTotal = compileRotation(ctx.rotation, { compiled: out });
+    // The seam (Phase 5a reaction tags + Phase 3 condition overlays) re-derives the affected
+    // hits under merged settings; the base settings the overlay merges onto are `ctx.settings`.
+    // Both are forwarded straight from the caller — `compileCharacter` does not own the build,
+    // so a settings-changing rotation must be given a `rotationRecompile` closure (else any
+    // reaction/condition node throws rather than silently un-amplifying). A pure feature/repeat
+    // rotation needs neither.
+    const rotationTotal = compileRotation(ctx.rotation, {
+      compiled: out,
+      baseSettings: ctx.settings,
+      ...(ctx.rotationRecompile !== undefined ? { recompile: ctx.rotationRecompile } : {}),
+    });
     if (rotationTotal !== null) out["rotation.total"] = rotationTotal;
   }
   return out;

@@ -197,6 +197,31 @@ for (const item of manifest.items) {
       settings,
     });
 
+    // The recompile seam (Phase 5a reaction tags + Phase 3 condition overlays): re-derive
+    // {compiled, context} under fully-merged settings via a read-only buildStats +
+    // compileCharacter re-call. This is exactly how a real caller (loader.ts) would wire it —
+    // the mid-rotation settings change (per-node reaction, or a condition's diff) recompiles
+    // the affected hits, since her engine resolves reaction + stats at COMPILE time. The
+    // re-call must NOT pass `rotation` (no recursion — it only needs the feature map). A pure
+    // feature/repeat rep never invokes this; the reaction/condition reps do.
+    const rotationRecompile = (merged: Readonly<Record<string, unknown>>) => {
+      const { context: mergedContext } = buildStats({
+        char,
+        weaponStatTable: WEAPON_TABLE_BY_TYPE[char.weapon]!,
+        statBlock: STAT_BLOCK,
+        levels: LEVELS,
+        enemy: ENEMY,
+        settings: merged,
+      });
+      const mergedCompiled = compileCharacter(char, {
+        charElement: char.element,
+        talentLevels: TALENTS,
+        settings: merged,
+        charLevel: LEVELS.charLevel,
+      });
+      return { compiled: mergedCompiled, context: mergedContext };
+    };
+
     // Thread the reconstructed rotation spec as ctx.rotation → loader.ts composes the char's
     // per-feature triples into rotation.total. The spec is EXACTLY the one the oracle dumped.
     const compiled = compileCharacter(char, {
@@ -205,6 +230,7 @@ for (const item of manifest.items) {
       settings,
       charLevel: LEVELS.charLevel,
       rotation: item.party.rotation,
+      rotationRecompile,
     });
 
     const oracle = fixture.features["rotation.total"]!;
