@@ -15,16 +15,20 @@
  * NON-DAMAGE OUTPUTS:
  *   - `lyney_hat_hp` (FeaturePostEffectValue / PostEffectStatsHP — Grin-Malkin Hat HP)
  *     modelled as output:{kind:"static"} (P3.5.3): (attack.lyney_hat_hp talent/100)×hp_total.
- *   - `lyney_hp_regeneration` (FeatureHeal) — DEFERRED: stacksLeveling:'lyney_surplus_stacks'
- *     scales the heal by the Prop-Surplus stack count (0 at solo → fixture 0). Our engine has
- *     no pure-×stacks factor for a heal multiplier (scalingOffset is 1+perStack×stacks, not
- *     ×stacks), so a faithful "0 at 0 stacks" can't be expressed without an engine-ext. NEVER
- *     baked to 0. raw/genshin_calc_pub/src/js/db/Char/Lyney.js:341-351.
+ *   - `lyney_hp_regeneration` (FeatureHeal) — MODELLED (P3.5 lyney-surplus): output:{kind:"heal"},
+ *     one `hp` mult with `stacksFactor:{lyney_surplus_stacks, 5}` → 0.20 × hp_total ×
+ *     min(stacks,5) × (1 + healing…). The pure-×stacks factor is 0 at solo, so the BASE
+ *     stacks=0 fixture reads 0 (its outputCoverage row), non-zero only when the stacks are
+ *     baked. raw/genshin_calc_pub/src/js/db/Char/Lyney.js:341-352.
+ *
+ * STACKS-SCALED DAMAGE:
+ *   - skill_dmg's second multiplier `lyney_skill_dmg_bonus` (ATK-scaled) is `stacksLeveling:
+ *     'lyney_surplus_stacks'` → her pure-×stacks getStackMultiplier (0 at solo). MODELLED
+ *     (P3.5 lyney-surplus) as a 2nd `skill_dmg` mult with `stacksFactor:{lyney_surplus_stacks,
+ *     5}` → an additive base-damage term +s2.p2% × atk_total × min(stacks,5); 0 at the C0 /
+ *     settings:{} build, non-zero only when the stacks are baked. (Lyney.js:334-338)
  *
  * CONDITIONAL BONUSES — ALL OFF in the fixed C0 / settings:{} build, so none folded:
- *   - skill_dmg's second multiplier `lyney_skill_dmg_bonus` is `stacksLeveling:
- *     'lyney_surplus_stacks'` → 0 at 0 stacks. Modelled with the base multiplier
- *     (s2.p1) only; the stack term contributes 0. (Lyney.js:334-338)
  *   - A1 "Perilous Performance" +80% charged (ConditionBoolean toggle, off) — the
  *     second multiplier on `lyney_pyrotechnic_strike_dmg` is gated by it. (Lyney.js:292-299)
  *   - A4 "Conclusive Ovation" pyro DMG% (ConditionStaticLevel gated by all-pyro party
@@ -66,7 +70,11 @@ const talents: TalentResolver = {
       if (name === "spiritbreath_thorn_dmg")                return LyneyTalents.s1.p16;
     }
     if (talent === "skill") {
-      if (name === "skill_dmg") return LyneyTalents.s2.p1;
+      if (name === "skill_dmg")                return LyneyTalents.s2.p1;
+      // 2nd skill_dmg mult (lyney_skill_dmg_bonus, ATK-scaled, ×lyney_surplus_stacks). Lyney.js:334-338
+      if (name === "lyney_skill_dmg_bonus")    return LyneyTalents.s2.p2;
+      // HP-regen heal (hp*, ×lyney_surplus_stacks), level-flat [20]. Lyney.js:341-352
+      if (name === "lyney_hp_regeneration")    return LyneyTalents.s2.p3;
     }
     if (talent === "burst") {
       if (name === "burst_dmg")                    return LyneyTalents.s3.p1;
@@ -204,13 +212,23 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
   // --- Skill: Bewildering Lights (pyro) ---
-  // raw: FeatureDamageSkill skill_dmg. Second multiplier (lyney_skill_dmg_bonus) is
-  // stacksLeveling:'lyney_surplus_stacks' → 0 at 0 stacks; base term only. Lyney.js:326-340
+  // raw: FeatureDamageSkill skill_dmg, TWO multipliers (Lyney.js:326-340). The 2nd
+  // (lyney_skill_dmg_bonus, ATK-scaled default) is stacksLeveling:'lyney_surplus_stacks' →
+  // her pure-×stacks getStackMultiplier (Multiplier.js:196-211): an ADDITIVE base-damage term
+  // +s2.p2% × atk_total × min(lyney_surplus_stacks, 5). 0 at solo (stacks 0 → ×0); non-zero only
+  // when the stacks are baked. stacksFactor (the new base-inert field) ports it.
   {
     name: "skill_dmg",
     category: "skill",
     element: "pyro",
-    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") },
+      {
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.lyney_skill_dmg_bonus"),
+        stacksFactor: { setting: "lyney_surplus_stacks", maxStacks: 5 },
+      },
+    ],
   },
   // --- Burst: Wondrous Trickery / Miracle Parade (pyro) ---
   // raw: FeatureDamageBurst burst_dmg — Lyney.js:353-362
@@ -240,7 +258,25 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "char_skill_attack", values: talents.get("attack.lyney_hat_hp") },
     ],
   },
-  // lyney_hp_regeneration — DEFERRED (stacks-scaled heal, 0 at solo; see file header). NOT modelled here.
+  // --- Skill heal: HP Regeneration (hp*, ×lyney_surplus_stacks) ---
+  // raw: FeatureHeal lyney_hp_regeneration, ONE mult { scaling:'hp*', leveling:'char_skill_elemental',
+  // stacksLeveling:'lyney_surplus_stacks', values: s2.p3=[20] } → 0.20 × hp_total × min(stacks, 5) ×
+  // (1 + healing + healing_base + healing_recv) (Lyney.js:341-352). Non-BoL heal. `scaling:"hp"` →
+  // resolveStatKey → hp_total, matching her `hp*`. stacksFactor (the new base-inert field) supplies
+  // the pure-×stacks factor → 0 at solo (the BASE lyney.json stacks=0 fixture), non-zero at stacks 5.
+  {
+    name: "lyney_hp_regeneration",
+    category: "skill",
+    output: { kind: "heal" },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.lyney_hp_regeneration"),
+        stacksFactor: { setting: "lyney_surplus_stacks", maxStacks: 5 },
+      },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------

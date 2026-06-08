@@ -427,6 +427,18 @@ function baseDamageTerm(
   if (entry.bondOfLifeFactor) {
     factors.push(cStat("bond_of_life"));
   }
+  // Pure-×stacks factor — her FeatureMultiplier.getStackMultiplier pushes
+  // `CConst(min(settings[stacksLeveling] ?? 0, maxStacks))` into the multiplier's CMulti iff
+  // `stacksLeveling` is set (Multiplier.js:196-211,228-230), so the term becomes
+  // `talent% × scalingStat × min(stacks, maxStacks)`. A pure ×stacks (0 at 0 stacks), NOT the
+  // `1 + perStack×stacks` of scalingOffset. The two v5.8 users are both Lyney's Prop-Surplus stacks
+  // (his skill heal + skill_dmg's 2nd mult). Absent ⇒ no factor; and even when set, every existing
+  // build leaves the setting absent → cConst(0) → the term vanishes (base-inert).
+  if (entry.stacksFactor) {
+    const rawStacks = ctx.settings[entry.stacksFactor.setting];
+    const stacks = typeof rawStacks === "number" ? rawStacks : 0;
+    factors.push(cConst(Math.min(stacks, entry.stacksFactor.maxStacks)));
+  }
   let term: Block = cMulti(factors);
   // Flat additive term from FeatureMultiplierList (her CConst(getValueFlat)):
   // `(levelMult × stat) + flat` — the flat component is talent-level-indexed and added

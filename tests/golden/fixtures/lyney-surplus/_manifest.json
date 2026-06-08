@@ -1,0 +1,76 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Lyney's Prop-Surplus stacks (ConditionStacks{name:'lyney_surplus_stacks', maxStacks:5}, Lyney.js:374-380) scale TWO outputs via her pure-×stacks getStackMultiplier (Multiplier.js:196-211 → CConst(min(settings[stacksLeveling] ?? 0, maxStacks)) pushed into the term's CMulti iff stacksLeveling set, 0 at 0 stacks). HEAL skill.lyney_hp_regeneration (FeatureHeal, one mult {scaling hp*, leveling char_skill_elemental, stacksLeveling lyney_surplus_stacks, values s2.p3=[20]}) → 0.20×hp_total×min(stacks,5)×(1+healing+healing_base+healing_recv) (Lyney.js:341-352). SKILL-DMG skill_dmg's 2nd mult lyney_skill_dmg_bonus (ATK-default, leveling char_skill_elemental, stacksLeveling lyney_surplus_stacks, values s2.p2=95.76% @talent10) → additive base-damage term +s2.p2%×atk_total×min(stacks,5) (Lyney.js:334-338). Stacks self-generate (Prop Surplus); 0 at solo → BASE lyney.json heal=0 + skill_dmg base-only. This config bakes lyney_surplus_stacks:5 (max) via mergeCharSettings (a SELF char toggle, the Furina/Yelan stacks-rep channel) → BOTH outputs non-zero, isolating both gaps. One new base-inert FeatureMultiplierEntry.stacksFactor closes both; lyneySurplusBurndown burns them RED until the engine field + the lyney.ts un-defers land, then the heal (=0 at the BASE stacks=0 fixture) flips outputCoverage's lyney row green (the 100%-green milestone).",
+    "id": "lyney-surplus"
+  },
+  "featureTotal": 31,
+  "itemCount": 1,
+  "items": [
+    {
+      "derived": {
+        "party_elements_count_level": 1,
+        "party_elements_same_inc": 1,
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "settings": {
+          "lyney_surplus_stacks": 5
+        }
+      },
+      "repKey": "Lyney",
+      "repSlug": "lyney",
+      "resonanceElements": {},
+      "slug": "lyney-surplus",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    }
+  ]
+}
