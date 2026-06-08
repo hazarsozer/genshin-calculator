@@ -236,7 +236,7 @@ const features: readonly Feature[] = [
 // C3 "+3 to Hunter's Vigil (skill)". Raw cons[2] settings char_skill_elemental_bonus:3.
 // C4 "To Enshrine Tears...": ConditionStatic display-only (bond-of-life burst bonus shown) → SKIP.
 //    The C4 BoL → burst-DMG bonus is the PostEffectStats below (c4PostEffects), gated
-//    ConditionConstellation(4). (Distinct from the C4 BoL *heal* — DEFERRED, see L160-170.)
+//    ConditionConstellation(4). (Distinct from the BoL *heals* now ported above via bondOfLifeFactor.)
 // C5 "+3 to Last Lightfall (burst)". Raw cons[4] settings char_skill_burst_bonus:3.
 // C6 "And So Shall I Never Despair": ConditionBoolean toggle (crit_rate:10, crit_dmg:70) → SKIP (toggle).
 //    clorinde_glimbright_shade_dmg feature is cons-gated (ConditionConstellation 6) → ported above.

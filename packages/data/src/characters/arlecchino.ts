@@ -207,8 +207,12 @@ const features: readonly Feature[] = [
   // FeatureMultiplierBondOfLife adds treeBonus multiplier = bond_of_life stat.
   // At BoL=0 in the canonical build the HP term = 150% × HP × 0 = 0; subtractBoL term is also 0.
   // Only the ATK multiplier contributes (oracle = 150% × ATK_total = 3049.06).
-  // HP×BoL multiplier OMITTED — zero at the fixed build; engine has no FeatureMultiplierBondOfLife
-  // treeBonus concept. If BoL support is added in the future, port the second multiplier then.
+  // HP×BoL multiplier OMITTED — untested (no oracle for a BoL>0 burst-heal build). The
+  // `bondOfLifeFactor` engine field now EXISTS (added for the masque + Clorinde heals), but
+  // adding it here is NOT a clean fix: with only the single ATK multiplier + `subtractBoL`, at
+  // BoL>0 this port nets NEGATIVE (the −BoL×HP subtract with no counterbalancing +heal%×HP×BoL
+  // positive term). The ATK-only term is the honest, tested value (oracle = 150% × ATK_total at
+  // BoL=0). Port the HP×BoL multiplier when a BoL>0 burst-heal fixture exists (healing track).
   {
     name: "arlecchino_heal",
     category: "burst",
