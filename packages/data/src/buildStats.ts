@@ -386,6 +386,17 @@ export interface BuildInput {
    * `{ element, origin? }` members can safely omit this.
    */
   readonly partySlugResolver?: (slug: string) => DbObjectChar;
+  /**
+   * Optional cooking-buff (food) flat stats. Her Food subsystem (CalcObjectFood) is a
+   * PURE FLAT-STAT additive layer (3 slots {Attack,Defence,Potion}, NO conditions /
+   * postEffects / settings — raw/.../classes/CalcObject/Food.js:43-75): a selected food's
+   * `getStats(tier)` is `concat`'d into the bag in `CalcSet.getBaseStats`. These are
+   * already Aspirine-native bag keys (`atk`/`def`/`dmg_phys`/`hp_percent`/`crit_rate`/…),
+   * so they are merged RAW exactly like `statBlock` (processPercent later folds percent
+   * keys /100). The caller assembles them from `generated/foodTables.ts`'s `getFoodStats`.
+   * Absent / empty → `raw.concat({})` → byte-identical (base-safety invariant).
+   */
+  readonly food?: Readonly<Record<string, number>>;
 }
 
 /** One equipped artifact set: its registry key + how many pieces are worn. */
@@ -718,6 +729,11 @@ export function buildStats(input: BuildInput): BuildResult {
   // getBuildData applies these via the baseline-active conditions.
   if (input.char.baseStats) raw.concat(input.char.baseStats);
   raw.concat(input.statBlock);
+  // Cooking-buff (food) flat stats — RAW, concatenated exactly like the bonus block. Her
+  // CalcSet.getBaseStats `concat`s each food slot's getStats(tier) into the bag (a pure
+  // flat-stat additive layer; no conditions/postEffects/settings). Already-Aspirine-native
+  // keys → no GOOD translation. Absent → concat({}) → byte-identical (base-safety invariant).
+  raw.concat(input.food ?? {});
 
   // 2b. Apply the conditional layer — every active condition's contributed stats,
   // RAW, concatenated like the bonus block. Mirrors her CalcSet.getBaseStats loop
