@@ -1,19 +1,17 @@
 /**
  * assembleBuild — unit tests + end-to-end smoke.
  *
- * Validation note: there is NO oracle fixture for "5 real artifacts → stat bag"
- * because Aspirine's oracle deliberately equips artifacts with mainStat='' and
- * no substats (build-configs.mjs) to isolate set bonuses. This test is therefore
- * UNIT-VALIDATED — each stat sums correctly via the bijective GOOD↔Aspirine map,
- * and the assembled bag flows cleanly through buildStats → compileCharacter to
- * yield finite, sane damage numbers. No oracle match is asserted.
+ * assembleArtifactStats now DERIVES each main from the ported per-rarity/level Mainstats
+ * table and SNAPS each sub via the exact getPreciseValue dictionary (generated/
+ * artifactTables.ts), so the pieces below carry only RAW GOOD fields (rarity/level/slot/
+ * main-KEY/substat display rolls) — NO caller-supplied mainStatValue. The expected sums
+ * fold the table-derived main + the SNAPPED substat values (e.g. critRate_ 6.6 → 6.61,
+ * atk 19 → 19.45). The metric-for-metric golden floor under this path lives in
+ * assemblyGolden.test.ts (the `assembly` oracle config); this file stays a unit + smoke
+ * check of the sum/snap arithmetic and the end-to-end compose.
  *
- * Main-stat values used below are from Aspirine's Mainstats.js:
- *   5★ flower  @+20 hp        → 4780  (StatTableArtifact[4][20])
- *   5★ plume   @+20 atk       → 311   (StatTableArtifact[4][20])
- *   5★ sands   @+20 atk_      → 46.6  (StatTableArtifact[4][20])
- *   5★ goblet  @+20 pyro_dmg_ → 46.6  (StatTableArtifact[4][20])
- *   5★ circlet @+20 critDMG_  → 62.2  (StatTableArtifact[4][20])
+ * Main-stat values derived below are from Aspirine's Mainstats.js (5★ +20, idx 20):
+ *   flower hp 4780 / plume atk 311 / sands atk_ 46.6 / goblet pyro_dmg_ 46.6 / circlet critDMG_ 62.2.
  *
  * setKey values use the goodId (registry key) as documented in DbObjectArtifactSet:
  *   "CrimsonWitch" (GOOD: "CrimsonWitchOfFlames") — follows Aspirine's key.
@@ -45,7 +43,6 @@ const CRIMSON_FLOWER: Artifact = {
   rarity: 5,
   level: 20,
   mainStatKey: "hp",
-  mainStatValue: 4780,
   subStats: [
     { key: "atk_",     value: 5.8 },
     { key: "critRate_", value: 3.5 },
@@ -60,7 +57,6 @@ const CRIMSON_PLUME: Artifact = {
   rarity: 5,
   level: 20,
   mainStatKey: "atk",
-  mainStatValue: 311,
   subStats: [
     { key: "hp_",       value: 4.1  },
     { key: "critRate_", value: 3.9  },
@@ -75,7 +71,6 @@ const CRIMSON_SANDS: Artifact = {
   rarity: 5,
   level: 20,
   mainStatKey: "atk_",
-  mainStatValue: 46.6,
   subStats: [
     { key: "hp",        value: 508  },
     { key: "critRate_", value: 3.1  },
@@ -91,7 +86,6 @@ const SHIME_GOBLET: Artifact = {
   rarity: 5,
   level: 20,
   mainStatKey: "pyro_dmg_",
-  mainStatValue: 46.6,
   subStats: [
     { key: "hp_",       value: 4.7  },
     { key: "atk_",      value: 4.1  },
@@ -106,7 +100,6 @@ const CRIMSON_CIRCLET: Artifact = {
   rarity: 5,
   level: 20,
   mainStatKey: "critDMG_",
-  mainStatValue: 62.2,
   subStats: [
     { key: "hp",        value: 299  },
     { key: "atk",       value: 19   },
@@ -128,58 +121,59 @@ const FIVE_PIECES: readonly Artifact[] = [
 // ---------------------------------------------------------------------------
 
 describe("assembleArtifactStats", () => {
-  it("sums hp across flower main + relevant substats", () => {
+  it("derives hp from the 5★+20 flower-main table + snapped substats", () => {
     const bag = assembleArtifactStats(FIVE_PIECES);
-    // flower mainStatValue=4780 + CRIMSON_SANDS sub hp=508 + CRIMSON_CIRCLET sub hp=299
-    expect(bag["hp"]).toBeCloseTo(4780 + 508 + 299, 5);
+    // flower main (table 5★+20 hp)=4780 + sands sub hp 508→507.88 + circlet sub hp 299→298.75
+    expect(bag["hp"]).toBeCloseTo(4780 + 507.88 + 298.75, 5);
   });
 
-  it("sums atk (flat) across plume main + substats", () => {
+  it("derives atk (flat) from plume-main table + snapped substats", () => {
     const bag = assembleArtifactStats(FIVE_PIECES);
-    // plume mainStatValue=311 + flower sub atk=19 + circlet sub atk=19
-    expect(bag["atk"]).toBeCloseTo(311 + 19 + 19, 5);
+    // plume main (table)=311 + flower sub atk 19→19.45 + circlet sub atk 19→19.45
+    expect(bag["atk"]).toBeCloseTo(311 + 19.45 + 19.45, 5);
   });
 
-  it("sums atk_percent (%) correctly as whole numbers (no pre-divide)", () => {
+  it("derives atk_percent (%) as whole numbers (snapped, no pre-divide)", () => {
     const bag = assembleArtifactStats(FIVE_PIECES);
-    // sands main 46.6 + flower 5.8 + plume 5.8 + shime 4.1 + circlet 4.7
-    const expected = 46.6 + 5.8 + 5.8 + 4.1 + 4.7;
+    // sands main (table) 46.6 + snapped subs: flower 5.8→5.83 + plume 5.8→5.83 + shime 4.1→4.08 + circlet 4.7→4.66
+    const expected = 46.6 + 5.83 + 5.83 + 4.08 + 4.66;
     expect(bag["atk_percent"]).toBeCloseTo(expected, 5);
   });
 
-  it("maps pyro_dmg_ goblet main to dmg_pyro (Aspirine key)", () => {
+  it("maps pyro_dmg_ goblet main to dmg_pyro (Aspirine key, table-derived)", () => {
     const bag = assembleArtifactStats(FIVE_PIECES);
-    // only the goblet main contributes pyro dmg — 46.6
+    // only the goblet main contributes pyro dmg — table 5★+20 pyro_dmg_ = 46.6
     expect(bag["dmg_pyro"]).toBeCloseTo(46.6, 5);
   });
 
-  it("sums crit_dmg (%) from circlet main + all substat rolls", () => {
+  it("derives crit_dmg (%) from circlet-main table + snapped substat rolls", () => {
     const bag = assembleArtifactStats(FIVE_PIECES);
-    // circlet main 62.2 + flower 7.0 + plume 14.0 + sands 7.8 + shime 6.2
-    const expected = 62.2 + 7.0 + 14.0 + 7.8 + 6.2;
+    // circlet main (table) 62.2 + snapped subs: 7.0→6.99 + 14.0→13.985 + 7.8→7.77 + 6.2→6.22
+    const expected = 62.2 + 6.99 + 13.985 + 7.77 + 6.22;
     expect(bag["crit_dmg"]).toBeCloseTo(expected, 5);
   });
 
-  it("sums crit_rate from all substat rolls (no main-stat contributor)", () => {
+  it("sums snapped crit_rate from all substat rolls (no main-stat contributor)", () => {
     const bag = assembleArtifactStats(FIVE_PIECES);
-    // flower 3.5 + plume 3.9 + sands 3.1 + shime 3.5 + circlet 6.6
-    const expected = 3.5 + 3.9 + 3.1 + 3.5 + 6.6;
+    // snapped: flower 3.5→3.5 + plume 3.9→3.89 + sands 3.1→3.11 + shime 3.5→3.5 + circlet 6.6→6.61
+    const expected = 3.5 + 3.89 + 3.11 + 3.5 + 6.61;
     expect(bag["crit_rate"]).toBeCloseTo(expected, 5);
   });
 
-  it("sums elemental mastery from only the sands substat", () => {
+  it("snaps elemental mastery from only the sands substat", () => {
     const bag = assembleArtifactStats(FIVE_PIECES);
-    expect(bag["mastery"]).toBeCloseTo(21, 5);
+    // sands sub eleMas 21 → 20.98 (5★ snap)
+    expect(bag["mastery"]).toBeCloseTo(20.98, 5);
   });
 
-  it("sums hp_percent (%) from all substat rolls", () => {
+  it("sums snapped hp_percent (%) from all substat rolls", () => {
     const bag = assembleArtifactStats(FIVE_PIECES);
-    // plume 4.1 + shime 4.7
-    const expected = 4.1 + 4.7;
+    // plume 4.1→4.08 + shime 4.7→4.66
+    const expected = 4.08 + 4.66;
     expect(bag["hp_percent"]).toBeCloseTo(expected, 5);
   });
 
-  it("does not pre-divide percents (atk_percent stays 46.6, not 0.466)", () => {
+  it("does not pre-divide percents (atk_percent stays > 1, not a fraction)", () => {
     const bag = assembleArtifactStats(FIVE_PIECES);
     // Sanity: atk_percent should be a number > 1, never a fraction.
     expect(bag["atk_percent"]!).toBeGreaterThan(1);
@@ -191,13 +185,13 @@ describe("assembleArtifactStats", () => {
     expect(bag["recharge"]).toBeUndefined();
   });
 
-  it("single artifact (1-piece) sums correctly", () => {
+  it("single artifact (1-piece) derives + snaps correctly", () => {
     const bag = assembleArtifactStats([CRIMSON_FLOWER]);
-    expect(bag["hp"]).toBeCloseTo(4780, 5);
-    expect(bag["atk_percent"]).toBeCloseTo(5.8, 5);
-    expect(bag["crit_rate"]).toBeCloseTo(3.5, 5);
-    expect(bag["crit_dmg"]).toBeCloseTo(7.0, 5);
-    expect(bag["atk"]).toBeCloseTo(19, 5);
+    expect(bag["hp"]).toBeCloseTo(4780, 5);          // table main
+    expect(bag["atk_percent"]).toBeCloseTo(5.83, 5); // 5.8 → 5.83
+    expect(bag["crit_rate"]).toBeCloseTo(3.5, 5);    // 3.5 → 3.5 (dict-exact)
+    expect(bag["crit_dmg"]).toBeCloseTo(6.99, 5);    // 7.0 → 6.99
+    expect(bag["atk"]).toBeCloseTo(19.45, 5);        // 19 → 19.45
   });
 
   it("empty artifact list returns an empty bag", () => {
@@ -228,7 +222,6 @@ describe("detectSets", () => {
       rarity: 5 as const,
       level: 20,
       mainStatKey: "hp" as const,
-      mainStatValue: 4780,
       subStats: [],
     }));
     const sets = detectSets(fiveNoblesse);

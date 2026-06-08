@@ -1,0 +1,651 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Build-assembly golden floor (full-parity R2) — real-artifact → stat-block assembly, the one production input path with no oracle pressure (today's oracle equips EMPTY artifacts). Her Artifact.calcStats() (raw/.../classes/Artifact.js:27-46) DERIVES each piece's MAIN from the Mainstats per-rarity/level table (values[rarity-1].getValue(level), 0-INDEXED — StatTable/Artifact.js:6-12) and SNAPS each SUBSTAT via the getPreciseValue EXACT dictionary (preciseValues[rarity-1][value] || value — DbObject/Substat.js:8-13, NOT rounding). Our assembleArtifactStats trusts a caller mainStatValue + sums substats verbatim → table lookup + snap UNPORTED. 4 reps equip 5 real DB.__Artifact pieces under a FAKE set key (__assembly__, unregistered → NO 2pc/4pc bonus fires; calcStats ignores set), so the oracle output is a PURE function of artifact main+sub stats: assembly-hutao-5star (full 5★ +20, all 10 substat keys, all 5 main slots, incl. a snap dict-MISS passthrough eleMas 17), assembly-keqing-crit (recharge/mastery/crit_rate mains), assembly-4star (4★ +16 → rarity idx 3, 17-len row, 4★ dict), assembly-low-level (5★ +8 → 0-indexed getValue at a non-max index). partyRecord.artifacts records each piece's GOOD descriptor (rarity/level/slot/main-KEY/substat display rolls — NO values); assemblyGolden reconstructs, DERIVES via assembleArtifactStats, and asserts the lifted DAMAGE triples — RED until the derivation lands.",
+    "id": "assembly"
+  },
+  "featureTotal": 123,
+  "itemCount": 4,
+  "items": [
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "artifacts": [
+          {
+            "level": 16,
+            "mainStatKey": "hp",
+            "rarity": 4,
+            "setKey": "Adventurer",
+            "slot": "flower",
+            "subStats": [
+              {
+                "key": "atk_",
+                "value": 7
+              },
+              {
+                "key": "critRate_",
+                "value": 5
+              },
+              {
+                "key": "critDMG_",
+                "value": 10
+              },
+              {
+                "key": "atk",
+                "value": 11
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "mainStatKey": "atk",
+            "rarity": 4,
+            "setKey": "Berserker",
+            "slot": "plume",
+            "subStats": [
+              {
+                "key": "atk_",
+                "value": 13
+              },
+              {
+                "key": "critRate_",
+                "value": 9
+              },
+              {
+                "key": "critDMG_",
+                "value": 18
+              },
+              {
+                "key": "hp",
+                "value": 167
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "mainStatKey": "atk_",
+            "rarity": 4,
+            "setKey": "Exile",
+            "slot": "sands",
+            "subStats": [
+              {
+                "key": "hp_",
+                "value": 7
+              },
+              {
+                "key": "critRate_",
+                "value": 14
+              },
+              {
+                "key": "critDMG_",
+                "value": 23
+              },
+              {
+                "key": "eleMas",
+                "value": 13
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "mainStatKey": "pyro_dmg_",
+            "rarity": 4,
+            "setKey": "LuckyDog",
+            "slot": "goblet",
+            "subStats": [
+              {
+                "key": "def",
+                "value": 13
+              },
+              {
+                "key": "atk_",
+                "value": 14
+              },
+              {
+                "key": "critRate_",
+                "value": 9
+              },
+              {
+                "key": "atk",
+                "value": 12
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "mainStatKey": "critDMG_",
+            "rarity": 4,
+            "setKey": "Instructor",
+            "slot": "circlet",
+            "subStats": [
+              {
+                "key": "atk",
+                "value": 14
+              },
+              {
+                "key": "atk_",
+                "value": 20
+              },
+              {
+                "key": "critRate_",
+                "value": 10
+              },
+              {
+                "key": "eleMas",
+                "value": 15
+              }
+            ]
+          }
+        ]
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {},
+      "slug": "assembly-4star",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "artifacts": [
+          {
+            "level": 20,
+            "mainStatKey": "hp",
+            "rarity": 5,
+            "setKey": "Adventurer",
+            "slot": "flower",
+            "subStats": [
+              {
+                "key": "atk_",
+                "value": 14
+              },
+              {
+                "key": "critRate_",
+                "value": 7
+              },
+              {
+                "key": "critDMG_",
+                "value": 14
+              },
+              {
+                "key": "atk",
+                "value": 16
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "mainStatKey": "atk",
+            "rarity": 5,
+            "setKey": "Berserker",
+            "slot": "plume",
+            "subStats": [
+              {
+                "key": "hp_",
+                "value": 21
+              },
+              {
+                "key": "critRate_",
+                "value": 14
+              },
+              {
+                "key": "critDMG_",
+                "value": 21
+              },
+              {
+                "key": "hp",
+                "value": 209
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "mainStatKey": "atk_",
+            "rarity": 5,
+            "setKey": "Exile",
+            "slot": "sands",
+            "subStats": [
+              {
+                "key": "hp",
+                "value": 239
+              },
+              {
+                "key": "critRate_",
+                "value": 21
+              },
+              {
+                "key": "critDMG_",
+                "value": 28
+              },
+              {
+                "key": "eleMas",
+                "value": 16
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "mainStatKey": "pyro_dmg_",
+            "rarity": 5,
+            "setKey": "LuckyDog",
+            "slot": "goblet",
+            "subStats": [
+              {
+                "key": "def",
+                "value": 16
+              },
+              {
+                "key": "def_",
+                "value": 19
+              },
+              {
+                "key": "enerRech_",
+                "value": 11
+              },
+              {
+                "key": "atk_",
+                "value": 21
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "mainStatKey": "critDMG_",
+            "rarity": 5,
+            "setKey": "Instructor",
+            "slot": "circlet",
+            "subStats": [
+              {
+                "key": "hp",
+                "value": 269
+              },
+              {
+                "key": "atk",
+                "value": 18
+              },
+              {
+                "key": "atk_",
+                "value": 28
+              },
+              {
+                "key": "eleMas",
+                "value": 17
+              }
+            ]
+          }
+        ]
+      },
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "resonanceElements": {},
+      "slug": "assembly-hutao-5star",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "artifacts": [
+          {
+            "level": 20,
+            "mainStatKey": "hp",
+            "rarity": 5,
+            "setKey": "Adventurer",
+            "slot": "flower",
+            "subStats": [
+              {
+                "key": "atk_",
+                "value": 35
+              },
+              {
+                "key": "critRate_",
+                "value": 7
+              },
+              {
+                "key": "critDMG_",
+                "value": 14
+              },
+              {
+                "key": "atk",
+                "value": 19
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "mainStatKey": "atk",
+            "rarity": 5,
+            "setKey": "Berserker",
+            "slot": "plume",
+            "subStats": [
+              {
+                "key": "atk_",
+                "value": 14
+              },
+              {
+                "key": "critRate_",
+                "value": 14
+              },
+              {
+                "key": "critDMG_",
+                "value": 7
+              },
+              {
+                "key": "eleMas",
+                "value": 21
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "mainStatKey": "enerRech_",
+            "rarity": 5,
+            "setKey": "Exile",
+            "slot": "sands",
+            "subStats": [
+              {
+                "key": "atk_",
+                "value": 21
+              },
+              {
+                "key": "critRate_",
+                "value": 21
+              },
+              {
+                "key": "critDMG_",
+                "value": 21
+              },
+              {
+                "key": "atk",
+                "value": 14
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "mainStatKey": "eleMas",
+            "rarity": 5,
+            "setKey": "LuckyDog",
+            "slot": "goblet",
+            "subStats": [
+              {
+                "key": "atk_",
+                "value": 28
+              },
+              {
+                "key": "critRate_",
+                "value": 23
+              },
+              {
+                "key": "critDMG_",
+                "value": 28
+              },
+              {
+                "key": "hp_",
+                "value": 14
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "mainStatKey": "critRate_",
+            "rarity": 5,
+            "setKey": "Instructor",
+            "slot": "circlet",
+            "subStats": [
+              {
+                "key": "atk_",
+                "value": 14
+              },
+              {
+                "key": "critDMG_",
+                "value": 35
+              },
+              {
+                "key": "atk",
+                "value": 16
+              },
+              {
+                "key": "eleMas",
+                "value": 19
+              }
+            ]
+          }
+        ]
+      },
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "resonanceElements": {},
+      "slug": "assembly-keqing-crit",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "artifacts": [
+          {
+            "level": 8,
+            "mainStatKey": "hp",
+            "rarity": 5,
+            "setKey": "Adventurer",
+            "slot": "flower",
+            "subStats": [
+              {
+                "key": "atk_",
+                "value": 14
+              },
+              {
+                "key": "critRate_",
+                "value": 7
+              },
+              {
+                "key": "critDMG_",
+                "value": 7
+              },
+              {
+                "key": "atk",
+                "value": 16
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "mainStatKey": "atk",
+            "rarity": 5,
+            "setKey": "Berserker",
+            "slot": "plume",
+            "subStats": [
+              {
+                "key": "atk_",
+                "value": 21
+              },
+              {
+                "key": "critRate_",
+                "value": 14
+              },
+              {
+                "key": "critDMG_",
+                "value": 14
+              },
+              {
+                "key": "hp",
+                "value": 209
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "mainStatKey": "atk_",
+            "rarity": 5,
+            "setKey": "Exile",
+            "slot": "sands",
+            "subStats": [
+              {
+                "key": "critRate_",
+                "value": 21
+              },
+              {
+                "key": "critDMG_",
+                "value": 21
+              },
+              {
+                "key": "eleMas",
+                "value": 16
+              },
+              {
+                "key": "hp",
+                "value": 239
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "mainStatKey": "pyro_dmg_",
+            "rarity": 5,
+            "setKey": "LuckyDog",
+            "slot": "goblet",
+            "subStats": [
+              {
+                "key": "atk_",
+                "value": 28
+              },
+              {
+                "key": "critRate_",
+                "value": 23
+              },
+              {
+                "key": "critDMG_",
+                "value": 28
+              },
+              {
+                "key": "atk",
+                "value": 18
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "mainStatKey": "critDMG_",
+            "rarity": 5,
+            "setKey": "Instructor",
+            "slot": "circlet",
+            "subStats": [
+              {
+                "key": "atk_",
+                "value": 14
+              },
+              {
+                "key": "critRate_",
+                "value": 7
+              },
+              {
+                "key": "atk",
+                "value": 19
+              },
+              {
+                "key": "eleMas",
+                "value": 19
+              }
+            ]
+          }
+        ]
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {},
+      "slug": "assembly-low-level",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    }
+  ]
+}
