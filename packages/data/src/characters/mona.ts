@@ -161,13 +161,17 @@ const features: readonly Feature[] = [
   // --- C2 "Lunar Chain": on charged hit, 20% chance of another free charged hit.
   // raw: FeatureDamageCharged name:'mona_charged_hit', element:'hydro',
   //   same charged_hit talent, condition:ConditionConstellation({constellation:2}).
-  //   rotationHitCount:0.20 (display-only hit-count weighting — not part of our engine).
   //   FeatureDamageCharged → damageType:"charged". Mona.js:201-213.
+  //   rotationHitCount:C2ChargedProb/100 = 0.20 — her per-feature ROTATION weight: this hit
+  //   lands 0.2× per rotation cycle (the 20% proc chance), so compileRotation scales its whole
+  //   triple by 0.2 in rotation.total. It is APPLIED to the total (her Tree.js:83-90), NOT
+  //   display-only. Inert outside a rotation (and in all 58k damage goldens).
   {
     name: "mona_charged_hit",
     category: "attack",
     damageType: "charged",
     element: "hydro",
+    rotationHitMulti: 0.2,
     condition: { type: "constellation", constellation: 2 },
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }],
   },

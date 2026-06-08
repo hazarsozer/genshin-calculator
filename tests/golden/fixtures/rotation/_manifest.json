@@ -37,11 +37,11 @@
     }
   },
   "config": {
-    "description": "Rotation subsystem (full-parity R3, the capstone — ALL node types: feature/repeat/reaction/condition/uptime). A rotation is a tree of nodes composing already-gated per-hit DAMAGE features into a sequence; its rotation.total output is THREE independent componentwise accumulators (Tree.js:36-44,110-136): total_normal=Σ count·perFeatureNormal, total_crit=Σ count·perFeatureCrit, total_average=Σ count·perFeatureAverage (each hit blended AT ITS OWN crit rate, THEN summed — NEVER blend(total_normal,total_crit) at one rate). build.setRotation(new DB.__Rotation({items})) (CalcSet.js:173) → getFeaturesList calls compileRotation() (CalcSet.js:453-459) → getFeaturesHash keys it rotation.total → FeatureRotation.getResult dumps a normal {normal,crit,average} triple (category rotation). 9 reps: rotation-fischl-mixed-crit (Fischl, enemy_weak_shot ON: charged_aimed [electro AIMED → 100% crit] + normal_hit_1×5 [physical → ~5% crit] — the crit rates DIFFER, so avg=blend(Σnormal,Σcrit) fails: THE mixed-crit guard) / rotation-keqing-simple (Keqing normal_hit_1×3, a simple count>1 sequence) / rotation-fischl-repeat (repeat ×3 of [normal_hit_1] — repeated block == 3× single) / rotation-fischl-mixed-block (charged_aimed + repeat×2[normal_hit_1] + aimed, weak_shot ON — reorderItems defers the repeat after loose features but the SUM is order-independent) / rotation-mona-vaporize (skill.explosion_dmg reaction:2 + normal_hit_1 — per-node reaction tag amplifies ONLY the tagged hit) / rotation-hutao-condition (normal_hit_1, condition(paramita), normal_hit_1 — mid-rotation overlay buffs the 2nd hit only) / rotation-hutao-uptime-{50,75,100} (uptime blend base·(1−p)+buffed·p, base=normal, buffed=paramita-infused normal; p=50 the genuine blend, p=75 NON-symmetric catches p↔1−p swap, p=100 endpoint locks the percent<100 guard). rotationBurndown reconstructs each spec from partyRecord.rotation, compiles via compileRotation, asserts rotation.total normal/crit/avg within 0.1.",
+    "description": "Rotation subsystem (full-parity R3, the capstone — ALL node types: feature/repeat/reaction/condition/uptime). A rotation is a tree of nodes composing already-gated per-hit DAMAGE features into a sequence; its rotation.total output is THREE independent componentwise accumulators (Tree.js:36-44,110-136): total_normal=Σ count·perFeatureNormal, total_crit=Σ count·perFeatureCrit, total_average=Σ count·perFeatureAverage (each hit blended AT ITS OWN crit rate, THEN summed — NEVER blend(total_normal,total_crit) at one rate). build.setRotation(new DB.__Rotation({items})) (CalcSet.js:173) → getFeaturesList calls compileRotation() (CalcSet.js:453-459) → getFeaturesHash keys it rotation.total → FeatureRotation.getResult dumps a normal {normal,crit,average} triple (category rotation). 9 reps: rotation-fischl-mixed-crit (Fischl, enemy_weak_shot ON: charged_aimed [electro AIMED → 100% crit] + normal_hit_1×5 [physical → ~5% crit] — the crit rates DIFFER, so avg=blend(Σnormal,Σcrit) fails: THE mixed-crit guard) / rotation-keqing-simple (Keqing normal_hit_1×3, a simple count>1 sequence) / rotation-fischl-repeat (repeat ×3 of [normal_hit_1] — repeated block == 3× single) / rotation-fischl-mixed-block (charged_aimed + repeat×2[normal_hit_1] + aimed, weak_shot ON — reorderItems defers the repeat after loose features but the SUM is order-independent) / rotation-mona-vaporize (skill.explosion_dmg reaction:2 + normal_hit_1 — per-node reaction tag amplifies ONLY the tagged hit) / rotation-hutao-condition (normal_hit_1, condition(paramita), normal_hit_1 — mid-rotation overlay buffs the 2nd hit only) / rotation-hutao-uptime-{50,75,100} (uptime blend base·(1−p)+buffed·p, base=normal, buffed=paramita-infused normal; p=50 the genuine blend, p=75 NON-symmetric catches p↔1−p swap, p=100 endpoint locks the percent<100 guard) / rotation-mona-c2-hitmulti (Mona C2: mona_charged_hit [rotationHitCount 0.2] + un-weighted charged_hit — IDENTICAL hits, so total = 1.2× a single charged hit, isolating the scalar hitMulti; a no-op weight 1 → 2× → RED). rotationBurndown reconstructs each spec from partyRecord.rotation, compiles via compileRotation, asserts rotation.total normal/crit/avg within 0.1.",
     "id": "rotation"
   },
-  "featureTotal": 278,
-  "itemCount": 9,
+  "featureTotal": 304,
+  "itemCount": 10,
   "items": [
     {
       "derived": {
@@ -403,6 +403,49 @@
       "weapon": {
         "name": "weapon_name.the_alley_flash",
         "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "rotation": {
+          "items": [
+            {
+              "count": 1,
+              "feature": "attack.mona_charged_hit",
+              "reaction": 0,
+              "type": "feature"
+            },
+            {
+              "count": 1,
+              "feature": "attack.charged_hit",
+              "reaction": 0,
+              "type": "feature"
+            }
+          ]
+        },
+        "settings": {
+          "char_constellation": 2
+        }
+      },
+      "repKey": "Mona",
+      "repSlug": "mona",
+      "resonanceElements": {},
+      "slug": "rotation-mona-c2-hitmulti",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
       }
     },
     {

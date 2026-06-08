@@ -44,6 +44,11 @@ export function compileCharacter(
   ctx: CompileContext
 ): Readonly<Record<string, CompiledFeature>> {
   const out: Record<string, CompiledFeature> = {};
+  // Per-feature DECLARATIONS keyed identically to `out` — the rotation compiler reads
+  // per-feature metadata (her `Feature2.rotationHitCount`) from these (the compiled closure
+  // does not expose it). Built in lockstep with `out` (same list, same gate) so a node's
+  // declaration always matches its compiled closure. Only consumed when `ctx.rotation` is set.
+  const featureDecls: Record<string, Feature> = {};
 
   // Char-level ("targeted") multipliers — her `char.getMultipliers()`. Only the
   // entries carrying a `target` are char-level multipliers that match-by-damage-type
@@ -95,7 +100,9 @@ export function compileCharacter(
     // base build (no base feature sets `.condition`) → the C0 golden suite is untouched.
     if (feature.condition !== undefined && !evaluate(feature.condition, ctx.settings)) continue;
     const block = compileFeature(feature, featureCtx);
-    out[featureKey(feature)] = compile(block);
+    const key = featureKey(feature);
+    out[key] = compile(block);
+    featureDecls[key] = feature;
   }
 
   // Rotation total (R3) — ONE optional branch: when a rotation spec is supplied, compose
@@ -113,6 +120,7 @@ export function compileCharacter(
     // rotation needs neither.
     const rotationTotal = compileRotation(ctx.rotation, {
       compiled: out,
+      features: featureDecls,
       baseSettings: ctx.settings,
       ...(ctx.rotationRecompile !== undefined ? { recompile: ctx.rotationRecompile } : {}),
     });

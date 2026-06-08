@@ -14,8 +14,14 @@
  * when hits have different crit rates (e.g. a 100%-crit aimed shot beside a 5%-crit
  * normal). No crit-rate re-exposure is needed — the per-feature `avg` already carries it.
  *
- * `hitMulti` defaults to 1 (the 4 overrides — Yoimiya/Mona/Yanfei/Clam — are OUT of this
- * dispatch). The `feature` and `repeat` node types compose under the SINGLE base settings;
+ * A feature's rotation weight is her `Feature2.rotationHitCount` (default 1): a SCALAR `!= 1`
+ * scales the whole hit triple (it enters `varNormal`, in which all three accumulators are
+ * linear — Tree.js:83-90). The scalar overrides (Mona's C2 `mona_charged_hit` = 0.2; Yoimiya's
+ * C6 `yoimiya_normal_hit_*` = 0.5) are read from each feature's `rotationHitMulti` field and
+ * folded into `factor` here. Yanfei's OBJECT-branch crit-rate weight is a SEPARATE follow-up
+ * (the unclamped crit-rate sum); Ocean-Hued-Clam / Arlecchino override only `getDisplay…` (a
+ * display-path weight, no gateable output) → OUT. The `feature` and `repeat` node types compose
+ * under the SINGLE base settings;
  * `reaction`-tagged feature nodes (Phase 5a) and `condition` overlays (Phase 3) DO change
  * the settings mid-rotation, so they recompile the affected features under MERGED settings
  * via the `recompile` seam (her engine resolves reaction + stats at COMPILE time, so a
@@ -29,7 +35,9 @@
  *   - `rotation.total_<element>/<type>` filtered sub-totals (Phase 5b) are NOT emitted; only the
  *     bare `rotation.total` is. Her engine computes them by re-running under `settings.rotation_include`
  *     (Feature2/Rotation.js:52,139-195), a separate dump — a future small pass.
- *   - `hitMulti` is fixed at 1 (the 4 `rotationHitCount`/method overrides — Yoimiya/Mona-C2/Yanfei/Clam).
+ *   - The OBJECT branch of her `getRotationHitMiltiplier` (Yanfei's crit-rate-weighted charged hits)
+ *     is NOT modelled — only the SCALAR `rotationHitMulti` is folded (Yoimiya 0.5 / Mona 0.2). A
+ *     follow-up adds the unclamped crit-rate weight. Clam/Arlecchino are display-only (OUT).
  *   - `condition` covers the settings-handle case (re-derive under merged settings); a postEffect-only
  *     condition with no settings diff is a no-op here (see the FIDELITY NOTE on `applyCondition`).
  *
@@ -44,6 +52,7 @@ import type {
   CompiledFeature,
   DamageContext,
   DamageResult,
+  Feature,
   Rotation,
   RotationConditionNode,
   RotationNode,
@@ -89,6 +98,16 @@ export interface RecompiledSlice {
 export interface RotationDeps {
   readonly compiled: Readonly<Record<string, CompiledFeature>>;
   /**
+   * The char's per-feature DECLARATIONS, keyed by the SAME full name as `compiled`
+   * (`attack.normal_hit_1`). Carries the per-feature rotation metadata `compileRotation`
+   * needs but the compiled closure does not expose — currently only `rotationHitMulti`
+   * (her `Feature2.rotationHitCount`, folded into a feature node's weight). Built in the
+   * loader from the EXACT same feature list it compiles (so the map and `compiled` are in
+   * lockstep). Absent ⇒ every feature defaults to weight 1 (base-inert: the existing
+   * `rotation.total` reps that pass no map are unchanged).
+   */
+  readonly features?: Readonly<Record<string, Feature>>;
+  /**
    * The settings the base build was compiled under — the substrate a reaction tag /
    * condition overlay merges onto (her `data.settings`). REQUIRED whenever `recompile` is
    * supplied (the seam recompiles against the COMPLETE merged object, so the base must be
@@ -130,6 +149,12 @@ interface RotationCtx {
   ) => RecompiledSlice;
   /** Memo of recompiled slices keyed by a stable settings string (avoids re-deriving). */
   readonly cache: Map<string, RecompiledSlice>;
+  /**
+   * Per-feature declarations keyed by full name (see RotationDeps.features) — the source of
+   * a feature node's `rotationHitMulti` weight. Block-invariant (the same map for every node),
+   * so it lives here rather than as a recursion-frame parameter. Empty when absent → weight 1.
+   */
+  readonly features: Readonly<Record<string, Feature>>;
 }
 
 /** A stable key for a merged-settings object (sorted keys → deterministic memo lookup). */
@@ -162,10 +187,11 @@ function resolveSlice(
 }
 
 /**
- * Add one feature's triple into `total` at `factor` (= weight × count), reading the closure
- * from `slice.compiled` and evaluating against `slice.context`. An unresolved feature name
- * contributes nothing — her `getActiveFeature` returns undefined and the node is skipped
- * (Tree.js:62-64). `hitMulti` defaults to 1 (the 4 overrides are out of this dispatch).
+ * Add one feature's triple into `total` at `factor` (= weight × count × rotationHitMulti),
+ * reading the closure from `slice.compiled` and evaluating against `slice.context`. The
+ * `rotationHitMulti` scalar is already folded into `factor` by the caller. An unresolved
+ * feature name contributes nothing — her `getActiveFeature` returns undefined and the node
+ * is skipped (Tree.js:62-64).
  */
 function addFeature(
   slice: RecompiledSlice,
@@ -238,7 +264,13 @@ function accumulateBlock(
 
   for (const node of ordered) {
     if (node.type === "feature") {
-      const factor = weight * node.count;
+      // Her `Feature2.rotationHitCount` (default 1) — a SCALAR weight on the hit, folded
+      // into `factor` BEFORE the reaction/non-reaction split so a REACTED weighted hit gets
+      // it too (Tree.js:83-90: the multiplier enters `varNormal`, in which all three
+      // accumulators are linear, so it scales the whole triple). Looked up from the feature's
+      // declaration; absent ⇒ 1 (base-inert).
+      const hitMulti = ctx.features[node.feature]?.rotationHitMulti ?? 1;
+      const factor = weight * node.count * hitMulti;
       const reaction = REACTION_INDEX[node.reaction ?? 0];
       if (reaction !== undefined && reaction !== "") {
         // Reaction-tagged (Phase 5a): compile THIS hit under {...activeSettings, reaction}.
@@ -423,7 +455,7 @@ export function compileRotation(
   deps: RotationDeps
 ): CompiledFeature | null {
   if (rotation.items.length === 0) return null;
-  const { compiled, recompile, baseSettings = {} } = deps;
+  const { compiled, recompile, baseSettings = {}, features = {} } = deps;
   return (context: DamageContext): DamageResult => {
     const base: RecompiledSlice = { compiled, context };
     // Conditional-spread `recompile` (omit when absent) — `exactOptionalPropertyTypes`
@@ -431,6 +463,7 @@ export function compileRotation(
     // settings-changing node (reaction tag / condition) throws in `resolveSlice`.
     const ctx: RotationCtx = {
       cache: new Map(),
+      features,
       ...(recompile !== undefined ? { recompile } : {}),
     };
     const total: RotationTotal = { normal: 0, crit: 0, avg: 0 };

@@ -24,6 +24,17 @@
  *   - A1 "Tricks of the Trouble-Maker" = ConditionStacks (stacking dmg_pyro, OFF at 0 stacks).
  *   - A4 "Summer Night's Dawn" = ConditionStatic text-only / party-gated → no solo stat.
  *
+ * ROTATION hitMulti (her Feature2.rotationHitCount = 0.5 on the 7 yoimiya_normal_hit_* features,
+ * Yoimiya.js:222,245,262,277,292,315,332) is DEFERRED with those features. They cannot be added
+ * faithfully yet: each is gated by `c6cond` (ConditionAnd[yoimiya_teika_enshou toggle, C6]), so it
+ * exists ONLY when the toggle is ON — and with the toggle ON their FeatureMultiplierYoimiya adds a
+ * multiplicative (1 + Niwabi-bonus s2.p4/100) layer (Multiplier/Yoimiya.js:16-33) PLUS a
+ * `scalingSource: constellation6` 0.6 scale, NEITHER of which the port's FeatureMultiplierEntry
+ * models (feature.ts: the string-stat (1+stat) bonus is "not yet modelled"). Porting them with
+ * plain multipliers would produce wrong per-feature triples — so they belong to the cons-feature /
+ * Niwabi engine pass. Once they land, set `rotationHitMulti: 0.5` on each (the scalar primitive +
+ * its Mona-0.2 oracle gate already shipped). The Mona C2 rep proves the rotation plumbing.
+ *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Yoimiya.js
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Yoimiya.js (toggle-gated bonus)
