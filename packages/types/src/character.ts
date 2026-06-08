@@ -256,9 +256,9 @@ export interface CharPostEffect {
     /**
      * Her `PostEffect.maxLevelSetting`: when `> 1`, the BASE talent level is clamped
      * to this cap BEFORE the `_bonus` offsets are added (raw getLevel:48-50). Omit when
-     * the raw post-effect sets no `maxLevelSetting` (e.g. Hu Tao / Mizuki / Iansan party
-     * batteries) — the eval then applies no clamp, exactly as her engine. Bennett / Sara /
-     * Furina party batteries set `maxLevelSetting: 10` (raw Bennet.js:692, Sara.js:411,
+     * the raw post-effect sets no `maxLevelSetting` (e.g. Hu Tao / Mizuki self-buffs +
+     * Iansan's party buff) — the eval then applies no clamp, exactly as her engine. Bennett /
+     * Sara / Furina party batteries set `maxLevelSetting: 10` (raw Bennet.js:692, Sara.js:411,
      * Furina.js:624).
      */
     readonly maxLevelSetting?: number;

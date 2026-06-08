@@ -488,9 +488,9 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
         // clamp the BASE to maxLevelSetting (only when > 1), THEN add _bonus and _bonus_2.
         // The clamp precedes the bonuses (her order: getLevel:48-50 clamps, 51-52 add), so a
         // constellation talent boost can push the effective level past the cap — faithful to raw.
-        // Absent maxLevelSetting → no clamp (base-inert for Hu Tao / Mizuki / Iansan party buffs,
-        // whose raw post-effects set no maxLevelSetting). maxLevelSetting:10 on Bennett / Sara /
-        // Furina batteries pins the buffer-talent ratio at L10, scaling correctly for talent < 10.
+        // Absent maxLevelSetting → no clamp (base-inert for Hu Tao / Mizuki self-buffs + Iansan's
+        // party buff, whose raw post-effects set no maxLevelSetting). maxLevelSetting:10 on Bennett /
+        // Sara / Furina caps the buffer-talent ratio at L10 (her clamp) while scaling for talent < 10.
         let base = (settings[levelSetting] as number | undefined) ?? 1;
         if (maxLevelSetting !== undefined && maxLevelSetting > 1) {
           base = Math.min(base, maxLevelSetting);
