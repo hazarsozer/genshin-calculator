@@ -79,6 +79,15 @@ export type {
 } from "./feature.js";
 
 export type {
+  Rotation,
+  RotationNode,
+  RotationFeatureNode,
+  RotationRepeatNode,
+  RotationConditionNode,
+  RotationUptimeNode,
+} from "./rotation.js";
+
+export type {
   EvalContext,
   ConditionStats,
   ConditionSettings,

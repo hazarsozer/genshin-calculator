@@ -59,12 +59,15 @@ import {
 } from "@genshin/core";
 import type {
   CharMultiplier,
+  CompiledFeature,
+  DamageContext,
   Element,
   EvalContext,
   Feature,
   FeatureMultiplierEntry,
   FeatureOutput,
   FeatureReaction,
+  Rotation,
 } from "@genshin/types";
 import { reactionShieldValues } from "./generated/elementScale.js";
 
@@ -153,6 +156,29 @@ export interface CompileContext {
    * multipliers only.
    */
   readonly extraMultipliers?: readonly CharMultiplier[];
+  /**
+   * OPTIONAL rotation spec (R3). When present, `compileCharacter` composes the char's
+   * per-feature damage triples into a `rotation.total` output (her `compileRotation` →
+   * `FeatureRotation`). Absent on every standard build → no rotation output is emitted
+   * (the branch is never taken; the 58k damage goldens are byte-identical). The
+   * composition reads the SAME compiled feature closures the char already produces — it
+   * adds no engine-core surface.
+   */
+  readonly rotation?: Rotation;
+  /**
+   * OPTIONAL rotation recompile seam (R3 Phase 5a reaction-tagging + Phase 3 condition
+   * overlay). A rotation whose nodes change settings mid-sequence — a `reaction>0` feature
+   * tag or any `condition` node — needs the affected hits RECOMPILED under merged settings
+   * (her engine resolves reaction + stats at compile time). The caller supplies a closure
+   * that re-derives `{compiled, context}` under fully-merged settings (a read-only
+   * `buildStats` + `compileCharacter` re-call). `compileCharacter` forwards it (+ `settings`
+   * as the base) to `compileRotation`. Absent → a pure `feature`/`repeat` rotation still
+   * composes; a settings-changing node without it throws (never a silent un-amplified
+   * fallthrough). Out of every standard build → no rotation, no seam, byte-identical goldens.
+   */
+  readonly rotationRecompile?: (
+    mergedSettings: Readonly<Record<string, unknown>>
+  ) => { compiled: Readonly<Record<string, CompiledFeature>>; context: DamageContext };
 }
 
 /**
