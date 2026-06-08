@@ -67,6 +67,7 @@ import type {
   FeatureMultiplierEntry,
   FeatureOutput,
   FeatureReaction,
+  RecompiledSlice,
   Rotation,
 } from "@genshin/types";
 import { reactionShieldValues } from "./generated/elementScale.js";
@@ -180,11 +181,7 @@ export interface CompileContext {
    */
   readonly rotationRecompile?: (
     mergedSettings: Readonly<Record<string, unknown>>
-  ) => {
-    compiled: Readonly<Record<string, CompiledFeature>>;
-    context: DamageContext;
-    settings: Readonly<Record<string, unknown>>;
-  };
+  ) => RecompiledSlice;
 }
 
 /**

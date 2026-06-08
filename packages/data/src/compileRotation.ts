@@ -57,6 +57,7 @@ import type {
   DamageContext,
   DamageResult,
   Feature,
+  RecompiledSlice,
   Rotation,
   RotationConditionNode,
   RotationNode,
@@ -67,30 +68,6 @@ interface RotationTotal {
   normal: number;
   crit: number;
   avg: number;
-}
-
-/**
- * A recompiled slice: the feature closures under some merged settings PLUS the
- * `DamageContext` (stat bag) they must be evaluated against, PLUS the fully-PROPAGATED settings
- * the slice was built under. The first two move together because a settings change can shift the
- * bag (a `condition` re-runs `buildStats`) AND the compiled closures (the amplifying factor /
- * infusion is baked at compile time). The `recompile` seam returns this bundle so the caller owns
- * the read-only re-derive (`buildStats` + `compileCharacter` under merged settings) and
- * `compileRotation` only composes triples. For a `reaction` tag the bag is unchanged (her
- * `buildStats` ignores `settings.reaction`), so `context` equals the base context; it is still
- * returned uniformly.
- *
- * `settings` is the PROPAGATED settings (post-`buildStats` condition-settings merge), NOT the raw
- * overlay the seam was called with. It is required for the T3 filtered-sub-total element bucketing:
- * a `condition`/`uptime` infusion overlay (Hu Tao Paramita) publishes `attack_infusion:'pyro'` only
- * through `buildStats`'s propagation, so the rotation's RAW overlay (`{hutao_paramita_papilio:true}`)
- * is insufficient to resolve the infused element — the resolver must read the slice's propagated
- * settings. The base slice's `settings` is `baseSettings` (already propagated by the caller).
- */
-export interface RecompiledSlice {
-  readonly compiled: Readonly<Record<string, CompiledFeature>>;
-  readonly context: DamageContext;
-  readonly settings: Readonly<Record<string, unknown>>;
 }
 
 /**

@@ -85,6 +85,7 @@ export type {
   RotationRepeatNode,
   RotationConditionNode,
   RotationUptimeNode,
+  RecompiledSlice,
 } from "./rotation.js";
 
 export type {
