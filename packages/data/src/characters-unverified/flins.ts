@@ -37,16 +37,27 @@ const lunarMultiFromAtk: CharPostEffect = {
   capValue: 0.14,
 };
 
-// A4 "Lunar Reflection": self EM buff = min(0.08 × atk_total, 160) at <C4 (0.10/220 at C4+; cons=0 here).
-// GCSim asc.go a4Init adds it as a self StatMod on EM. NOT reaction-only — it feeds the lunar EM factor
-// 6·EM/(EM+2000) on the DirectLunarCharged DIRECT hits too (the gate proved A4 is load-bearing for A).
-// Unconditional here (the gate build is ascension 6; the port carries no ascension gate, like the rest).
+// A4 "Lunar Reflection": self EM buff. Below C4: min(0.08 × atk_total, 160). GCSim asc.go a4Init adds it
+// as a self StatMod on EM, reading scale/cap from c4A4 (cons.go:145-150) — a REPLACEMENT at cons≥4
+// (0.10/220), not an additive bump. So the base is gated cons<4 (via `invert`) and the C4 upgrade is a
+// separate cons≥4 post-effect below. NOT reaction-only — it feeds the lunar EM factor 6·EM/(EM+2000) on
+// every Lunar hit (direct + reaction). Base-inert: at cons=0 cons<4 holds → the base fires identically.
 const a4MasteryFromAtk: CharPostEffect = {
   priority: 1,
   fromStat: "atk",
   toStat: "mastery",
   ratio: 0.08,
   capValue: 160,
+  conditions: [{ type: "constellation", constellation: 4, invert: true }], // cons<4
+};
+// C4 upgrades A4's EM scaling to 0.10 / 220 (cons.go c4A4). Fires only at cons≥4 (replaces the base above).
+const a4MasteryUpgraded: CharPostEffect = {
+  priority: 1,
+  fromStat: "atk",
+  toStat: "mastery",
+  ratio: 0.10,
+  capValue: 220,
+  conditions: [{ type: "constellation", constellation: 4 }], // cons≥4
 };
 
 const talents: TalentResolver = {
@@ -219,7 +230,7 @@ export const flins: DbObjectChar = {
   conditions: constellationConditions, // C4 +20% ATKP (cons≥4); C2 hit is a feature-level condition
   // lunarcharged_multi = min(0.00007×atk, 0.14) (base-DMG bonus) + A4 EM = min(0.08×atk, 160) — both feed
   // the DirectLunarCharged hits (the base bonus, and the lunar EM factor 6·EM/(EM+2000) respectively).
-  postEffects: [lunarMultiFromAtk, a4MasteryFromAtk],
+  postEffects: [lunarMultiFromAtk, a4MasteryFromAtk, a4MasteryUpgraded],
   // Models GCSim LunarChargeEnableKey=1 (asc.go:62) — enables the Lunar-Charged reaction proc.
   // Same flag Ineffa carries; suppresses the generic electrocharged contribution.
   lunarChargedActive: true,
