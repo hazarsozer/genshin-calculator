@@ -154,6 +154,26 @@ const features: readonly Feature[] = [
       critDmgKeys: LUNAR_CRIT_DMG_KEYS,
     },
   },
+  // --- Lunar-Charged reaction proc (lunarcharged variant, electro, level-scaled, crit-bearing) ---
+  // GCSim AttackTagReactionLunarCharge → 1.8 × CalcLunarChargedDmg (lunarcharged.go:125, reaction.go:19):
+  //   1.8 × (1 + 6·EM/(2000+EM) + react) × reactionBase(lvl) × (1 + lunarcharged_multi) × res, DEF ignored.
+  // Identical machinery to Ineffa's lunarcharged_contrubution; reuses lunarMultiFromAtk (base bonus) +
+  // a4MasteryFromAtk (EM=160) already on Flins (sub-project A). react=0 at C0/moonsign 1 (A1 → sub-project C).
+  // The _2/_12 penalty tiers are GCSim's multi-contributor TEAM mechanic (lcContributorMult), not a solo
+  // Flins output → deferred. ("contrubution" spelling mirrors the Ineffa precedent / her raw engine key.)
+  {
+    name: "lunarcharged_contrubution",
+    category: "reaction",
+    damageType: "lunarreaction",
+    reaction: {
+      variant: "lunarcharged",
+      element: "electro",
+      scalingStatKeys: LUNAR_SCALING_KEYS,
+      reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
+      critRateKeys: LUNAR_CRIT_RATE_KEYS,
+      critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+    },
+  },
 ];
 
 export const flins: DbObjectChar = {
@@ -170,4 +190,7 @@ export const flins: DbObjectChar = {
   // lunarcharged_multi = min(0.00007×atk, 0.14) (base-DMG bonus) + A4 EM = min(0.08×atk, 160) — both feed
   // the DirectLunarCharged hits (the base bonus, and the lunar EM factor 6·EM/(EM+2000) respectively).
   postEffects: [lunarMultiFromAtk, a4MasteryFromAtk],
+  // Models GCSim LunarChargeEnableKey=1 (asc.go:62) — enables the Lunar-Charged reaction proc.
+  // Same flag Ineffa carries; suppresses the generic electrocharged contribution.
+  lunarChargedActive: true,
 };
