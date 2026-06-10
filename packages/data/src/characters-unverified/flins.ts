@@ -12,7 +12,7 @@
  *   s2: p1..p5 = skill-stance N1..N5, p6 = skill charge, p7 = Northland Spearstorm.
  *   s3: p1 = Initial burst, p2/p3 = Mid/Final, p6 = Symphony (p7 = SymphonyExtra, moonsign≥2 → C).
  */
-import type { CharPostEffect, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { FlinsStatTable, FlinsTalents } from "../generated/flins.gen.js";
 
 // ── Lunar-Charged shared keys (same convention as the Ineffa precedent) ──
@@ -174,6 +174,35 @@ const features: readonly Feature[] = [
       critDmgKeys: LUNAR_CRIT_DMG_KEYS,
     },
   },
+  // --- C2 "The Devil's Wall": DirectLunarCharged hit, constant Mult 0.5 (50%), cons≥2 ---
+  // GCSim cons.go:77-89 (c2MakeAtkCB): AttackTagDirectLunarCharged, Mult 0.5, electro, IgnoreDefPercent:1,
+  // armed by c2OnSkill (in spearStorm, skill.go:122), fired by the next skill-stance normal (attack.go:136).
+  // No moonsign gate → solo-gateable at cons=2. Same lunardirect machinery as A's Mid/Final/Symphony, with
+  // a constant mult (getValue:()=>50) instead of a talent. (The C2 gleam electro RES shred is moonsign≥2 → C-δ.)
+  {
+    name: "flins_c2_devils_wall",
+    category: "skill",
+    damageType: "lunardirect",
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [{ leveling: "", scaling: "atk", values: { getValue: () => 50 }, source: "constellation2" }],
+    reaction: {
+      variant: "lunardirect",
+      element: "electro",
+      scalingStatKeys: LUNAR_SCALING_KEYS,
+      reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
+      amplifyingMultiplier: LUNAR_DIRECT_AMPLIFY,
+      critRateKeys: LUNAR_CRIT_RATE_KEYS,
+      critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+    },
+  },
+];
+
+// ── Constellation conditions ──
+// C4: +20% ATKP (cons.go:129-143, c4Init m[ATKP]=0.2). Pure stat buff; atk_percent:20 = +20% of atk_base
+// (Stats.ts:79). The C4 A4 EM-upgrade (0.08/160→0.10/220) is DEFERRED to C-δ (a postEffect replacement,
+// entangled only with cons≥4 Lunar hits — not gated here). C1 = energy/CD (no damage output).
+const constellationConditions: readonly Condition[] = [
+  { type: "constellation", constellation: 4, stats: { atk_percent: 20 } },
 ];
 
 export const flins: DbObjectChar = {
@@ -187,6 +216,7 @@ export const flins: DbObjectChar = {
   talents,
   features,
   multipliers: [], // lean C0: no char-level damage multipliers
+  conditions: constellationConditions, // C4 +20% ATKP (cons≥4); C2 hit is a feature-level condition
   // lunarcharged_multi = min(0.00007×atk, 0.14) (base-DMG bonus) + A4 EM = min(0.08×atk, 160) — both feed
   // the DirectLunarCharged hits (the base bonus, and the lunar EM factor 6·EM/(EM+2000) respectively).
   postEffects: [lunarMultiFromAtk, a4MasteryFromAtk],
