@@ -1,0 +1,212 @@
+{
+  "_source": "gen-live-goldens (port-snapshot of a GCSim-gated live char; independent oracle = <slug>-gate.json)",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3501.470070007666,
+      "category": "attack",
+      "crit": 8611.272686599814,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2933.7142237196495
+    },
+    "attack.normal_hit_1": {
+      "average": 1418.7052615650764,
+      "category": "attack",
+      "crit": 3489.0653425531177,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1188.6652525664051
+    },
+    "attack.normal_hit_2": {
+      "average": 1432.0993101244712,
+      "category": "attack",
+      "crit": 3522.005736792231,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1199.8874849391646
+    },
+    "attack.normal_hit_3": {
+      "average": 1773.770304434902,
+      "category": "attack",
+      "crit": 4362.287687596503,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1486.1572618613907
+    },
+    "attack.normal_hit_4": {
+      "average": 1016.270826881025,
+      "category": "attack",
+      "crit": 2499.346000032957,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 851.4846965308103
+    },
+    "attack.normal_hit_5": {
+      "average": 2435.916415803931,
+      "category": "attack",
+      "crit": 5990.723918484496,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2040.9378043949796
+    },
+    "attack.plunge_high": {
+      "average": 4703.134848457543,
+      "category": "attack",
+      "crit": 11566.563715288166,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3940.5316410319174
+    },
+    "attack.skill_charged_hit": {
+      "average": 3498.3616255970924,
+      "category": "attack",
+      "crit": 8603.62799396632,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2931.1098068894003
+    },
+    "attack.skill_normal_hit_1": {
+      "average": 1652.378902348919,
+      "category": "attack",
+      "crit": 4063.746090989683,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1384.4492147221672
+    },
+    "attack.skill_normal_hit_2": {
+      "average": 1667.9702669364851,
+      "category": "attack",
+      "crit": 4102.090411899281,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1397.5124730517298
+    },
+    "attack.skill_normal_hit_3": {
+      "average": 2065.9164838392217,
+      "category": "attack",
+      "crit": 5080.771742836021,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1730.9325661729106
+    },
+    "attack.skill_normal_hit_4": {
+      "average": 1183.6608449357964,
+      "category": "attack",
+      "crit": 2911.013403056438,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 991.7327829223917
+    },
+    "attack.skill_normal_hit_5": {
+      "average": 2837.11773104878,
+      "category": "attack",
+      "crit": 6977.410612564484,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2377.0851886581463
+    },
+    "burst.flins_burst_final": {
+      "average": 32638.098806772952,
+      "category": "burst",
+      "crit": 80267.87697108448,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 27345.90123296056
+    },
+    "burst.flins_burst_initial": {
+      "average": 11123.719619203928,
+      "category": "burst",
+      "crit": 27356.90467576538,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 9320.032390697099
+    },
+    "burst.flins_burst_mid": {
+      "average": 4533.069278718466,
+      "category": "burst",
+      "crit": 11148.316245983957,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 3798.0418379111893
+    },
+    "burst.flins_symphony": {
+      "average": 19945.50482636125,
+      "category": "burst",
+      "crit": 49052.59148232941,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 16711.384086809234
+    },
+    "reaction.hyperbloom": {
+      "average": 9973.49104503386,
+      "category": "reaction",
+      "crit": 9973.49104503386,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 9973.49104503386
+    },
+    "reaction.lunarcharged_contrubution": {
+      "average": 5046.512214797105,
+      "category": "reaction",
+      "crit": 12411.042199135376,
+      "damageType": "lunarreaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4228.231105426186
+    },
+    "reaction.overloaded": {
+      "average": 9142.366791281038,
+      "category": "reaction",
+      "crit": 9142.366791281038,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 9142.366791281038
+    },
+    "reaction.shatter": {
+      "average": 9973.49104503386,
+      "category": "reaction",
+      "crit": 9973.49104503386,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 9973.49104503386
+    },
+    "reaction.superconduct": {
+      "average": 4986.74552251693,
+      "category": "reaction",
+      "crit": 4986.74552251693,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4986.74552251693
+    },
+    "skill.flins_spearstorm": {
+      "average": 6165.035567041288,
+      "category": "skill",
+      "crit": 15161.860969516387,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5165.388300099611
+    }
+  }
+}
