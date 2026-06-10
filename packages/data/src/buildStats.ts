@@ -212,6 +212,16 @@ const REACTION_BONUS_PERCENT_KEYS = [
 ] as const;
 
 /**
+ * Lunar elevation keys — the `(1 + Σ elevation)` factor multiplied into every lunar hit (Flins C6,
+ * `cons.go c6Init`: `× (1 + atk.Elevation)`). Read by the lunar variants' `elevationKeys` via
+ * `cMultiplierReaction` (`cStat`), exactly like the reaction-bonus terms, but elevation is a separate
+ * factor — NOT a reaction DMG bonus — so it lives in its own list. Condition-sourced RAW RATIOS
+ * (`lunar_elevation: 0.35` = GCSim's 0.35), emitted VERBATIM (no `/100`). Absent for every non-Flins
+ * build → never emitted → byte-unchanged.
+ */
+const LUNAR_ELEVATION_BAG_KEYS = ["lunar_elevation"] as const;
+
+/**
  * Raw-bag scaling INPUT keys read VERBATIM by a non-`*` multiplier scaling.
  *
  * A multiplier whose `scaling` key carries no `*` (and is not one of the total stats
@@ -1013,6 +1023,12 @@ export function buildStats(input: BuildInput): BuildResult {
   // → the ConditionNumber is inactive → key never set → not emitted → the multiplier
   // reads 0 and the base golden suite is byte-untouched.
   for (const key of RAW_BAG_SCALING_KEYS) {
+    if (raw.isSet(key)) out[key] = raw.get(key);
+  }
+
+  // Lunar elevation (Flins C6) — condition-sourced raw ratio, emitted verbatim. Read by the lunar
+  // variants' `(1 + Σ elevation)` factor. Absent (cons<6 / non-Flins) → unset → factor reads ×1.
+  for (const key of LUNAR_ELEVATION_BAG_KEYS) {
     if (raw.isSet(key)) out[key] = raw.get(key);
   }
 

@@ -25,6 +25,9 @@ const LUNAR_SCALING_KEYS = ["lunarcharged_multi"] as const; // → (1 + lunarcha
 const LUNAR_REACTION_BONUS_KEYS = ["dmg_reaction_lunarcharged"] as const; // A1 etc. (0 at C0/moonsign 1)
 const LUNAR_CRIT_RATE_KEYS = ["crit_rate_total"] as const;
 const LUNAR_CRIT_DMG_KEYS = ["crit_dmg_total"] as const;
+// C6 "…": +0.35 elevation (×1.35) on every Lunar hit at cons≥6 (cons.go c6Init; the +0.1→0.45 at
+// moonsign≥2 → C-ε). Read raw by cStat via the lunar variants' elevationKeys. Set by the C6 condition.
+const LUNAR_ELEVATION_KEYS = ["lunar_elevation"] as const;
 
 // "every 100 ATK raises Lunar-Charged Base DMG by 0.7%, up to 14%" (asc.go:74 lunarchargeInit) modeled
 // as her PostEffectStatsAtk: lunarcharged_multi = min(0.00007 × atk_total, 0.14). Unconditional (base
@@ -133,6 +136,7 @@ const features: readonly Feature[] = [
       amplifyingMultiplier: LUNAR_DIRECT_AMPLIFY,
       critRateKeys: LUNAR_CRIT_RATE_KEYS,
       critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+      elevationKeys: LUNAR_ELEVATION_KEYS,
     },
   },
   {
@@ -148,6 +152,7 @@ const features: readonly Feature[] = [
       amplifyingMultiplier: LUNAR_DIRECT_AMPLIFY,
       critRateKeys: LUNAR_CRIT_RATE_KEYS,
       critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+      elevationKeys: LUNAR_ELEVATION_KEYS,
     },
   },
   {
@@ -163,6 +168,7 @@ const features: readonly Feature[] = [
       amplifyingMultiplier: LUNAR_DIRECT_AMPLIFY,
       critRateKeys: LUNAR_CRIT_RATE_KEYS,
       critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+      elevationKeys: LUNAR_ELEVATION_KEYS,
     },
   },
   // --- Lunar-Charged reaction proc (lunarcharged variant, electro, level-scaled, crit-bearing) ---
@@ -183,6 +189,7 @@ const features: readonly Feature[] = [
       reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
       critRateKeys: LUNAR_CRIT_RATE_KEYS,
       critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+      elevationKeys: LUNAR_ELEVATION_KEYS,
     },
   },
   // --- C2 "The Devil's Wall": DirectLunarCharged hit, constant Mult 0.5 (50%), cons≥2 ---
@@ -204,6 +211,7 @@ const features: readonly Feature[] = [
       amplifyingMultiplier: LUNAR_DIRECT_AMPLIFY,
       critRateKeys: LUNAR_CRIT_RATE_KEYS,
       critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+      elevationKeys: LUNAR_ELEVATION_KEYS,
     },
   },
 ];
@@ -214,6 +222,9 @@ const features: readonly Feature[] = [
 // entangled only with cons≥4 Lunar hits — not gated here). C1 = energy/CD (no damage output).
 const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 4, stats: { atk_percent: 20 } },
+  // C6 elevation: +0.35 (×1.35) on every Lunar hit at cons≥6. Read raw by cStat (lunar_elevation = 0.35);
+  // the lunar variants' elevationKeys multiply (1 + lunar_elevation). The moonsign≥2 +0.1 → C-ε.
+  { type: "constellation", constellation: 6, stats: { lunar_elevation: 0.35 } },
 ];
 
 export const flins: DbObjectChar = {
