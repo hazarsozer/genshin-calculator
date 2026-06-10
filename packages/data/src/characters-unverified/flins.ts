@@ -2,16 +2,52 @@
  * Flins — STAGED past-v5.8 port (lean C0, GCSim-gated). NOT in characters/ — staging is invisible
  * to the filesystem-glob vitest suites; promotion is deferred (see the POC design spec).
  *
- * Gated (ATK×talent% direct surface): base normals + charge + plunge (physical), electro skill-stance
- * normals + charge, Northland Spearstorm, Initial burst. ALL Lunar-Charged content quarantined
- * (tools/port/FLINS-QUARANTINE.md). Numbers: generated/flins.gen.ts (Amber, pinned). Kit ref:
- * /tmp/gcsim/internal/characters/flins/. Talent param keys verified by value vs flins_gen.go:
+ * Gated (GCSim fp-epsilon): base normals + charge + plunge (physical), electro skill-stance normals +
+ * charge, Northland Spearstorm, Initial burst, AND the DirectLunarCharged burst hits (Mid/Final/
+ * Thunderous Symphony — sub-project A, lunardirect variant). Still quarantined: the Lunar-Charged
+ * reaction, A1/A4, constellations, all moonsign≥2 branches (tools/port/FLINS-QUARANTINE.md).
+ * Numbers: generated/flins.gen.ts (Amber, pinned). Kit ref: /tmp/gcsim/internal/characters/flins/.
+ * Talent param keys verified by value vs flins_gen.go:
  *   s1: p1..p5 = N1..N5, p6 = charge, p10 = high plunge (p8/p9 = collision/low plunge).
  *   s2: p1..p5 = skill-stance N1..N5, p6 = skill charge, p7 = Northland Spearstorm.
- *   s3: p1 = Initial burst (p2/p3/p6/p7 = quarantined Mid/Final/Symphony/SymphonyExtra).
+ *   s3: p1 = Initial burst, p2/p3 = Mid/Final, p6 = Symphony (p7 = SymphonyExtra, moonsign≥2 → C).
  */
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { FlinsStatTable, FlinsTalents } from "../generated/flins.gen.js";
+
+// ── Lunar-Charged shared keys (same convention as the Ineffa precedent) ──
+// DirectLunarCharged hits route through compileReaction's `lunardirect` variant:
+//   base(talent%×ATK) × (1 + lunarcharged_multi) × (1 + 6·EM/(EM+2000) + Σreaction) × 3 × res
+// — exactly GCSim's calcDirectLunar (×3 + the lunar EM factor, NO DMG%). The DEF-ignore is implicit:
+// lunardirect omits the defence factor (×1), matching GCSim's IgnoreDefPercent:1.
+const LUNAR_DIRECT_AMPLIFY = 3; // ChargedLike flat amplifying factor (×3)
+const LUNAR_SCALING_KEYS = ["lunarcharged_multi"] as const; // → (1 + lunarcharged_multi) = (1 + BaseDmgBonus)
+const LUNAR_REACTION_BONUS_KEYS = ["dmg_reaction_lunarcharged"] as const; // A1 etc. (0 at C0/moonsign 1)
+const LUNAR_CRIT_RATE_KEYS = ["crit_rate_total"] as const;
+const LUNAR_CRIT_DMG_KEYS = ["crit_dmg_total"] as const;
+
+// "every 100 ATK raises Lunar-Charged Base DMG by 0.7%, up to 14%" (asc.go:74 lunarchargeInit) modeled
+// as her PostEffectStatsAtk: lunarcharged_multi = min(0.00007 × atk_total, 0.14). Unconditional (base
+// talent, NOT ascension-gated). Ratio 0.7/100/100 = 0.00007 (percent then isPercent fold); cap 14/100.
+const lunarMultiFromAtk: CharPostEffect = {
+  priority: 1,
+  fromStat: "atk",
+  toStat: "lunarcharged_multi",
+  ratio: 0.00007,
+  capValue: 0.14,
+};
+
+// A4 "Lunar Reflection": self EM buff = min(0.08 × atk_total, 160) at <C4 (0.10/220 at C4+; cons=0 here).
+// GCSim asc.go a4Init adds it as a self StatMod on EM. NOT reaction-only — it feeds the lunar EM factor
+// 6·EM/(EM+2000) on the DirectLunarCharged DIRECT hits too (the gate proved A4 is load-bearing for A).
+// Unconditional here (the gate build is ascension 6; the port carries no ascension gate, like the rest).
+const a4MasteryFromAtk: CharPostEffect = {
+  priority: 1,
+  fromStat: "atk",
+  toStat: "mastery",
+  ratio: 0.08,
+  capValue: 160,
+};
 
 const talents: TalentResolver = {
   get(path: string) {
@@ -38,6 +74,9 @@ const talents: TalentResolver = {
     }
     if (talent === "burst") {
       if (name === "flins_burst_initial") return FlinsTalents.s3.p1; // ≈ 259.84
+      if (name === "flins_burst_mid") return FlinsTalents.s3.p2; // Cometh the Night (Mid), GCSim burstMid
+      if (name === "flins_burst_final") return FlinsTalents.s3.p3; // Cometh the Night (Final), GCSim burstFinal
+      if (name === "flins_symphony") return FlinsTalents.s3.p6; // Thunderous Symphony, GCSim symphony
     }
     throw new Error(`flins talents: unknown path '${path}'`);
   },
@@ -61,8 +100,60 @@ const features: readonly Feature[] = [
   { name: "skill_charged_hit", category: "attack", damageType: "charged", element: "electro", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.skill_charged_hit") }] },
   // --- Northland Spearstorm (skill, electro) ---
   { name: "flins_spearstorm", category: "skill", element: "electro", multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.flins_spearstorm") }] },
-  // --- Initial burst (electro; the DirectLunarCharged Mid/Final/Symphony hits are QUARANTINED) ---
+  // --- Initial burst (electro, pure ATK×talent% — no DEF-ignore, no base bonus) ---
   { name: "flins_burst_initial", category: "burst", element: "electro", multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.flins_burst_initial") }] },
+  // --- DirectLunarCharged burst hits (lunardirect variant, electro) ---
+  // GCSim routes AttackTagDirectLunarCharged → pkg/enemy/damage.go calcDirectLunar:
+  //   Mult·ATK·(1+BaseDmgBonus) × 3 × (1 + 6·EM/(EM+2000) + reactBonus) × defmod[=1] × resmod, NO DMG%.
+  // This is the `lunardirect` variant (the ×3 + lunar EM factor — same machinery Ineffa uses). The
+  // (1+BaseDmgBonus) factor is supplied by scalingStatKeys:["lunarcharged_multi"] (set by lunarMultiFromAtk).
+  // Mid fires ×2 at moonsign 1 (same mult → one gated feature). SymphonyExtra (s3.p7), Mid's moonsign≥2
+  // extra hits, and the C2 hit are moonsign≥2/constellation content → sub-project C.
+  {
+    name: "flins_burst_mid",
+    category: "burst",
+    damageType: "lunardirect",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.flins_burst_mid") }],
+    reaction: {
+      variant: "lunardirect",
+      element: "electro",
+      scalingStatKeys: LUNAR_SCALING_KEYS,
+      reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
+      amplifyingMultiplier: LUNAR_DIRECT_AMPLIFY,
+      critRateKeys: LUNAR_CRIT_RATE_KEYS,
+      critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+    },
+  },
+  {
+    name: "flins_burst_final",
+    category: "burst",
+    damageType: "lunardirect",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.flins_burst_final") }],
+    reaction: {
+      variant: "lunardirect",
+      element: "electro",
+      scalingStatKeys: LUNAR_SCALING_KEYS,
+      reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
+      amplifyingMultiplier: LUNAR_DIRECT_AMPLIFY,
+      critRateKeys: LUNAR_CRIT_RATE_KEYS,
+      critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+    },
+  },
+  {
+    name: "flins_symphony",
+    category: "burst",
+    damageType: "lunardirect",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.flins_symphony") }],
+    reaction: {
+      variant: "lunardirect",
+      element: "electro",
+      scalingStatKeys: LUNAR_SCALING_KEYS,
+      reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
+      amplifyingMultiplier: LUNAR_DIRECT_AMPLIFY,
+      critRateKeys: LUNAR_CRIT_RATE_KEYS,
+      critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+    },
+  },
 ];
 
 export const flins: DbObjectChar = {
@@ -75,5 +166,8 @@ export const flins: DbObjectChar = {
   statTable: FlinsStatTable,
   talents,
   features,
-  multipliers: [], // lean C0: no char-level damage multipliers (all Lunar-Charged content quarantined)
+  multipliers: [], // lean C0: no char-level damage multipliers
+  // lunarcharged_multi = min(0.00007×atk, 0.14) (base-DMG bonus) + A4 EM = min(0.08×atk, 160) — both feed
+  // the DirectLunarCharged hits (the base bonus, and the lunar EM factor 6·EM/(EM+2000) respectively).
+  postEffects: [lunarMultiFromAtk, a4MasteryFromAtk],
 };
