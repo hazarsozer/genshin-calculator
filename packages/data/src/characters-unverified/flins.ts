@@ -257,6 +257,15 @@ const charConditions: readonly Condition[] = [
   // (GATE-VERIFIED 2026-06-10: the direct A1 gate runs at cons=0 — the C2 hit's gleam, electro RES
   // −0.25 at cons≥2 + moonsign≥2, is C-ε; the moonsign body is idle Aino, inert at cons=0.)
   { type: "boolean", name: "moonsign_2", stats: { dmg_reaction_lunarcharged: 20 } },
+  // ── C-ε moonsign-cons (each = a moonsign_2 boolean gated by a constellation SUB-condition) ──
+  // Nesting note (gate-caught): the constellation must be the SUB-gate under the boolean, NOT the reverse —
+  // `evaluateConstellation` is a leaf gate that ignores `.condition`, whereas `evaluateBoolean` honors it
+  // (checkGate). This matches the house pattern (tighnari/venti/klee/citlali use `condition:{constellation}`
+  // as a sub-gate). Active iff moonsign_2 AND cons≥N; base-inert (moonsign_2 off by default).
+  // C2 gleam: electro RES −0.25 at cons≥2 + moonsign≥2 (cons.go c2GleamInit — an OnEnemyDamage ResistMod
+  // triggered by Flins's electro). enemy_res_electro shred (Escoffier A4 precedent): RAW −25 → buildStats
+  // ÷100 → −0.25, folded into the enemy electro resistance every Flins electro/lunar hit + the reaction reads.
+  { type: "boolean", name: "moonsign_2", condition: { type: "constellation", constellation: 2 }, stats: { enemy_res_electro: -25 } },
 ];
 
 export const flins: DbObjectChar = {
