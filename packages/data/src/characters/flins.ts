@@ -1,16 +1,21 @@
 /**
- * Flins — STAGED past-v5.8 port (lean C0, GCSim-gated). NOT in characters/ — staging is invisible
- * to the filesystem-glob vitest suites; promotion is deferred (see the POC design spec).
+ * Flins — PROMOTED past-v5.8 LIVE char (sub-project D). His independent oracle is the GCSim gate, NOT
+ * an her-engine golden (she never made him): `node tools/oracle/gate-live.mjs --self-test` +
+ * `tools/oracle/_fixtures/flins-gate.json` (31 features, fp-epsilon). The every-char suite fixtures
+ * (golden/constellations/weapon-passive) are the frozen post-verification snapshot from
+ * `tools/port/gen-live-goldens.mjs` — a regression lock, not an independent validation. See
+ * `tools/port/LIVE-CHARS.md`.
  *
- * Gated (GCSim fp-epsilon): base normals + charge + plunge (physical), electro skill-stance normals +
- * charge, Northland Spearstorm, Initial burst, AND the DirectLunarCharged burst hits (Mid/Final/
- * Thunderous Symphony — sub-project A, lunardirect variant). Still quarantined: the Lunar-Charged
- * reaction, A1/A4, constellations, all moonsign≥2 branches (tools/port/FLINS-QUARANTINE.md).
+ * TRUE-100% GCSim-gated surface: base normals + charge + plunge, electro skill-stance, Northland
+ * Spearstorm, the full burst (Initial/Mid/Final/Thunderous Symphony + SymphonyExtra), the Lunar-Charged
+ * reaction, A1/A4, and every constellation + the moonsign mechanic (A→C-ζ). Genuinely out of gating
+ * (display/teammate/no-output): Mid hit-count, Lunar _2/_12 contributor tiers, C6 other-+0.1, C1, plunge
+ * — see tools/port/FLINS-QUARANTINE.md.
  * Numbers: generated/flins.gen.ts (Amber, pinned). Kit ref: /tmp/gcsim/internal/characters/flins/.
  * Talent param keys verified by value vs flins_gen.go:
  *   s1: p1..p5 = N1..N5, p6 = charge, p10 = high plunge (p8/p9 = collision/low plunge).
  *   s2: p1..p5 = skill-stance N1..N5, p6 = skill charge, p7 = Northland Spearstorm.
- *   s3: p1 = Initial burst, p2/p3 = Mid/Final, p6 = Symphony (p7 = SymphonyExtra, moonsign≥2 → C).
+ *   s3: p1 = Initial burst, p2/p3 = Mid/Final, p6 = Symphony, p7 = SymphonyExtra (moonsign≥2).
  */
 import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { FlinsStatTable, FlinsTalents } from "../generated/flins.gen.js";
