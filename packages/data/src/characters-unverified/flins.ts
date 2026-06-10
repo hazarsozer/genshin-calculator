@@ -266,6 +266,11 @@ const charConditions: readonly Condition[] = [
   // triggered by Flins's electro). enemy_res_electro shred (Escoffier A4 precedent): RAW −25 → buildStats
   // ÷100 → −0.25, folded into the enemy electro resistance every Flins electro/lunar hit + the reaction reads.
   { type: "boolean", name: "moonsign_2", condition: { type: "constellation", constellation: 2 }, stats: { enemy_res_electro: -25 } },
+  // C6 +0.1 self elevation at cons≥6 + moonsign≥2 (cons.go c6Init `flins += 0.1`). Adds 0.1 to the SAME
+  // lunar_elevation key C-γ's C6 condition sets to 0.35 — the raw bag SUMS condition contributions
+  // (raw.concat) → 0.45; the lunar variants' elevationKeys factor reads (1 + 0.45) = ×1.45. (The c6Init
+  // `other += 0.1` for OTHER lunar chars is a teammate buff, not a Flins output → deferred, see quarantine.)
+  { type: "boolean", name: "moonsign_2", condition: { type: "constellation", constellation: 6 }, stats: { lunar_elevation: 0.1 } },
 ];
 
 export const flins: DbObjectChar = {
