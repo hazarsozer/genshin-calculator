@@ -216,15 +216,25 @@ const features: readonly Feature[] = [
   },
 ];
 
-// ── Constellation conditions ──
+// ── Char-level conditions (constellations + the A1 moonsign toggle) ──
 // C4: +20% ATKP (cons.go:129-143, c4Init m[ATKP]=0.2). Pure stat buff; atk_percent:20 = +20% of atk_base
-// (Stats.ts:79). The C4 A4 EM-upgrade (0.08/160→0.10/220) is DEFERRED to C-δ (a postEffect replacement,
-// entangled only with cons≥4 Lunar hits — not gated here). C1 = energy/CD (no damage output).
-const constellationConditions: readonly Condition[] = [
+// (Stats.ts:79). The C4 A4 EM-upgrade (0.08/160→0.10/220, C-β) is the conditional postEffects below.
+// C1 = energy/CD (no damage output).
+const charConditions: readonly Condition[] = [
   { type: "constellation", constellation: 4, stats: { atk_percent: 20 } },
   // C6 elevation: +0.35 (×1.35) on every Lunar hit at cons≥6. Read raw by cStat (lunar_elevation = 0.35);
   // the lunar variants' elevationKeys multiply (1 + lunar_elevation). The moonsign≥2 +0.1 → C-ε.
   { type: "constellation", constellation: 6, stats: { lunar_elevation: 0.35 } },
+  // A1 "Lunar Reflection": +0.2 reaction bonus on EVERY Flins Lunar hit (direct + reaction) at
+  // moonsign≥2 (asc.go a1Init — returns 0 below moonsign 2). Modeled as a moonsign-gated boolean
+  // contributing RAW 20 → dmg_reaction_lunarcharged, which buildStats emits as a fraction ÷100 → 0.2
+  // (REACTION_BONUS_PERCENT_KEYS, buildStats.ts:211 — the exact lane as FracturedHalo 40-80 /
+  // ThunderingFury 20). Every Flins lunar feature already reads that key via reactionBonusKeys, so the
+  // +0.2 lands on both the lunardirect hits and the lunarcharged reaction with NO new key / engine
+  // change. Base-inert: moonsign_2 is absent by default → inactive → 0 → existing rows byte-identical.
+  // (GATE-VERIFIED 2026-06-10: the direct A1 gate runs at cons=0 — the C2 hit's gleam, electro RES
+  // −0.25 at cons≥2 + moonsign≥2, is C-ε; the moonsign body is idle Aino, inert at cons=0.)
+  { type: "boolean", name: "moonsign_2", stats: { dmg_reaction_lunarcharged: 20 } },
 ];
 
 export const flins: DbObjectChar = {
@@ -238,7 +248,7 @@ export const flins: DbObjectChar = {
   talents,
   features,
   multipliers: [], // lean C0: no char-level damage multipliers
-  conditions: constellationConditions, // C4 +20% ATKP (cons≥4); C2 hit is a feature-level condition
+  conditions: charConditions, // C4 +20% ATKP (cons≥4) + A1 moonsign_2 react bonus; C2 hit is feature-level
   // lunarcharged_multi = min(0.00007×atk, 0.14) (base-DMG bonus) + A4 EM = min(0.08×atk, 160) — both feed
   // the DirectLunarCharged hits (the base bonus, and the lunar EM factor 6·EM/(EM+2000) respectively).
   postEffects: [lunarMultiFromAtk, a4MasteryFromAtk, a4MasteryUpgraded],
