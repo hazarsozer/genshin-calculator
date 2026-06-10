@@ -706,6 +706,7 @@ function compileReaction(
       characterLevel: ctx.charLevel,
       ...(reaction.scalingStatKeys ? { scalingStatKeys: reaction.scalingStatKeys } : {}),
       ...(reaction.reactionBonusKeys ? { reactionBonusKeys: reaction.reactionBonusKeys } : {}),
+      ...(reaction.elevationKeys ? { elevationKeys: reaction.elevationKeys } : {}),
       ...(critRate.length > 0 ? { critRateKeys: critRate } : {}),
       ...(critDmg.length > 0 ? { critDmgKeys: critDmg } : {}),
       ...(reaction.penalty !== undefined ? { penalty: reaction.penalty } : {}),
@@ -728,6 +729,11 @@ function compileReaction(
   // (1 + emBonus + Σ reactionBonus) — the shared lunar reaction factor.
   const reactionBonusTerms: Block[] = reaction.reactionBonusKeys?.map((k) => cStat(k)) ?? [];
   factors.push(cMultiplierReaction([lunarEmBonusTerm(), ...reactionBonusTerms]));
+
+  // Optional elevation factor (1 + Σ elevation) — Flins C6. Conditional → base-inert.
+  if (reaction.elevationKeys && reaction.elevationKeys.length > 0) {
+    factors.push(cMultiplierReaction(reaction.elevationKeys.map((k) => cStat(k))));
+  }
 
   // ChargedLike flat amplifying factor (×3); CMultiplierAmplifying([3%]) → bare 3.
   if (reaction.amplifyingMultiplier !== undefined && reaction.amplifyingMultiplier !== 1) {

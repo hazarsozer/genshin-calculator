@@ -602,6 +602,12 @@ export interface FeatureReaction {
   readonly scalingStatKeys?: readonly string[];
   /** Reaction-DMG-bonus stat keys, summed inside `(1 + emBonus + Σ)`. */
   readonly reactionBonusKeys?: readonly string[];
+  /**
+   * Optional elevation stat keys — the lunar `(1 + Σ elevation)` factor applied AFTER the reaction
+   * factor (GCSim `× (1 + atk.Elevation)` in calcDirectLunar / CalcLunarChargedDmg). Flins C6 sets
+   * `lunar_elevation`. Omitted ⇒ no elevation factor (base-inert for every existing lunar feature).
+   */
+  readonly elevationKeys?: readonly string[];
   /** Crit-rate stat keys (Lunar-Charged is crit-bearing). */
   readonly critRateKeys?: readonly string[];
   /** Crit-DMG stat keys. */

@@ -33,6 +33,7 @@ export { escoffier } from "./escoffier.js";
 export { eula } from "./eula.js";
 export { faruzan } from "./faruzan.js";
 export { fischl } from "./fischl.js";
+export { flins } from "./flins.js";
 export { freminet } from "./freminet.js";
 export { furina } from "./furina.js";
 export { gaming } from "./gaming.js";
