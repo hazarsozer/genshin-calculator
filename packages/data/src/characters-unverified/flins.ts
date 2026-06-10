@@ -271,6 +271,11 @@ const charConditions: readonly Condition[] = [
   // (raw.concat) → 0.45; the lunar variants' elevationKeys factor reads (1 + 0.45) = ×1.45. (The c6Init
   // `other += 0.1` for OTHER lunar chars is a teammate buff, not a Flins output → deferred, see quarantine.)
   { type: "boolean", name: "moonsign_2", condition: { type: "constellation", constellation: 6 }, stats: { lunar_elevation: 0.1 } },
+  // ── C-ζ talent-level constellations (plain constellation conditions, Ineffa/Hu Tao pattern; `settings`,
+  // not `stats` — skillLevelBonus adds `<leveling>_bonus` to the base talent level, compileFeature.ts:266) ──
+  // C3 (BurstCon=3): +3 burst levels → every char_skill_burst feature (Initial/Mid/Final/Symphony/
+  // SymphonyExtra). Base-inert: inactive at cons<3; the constant-mult C2 hit (leveling:"") is unaffected.
+  { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
 ];
 
 export const flins: DbObjectChar = {
