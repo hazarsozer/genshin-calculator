@@ -276,6 +276,9 @@ const charConditions: readonly Condition[] = [
   // C3 (BurstCon=3): +3 burst levels → every char_skill_burst feature (Initial/Mid/Final/Symphony/
   // SymphonyExtra). Base-inert: inactive at cons<3; the constant-mult C2 hit (leveling:"") is unaffected.
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C5 (SkillCon=5): +3 skill levels → ONLY Northland Spearstorm (skillDmg, char_skill_elemental). The
+  // skill-stance normals are char_skill_attack-leveled (TalentLvlAttack), so C5 leaves them untouched.
+  { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
 export const flins: DbObjectChar = {
