@@ -91,6 +91,7 @@ const talents: TalentResolver = {
       if (name === "flins_burst_mid") return FlinsTalents.s3.p2; // Cometh the Night (Mid), GCSim burstMid
       if (name === "flins_burst_final") return FlinsTalents.s3.p3; // Cometh the Night (Final), GCSim burstFinal
       if (name === "flins_symphony") return FlinsTalents.s3.p6; // Thunderous Symphony, GCSim symphony
+      if (name === "flins_symphony_extra") return FlinsTalents.s3.p7; // SymphonyExtra (moonsign≥2 follow-up); GCSim symphonyExtra ×100
     }
     throw new Error(`flins talents: unknown path '${path}'`);
   },
@@ -160,6 +161,27 @@ const features: readonly Feature[] = [
     category: "burst",
     damageType: "lunardirect",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.flins_symphony") }],
+    reaction: {
+      variant: "lunardirect",
+      element: "electro",
+      scalingStatKeys: LUNAR_SCALING_KEYS,
+      reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
+      amplifyingMultiplier: LUNAR_DIRECT_AMPLIFY,
+      critRateKeys: LUNAR_CRIT_RATE_KEYS,
+      critDmgKeys: LUNAR_CRIT_DMG_KEYS,
+      elevationKeys: LUNAR_ELEVATION_KEYS,
+    },
+  },
+  // --- SymphonyExtra (s3.p7): a 2nd Thunderous-Symphony hit at moonsign≥2 + an active LC cloud
+  // (burst.go:118-121). Same lunardirect machinery as flins_symphony, mult s3.p7. Gated PRESENT only at
+  // moonsign≥2 via the feature-level boolean condition (the "active LC cloud" half is uptime, not a
+  // per-hit value). At moonsign≥2 its value carries A1's +0.2 (it is a DirectLunarCharged hit). ---
+  {
+    name: "flins_symphony_extra",
+    category: "burst",
+    damageType: "lunardirect",
+    condition: { type: "boolean", name: "moonsign_2" },
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.flins_symphony_extra") }],
     reaction: {
       variant: "lunardirect",
       element: "electro",
