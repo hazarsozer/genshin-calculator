@@ -70,6 +70,11 @@ export interface LunarChargedDamageParams {
    */
   readonly reactionBonusKeys?: readonly string[];
   /**
+   * Optional elevation stat keys — `(1 + Σ elevation)` multiplied into the base (Flins C6).
+   * Omit ⇒ no elevation factor (the `full` product is unchanged → byte-identical).
+   */
+  readonly elevationKeys?: readonly string[];
+  /**
    * Optional stat keys for the rate-scaling term `(1 + Σ scalingStat)` that
    * MULTIPLIES the reaction rate. Lunar-Charged always scales the rate by
    * `(1 + lunarcharged_multi)` — her `getScalingStat()` returns `lunarcharged_multi`
@@ -155,8 +160,14 @@ export function cLunarChargedDamage(params: LunarChargedDamageParams): DamageBlo
       ])
     : cConst(effectiveRate);
 
-  // Full base: rate × levelMult × reactionFactor × resMult
-  const full: Block = cMulti([rate, cConst(levelMult), reactionFactor, resMult]);
+  // Optional elevation factor (1 + Σ elevation) — Flins C6. Omitted when absent (byte-identical).
+  const elevationFactors: Block[] =
+    params.elevationKeys && params.elevationKeys.length > 0
+      ? [cMultiplierReaction(params.elevationKeys.map((k) => cStat(k)))]
+      : [];
+
+  // Full base: rate × levelMult × reactionFactor × [elevation?] × resMult
+  const full: Block = cMulti([rate, cConst(levelMult), reactionFactor, ...elevationFactors, resMult]);
 
   // Crit hook — generic: same cCritRate/cCritDmg machinery as normal hits.
   // When keys are absent, the optional fields are omitted entirely (not set to
