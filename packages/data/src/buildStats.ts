@@ -163,6 +163,10 @@ const REACTION_DERIVED_KEYS = [
   // Lauma's Lunar-Bloom base-DMG bonus = min(EM×0.000175, 0.14) (post-effect `lunarBloomMultiFromEm`,
   // already fraction-valued). Read by the lunardirect `(1 + Σ scaling)` term on her direct-LB hits.
   "lunarbloom_multi",
+  // Columbina's Moonsign base-DMG bonus = min(MaxHP×0.000002, 0.07) (post-effect `lunarMultiFromHp`,
+  // fraction-valued). Read by the lunardirect `(1 + Σ scaling)` term on BOTH her direct LC and LB hits
+  // (the HP-scaled analog of lunarcharged_multi / lunarbloom_multi). Base-inert: sole reader = Columbina.
+  "columbina_lunar_multi",
 ] as const;
 
 /**
