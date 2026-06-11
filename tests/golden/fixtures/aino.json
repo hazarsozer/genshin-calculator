@@ -1,0 +1,86 @@
+{
+  "_source": "gen-live-goldens (port-snapshot of a GCSim-gated live char; independent oracle = <slug>-gate.json)",
+  "features": {
+    "attack.normal_hit_1": {
+      "average": 1395.4588620755505,
+      "category": "attack",
+      "crit": 2537.1979310464553,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1268.5989655232277
+    },
+    "attack.normal_hit_2": {
+      "average": 1389.0161170835565,
+      "category": "attack",
+      "crit": 2525.48384924283,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1262.741924621415
+    },
+    "attack.normal_hit_3": {
+      "average": 1032.7978186746466,
+      "category": "attack",
+      "crit": 1877.8142157720847,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 938.9071078860424
+    },
+    "burst.water_ball": {
+      "average": 624.030393514435,
+      "category": "burst",
+      "crit": 1134.600715480791,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 567.3003577403955
+    },
+    "reaction.electrocharged": {
+      "average": 5529.522957740585,
+      "category": "reaction",
+      "crit": 5529.522957740585,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5529.522957740585
+    },
+    "reaction.rupture": {
+      "average": 5529.522957740585,
+      "category": "reaction",
+      "crit": 5529.522957740585,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5529.522957740585
+    },
+    "reaction.shatter": {
+      "average": 8294.284436610877,
+      "category": "reaction",
+      "crit": 8294.284436610877,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8294.284436610877
+    },
+    "skill.skill_stage_1": {
+      "average": 1477.359052185868,
+      "category": "skill",
+      "crit": 2686.107367610669,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1343.0536838053345
+    },
+    "skill.skill_stage_2": {
+      "average": 4251.911418486155,
+      "category": "skill",
+      "crit": 7730.74803361119,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3865.374016805595
+    }
+  }
+}

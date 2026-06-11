@@ -3,6 +3,7 @@
  * Auto-generated from characters/*.ts (P1.9 complete). Re-run the generator if the roster changes.
  */
 
+export { aino } from "./aino.js";
 export { albedo } from "./albedo.js";
 export { alhaitham } from "./alhaitham.js";
 export { aloy } from "./aloy.js";
