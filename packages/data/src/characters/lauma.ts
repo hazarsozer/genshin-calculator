@@ -1,20 +1,26 @@
 /**
- * Lauma — past-v5.8 LIVE char (KP-L lockstep, first knowledge-first port). Her independent oracle is
- * the GCSim gate, NOT an her-engine golden (Aspirine never made her): `node tools/oracle/gate-live.mjs
- * --self-test` + `tools/oracle/_fixtures/lauma-gate.json`. See `tools/port/LIVE-CHARS.md` + the KB page
- * `wiki/game/entities/characters/lauma.md` (written knowledge-first, before this port).
+ * Lauma — PROMOTED past-v5.8 LIVE char (KP-L lockstep, the first knowledge-first port — her KB page
+ * `wiki/game/entities/characters/lauma.md` was written BEFORE this port). Her independent oracle is the
+ * GCSim gate, NOT an her-engine golden (Aspirine never made her): `node tools/oracle/gate-live.mjs
+ * --self-test` + `tools/oracle/_fixtures/lauma-gate.json` (10 rows, fp-epsilon). The every-char suite
+ * fixtures (golden/constellations/weapon-passive) are the frozen post-verification snapshot from
+ * `tools/port/gen-live-goldens.mjs` — a regression lock, not an independent validation. See
+ * `tools/port/LIVE-CHARS.md`.
  *
- * Dendro catalyst, Lunar-Bloom enabler (the Dendro/Hydro analog of Flins's Lunar-Charged). Her damage is
- * almost entirely EM-scaled. Numbers: generated/lauma.gen.ts (Amber, pinned 10000119). Kit ref:
- * /tmp/gcsim/internal/characters/lauma/. Param keys verified by value vs lauma_gen.go:
+ * Dendro catalyst, Lunar-Bloom enabler (the Dendro/Hydro analog of Flins's Lunar-Charged); damage almost
+ * entirely EM-scaled — and uniquely she has 200 intrinsic base EM (generated/lauma.gen.ts, Amber-pinned
+ * 10000119 + the live-chars.json baseEM supplement). Kit ref: /tmp/gcsim/internal/characters/lauma/.
+ * Param keys verified by value vs lauma_gen.go:
  *   s1: p1..p3 = N1..N3, p9 = charge (Spiritcall Prayer), p10/p11/p12 = collision/low/high plunge.
  *   s2: p1 = skill Tap, p2 = skill Hold-1, p3 = skill Hold-2 (Lunar-Bloom, ×Verdant Dew), p4/p5 =
  *       Frostgrove Sanctuary ATK / EM coefficients, p8 = Dendro+Hydro RES shred.
  *   s3: p3/p4 = Bloom / Lunar-Bloom Pale-Hymn EM coefficients (team buff — no direct damage).
  *
- * DAMAGE surface (GCSim-gateable): normals · charge · plunge · skill Tap · skill Hold (both instances) ·
- * Frostgrove ticks (ATK+EM hybrid) · C6 direct-Lunar-Bloom hits. Off-surface (teammate/non-damage):
- * the burst (pure Pale-Hymn team buff), A1 reaction-crit, C1 heal, C2/C6 ally bonuses, C4 energy.
+ * TRUE-100% GCSim-gated surface: normals · Charge · skill Tap · Hold-1 + Hold-2 (direct Lunar-Bloom ×dew)
+ * · Frostgrove ticks (ATK+EM hybrid) · C6 Frostgrove tick (moonsign 1 AND moonsign 2 — +0.25 elevation +
+ * 0.4 C2 react). Genuinely out of gating (see tools/port/LAUMA-QUARANTINE.md): the C6 Normal conversion +
+ * the Pale-Hymn team buff (deferred as a unit), A1 ascendant/nascent crit (crit-only, invisible at cr=-1),
+ * C1 heal, C4 energy; plunge is GCSim-unimplemented (port-only).
  */
 import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { LaumaStatTable, LaumaTalents } from "../generated/lauma.gen.js";
@@ -143,13 +149,15 @@ const features: readonly Feature[] = [
       elevationKeys: LUNAR_BLOOM_ELEVATION_KEYS,
     },
   },
-  // --- C6 "…": Frostgrove fires an extra direct Lunar-Bloom tick, Mult 1.85 (EM-scaled), cons≥6 + Ascendant.
-  // (cons.go c6OnFrostgroveTick: AttackTagDirectLunarBloom, UseEM, Mult 1.85, IgnoreDef.) ---
+  // --- C6: Frostgrove fires an extra direct Lunar-Bloom tick, Mult 1.85 (EM-scaled), cons≥6. Fires
+  // at moonsign 1 too — the +0.25 ELEVATION (not the tick) is the Ascendant-Gleam-gated part, applied
+  // via the moonsign_2_c6 condition's lunarbloom_elevation. (cons.go c6OnFrostgroveTick: only `Cons < 6`
+  // gates the tick; c6Init gates the elevation on ascendantGleam.) Exempt from the Pale-Hymn buff. ---
   {
     name: "lauma_c6_frostgrove",
     category: "skill",
     damageType: "lunardirect",
-    condition: { type: "boolean", name: "moonsign_2_c6" },
+    condition: { type: "constellation", constellation: 6 },
     multipliers: [{ leveling: "", scaling: "mastery*", values: { getValue: () => 185 }, source: "constellation6" }],
     reaction: {
       variant: "lunardirect",
@@ -161,24 +169,12 @@ const features: readonly Feature[] = [
       elevationKeys: LUNAR_BLOOM_ELEVATION_KEYS,
     },
   },
-  // --- C6 Normal-Attack conversion: while holding Pale Hymn, a Normal becomes a direct Lunar-Bloom hit,
-  // Mult 1.5 (EM-scaled), cons≥6 (attack.go: paleHymnCount>0 branch). ---
-  {
-    name: "lauma_c6_normal",
-    category: "attack",
-    damageType: "lunardirect",
-    condition: { type: "constellation", constellation: 6 },
-    multipliers: [{ leveling: "", scaling: "mastery*", values: { getValue: () => 150 }, source: "constellation6" }],
-    reaction: {
-      variant: "lunardirect",
-      element: "dendro",
-      scalingStatKeys: LUNAR_BLOOM_SCALING_KEYS,
-      reactionBonusKeys: LUNAR_BLOOM_REACTION_BONUS_KEYS,
-      critRateKeys: LUNAR_BLOOM_CRIT_RATE_KEYS,
-      critDmgKeys: LUNAR_BLOOM_CRIT_DMG_KEYS,
-      elevationKeys: LUNAR_BLOOM_ELEVATION_KEYS,
-    },
-  },
+  // --- C6 Normal-Attack conversion (Mult 1.5 direct Lunar-Bloom, cons≥6, attack.go paleHymnCount>0
+  // branch) is DEFERRED to the Pale-Hymn sub-project (see tools/port/LAUMA-QUARANTINE.md): it only
+  // fires while Pale Hymn is held, and when it does the Pale-Hymn FlatDmg self-buff (EM ×
+  // lunarBloomDmgIncrease, initBurst) is added unless it consumed the last stack — so its bare 1.5×EM
+  // core is wrong in the common case. Its core reuses the SAME lunardirect machinery already validated
+  // by Hold-2 + the C6 tick; it returns WITH the Pale-Hymn buff modeled. ---
 ];
 
 // ── Char-level conditions (constellations + the moonsign/shred toggles) ──
@@ -189,14 +185,14 @@ const charConditions: readonly Condition[] = [
   // C5 (SkillCon=5): +3 skill levels → every char_skill_elemental feature (Tap/Hold/Frostgrove + the
   // EM term). Base-inert: inactive at cons<5.
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
-  // C6 elevation: +0.25 (×1.25) on every direct Lunar-Bloom hit at cons≥6 + Ascendant Gleam. Read raw by
-  // cStat (lunarbloom_elevation = 0.25); the lunar variants' elevationKeys multiply (1 + elevation).
-  // Gated by moonsign_2_c6 (Ascendant Gleam AND cons≥6). Base-inert: toggle off by default.
-  { type: "boolean", name: "moonsign_2_c6", stats: { lunarbloom_elevation: 0.25 } },
-  // A1 / C2 ascendant team Lunar-Bloom DMG bonus (+0.4 C2) → dmg_reaction_lunarbloom. Teammate-side
-  // (applies to ALL chars' direct LB), Ascendant Gleam only — quarantined; modeled as moonsign-gated
-  // toggle for completeness. 0 at moonsign 1 (base-inert).
-  { type: "boolean", name: "moonsign_2_c2", stats: { dmg_reaction_lunarbloom: 40 } },
+  // ── Ascendant Gleam (moonsign≥2) effects — one `moonsign_2` toggle, constellation as the SUB-gate
+  // under the boolean (the Flins C-ε nesting: evaluateBoolean honors `.condition`, evaluateConstellation
+  // ignores it). Base-inert: moonsign_2 off by default. Needs a 2nd moonsign teammate to arm. ──
+  // C6 elevation +0.25 (×1.25) on every direct Lunar-Bloom hit at cons≥6 + Ascendant (cons.go c6Init).
+  { type: "boolean", name: "moonsign_2", condition: { type: "constellation", constellation: 6 }, stats: { lunarbloom_elevation: 0.25 } },
+  // C2 team Lunar-Bloom DMG +0.4 at cons≥2 + Ascendant (cons.go c2Init AddReactBonusMod — applies to
+  // ALL chars' direct LB incl. Lauma's own → folded into the (1 + emcurve + Σreact) factor).
+  { type: "boolean", name: "moonsign_2", condition: { type: "constellation", constellation: 2 }, stats: { dmg_reaction_lunarbloom: 40 } },
 ];
 
 export const lauma: DbObjectChar = {

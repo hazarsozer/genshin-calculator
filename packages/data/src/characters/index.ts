@@ -57,6 +57,7 @@ export { klee } from "./klee.js";
 export { kujouSara } from "./kujou_sara.js";
 export { kukiShinobu } from "./kuki_shinobu.js";
 export { lanYan } from "./lan_yan.js";
+export { lauma } from "./lauma.js";
 export { layla } from "./layla.js";
 export { lisa } from "./lisa.js";
 export { lynette } from "./lynette.js";
