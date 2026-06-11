@@ -58,4 +58,5 @@ export const JahodaStatTable: readonly StatTableEntry[] = [
   entry("hp_base", 808.7586, s4hp, new StatTable([604.1841, 1033.4728, 1605.8577, 2035.1465, 2464.435, 2893.7239])),
   entry("atk_base", 18.6984, s4atk, new StatTable([13.969, 23.8943, 37.1281, 47.0534, 56.9788, 66.9041])),
   entry("def_base", 48.6412, s4hp, new StatTable([36.3375, 62.1563, 96.5812, 122.4, 148.2188, 174.0375])),
+  entry("healing_base", 0, undefined, new StatTable([0, 0.0462, 0.0923, 0.0923, 0.1385, 0.1846])),
 ];
