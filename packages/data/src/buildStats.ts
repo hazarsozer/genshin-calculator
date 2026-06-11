@@ -160,6 +160,9 @@ const CRIT_BONUS_TYPES = ["normal", "charged", "plunge", "skill", "burst"] as co
  */
 const REACTION_DERIVED_KEYS = [
   "lunarcharged_multi",
+  // Lauma's Lunar-Bloom base-DMG bonus = min(EM×0.000175, 0.14) (post-effect `lunarBloomMultiFromEm`,
+  // already fraction-valued). Read by the lunardirect `(1 + Σ scaling)` term on her direct-LB hits.
+  "lunarbloom_multi",
 ] as const;
 
 /**
@@ -209,6 +212,9 @@ const REACTION_BONUS_PERCENT_KEYS = [
   "dmg_reaction_vaporize",
   "dmg_reaction_melt",
   "dmg_reaction_lunarcharged",
+  // Lauma's Ascendant-Gleam (moonsign≥2) team Lunar-Bloom DMG bonus — C2 +0.4 (raw 40 → /100), A1
+  // ascendant. Condition-sourced raw percent, /100'd like every sibling. Off at moonsign 1 → base-inert.
+  "dmg_reaction_lunarbloom",
 ] as const;
 
 /**
@@ -219,7 +225,7 @@ const REACTION_BONUS_PERCENT_KEYS = [
  * (`lunar_elevation: 0.35` = GCSim's 0.35), emitted VERBATIM (no `/100`). Absent for every non-Flins
  * build → never emitted → byte-unchanged.
  */
-const LUNAR_ELEVATION_BAG_KEYS = ["lunar_elevation"] as const;
+const LUNAR_ELEVATION_BAG_KEYS = ["lunar_elevation", "lunarbloom_elevation"] as const;
 
 /**
  * Raw-bag scaling INPUT keys read VERBATIM by a non-`*` multiplier scaling.
