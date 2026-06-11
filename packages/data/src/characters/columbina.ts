@@ -1,9 +1,11 @@
 /**
- * Columbina — STAGING past-v5.8 LIVE char (KP-L lockstep, knowledge-first: her KB page
+ * Columbina — PROMOTED past-v5.8 LIVE char (KP-L lockstep, the knowledge-first port — her KB page
  * `wiki/game/entities/characters/columbina.md` was written BEFORE this port). Her independent oracle is the
  * GCSim gate, NOT an her-engine golden (Aspirine never made her): `node tools/oracle/gate-live.mjs
- * --self-test` + `tools/oracle/_fixtures/columbina-gate.json` (fp-epsilon). Promotes to characters/ once
- * TRUE-100% gated (see tools/port/LIVE-CHARS.md).
+ * --self-test` + `tools/oracle/_fixtures/columbina-gate.json` (10 rows, fp-epsilon). The every-char suite
+ * fixtures (golden/constellations/weapon-passive) are the frozen post-verification snapshot from
+ * `tools/port/gen-live-goldens.mjs` — a regression lock, not an independent validation. See
+ * `tools/port/LIVE-CHARS.md`.
  *
  * 5★ Hydro catalyst, Nod-Krai — a **dual Lunar enabler** (the Hydro half of both Lunar-Charged and
  * Lunar-Bloom) and **HP-scaling** sub-DPS; ascends on CRIT Rate (NO base EM). A hybrid of [[flins]]

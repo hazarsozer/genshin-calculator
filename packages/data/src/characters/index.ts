@@ -22,6 +22,7 @@ export { chongyun } from "./chongyun.js";
 export { citlali } from "./citlali.js";
 export { clorinde } from "./clorinde.js";
 export { collei } from "./collei.js";
+export { columbina } from "./columbina.js";
 export { cyno } from "./cyno.js";
 export { dahlia } from "./dahlia.js";
 export { dehya } from "./dehya.js";
