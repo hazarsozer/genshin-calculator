@@ -64,4 +64,5 @@ export const LaumaStatTable: readonly StatTableEntry[] = [
   entry("hp_base", 829.3884, s5hp, new StatTable([711.1255, 1216.3989, 1890.0969, 2395.3704, 2900.6438, 3405.9172])),
   entry("atk_base", 19.8489, s5atk, new StatTable([17.0174, 29.1087, 45.2305, 57.3218, 69.4131, 81.5044])),
   entry("def_base", 52.0521, s5hp, new StatTable([44.631, 76.3425, 118.6245, 150.336, 182.0475, 213.759])),
+  entry("mastery_base", 200, undefined, new StatTable([0, 28.8, 57.6, 57.6, 86.4, 115.2])),
 ];
