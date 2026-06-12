@@ -40,8 +40,8 @@
     "description": "EVERY non-beta artifact set (55) at 4pc, zero artifact stats, on the SET_REP rep; named checkbox/stacks 4pc conditionals enabled to max (equipSet). Isolates the full 2pc+4pc bonus.",
     "id": "sets-4pc"
   },
-  "featureTotal": 1569,
-  "itemCount": 55,
+  "featureTotal": 1641,
+  "itemCount": 58,
   "items": [
     {
       "artifactSets": {
@@ -85,6 +85,31 @@
         "passiveToggles": {},
         "refine": 1,
         "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {
+        "AubadeOfMorningstarAndMoon": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "set",
+      "repKey": "Flins",
+      "repSlug": "flins",
+      "setToggles": {
+        "set.aubade_of_morningstar_and_moon_4": true,
+        "moonsign_2": true
+      },
+      "slug": "AubadeOfMorningstarAndMoon",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
       }
     },
     {
@@ -727,6 +752,31 @@
     },
     {
       "artifactSets": {
+        "NightOfTheSkysUnveiling": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "set",
+      "repKey": "Flins",
+      "repSlug": "flins",
+      "setToggles": {
+        "set.night_of_the_skys_unveiling_4": true,
+        "moonsign_2": true
+      },
+      "slug": "NightOfTheSkysUnveiling",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {
         "NoblesseOblige": 4
       },
       "enemy": {
@@ -1041,6 +1091,32 @@
         "set.shimenawas_reminiscence_4": true
       },
       "slug": "ShimenawasReminiscence",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {
+        "SilkenMoonsSerenade": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "set",
+      "repKey": "Flins",
+      "repSlug": "flins",
+      "setToggles": {
+        "set.silken_moons_serenade_4": true,
+        "moonsign_1": true,
+        "moonsign_2": true
+      },
+      "slug": "SilkenMoonsSerenade",
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.blackcliff_pole",
