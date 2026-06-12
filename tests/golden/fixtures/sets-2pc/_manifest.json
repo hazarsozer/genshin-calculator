@@ -40,8 +40,8 @@
     "description": "EVERY non-beta artifact set (55) at 2pc, equipped with zero artifact main/substats (only the set bonus moves), on a bonus-binding rep (SET_REP). Isolates the 2-piece bonus.",
     "id": "sets-2pc"
   },
-  "featureTotal": 1591,
-  "itemCount": 56,
+  "featureTotal": 1614,
+  "itemCount": 57,
   "items": [
     {
       "artifactSets": {
@@ -1005,6 +1005,28 @@
       "repSlug": "hu_tao",
       "setToggles": {},
       "slug": "ShimenawasReminiscence",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {
+        "SilkenMoonsSerenade": 2
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "set",
+      "repKey": "Flins",
+      "repSlug": "flins",
+      "setToggles": {},
+      "slug": "SilkenMoonsSerenade",
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.blackcliff_pole",

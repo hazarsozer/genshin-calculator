@@ -59,6 +59,7 @@ import { retracingBolide } from "./retracing-bolide.js";
 import { scholar } from "./scholar.js";
 import { scrollOfTheHeroOfCinderCity } from "./scroll-of-the-hero-of-cinder-city.js";
 import { shimenawasReminiscence } from "./shimenawas-reminiscence.js";
+import { silkenMoonsSerenade } from "./silken-moons-serenade.js";
 import { songOfDaysPast } from "./song-of-days-past.js";
 import { tenacityOfTheMillelith } from "./tenacity-of-the-millelith.js";
 import { theExile } from "./the-exile.js";
@@ -116,6 +117,7 @@ export { retracingBolide } from "./retracing-bolide.js";
 export { scholar } from "./scholar.js";
 export { scrollOfTheHeroOfCinderCity } from "./scroll-of-the-hero-of-cinder-city.js";
 export { shimenawasReminiscence } from "./shimenawas-reminiscence.js";
+export { silkenMoonsSerenade } from "./silken-moons-serenade.js";
 export { songOfDaysPast } from "./song-of-days-past.js";
 export { tenacityOfTheMillelith } from "./tenacity-of-the-millelith.js";
 export { theExile } from "./the-exile.js";
@@ -175,6 +177,7 @@ export const ARTIFACT_SETS: Readonly<Record<string, DbObjectArtifactSet>> = {
   [scholar.goodId]: scholar,
   [scrollOfTheHeroOfCinderCity.goodId]: scrollOfTheHeroOfCinderCity,
   [shimenawasReminiscence.goodId]: shimenawasReminiscence,
+  [silkenMoonsSerenade.goodId]: silkenMoonsSerenade,
   [songOfDaysPast.goodId]: songOfDaysPast,
   [tenacityOfTheMillelith.goodId]: tenacityOfTheMillelith,
   [theExile.goodId]: theExile,

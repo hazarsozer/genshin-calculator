@@ -40,8 +40,8 @@
     "description": "EVERY non-beta artifact set (55) at 4pc, zero artifact stats, on the SET_REP rep; named checkbox/stacks 4pc conditionals enabled to max (equipSet). Isolates the full 2pc+4pc bonus.",
     "id": "sets-4pc"
   },
-  "featureTotal": 1593,
-  "itemCount": 56,
+  "featureTotal": 1617,
+  "itemCount": 57,
   "items": [
     {
       "artifactSets": {
@@ -1066,6 +1066,31 @@
         "set.shimenawas_reminiscence_4": true
       },
       "slug": "ShimenawasReminiscence",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {
+        "SilkenMoonsSerenade": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "set",
+      "repKey": "Flins",
+      "repSlug": "flins",
+      "setToggles": {
+        "set.silken_moons_serenade_4": true,
+        "moonsign_2": true
+      },
+      "slug": "SilkenMoonsSerenade",
       "statBlock": "sampleStats",
       "weapon": {
         "name": "weapon_name.blackcliff_pole",
