@@ -1,5 +1,6 @@
 {
-  "_source": "gen-night-armory-fixtures (port-snapshot; independent oracle = night-gate.json)",
+  "_source": "port-snapshot; independent oracle = night-gate.json",
+  "element": "electro",
   "features": {
     "attack.charged_hit": {
       "average": 2682.9445990967833,

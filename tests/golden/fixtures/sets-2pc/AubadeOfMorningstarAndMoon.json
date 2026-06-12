@@ -1,4 +1,5 @@
 {
+  "_source": "port-snapshot; independent oracle = aubade-gate.json",
   "element": "electro",
   "features": {
     "attack.charged_hit": {
