@@ -1113,6 +1113,7 @@
       "repSlug": "flins",
       "setToggles": {
         "set.silken_moons_serenade_4": true,
+        "moonsign_1": true,
         "moonsign_2": true
       },
       "slug": "SilkenMoonsSerenade",

@@ -120,13 +120,13 @@
       "normal": 1821.4029367640342
     },
     "burst.flins_burst_final": {
-      "average": 32007.797477207263,
+      "average": 34149.87931087983,
       "category": "burst",
-      "crit": 78717.75758834057,
+      "crit": 83985.84511099811,
       "damageType": "lunardirect",
       "format": "",
       "isReacted": false,
-      "normal": 26817.801909303562
+      "normal": 28612.549777533353
     },
     "burst.flins_burst_initial": {
       "average": 8523.369578351061,
@@ -138,76 +138,76 @@
       "normal": 7141.3235201445295
     },
     "burst.flins_burst_mid": {
-      "average": 4445.527427389898,
+      "average": 4743.038793177754,
       "category": "burst",
-      "crit": 10933.021887269524,
+      "crit": 11664.700709860846,
       "damageType": "lunardirect",
       "format": "",
       "isReacted": false,
-      "normal": 3724.6947096254953
+      "normal": 3973.965246879632
     },
     "burst.flins_symphony": {
-      "average": 19560.320680515557,
+      "average": 20869.370689982123,
       "category": "burst",
-      "crit": 48105.29630398591,
+      "crit": 51324.68312338774,
       "damageType": "lunardirect",
       "format": "",
       "isReacted": false,
-      "normal": 16388.65672235218
+      "normal": 17485.447086270386
     },
     "burst.flins_symphony_extra": {
-      "average": 28451.375535295352,
+      "average": 30355.448276337633,
       "category": "burst",
-      "crit": 69971.34007852497,
+      "crit": 74654.08454310945,
       "damageType": "lunardirect",
       "format": "",
       "isReacted": false,
-      "normal": 23838.046141603172
+      "normal": 25433.377580029653
     },
     "reaction.hyperbloom": {
-      "average": 11461.941628021978,
+      "average": 12873.897962633833,
       "category": "reaction",
-      "crit": 11461.941628021978,
+      "crit": 12873.897962633833,
       "damageType": "reaction",
       "format": "",
       "isReacted": false,
-      "normal": 11461.941628021978
+      "normal": 12873.897962633833
     },
     "reaction.lunarcharged_contrubution": {
-      "average": 6458.935980403006,
+      "average": 6891.1921966680475,
       "category": "reaction",
-      "crit": 15884.659266106313,
+      "crit": 16947.72023030527,
       "damageType": "lunarreaction",
       "format": "",
       "isReacted": false,
-      "normal": 5411.633393102638
+      "normal": 5773.800192930578
     },
     "reaction.overloaded": {
-      "average": 10506.779825686814,
+      "average": 11801.073132414347,
       "category": "reaction",
-      "crit": 10506.779825686814,
+      "crit": 11801.073132414347,
       "damageType": "reaction",
       "format": "",
       "isReacted": false,
-      "normal": 10506.779825686814
+      "normal": 11801.073132414347
     },
     "reaction.shatter": {
-      "average": 11461.941628021978,
+      "average": 12873.897962633833,
       "category": "reaction",
-      "crit": 11461.941628021978,
+      "crit": 12873.897962633833,
       "damageType": "reaction",
       "format": "",
       "isReacted": false,
-      "normal": 11461.941628021978
+      "normal": 12873.897962633833
     },
     "reaction.superconduct": {
-      "average": 5730.970814010989,
+      "average": 6436.948981316917,
       "category": "reaction",
-      "crit": 5730.970814010989,
+      "crit": 6436.948981316917,
       "damageType": "reaction",
       "format": "",
       "isReacted": false,
-      "normal": 5730.970814010989
+      "normal": 6436.948981316917
     },
     "skill.flins_spearstorm": {
       "average": 4723.85842149917,

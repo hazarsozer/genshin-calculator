@@ -51,13 +51,20 @@ export const silkenMoonsSerenade: DbObjectArtifactSet = {
     4: {
       conditions: [
         // GATED: +10% Lunar-reaction DMG while Gleaming Moon: Devotion is active.
-        // This fires as long as the EM buff is up (the wearer has one Gleaming Moon effect).
-        // Always present when the set toggle is on — not Moonsign-tiered.
+        // Moonsign≥1 floor: GCSim's 4pc Init exits at `case 0: return nil`, so at Moonsign 0 the 4pc
+        // grants NEITHER the EM NOR the +10% react (unlike Night/Aubade, whose react has no floor).
+        // Gate the react on moonsign_1 — mirrors the +60 EM base tier below + GCSim's control flow.
         {
-          type: "boolean",
-          name: "set.silken_moons_serenade_4",
+          type: "static",
           title: "set_bonus.silken_moons_serenade_4",
           stats: { dmg_reaction_lunarcharged: 10, dmg_reaction_lunarbloom: 10 },
+          condition: {
+            type: "and",
+            items: [
+              { type: "boolean", name: "set.silken_moons_serenade_4" },
+              { type: "boolean", name: "moonsign_1" },
+            ],
+          },
         },
         // GATED: +60 EM base at Moonsign ≥1 (Nascent Gleam), also requiring the set toggle.
         {
