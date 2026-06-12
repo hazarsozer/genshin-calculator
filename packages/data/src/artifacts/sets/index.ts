@@ -45,6 +45,7 @@ import { maidenBeloved } from "./maiden-beloved.js";
 import { marechausseeHunter } from "./marechaussee-hunter.js";
 import { martialArtist } from "./martial-artist.js";
 import { nighttimeWhispersInTheEchoingWoods } from "./nighttime-whispers-in-the-echoing-woods.js";
+import { nightOfTheSkysUnveiling } from "./night-of-the-skys-unveiling.js";
 import { noblesseOblige } from "./noblesse-oblige.js";
 import { nymphsDream } from "./nymphs-dream.js";
 import { obsidianCodex } from "./obsidian-codex.js";
@@ -103,6 +104,7 @@ export { maidenBeloved } from "./maiden-beloved.js";
 export { marechausseeHunter } from "./marechaussee-hunter.js";
 export { martialArtist } from "./martial-artist.js";
 export { nighttimeWhispersInTheEchoingWoods } from "./nighttime-whispers-in-the-echoing-woods.js";
+export { nightOfTheSkysUnveiling } from "./night-of-the-skys-unveiling.js";
 export { noblesseOblige } from "./noblesse-oblige.js";
 export { nymphsDream } from "./nymphs-dream.js";
 export { obsidianCodex } from "./obsidian-codex.js";
@@ -163,6 +165,7 @@ export const ARTIFACT_SETS: Readonly<Record<string, DbObjectArtifactSet>> = {
   [marechausseeHunter.goodId]: marechausseeHunter,
   [martialArtist.goodId]: martialArtist,
   [nighttimeWhispersInTheEchoingWoods.goodId]: nighttimeWhispersInTheEchoingWoods,
+  [nightOfTheSkysUnveiling.goodId]: nightOfTheSkysUnveiling,
   [noblesseOblige.goodId]: noblesseOblige,
   [nymphsDream.goodId]: nymphsDream,
   [obsidianCodex.goodId]: obsidianCodex,
