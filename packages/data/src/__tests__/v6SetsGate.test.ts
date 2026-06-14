@@ -141,3 +141,87 @@ describe("v6.x set gate — port reproduces frozen ourRatio (GCSim-free regressi
     expect(got).toBeCloseTo(row!.ourRatio, 6);
   });
 });
+
+// ── teammate-buff regression lock ─────────────────────────────────────────────
+// Flins (recipient) wears NOTHING; the set buff arrives via party.setOther.
+// Mirrors the T4 gate-reps.mjs "night-team" and "silken-team" builds exactly.
+
+/** Shared resolver: setOther-only builds need no member resolution. */
+const noMemberResolver = (s: string): never => {
+  throw new Error("no party members: " + s);
+};
+
+describe("v6.x set gate — port reproduces frozen ourRatio, teammate path (GCSim-free regression lock)", () => {
+  it("night-team: reaction.lunarcharged_contrubution matches frozen fixture (absolute)", () => {
+    const [row] = loadFixture("night-team-gate.json");
+
+    const settings = reconstructSettings({
+      charToggles: {},
+      setToggles: {},
+      passiveToggles: {},
+      constellation: 0,
+      refine: 1,
+    });
+
+    const { compiled, context } = reconstructPort({
+      char: flins,
+      weapon: blackcliffPole,
+      weaponStatTable: blackcliffPole.statTable,
+      statBlock: STAT_BLOCK,
+      settings,
+      passiveOn: false,
+      artifactSets: {},
+      setRegistry: {},
+      party: { setOther: ["night_of_the_skys_unveiling_4"] },
+      partySlugResolver: noMemberResolver,
+      levels: LEVELS,
+      talents: TALENTS,
+      enemy: ENEMY,
+    });
+
+    const features: Record<string, { normal: number }> = {};
+    for (const [key, fn] of Object.entries(compiled)) {
+      features[key] = fn(context) as { normal: number };
+    }
+
+    const got = features[row!.feature]!.normal;
+    expect(got).toBeCloseTo(row!.ourRatio, 6);
+  });
+
+  it("silken-team: reaction.lunarcharged_contrubution matches frozen fixture (absolute)", () => {
+    const [row] = loadFixture("silken-team-gate.json");
+
+    // Silken's team react+EM gates on moonsign_1; the +60 EM increment gates on moonsign_2.
+    const settings = reconstructSettings({
+      charToggles: { moonsign_1: true, moonsign_2: true },
+      setToggles: {},
+      passiveToggles: {},
+      constellation: 0,
+      refine: 1,
+    });
+
+    const { compiled, context } = reconstructPort({
+      char: flins,
+      weapon: blackcliffPole,
+      weaponStatTable: blackcliffPole.statTable,
+      statBlock: STAT_BLOCK,
+      settings,
+      passiveOn: false,
+      artifactSets: {},
+      setRegistry: {},
+      party: { setOther: ["silken_moons_serenade_4"] },
+      partySlugResolver: noMemberResolver,
+      levels: LEVELS,
+      talents: TALENTS,
+      enemy: ENEMY,
+    });
+
+    const features: Record<string, { normal: number }> = {};
+    for (const [key, fn] of Object.entries(compiled)) {
+      features[key] = fn(context) as { normal: number };
+    }
+
+    const got = features[row!.feature]!.normal;
+    expect(got).toBeCloseTo(row!.ourRatio, 6);
+  });
+});
