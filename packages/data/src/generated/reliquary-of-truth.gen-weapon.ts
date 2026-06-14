@@ -32,11 +32,8 @@ const crt_3_1 = new StatTable([
   4.998,
 ]);
 
-function entry(stat: string, base: number, scale?: StatTable, ascension?: StatTable): StatTableEntry {
-  const params = scale !== undefined && ascension !== undefined
-    ? { base, scale, ascension }
-    : scale !== undefined ? { base, scale }
-    : ascension !== undefined ? { base, ascension } : { base };
+function entry(stat: string, base: number, scale: StatTable, ascension?: StatTable): StatTableEntry {
+  const params = ascension !== undefined ? { base, scale, ascension } : { base, scale };
   const table = new StatTableAscensionScale(params);
   return { getName: () => stat, getValue: (level: number, asc: number) => table.getValue(level, asc) };
 }
