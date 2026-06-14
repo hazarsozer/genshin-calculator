@@ -144,7 +144,7 @@ describe("v6.x set gate — port reproduces frozen ourRatio (GCSim-free regressi
 
 // ── teammate-buff regression lock ─────────────────────────────────────────────
 // Flins (recipient) wears NOTHING; the set buff arrives via party.setOther.
-// Mirrors the T4 gate-reps.mjs "night-team" and "silken-team" builds exactly.
+// Mirrors the gate-reps.mjs "night-team" and "silken-team" GCSim gate builds exactly.
 
 /** Shared resolver: setOther-only builds need no member resolution. */
 const noMemberResolver = (s: string): never => {
