@@ -1,0 +1,166 @@
+{
+  "_source": "port-snapshot master_key weapons-r5 — regression lock; independent validation = tools/oracle/gate-reps.mjs (GCSim)",
+  "element": "electro",
+  "features": {
+    "attack.charged_final": {
+      "average": 3053.5094392672763,
+      "category": "attack",
+      "crit": 5551.835344122321,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2775.9176720611604
+    },
+    "attack.charged_spin": {
+      "average": 1688.6023302168542,
+      "category": "attack",
+      "crit": 3070.1860549397347,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1535.0930274698674
+    },
+    "attack.normal_hit_1": {
+      "average": 2212.8288671747378,
+      "category": "attack",
+      "crit": 4023.3252130449778,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2011.6626065224889
+    },
+    "attack.normal_hit_2": {
+      "average": 1906.2810149330994,
+      "category": "attack",
+      "crit": 3465.9654816965444,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1732.9827408482722
+    },
+    "attack.normal_hit_3": {
+      "average": 2383.3587982230656,
+      "category": "attack",
+      "crit": 4333.379633132847,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2166.6898165664234
+    },
+    "attack.normal_hit_4": {
+      "average": 3138.5627785799493,
+      "category": "attack",
+      "crit": 5706.477779236271,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2853.2388896181355
+    },
+    "attack.plunge": {
+      "average": 1979.0149951133965,
+      "category": "attack",
+      "crit": 3598.209082024357,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1799.1045410121785
+    },
+    "attack.plunge_high": {
+      "average": 4942.746294031221,
+      "category": "attack",
+      "crit": 8986.811443693128,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4493.405721846564
+    },
+    "attack.plunge_low": {
+      "average": 3957.1916991003923,
+      "category": "attack",
+      "crit": 7194.8939983643495,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3597.4469991821747
+    },
+    "burst.burst_dmg": {
+      "average": 4353.453493550733,
+      "category": "burst",
+      "crit": 7915.36998827406,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3957.68499413703
+    },
+    "reaction.electrocharged": {
+      "average": 5957.0451,
+      "category": "reaction",
+      "crit": 5957.0451,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5957.0451
+    },
+    "reaction.hyperbloom": {
+      "average": 8935.567649999999,
+      "category": "reaction",
+      "crit": 8935.567649999999,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8935.567649999999
+    },
+    "reaction.overloaded": {
+      "average": 8190.9370125,
+      "category": "reaction",
+      "crit": 8190.9370125,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8190.9370125
+    },
+    "reaction.shatter": {
+      "average": 8935.567649999999,
+      "category": "reaction",
+      "crit": 8935.567649999999,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8935.567649999999
+    },
+    "reaction.superconduct": {
+      "average": 4467.7838249999995,
+      "category": "reaction",
+      "crit": 4467.7838249999995,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4467.7838249999995
+    },
+    "skill.hold_dmg": {
+      "average": 6483.760886810529,
+      "category": "skill",
+      "crit": 11788.656157837326,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5894.328078918663
+    },
+    "skill.press_dmg": {
+      "average": 4375.220761018487,
+      "category": "skill",
+      "crit": 7954.946838215431,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3977.4734191077155
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Razor",
+  "repSlug": "razor",
+  "schema": 1,
+  "slug": "master_key",
+  "weapon": "weapon_name.master_key",
+  "weaponType": "claymore"
+}

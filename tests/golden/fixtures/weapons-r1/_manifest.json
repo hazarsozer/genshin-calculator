@@ -2037,6 +2037,28 @@
         "level": 90,
         "res": 10
       },
+      "featureCount": 17,
+      "kind": "weapon",
+      "repKey": "Razor",
+      "repSlug": "razor",
+      "setToggles": {},
+      "slug": "master_key",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.master_key",
+        "passiveToggles": {
+          "weapon_fall_into_place": true
+        },
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
       "featureCount": 23,
       "kind": "weapon",
       "repKey": "Klee",
@@ -3267,6 +3289,28 @@
         "name": "weapon_name.slingshot",
         "passiveToggles": {
           "weapon_slingshot": true
+        },
+        "refine": 1,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 20,
+      "kind": "weapon",
+      "repKey": "Fischl",
+      "repSlug": "fischl",
+      "setToggles": {},
+      "slug": "snare_hook",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.snare_hook",
+        "passiveToggles": {
+          "weapon_phantom_flash": true
         },
         "refine": 1,
         "type": "bow"

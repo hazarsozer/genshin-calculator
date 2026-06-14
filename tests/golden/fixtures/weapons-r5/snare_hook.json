@@ -1,0 +1,193 @@
+{
+  "_source": "port-snapshot snare_hook weapons-r5 — regression lock; independent validation = tools/oracle/gate-reps.mjs (GCSim)",
+  "element": "electro",
+  "features": {
+    "attack.aimed": {
+      "average": 1147.858570249793,
+      "category": "attack",
+      "crit": 2087.015582272351,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1043.5077911361755
+    },
+    "attack.charged_aimed": {
+      "average": 2905.7900691859813,
+      "category": "attack",
+      "crit": 5283.254671247239,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2641.6273356236193
+    },
+    "attack.fischl_stellar_predator": {
+      "average": 4437.141435646993,
+      "category": "attack",
+      "crit": 8067.529882994533,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 4033.7649414972666
+    },
+    "attack.normal_hit_1": {
+      "average": 1077.636634187453,
+      "category": "attack",
+      "crit": 1959.339334886278,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 979.669667443139
+    },
+    "attack.normal_hit_2": {
+      "average": 1142.7569766042388,
+      "category": "attack",
+      "crit": 2077.7399574622523,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1038.8699787311261
+    },
+    "attack.normal_hit_3": {
+      "average": 1420.0435959273261,
+      "category": "attack",
+      "crit": 2581.8974471405927,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1290.9487235702964
+    },
+    "attack.normal_hit_4": {
+      "average": 1409.5403148923604,
+      "category": "attack",
+      "crit": 2562.8005725315643,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1281.4002862657821
+    },
+    "attack.normal_hit_5": {
+      "average": 1760.3499014602062,
+      "category": "attack",
+      "crit": 3200.636184473102,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1600.318092236551
+    },
+    "attack.plunge": {
+      "average": 1288.962648610957,
+      "category": "attack",
+      "crit": 2343.568452019922,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1171.784226009961
+    },
+    "attack.plunge_high": {
+      "average": 3219.2856465912896,
+      "category": "attack",
+      "crit": 5853.246630165981,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2926.6233150829903
+    },
+    "attack.plunge_low": {
+      "average": 2577.379126608096,
+      "category": "attack",
+      "crit": 4686.143866560175,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2343.0719332800877
+    },
+    "burst.burst_dmg": {
+      "average": 6856.965521381465,
+      "category": "burst",
+      "crit": 12467.21003887539,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 6233.605019437695
+    },
+    "reaction.electrocharged": {
+      "average": 5957.0451,
+      "category": "reaction",
+      "crit": 5957.0451,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5957.0451
+    },
+    "reaction.hyperbloom": {
+      "average": 8935.567649999999,
+      "category": "reaction",
+      "crit": 8935.567649999999,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8935.567649999999
+    },
+    "reaction.overloaded": {
+      "average": 8190.9370125,
+      "category": "reaction",
+      "crit": 8190.9370125,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8190.9370125
+    },
+    "reaction.shatter": {
+      "average": 8935.567649999999,
+      "category": "reaction",
+      "crit": 8935.567649999999,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8935.567649999999
+    },
+    "reaction.superconduct": {
+      "average": 4467.7838249999995,
+      "category": "reaction",
+      "crit": 4467.7838249999995,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4467.7838249999995
+    },
+    "skill.fischl_oz_dmg": {
+      "average": 2363.0793597087095,
+      "category": "skill",
+      "crit": 4296.507926743108,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2148.253963371554
+    },
+    "skill.fischl_undone": {
+      "average": 1182.7224022566115,
+      "category": "skill",
+      "crit": 2150.404367739294,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1075.202183869647
+    },
+    "skill.skill_dmg": {
+      "average": 3072.003167621323,
+      "category": "skill",
+      "crit": 5585.460304766041,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2792.7301523830206
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Fischl",
+  "repSlug": "fischl",
+  "schema": 1,
+  "slug": "snare_hook",
+  "weapon": "weapon_name.snare_hook",
+  "weaponType": "bow"
+}
