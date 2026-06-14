@@ -1,0 +1,193 @@
+{
+  "_source": "port-snapshot rainbow_serpents_rain_bow weapons-r5 — regression lock; independent validation = tools/oracle/gate-reps.mjs (GCSim)",
+  "element": "electro",
+  "features": {
+    "attack.aimed": {
+      "average": 1656.8660503328088,
+      "category": "attack",
+      "crit": 3012.483727877834,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1506.241863938917
+    },
+    "attack.charged_aimed": {
+      "average": 4194.336340565684,
+      "category": "attack",
+      "crit": 7626.066073755788,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3813.033036877894
+    },
+    "attack.fischl_stellar_predator": {
+      "average": 6404.7515920438,
+      "category": "attack",
+      "crit": 11645.00289462509,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 5822.501447312545
+    },
+    "attack.normal_hit_1": {
+      "average": 1555.504833135978,
+      "category": "attack",
+      "crit": 2828.190605701778,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1414.095302850889
+    },
+    "attack.normal_hit_2": {
+      "average": 1649.5022012202187,
+      "category": "attack",
+      "crit": 2999.0949113094885,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1499.5474556547442
+    },
+    "attack.normal_hit_3": {
+      "average": 2049.749058869242,
+      "category": "attack",
+      "crit": 3726.816470671349,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1863.4082353356746
+    },
+    "attack.normal_hit_4": {
+      "average": 2034.5881930492033,
+      "category": "attack",
+      "crit": 3699.25126008946,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1849.62563004473
+    },
+    "attack.normal_hit_5": {
+      "average": 2540.9611114384984,
+      "category": "attack",
+      "crit": 4619.929293524542,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2309.964646762271
+    },
+    "attack.plunge": {
+      "average": 1860.541453435158,
+      "category": "attack",
+      "crit": 3382.802642609378,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1691.401321304689
+    },
+    "attack.plunge_high": {
+      "average": 4646.8486906013695,
+      "category": "attack",
+      "crit": 8448.815801093398,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4224.407900546699
+    },
+    "attack.plunge_low": {
+      "average": 3720.2945418476743,
+      "category": "attack",
+      "crit": 6764.171894268498,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3382.085947134249
+    },
+    "burst.burst_dmg": {
+      "average": 9897.624738043463,
+      "category": "burst",
+      "crit": 17995.681341897205,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 8997.840670948603
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.hyperbloom": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.fischl_oz_dmg": {
+      "average": 3410.965485487917,
+      "category": "skill",
+      "crit": 6201.755428159849,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3100.8777140799243
+    },
+    "skill.fischl_undone": {
+      "average": 1707.1899326766347,
+      "category": "skill",
+      "crit": 3103.9816957757,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1551.99084788785
+    },
+    "skill.skill_dmg": {
+      "average": 4434.255131134292,
+      "category": "skill",
+      "crit": 8062.2820566078035,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4031.1410283039017
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Fischl",
+  "repSlug": "fischl",
+  "schema": 1,
+  "slug": "rainbow_serpents_rain_bow",
+  "weapon": "weapon_name.rainbow_serpents_rain_bow",
+  "weaponType": "bow"
+}

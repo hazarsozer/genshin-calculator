@@ -40,8 +40,8 @@
     "description": "EVERY non-beta weapon (202) at refine R1, passive ON, on a scaling-relevant rep (REP_BY_TYPE, or CHAR_COUPLED_REP for HP/DEF/EM passives). Isolates each weapon's base ATK + statTable + R1 passive.",
     "id": "weapons-r1"
   },
-  "featureTotal": 5820,
-  "itemCount": 202,
+  "featureTotal": 5948,
+  "itemCount": 208,
   "items": [
     {
       "artifactSets": {},
@@ -4419,6 +4419,94 @@
         },
         "refine": 1,
         "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 20,
+      "kind": "weapon",
+      "repKey": "Fischl",
+      "repSlug": "fischl",
+      "setToggles": {},
+      "slug": "rainbow_serpents_rain_bow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.rainbow_serpents_rain_bow",
+        "passiveToggles": {
+          "weapon_astral_whispers": true
+        },
+        "refine": 1,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "serenitys_call",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.serenitys_call",
+        "passiveToggles": {
+          "weapon_solemn_silence": true
+        },
+        "refine": 1,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "weapon",
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "setToggles": {},
+      "slug": "prospectors_shovel",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.prospectors_shovel",
+        "passiveToggles": {
+          "weapon_swift_and_sure": true
+        },
+        "refine": 1,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "weapon",
+      "repKey": "Rosaria",
+      "repSlug": "rosaria",
+      "setToggles": {},
+      "slug": "sacrificers_staff",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.sacrificers_staff",
+        "passiveToggles": {
+          "weapon_untainted_desire": 3
+        },
+        "refine": 1,
+        "type": "polearm"
       }
     }
   ]
