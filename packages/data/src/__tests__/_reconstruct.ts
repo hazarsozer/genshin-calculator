@@ -29,6 +29,7 @@
 
 import { buildStats } from "../buildStats.js";
 import { compileCharacter } from "../loader.js";
+import type { PartyInput } from "../partyContext.js";
 import type {
   CharMultiplier,
   CharPostEffect,
@@ -116,6 +117,17 @@ export interface ReconstructInput {
   /** Base talent levels (attack/elemental/burst) — usually `TALENTS`; the talent-sweep axis overrides them. */
   readonly talents: { readonly attack: number; readonly elemental: number; readonly burst: number };
   readonly enemy: ReconstructEnemy;
+  /**
+   * Optional party composition. When provided, forwarded to `buildStats` so that
+   * `party_*` context keys and `set_other.*` team-buff toggles are applied. Absent → inert
+   * (all existing callers that omit `party` produce a byte-identical `buildStats` call).
+   */
+  readonly party?: PartyInput;
+  /**
+   * Optional resolver for slug-keyed party members. Required only when `party.members`
+   * contains `{ character: slug }` entries; safe to omit for `setOther`-only party inputs.
+   */
+  readonly partySlugResolver?: (slug: string) => DbObjectChar;
 }
 
 /** The compiled port build: the named feature closures + the eval context to run them against. */
@@ -195,6 +207,8 @@ export function reconstructPort(input: ReconstructInput): ReconstructResult {
     setBonuses,
     setRegistry: input.setRegistry,
     talentLevels: input.talents,
+    ...(input.party !== undefined ? { party: input.party } : {}),
+    ...(input.partySlugResolver !== undefined ? { partySlugResolver: input.partySlugResolver } : {}),
   });
 
   const compiled = compileCharacter(input.char, {
