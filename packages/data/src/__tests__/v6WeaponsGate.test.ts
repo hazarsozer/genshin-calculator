@@ -1,0 +1,104 @@
+/**
+ * v6.x live weapons — GCSim-free regression lock (weapon analog of v6SetsGate.test.ts).
+ *
+ * Re-runs OUR PORT (no GCSim binary) for each gated v6.x weapon and asserts it reproduces
+ * the frozen `ourRatio` from tools/oracle/_fixtures/<weapon>-gate.json. This is the in-suite
+ * CI lock for the weapon PASSIVE itself: the armory fixtures (weapons-r1/r5) lock the stat
+ * table on a solo non-reacting holder, so they do NOT exercise the EM-on-reaction passive —
+ * this test does. Correctness vs GCSim is the dev-time `gate-live --self-test` gate; this is
+ * the cheap golden that catches port/schema drift without the binary.
+ *
+ * Gate method (matches the gate-reps.mjs `<weapon>-gcsim` entries exactly): an electro holder
+ * wears the weapon at R5 (passive ON → +120 EM), driven into a superconduct against a cryo
+ * aura; the gated feature is `reaction.superconduct` in absolute mode (transformative: no ATK
+ * denominator, so the value is purely the EM-scaled reaction). With the passive OFF the EM
+ * drops to 0 and the superconduct falls ~47% — so the frozen value is load-bearing on the EM.
+ *
+ * Fixtures: tools/oracle/_fixtures/{snare-hook,master-key}-gate.json (frozen by --write).
+ * Extend per Phase-B weapon: add the gate rep, `--write` its fixture, add a case here.
+ */
+
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
+import { describe, it, expect } from "vitest";
+import { fischl } from "../characters/fischl.js";
+import { razor } from "../characters/razor.js";
+import { snareHook } from "../weapons/snare-hook.js";
+import { masterKey } from "../weapons/masters-key.js";
+import type { DbObjectChar, DbObjectWeapon } from "@genshin/types";
+import {
+  LEVELS,
+  TALENTS,
+  reconstructSettings,
+  reconstructPort,
+} from "./_reconstruct.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const FIXTURES = resolve(__dirname, "../../../../tools/oracle/_fixtures");
+
+// ── frozen fixture row type (shared with v6SetsGate.test.ts) ─────────────────
+interface GateRow {
+  rep: string;
+  feature: string;
+  ourRatio: number;
+}
+
+function loadFixture(name: string): GateRow[] {
+  return JSON.parse(readFileSync(resolve(FIXTURES, name), "utf8")) as GateRow[];
+}
+
+// ── shared rep parameters (matches the gate-reps.mjs <weapon>-gcsim entries) ──
+const ENEMY = { level: 90, resistance: 10 } as const;
+const STAT_BLOCK = { atk_base: 2000 } as const;
+
+/** Run our port for one weapon (passive ON, R5) and return its features map. */
+function runPort(
+  char: DbObjectChar,
+  weapon: DbObjectWeapon,
+  passiveToggleKey: string,
+): Record<string, { normal: number }> {
+  const settings = reconstructSettings({
+    charToggles: {},
+    setToggles: {},
+    passiveToggles: { [passiveToggleKey]: true },
+    constellation: 0,
+    refine: 5,
+  });
+
+  const { compiled, context } = reconstructPort({
+    char,
+    weapon,
+    weaponStatTable: weapon.statTable,
+    statBlock: STAT_BLOCK,
+    settings,
+    passiveOn: true,
+    artifactSets: {},
+    setRegistry: {},
+    levels: LEVELS,
+    talents: TALENTS,
+    enemy: ENEMY,
+  });
+
+  const features: Record<string, { normal: number }> = {};
+  for (const [key, fn] of Object.entries(compiled)) {
+    features[key] = fn(context) as { normal: number };
+  }
+  return features;
+}
+
+describe("v6.x weapon gate — port reproduces frozen ourRatio (GCSim-free regression lock)", () => {
+  it("snare-hook: reaction.superconduct matches frozen fixture (absolute, R5 passive ON)", () => {
+    const [row] = loadFixture("snare-hook-gate.json");
+    const features = runPort(fischl, snareHook, "weapon_phantom_flash");
+    const got = features[row!.feature]!.normal;
+    expect(got).toBeCloseTo(row!.ourRatio, 6);
+  });
+
+  it("master-key: reaction.superconduct matches frozen fixture (absolute, R5 passive ON)", () => {
+    const [row] = loadFixture("master-key-gate.json");
+    const features = runPort(razor, masterKey, "weapon_fall_into_place");
+    const got = features[row!.feature]!.normal;
+    expect(got).toBeCloseTo(row!.ourRatio, 6);
+  });
+});
