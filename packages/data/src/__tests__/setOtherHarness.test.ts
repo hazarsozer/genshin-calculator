@@ -32,8 +32,8 @@ const BASE_SETTINGS = reconstructSettings({
 });
 
 describe("setOther harness — party thread-through (additive, base-inert)", () => {
-  it("reconstructPort without party: baseline atk_total", () => {
-    const { context } = reconstructPort({
+  it("party.setOther noblesse_oblige_4 raises atk_total ~20% vs no-party baseline", () => {
+    const BASE_ARGS = {
       char: flins,
       weapon: blackcliffPole,
       weaponStatTable: blackcliffPole.statTable,
@@ -45,42 +45,17 @@ describe("setOther harness — party thread-through (additive, base-inert)", () 
       levels: LEVELS,
       talents: TALENTS,
       enemy: ENEMY,
-    });
-    // Baseline check — just confirm it compiles cleanly.
-    expect(context.stats["atk_total"]).toBeGreaterThan(0);
-  });
+    } as const;
 
-  it("reconstructPort WITH party.setOther noblesse_oblige_4 raises atk_total ~20%", () => {
-    const { context: withoutParty } = reconstructPort({
-      char: flins,
-      weapon: blackcliffPole,
-      weaponStatTable: blackcliffPole.statTable,
-      statBlock: STAT_BLOCK,
-      settings: BASE_SETTINGS,
-      passiveOn: false,
-      artifactSets: {},
-      setRegistry: {},
-      levels: LEVELS,
-      talents: TALENTS,
-      enemy: ENEMY,
-    });
+    const { context: withoutParty } = reconstructPort(BASE_ARGS);
+    const base = withoutParty.stats["atk_total"] as number;
+    // Baseline: compiles cleanly without party.
+    expect(base).toBeGreaterThan(0);
 
     const { context: withParty } = reconstructPort({
-      char: flins,
-      weapon: blackcliffPole,
-      weaponStatTable: blackcliffPole.statTable,
-      statBlock: STAT_BLOCK,
-      settings: BASE_SETTINGS,
-      passiveOn: false,
-      artifactSets: {},
-      setRegistry: {},
-      levels: LEVELS,
-      talents: TALENTS,
-      enemy: ENEMY,
+      ...BASE_ARGS,
       party: { setOther: ["noblesse_oblige_4"] },
     });
-
-    const base = withoutParty.stats["atk_total"] as number;
     const buffed = withParty.stats["atk_total"] as number;
 
     // Noblesse 4pc = +20% ATK (atk_percent: 20 raw). The effective lift on
