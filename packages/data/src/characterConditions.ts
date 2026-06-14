@@ -508,6 +508,125 @@ const setOtherScrollCinderCity4Tier2: Condition = {
 };
 
 /**
+ * Night of the Sky's Unveiling 4pc — ALL party members' Lunar-reaction DMG +10%.
+ * Source: GCSim nightoftheskysunveiling.go — `for _, char := range s.core.Player.Chars()`
+ * (team-wide). +10% applies to both Lunar-Charged and Lunar-Bloom.
+ * Gate: OR(AND(set.night_of_the_skys_unveiling_4, piecesCount NightOfTheSkysUnveiling≥4),
+ *          set_other.night_of_the_skys_unveiling_4). Fires once whether self-worn or teammate.
+ * Note: the CRIT-rate tier (MS1/MS2 +15%/+30% on Lunar reactions) is wearer-only and
+ * quarantined (NIGHT-QUARANTINE.md) — NOT included here.
+ */
+const setOtherNightOfTheSkysUnveiling4: Condition = {
+  type: "static",
+  stats: { dmg_reaction_lunarcharged: 10, dmg_reaction_lunarbloom: 10 },
+  condition: {
+    type: "or",
+    items: [
+      {
+        type: "and",
+        items: [
+          { type: "boolean", name: "set.night_of_the_skys_unveiling_4" },
+          { type: "pieces-count", setName: "NightOfTheSkysUnveiling", count: 4 },
+        ],
+      },
+      { type: "boolean", name: "set_other.night_of_the_skys_unveiling_4" },
+    ],
+  },
+};
+
+/**
+ * Silken Moon's Serenade 4pc — react buff (+10% Lunar-reaction DMG) at Moonsign ≥1.
+ * Source: GCSim silkenmoonsserenade.go — gleamingMoonDevotionReactKey team-wide via
+ * `for _, char := range s.core.Player.Chars()`, gated `case 0: return nil` (Moonsign 0 = no buff).
+ * Gate: AND(moonsign_1, OR(AND(set.silken_moons_serenade_4, piecesCount SilkenMoonsSerenade≥4),
+ *                          set_other.silken_moons_serenade_4)). Fires once, self-worn or teammate.
+ */
+const setOtherSilkenMoonsSerenade4React: Condition = {
+  type: "static",
+  stats: { dmg_reaction_lunarcharged: 10, dmg_reaction_lunarbloom: 10 },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "moonsign_1" },
+      {
+        type: "or",
+        items: [
+          {
+            type: "and",
+            items: [
+              { type: "boolean", name: "set.silken_moons_serenade_4" },
+              { type: "pieces-count", setName: "SilkenMoonsSerenade", count: 4 },
+            ],
+          },
+          { type: "boolean", name: "set_other.silken_moons_serenade_4" },
+        ],
+      },
+    ],
+  },
+};
+
+/**
+ * Silken Moon's Serenade 4pc — EM base tier (+60 EM) at Moonsign ≥1 (Nascent Gleam).
+ * Source: GCSim silkenmoonsserenade.go — gleamingMoonDevotionEMKey, `addEMStats` at MS≥1.
+ * Gate: AND(moonsign_1, OR(AND(set.silken_moons_serenade_4, piecesCount SilkenMoonsSerenade≥4),
+ *                          set_other.silken_moons_serenade_4)). Fires once.
+ */
+const setOtherSilkenMoonsSerenade4Ms1: Condition = {
+  type: "static",
+  stats: { mastery: 60 },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "moonsign_1" },
+      {
+        type: "or",
+        items: [
+          {
+            type: "and",
+            items: [
+              { type: "boolean", name: "set.silken_moons_serenade_4" },
+              { type: "pieces-count", setName: "SilkenMoonsSerenade", count: 4 },
+            ],
+          },
+          { type: "boolean", name: "set_other.silken_moons_serenade_4" },
+        ],
+      },
+    ],
+  },
+};
+
+/**
+ * Silken Moon's Serenade 4pc — EM increment (+60 EM) at Moonsign ≥2 (Ascendant Gleam).
+ * Stacks with the Ms1 condition for a total of +120 EM at Moonsign ≥2.
+ * Source: GCSim silkenmoonsserenade.go — `addEMStats` called twice at MS≥2.
+ * Gate: AND(moonsign_2, OR(AND(set.silken_moons_serenade_4, piecesCount SilkenMoonsSerenade≥4),
+ *                          set_other.silken_moons_serenade_4)). Fires once.
+ */
+const setOtherSilkenMoonsSerenade4Ms2: Condition = {
+  type: "static",
+  stats: { mastery: 60 },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "moonsign_2" },
+      {
+        type: "or",
+        items: [
+          {
+            type: "and",
+            items: [
+              { type: "boolean", name: "set.silken_moons_serenade_4" },
+              { type: "pieces-count", setName: "SilkenMoonsSerenade", count: 4 },
+            ],
+          },
+          { type: "boolean", name: "set_other.silken_moons_serenade_4" },
+        ],
+      },
+    ],
+  },
+};
+
+/**
  * Song of Days Past 4pc (team) — the recorded-healing INPUT, injected into the stats bag.
  *
  * Faithful port of the ConditionNumber in Buffs/Artifacts.js:262-273
@@ -871,6 +990,12 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
   ...setArchaicPetra4DmgConditions,
   setOtherScrollCinderCity4Tier1,
   setOtherScrollCinderCity4Tier2,
+  // Night of the Sky's Unveiling + Silken Moon's Serenade 4pc (v6.x Lunar sets, team-wide).
+  // GCSim confirms both apply to all party members (the CRIT-rate tier of Night is quarantined).
+  setOtherNightOfTheSkysUnveiling4,
+  setOtherSilkenMoonsSerenade4React,
+  setOtherSilkenMoonsSerenade4Ms1,
+  setOtherSilkenMoonsSerenade4Ms2,
   // Song of Days Past 4pc (team) — the healing-recorded INPUT (the multiplier is in
   // CHARACTER_MULTIPLIERS). Inert unless `party_days_past_healing_recorded > 0`.
   setOtherSongOfDaysPast4HealingInput,

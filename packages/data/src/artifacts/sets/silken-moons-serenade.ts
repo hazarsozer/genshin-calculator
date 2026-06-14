@@ -2,17 +2,13 @@
  * Silken Moon's Serenade — artifact set port (v6.x Nod-Krai / Lunar).
  *
  * 2pc: +20% Energy Recharge (no damage output — ported as a stat for completeness, not gated).
- * 4pc: when the wearer deals Elemental DMG, all party members gain "Gleaming Moon: Devotion" for
- *      8s. While active: team EM +60 (Moonsign Nascent Gleam ≥1) or +120 (Ascendant Gleam ≥2).
- *      Additionally, while any party member has a Gleaming Moon effect, ALL characters' Lunar-
- *      reaction DMG +10%. The +10% fires whenever the EM buff is up (one Gleaming Moon effect).
- *
- * GATED (wearer-facing): Both the +120 EM (at MS2) AND the +10% Lunar-reaction DMG, together on
- *   the wearer's own Lunar-Charged hit (absolute mode — EM enters non-linearly; both effects fire
- *   once the wearer has triggered the on-hit EM buff, which precedes the LC reaction).
+ * 4pc: ALL party members gain EM +60/+120 (Moonsign ≥1/≥2) AND Lunar-reaction DMG +10% (at ≥1).
+ *      Team-propagation is modeled via three conditions in characterConditions.ts
+ *      (setOtherSilkenMoonsSerenade4React/Ms1/Ms2, the Noblesse OR pattern). The
+ *      `set.silken_moons_serenade_4` boolean below is the TOGGLE activating the self-worn arm
+ *      of those OR gates; real stats live in characterConditions.ts.
  * QUARANTINED (SILKEN-QUARANTINE.md): the 2pc ER (no damage output), the on-hit UPTIME (always-on
- *   toggle here — the 8s buff window after an elemental hit is a rotation concern), team-propagation
- *   (wearer-only here), and the Moonsign-1-only EM tier (separately testable follow-up).
+ *   toggle here — the 8s buff window after an elemental hit is a rotation concern).
  *
  * `moonsign_1`/`moonsign_2` are settings KEYS (boolean conditions read them); both are absent in
  * every v5.8 build → base-inert (the ~58k goldens are unaffected).
@@ -46,51 +42,17 @@ export const silkenMoonsSerenade: DbObjectArtifactSet = {
         },
       ],
     },
-    // 4pc — team EM (Moonsign-tiered) + Lunar-reaction DMG while EM buff is active.
-    // Both gated on `set.silken_moons_serenade_4` (the on-hit uptime toggle, always-on here).
+    // 4pc — display-only toggle. Real stats (team EM + Lunar-react DMG) are in
+    // characterConditions.ts via the set_other OR pattern (Noblesse convention).
+    // This boolean activates the self-worn arm of those OR gates in characterConditions.
+    // `text_percent: 120` is the headline EM value shown in the UI (max tier, MS2).
     4: {
       conditions: [
-        // GATED: +10% Lunar-reaction DMG while Gleaming Moon: Devotion is active.
-        // Moonsign≥1 floor: GCSim's 4pc Init exits at `case 0: return nil`, so at Moonsign 0 the 4pc
-        // grants NEITHER the EM NOR the +10% react (unlike Night/Aubade, whose react has no floor).
-        // Gate the react on moonsign_1 — mirrors the +60 EM base tier below + GCSim's control flow.
         {
-          type: "static",
+          type: "boolean",
+          name: "set.silken_moons_serenade_4",
           title: "set_bonus.silken_moons_serenade_4",
-          stats: { dmg_reaction_lunarcharged: 10, dmg_reaction_lunarbloom: 10 },
-          condition: {
-            type: "and",
-            items: [
-              { type: "boolean", name: "set.silken_moons_serenade_4" },
-              { type: "boolean", name: "moonsign_1" },
-            ],
-          },
-        },
-        // GATED: +60 EM base at Moonsign ≥1 (Nascent Gleam), also requiring the set toggle.
-        {
-          type: "static",
-          title: "set_bonus.silken_moons_serenade_4_ms1",
-          stats: { mastery: 60 },
-          condition: {
-            type: "and",
-            items: [
-              { type: "boolean", name: "set.silken_moons_serenade_4" },
-              { type: "boolean", name: "moonsign_1" },
-            ],
-          },
-        },
-        // GATED: +60 EM increment at Moonsign ≥2 (Ascendant Gleam) → total +120 at MS2.
-        {
-          type: "static",
-          title: "set_bonus.silken_moons_serenade_4_ms2",
-          stats: { mastery: 60 },
-          condition: {
-            type: "and",
-            items: [
-              { type: "boolean", name: "set.silken_moons_serenade_4" },
-              { type: "boolean", name: "moonsign_2" },
-            ],
-          },
+          stats: { text_percent: 120 },
         },
       ],
     },
