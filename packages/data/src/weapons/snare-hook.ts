@@ -16,7 +16,7 @@
  *
  * Sources:
  *   Project Amber (pinned): tools/port/_fixtures/ambr/weapon/15433.json
- *     affixData["115433"]: name "Phantom Flash", upgrade[4] "+120 EM for 12s"
+ *     affix["115433"]: name "Phantom Flash", upgrade[4] "+120 EM for 12s"
  *   GCSim (cross-check): /tmp/gcsim/internal/weapons/bow/snarehook/snarehook.go
  *     emBuff = 45 + 15*r → R5=120 (identical values, identical logic)
  *   live-weapons.json gameId 15433, slug "snare-hook", type "bow"

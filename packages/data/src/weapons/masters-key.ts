@@ -21,7 +21,7 @@
  *
  * Sources:
  *   Project Amber (pinned): tools/port/_fixtures/ambr/weapon/12433.json
- *     affixData["112433"]: name "Fall Into Place", upgrade[4] "+120 EM for 12s"
+ *     affix["112433"]: name "Fall Into Place", upgrade[4] "+120 EM for 12s"
  *   GCSim (cross-check): /tmp/gcsim/internal/weapons/claymore/masterkey/masterkey.go
  *     emBuff = 45 + 15*r → R5=120 (identical values, identical logic)
  *   live-weapons.json gameId 12433, slug "masters-key", type "claymore"
