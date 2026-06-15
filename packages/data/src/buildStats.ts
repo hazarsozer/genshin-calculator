@@ -789,6 +789,7 @@ export function buildStats(input: BuildInput): BuildResult {
   // stats for a condition are computed against the PRE-merge settings (its own settings
   // don't gate itself), then merged in for the rest — exactly her order. Inert for the
   // base build: every condition is a gated-off toggle → both halves return {} → no merge.
+  //
   // Surface the wielder's burst Energy Capacity (a statTable constEntry, e.g. 40/60/80) into the
   // condition EvalContext so conditions can gate on it — Moonweaver's Dawn's energy-cap tier
   // (GCSim `cost := char.EnergyMax`; her engine has no playable v6 analog). Read from the
