@@ -65,8 +65,14 @@ const ELEMENTS: readonly Element[] = [
 const SCALING_TOTAL_STATS = ["atk", "hp", "def"] as const;
 /** Flat-summed stats whose total is `base+flat` and that the engine reads as a number. */
 const FLAT_TOTAL_STATS = ["mastery", "recharge"] as const;
-/** Flat-summed PERCENT stats whose total is `base+flat` but emitted as a FRACTION. */
-const FRACTION_TOTAL_STATS = ["crit_rate", "crit_dmg"] as const;
+/**
+ * Flat-summed PERCENT stats whose total is `base+flat` but emitted as a FRACTION.
+ * `crit_dmg_lunar` is the reaction-scoped crit DMG channel (Nocturne's Curtain Call's "CRIT DMG from
+ * Lunar Reaction DMG"): emitted as `crit_dmg_lunar_total` and read ONLY by the lunar reaction variants
+ * in compileReaction. Base-inert — no v5.8 content sets it, so `crit_dmg_lunar_total` is 0 everywhere
+ * except a Nocturne's build (the 58k goldens compare feature damage, not the stat bag, and read 0).
+ */
+const FRACTION_TOTAL_STATS = ["crit_rate", "crit_dmg", "crit_dmg_lunar"] as const;
 /**
  * DMG% bonus keys carried in the bonus block; emitted as fractions.
  *
@@ -789,7 +795,17 @@ export function buildStats(input: BuildInput): BuildResult {
   // stats for a condition are computed against the PRE-merge settings (its own settings
   // don't gate itself), then merged in for the rest — exactly her order. Inert for the
   // base build: every condition is a gated-off toggle → both halves return {} → no merge.
-  let merged: EvalContext = settings;
+  //
+  // Surface the wielder's burst Energy Capacity (a statTable constEntry, e.g. 40/60/80) into the
+  // condition EvalContext so conditions can gate on it — Moonweaver's Dawn's energy-cap tier
+  // (GCSim `cost := char.EnergyMax`; her engine has no playable v6 analog). Read from the
+  // assembled bag exactly as the existing `burst_energy_cost` consumers do (the akuoumaru/
+  // mouuns-moon/wavebreakers-fin postEffects via `readStats`, and the static-output emit at the
+  // `raw.isSet("burst_energy_cost")` block below). Base-inert: no existing condition reads
+  // `burst_energy_cost` (grep-verified) → 58k v5.8 goldens + goldenConfig byte-identical.
+  let merged: EvalContext = raw.isSet("burst_energy_cost")
+    ? { ...settings, burst_energy_cost: raw.get("burst_energy_cost") }
+    : settings;
   const applyCondition = (cond: Condition): void => {
     raw.concat(conditionStats(cond, merged));
     merged = { ...merged, ...conditionSettings(cond, merged) };

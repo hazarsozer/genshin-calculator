@@ -668,9 +668,19 @@ function compileReaction(
   // Crit hook is generic (Lunar-Charged is crit-bearing): omit keys → non-crit.
   const critRate = reaction.critRateKeys ?? [];
   const critDmg = reaction.critDmgKeys ?? [];
+  // Lunar reactions additionally read a reaction-scoped crit DMG channel — Nocturne's Curtain Call's
+  // "CRIT DMG from Lunar Reaction DMG" (+60-140%). Appended only when the feature already reads crit
+  // DMG (every crit-bearing lunar reaction does), so no non-critting reaction gains a crit block.
+  // Base-inert: crit_dmg_lunar_total reads 0 unless a lunar crit-DMG source emits it → every existing
+  // lunar reaction is byte-identical. The non-lunar transformative branch keeps plain critDmg — in
+  // game the bonus is gated on a Lunar attack tag (GCSim AttackTagIsLunar).
+  const lunarCritDmg = critDmg.length > 0 ? [...critDmg, "crit_dmg_lunar_total"] : critDmg;
+  // critOpts feeds the lunardirect fall-through only; the lunarcharged branch passes lunarCritDmg
+  // directly. Both lunar variants thus carry the scoped channel, while the transformative branch
+  // early-returns below with plain critRate/critDmg (no lunar extension).
   const critOpts = {
     ...(critRate.length > 0 ? { critRate: cCritRate(critRate.map((k) => cStat(k))) } : {}),
-    ...(critDmg.length > 0 ? { critDmg: cCritDmg(critDmg.map((k) => cStat(k))) } : {}),
+    ...(lunarCritDmg.length > 0 ? { critDmg: cCritDmg(lunarCritDmg.map((k) => cStat(k))) } : {}),
   };
 
   if (ctx.charLevel === undefined) {
@@ -708,7 +718,7 @@ function compileReaction(
       ...(reaction.reactionBonusKeys ? { reactionBonusKeys: reaction.reactionBonusKeys } : {}),
       ...(reaction.elevationKeys ? { elevationKeys: reaction.elevationKeys } : {}),
       ...(critRate.length > 0 ? { critRateKeys: critRate } : {}),
-      ...(critDmg.length > 0 ? { critDmgKeys: critDmg } : {}),
+      ...(lunarCritDmg.length > 0 ? { critDmgKeys: lunarCritDmg } : {}),
       ...(reaction.penalty !== undefined ? { penalty: reaction.penalty } : {}),
     });
   }

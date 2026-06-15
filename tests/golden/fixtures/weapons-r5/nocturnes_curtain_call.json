@@ -1,0 +1,157 @@
+{
+  "_source": "port-snapshot nocturnes_curtain_call weapons-r5 — regression lock; validation = 2-witness (Amber + GCSim source) + load-bearing r1≠r5 (no single-rep GCSim gate)",
+  "element": "hydro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3008.402186816582,
+      "category": "attack",
+      "crit": 5595.3758531041385,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1941.4582453533524
+    },
+    "attack.moondew_cleanse": {
+      "average": 2327.3206564680227,
+      "category": "attack",
+      "crit": 5088.803314290202,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 1188.4040800780847
+    },
+    "attack.normal_hit_1": {
+      "average": 1129.0570083619743,
+      "category": "attack",
+      "crit": 2099.9513791909626,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 728.6316463816572
+    },
+    "attack.normal_hit_2": {
+      "average": 883.749421066426,
+      "category": "attack",
+      "crit": 1643.6998325886825,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 570.3235451278682
+    },
+    "attack.normal_hit_3": {
+      "average": 1411.176484805986,
+      "category": "attack",
+      "crit": 2624.6699534237528,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 910.696127692444
+    },
+    "attack.plunge_high": {
+      "average": 3482.4600121809362,
+      "category": "attack",
+      "crit": 6477.083664859724,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2247.3892401721705
+    },
+    "attack.plunge_hit": {
+      "average": 1394.3344498601325,
+      "category": "attack",
+      "crit": 2593.3451804043298,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 899.8271994097009
+    },
+    "attack.plunge_low": {
+      "average": 2788.078080038121,
+      "category": "attack",
+      "crit": 5185.591485732217,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1799.2731161077875
+    },
+    "burst.burst_cast": {
+      "average": 25941.327388941965,
+      "category": "burst",
+      "crit": 48248.69410933073,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 16741.113995787277
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.gravity_lb": {
+      "average": 2168.355809040717,
+      "category": "skill",
+      "crit": 4741.21870441037,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 1107.2315640577524
+    },
+    "skill.gravity_lc": {
+      "average": 21732.838904248998,
+      "category": "skill",
+      "crit": 47519.942014658474,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 11097.479994306108
+    },
+    "skill.gravity_ripple_dot": {
+      "average": 6061.820798202803,
+      "category": "skill",
+      "crit": 11274.478481881375,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3911.9676292280265
+    },
+    "skill.skill_cast": {
+      "average": 10828.380742088768,
+      "category": "skill",
+      "crit": 20139.88036507015,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6988.044739390235
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Columbina",
+  "repSlug": "columbina",
+  "schema": 1,
+  "slug": "nocturnes_curtain_call",
+  "weapon": "weapon_name.nocturnes_curtain_call",
+  "weaponType": "catalyst"
+}

@@ -1,0 +1,157 @@
+{
+  "_source": "port-snapshot blackmarrow_lantern weapons-r1 — regression lock; validation = 2-witness (Amber + GCSim source) + load-bearing r1≠r5 (no single-rep GCSim gate)",
+  "element": "dendro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2614.974885055978,
+      "category": "attack",
+      "crit": 4754.499791010869,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2377.2498955054343
+    },
+    "attack.normal_hit_1": {
+      "average": 743.3885852114897,
+      "category": "attack",
+      "crit": 1351.6156094754358,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 675.8078047377179
+    },
+    "attack.normal_hit_2": {
+      "average": 681.9622923296516,
+      "category": "attack",
+      "crit": 1239.9314405993666,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 619.9657202996833
+    },
+    "attack.normal_hit_3": {
+      "average": 846.1154963210183,
+      "category": "attack",
+      "crit": 1538.3918114927606,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 769.1959057463803
+    },
+    "attack.normal_hit_4": {
+      "average": 1077.2579628850415,
+      "category": "attack",
+      "crit": 1958.6508416091663,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 979.3254208045831
+    },
+    "attack.plunge": {
+      "average": 1065.8155502135157,
+      "category": "attack",
+      "crit": 1937.846454933665,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 968.9232274668325
+    },
+    "attack.plunge_high": {
+      "average": 2661.9582083419887,
+      "category": "attack",
+      "crit": 4839.924015167252,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2419.962007583626
+    },
+    "attack.plunge_low": {
+      "average": 2131.179483668466,
+      "category": "attack",
+      "crit": 3874.8717884881207,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1937.4358942440604
+    },
+    "other.nahida_mastery_bonus": {
+      "average": 97.678,
+      "category": "other",
+      "crit": 97.678,
+      "damageType": "other",
+      "format": "",
+      "isReacted": false,
+      "normal": 97.678
+    },
+    "reaction.burning": {
+      "average": 1333.0510856655403,
+      "category": "reaction",
+      "crit": 1333.0510856655403,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1333.0510856655403
+    },
+    "reaction.electrocharged": {
+      "average": 9414.327261324324,
+      "category": "reaction",
+      "crit": 9414.327261324324,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 9414.327261324324
+    },
+    "reaction.rupture": {
+      "average": 10664.408685324323,
+      "category": "reaction",
+      "crit": 10664.408685324323,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 10664.408685324323
+    },
+    "reaction.shatter": {
+      "average": 14121.490891986487,
+      "category": "reaction",
+      "crit": 14121.490891986487,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 14121.490891986487
+    },
+    "skill.hold_dmg": {
+      "average": 2939.5924569939616,
+      "category": "skill",
+      "crit": 5344.71355817084,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2672.35677908542
+    },
+    "skill.nahida_trikarma_purification_dmg": {
+      "average": 3942.9792945767895,
+      "category": "skill",
+      "crit": 6814.609324634258,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3407.304662317129
+    },
+    "skill.press_dmg": {
+      "average": 2218.220074909554,
+      "category": "skill",
+      "crit": 4033.127408926462,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2016.563704463231
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Nahida",
+  "repSlug": "nahida",
+  "schema": 1,
+  "slug": "blackmarrow_lantern",
+  "weapon": "weapon_name.blackmarrow_lantern",
+  "weaponType": "catalyst"
+}

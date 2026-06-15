@@ -1,0 +1,148 @@
+{
+  "_source": "port-snapshot nightweavers_looking_glass weapons-r1 — regression lock; validation = 2-witness (Amber + GCSim source) + load-bearing r1≠r5 (no single-rep GCSim gate)",
+  "element": "dendro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2624.728473974713,
+      "category": "attack",
+      "crit": 4772.233589044933,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2386.1167945224665
+    },
+    "attack.normal_hit_1": {
+      "average": 638.2436169100635,
+      "category": "attack",
+      "crit": 1160.442939836479,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 580.2214699182394
+    },
+    "attack.normal_hit_2": {
+      "average": 602.3073459520257,
+      "category": "attack",
+      "crit": 1095.1042653673194,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 547.5521326836597
+    },
+    "attack.normal_hit_3": {
+      "average": 842.6638385593835,
+      "category": "attack",
+      "crit": 1532.11607010797,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 766.058035053985
+    },
+    "attack.plunge_high": {
+      "average": 2733.1764515908567,
+      "category": "attack",
+      "crit": 4969.411730165194,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2484.705865082597
+    },
+    "attack.plunge_hit": {
+      "average": 1094.3304648638139,
+      "category": "attack",
+      "crit": 1989.691754297843,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 994.8458771489215
+    },
+    "attack.plunge_low": {
+      "average": 2188.197230378109,
+      "category": "attack",
+      "crit": 3978.5404188692887,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1989.2702094346444
+    },
+    "reaction.burning": {
+      "average": 2143.359802144271,
+      "category": "reaction",
+      "crit": 2143.359802144271,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2143.359802144271
+    },
+    "reaction.electrocharged": {
+      "average": 14021.674857154165,
+      "category": "reaction",
+      "crit": 14021.674857154165,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 14021.674857154165
+    },
+    "reaction.rupture": {
+      "average": 17146.878417154167,
+      "category": "reaction",
+      "crit": 17146.878417154167,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 17146.878417154167
+    },
+    "reaction.shatter": {
+      "average": 21032.512285731245,
+      "category": "reaction",
+      "crit": 21032.512285731245,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 21032.512285731245
+    },
+    "skill.frostgrove": {
+      "average": 4878.379470110353,
+      "category": "skill",
+      "crit": 8869.780854746097,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4434.890427373049
+    },
+    "skill.skill_hold_1": {
+      "average": 4545.930736206585,
+      "category": "skill",
+      "crit": 8265.328611284698,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4132.664305642349
+    },
+    "skill.skill_hold_2": {
+      "average": 0,
+      "category": "skill",
+      "crit": 0,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 0
+    },
+    "skill.skill_press": {
+      "average": 3496.869797081988,
+      "category": "skill",
+      "crit": 6357.945085603615,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3178.9725428018073
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Lauma",
+  "repSlug": "lauma",
+  "schema": 1,
+  "slug": "nightweavers_looking_glass",
+  "weapon": "weapon_name.nightweavers_looking_glass",
+  "weaponType": "catalyst"
+}

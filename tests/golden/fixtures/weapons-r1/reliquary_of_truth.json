@@ -1,0 +1,157 @@
+{
+  "_source": "port-snapshot reliquary_of_truth weapons-r1 — regression lock; validation = 2-witness (Amber + GCSim source) + load-bearing r1≠r5 (no single-rep GCSim gate)",
+  "element": "dendro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3516.3031161925037,
+      "category": "attack",
+      "crit": 8122.170273942338,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2505.2591059547353
+    },
+    "attack.normal_hit_1": {
+      "average": 999.619389715531,
+      "category": "attack",
+      "crit": 2308.9815138563213,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 712.1984356358454
+    },
+    "attack.normal_hit_2": {
+      "average": 917.0207130280733,
+      "category": "attack",
+      "crit": 2118.190079133742,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 653.3493887609752
+    },
+    "attack.normal_hit_3": {
+      "average": 1137.754160995957,
+      "category": "attack",
+      "crit": 2628.0535892769876,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 810.6152621049989
+    },
+    "attack.normal_hit_4": {
+      "average": 1448.5666969435433,
+      "category": "attack",
+      "crit": 3345.9872419865555,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1032.0597480316626
+    },
+    "attack.plunge": {
+      "average": 1433.1803192144184,
+      "category": "attack",
+      "crit": 3310.446853207312,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1021.0974215086612
+    },
+    "attack.plunge_high": {
+      "average": 3579.4806277716043,
+      "category": "attack",
+      "crit": 8268.10152320422,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2550.2711629205423
+    },
+    "attack.plunge_low": {
+      "average": 2865.753358632559,
+      "category": "attack",
+      "crit": 6619.4909746971625,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2041.762174618378
+    },
+    "other.nahida_mastery_bonus": {
+      "average": 72.55,
+      "category": "other",
+      "crit": 72.55,
+      "damageType": "other",
+      "format": "",
+      "isReacted": false,
+      "normal": 72.55
+    },
+    "reaction.burning": {
+      "average": 985.5528612359184,
+      "category": "reaction",
+      "crit": 985.5528612359184,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 985.5528612359184
+    },
+    "reaction.electrocharged": {
+      "average": 7884.422889887347,
+      "category": "reaction",
+      "crit": 7884.422889887347,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7884.422889887347
+    },
+    "reaction.rupture": {
+      "average": 7884.422889887347,
+      "category": "reaction",
+      "crit": 7884.422889887347,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7884.422889887347
+    },
+    "reaction.shatter": {
+      "average": 11826.63433483102,
+      "category": "reaction",
+      "crit": 11826.63433483102,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 11826.63433483102
+    },
+    "skill.hold_dmg": {
+      "average": 3952.809709926747,
+      "category": "skill",
+      "crit": 9130.43968725932,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2816.256788073255
+    },
+    "skill.nahida_trikarma_purification_dmg": {
+      "average": 4488.334637822717,
+      "category": "skill",
+      "crit": 9937.859675543741,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3065.3030663160266
+    },
+    "skill.press_dmg": {
+      "average": 2982.7950571839865,
+      "category": "skill",
+      "crit": 6889.840990999364,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2125.1508278098795
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Nahida",
+  "repSlug": "nahida",
+  "schema": 1,
+  "slug": "reliquary_of_truth",
+  "weapon": "weapon_name.reliquary_of_truth",
+  "weaponType": "catalyst"
+}

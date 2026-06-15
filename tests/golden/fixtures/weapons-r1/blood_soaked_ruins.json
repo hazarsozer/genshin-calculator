@@ -1,0 +1,220 @@
+{
+  "_source": "port-snapshot blood_soaked_ruins weapons-r1 — regression lock; independent validation = tools/oracle/gate-reps.mjs (GCSim)",
+  "element": "electro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3774.576846419389,
+      "category": "attack",
+      "crit": 6557.9228299642755,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2461.682743980584
+    },
+    "attack.normal_hit_1": {
+      "average": 1529.3610755282496,
+      "category": "attack",
+      "crit": 2657.100999805971,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 997.4102852124515
+    },
+    "attack.normal_hit_2": {
+      "average": 1543.7998296975802,
+      "category": "attack",
+      "crit": 2682.1867880826403,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1006.8268724033935
+    },
+    "attack.normal_hit_3": {
+      "average": 1912.120391756367,
+      "category": "attack",
+      "crit": 3322.1042996208903,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1247.0361485063402
+    },
+    "attack.normal_hit_4": {
+      "average": 1095.5376616508408,
+      "category": "attack",
+      "crit": 1903.3793017728565,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 714.4817198847059
+    },
+    "attack.normal_hit_5": {
+      "average": 2625.9124079522103,
+      "category": "attack",
+      "crit": 4562.2414459337015,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1712.5530953204584
+    },
+    "attack.plunge_high": {
+      "average": 5069.968770156341,
+      "category": "attack",
+      "crit": 8808.527498003936,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3306.504316067543
+    },
+    "attack.skill_charged_hit": {
+      "average": 3771.2259503483256,
+      "category": "attack",
+      "crit": 6552.101007084684,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2459.497375031788
+    },
+    "attack.skill_normal_hit_1": {
+      "average": 1781.2607338107161,
+      "category": "attack",
+      "crit": 3094.7496653717117,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1161.6928173317235
+    },
+    "attack.skill_normal_hit_2": {
+      "average": 1798.0681897077134,
+      "category": "attack",
+      "crit": 3123.950819097087,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1172.6542113727803
+    },
+    "attack.skill_normal_hit_3": {
+      "average": 2227.053314929123,
+      "category": "attack",
+      "crit": 3869.2665090063424,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1452.427368245624
+    },
+    "attack.skill_normal_hit_4": {
+      "average": 1275.983723972853,
+      "category": "attack",
+      "crit": 2216.8850005113054,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 832.1640392309704
+    },
+    "attack.skill_normal_hit_5": {
+      "average": 3058.4065218524606,
+      "category": "attack",
+      "crit": 5313.6536276891575,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1994.6147251085424
+    },
+    "burst.flins_burst_final": {
+      "average": 43188.23626748452,
+      "category": "burst",
+      "crit": 75034.93295496123,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 28166.266124234695
+    },
+    "burst.flins_burst_initial": {
+      "average": 11991.344687009227,
+      "category": "burst",
+      "crit": 20833.676537677573,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 7820.449150779869
+    },
+    "burst.flins_burst_mid": {
+      "average": 5998.366148261739,
+      "category": "burst",
+      "crit": 10421.518465966838,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 3911.9814061437073
+    },
+    "burst.flins_symphony": {
+      "average": 26392.811052351644,
+      "category": "burst",
+      "crit": 45854.68125025408,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 17212.71818703231
+    },
+    "reaction.hyperbloom": {
+      "average": 9973.49104503386,
+      "category": "reaction",
+      "crit": 9973.49104503386,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 9973.49104503386
+    },
+    "reaction.lunarcharged_contrubution": {
+      "average": 7958.251680854003,
+      "category": "reaction",
+      "crit": 13826.609579821312,
+      "damageType": "lunarreaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5190.168761194186
+    },
+    "reaction.overloaded": {
+      "average": 9142.366791281038,
+      "category": "reaction",
+      "crit": 9142.366791281038,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 9142.366791281038
+    },
+    "reaction.shatter": {
+      "average": 9973.49104503386,
+      "category": "reaction",
+      "crit": 9973.49104503386,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 9973.49104503386
+    },
+    "reaction.superconduct": {
+      "average": 4986.74552251693,
+      "category": "reaction",
+      "crit": 4986.74552251693,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4986.74552251693
+    },
+    "skill.flins_spearstorm": {
+      "average": 6645.894451028431,
+      "category": "skill",
+      "crit": 11546.52951026176,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4334.282849197357
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Flins",
+  "repSlug": "flins",
+  "schema": 1,
+  "slug": "blood_soaked_ruins",
+  "weapon": "weapon_name.blood_soaked_ruins",
+  "weaponType": "polearm"
+}

@@ -1,0 +1,220 @@
+{
+  "_source": "port-snapshot sacrificers_staff weapons-r5 — regression lock; validation = 2-witness (Amber + GCSim source) + load-bearing r1≠r5 (no single-rep GCSim gate)",
+  "element": "cryo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 5721.809752799438,
+      "category": "attack",
+      "crit": 9601.318509916162,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 4800.659254958081
+    },
+    "attack.normal_hit_1": {
+      "average": 2048.815735383949,
+      "category": "attack",
+      "crit": 3437.9563972613832,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1718.9781986306916
+    },
+    "attack.normal_hit_2": {
+      "average": 2015.2285921809334,
+      "category": "attack",
+      "crit": 3381.5964563226726,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1690.7982281613363
+    },
+    "attack.normal_hit_3": {
+      "average": 2485.4485970231513,
+      "category": "attack",
+      "crit": 4170.635629464629,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2085.3178147323147
+    },
+    "attack.normal_hit_3_1": {
+      "average": 1242.7242985115756,
+      "category": "attack",
+      "crit": 2085.3178147323147,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1042.6589073661573
+    },
+    "attack.normal_hit_4": {
+      "average": 2720.55859944426,
+      "category": "attack",
+      "crit": 4565.155216035608,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2282.577608017804
+    },
+    "attack.normal_hit_5": {
+      "average": 3304.9748911767306,
+      "category": "attack",
+      "crit": 5545.818188369182,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2772.909094184591
+    },
+    "attack.normal_hit_5_1": {
+      "average": 1625.6177310259532,
+      "category": "attack",
+      "crit": 2727.8211414336224,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1363.9105707168112
+    },
+    "attack.normal_hit_5_2": {
+      "average": 1679.357160150778,
+      "category": "attack",
+      "crit": 2817.997046935561,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1408.9985234677804
+    },
+    "attack.plunge": {
+      "average": 2318.520495304164,
+      "category": "attack",
+      "crit": 3890.5267229992346,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1945.2633614996173
+    },
+    "attack.plunge_high": {
+      "average": 5790.687387182192,
+      "category": "attack",
+      "crit": 9716.896645941188,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4858.448322970594
+    },
+    "attack.plunge_low": {
+      "average": 4636.059483965569,
+      "category": "attack",
+      "crit": 7779.406456968099,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3889.7032284840493
+    },
+    "burst.burst_dmg": {
+      "average": 13330.991157687655,
+      "category": "burst",
+      "crit": 22369.68681022864,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 11184.84340511432
+    },
+    "burst.rosaria_burst_lance_dmg": {
+      "average": 7915.275999877045,
+      "category": "burst",
+      "crit": 13282.001543573255,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 6641.000771786627
+    },
+    "burst.rosaria_crit_dmg_buff": {
+      "average": 2.8782000000000005,
+      "category": "burst",
+      "crit": 2.8782000000000005,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2.8782000000000005
+    },
+    "burst.rosaria_ice_lance": {
+      "average": 6873.7923156826955,
+      "category": "burst",
+      "crit": 11534.36976152414,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 5767.18488076207
+    },
+    "burst.rosaria_swing_dmg": {
+      "average": 5415.715157810609,
+      "category": "burst",
+      "crit": 9087.685266655382,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4543.842633327691
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.rosaria_slash_dmg": {
+      "average": 5700.218017883212,
+      "category": "skill",
+      "crit": 9565.087119312702,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4782.543559656351
+    },
+    "skill.rosaria_stab_dmg": {
+      "average": 2447.7406782674975,
+      "category": "skill",
+      "crit": 4107.360939469573,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2053.6804697347866
+    },
+    "skill.skill_dmg": {
+      "average": 8147.95869615071,
+      "category": "skill",
+      "crit": 13672.448058782276,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6836.224029391138
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Rosaria",
+  "repSlug": "rosaria",
+  "schema": 1,
+  "slug": "sacrificers_staff",
+  "weapon": "weapon_name.sacrificers_staff",
+  "weaponType": "polearm"
+}
