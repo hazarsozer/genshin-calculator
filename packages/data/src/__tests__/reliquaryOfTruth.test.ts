@@ -79,6 +79,14 @@ describe("Reliquary of Truth — Essence of Falsity (self-only)", () => {
     expect(delta(NONE, "crit_rate_total", 5)).toBeCloseTo(0.16, 6);
   });
 
+  it("no toggles → no EM, no CRIT DMG, no synergy (only the always-on CR fires)", () => {
+    // Pins that both boolean-refine toggles are OFF by default and the and-gated synergy stays
+    // dark when neither is set — a toggle accidentally made always-on, or the synergy left ungated,
+    // would surface here as a non-zero delta (most sensitive at R5).
+    expect(delta(NONE, "mastery", 5)).toBeCloseTo(0, 6);
+    expect(delta(NONE, "crit_dmg_total", 5)).toBeCloseTo(0, 6);
+  });
+
   it("Secret of Lies (Elemental Skill): EM +80 (R1) / +160 (R5)", () => {
     expect(delta(SECRET, "mastery", 1)).toBeCloseTo(80, 6);
     expect(delta(SECRET, "mastery", 5)).toBeCloseTo(160, 6);
