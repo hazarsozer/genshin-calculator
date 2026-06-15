@@ -1,0 +1,157 @@
+{
+  "_source": "port-snapshot etherlight_spindlelute weapons-r5 — regression lock; independent validation = tools/oracle/gate-reps.mjs (GCSim)",
+  "element": "dendro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2703.9087746794185,
+      "category": "attack",
+      "crit": 4916.197772144397,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2458.0988860721986
+    },
+    "attack.normal_hit_1": {
+      "average": 768.670831233179,
+      "category": "attack",
+      "crit": 1397.583329514871,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 698.7916647574355
+    },
+    "attack.normal_hit_2": {
+      "average": 705.1554631627611,
+      "category": "attack",
+      "crit": 1282.100842114111,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 641.0504210570555
+    },
+    "attack.normal_hit_3": {
+      "average": 874.891429347574,
+      "category": "attack",
+      "crit": 1590.7116897228618,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 795.3558448614309
+    },
+    "attack.normal_hit_4": {
+      "average": 1113.8949269012905,
+      "category": "attack",
+      "crit": 2025.2635034568916,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1012.6317517284458
+    },
+    "attack.plunge": {
+      "average": 1102.0633639280275,
+      "category": "attack",
+      "crit": 2003.7515707782316,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1001.8757853891158
+    },
+    "attack.plunge_high": {
+      "average": 2752.4899755248434,
+      "category": "attack",
+      "crit": 5004.527228226988,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2502.263614113494
+    },
+    "attack.plunge_low": {
+      "average": 2203.6597518543904,
+      "category": "attack",
+      "crit": 4006.6540942807096,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2003.3270471403548
+    },
+    "other.nahida_mastery_bonus": {
+      "average": 92.55,
+      "category": "other",
+      "crit": 92.55,
+      "damageType": "other",
+      "format": "",
+      "isReacted": false,
+      "normal": 92.55
+    },
+    "reaction.burning": {
+      "average": 1139.0812310364104,
+      "category": "reaction",
+      "crit": 1139.0812310364104,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1139.0812310364104
+    },
+    "reaction.electrocharged": {
+      "average": 9112.649848291283,
+      "category": "reaction",
+      "crit": 9112.649848291283,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 9112.649848291283
+    },
+    "reaction.rupture": {
+      "average": 9112.649848291283,
+      "category": "reaction",
+      "crit": 9112.649848291283,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 9112.649848291283
+    },
+    "reaction.shatter": {
+      "average": 13668.974772436924,
+      "category": "reaction",
+      "crit": 13668.974772436924,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 13668.974772436924
+    },
+    "skill.hold_dmg": {
+      "average": 3039.566415674106,
+      "category": "skill",
+      "crit": 5526.484392134737,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2763.2421960673687
+    },
+    "skill.nahida_trikarma_purification_dmg": {
+      "average": 3903.405867100296,
+      "category": "skill",
+      "crit": 6782.280449499237,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3391.1402247496185
+    },
+    "skill.press_dmg": {
+      "average": 2293.6605467970244,
+      "category": "skill",
+      "crit": 4170.291903267317,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2085.1459516336586
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Nahida",
+  "repSlug": "nahida",
+  "schema": 1,
+  "slug": "etherlight_spindlelute",
+  "weapon": "weapon_name.etherlight_spindlelute",
+  "weaponType": "catalyst"
+}

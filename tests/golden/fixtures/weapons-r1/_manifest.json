@@ -40,8 +40,8 @@
     "description": "EVERY non-beta weapon (202) at refine R1, passive ON, on a scaling-relevant rep (REP_BY_TYPE, or CHAR_COUPLED_REP for HP/DEF/EM passives). Isolates each weapon's base ATK + statTable + R1 passive.",
     "id": "weapons-r1"
   },
-  "featureTotal": 5973,
-  "itemCount": 209,
+  "featureTotal": 6021,
+  "itemCount": 212,
   "items": [
     {
       "artifactSets": {},
@@ -4527,6 +4527,73 @@
         "passiveToggles": {},
         "refine": 1,
         "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 16,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "etherlight_spindlelute",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.etherlight_spindlelute",
+        "passiveToggles": {
+          "weapon_last_singer": true
+        },
+        "refine": 1,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 16,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "blackmarrow_lantern",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackmarrow_lantern",
+        "passiveToggles": {
+          "weapon_token_of_covenant": true
+        },
+        "refine": 1,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 16,
+      "kind": "weapon",
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "setToggles": {},
+      "slug": "dawning_frost",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.dawning_frost",
+        "passiveToggles": {
+          "weapon_nocturnal_dreams_charged": true,
+          "weapon_nocturnal_dreams_skill": true
+        },
+        "refine": 1,
+        "type": "catalyst"
       }
     }
   ]

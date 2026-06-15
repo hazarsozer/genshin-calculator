@@ -1,0 +1,157 @@
+{
+  "_source": "port-snapshot dawning_frost weapons-r5 — regression lock; independent validation = tools/oracle/gate-reps.mjs (GCSim)",
+  "element": "dendro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2839.418850070807,
+      "category": "attack",
+      "crit": 6271.298526058278,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2458.0988860721986
+    },
+    "attack.normal_hit_1": {
+      "average": 807.1938181279269,
+      "category": "attack",
+      "crit": 1782.8131984623499,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 698.7916647574355
+    },
+    "attack.normal_hit_2": {
+      "average": 740.4952907747944,
+      "category": "attack",
+      "crit": 1635.4991182344443,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 641.0504210570555
+    },
+    "attack.normal_hit_3": {
+      "average": 918.7378063630949,
+      "category": "attack",
+      "crit": 2029.1754598780713,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 795.3558448614309
+    },
+    "attack.normal_hit_4": {
+      "average": 1169.7192901105761,
+      "category": "attack",
+      "crit": 2583.507135549749,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1012.6317517284458
+    },
+    "attack.plunge": {
+      "average": 1157.2947722249585,
+      "category": "attack",
+      "crit": 2556.065653747543,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1001.8757853891158
+    },
+    "attack.plunge_high": {
+      "average": 2890.4347640436918,
+      "category": "attack",
+      "crit": 6383.975113415474,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2502.263614113494
+    },
+    "attack.plunge_low": {
+      "average": 2314.0991653091437,
+      "category": "attack",
+      "crit": 5111.048228828244,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2003.3270471403548
+    },
+    "other.nahida_mastery_bonus": {
+      "average": 102.55,
+      "category": "other",
+      "crit": 102.55,
+      "damageType": "other",
+      "format": "",
+      "isReacted": false,
+      "normal": 102.55
+    },
+    "reaction.burning": {
+      "average": 1212.0234500466765,
+      "category": "reaction",
+      "crit": 1212.0234500466765,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1212.0234500466765
+    },
+    "reaction.electrocharged": {
+      "average": 9696.187600373412,
+      "category": "reaction",
+      "crit": 9696.187600373412,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 9696.187600373412
+    },
+    "reaction.rupture": {
+      "average": 9696.187600373412,
+      "category": "reaction",
+      "crit": 9696.187600373412,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 9696.187600373412
+    },
+    "reaction.shatter": {
+      "average": 14544.28140056012,
+      "category": "reaction",
+      "crit": 14544.28140056012,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 14544.28140056012
+    },
+    "skill.hold_dmg": {
+      "average": 3191.8984314589075,
+      "category": "skill",
+      "crit": 7049.804549982756,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2763.2421960673687
+    },
+    "skill.nahida_trikarma_purification_dmg": {
+      "average": 4491.199553534338,
+      "category": "skill",
+      "crit": 9145.051196549895,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3584.4953108047316
+    },
+    "skill.press_dmg": {
+      "average": 2408.6104728186847,
+      "category": "skill",
+      "crit": 5319.79116348392,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2085.1459516336586
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Nahida",
+  "repSlug": "nahida",
+  "schema": 1,
+  "slug": "dawning_frost",
+  "weapon": "weapon_name.dawning_frost",
+  "weaponType": "catalyst"
+}
