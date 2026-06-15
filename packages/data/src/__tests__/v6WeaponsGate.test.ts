@@ -29,9 +29,11 @@ import { dirname, resolve } from "node:path";
 import { describe, it, expect } from "vitest";
 import { fischl } from "../characters/fischl.js";
 import { razor } from "../characters/razor.js";
+import { flins } from "../characters/flins.js";
 import { snareHook } from "../weapons/snare-hook.js";
 import { masterKey } from "../weapons/masters-key.js";
 import { prospectorsShovel } from "../weapons/prospectors-shovel.js";
+import { bloodSoakedRuins } from "../weapons/blood-soaked-ruins.js";
 import type { DbObjectChar, DbObjectWeapon } from "@genshin/types";
 import {
   LEVELS,
@@ -63,6 +65,7 @@ function runPort(
   char: DbObjectChar,
   weapon: DbObjectWeapon,
   passiveToggleKey: string,
+  enemy: { level: number; resistance: number } = ENEMY,
 ): Record<string, { normal: number }> {
   const settings = reconstructSettings({
     charToggles: {},
@@ -83,7 +86,7 @@ function runPort(
     setRegistry: {},
     levels: LEVELS,
     talents: TALENTS,
-    enemy: ENEMY,
+    enemy,
   });
 
   const features: Record<string, { normal: number }> = {};
@@ -114,6 +117,20 @@ describe("v6.x weapon gate — port reproduces frozen ourRatio (GCSim-free regre
   it("prospectors-shovel: reaction.electrocharged matches frozen fixture (absolute, R5 passive ON)", () => {
     const [row] = loadFixture("prospectors-shovel-gate.json");
     const features = runPort(fischl, prospectorsShovel, "weapon_swift_and_sure");
+    const got = features[row!.feature]!.normal;
+    expect(got).toBeCloseTo(row!.ourRatio, 6);
+  });
+
+  // Blood-Soaked Ruins (Flins's signature) gates the Lunar-Charged REACTION + a DIRECT +LC DMG% (not EM):
+  // Flins wears it R5 (weapon_mournful_tribute → dmg_reaction_lunarcharged +84%) → his lunarcharged
+  // contribution is ~1.58× the unbuffed value (the +0.84 react term). Enemy L100 matches the gate rep
+  // (lunar is DEF-ignored, so the level is immaterial, but kept faithful). Only the Mournful Tribute
+  // (LC-DMG) toggle is on — the Requiem-of-Ruin crit_dmg channel is out of this gate's scope (crit
+  // neutralized in the GCSim rep; the .normal field read here is the non-crit value either way), covered
+  // by bloodSoakedRuins.test.ts. Frozen value load-bearing on the +LC% (toggle off → react 0 → ÷1.58 → RED).
+  it("blood-soaked-ruins: reaction.lunarcharged_contrubution matches frozen fixture (absolute, R5 passive ON)", () => {
+    const [row] = loadFixture("blood-soaked-ruins-gate.json");
+    const features = runPort(flins, bloodSoakedRuins, "weapon_mournful_tribute", { level: 100, resistance: 10 });
     const got = features[row!.feature]!.normal;
     expect(got).toBeCloseTo(row!.ourRatio, 6);
   });
