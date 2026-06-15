@@ -886,6 +886,39 @@ const weaponOtherFreedomSworn: Condition = {
 };
 
 /**
+ * Nightweaver's Looking Glass (off-field, v6.0) — "Millennial Hymn" combined buff. When BOTH of the
+ * wielder's EM buffs (Prayer of the Far North + New Moon Verse) are active, ALL nearby party members'
+ * Bloom DMG +120/150/180/210/240%, Hyperbloom & Burgeon DMG +80/100/120/140/160%, and Lunar-Bloom DMG
+ * +40/50/60/70/80% (R1..R5). Off-field capable; "cannot stack". This is the TEAMMATE copy — the self
+ * copy (the wielder's own reactions) is `weapon_millennial_hymn` in nightweavers-looking-glass.ts.
+ *
+ * The NOT(weapon_millennial_hymn) guard prevents double-count when the active char IS the wielder
+ * (then the self toggle carries it — mirrors the Wolf's Gravestone off-field guard, and matches the
+ * "cannot stack" clause). Level read off the gate setting; absent → boolean gate false → INERT
+ * (base-safe: no golden build publishes it). All four reaction-DMG keys are existing emit keys.
+ *
+ * Source: GCSim catalyst/nightweavers/nightweavers.go (reactBuff=0.3+0.1r; loops ALL c.Player.Chars(),
+ *         gated on both prayerKey AND newMoonKey active); Amber affix 114520 "Millennial Hymn".
+ */
+const weaponOtherMillennialHymn: Condition = {
+  type: "static-level",
+  levelSetting: "weapon_other.weapon_millennial_hymn",
+  levelStats: {
+    dmg_reaction_bloom: [120, 150, 180, 210, 240],
+    dmg_reaction_hyperbloom: [80, 100, 120, 140, 160],
+    dmg_reaction_burgeon: [80, 100, 120, 140, 160],
+    dmg_reaction_lunarbloom: [40, 50, 60, 70, 80],
+  },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "weapon_other.weapon_millennial_hymn" },
+      { type: "boolean", name: "weapon_millennial_hymn", invert: true },
+    ],
+  },
+};
+
+/**
  * Bond of Life → bag stat — faithful port of her GLOBAL `ConditionBoLStat`
  * (db/Buffs/Static.js:28, the `static` buff appended to every character):
  *   getStats(settings) → { bond_of_life: settings['common.bond_of_life'] || 0 }
@@ -1013,6 +1046,9 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
   weaponOtherElegyForTheEnd,
   weaponOtherSongOfBrokenPines,
   weaponOtherFreedomSworn,
+  // v6 5★ catalyst off-field team buff (Nightweaver's Looking Glass) — inert unless
+  // `weapon_other.weapon_millennial_hymn` is published; NOT(self toggle) guards double-count.
+  weaponOtherMillennialHymn,
   // BoL/stat input emits (ConditionBoLStat + Neuvillette's A4 slider) — global
   // setting→stat conditions read by per-char post-effects (Clorinde C4 / Neuvillette
   // A4). Each gated on its own input being > 0 → inert for every golden.
