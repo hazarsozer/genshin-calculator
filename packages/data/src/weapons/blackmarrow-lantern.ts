@@ -10,9 +10,13 @@
  * (dmg_reaction_bloom + dmg_reaction_lunarbloom) — the Prospector's Shovel multi-channel pattern,
  * one toggle. Toggle: weapon_token_of_covenant.
  *
- * GCSim oracle gate: blackmarrow-lantern-gcsim (Bloom reaction, absolute mode); see
- * tools/oracle/gate-reps.mjs + v6WeaponsGate.test.ts. (Lunar-Bloom = deferred Moonsign, like
- * Prospector's Lunar-Charged.)
+ * Validation (B2 4★ doctrine — value cross-checked + armory-locked, NO live gate): both reaction-DMG
+ * values are two-witness confirmed (Amber + GCSim source). The armory port-snapshot on Nahida
+ * exercises the Bloom% via reaction.rupture/burning (both inherit dmg_reaction_bloom — base `bloom`
+ * is not emitted per-char; r1 10664 → r5 11914, load-bearing). The Lunar-Bloom% rests on the
+ * 2-witness cross-check only (the Nahida rep triggers no Lunar-Bloom). Bloom (the Dendro-Core
+ * explosion) is not cleanly single-rep live-gateable; both channels are existing golden-tested keys
+ * (cf. Lauma / Aubade set).
  *
  * Sources:
  *   Project Amber (pinned): tools/port/_fixtures/ambr/weapon/14433.json
