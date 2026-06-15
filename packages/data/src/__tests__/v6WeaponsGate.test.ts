@@ -14,7 +14,12 @@
  * denominator, so the value is purely the EM-scaled reaction). With the passive OFF the EM
  * drops to 0 and the superconduct falls ~47% — so the frozen value is load-bearing on the EM.
  *
- * Fixtures: tools/oracle/_fixtures/{snare-hook,master-key}-gate.json (frozen by --write).
+ * Prospector's Shovel is the same shape with a DIFFERENT reaction: it grants a direct +EC DMG%
+ * (not EM), so it gates `reaction.electrocharged` (a hydro applier + the electro holder's
+ * continuous-electro skill → Electro-Charged) and the frozen value is load-bearing on that
+ * bonus (passive off → ÷1.96).
+ *
+ * Fixtures: tools/oracle/_fixtures/{snare-hook,master-key,prospectors-shovel}-gate.json (frozen by --write).
  * Extend per Phase-B weapon: add the gate rep, `--write` its fixture, add a case here.
  */
 
@@ -26,6 +31,7 @@ import { fischl } from "../characters/fischl.js";
 import { razor } from "../characters/razor.js";
 import { snareHook } from "../weapons/snare-hook.js";
 import { masterKey } from "../weapons/masters-key.js";
+import { prospectorsShovel } from "../weapons/prospectors-shovel.js";
 import type { DbObjectChar, DbObjectWeapon } from "@genshin/types";
 import {
   LEVELS,
@@ -98,6 +104,16 @@ describe("v6.x weapon gate — port reproduces frozen ourRatio (GCSim-free regre
   it("master-key: reaction.superconduct matches frozen fixture (absolute, R5 passive ON)", () => {
     const [row] = loadFixture("master-key-gate.json");
     const features = runPort(razor, masterKey, "weapon_fall_into_place");
+    const got = features[row!.feature]!.normal;
+    expect(got).toBeCloseTo(row!.ourRatio, 6);
+  });
+
+  // Prospector's Shovel gates a DIFFERENT reaction (Electro-Charged) and a DIRECT +EC DMG% (not EM):
+  // Fischl wears it R5 (dmg_reaction_electrocharged +96%) → her EC reaction is 1.96× the unbuffed value.
+  // Same GCSim-free reproduction; the frozen value is load-bearing on the +EC% (passive off → ÷1.96 → RED).
+  it("prospectors-shovel: reaction.electrocharged matches frozen fixture (absolute, R5 passive ON)", () => {
+    const [row] = loadFixture("prospectors-shovel-gate.json");
+    const features = runPort(fischl, prospectorsShovel, "weapon_swift_and_sure");
     const got = features[row!.feature]!.normal;
     expect(got).toBeCloseTo(row!.ourRatio, 6);
   });
