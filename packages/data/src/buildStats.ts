@@ -789,7 +789,16 @@ export function buildStats(input: BuildInput): BuildResult {
   // stats for a condition are computed against the PRE-merge settings (its own settings
   // don't gate itself), then merged in for the rest — exactly her order. Inert for the
   // base build: every condition is a gated-off toggle → both halves return {} → no merge.
-  let merged: EvalContext = settings;
+  // Surface the wielder's burst Energy Capacity (a statTable constEntry, e.g. 40/60/80) into the
+  // condition EvalContext so conditions can gate on it — Moonweaver's Dawn's energy-cap tier
+  // (GCSim `cost := char.EnergyMax`; her engine has no playable v6 analog). Read from the
+  // assembled bag exactly as the existing `burst_energy_cost` consumers do (the akuoumaru/
+  // mouuns-moon/wavebreakers-fin postEffects via `readStats`, and the static-output emit at the
+  // `raw.isSet("burst_energy_cost")` block below). Base-inert: no existing condition reads
+  // `burst_energy_cost` (grep-verified) → 58k v5.8 goldens + goldenConfig byte-identical.
+  let merged: EvalContext = raw.isSet("burst_energy_cost")
+    ? { ...settings, burst_energy_cost: raw.get("burst_energy_cost") }
+    : settings;
   const applyCondition = (cond: Condition): void => {
     raw.concat(conditionStats(cond, merged));
     merged = { ...merged, ...conditionSettings(cond, merged) };
