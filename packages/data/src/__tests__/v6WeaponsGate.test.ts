@@ -19,8 +19,15 @@
  * continuous-electro skill → Electro-Charged) and the frozen value is load-bearing on that
  * bonus (passive off → ÷1.96).
  *
- * Fixtures: tools/oracle/_fixtures/{snare-hook,master-key,prospectors-shovel}-gate.json (frozen by --write).
- * Extend per Phase-B weapon: add the gate rep, `--write` its fixture, add a case here.
+ * Blood-Soaked Ruins is again a direct reaction-DMG% (not EM), but on the LUNAR-CHARGED reaction:
+ * Flins wears it R5 (weapon_mournful_tribute → dmg_reaction_lunarcharged +84%) and the gated feature
+ * is `reaction.lunarcharged_contrubution` — his isolated lunar contributor, absolute mode, enemy L100
+ * to match the rep (lunar reactions are DEF-ignored, so the level is immaterial). The frozen value is
+ * load-bearing on that bonus (toggle off → ÷1.58). Its Requiem-of-Ruin crit_dmg channel is out of this
+ * gate (crit-neutralized in the GCSim rep) — that channel is covered by bloodSoakedRuins.test.ts.
+ *
+ * Fixtures: tools/oracle/_fixtures/{snare-hook,master-key,prospectors-shovel,blood-soaked-ruins}-gate.json (frozen by --write).
+ * Extend per v6 weapon: add the gate rep, `--write` its fixture, add a case here.
  */
 
 import { readFileSync } from "node:fs";
