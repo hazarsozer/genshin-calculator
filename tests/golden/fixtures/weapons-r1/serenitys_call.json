@@ -1,5 +1,5 @@
 {
-  "_source": "port-snapshot serenitys_call weapons-r1 — regression lock; independent validation = tools/oracle/gate-reps.mjs (GCSim)",
+  "_source": "port-snapshot serenitys_call weapons-r1 — regression lock; validation = 2-witness (Amber + GCSim source) + load-bearing r1≠r5 (no single-rep GCSim gate)",
   "element": "pyro",
   "features": {
     "attack.charged_hit": {

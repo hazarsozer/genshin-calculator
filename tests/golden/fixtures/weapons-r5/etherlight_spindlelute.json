@@ -1,5 +1,5 @@
 {
-  "_source": "port-snapshot etherlight_spindlelute weapons-r5 — regression lock; independent validation = tools/oracle/gate-reps.mjs (GCSim)",
+  "_source": "port-snapshot etherlight_spindlelute weapons-r5 — regression lock; validation = 2-witness (Amber + GCSim source) + load-bearing r1≠r5 (no single-rep GCSim gate)",
   "element": "dendro",
   "features": {
     "attack.charged_hit": {
