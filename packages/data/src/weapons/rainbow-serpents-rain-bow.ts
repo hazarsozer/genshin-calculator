@@ -11,6 +11,7 @@
  * Validation: the off-field trigger can't be cleanly isolated in a single-rep GCSim gate, so the
  * armory port-snapshot on an ATK-scaling rep is the in-suite lock (ATK% changes every hit → the
  * passive IS exercised there, unlike the EM-on-reaction B1 weapons). Values cross-checked below.
+ * Stat-delta unit test: src/__tests__/rainbowSerpentsRainBow.test.ts.
  *
  * Sources:
  *   Project Amber (pinned): tools/port/_fixtures/ambr/weapon/15434.json

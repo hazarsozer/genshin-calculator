@@ -1,9 +1,10 @@
 /**
  * sacrificers_staff — 4★ polearm (v6.1, live port)
  *
- * Sub-stat: Energy Recharge. Passive "Untainted Desire": for 6s after an Elemental Skill hits an
- * opponent, ATK +8/10/12/14/16% and Energy Recharge +6/7.5/9/10.5/12% PER STACK, max 3 stacks
- * (off-field triggerable). At 3 stacks (R5): ATK +48%, ER +36%.
+ * Sub-stat: CRIT Rate (gen-weapon emits crit_rate_base; the per-stack Energy Recharge in the passive
+ * below is a SEPARATE effect, NOT the sub-stat). Passive "Untainted Desire": for 6s after an Elemental
+ * Skill hits an opponent, ATK +8/10/12/14/16% and Energy Recharge +6/7.5/9/10.5/12% PER STACK, max 3
+ * stacks (off-field triggerable). At 3 stacks (R5): ATK +48%, ER +36%.
  *
  * Passive shape: ConditionStacks (Lithic Blade pattern) — per-stack stats scale with weapon_refine;
  * the player supplies the stack count via the weapon_untainted_desire setting (clamped to maxStacks).
@@ -11,7 +12,7 @@
  * Validation: the off-field stack-ramp uptime is a rotation concern (not single-rep GCSim-gateable),
  * so the armory port-snapshot on an ATK-scaling rep (stacks set to 3) is the in-suite lock — ATK%
  * changes every hit → the passive IS exercised there. ER has no single-hit damage effect. Values
- * cross-checked below.
+ * cross-checked below. Stat-delta unit test: src/__tests__/sacrificersStaff.test.ts.
  *
  * Sources:
  *   Project Amber (pinned): tools/port/_fixtures/ambr/weapon/13434.json

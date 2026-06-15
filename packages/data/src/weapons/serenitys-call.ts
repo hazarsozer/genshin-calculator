@@ -9,8 +9,10 @@
  *
  * Passive shape: ConditionBooleanRefine granting hp_percent. Toggle: weapon_solemn_silence.
  *
- * GCSim oracle gate: serenitys-call-gcsim (HP-scaling holder + reaction, absolute mode);
- * see tools/oracle/gate-reps.mjs + v6WeaponsGate.test.ts.
+ * Validation (armory-locked, no live gate): the off-field reaction-trigger uptime is a rotation
+ * concern (not single-rep GCSim-gateable), so the armory port-snapshot on an HP-scaling rep (Hu Tao)
+ * is the in-suite lock — its HP-scaled features change r1→r5, so the hp_percent passive IS exercised.
+ * Values 2-witness-confirmed below. Stat-delta unit test: src/__tests__/serenitysCall.test.ts.
  *
  * Sources:
  *   Project Amber (pinned): tools/port/_fixtures/ambr/weapon/11433.json
