@@ -22,7 +22,8 @@ import { describe, it, expect } from "vitest";
 import { buildStats } from "../buildStats.js";
 import { compileCharacter } from "../loader.js";
 import { flins } from "../characters/flins.js";
-import { blackcliffPoleStatTable } from "../generated/weaponStatTables.js";
+import { nahida } from "../characters/nahida.js";
+import { blackcliffPoleStatTable, SolarPearlStatTable } from "../generated/weaponStatTables.js";
 
 const STAT_BLOCK = { atk_base: 871, crit_dmg_base: 50, crit_rate_base: 5, mastery_base: 200 } as const;
 const LEVELS = { charLevel: 90, ascension: 6, weaponLevel: 90, weaponAscension: 6 } as const;
@@ -42,6 +43,32 @@ function flinsEval(extra: Record<string, number>): (key: string) => { normal: nu
     charElement: flins.element,
     talentLevels: TALENTS,
     settings: {},
+    charLevel: LEVELS.charLevel,
+  });
+  return (key: string) => compiled[key]!(context);
+}
+
+/**
+ * Nahida @ C2 — "The Root of All Fullness" makes her Bloom/Rupture + Burning TRANSFORMATIVE reactions
+ * crit (crit_rate_bloom / crit_dmg_bloom). These route through compileReaction's `transformative`
+ * branch (plain critDmg, never lunarCritDmg), so crit_dmg_lunar must NOT reach them — the most
+ * dangerous leak path (a critting non-lunar reaction), guarded here so a future refactor of the
+ * transformative branch can't silently start reading the lunar channel.
+ */
+function nahidaEval(extra: Record<string, number>): (key: string) => { normal: number; crit: number } {
+  const settings = { char_constellation: 2 };
+  const { context } = buildStats({
+    char: nahida,
+    weaponStatTable: SolarPearlStatTable,
+    statBlock: { ...STAT_BLOCK, ...extra },
+    levels: LEVELS,
+    enemy: ENEMY,
+    settings,
+  });
+  const compiled = compileCharacter(nahida, {
+    charElement: nahida.element,
+    talentLevels: TALENTS,
+    settings,
     charLevel: LEVELS.charLevel,
   });
   return (key: string) => compiled[key]!(context);
@@ -73,6 +100,14 @@ describe("lunar-reaction crit DMG channel (crit_dmg_lunar_total)", () => {
     const b = base(NON_LUNAR);
     const w = wine(NON_LUNAR);
     expect(w.crit).toBeCloseTo(b.crit, 6);
+    expect(w.normal).toBeCloseTo(b.normal, 6);
+  });
+
+  it("does NOT touch a critting TRANSFORMATIVE reaction (Nahida C2 rupture uses plain critDmg)", () => {
+    const b = nahidaEval({})("reaction.rupture");
+    const w = nahidaEval({ crit_dmg_lunar: 140 })("reaction.rupture");
+    expect(b.crit).toBeGreaterThan(b.normal); // C2 makes rupture actually crit → the assertion bites
+    expect(w.crit).toBeCloseTo(b.crit, 6); // crit_dmg_lunar must NOT leak into the transformative path
     expect(w.normal).toBeCloseTo(b.normal, 6);
   });
 });

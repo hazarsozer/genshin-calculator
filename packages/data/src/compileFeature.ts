@@ -675,8 +675,9 @@ function compileReaction(
   // lunar reaction is byte-identical. The non-lunar transformative branch keeps plain critDmg — in
   // game the bonus is gated on a Lunar attack tag (GCSim AttackTagIsLunar).
   const lunarCritDmg = critDmg.length > 0 ? [...critDmg, "crit_dmg_lunar_total"] : critDmg;
-  // critOpts feeds the lunardirect variant only (the transformative branch passes critRate/critDmg
-  // directly below), so it carries the lunar-scoped crit DMG.
+  // critOpts feeds the lunardirect fall-through only; the lunarcharged branch passes lunarCritDmg
+  // directly. Both lunar variants thus carry the scoped channel, while the transformative branch
+  // early-returns below with plain critRate/critDmg (no lunar extension).
   const critOpts = {
     ...(critRate.length > 0 ? { critRate: cCritRate(critRate.map((k) => cStat(k))) } : {}),
     ...(lunarCritDmg.length > 0 ? { critDmg: cCritDmg(lunarCritDmg.map((k) => cStat(k))) } : {}),
