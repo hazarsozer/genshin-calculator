@@ -65,8 +65,14 @@ const ELEMENTS: readonly Element[] = [
 const SCALING_TOTAL_STATS = ["atk", "hp", "def"] as const;
 /** Flat-summed stats whose total is `base+flat` and that the engine reads as a number. */
 const FLAT_TOTAL_STATS = ["mastery", "recharge"] as const;
-/** Flat-summed PERCENT stats whose total is `base+flat` but emitted as a FRACTION. */
-const FRACTION_TOTAL_STATS = ["crit_rate", "crit_dmg"] as const;
+/**
+ * Flat-summed PERCENT stats whose total is `base+flat` but emitted as a FRACTION.
+ * `crit_dmg_lunar` is the reaction-scoped crit DMG channel (Nocturne's Curtain Call's "CRIT DMG from
+ * Lunar Reaction DMG"): emitted as `crit_dmg_lunar_total` and read ONLY by the lunar reaction variants
+ * in compileReaction. Base-inert — no v5.8 content sets it, so `crit_dmg_lunar_total` is 0 everywhere
+ * except a Nocturne's build (the 58k goldens compare feature damage, not the stat bag, and read 0).
+ */
+const FRACTION_TOTAL_STATS = ["crit_rate", "crit_dmg", "crit_dmg_lunar"] as const;
 /**
  * DMG% bonus keys carried in the bonus block; emitted as fractions.
  *
