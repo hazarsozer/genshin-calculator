@@ -1,6 +1,8 @@
-/** Transient staging barrel — past-v5.8 chars being gated vs GCSim before promotion. Empty when no
- * char is mid-gating. NOT globbed by the vitest suites (they glob characters/*.ts); the gate's
- * _port-entry.ts merges this for resolution, so promoted chars resolve from characters/ and this is a
- * no-op. (Flins promoted in sub-project D; Lauma + Columbina promoted in the KP-L lockstep — see
- * tools/port/LIVE-CHARS.md.) Empty again — no char mid-gating. */
-export {};
+/** Transient staging barrel — past-v5.8 chars being gated before promotion. NOT globbed by the vitest
+ * suites (they glob characters/*.ts); the gate's _port-entry.ts merges this for resolution, so a staged
+ * char resolves for gating without triggering the every-char golden suite. Promote to characters/ (+
+ * generate fixtures) once the gate validates it. (Flins promoted in sub-project D; Lauma + Columbina in
+ * the KP-L lockstep — see tools/port/LIVE-CHARS.md.)
+ *
+ * Mid-gating: nefer — the FIRST GO-gated char (GCSim lacks her); gated via tools/oracle/gate-go.mjs. */
+export { nefer } from "./nefer.js";
