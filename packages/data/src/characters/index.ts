@@ -70,6 +70,7 @@ export { mona } from "./mona.js";
 export { mualani } from "./mualani.js";
 export { nahida } from "./nahida.js";
 export { navia } from "./navia.js";
+export { nefer } from "./nefer.js";
 export { neuvillette } from "./neuvillette.js";
 export { nilou } from "./nilou.js";
 export { ningguang } from "./ningguang.js";

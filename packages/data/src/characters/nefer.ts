@@ -1,8 +1,11 @@
 /**
- * Nefer — STAGING past-v5.8 LIVE char (characters-unverified/, being GO-gated before promotion) and the
- * FIRST GO-gated character: GCSim does not model her, so her independent oracle is the GO gate
- * (`node tools/oracle/gate-go.mjs --report`, our-port vs GO's legacy gi/sheets engine), NOT an her-engine
- * golden. Her KB page `wiki/game/entities/characters/nefer.md` was written before this port (knowledge-first).
+ * Nefer — PROMOTED past-v5.8 LIVE char (the FIRST GO-gated character: GCSim does not model her). Her
+ * independent oracle is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the nefer-normals +
+ * nefer-hybrid-lunar reps, frozen in `tools/oracle/_fixtures/nefer-go-gate.json`), NOT an her-engine
+ * golden. The every-char suite fixtures (golden/constellations/weapon-passive) are the frozen
+ * post-verification snapshot from `tools/port/gen-live-goldens.mjs` — a regression lock, not an
+ * independent validation (see `tools/port/LIVE-CHARS.md`). Her KB page
+ * `wiki/game/entities/characters/nefer.md` was written before this port (knowledge-first).
  *
  * 5★ Dendro catalyst, Nod-Krai (6.1) — the EM-first **Lunar-Bloom carry** (the DPS to [[lauma]]'s
  * enabler). Mirrors [[lauma]]'s EM-scaled Lunar-Bloom machinery: her Skill cast, Phantasm "Nefer" hits,
