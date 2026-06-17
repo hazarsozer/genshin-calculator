@@ -46,6 +46,9 @@ const lunarBloomMultiFromEm: CharPostEffect = {
   capValue: 0.14,
 };
 
+// NOTE: the inline `≈ …%` annotations below are the L1-floor talent-param values; each resolver
+// entry returns the full StatTable, which scales to the talent level (the gate + goldens run L10, so
+// e.g. shade_1 is ≈96% @L1 → 172.8% @L10).
 const talents: TalentResolver = {
   get(path: string) {
     const [talent, name] = path.split(".");
