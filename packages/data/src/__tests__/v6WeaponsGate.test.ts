@@ -2,7 +2,7 @@
  * v6.x live weapons — GCSim-free regression lock (weapon analog of v6SetsGate.test.ts).
  *
  * Re-runs OUR PORT (no GCSim binary) for each gated v6.x weapon and asserts it reproduces
- * the frozen `ourRatio` from tools/oracle/_fixtures/<weapon>-gate.json. This is the in-suite
+ * the frozen `ourRatio` from tests/golden/fixtures/gates/<weapon>-gate.json. This is the in-suite
  * CI lock for the weapon PASSIVE itself: the armory fixtures (weapons-r1/r5) lock the stat
  * table on a solo non-reacting holder, so they do NOT exercise the EM-on-reaction passive —
  * this test does. Correctness vs GCSim is the dev-time `gate-live --self-test` gate; this is
@@ -26,7 +26,7 @@
  * load-bearing on that bonus (toggle off → ÷1.58). Its Requiem-of-Ruin crit_dmg channel is out of this
  * gate (crit-neutralized in the GCSim rep) — that channel is covered by bloodSoakedRuins.test.ts.
  *
- * Fixtures: tools/oracle/_fixtures/{snare-hook,master-key,prospectors-shovel,blood-soaked-ruins}-gate.json (frozen by --write).
+ * Fixtures: tests/golden/fixtures/gates/{snare-hook,master-key,prospectors-shovel,blood-soaked-ruins}-gate.json (frozen by --write).
  * Extend per v6 weapon: add the gate rep, `--write` its fixture, add a case here.
  */
 
@@ -50,7 +50,7 @@ import {
 } from "./_reconstruct.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const FIXTURES = resolve(__dirname, "../../../../tools/oracle/_fixtures");
+const FIXTURES = resolve(__dirname, "../../../../tests/golden/fixtures/gates");
 
 // ── frozen fixture row type (shared with v6SetsGate.test.ts) ─────────────────
 interface GateRow {

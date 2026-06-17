@@ -1,0 +1,10 @@
+[
+  {
+    "rep": "snare-hook-gcsim",
+    "feature": "reaction.superconduct",
+    "gcsimAbil": "superconduct",
+    "ourRatio": 3722.2353721698114,
+    "gcsimRatio": 3722.2353721698114,
+    "relDiff": 0
+  }
+]
