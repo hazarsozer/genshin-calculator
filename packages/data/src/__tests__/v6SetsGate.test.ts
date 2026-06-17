@@ -2,13 +2,13 @@
  * v6.x Lunar artifact sets — GCSim-free regression lock.
  *
  * Re-runs OUR PORT (no GCSim) for each of the 3 gated v6.x Lunar sets and asserts it
- * reproduces the frozen `ourRatio` from tools/oracle/_fixtures/<set>-gate.json. This is
+ * reproduces the frozen `ourRatio` from tests/golden/fixtures/gates/<set>-gate.json. This is
  * the live-content analog of a golden: it catches port/schema drift in CI without needing
  * the GCSim binary. Correctness vs GCSim is the dev-time `gate-live --self-test` gate.
  *
  * Gate method: Flins wears the 4pc set; idle Aino + Mona driver arms Moonsign 2.
  * Feature gated: `reaction.lunarcharged_contrubution` in absolute mode (nonCrit damage).
- * Fixtures: tools/oracle/_fixtures/{aubade,silken,night}-gate.json (frozen by --write).
+ * Fixtures: tests/golden/fixtures/gates/{aubade,silken,night}-gate.json (frozen by --write).
  */
 
 import { readFileSync } from "node:fs";
@@ -29,7 +29,7 @@ import {
 } from "./_reconstruct.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const FIXTURES = resolve(__dirname, "../../../../tools/oracle/_fixtures");
+const FIXTURES = resolve(__dirname, "../../../../tests/golden/fixtures/gates");
 
 // ── frozen fixture row type ──────────────────────────────────────────────────
 interface GateRow {

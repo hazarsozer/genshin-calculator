@@ -1,0 +1,10 @@
+[
+  {
+    "rep": "prospectors-shovel-gcsim",
+    "feature": "reaction.electrocharged",
+    "gcsimAbil": "electrocharged",
+    "ourRatio": 5104.499148,
+    "gcsimRatio": 5104.499148,
+    "relDiff": 0
+  }
+]
