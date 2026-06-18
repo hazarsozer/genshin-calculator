@@ -109,7 +109,7 @@ const talents: TalentResolver = {
 const IN_MODE = "char_skill_elemental";
 
 const features: readonly Feature[] = [
-  // ── Base normals / charged / plunge: PHYSICAL (claymore, no innate infusion → resolveElement default), ATK ──
+  // --- Base normals / charged / plunge: PHYSICAL (claymore, no innate infusion → resolveElement default), ATK ---
   { name: "normal_hit_1", category: "attack", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }] },
   { name: "normal_hit_2", category: "attack", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }] },
   { name: "normal_hit_3", category: "attack", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }] },
@@ -124,10 +124,10 @@ const features: readonly Feature[] = [
   { name: "plunge_hit", category: "attack", damageType: "plunge", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_hit") }] },
   { name: "plunge_low", category: "attack", damageType: "plunge", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }] },
   { name: "plunge_high", category: "attack", damageType: "plunge", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }] },
-  // ── Tap cast "Windbound Execution": ANEMO skill hit ──
+  // --- Tap cast "Windbound Execution": ANEMO skill hit ---
   { name: "skill_cast", category: "skill", element: "anemo", multipliers: [{ leveling: IN_MODE, values: talents.get("skill.skill_cast") }] },
-  // ── Sturm und Drang in-mode normals (skill-leveled, normal-type). Dual-claymore: anemo leg explicit,
-  // phec leg PHYSICAL at C0 (no PHEC ally → resolveElement default; runtime PHEC resolver quarantined). ──
+  // --- Sturm und Drang in-mode normals (skill-leveled, normal-type). Dual-claymore: anemo leg explicit,
+  // phec leg PHYSICAL at C0 (no PHEC ally → resolveElement default; runtime PHEC resolver quarantined). ---
   { name: "sturm_normal_1", category: "attack", multipliers: [{ leveling: IN_MODE, values: talents.get("skill.sturm_normal_1") }] }, // phec leg → physical
   { name: "sturm_normal_2", category: "attack", element: "anemo", multipliers: [{ leveling: IN_MODE, values: talents.get("skill.sturm_normal_2") }] },
   { name: "sturm_normal_3", category: "attack", multipliers: [{ leveling: IN_MODE, values: talents.get("skill.sturm_normal_3") }] }, // phec leg → physical
@@ -137,18 +137,18 @@ const features: readonly Feature[] = [
   { name: "sturm_normal_7", category: "attack", element: "anemo", multipliers: [{ leveling: IN_MODE, values: talents.get("skill.sturm_normal_7") }] },
   { name: "sturm_normal_8", category: "attack", multipliers: [{ leveling: IN_MODE, values: talents.get("skill.sturm_normal_8") }] }, // phec leg → physical
   { name: "sturm_normal_9", category: "attack", element: "anemo", multipliers: [{ leveling: IN_MODE, values: talents.get("skill.sturm_normal_9") }] },
-  // ── Sturm und Drang in-mode charged (skill-leveled, charged-type) ──
+  // --- Sturm und Drang in-mode charged (skill-leveled, charged-type) ---
   { name: "sturm_charged_1", category: "attack", damageType: "charged", multipliers: [{ leveling: IN_MODE, values: talents.get("skill.sturm_charged_1") }] }, // phec leg → physical
   { name: "sturm_charged_2", category: "attack", damageType: "charged", element: "anemo", multipliers: [{ leveling: IN_MODE, values: talents.get("skill.sturm_charged_2") }] },
-  // ── Four Winds' Ascension (special Skill, skill-type, skill-leveled). Four Winds' phec leg is skill-category
-  // → carries explicit element:"physical" to stay at the C0 physical state (skill default would be anemo). ──
+  // --- Four Winds' Ascension (special Skill, skill-type, skill-leveled). Four Winds' phec leg is skill-category
+  // → carries explicit element:"physical" to stay at the C0 physical state (skill default would be anemo). ---
   { name: "four_winds_1", category: "skill", element: "physical", multipliers: [{ leveling: IN_MODE, values: talents.get("skill.four_winds_1") }] }, // phec leg → physical at C0
   { name: "four_winds_2", category: "skill", element: "anemo", multipliers: [{ leveling: IN_MODE, values: talents.get("skill.four_winds_2") }] },
-  // ── Azure Devour (special Charged Attack, charged-type, skill-leveled; per-hit value, fires ×2 in-game) ──
+  // --- Azure Devour (special Charged Attack, charged-type, skill-leveled; per-hit value, fires ×2 in-game) ---
   { name: "azure_devour_1", category: "attack", damageType: "charged", multipliers: [{ leveling: IN_MODE, values: talents.get("skill.azure_devour_1") }] }, // phec leg → physical
   { name: "azure_devour_2", category: "attack", damageType: "charged", element: "anemo", multipliers: [{ leveling: IN_MODE, values: talents.get("skill.azure_devour_2") }] },
-  // ── Burst "Northwind Avatar": 2 ANEMO slashes (hit-1 converts to PHEC only with a PHEC ally — quarantined;
-  // GO's solo 'physical' on hit-1 is a phecElement-fallback sentinel, not the in-game element). ──
+  // --- Burst "Northwind Avatar": 2 ANEMO slashes (hit-1 converts to PHEC only with a PHEC ally — quarantined;
+  // GO's solo 'physical' on hit-1 is a phecElement-fallback sentinel, not the in-game element). ---
   { name: "burst_hit_1", category: "burst", element: "anemo", multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_hit_1") }] },
   { name: "burst_hit_2", category: "burst", element: "anemo", multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_hit_2") }] },
 ];
