@@ -1,10 +1,11 @@
 /**
- * Linnea — STAGED past-v5.8 LIVE char (the 7th GO-gated character; GCSim does not model her). Her
- * independent oracle is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the `linnea` rep,
- * frozen in `tools/oracle/_fixtures/linnea-go-gate.json`), NOT an her-engine golden. Staged here in
- * `characters-unverified/` (the gate's `_port-entry.ts` merges this barrel for resolution; vitest globs
- * only `characters/` → suite untouched until promotion). KB page
- * `wiki/game/entities/characters/linnea.md` was written before this port (knowledge-first).
+ * Linnea — PROMOTED past-v5.8 LIVE char (the 7th GO-gated character; GCSim does not model her). Her
+ * independent oracle is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the `linnea` rep, frozen
+ * in `tools/oracle/_fixtures/linnea-go-gate.json`), NOT an her-engine golden. The every-char suite fixtures
+ * (golden/constellations/weapon-passive) are the frozen post-verification snapshot from
+ * `tools/port/gen-live-goldens.mjs` — a regression lock, not an independent validation (see
+ * `tools/port/LIVE-CHARS.md`). KB page `wiki/game/entities/characters/linnea.md` was written before this
+ * port (knowledge-first).
  *
  * 5★ Geo Bow, Nod-Krai (6.5) — a DEF-scaling **Lunar-Crystallize** sub-DPS + healer. A rich composite of
  * already-ported patterns: [[zibai]] (DEF Lunar-Crystallize via the `lunardirect` channel, a0 IDENTICAL)
