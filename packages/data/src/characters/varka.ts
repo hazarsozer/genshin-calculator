@@ -1,10 +1,11 @@
 /**
- * Varka — STAGED past-v5.8 LIVE char (the 6th GO-gated character; GCSim does not model him). His
- * independent oracle is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the `varka` rep,
- * frozen in `tools/oracle/_fixtures/varka-go-gate.json`), NOT an her-engine golden. Staged here in
- * `characters-unverified/` (the gate's `_port-entry.ts` merges this barrel for resolution; vitest globs
- * only `characters/` → suite untouched until promotion). KB page
- * `wiki/game/entities/characters/varka.md` was written before this port (knowledge-first).
+ * Varka — PROMOTED past-v5.8 LIVE char (the 6th GO-gated character; GCSim does not model him). His
+ * independent oracle is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the `varka` rep, frozen
+ * in `tools/oracle/_fixtures/varka-go-gate.json`), NOT an her-engine golden. The every-char suite fixtures
+ * (golden/constellations/weapon-passive) are the frozen post-verification snapshot from
+ * `tools/port/gen-live-goldens.mjs` — a regression lock, not an independent validation (see
+ * `tools/port/LIVE-CHARS.md`). KB page `wiki/game/entities/characters/varka.md` was written before this
+ * port (knowledge-first).
  *
  * 5★ Anemo Claymore, Mondstadt (6.4) — an on-field Anemo DPS and self-Viridescent-Venerer carrier. His
  * whole damage surface is **pure `talent% × ATK`** (he ascends on CRIT DMG; GO `em=0`, no DEF/EM/lunar

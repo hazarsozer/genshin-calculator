@@ -101,6 +101,7 @@ export { travelerGeo } from "./traveler_geo.js";
 export { travelerHydro } from "./traveler_hydro.js";
 export { travelerPyro } from "./traveler_pyro.js";
 export { varesa } from "./varesa.js";
+export { varka } from "./varka.js";
 export { venti } from "./venti.js";
 export { wanderer } from "./wanderer.js";
 export { wriothesley } from "./wriothesley.js";
