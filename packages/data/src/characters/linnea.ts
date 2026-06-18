@@ -18,7 +18,7 @@
  *   - **Skill "Pummeler"** (s2.p1, `talent% × DEF`, GEO skill, ×2 per-hit): ratio mode, scaling `def`.
  *   - **Skill "Hammer" + "Crush"** (s2.p2/p3, her PRIMARY carry — Lunar-Crystallize, `talent% × DEF`):
  *     GO `lunarDmg(.., 'def', 'lunarcrystallize')` = `talent% × 1.6 × DEF × (1 + a0) × (1 + 6·EM/(EM+2000))
- *     × res(geo) × transDef` — the [[zibai]] `lundardirect` shape, amp **1.6**, scaling `def`. Gated
+ *     × res(geo) × transDef` — the [[zibai]] `lunardirect` shape, amp **1.6**, scaling `def`. Gated
  *     ABSOLUTE on a matched build, tol 1e-5 (the same GO-side `transDef` 0.9999905 DEF-ignore-cap residual
  *     as Zibai/Nefer). Crush's C1/C2 premod (lc_dmgInc + critDMG) is 0 at C0 → quarantined.
  *   - **Burst "..." heals** (s3, DEF + flat — the [[jahoda]] `output:{kind:"heal"}` idiom with `scaling:"def"`):
@@ -49,7 +49,7 @@
 import type { CharPostEffect, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
 import { LinneaStatTable, LinneaTalents } from "../generated/linnea.gen.js";
 
-// ── Lunar-Crystallize (lundardirect) shared keys — DEF-scaled, ×1.6 amplifier, geo. Her Hammer/Crush route
+// ── Lunar-Crystallize (lunardirect) shared keys — DEF-scaled, ×1.6 amplifier, geo. Her Hammer/Crush route
 // through compileReaction's `lunardirect` variant (the Zibai shape):
 //   base(talent% × DEF) × (1 + linnea_lunar_multi) × (1 + 6·EM/(EM+2000) [+Σreaction]) × 1.6 × res(geo) ──
 const LUNAR_CRYSTALLIZE_AMPLIFY = 1.6; // GO lunarDmgMultiplier('def','lunarcrystallize') = [1.6, def]
@@ -113,7 +113,7 @@ const scaledTalent = (table: TalentTable, factor: number): TalentTable => ({
   getValue: (level: number) => table.getValue(level) * factor,
 });
 
-// Hammer/Crush share the lundardirect Lunar-Crystallize reaction config (DEF-scaled, geo, ×1.6, crit-capable).
+// Hammer/Crush share the lunardirect Lunar-Crystallize reaction config (DEF-scaled, geo, ×1.6, crit-capable).
 const lunarReaction = {
   variant: "lunardirect" as const,
   element: "geo" as const,
