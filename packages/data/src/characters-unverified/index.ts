@@ -4,7 +4,8 @@
  * generate fixtures) once the gate validates it. (Flins promoted in sub-project D; Lauma + Columbina in
  * the KP-L lockstep — see tools/port/LIVE-CHARS.md.)
  *
- * Currently EMPTY: varka (6th GO-gated; anemo claymore; pure-ATK dual-claymore DPS) was promoted to
- * characters/ on 2026-06-18, joining nefer (2026-06-17) and durin + jahoda + zibai + illuga (2026-06-18).
- * The remaining v6 chars (Linnea/Nicole/… — see tools/port/live-chars.json) stage here as they're gated. */
-export {};
+ * Currently staging: linnea (7th GO-gated; geo bow; DEF Lunar-Crystallize sub-DPS + healer) being gated
+ * before promotion. varka (6th GO-gated; anemo claymore) was promoted to characters/ on 2026-06-18, joining
+ * nefer (2026-06-17) and durin + jahoda + zibai + illuga (2026-06-18). The remaining v6 chars (Nicole/Prune/…
+ * — see tools/port/live-chars.json) stage here as they're gated. */
+export { linnea } from "./linnea.js";

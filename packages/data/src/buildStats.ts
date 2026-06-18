@@ -177,6 +177,10 @@ const REACTION_DERIVED_KEYS = [
   // `lunarMultiFromDef`, fraction-valued). Read by the lunardirect `(1 + Σ scaling)` term on her
   // Lunar-Crystallize hits (Stride-2 + Burst-2) — the DEF-scaled analog. Base-inert: sole reader = Zibai.
   "zibai_lunar_multi",
+  // Linnea's Lunar-Crystallize a0 base-DMG bonus = min(DEF×0.00007, 0.14) (post-effect `lunarMultiFromDef`,
+  // fraction-valued; IDENTICAL coefficient to Zibai). Read by the lunardirect `(1 + Σ scaling)` term on her
+  // Hammer/Crush hits. Base-inert: sole reader = Linnea.
+  "linnea_lunar_multi",
 ] as const;
 
 /**
