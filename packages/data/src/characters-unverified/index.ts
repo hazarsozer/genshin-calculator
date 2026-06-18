@@ -4,6 +4,7 @@
  * generate fixtures) once the gate validates it. (Flins promoted in sub-project D; Lauma + Columbina in
  * the KP-L lockstep — see tools/port/LIVE-CHARS.md.)
  *
- * Currently EMPTY: nefer (the first GO-gated char) was promoted to characters/ on 2026-06-17; the next
- * v6 chars (Durin/Jahoda/Zibai/… — see tools/port/live-chars.json) stage here as they're gated. */
-export {};
+ * Currently staged: durin (GO-gated, 2026-06-18). nefer (the first GO-gated char) was promoted to
+ * characters/ on 2026-06-17; the next v6 chars (Jahoda/Zibai/… — see tools/port/live-chars.json) stage
+ * here as they're gated. */
+export { durin } from "./durin.js";
