@@ -509,7 +509,7 @@ describe("party: buildPartyContext reproduces her derived keys (round-trip)", ()
       const party = partyInputFromManifest(item.party);
       const ctx = buildPartyContext(party, {
         element: item.element as Element,
-        origin: item.origin,
+        ...(item.origin !== undefined ? { origin: item.origin } : {}),
       });
       for (const key of derivedKeys) {
         expect(

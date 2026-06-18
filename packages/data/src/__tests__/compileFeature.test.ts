@@ -581,7 +581,6 @@ describe("compileFeature — coefficientFromStat (M1)", () => {
         {
           leveling: "char_skill_elemental",
           values: constTable(100),
-          // @ts-expect-error — deliberately malformed to test the runtime guard
           coefficientFromStat: { stat: "mastery", cap: 4 },
         },
       ],
