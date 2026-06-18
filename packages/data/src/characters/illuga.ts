@@ -36,14 +36,6 @@
 import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { IllugaStatTable, IllugaTalents } from "../generated/illuga.gen.js";
 
-// EM+DEF split-scale: two summed base-term multipliers (the Frostgrove idiom — EM term scaling:"mastery*"
-// + DEF term scaling:"def"). EM coefficient = exactly 2× the DEF term across his Skill/Burst. Both terms
-// share the feature's talent level (Tap/Hold skill-leveled, Burst burst-leveled).
-const splitEmDef = (leveling: string, emPath: string, defPath: string) => [
-  { scaling: "mastery*" as const, leveling, values: talents.get(emPath) },
-  { scaling: "def" as const, leveling, values: talents.get(defPath) },
-];
-
 const talents: TalentResolver = {
   get(path: string) {
     const [talent, name] = path.split(".");
@@ -70,6 +62,14 @@ const talents: TalentResolver = {
     throw new Error(`illuga talents: unknown path '${path}'`);
   },
 };
+
+// EM+DEF split-scale: two summed base-term multipliers (the Frostgrove idiom — EM term scaling:"mastery*"
+// + DEF term scaling:"def"). EM coefficient = exactly 2× the DEF term across his Skill/Burst. Both terms
+// share the feature's talent level (Tap/Hold skill-leveled, Burst burst-leveled).
+const splitEmDef = (leveling: string, emPath: string, defPath: string) => [
+  { scaling: "mastery*" as const, leveling, values: talents.get(emPath) },
+  { scaling: "def" as const, leveling, values: talents.get(defPath) },
+];
 
 const features: readonly Feature[] = [
   // --- base normals / charged / plunge: PHYSICAL (polearm, no innate infusion → resolveElement default), ATK-scaled ---
