@@ -45,6 +45,7 @@ export { gorou } from "./gorou.js";
 export { huTao } from "./hu-tao.js";
 export { iansan } from "./iansan.js";
 export { ifa } from "./ifa.js";
+export { illuga } from "./illuga.js";
 export { ineffa } from "./ineffa.js";
 export { jahoda } from "./jahoda.js";
 export { jean } from "./jean.js";

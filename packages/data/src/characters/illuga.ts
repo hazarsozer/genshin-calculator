@@ -1,10 +1,11 @@
 /**
- * Illuga — past-v5.8 LIVE char (the 5th GO-gated character; GCSim does not model him), STAGED for gating.
- * Independent oracle is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the `illuga` rep, frozen
- * in `tools/oracle/_fixtures/illuga-go-gate.json`), NOT an her-engine golden. KB page
- * `wiki/game/entities/characters/illuga.md` was written before this port (knowledge-first). Promote to
- * `characters/` (+ generate suite fixtures) once the gate validates the C0 surface — see
- * `tools/port/LIVE-CHARS.md`.
+ * Illuga — PROMOTED past-v5.8 LIVE char (the 5th GO-gated character; GCSim does not model him). His
+ * independent oracle is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the `illuga` rep, frozen
+ * in `tools/oracle/_fixtures/illuga-go-gate.json`), NOT an her-engine golden. The every-char suite fixtures
+ * (golden/constellations/weapon-passive) are the frozen post-verification snapshot from
+ * `tools/port/gen-live-goldens.mjs` — a regression lock, not an independent validation (see
+ * `tools/port/LIVE-CHARS.md`). KB page `wiki/game/entities/characters/illuga.md` was written before this
+ * port (knowledge-first).
  *
  * 4★ Geo Polearm, Nod-Krai (6.3) — an EM-ascending off-field Geo support + Lunar-Crystallize amplifier.
  * His OWN damage is simple: base normals (ATK, physical) + Skill Tap/Hold + Burst, the latter three all
