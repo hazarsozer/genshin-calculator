@@ -99,8 +99,8 @@ const features: readonly Feature[] = [
   { name: "charged_hit", category: "attack", damageType: "charged", element: "dendro", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }] },
   // plunge: catalyst plunge (dendro), ATK-scaled. Port-only — GCSim doesn't model her (no plunge to gate).
   { name: "plunge_hit", category: "attack", damageType: "plunge", element: "dendro", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_hit") }] },
-  { name: "plunge_low", category: "attack", damageType: "plunge", element: "dendro", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }] },
-  { name: "plunge_high", category: "attack", damageType: "plunge", element: "dendro", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }] },
+  { name: "plunge_low", category: "attack", damageType: "plunge", element: "dendro", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }] },
+  { name: "plunge_high", category: "attack", damageType: "plunge", element: "dendro", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }] },
   // --- Skill cast "Shadow Dance" (ATK+EM hybrid Dendro — the state-opening AoE hit) ---
   { name: "skill_cast", category: "skill", element: "dendro", multipliers: hybrid("char_skill_elemental", "skill.skill_cast_atk", "skill.skill_cast_em") },
   // --- Phantasm Performance "Nefer" hits (ATK+EM hybrid Dendro, in-state charged replacement) ---

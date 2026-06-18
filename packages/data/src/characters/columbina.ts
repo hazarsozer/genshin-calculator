@@ -85,8 +85,8 @@ const features: readonly Feature[] = [
   { name: "charged_hit", category: "attack", damageType: "charged", element: "hydro", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }] },
   // plunge: catalyst plunge (hydro), ATK-scaled. Port-only — GCSim doesn't implement Columbina plunge actions (like Flins/Lauma).
   { name: "plunge_hit", category: "attack", damageType: "plunge", element: "hydro", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_hit") }] },
-  { name: "plunge_low", category: "attack", damageType: "plunge", element: "hydro", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }] },
-  { name: "plunge_high", category: "attack", damageType: "plunge", element: "hydro", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }] },
+  { name: "plunge_low", category: "attack", damageType: "plunge", element: "hydro", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }] },
+  { name: "plunge_high", category: "attack", damageType: "plunge", element: "hydro", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }] },
   // --- Skill cast + Gravity Ripple DoT (HP-scaling Hydro skill hits — no lunar machinery, no DEF-ignore) ---
   { name: "skill_cast", category: "skill", element: "hydro", multipliers: [{ scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.skill_cast") }] },
   { name: "gravity_ripple_dot", category: "skill", element: "hydro", multipliers: [{ scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.gravity_ripple_dot") }] },

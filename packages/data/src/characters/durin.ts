@@ -73,8 +73,8 @@ const features: readonly Feature[] = [
   { name: "normal_hit_4", category: "attack", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }] },
   { name: "charged_hit", category: "attack", damageType: "charged", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }] },
   { name: "plunge_hit", category: "attack", damageType: "plunge", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_hit") }] },
-  { name: "plunge_low", category: "attack", damageType: "plunge", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }] },
-  { name: "plunge_high", category: "attack", damageType: "plunge", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }] },
+  { name: "plunge_low", category: "attack", damageType: "plunge", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }] },
+  { name: "plunge_high", category: "attack", damageType: "plunge", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }] },
   // --- Skill "Binary Form": Light "Confirmation of Purity" (1 AoE) + Dark "Denial of Darkness" (3-hit chain) — both Pyro, ATK-scaled, both exposed ---
   { name: "skill_purity", category: "skill", element: "pyro", multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_purity") }] },
   { name: "skill_dark_1", category: "skill", element: "pyro", multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dark_1") }] },

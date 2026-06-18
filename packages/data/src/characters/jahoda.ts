@@ -66,12 +66,12 @@ const features: readonly Feature[] = [
   { name: "normal_hit_1", category: "attack", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }] },
   { name: "normal_hit_2", category: "attack", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }] }, // ×2 double — per-hit
   { name: "normal_hit_3", category: "attack", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }] },
-  { name: "aimed_shot", category: "attack", damageType: "charged", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed_shot") }] }, // physical
+  { name: "aimed_shot", category: "attack", damageType: "charged", isAimed: true, multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed_shot") }] }, // physical
   // fully-charged aimed shot is element-infused → ANEMO (GO sets hit.ele = char element)
-  { name: "fully_charged_aimed", category: "attack", damageType: "charged", element: "anemo", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.fully_charged_aimed") }] },
+  { name: "fully_charged_aimed", category: "attack", damageType: "charged", isAimed: true, element: "anemo", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.fully_charged_aimed") }] },
   { name: "plunge_hit", category: "attack", damageType: "plunge", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_hit") }] },
-  { name: "plunge_low", category: "attack", damageType: "plunge", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }] },
-  { name: "plunge_high", category: "attack", damageType: "plunge", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }] },
+  { name: "plunge_low", category: "attack", damageType: "plunge", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }] },
+  { name: "plunge_high", category: "attack", damageType: "plunge", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }] },
   // --- Skill "Savvy Strategy" discharges: Smoke Bomb / Unfilled Flask / Filled Flask — all Anemo, ATK-scaled ---
   { name: "smoke_bomb", category: "skill", element: "anemo", multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.smoke_bomb") }] },
   { name: "unfilled_flask", category: "skill", element: "anemo", multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.unfilled_flask") }] },
