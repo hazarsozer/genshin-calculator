@@ -173,6 +173,10 @@ const REACTION_DERIVED_KEYS = [
   // fraction-valued). Read by the lunardirect `(1 + Σ scaling)` term on BOTH her direct LC and LB hits
   // (the HP-scaled analog of lunarcharged_multi / lunarbloom_multi). Base-inert: sole reader = Columbina.
   "columbina_lunar_multi",
+  // Zibai's Lunar-Crystallize utility-passive base-DMG bonus = min(DEF×0.00007, 0.14) (post-effect
+  // `lunarMultiFromDef`, fraction-valued). Read by the lunardirect `(1 + Σ scaling)` term on her
+  // Lunar-Crystallize hits (Stride-2 + Burst-2) — the DEF-scaled analog. Base-inert: sole reader = Zibai.
+  "zibai_lunar_multi",
 ] as const;
 
 /**
