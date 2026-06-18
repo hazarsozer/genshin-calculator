@@ -99,13 +99,13 @@ const features: readonly Feature[] = [
   { name: "plunge_high", category: "attack", damageType: "plunge", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }] },
 
   // --- in-Masterstroke normals (ATK, cryo, SKILL-leveled — s2 talent table, normal-TYPE hit per GO) ---
-  // Masterstroke mode infuses normals to cryo (GO hitEle.cryo, levelType 'skill'). Same category as auto
-  // (attack) — these are normal-type hits, so normal_dmg_ bonuses apply. But they use the s2 talent table.
-  // The Zibai gotcha: dmg-type ≠ talent-level source. Gate key = "skill.ms_normal_*" (matches category "skill").
-  // Wait — category "attack" vs "skill" matters: in-mode normals are NORMAL-TYPE hits (normal_dmg_ bonus)
-  // but skill-LEVELED. In our engine, category drives the dmg_type bonus; leveling drives the talent level.
-  // GO `dmgNode('atk', arr, 'normal', hitEle.cryo, undefined, 'skill')` → move='normal', levelType='skill'.
-  // So category = "attack" (normal-type) is faithful. But gate key is "attack.ms_normal_*".
+  // The Zibai gotcha (dmg-type ≠ talent-level source): GO uses
+  //   dmgNode('atk', arr, 'normal', hitEle.cryo, undefined, 'skill')
+  // where move='normal' (normal-TYPE DMG — gets normal_dmg_ bonus) and levelType='skill' (skill-LEVELED).
+  // In our engine, `category` drives the DMG-type bonus (attack → normal_dmg_), and `leveling` drives
+  // the talent level (char_skill_elemental → skill talent level).
+  // So: category = "attack" (normal_dmg_ applies), leveling = "char_skill_elemental", element = "cryo".
+  // Gate key prefix = "attack.ms_normal_*" (NOT "skill.*" — category "attack" sets the key prefix).
   { name: "ms_normal_1", category: "attack", element: "cryo", multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.ms_normal_1") }] },
   { name: "ms_normal_2", category: "attack", element: "cryo", multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.ms_normal_2") }] },
   { name: "ms_normal_3", category: "attack", element: "cryo", multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.ms_normal_3") }] },
