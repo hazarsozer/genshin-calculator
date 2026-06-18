@@ -1,8 +1,11 @@
 /**
- * Nicole — PROMOTED past-v5.8 LIVE char (8th GO-gated; GCSim does not model her). Her independent oracle
- * is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the `nicole` rep, frozen in
- * `tools/oracle/_fixtures/nicole-go-gate.json`), NOT an her-engine golden. Her KB page
- * `wiki/game/entities/characters/nicole.md` was written before this port (knowledge-first).
+ * Nicole — PROMOTED past-v5.8 LIVE char (the 8th GO-gated character; GCSim does not model her). Her
+ * independent oracle is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the `nicole` rep, frozen
+ * in `tools/oracle/_fixtures/nicole-go-gate.json`), NOT an her-engine golden. The every-char suite fixtures
+ * (golden/constellations/weapon-passive) are the frozen post-verification snapshot from
+ * `tools/port/gen-live-goldens.mjs` — a regression lock, not an independent validation (see
+ * `tools/port/LIVE-CHARS.md`). Her KB page `wiki/game/entities/characters/nicole.md` was written before
+ * this port (knowledge-first).
  *
  * 5★ Pyro catalyst, Hexenzirkel-affiliated (6.6) — an off-field ATK-buffer / shielder / Coordinated-Attack
  * support (a near-universal team amp, Bennett-class). Her gateable C0 OWN-output surface is small and
@@ -85,9 +88,12 @@ const features: readonly Feature[] = [
   },
   // --- Burst cast "Revelation: Ladder of Divine Ascent" — AoE Pyro hit (ATK) ---
   { name: "burst_dmg", category: "burst", element: "pyro", multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }] },
-  // --- Arcane Projection (Silent Contemplation Coordinated Attack) — burst-leveled, Pyro, ATK. Self-trigger
+  // --- Arcane Projection (Silent Contemplation Coordinated Attack) — burst-LEVELED, Pyro, ATK. Self-trigger
   // case (scales off Nicole's ATK); the teammate-triggered cross-char ATK source is a quarantined partyData
-  // refinement (Varka PHEC precedent). GO exposes the Nicole-trigger node as nicole.burstArcaneProjectionDmg. ---
+  // refinement (Varka PHEC precedent). GO exposes the Nicole-trigger node as nicole.burstArcaneProjectionDmg.
+  // GATE-INERT NUANCE: GO types it DMG-type 'elemental' (takes all_dmg_/pyro_dmg_, NOT burst_dmg_); category
+  // "burst" here is for burst-LEVELING only. At C0 (no dmg% bonus) this is gate-invisible; revisit with the
+  // partyData cross-char refinement if the projection's real-build dmg-bonus group matters. ---
   { name: "arcane_projection", category: "burst", element: "pyro", multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.arcane_projection") }] },
 ];
 
