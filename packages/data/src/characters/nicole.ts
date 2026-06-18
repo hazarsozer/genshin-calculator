@@ -1,5 +1,5 @@
 /**
- * Nicole — staged past-v5.8 LIVE char (8th GO-gated; GCSim does not model her). Her independent oracle
+ * Nicole — PROMOTED past-v5.8 LIVE char (8th GO-gated; GCSim does not model her). Her independent oracle
  * is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the `nicole` rep, frozen in
  * `tools/oracle/_fixtures/nicole-go-gate.json`), NOT an her-engine golden. Her KB page
  * `wiki/game/entities/characters/nicole.md` was written before this port (knowledge-first).

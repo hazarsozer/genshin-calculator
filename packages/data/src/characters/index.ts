@@ -76,6 +76,7 @@ export { nahida } from "./nahida.js";
 export { navia } from "./navia.js";
 export { nefer } from "./nefer.js";
 export { neuvillette } from "./neuvillette.js";
+export { nicole } from "./nicole.js";
 export { nilou } from "./nilou.js";
 export { ningguang } from "./ningguang.js";
 export { noelle } from "./noelle.js";
