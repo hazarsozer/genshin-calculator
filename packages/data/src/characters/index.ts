@@ -30,6 +30,7 @@ export { dehya } from "./dehya.js";
 export { diluc } from "./diluc.js";
 export { diona } from "./diona.js";
 export { dori } from "./dori.js";
+export { durin } from "./durin.js";
 export { emilie } from "./emilie.js";
 export { escoffier } from "./escoffier.js";
 export { eula } from "./eula.js";

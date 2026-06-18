@@ -1,9 +1,11 @@
 /**
- * Durin — staged past-v5.8 LIVE char (GO-gated: GCSim does not model him). Gated vs Genshin Optimizer's
- * legacy gi/sheets engine (`node tools/oracle/gate-go.mjs --self-test` — the `durin-pyro` rep), NOT an
- * her-engine golden. Promote to `characters/` + freeze the suite goldens only after the gate is green at
- * fp-epsilon (see `tools/port/LIVE-CHARS.md`). His KB page `wiki/game/entities/characters/durin.md` was
- * written before this port (knowledge-first).
+ * Durin — PROMOTED past-v5.8 LIVE char (the 2nd GO-gated character: GCSim does not model him). His
+ * independent oracle is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the `durin-pyro` rep,
+ * frozen in `tools/oracle/_fixtures/durin-go-gate.json`), NOT an her-engine golden. The every-char suite
+ * fixtures (golden/constellations/weapon-passive) are the frozen post-verification snapshot from
+ * `tools/port/gen-live-goldens.mjs` — a regression lock, not an independent validation (see
+ * `tools/port/LIVE-CHARS.md`). His KB page `wiki/game/entities/characters/durin.md` was written before
+ * this port (knowledge-first).
  *
  * 5★ Pyro Sword, Mondstadt (6.2) — a **dual-form off-field Burst DPS**. His entire kit is **ATK-scaling**
  * (CRIT-DMG ascension, no EM/DEF component anywhere at C0), so the whole gateable surface runs in the
