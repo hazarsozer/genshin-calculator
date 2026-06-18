@@ -46,6 +46,7 @@ export { huTao } from "./hu-tao.js";
 export { iansan } from "./iansan.js";
 export { ifa } from "./ifa.js";
 export { ineffa } from "./ineffa.js";
+export { jahoda } from "./jahoda.js";
 export { jean } from "./jean.js";
 export { kachina } from "./kachina.js";
 export { kaedeharaKazuha } from "./kaedehara_kazuha.js";

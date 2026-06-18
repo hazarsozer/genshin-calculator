@@ -1,9 +1,11 @@
 /**
- * Jahoda — staged past-v5.8 LIVE char (GO-gated: GCSim does not model her). Gated vs Genshin Optimizer's
- * legacy gi/sheets engine (`node tools/oracle/gate-go.mjs --self-test` — the `jahoda` rep), NOT an
- * her-engine golden. Promote to `characters/` + freeze the suite goldens only after the gate is green at
- * fp-epsilon (see `tools/port/LIVE-CHARS.md`). Her KB page `wiki/game/entities/characters/jahoda.md` was
- * written before this port (knowledge-first).
+ * Jahoda — PROMOTED past-v5.8 LIVE char (the 3rd GO-gated character; first bow, first healer: GCSim does
+ * not model her). Her independent oracle is the GO gate (`node tools/oracle/gate-go.mjs --self-test` —
+ * the `jahoda` rep, frozen in `tools/oracle/_fixtures/jahoda-go-gate.json`), NOT an her-engine golden. The
+ * every-char suite fixtures (golden/constellations/weapon-passive) are the frozen post-verification
+ * snapshot from `tools/port/gen-live-goldens.mjs` — a regression lock, not an independent validation (see
+ * `tools/port/LIVE-CHARS.md`). Her KB page `wiki/game/entities/characters/jahoda.md` was written before
+ * this port (knowledge-first).
  *
  * 4★ Anemo Bow, Nod-Krai (6.2) — an off-field Anemo support / **healer** / VV carrier (ascends on Healing
  * Bonus). Her personal damage is ATK-scaling filler; her real outputs are her Burst's robot HEALS. The
