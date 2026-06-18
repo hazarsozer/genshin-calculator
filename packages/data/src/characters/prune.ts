@@ -1,5 +1,5 @@
 /**
- * Prune — staged past-v5.8 LIVE char (the 9th GO-gated character; GCSim does not model her). Her
+ * Prune — PROMOTED past-v5.8 LIVE char (the 9th GO-gated character; GCSim does not model her). Her
  * independent oracle is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the `prune` rep, frozen
  * in `tools/oracle/_fixtures/prune-go-gate.json`), NOT an her-engine golden. The every-char suite fixtures
  * (golden/constellations/weapon-passive) are the frozen post-verification snapshot from

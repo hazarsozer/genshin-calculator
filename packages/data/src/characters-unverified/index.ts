@@ -4,8 +4,8 @@
  * generate fixtures) once the gate validates it. (Flins promoted in sub-project D; Lauma + Columbina in
  * the KP-L lockstep — see tools/port/LIVE-CHARS.md.)
  *
- * Currently STAGING: prune (9th GO-gated; anemo catalyst; VV/Swirl support — gates her converted-element
- * Clang + A1 Oathhammer per swirl-element variant). Promoted so far: nefer (2026-06-17) and durin + jahoda +
- * zibai + illuga + varka + linnea + nicole (2026-06-18). The remaining v6 chars (Lohen — blocked, no GO
- * sheet; see tools/port/live-chars.json) stage here as they're gated. */
-export { prune } from "./prune.js";
+ * Currently EMPTY: prune (9th GO-gated; anemo catalyst; VV/Swirl support) was promoted to characters/ on
+ * 2026-06-18, joining nefer (2026-06-17) and durin + jahoda + zibai + illuga + varka + linnea + nicole
+ * (2026-06-18). The remaining documented v6 char (Lohen) is BLOCKED — GO has no sheet for her yet (stats
+ * only); see tools/port/live-chars.json. New chars stage here as they're gated. */
+export {};

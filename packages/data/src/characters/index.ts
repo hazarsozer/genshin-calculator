@@ -81,6 +81,7 @@ export { nilou } from "./nilou.js";
 export { ningguang } from "./ningguang.js";
 export { noelle } from "./noelle.js";
 export { ororon } from "./ororon.js";
+export { prune } from "./prune.js";
 export { qiqi } from "./qiqi.js";
 export { raidenShogun } from "./raiden_shogun.js";
 export { razor } from "./razor.js";
