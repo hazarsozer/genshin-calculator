@@ -1,5 +1,5 @@
 /**
- * Lohen — staging past-v5.8 LIVE char (the 10th GO-gated character; GCSim does not model him). His
+ * Lohen — PROMOTED past-v5.8 LIVE char (the 10th GO-gated character; GCSim does not model him). His
  * independent oracle is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the `lohen` rep, frozen
  * in `tools/oracle/_fixtures/lohen-go-gate.json`), NOT an her-engine golden. The every-char suite fixtures
  * (golden/constellations/weapon-passive) are the frozen post-verification snapshot from
@@ -8,7 +8,7 @@
  * port (knowledge-first).
  *
  * 5★ Cryo polearm, Mondstadt (6.6) — a Hexerei Masterstroke carry. PURE ATK (GO em=0, no DEF/EM/lunar/
- * shield/heal) → all 21 C0 features gate in plain RATIO mode at fp-epsilon.
+ * shield/heal) → all 22 C0 features gate in plain RATIO mode at fp-epsilon.
  *
  * The gated C0 surface:
  *   - 9 out-of-Masterstroke hits (6 normals, charged, 3 plunge) — PHYSICAL, attack-leveled (s1 / auto).

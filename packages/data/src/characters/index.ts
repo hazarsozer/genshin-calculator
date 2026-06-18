@@ -65,6 +65,7 @@ export { lanYan } from "./lan_yan.js";
 export { lauma } from "./lauma.js";
 export { layla } from "./layla.js";
 export { linnea } from "./linnea.js";
+export { lohen } from "./lohen.js";
 export { lisa } from "./lisa.js";
 export { lynette } from "./lynette.js";
 export { lyney } from "./lyney.js";
