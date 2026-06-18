@@ -117,3 +117,4 @@ export { yoimiya } from "./yoimiya.js";
 export { yumemizukiMizuki } from "./yumemizuki_mizuki.js";
 export { yunJin } from "./yun_jin.js";
 export { zhongli } from "./zhongli.js";
+export { zibai } from "./zibai.js";

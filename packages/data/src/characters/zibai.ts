@@ -1,10 +1,12 @@
 /**
- * Zibai — past-v5.8 LIVE char (the 4th GO-gated character; GCSim does not model her), STAGED for gating.
- * Her independent oracle is the GO gate (`node tools/oracle/gate-go.mjs --self-test` — the `zibai` rep,
- * frozen in `tools/oracle/_fixtures/zibai-go-gate.json`), NOT an her-engine golden. Her KB page
- * `wiki/game/entities/characters/zibai.md` was written before this port (knowledge-first). Promote to
- * `characters/` (+ generate suite fixtures) once the gate validates the C0 surface — see
- * `tools/port/LIVE-CHARS.md`.
+ * Zibai — PROMOTED past-v5.8 LIVE char (the 4th GO-gated character; the first DEF-scaler and first GO char
+ * to use the lunar reaction channel: GCSim does not model her). Her independent oracle is the GO gate
+ * (`node tools/oracle/gate-go.mjs --self-test` — the `zibai` rep, frozen in
+ * `tools/oracle/_fixtures/zibai-go-gate.json`), NOT an her-engine golden. The every-char suite fixtures
+ * (golden/constellations/weapon-passive) are the frozen post-verification snapshot from
+ * `tools/port/gen-live-goldens.mjs` — a regression lock, not an independent validation (see
+ * `tools/port/LIVE-CHARS.md`). Her KB page `wiki/game/entities/characters/zibai.md` was written before
+ * this port (knowledge-first).
  *
  * 5★ Geo Sword, Nod-Krai (6.3) — a **Lunar-Crystallize on-field DPS** and the FIRST GO-gated char that is
  * **DEF-scaling** (CRIT-DMG ascension, but every in-Skill hit is `% DEF`) AND the first to use the lunar
