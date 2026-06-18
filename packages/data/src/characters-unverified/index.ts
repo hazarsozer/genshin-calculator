@@ -4,7 +4,7 @@
  * generate fixtures) once the gate validates it. (Flins promoted in sub-project D; Lauma + Columbina in
  * the KP-L lockstep — see tools/port/LIVE-CHARS.md.)
  *
- * Currently EMPTY: zibai (4th GO-gated; geo sword; DEF-scaling + Lunar-Crystallize) was promoted to
- * characters/ on 2026-06-18, joining nefer (2026-06-17) and durin + jahoda (2026-06-18). The remaining
- * v6 chars (Illuga/Varka/Linnea/… — see tools/port/live-chars.json) stage here as they're gated. */
-export {};
+ * Currently STAGING illuga (5th GO-gated; geo polearm; EM+DEF split-scale off-field support). nefer
+ * (2026-06-17), durin + jahoda + zibai (2026-06-18) were already promoted to characters/. The remaining
+ * v6 chars (Varka/Linnea/… — see tools/port/live-chars.json) stage here as they're gated. */
+export { illuga } from "./illuga.js";
