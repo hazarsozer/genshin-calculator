@@ -75,7 +75,7 @@ const features: readonly Feature[] = [
   { name: "plunge_hit", category: "attack", damageType: "plunge", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_hit") }] },
   { name: "plunge_low", category: "attack", damageType: "plunge", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }] },
   { name: "plunge_high", category: "attack", damageType: "plunge", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }] },
-  // --- Skill "Binary Form": Light single AoE + Dark 3-hit chain (both Pyro, ATK-scaled; both exposed) ---
+  // --- Skill "Binary Form": Light "Confirmation of Purity" (1 AoE) + Dark "Denial of Darkness" (3-hit chain) — both Pyro, ATK-scaled, both exposed ---
   { name: "skill_purity", category: "skill", element: "pyro", multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_purity") }] },
   { name: "skill_dark_1", category: "skill", element: "pyro", multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dark_1") }] },
   { name: "skill_dark_2", category: "skill", element: "pyro", multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dark_2") }] },
