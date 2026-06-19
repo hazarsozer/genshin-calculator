@@ -40,8 +40,8 @@
     "description": "EVERY non-beta artifact set (55) at 4pc, zero artifact stats, on the SET_REP rep; named checkbox/stacks 4pc conditionals enabled to max (equipSet). Isolates the full 2pc+4pc bonus.",
     "id": "sets-4pc"
   },
-  "featureTotal": 1686,
-  "itemCount": 60,
+  "featureTotal": 1711,
+  "itemCount": 61,
   "items": [
     {
       "artifactSets": {
@@ -228,6 +228,28 @@
         "passiveToggles": {},
         "refine": 1,
         "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {
+        "CelestialGift": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "set",
+      "repKey": "Xiao",
+      "repSlug": "xiao",
+      "setToggles": {},
+      "slug": "CelestialGift",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
       }
     },
     {

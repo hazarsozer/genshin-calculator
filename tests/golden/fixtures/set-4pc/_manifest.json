@@ -604,12 +604,44 @@
         "passiveToggles": {},
         "refine": 1
       }
+    },
+    {
+      "artifactSets": {
+        "CelestialGift": 4
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "id": 28,
+      "key": "Xiao",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "xiao",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1
+      }
     }
   ],
-  "characterCount": 17,
+  "characterCount": 18,
   "config": {
-    "description": "One signature 4pc artifact set per rep (17), equipped with zero artifact main/substats so ONLY the set bonus moves numbers; every named 4pc conditional enabled to max.",
+    "description": "One signature 4pc artifact set per rep (18), equipped with zero artifact main/substats so ONLY the set bonus moves numbers; every named 4pc conditional enabled to max.",
     "id": "set-4pc"
   },
-  "featureTotal": 497
+  "featureTotal": 522
 }
