@@ -242,10 +242,11 @@ describe("artifact-sets: auto-discovery", () => {
     expect(Object.keys(SET_REGISTRY).length).toBeGreaterThan(0);
   });
 
-  it("all 7 currently-ported sets are present in SET_REGISTRY", () => {
+  it("all 8 currently-ported sets are present in SET_REGISTRY", () => {
     // Hard gate: a regression that drops a port (e.g. via goodId rename) fails here.
-    // DATA-DRIVEN: the expected keys are the 7 oracle goodIds that have ported files.
+    // DATA-DRIVEN: the expected keys are the 8 oracle goodIds that have ported files.
     const expectedKeys = [
+      "ADayCarvedFromRisingWinds",
       "CrimsonWitch",
       "DeepwoodMemories",
       "EmblemofSeveredFate",
