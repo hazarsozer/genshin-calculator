@@ -40,8 +40,8 @@
     "description": "EVERY non-beta weapon (202) at refine R5, passive ON, same reps as weapons-r1. Diff vs weapons-r1 = the refine scaling of each passive + refine-keyed stats.",
     "id": "weapons-r5"
   },
-  "featureTotal": 6223,
-  "itemCount": 221,
+  "featureTotal": 6248,
+  "itemCount": 222,
   "items": [
     {
       "artifactSets": {},
@@ -4797,6 +4797,28 @@
         },
         "refine": 5,
         "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "weapon",
+      "repKey": "Durin",
+      "repSlug": "durin",
+      "setToggles": {},
+      "slug": "athame_artis",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.athame_artis",
+        "passiveToggles": {
+          "weapon_athame_artis_1": true
+        },
+        "refine": 5,
+        "type": "sword"
       }
     }
   ]

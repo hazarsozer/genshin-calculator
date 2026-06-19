@@ -40,8 +40,8 @@
     "description": "EVERY non-beta weapon (202) at refine R1, passive ON, on a scaling-relevant rep (REP_BY_TYPE, or CHAR_COUPLED_REP for HP/DEF/EM passives). Isolates each weapon's base ATK + statTable + R1 passive.",
     "id": "weapons-r1"
   },
-  "featureTotal": 6223,
-  "itemCount": 221,
+  "featureTotal": 6248,
+  "itemCount": 222,
   "items": [
     {
       "artifactSets": {},
@@ -4797,6 +4797,28 @@
         },
         "refine": 1,
         "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "weapon",
+      "repKey": "Durin",
+      "repSlug": "durin",
+      "setToggles": {},
+      "slug": "athame_artis",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.athame_artis",
+        "passiveToggles": {
+          "weapon_athame_artis_1": true
+        },
+        "refine": 1,
+        "type": "sword"
       }
     }
   ]

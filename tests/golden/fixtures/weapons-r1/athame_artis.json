@@ -1,0 +1,238 @@
+{
+  "_source": "port-snapshot athame_artis weapons-r1 — regression lock; validation = 2-witness (Amber + GCSim source) + load-bearing r1≠r5 (no single-rep GCSim gate)",
+  "element": "pyro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 4869.924483815729,
+      "category": "attack",
+      "crit": 7273.539819361691,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3050.981467853058
+    },
+    "attack.normal_hit_1": {
+      "average": 1829.2012334084877,
+      "category": "attack",
+      "crit": 2732.0275813388953,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1145.9847237159795
+    },
+    "attack.normal_hit_2": {
+      "average": 1643.048769995793,
+      "category": "attack",
+      "crit": 2453.9971191409236,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1029.3612076933402
+    },
+    "attack.normal_hit_3": {
+      "average": 1168.5012739468823,
+      "category": "attack",
+      "crit": 1745.230459583674,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 732.0597565367759
+    },
+    "attack.normal_hit_4": {
+      "average": 2851.041107080577,
+      "category": "attack",
+      "crit": 4258.209975925426,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1786.1619026532824
+    },
+    "attack.plunge_high": {
+      "average": 5941.160184903141,
+      "category": "attack",
+      "crit": 8873.498002219616,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3722.1048667028585
+    },
+    "attack.plunge_hit": {
+      "average": 2378.7679654532208,
+      "category": "attack",
+      "crit": 3552.840208353564,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1490.2853222959577
+    },
+    "attack.plunge_low": {
+      "average": 4756.5289195108535,
+      "category": "attack",
+      "crit": 7104.176381581182,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2979.9397573746564
+    },
+    "burst.burst_dark_1": {
+      "average": 6991.3144620954345,
+      "category": "burst",
+      "crit": 10681.545927606014,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4198.720883492929
+    },
+    "burst.burst_dark_2": {
+      "average": 5671.525507516195,
+      "category": "burst",
+      "crit": 8665.131645353858,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3406.1052065070194
+    },
+    "burst.burst_dark_3": {
+      "average": 6233.327562506007,
+      "category": "burst",
+      "crit": 9523.470157393629,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3743.50242035913
+    },
+    "burst.burst_purity_1": {
+      "average": 6630.155998173414,
+      "category": "burst",
+      "crit": 10129.756884151879,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3981.822674588002
+    },
+    "burst.burst_purity_2": {
+      "average": 5372.789494148597,
+      "category": "burst",
+      "crit": 8208.713547681918,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3226.6955769189926
+    },
+    "burst.burst_purity_3": {
+      "average": 6233.327562506007,
+      "category": "burst",
+      "crit": 9523.470157393629,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3743.50242035913
+    },
+    "burst.dragon_decay": {
+      "average": 7236.545517844956,
+      "category": "burst",
+      "crit": 11056.217500321787,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4345.997445095041
+    },
+    "burst.dragon_white": {
+      "average": 5274.69707184879,
+      "category": "burst",
+      "crit": 8058.8449185956115,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3167.7849522781485
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.skill_dark_1": {
+      "average": 3106.500568735137,
+      "category": "skill",
+      "crit": 4639.754817688819,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1946.2058799030276
+    },
+    "skill.skill_dark_2": {
+      "average": 2287.732976975488,
+      "category": "skill",
+      "crit": 3416.873702949129,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1433.2523921766478
+    },
+    "skill.skill_dark_3": {
+      "average": 2779.681572024353,
+      "category": "skill",
+      "crit": 4151.630002981799,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1741.4555381635064
+    },
+    "skill.skill_purity": {
+      "average": 4541.063954297209,
+      "category": "skill",
+      "crit": 6782.365846455414,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2844.9521168017673
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Durin",
+  "repSlug": "durin",
+  "schema": 1,
+  "slug": "athame_artis",
+  "weapon": "weapon_name.athame_artis",
+  "weaponType": "sword"
+}
