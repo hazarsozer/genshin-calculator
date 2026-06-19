@@ -192,6 +192,7 @@ export { theAlleyFlash } from "./the-alley-flash.js";
 export { theBell } from "./the-bell.js";
 export { theBlackSword } from "./the-black-sword.js";
 export { theCatch } from "./the-catch.js";
+export { theDaybreakChronicles } from "./the-daybreak-chronicles.js";
 export { theDockhandsAssistant } from "./the-dockhands-assistant.js";
 export { theFirstGreatMagic } from "./the-first-great-magic.js";
 export { theFlute } from "./the-flute.js";
