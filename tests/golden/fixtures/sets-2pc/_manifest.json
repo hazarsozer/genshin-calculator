@@ -40,8 +40,8 @@
     "description": "EVERY non-beta artifact set (55) at 2pc, equipped with zero artifact main/substats (only the set bonus moves), on a bonus-binding rep (SET_REP). Isolates the 2-piece bonus.",
     "id": "sets-2pc"
   },
-  "featureTotal": 1658,
-  "itemCount": 59,
+  "featureTotal": 1682,
+  "itemCount": 60,
   "items": [
     {
       "artifactSets": {
@@ -305,6 +305,28 @@
         "passiveToggles": {},
         "refine": 1,
         "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {
+        "DisenchantmentInDeepShadow": 2
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "set",
+      "repKey": "Freminet",
+      "repSlug": "freminet",
+      "setToggles": {},
+      "slug": "DisenchantmentInDeepShadow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
       }
     },
     {

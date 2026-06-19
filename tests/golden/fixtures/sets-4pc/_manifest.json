@@ -40,8 +40,8 @@
     "description": "EVERY non-beta artifact set (55) at 4pc, zero artifact stats, on the SET_REP rep; named checkbox/stacks 4pc conditionals enabled to max (equipSet). Isolates the full 2pc+4pc bonus.",
     "id": "sets-4pc"
   },
-  "featureTotal": 1662,
-  "itemCount": 59,
+  "featureTotal": 1686,
+  "itemCount": 60,
   "items": [
     {
       "artifactSets": {
@@ -322,6 +322,28 @@
         "passiveToggles": {},
         "refine": 1,
         "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {
+        "DisenchantmentInDeepShadow": 4
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "set",
+      "repKey": "Freminet",
+      "repSlug": "freminet",
+      "setToggles": {},
+      "slug": "DisenchantmentInDeepShadow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
       }
     },
     {

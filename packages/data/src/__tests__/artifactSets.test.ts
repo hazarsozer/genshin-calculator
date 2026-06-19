@@ -4,8 +4,8 @@
  * Three layers:
  *
  * 1. AUTO-DISCOVERY fixture harness — driven by two manifests:
- *      tests/golden/fixtures/set-4pc/_manifest.json   (15 entries)
- *      tests/golden/fixtures/set-2pc/_manifest.json    (5 entries)
+ *      tests/golden/fixtures/set-4pc/_manifest.json   (17 entries)
+ *      tests/golden/fixtures/set-2pc/_manifest.json    (7 entries)
  *    For each entry the harness:
  *      (a) looks up the set by oracleKey in a glob-built SET_REGISTRY
  *          (goodId → DbObjectArtifactSet; each goodId is Aspirine's oracle art.set
