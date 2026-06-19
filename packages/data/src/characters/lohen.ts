@@ -16,14 +16,14 @@
  *     Note: same "category" as auto hits (normal/charged/plunge type), but different talent tables (s2),
  *     and cryo element (Masterstroke mode infusion, GO hitEle.cryo + 'skill' levelIndex).
  *   - skill.etch_dmg "Etched Into Bone and Soul" — cryo, skill-leveled (s2.p17 @ L10 = 108%).
- *     At 0 Will-to-Win (cond-off / naught), will_mult = 1 + 0.004 × 0 = 1.0 → bare talent% × ATK.
- *   - burst.burst_dmg "Manifest Judgment" — cryo, burst-leveled (s3.p1 @ L10 = 213.84%). At 0 Will,
- *     will_mult = 1.0 → bare talent% × ATK. GO exposes single-hit value (×6 in-game per UI display).
+ *     Will-to-Win: talent% × ATK × (1 + 0.004 × will). Gated at will=100 (×1.40). Default will=0 → ×1.0.
+ *   - burst.burst_dmg "Manifest Judgment" — cryo, burst-leveled (s3.p1 @ L10 = 213.84%).
+ *     Will-to-Win: same formula. GO exposes single-hit value (×6 in-game per UI display).
  *
- * Quarantined (lean C0): Will-to-Win scaling (+0.4%/point in etch/burst), A4 "Flippant Masterpiece"
- * (teammate ATK% + self ATK% conditional), A0 "When the Mood Strikes" (+1 skill level via a0HighSpirits
- * conditional), Hexerei lockedPassive (requires 2+ Hexerei + homework cond), C1-C6. The willConsumed
- * conditional is not modeled (defaults naught = will=0 = mult 1.0, which is what GO evaluates at).
+ * Quarantined (lean C0): C1's Will-max-300 extension (gated at maxStacks:100 = C0), C6 etch +175%
+ * CritDMG, A4 "Flippant Masterpiece" (teammate ATK% + self ATK% conditional), A0 "When the Mood
+ * Strikes" (+1 skill level via a0HighSpirits conditional), Hexerei lockedPassive (requires 2+ Hexerei
+ * + homework cond), C1-C6.
  *
  * NO engine touch (pure ATK). polearm WEAPON_BY_TYPE entry already exists (Flins first; Illuga reused).
  * Element by construction + GO dump: out-of-mode normals/charged/plunge = PHYSICAL (polearm, no infusion
@@ -71,11 +71,11 @@ const talents: TalentResolver = {
       if (name === "ms_plunge_hit") return LohenTalents.s2.p9;  // ≈ 63.9324
       if (name === "ms_plunge_low") return LohenTalents.s2.p10; // ≈ 127.8377
       if (name === "ms_plunge_high") return LohenTalents.s2.p11; // ≈ 159.6762
-      // Etched Into Bone and Soul (s2.p17 — willEtchMult is quarantined: cond-off = 0 will = mult 1.0)
+      // Etched Into Bone and Soul (s2.p17 — willEtchMult gated via scalingOffset{lohen_will, 0.004, 100})
       if (name === "etch_dmg") return LohenTalents.s2.p17; // ≈ 60 at L1, 108 at L10
     }
     if (talent === "burst") {
-      // Manifest Judgment (s3.p1 — willBurstMult quarantined: cond-off = 0 will = mult 1.0)
+      // Manifest Judgment (s3.p1 — willBurstMult gated via scalingOffset{lohen_will, 0.004, 100})
       if (name === "burst_dmg") return LohenTalents.s3.p1; // ≈ 118.8 at L1, 213.84 at L10
     }
     throw new Error(`lohen talents: unknown path '${path}'`);
@@ -120,13 +120,16 @@ const features: readonly Feature[] = [
   { name: "ms_plunge_high", category: "attack", damageType: "plunge", element: "cryo", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.ms_plunge_high") }] },
 
   // --- Etched Into Bone and Soul (cryo, skill-leveled) ---
-  // willConsumed = 0 (cond-off / naught at C0) → will_mult = 1 + 0.004 × 0 = 1.0 → bare talent% × ATK.
-  // Quarantined: the will_mult scaling (the +0.004 per will-point term), and C6 etch critDMG bonus.
-  { name: "etch_dmg", category: "skill", element: "cryo", multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.etch_dmg") }] },
+  // talent% × ATK × (1 + 0.004 × will) where will = settings.lohen_will (0..100). scalingOffset adds
+  // the perStack=0.004 offset per will-point, capped at maxStacks=100 → ×1.40 at will=100.
+  // At will=0 (default) the offset is 0 → bare talent% × ATK (base-inert: 58k goldens + own suite golden unchanged).
+  // Quarantined: C1 Will-max-300 extension (stay at maxStacks:100), C6 etch +175% CritDMG.
+  { name: "etch_dmg", category: "skill", element: "cryo", multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.etch_dmg"), scalingOffset: { setting: "lohen_will", perStack: 0.004, maxStacks: 100 } }] },
 
   // --- Manifest Judgment burst (cryo, burst-leveled) ---
-  // willConsumed = 0 → will_mult = 1.0 → bare talent% × ATK. GO shows ×6 per UI multi, single-hit value.
-  { name: "burst_dmg", category: "burst", element: "cryo", multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }] },
+  // Same Will-to-Win formula: talent% × ATK × (1 + 0.004 × will). GO shows ×6 per UI multi, single-hit value.
+  // At will=0 (default) → bare talent% × ATK. Quarantined: C6 etch critDMG (separate).
+  { name: "burst_dmg", category: "burst", element: "cryo", multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg"), scalingOffset: { setting: "lohen_will", perStack: 0.004, maxStacks: 100 } }] },
 ];
 
 export const lohen: DbObjectChar = {
