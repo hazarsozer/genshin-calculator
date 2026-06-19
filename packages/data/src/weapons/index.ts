@@ -18,6 +18,7 @@ export { aquaSimulacra } from "./aqua-simulacra.js";
 export { aquilaFavonia } from "./aquila-favonia.js";
 export { ashGravenDrinkingHorn } from "./ash-graven-drinking-horn.js";
 export { astralVulturesCrimsonPlumage } from "./astral-vultures-crimson-plumage.js";
+export { athameArtis } from "./athame-artis.js";
 export { azurelight } from "./azurelight.js";
 export { balladOfTheBoundlessBlue } from "./ballad-of-the-boundless-blue.js";
 export { balladOfTheFjords } from "./ballad-of-the-fjords.js";
