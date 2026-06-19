@@ -36,7 +36,7 @@
       "refine": 1
     }
   },
-  "characterCount": 5,
+  "characterCount": 6,
   "characters": [
     {
       "artifactSets": {
@@ -197,11 +197,43 @@
         "passiveToggles": {},
         "refine": 1
       }
+    },
+    {
+      "artifactSets": {
+        "ADayCarvedFromRisingWinds": 2
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 21,
+      "id": 33,
+      "key": "Eula",
+      "setToggles": {},
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "eula",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1
+      }
     }
   ],
   "config": {
-    "description": "One 2pc artifact set per rep (5), zero artifact stats — isolates the (mostly unconditional) 2-piece bonus.",
+    "description": "One 2pc artifact set per rep (6), zero artifact stats — isolates the (mostly unconditional) 2-piece bonus.",
     "id": "set-2pc"
   },
-  "featureTotal": 162
+  "featureTotal": 183
 }

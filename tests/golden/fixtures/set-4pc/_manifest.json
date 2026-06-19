@@ -36,7 +36,7 @@
       "refine": 1
     }
   },
-  "characterCount": 15,
+  "characterCount": 16,
   "characters": [
     {
       "artifactSets": {
@@ -538,11 +538,45 @@
         "passiveToggles": {},
         "refine": 1
       }
+    },
+    {
+      "artifactSets": {
+        "ADayCarvedFromRisingWinds": 4
+      },
+      "char": {
+        "ascension": 6,
+        "constellation": 0,
+        "level": 90
+      },
+      "charToggles": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 21,
+      "id": 33,
+      "key": "Eula",
+      "setToggles": {
+        "set.a_day_carved_4": true
+      },
+      "skills": {
+        "attack": 10,
+        "burst": 10,
+        "elemental": 10
+      },
+      "slug": "eula",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "level": 90,
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1
+      }
     }
   ],
   "config": {
-    "description": "One signature 4pc artifact set per rep (15), equipped with zero artifact main/substats so ONLY the set bonus moves numbers; every named 4pc conditional enabled to max.",
+    "description": "One signature 4pc artifact set per rep (16), equipped with zero artifact main/substats so ONLY the set bonus moves numbers; every named 4pc conditional enabled to max.",
     "id": "set-4pc"
   },
-  "featureTotal": 452
+  "featureTotal": 473
 }
