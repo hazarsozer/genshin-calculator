@@ -40,8 +40,8 @@
     "description": "EVERY non-beta weapon (202) at refine R1, passive ON, on a scaling-relevant rep (REP_BY_TYPE, or CHAR_COUPLED_REP for HP/DEF/EM passives). Isolates each weapon's base ATK + statTable + R1 passive.",
     "id": "weapons-r1"
   },
-  "featureTotal": 6142,
-  "itemCount": 218,
+  "featureTotal": 6162,
+  "itemCount": 219,
   "items": [
     {
       "artifactSets": {},
@@ -4731,6 +4731,28 @@
         },
         "refine": 1,
         "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 20,
+      "kind": "weapon",
+      "repKey": "Zibai",
+      "repSlug": "zibai",
+      "setToggles": {},
+      "slug": "lightbearing_moonshard",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.lightbearing_moonshard",
+        "passiveToggles": {
+          "weapon_lightbearing_moonshard_1": true
+        },
+        "refine": 1,
+        "type": "sword"
       }
     }
   ]

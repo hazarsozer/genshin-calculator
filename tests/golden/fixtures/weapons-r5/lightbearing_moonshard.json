@@ -1,0 +1,193 @@
+{
+  "_source": "port-snapshot lightbearing_moonshard weapons-r5 — regression lock; validation = 2-witness (Amber + GCSim source) + load-bearing r1≠r5 (no single-rep GCSim gate)",
+  "element": "geo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 1863.716176811121,
+      "category": "attack",
+      "crit": 4962.467529754986,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1519.4104709284693
+    },
+    "attack.normal_hit_1": {
+      "average": 1193.8460278866,
+      "category": "attack",
+      "crit": 3178.8220881631755,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 973.2931323003139
+    },
+    "attack.normal_hit_2": {
+      "average": 1099.3481106343488,
+      "category": "attack",
+      "crit": 2927.2049954810986,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 896.2529012069322
+    },
+    "attack.normal_hit_3": {
+      "average": 729.4286837825023,
+      "category": "attack",
+      "crit": 1942.2303693989081,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 594.6729409362349
+    },
+    "attack.normal_hit_4": {
+      "average": 1839.510714171487,
+      "category": "attack",
+      "crit": 4898.016287722302,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1499.6767615547296
+    },
+    "attack.plunge_high": {
+      "average": 3501.4363674884394,
+      "category": "attack",
+      "crit": 9323.181553800281,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2854.575791231568
+    },
+    "attack.plunge_hit": {
+      "average": 1401.9323507248914,
+      "category": "attack",
+      "crit": 3732.8880094227006,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1142.9372775362458
+    },
+    "attack.plunge_low": {
+      "average": 2803.2712169765055,
+      "category": "attack",
+      "crit": 7464.195763512161,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2285.390711805877
+    },
+    "attack.shift_charged": {
+      "average": 1950.3716206773252,
+      "category": "attack",
+      "crit": 5193.20267699094,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1590.0570588647013
+    },
+    "attack.shift_normal_1": {
+      "average": 1557.8488155812338,
+      "category": "attack",
+      "crit": 4148.0426364151335,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1270.049502155245
+    },
+    "attack.shift_normal_2": {
+      "average": 1434.5380727580437,
+      "category": "attack",
+      "crit": 3819.7063988786467,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1169.5193698557543
+    },
+    "attack.shift_normal_3": {
+      "average": 951.8298922040399,
+      "category": "attack",
+      "crit": 2534.4121560369076,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 775.9874184448323
+    },
+    "attack.shift_normal_4": {
+      "average": 2400.3750912572464,
+      "category": "attack",
+      "crit": 6391.41495781734,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1956.9262171950136
+    },
+    "burst.burst_1": {
+      "average": 5308.298564434352,
+      "category": "burst",
+      "crit": 14134.265502445192,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4327.6355713220355
+    },
+    "burst.burst_2": {
+      "average": 40344.850304074294,
+      "category": "burst",
+      "crit": 107425.16061075355,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 32891.48249222104
+    },
+    "reaction.crystalize": {
+      "average": 2161.7331008659794,
+      "category": "reaction",
+      "crit": 2161.7331008659794,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2161.7331008659794
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.stride_1": {
+      "average": 5806.014271042943,
+      "category": "skill",
+      "crit": 15459.519886039301,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4733.402536043347
+    },
+    "skill.stride_2": {
+      "average": 31997.326816459314,
+      "category": "skill",
+      "crit": 85198.43168251365,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 26086.092942453277
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Zibai",
+  "repSlug": "zibai",
+  "schema": 1,
+  "slug": "lightbearing_moonshard",
+  "weapon": "weapon_name.lightbearing_moonshard",
+  "weaponType": "sword"
+}
