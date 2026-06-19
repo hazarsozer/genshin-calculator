@@ -79,6 +79,7 @@ export { freedomSworn } from "./freedom-sworn.js";
 export { frostbearer } from "./frostbearer.js";
 export { fruitOfFulfillment } from "./fruit-of-fulfillment.js";
 export { fruitfulHook } from "./fruitful-hook.js";
+export { goldenFrostboundOath } from "./golden-frostbound-oath.js";
 export { hakushinRing } from "./hakushin-ring.js";
 export { halberd } from "./halberd.js";
 export { hamayumi } from "./hamayumi.js";
