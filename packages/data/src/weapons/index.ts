@@ -46,6 +46,7 @@ export { darkIronSword } from "./dark-iron-sword.js";
 export { dawningFrost } from "./dawning-frost.js";
 export { deathmatch } from "./deathmatch.js";
 export { debateClub } from "./debate-club.js";
+export { disasterAndRemorse } from "./disaster-and-remorse.js";
 export { dodocoTales } from "./dodoco-tales.js";
 export { dragonsBane } from "./dragons-bane.js";
 export { dragonspineSpear } from "./dragonspine-spear.js";
