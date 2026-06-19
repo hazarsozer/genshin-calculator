@@ -17,7 +17,9 @@
  * REACTION_BONUS_PERCENT_KEYS in buildStats.ts and wired into Linnea + Zibai's `lunardirect` features
  * via `reactionBonusKeys`. NO engine touch needed — pure data port.
  *
- * `geo_dmg_` is a standard existing elemental-DMG% key, already emitted by buildStats.
+ * KEY MAPPING: GO uses `geo_dmg_` but our engine key is `dmg_geo` (the DMG_BONUS_ELEMENT_KEYS pattern,
+ * consistent with dmg_pyro/dmg_cryo/etc.; see buildStats.ts DMG_BONUS_ELEMENT_KEYS). Same as
+ * skyward-atlas.ts and calamity-queller.ts which also buffer dmg_geo (not geo_dmg_).
  *
  * ALWAYS-ON DEF%: ratio-inert on non-DEF hits (DEF doesn't scale ATK damage). On Linnea's
  *   Lunar-Crystallize hits (skill_hammer) the gate is ABSOLUTE (the a0 term makes them non-∝-DEF);
@@ -32,8 +34,8 @@
  *   team-buff channel). No code ships for it. Documented here for future extension.
  *
  * Gate: GO-gate, RATIO mode on Linnea.
- *   golden-frostbound-oath-geo:   Linnea skill.skill_pummeler with toggle ON → +40% geo_dmg_.
- *   golden-frostbound-oath-lunar: Linnea skill.skill_hammer with toggle ON → +40% lunarcrystallize_dmg_
+ *   golden-frostbound-oath-geo:   Linnea skill.skill_pummeler with toggle ON → +40% dmg_geo (RATIO, DEF).
+ *   golden-frostbound-oath-lunar: Linnea skill.skill_hammer with toggle ON → +40% dmg_reaction_lunarcrystallize
  *                                 (ABSOLUTE mode, tol 1e-5 — a0 term makes it non-∝-DEF, like Moonshard).
  *
  * Amber fixture: tools/port/_fixtures/ambr/weapon/15516.json (verified name, type Bow, rarity 5★).
@@ -66,8 +68,9 @@ export const goldenFrostboundOath: DbObjectWeapon = {
     // Toggle `skillOrLc` (after Skill or Lunar-Crystallize hit): geo_dmg_ +40% AND lunarcrystallize_dmg_ +40%
     // (R1..R5: 40/50/60/70/80% both). GO: equal(condSkillOrLc, 'on', subscript(refinement, selfDmg_arr))
     // applied to BOTH geo_dmg_ and lunarcrystallize_dmg_ (GO aliases the node: { ...self_geo_dmg_ }).
-    // Our `dmg_reaction_lunarcrystallize` maps to GO's lunarcrystallize_dmg_, feeding Linnea/Zibai's
-    // lunardirect `reactionBonusKeys`. `geo_dmg_` is a standard elemental-DMG% key.
+    // Our key `dmg_geo` maps to GO's `geo_dmg_` (DMG_BONUS_ELEMENT_KEYS pattern, consistent with
+    // skyward-atlas/calamity-queller). Our `dmg_reaction_lunarcrystallize` maps to GO's
+    // lunarcrystallize_dmg_, feeding Linnea/Zibai's lunardirect `reactionBonusKeys`.
     {
       type: "boolean-refine",
       name: "weapon_golden_frostbound_oath_1",
@@ -75,11 +78,11 @@ export const goldenFrostboundOath: DbObjectWeapon = {
       title: "talent_name.golden_frostbound_oath_skill_or_lc",
       description: "talent_descr.golden_frostbound_oath_skill_or_lc",
       refinementStats: [
-        { geo_dmg_: 40, dmg_reaction_lunarcrystallize: 40 },  // R1
-        { geo_dmg_: 50, dmg_reaction_lunarcrystallize: 50 },  // R2
-        { geo_dmg_: 60, dmg_reaction_lunarcrystallize: 60 },  // R3
-        { geo_dmg_: 70, dmg_reaction_lunarcrystallize: 70 },  // R4
-        { geo_dmg_: 80, dmg_reaction_lunarcrystallize: 80 },  // R5
+        { dmg_geo: 40, dmg_reaction_lunarcrystallize: 40 },  // R1
+        { dmg_geo: 50, dmg_reaction_lunarcrystallize: 50 },  // R2
+        { dmg_geo: 60, dmg_reaction_lunarcrystallize: 60 },  // R3
+        { dmg_geo: 70, dmg_reaction_lunarcrystallize: 70 },  // R4
+        { dmg_geo: 80, dmg_reaction_lunarcrystallize: 80 },  // R5
       ],
     },
     // QUARANTINED: `moondrift` team buff — geo_dmg_ +20% AND lunarcrystallize_dmg_ +20% to TEAMMATES
