@@ -40,8 +40,8 @@
     "description": "EVERY non-beta weapon (202) at refine R5, passive ON, same reps as weapons-r1. Diff vs weapons-r1 = the refine scaling of each passive + refine-keyed stats.",
     "id": "weapons-r5"
   },
-  "featureTotal": 6116,
-  "itemCount": 217,
+  "featureTotal": 6142,
+  "itemCount": 218,
   "items": [
     {
       "artifactSets": {},
@@ -4709,6 +4709,28 @@
         },
         "refine": 5,
         "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "weapon",
+      "repKey": "Jahoda",
+      "repSlug": "jahoda",
+      "setToggles": {},
+      "slug": "the_daybreak_chronicles",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_daybreak_chronicles",
+        "passiveToggles": {
+          "weapon_the_daybreak_chronicles": 6
+        },
+        "refine": 5,
+        "type": "bow"
       }
     }
   ]
