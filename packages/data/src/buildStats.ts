@@ -233,6 +233,12 @@ const REACTION_BONUS_PERCENT_KEYS = [
   // Lauma's Ascendant-Gleam (moonsign≥2) team Lunar-Bloom DMG bonus — C2 +0.4 (raw 40 → /100), A1
   // ascendant. Condition-sourced raw percent, /100'd like every sibling. Off at moonsign 1 → base-inert.
   "dmg_reaction_lunarbloom",
+  // Lightbearing Moonshard passive (v6.3): toggle → lunarcrystallize_dmg_ +64% (R1). Condition-sourced
+  // raw percent (64 → /100 = 0.64), emitted into the Lunar-Crystallize reaction factor
+  // (1 + emBonus + Σ reactionBonus) via `reactionBonusKeys` on the `lunardirect` Feature.reaction.
+  // Golden Frostbound Oath (v6.5) also writes this key (lunarcrystallize_dmg_ +40% via its toggle).
+  // Absent on every build with no such passive active → key never emitted → base-inert.
+  "dmg_reaction_lunarcrystallize",
 ] as const;
 
 /**

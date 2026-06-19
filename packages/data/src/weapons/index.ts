@@ -95,6 +95,7 @@ export { keyOfKhajNisut } from "./key-of-khaj-nisut.js";
 export { kingsSquire } from "./kings-squire.js";
 export { kitainCrossSpear } from "./kitain-cross-spear.js";
 export { lightOfFoliarIncision } from "./light-of-foliar-incision.js";
+export { lightbearingMoonshard } from "./lightbearing-moonshard.js";
 export { lionsRoar } from "./lions-roar.js";
 export { lithicBlade } from "./lithic-blade.js";
 export { lithicSpear } from "./lithic-spear.js";

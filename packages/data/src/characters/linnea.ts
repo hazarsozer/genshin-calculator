@@ -56,6 +56,10 @@ const LUNAR_CRYSTALLIZE_AMPLIFY = 1.6; // GO lunarDmgMultiplier('def','lunarcrys
 const LUNAR_SCALING_KEYS = ["linnea_lunar_multi"] as const; // → (1 + linnea_lunar_multi) = (1 + a0 baseDmg)
 const LUNAR_CRIT_RATE_KEYS = ["crit_rate_total"] as const;
 const LUNAR_CRIT_DMG_KEYS = ["crit_dmg_total"] as const;
+// Lunar-Crystallize reaction DMG bonus key — fed by Lightbearing Moonshard toggle +64% (v6.3),
+// Golden Frostbound Oath toggle +40% (v6.5), and any future lunarcrystallize_dmg_ source.
+// Absent (0) on builds with no such source → base-inert on every existing Linnea fixture.
+const LUNAR_REACTION_BONUS_KEYS = ["dmg_reaction_lunarcrystallize"] as const;
 
 // a0 base-DMG bonus = min(DEF × 0.00007, 0.14) — GO passive3 [0.007, 0.14] (== Zibai's lunarMultiFromDef,
 // the 0.00007 DEF lunar-coefficient). Feeds (1 + a0) on every Lunar-Crystallize hit. Base-inert: sole reader
@@ -118,6 +122,7 @@ const lunarReaction = {
   variant: "lunardirect" as const,
   element: "geo" as const,
   scalingStatKeys: LUNAR_SCALING_KEYS,
+  reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
   amplifyingMultiplier: LUNAR_CRYSTALLIZE_AMPLIFY,
   critRateKeys: LUNAR_CRIT_RATE_KEYS,
   critDmgKeys: LUNAR_CRIT_DMG_KEYS,

@@ -56,6 +56,10 @@ const LUNAR_CRYSTALLIZE_AMPLIFY = 1.6; // GO lunarDmgMultiplier('def','lunarcrys
 const LUNAR_SCALING_KEYS = ["zibai_lunar_multi"] as const; // → (1 + zibai_lunar_multi) = (1 + a0 baseDmg)
 const LUNAR_CRIT_RATE_KEYS = ["crit_rate_total"] as const; // Lunar-Crystallize is crit-capable
 const LUNAR_CRIT_DMG_KEYS = ["crit_dmg_total"] as const;
+// Lunar-Crystallize reaction DMG bonus key — fed by Lightbearing Moonshard (v6.3) toggle +64%,
+// Golden Frostbound Oath (v6.5) toggle +40%, and any future lunarcrystallize_dmg_ source.
+// Absent (0) on builds with no such source → base-inert on every existing Zibai fixture.
+const LUNAR_REACTION_BONUS_KEYS = ["dmg_reaction_lunarcrystallize"] as const;
 
 // Utility passive (GO a0 `a0_lunarcrystallize_baseDmg_`): every Lunar-Crystallize hit gets a base-DMG bonus
 // of min(DEF × 0.00007, 0.14) — the DEF-scaled analog of Columbina's HP-scaled `columbina_lunar_multi`
@@ -134,6 +138,7 @@ const features: readonly Feature[] = [
       variant: "lunardirect",
       element: "geo",
       scalingStatKeys: LUNAR_SCALING_KEYS,
+      reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
       amplifyingMultiplier: LUNAR_CRYSTALLIZE_AMPLIFY,
       critRateKeys: LUNAR_CRIT_RATE_KEYS,
       critDmgKeys: LUNAR_CRIT_DMG_KEYS,
@@ -148,6 +153,7 @@ const features: readonly Feature[] = [
       variant: "lunardirect",
       element: "geo",
       scalingStatKeys: LUNAR_SCALING_KEYS,
+      reactionBonusKeys: LUNAR_REACTION_BONUS_KEYS,
       amplifyingMultiplier: LUNAR_CRYSTALLIZE_AMPLIFY,
       critRateKeys: LUNAR_CRIT_RATE_KEYS,
       critDmgKeys: LUNAR_CRIT_DMG_KEYS,
