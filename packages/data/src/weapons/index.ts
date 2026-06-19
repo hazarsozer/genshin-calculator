@@ -17,6 +17,7 @@ export { amosBow } from "./amos-bow.js";
 export { aquaSimulacra } from "./aqua-simulacra.js";
 export { aquilaFavonia } from "./aquila-favonia.js";
 export { ashGravenDrinkingHorn } from "./ash-graven-drinking-horn.js";
+export { angelosHeptades } from "./angelos-heptades.js";
 export { astralVulturesCrimsonPlumage } from "./astral-vultures-crimson-plumage.js";
 export { athameArtis } from "./athame-artis.js";
 export { azurelight } from "./azurelight.js";
