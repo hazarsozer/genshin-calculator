@@ -40,8 +40,8 @@
     "description": "EVERY non-beta weapon (202) at refine R5, passive ON, same reps as weapons-r1. Diff vs weapons-r1 = the refine scaling of each passive + refine-keyed stats.",
     "id": "weapons-r5"
   },
-  "featureTotal": 6179,
-  "itemCount": 220,
+  "featureTotal": 6223,
+  "itemCount": 221,
   "items": [
     {
       "artifactSets": {},
@@ -4775,6 +4775,28 @@
         },
         "refine": 5,
         "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 44,
+      "kind": "weapon",
+      "repKey": "Varka",
+      "repSlug": "varka",
+      "setToggles": {},
+      "slug": "gest_of_the_mighty_wolf",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.gest_of_the_mighty_wolf",
+        "passiveToggles": {
+          "weapon_gest_of_the_mighty_wolf": 4
+        },
+        "refine": 5,
+        "type": "claymore"
       }
     }
   ]
