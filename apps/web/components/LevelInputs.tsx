@@ -3,10 +3,7 @@
 import { useBuildStore } from '@/lib/store';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
-}
+import { clamp } from '@/lib/utils';
 
 function NumberField({
   id,

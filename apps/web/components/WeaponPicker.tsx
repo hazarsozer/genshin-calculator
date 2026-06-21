@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { humanizeSlug } from '@/lib/utils';
 
 export function WeaponPicker() {
   const characterKey = useBuildStore((s) => s.form.characterKey);
@@ -44,7 +45,7 @@ export function WeaponPicker() {
         <SelectContent>
           {compatibleWeapons.map((w) => (
             <SelectItem key={w.name} value={w.name}>
-              {w.name}
+              {humanizeSlug(w.name)}
             </SelectItem>
           ))}
         </SelectContent>

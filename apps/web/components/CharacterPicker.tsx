@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { humanizeSlug } from '@/lib/utils';
 
 export function CharacterPicker() {
   const characterKey = useBuildStore((s) => s.form.characterKey);
@@ -33,7 +34,7 @@ export function CharacterPicker() {
         <SelectContent>
           {ALL_CHARACTERS.map((c) => (
             <SelectItem key={c.name} value={c.name}>
-              {c.name}
+              {humanizeSlug(c.name)}
             </SelectItem>
           ))}
         </SelectContent>
