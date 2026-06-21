@@ -22,7 +22,7 @@
 import { describe, it, expect } from "vitest";
 import { lauma } from "../characters/lauma.js";
 import { nightweaversLookingGlass } from "../weapons/nightweavers-looking-glass.js";
-import { LEVELS, TALENTS, reconstructSettings, reconstructPort } from "./_reconstruct.js";
+import { LEVELS, TALENTS, reconstructSettings, reconstructPort } from "../reconstruct.js";
 
 const ENEMY = { level: 90, resistance: 10 } as const;
 const STAT_BLOCK = { atk_base: 2000 } as const;

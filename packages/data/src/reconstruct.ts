@@ -27,9 +27,9 @@
  * Source: packages/data/src/__tests__/goldenConfig.test.ts (the original inline reconstruction).
  */
 
-import { buildStats } from "../buildStats.js";
-import { compileCharacter } from "../loader.js";
-import type { PartyInput } from "../partyContext.js";
+import { buildStats } from "./buildStats.js";
+import { compileCharacter } from "./loader.js";
+import type { PartyInput } from "./partyContext.js";
 import type {
   CharMultiplier,
   CharPostEffect,

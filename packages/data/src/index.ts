@@ -54,3 +54,18 @@ export { assembleArtifactStats, detectSets } from "./assembleBuild.js";
 // Phase 3 ② — party composition input model
 export { buildPartyContext } from "./partyContext.js";
 export type { PartyInput, PartyMember, ActiveCharFacts } from "./partyContext.js";
+
+export { ALL_CHARACTERS, ALL_WEAPONS } from "./roster.js";
+export {
+  reconstructPort,
+  reconstructSettings,
+  LEVELS,
+  TALENTS,
+  TOLERANCE,
+} from "./reconstruct.js";
+export type {
+  ReconstructInput,
+  ReconstructResult,
+  ReconstructToggles,
+  ReconstructEnemy,
+} from "./reconstruct.js";

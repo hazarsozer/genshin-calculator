@@ -26,7 +26,7 @@ import {
   TALENTS,
   reconstructSettings,
   reconstructPort,
-} from "./_reconstruct.js";
+} from "../reconstruct.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FIXTURES = resolve(__dirname, "../../../../tests/golden/fixtures/gates");

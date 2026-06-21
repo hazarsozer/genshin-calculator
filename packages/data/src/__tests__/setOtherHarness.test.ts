@@ -18,7 +18,7 @@ import {
   TALENTS,
   reconstructSettings,
   reconstructPort,
-} from "./_reconstruct.js";
+} from "../reconstruct.js";
 
 const ENEMY = { level: 90, resistance: 10 } as const;
 const STAT_BLOCK = { atk_base: 1000 } as const;
