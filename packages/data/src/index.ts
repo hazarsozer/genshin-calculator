@@ -57,6 +57,10 @@ export type { PartyInput, PartyMember, ActiveCharFacts } from "./partyContext.js
 
 export { ALL_CHARACTERS, ALL_WEAPONS } from "./roster.js";
 export {
+  CHARACTER_CONDITIONS,
+  ENEMY_CONDITIONS,
+} from "./characterConditions.js";
+export {
   reconstructPort,
   reconstructSettings,
   LEVELS,
