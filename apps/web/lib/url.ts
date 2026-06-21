@@ -1,5 +1,5 @@
-import type { BuildForm } from "./types.js";
-import { DEFAULT_FORM } from "./defaults.js";
+import type { BuildForm } from "./types";
+import { DEFAULT_FORM } from "./defaults";
 
 /**
  * Encode a BuildForm to a URL-safe string (JSON → base64url).

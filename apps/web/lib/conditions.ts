@@ -26,7 +26,7 @@ import {
 } from "@genshin/data";
 import type { DbObjectChar, DbObjectWeapon, Condition } from "@genshin/types";
 import type { EquippedSet } from "@genshin/data";
-import { humanizeSlug } from "./utils.js";
+import { humanizeSlug } from "./utils";
 
 /** A single renderable UI control derived from a Condition. */
 export interface ConditionControl {

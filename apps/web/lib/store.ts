@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import type { BuildForm } from "./types.js";
-import { DEFAULT_FORM } from "./defaults.js";
+import type { BuildForm } from "./types";
+import { DEFAULT_FORM } from "./defaults";
 
 interface BuildState {
   form: BuildForm;

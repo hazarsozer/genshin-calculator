@@ -14,10 +14,10 @@
  */
 
 import { useMemo } from 'react';
-import { useBuildStore } from './store.js';
-import { assembleFromGood, assembleFromManual } from './artifacts.js';
-import { computeBuild } from './calc.js';
-import type { ComputeResult } from './types.js';
+import { useBuildStore } from './store';
+import { assembleFromGood, assembleFromManual } from './artifacts';
+import { computeBuild } from './calc';
+import type { ComputeResult } from './types';
 
 export function useResults(): ComputeResult {
   const form = useBuildStore((s) => s.form);

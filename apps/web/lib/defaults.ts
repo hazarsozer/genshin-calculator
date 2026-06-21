@@ -1,4 +1,4 @@
-import type { BuildForm } from "./types.js";
+import type { BuildForm } from "./types";
 
 export const DEFAULT_FORM: BuildForm = {
   characterKey: "bennett",

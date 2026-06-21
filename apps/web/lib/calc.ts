@@ -25,8 +25,8 @@ import {
   findCharacter,
   findWeapon,
   resolveWeaponStatTable,
-} from "./catalog.js";
-import type { BuildForm, ComputeResult, FeatureResult } from "./types.js";
+} from "./catalog";
+import type { BuildForm, ComputeResult, FeatureResult } from "./types";
 
 const humanize = (key: string): string =>
   key
