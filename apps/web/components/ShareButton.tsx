@@ -16,6 +16,9 @@ export function ShareButton() {
     navigator.clipboard.writeText(url).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {
+      // Clipboard write may be rejected in non-HTTPS or restricted contexts.
+      // The hash is already set above, so the user can still copy the URL manually.
     });
   }
 
