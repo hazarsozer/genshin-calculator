@@ -59,10 +59,12 @@ export function Cockpit() {
       )}
 
       {/* Slide-out drawer */}
-      <AnimatePresence mode="popLayout">
+      {/* Stable key: switching drawers swaps contents (no exit/enter stacking);
+          only open (null→id) and close (id→null) animate. */}
+      <AnimatePresence>
         {activeDrawer && (
           <Drawer
-            key={activeDrawer}
+            key="drawer"
             title={DRAWER_TITLES[activeDrawer]}
             onClose={() => setActiveDrawer(null)}
           >
