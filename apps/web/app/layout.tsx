@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Teko } from "next/font/google";
 import "./globals.css";
+import { ThemeRoot } from "@/components/shell/ThemeRoot";
+import { TopBar } from "@/components/shell/TopBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -10,6 +12,13 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// Condensed display face for the big damage numbers (game-HUD feel).
+const teko = Teko({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -26,9 +35,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${teko.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full">
+        <ThemeRoot>
+          <TopBar />
+          {children}
+        </ThemeRoot>
+      </body>
     </html>
   );
 }
