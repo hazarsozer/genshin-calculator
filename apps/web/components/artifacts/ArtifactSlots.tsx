@@ -32,7 +32,7 @@ const SLOTS = [
     label: "Goblet",
     fixedMain: null,
     mains: [
-      "hp_", "atk_", "def_",
+      "hp_", "atk_", "def_", "eleMas",
       "pyro_dmg_", "hydro_dmg_", "electro_dmg_", "cryo_dmg_",
       "anemo_dmg_", "geo_dmg_", "dendro_dmg_", "physical_dmg_",
     ],

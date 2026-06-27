@@ -82,7 +82,7 @@ export function GoodImport() {
       </div>
 
       {parseResult?.error && (
-        <p className="text-[11px]" style={{ color: "oklch(0.704 0.191 22.216)" }}>
+        <p className="text-[11px] text-[var(--destructive)]">
           {parseResult.error}
         </p>
       )}
