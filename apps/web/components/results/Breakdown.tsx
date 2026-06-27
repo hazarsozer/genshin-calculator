@@ -21,8 +21,9 @@ export function Breakdown() {
   if (!result.features.length)
     return <p className="text-sm text-[var(--ck-muted)]">Pick a character to see the damage breakdown.</p>;
 
-  const feats = [...result.features].sort((a, b) => b.triple[mode] - a.triple[mode]);
-  const max = feats[0].triple[mode] || 1;
+  // Natural kit order (NA → Charged → Skill → Burst), like Aspirine — not damage-sorted.
+  const feats = result.features;
+  const max = Math.max(1, ...feats.map((f) => f.triple[mode]));
 
   return (
     <div>

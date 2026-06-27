@@ -82,7 +82,7 @@ interface RailProps {
 
 export function Rail({ active, onOpen }: RailProps) {
   return (
-    <nav className="hidden flex-col items-center gap-1 border-r border-[var(--ck-border)] bg-[#0e0a0a] py-3 lg:flex" style={{ width: 64, flexShrink: 0 }}>
+    <nav className="relative z-30 hidden flex-col items-center gap-1 border-r border-[var(--ck-border)] bg-[#0e0a0a] py-3 lg:flex" style={{ width: 64, flexShrink: 0 }}>
       {ITEMS.map((item) => {
         const isOn = active === item.id;
         return (
