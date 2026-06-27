@@ -3,18 +3,11 @@
 import { ALL_CHARACTERS, ALL_WEAPONS } from "@genshin/data";
 import { useBuildStore } from "@/lib/store";
 import { collectGroupedConditions } from "@/lib/conditions";
-import { GoodImport } from "@/components/GoodImport";
-import { ManualStatsForm } from "@/components/ManualStatsForm";
-import { SetPicker } from "@/components/SetPicker";
+import { GoodImport } from "@/components/artifacts/GoodImport";
+import { ArtifactSlots } from "@/components/artifacts/ArtifactSlots";
+import { SetPicker } from "@/components/artifacts/SetPicker";
 import { ConditionControlWidget } from "./ConditionControl";
 import type { EquippedSet } from "@genshin/data";
-
-/**
- * ArtifactsDrawer — wraps the existing GOOD-import + manual-stats + set-picker
- * logic (restyled with tokens) plus the equipped set conditions.
- *
- * A slot-based redesign is a later pass — this milestone wraps the existing forms.
- */
 
 function SectionHead({ label }: { label: string }) {
   return (
@@ -41,8 +34,7 @@ function TabButton({
       style={
         active
           ? {
-              background:
-                "color-mix(in srgb, var(--ck-accent) 16%, transparent)",
+              background: "color-mix(in srgb, var(--ck-accent) 16%, transparent)",
               color: "var(--ck-accent2)",
             }
           : { color: "var(--ck-muted)" }
@@ -81,8 +73,8 @@ export function ArtifactsDrawer() {
         <GoodImport />
       ) : (
         <>
-          <SectionHead label="Base Stats" />
-          <ManualStatsForm />
+          <SectionHead label="Artifact Slots" />
+          <ArtifactSlots />
           <SectionHead label="Artifact Sets" />
           <SetPicker />
         </>

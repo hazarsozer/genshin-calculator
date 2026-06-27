@@ -111,7 +111,12 @@ export function Breakdown() {
                 <div key={node.feat.key}>
                   <div className="flex items-baseline justify-between">
                     <span className="text-[13px] font-medium">{node.feat.label}</span>
-                    <span className="text-[15px] font-bold tabular-nums">{fmt(node.feat.triple[mode])}</span>
+                    <span
+                      className="text-[15px] font-bold tabular-nums"
+                      data-testid="result-avg"
+                    >
+                      {fmt(node.feat.triple[mode])}
+                    </span>
                   </div>
                   <div className="mt-1 h-2 overflow-hidden rounded bg-[#1a1311]">
                     <div

@@ -9,6 +9,15 @@ import type { EquippedSet } from "@genshin/data";
 
 export type ArtifactMode = "good" | "manual";
 
+/** Per-slot artifact data for the slot-based manual input UI.
+ *  Uses GOOD stat key strings so `assembleArtifactStats` can derive the flat block. */
+export interface ArtifactSlotData {
+  mainStatKey: string;              // GoodStatKey (e.g. "hp", "critDMG_")
+  rarity: 1 | 2 | 3 | 4 | 5;
+  level: number;                    // 0..20
+  substats: Array<{ key: string; value: number }>;
+}
+
 export interface BuildForm {
   characterKey: string; // DbObjectChar.name
   weaponKey: string; // DbObjectWeapon.name
@@ -27,8 +36,10 @@ export interface BuildForm {
   enemy: { level: number; resistance: number | Record<string, number> };
   artifactMode: ArtifactMode;
   goodJson: string; // raw GOOD text (good mode)
-  manualStats: Record<string, number>; // raw-percent Aspirine keys (manual mode)
+  manualStats: Record<string, number>; // raw-percent Aspirine keys (manual mode); derived from artifactSlots when slots are used
   manualSets: EquippedSet[]; // manual-mode set picker
+  /** Per-slot data for the slot-based input UI. When set, manualStats is derived from this. Optional so existing builds without slots still work. */
+  artifactSlots?: Partial<Record<string, ArtifactSlotData>>;
 }
 
 export interface FeatureResult {
