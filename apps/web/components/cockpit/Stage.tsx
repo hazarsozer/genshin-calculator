@@ -13,7 +13,8 @@ const ELEMENT_LABEL: Record<string, string> = {
 };
 
 const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
-const pct = (n: number | undefined) => `${(n ?? 0).toFixed(1)}%`;
+// Engine stores ratio-type stats as fractions (0.05 = 5%); ×100 for display.
+const pct = (n: number | undefined) => `${((n ?? 0) * 100).toFixed(1)}%`;
 
 /** The persistent showcase: splash art, identity, the live headline result, stat strip. */
 export function Stage() {

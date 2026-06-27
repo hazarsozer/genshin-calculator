@@ -14,7 +14,7 @@ interface SplashArtProps {
  * failure it hides the <img>, leaving the element-gradient background visible —
  * a missing asset never breaks layout.
  */
-export function SplashArt({ name, className, objectPosition = "66% 16%" }: SplashArtProps) {
+export function SplashArt({ name, className, objectPosition = "center 22%" }: SplashArtProps) {
   const sources = splashSources(name);
   const [idx, setIdx] = useState(0);
   const [failed, setFailed] = useState(false);
