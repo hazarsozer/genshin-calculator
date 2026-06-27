@@ -171,3 +171,70 @@ export function collectConditions(
 
   return controls;
 }
+
+/**
+ * Grouped version of collectConditions — maps conditions into their destination
+ * drawer rather than a flat list. Each group is independently deduplicated.
+ *
+ * Groups:
+ *   self   → Character drawer   (char's own buff channels)
+ *   weapon → Weapon drawer
+ *   set    → Artifacts drawer
+ *   global → Buffs & Team drawer (CHARACTER_CONDITIONS)
+ *   enemy  → Enemy drawer        (ENEMY_CONDITIONS)
+ */
+export interface GroupedConditions {
+  self: ConditionControl[];
+  weapon: ConditionControl[];
+  set: ConditionControl[];
+  global: ConditionControl[];
+  enemy: ConditionControl[];
+}
+
+function makeGroupCollector() {
+  const seen = new Set<string>();
+  const out: ConditionControl[] = [];
+  function push(cond: Condition): void {
+    const ctrl = conditionToControl(cond);
+    if (!ctrl) return;
+    if (seen.has(ctrl.name)) return;
+    seen.add(ctrl.name);
+    out.push(ctrl);
+  }
+  return { push, controls: out };
+}
+
+export function collectGroupedConditions(
+  char: DbObjectChar,
+  weapon: DbObjectWeapon,
+  sets: readonly EquippedSet[]
+): GroupedConditions {
+  const selfG = makeGroupCollector();
+  const weaponG = makeGroupCollector();
+  const setG = makeGroupCollector();
+  const globalG = makeGroupCollector();
+  const enemyG = makeGroupCollector();
+
+  for (const c of harvestCharConditions(char)) selfG.push(c);
+  for (const c of weapon.conditions ?? []) weaponG.push(c);
+
+  for (const { setKey, pieces } of sets) {
+    const set = ARTIFACT_SETS[setKey];
+    if (!set) continue;
+    for (const tier of [2, 4] as const) {
+      if (pieces < tier) continue;
+      for (const c of set.bonus[tier]?.conditions ?? []) setG.push(c);
+    }
+  }
+
+  for (const c of CHARACTER_CONDITIONS) globalG.push(c);
+  for (const c of ENEMY_CONDITIONS) enemyG.push(c);
+
+  return {
+    self: selfG.controls,
+    weapon: weaponG.controls,
+    set: setG.controls,
+    global: globalG.controls,
+    enemy: enemyG.controls,
+  };
+}
