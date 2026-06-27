@@ -84,6 +84,8 @@ function buildManualStats(
     return assembleArtifactStats(
       entries.map(([slot, d]) => ({
         slot: slot as SlotKey,
+        // "_slot" is a placeholder — assembleArtifactStats validates stat keys only,
+        // not set keys, so any non-empty string is safe here.
         setKey: "_slot",
         rarity: d.rarity,
         level: d.level,
@@ -95,7 +97,10 @@ function buildManualStats(
           .map((s) => ({ key: s.key as any, value: s.value })),
       }))
     );
-  } catch {
+  } catch (e) {
+    // Defensive: GoodStatKey is exhaustive — the UI dropdowns constrain keys to the
+    // bijective goodToAspirine map, so this path is unreachable via normal use.
+    console.error("[buildManualStats] unexpected stat key:", e);
     return {};
   }
 }
@@ -188,10 +193,11 @@ function SlotCard({ slotDef, data, onUpdate }: SlotCardProps) {
       {/* Header: icon + slot label + clear */}
       <div className="flex items-center gap-1.5">
         <div
-          className="h-7 w-7 flex-none rounded-[8px] border border-[rgba(255,122,69,.25)]"
+          className="h-7 w-7 flex-none rounded-[8px] border"
           style={{
+            borderColor: "color-mix(in srgb, var(--ck-accent) 25%, transparent)",
             background:
-              "radial-gradient(circle at 35% 30%, rgba(226,60,90,.55), rgba(120,26,30,.7))",
+              "radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--ck-accent) 55%, transparent), color-mix(in srgb, var(--ck-accent) 70%, var(--ck-bg)))",
           }}
         />
         <span className="flex-1 text-[9.5px] font-bold uppercase tracking-[1px] text-[var(--ck-faint)]">
@@ -260,7 +266,9 @@ function SlotCard({ slotDef, data, onUpdate }: SlotCardProps) {
       {/* Substats */}
       {substats.length > 0 && (
         <div className="flex flex-col gap-1">
-          {substats.map((sub, i) => (
+          {(() => {
+            const usedKeys = new Set(substats.map((s) => s.key));
+            return substats.map((sub, i) => (
             <div key={i} className="flex items-center gap-1">
               <select
                 value={sub.key}
@@ -268,7 +276,7 @@ function SlotCard({ slotDef, data, onUpdate }: SlotCardProps) {
                 aria-label={`Substat ${i + 1} key`}
                 className={`${INPUT_CLS} min-w-0 flex-1`}
               >
-                {SUBSTAT_KEYS.map((k) => (
+                {SUBSTAT_KEYS.filter((k) => !usedKeys.has(k) || k === sub.key).map((k) => (
                   <option key={k} value={k}>
                     {LABEL[k] ?? k}
                   </option>
@@ -300,7 +308,8 @@ function SlotCard({ slotDef, data, onUpdate }: SlotCardProps) {
                 ✕
               </button>
             </div>
-          ))}
+          ));
+          })()}
         </div>
       )}
 
