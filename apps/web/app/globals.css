@@ -128,3 +128,13 @@
     @apply font-sans;
   }
 }
+
+/* ---- Cockpit token layer ---- */
+:root, [data-skin="dark"] {
+  --ck-bg:#0b0809; --ck-surface:#16100f; --ck-surface2:#1d1614; --ck-border:#2c211e;
+  --ck-text:#f5ece7; --ck-muted:#b6a59d; --ck-faint:#7c6c64;
+  /* element accents are injected inline by ThemeRoot; sane defaults here: */
+  --ck-accent:#ff7a45; --ck-accent2:#ffb36b; --ck-glow:rgba(255,122,69,.35);
+  --ck-art-gradient:linear-gradient(150deg,#3a1012,#7d241a 55%,#c0492c);
+}
+/* Vision skin tokens are added in Task 16. */
