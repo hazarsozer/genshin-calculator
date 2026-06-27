@@ -40,4 +40,5 @@ export interface FeatureResult {
 export interface ComputeResult {
   features: readonly FeatureResult[];
   error?: string;
+  stats?: Readonly<Record<string, number>>;
 }

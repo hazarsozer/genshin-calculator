@@ -90,7 +90,7 @@ export function computeBuild(
       const triple: [number, number, number] = [r.normal, r.crit, r.avg];
       return { key, label: humanize(key), triple };
     });
-    return { features };
+    return { features, stats: context.stats };
   } catch (e) {
     return {
       features: [],

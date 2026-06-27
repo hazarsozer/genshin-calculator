@@ -95,4 +95,11 @@ describe("computeBuild anchor", () => {
     expect(error).toBeDefined();
     expect(features).toEqual([]);
   });
+
+  it("surfaces final stats for the stat strip", () => {
+    const result = computeBuild(bennettTogglesForm, SAMPLE_BLOCK, []);
+    expect(result.stats).toBeDefined();
+    expect(result.stats!.atk_total).toBeGreaterThan(0);
+    expect(result.stats!.crit_rate_total).toBeGreaterThanOrEqual(0);
+  });
 });
