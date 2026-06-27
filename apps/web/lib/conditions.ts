@@ -28,6 +28,36 @@ import type { DbObjectChar, DbObjectWeapon, Condition } from "@genshin/types";
 import type { EquippedSet } from "@genshin/data";
 import { humanizeSlug } from "./utils";
 
+/**
+ * Harvest every candidate Condition from all buff channels on a character:
+ *   - char.conditions (top-level toggles)
+ *   - char.postEffects[].conditions (gating conditions on each post-effect)
+ *   - char.multipliers[].condition  (singular gate on each char-level multiplier)
+ *   - char.constellation?.entries[].conditions (constellation-injected settings)
+ *   - char.partyData?.conditions (conditions this character contributes as a teammate)
+ *
+ * Note: Feature.condition (singular, on char.features[]) is a production-gate that
+ * determines whether the feature is emitted at all — it is NOT a buff condition and
+ * is intentionally excluded here.
+ *
+ * The caller feeds the result through conditionToControl + dedup, so harmless
+ * gate-only types (constellation, static, …) are naturally filtered out.
+ */
+function harvestCharConditions(char: DbObjectChar): readonly Condition[] {
+  const out: Condition[] = [];
+  const pushAll = (cs?: readonly Condition[]) => {
+    if (cs) out.push(...cs);
+  };
+
+  pushAll(char.conditions);
+  for (const p of char.postEffects ?? []) pushAll(p.conditions);
+  for (const m of char.multipliers) if (m.condition) out.push(m.condition);
+  for (const e of char.constellation?.entries ?? []) pushAll(e.conditions);
+  pushAll(char.partyData?.conditions);
+
+  return out;
+}
+
 /** A single renderable UI control derived from a Condition. */
 export interface ConditionControl {
   /** The condition's settings key, e.g. "hutao_paramita_papilio". */
@@ -119,8 +149,8 @@ export function collectConditions(
     controls.push(ctrl);
   }
 
-  // 1. Character conditions
-  for (const c of char.conditions ?? []) push(c);
+  // 1. Character conditions (all buff channels — see harvestCharConditions)
+  for (const c of harvestCharConditions(char)) push(c);
 
   // 2. Weapon conditions
   for (const c of weapon.conditions ?? []) push(c);

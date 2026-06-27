@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { huTao } from "@genshin/data";
+import { huTao, ALL_CHARACTERS, ALL_WEAPONS } from "@genshin/data";
 import { collectConditions } from "../conditions.js";
 import type { DbObjectWeapon } from "@genshin/types";
 
@@ -13,6 +13,12 @@ import type { DbObjectWeapon } from "@genshin/types";
  *   raw/genshin_calc_pub/src/js/db/Char/Hutao.js → conditions: [paramita, ...]
  *   where paramita = { type:"boolean", name:"hutao_paramita_papilio", ... }
  */
+
+function findByName<T extends { name: string }>(arr: readonly T[], n: string): T {
+  const match = arr.find((x) => x.name === n);
+  if (!match) throw new Error(`No entry named "${n}"`);
+  return match;
+}
 
 // Minimal stub weapon — collectConditions only reads weapon.conditions?.
 const stubWeapon: DbObjectWeapon = {
@@ -50,5 +56,25 @@ describe("collectConditions", () => {
     for (const c of controls) {
       expect(c.kind).toMatch(/^(boolean|number)$/);
     }
+  });
+
+  it("discovers Bennett's burst-ATK toggle from postEffects (not just char.conditions)", () => {
+    const bennett = findByName(ALL_CHARACTERS, "bennett");
+    const weapon = findByName(ALL_WEAPONS, "dark_iron_sword");
+    const controls = collectConditions(bennett, weapon, []);
+    const names = controls.map((c) => c.name);
+    // bennet_fantastic_voyage lives on postEffects[].conditions, not char.conditions —
+    // was invisible before the widened harvest.
+    expect(names).toContain("bennet_fantastic_voyage");
+  });
+
+  it("still surfaces Hu Tao's Paramita (top-level) without duplicates after widened harvest", () => {
+    // hutao_paramita_papilio appears in BOTH char.conditions AND postEffects[].conditions;
+    // widened harvest must dedupe correctly.
+    const hutao = findByName(ALL_CHARACTERS, "hu_tao");
+    const weapon = findByName(ALL_WEAPONS, "staff_of_homa");
+    const controls = collectConditions(hutao, weapon, []);
+    const names = controls.map((c) => c.name);
+    expect(names.filter((n) => n === "hutao_paramita_papilio")).toHaveLength(1);
   });
 });
