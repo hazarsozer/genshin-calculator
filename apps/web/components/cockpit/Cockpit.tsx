@@ -6,11 +6,11 @@ import { Stage } from "./Stage";
 import { Rail } from "./Rail";
 import { Drawer } from "./Drawer";
 import { Breakdown } from "@/components/results/Breakdown";
-import { CharacterDrawer } from "@/components/build/CharacterDrawer";
-import { WeaponDrawer } from "@/components/build/WeaponDrawer";
-import { ArtifactsDrawer } from "@/components/build/ArtifactsDrawer";
-import { BuffsTeamDrawer } from "@/components/build/BuffsTeamDrawer";
-import { EnemyDrawer } from "@/components/build/EnemyDrawer";
+import { CharacterDrawer } from "@/components/drawers/CharacterDrawer";
+import { WeaponDrawer } from "@/components/drawers/WeaponDrawer";
+import { ArtifactsDrawer } from "@/components/drawers/ArtifactsDrawer";
+import { BuffsTeamDrawer } from "@/components/drawers/BuffsTeamDrawer";
+import { EnemyDrawer } from "@/components/drawers/EnemyDrawer";
 import type { DrawerId } from "./Rail";
 
 const DRAWER_TITLES: Record<Exclude<DrawerId, null>, string> = {

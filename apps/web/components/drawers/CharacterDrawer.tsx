@@ -175,14 +175,14 @@ export function CharacterDrawer() {
         label="Normal Attack"
         value={form.talents.attack}
         min={1}
-        max={13}
+        max={10}
         onChange={(v) => setForm({ talents: { ...form.talents, attack: v } })}
       />
       <LevelLine
         label="Elemental Skill"
         value={form.talents.elemental}
         min={1}
-        max={13}
+        max={10}
         onChange={(v) =>
           setForm({ talents: { ...form.talents, elemental: v } })
         }
@@ -191,7 +191,7 @@ export function CharacterDrawer() {
         label="Elemental Burst"
         value={form.talents.burst}
         min={1}
-        max={13}
+        max={10}
         onChange={(v) => setForm({ talents: { ...form.talents, burst: v } })}
       />
 
