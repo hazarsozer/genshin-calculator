@@ -1,0 +1,240 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { ALL_CHARACTERS } from "@genshin/data";
+import { useBuildStore } from "@/lib/store";
+import { collectGroupedConditions } from "@/lib/conditions";
+import { ALL_WEAPONS } from "@genshin/data";
+import { humanizeSlug } from "@/lib/utils";
+import { avatarIconSources } from "@/lib/enkaArt";
+import { LevelSlider } from "@/components/controls/LevelSlider";
+import { LevelLine } from "@/components/controls/LevelLine";
+import { ConditionControlWidget } from "./ConditionControl";
+import type { EquippedSet } from "@genshin/data";
+
+/** Section heading inside a drawer. */
+function SectionHead({ label }: { label: string }) {
+  return (
+    <div className="mb-1 mt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--ck-faint)]">
+      {label}
+    </div>
+  );
+}
+
+const INFUSION_ELEMENTS = [
+  { value: "pyro", label: "Pyro" },
+  { value: "hydro", label: "Hydro" },
+  { value: "electro", label: "Electro" },
+  { value: "cryo", label: "Cryo" },
+  { value: "anemo", label: "Anemo" },
+  { value: "geo", label: "Geo" },
+  { value: "dendro", label: "Dendro" },
+] as const;
+
+/**
+ * Avatar icon with CDN fallback + gradient placeholder.
+ * Mirrors SplashArt's approach but smaller (avatar icon, not gacha splash).
+ */
+function CharAvatar({ name, className }: { name: string; className?: string }) {
+  const sources = avatarIconSources(name);
+  const [idx, setIdx] = useState(0);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setIdx(0);
+    setFailed(false);
+  }, [name]);
+
+  return (
+    <div
+      className={className}
+      style={{ background: "var(--ck-art-gradient)", overflow: "hidden" }}
+    >
+      {!failed && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={sources[idx]}
+          alt={name}
+          className="h-full w-full object-cover"
+          onError={() =>
+            idx + 1 < sources.length ? setIdx(idx + 1) : setFailed(true)
+          }
+        />
+      )}
+    </div>
+  );
+}
+
+export function CharacterDrawer() {
+  const form = useBuildStore((s) => s.form);
+  const setForm = useBuildStore((s) => s.setForm);
+  const [search, setSearch] = useState("");
+
+  const char = ALL_CHARACTERS.find((c) => c.name === form.characterKey);
+  const weapon = ALL_WEAPONS.find((w) => w.name === form.weaponKey);
+
+  // Grouped conditions — self group only goes in this drawer
+  const equipped: readonly EquippedSet[] = form.manualSets;
+  const grouped =
+    char && weapon ? collectGroupedConditions(char, weapon, equipped) : null;
+
+  // Infusion relevance heuristic: anemo chars can absorb; chars with any
+  // infusion-related condition in their self group can self-infuse.
+  const showInfusion =
+    char &&
+    (char.element === "anemo" ||
+      (grouped?.self ?? []).some((c) => c.name.includes("infusion")));
+
+  const filtered =
+    search.trim() === ""
+      ? ALL_CHARACTERS
+      : ALL_CHARACTERS.filter((c) =>
+          humanizeSlug(c.name).toLowerCase().includes(search.toLowerCase())
+        );
+
+  function handlePick(key: string) {
+    setSearch("");
+    setForm({ characterKey: key, conditions: { toggles: {}, stacks: {} } });
+  }
+
+  function handleInfusion(value: string) {
+    setForm({
+      conditions: {
+        ...form.conditions,
+        infusion: value || undefined,
+      },
+    });
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      {/* ── Character picker ── */}
+      <SectionHead label="Character" />
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="Search…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-lg border border-[var(--ck-border)] bg-[var(--ck-surface2)] px-3 py-1.5 text-[13px] text-[var(--ck-text)] placeholder-[var(--ck-faint)] focus:outline-none focus:ring-1 focus:ring-[var(--ck-accent)]"
+        />
+        {search.trim() !== "" && (
+          <div className="absolute left-0 right-0 top-full z-30 mt-1 max-h-52 overflow-y-auto rounded-lg border border-[var(--ck-border)] bg-[var(--ck-surface)] shadow-xl">
+            {filtered.length === 0 ? (
+              <div className="px-3 py-2 text-[12px] text-[var(--ck-faint)]">
+                No results
+              </div>
+            ) : (
+              filtered.map((c) => (
+                <button
+                  key={c.name}
+                  type="button"
+                  onClick={() => handlePick(c.name)}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-[var(--ck-text)] transition-colors hover:bg-[var(--ck-surface2)]"
+                >
+                  <CharAvatar
+                    name={c.name}
+                    className="h-6 w-6 flex-none rounded-full"
+                  />
+                  {humanizeSlug(c.name)}
+                </button>
+              ))
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Currently selected character pill */}
+      {char && (
+        <div className="flex items-center gap-3 rounded-xl border border-[var(--ck-border)] bg-[var(--ck-surface)] p-3">
+          <CharAvatar
+            name={char.name}
+            className="h-10 w-10 flex-none rounded-full"
+          />
+          <div>
+            <div className="text-[14px] font-bold">{humanizeSlug(char.name)}</div>
+            <div className="text-[11px] text-[var(--ck-muted)]">
+              {char.element.charAt(0).toUpperCase() + char.element.slice(1)} ·{" "}
+              {"★".repeat(char.rarity)}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Level ── */}
+      <SectionHead label="Level" />
+      <LevelSlider
+        level={form.charLevel}
+        ascension={form.ascension}
+        onChange={(l, a) => setForm({ charLevel: l, ascension: a })}
+      />
+
+      {/* ── Talents ── */}
+      <SectionHead label="Talents" />
+      <LevelLine
+        label="Normal Attack"
+        value={form.talents.attack}
+        min={1}
+        max={13}
+        onChange={(v) => setForm({ talents: { ...form.talents, attack: v } })}
+      />
+      <LevelLine
+        label="Elemental Skill"
+        value={form.talents.elemental}
+        min={1}
+        max={13}
+        onChange={(v) =>
+          setForm({ talents: { ...form.talents, elemental: v } })
+        }
+      />
+      <LevelLine
+        label="Elemental Burst"
+        value={form.talents.burst}
+        min={1}
+        max={13}
+        onChange={(v) => setForm({ talents: { ...form.talents, burst: v } })}
+      />
+
+      {/* ── Constellation ── */}
+      <SectionHead label="Constellation" />
+      <LevelLine
+        label="C"
+        value={form.constellation}
+        min={0}
+        max={6}
+        onChange={(v) => setForm({ constellation: v })}
+      />
+
+      {/* ── Infusion (conditional) ── */}
+      {showInfusion && (
+        <>
+          <SectionHead label="Attack Infusion" />
+          <select
+            value={form.conditions.infusion ?? ""}
+            onChange={(e) => handleInfusion(e.target.value)}
+            className="w-full rounded-lg border border-[var(--ck-border)] bg-[var(--ck-surface2)] px-3 py-2 text-[13px] text-[var(--ck-text)] focus:outline-none focus:ring-1 focus:ring-[var(--ck-accent)]"
+          >
+            <option value="">None</option>
+            {INFUSION_ELEMENTS.map((el) => (
+              <option key={el.value} value={el.value}>
+                {el.label}
+              </option>
+            ))}
+          </select>
+        </>
+      )}
+
+      {/* ── Self conditions ── */}
+      {grouped && grouped.self.length > 0 && (
+        <>
+          <SectionHead label="Conditions" />
+          <div className="flex flex-col gap-2">
+            {grouped.self.map((ctrl) => (
+              <ConditionControlWidget key={ctrl.name} ctrl={ctrl} />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}

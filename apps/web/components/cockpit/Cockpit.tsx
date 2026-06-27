@@ -1,70 +1,88 @@
 "use client";
 
+import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { Stage } from "./Stage";
+import { Rail } from "./Rail";
+import { Drawer } from "./Drawer";
 import { Breakdown } from "@/components/results/Breakdown";
-import { CharacterPicker } from "@/components/CharacterPicker";
-import { WeaponPicker } from "@/components/WeaponPicker";
-import { LevelInputs } from "@/components/LevelInputs";
-import { TalentInputs } from "@/components/TalentInputs";
-import { ConditionsPanel } from "@/components/ConditionsPanel";
-import { ArtifactPanel } from "@/components/ArtifactPanel";
-import { EnemyPanel } from "@/components/EnemyPanel";
+import { CharacterDrawer } from "@/components/build/CharacterDrawer";
+import { WeaponDrawer } from "@/components/build/WeaponDrawer";
+import { ArtifactsDrawer } from "@/components/build/ArtifactsDrawer";
+import { BuffsTeamDrawer } from "@/components/build/BuffsTeamDrawer";
+import { EnemyDrawer } from "@/components/build/EnemyDrawer";
+import type { DrawerId } from "./Rail";
 
-const RAIL = ["Build", "Team", "Enemy", "Buffs", "Food", "Cond"];
+const DRAWER_TITLES: Record<Exclude<DrawerId, null>, string> = {
+  character: "Character",
+  weapon: "Weapon",
+  artifacts: "Artifacts",
+  buffs: "Buffs & Team",
+  enemy: "Enemy",
+};
 
-function Panel({ title, children }: { title?: string; children: React.ReactNode }) {
-  return (
-    <div className="rounded-xl border border-[var(--ck-border)] bg-[var(--ck-surface)] p-4">
-      {title && (
-        <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.15em] text-[var(--ck-faint)]">
-          {title}
-        </div>
-      )}
-      {children}
-    </div>
-  );
+function DrawerBody({ id }: { id: Exclude<DrawerId, null> }) {
+  switch (id) {
+    case "character":
+      return <CharacterDrawer />;
+    case "weapon":
+      return <WeaponDrawer />;
+    case "artifacts":
+      return <ArtifactsDrawer />;
+    case "buffs":
+      return <BuffsTeamDrawer />;
+    case "enemy":
+      return <EnemyDrawer />;
+  }
 }
 
-/** The cockpit grid: icon rail · persistent stage · work column. */
+/** The cockpit grid: icon rail · optional slide-out drawer · stage · breakdown. */
 export function Cockpit() {
+  const [activeDrawer, setActiveDrawer] = useState<DrawerId>(null);
+
+  function handleRailOpen(id: DrawerId) {
+    // Toggle: clicking the active rail button closes the drawer
+    setActiveDrawer((prev) => (prev === id ? null : id));
+  }
+
   return (
-    <div className="grid flex-1 lg:grid-cols-[64px_1fr_440px]">
-      {/* icon rail (placeholder — drawers wire up in a later task) */}
-      <nav className="hidden flex-col items-center gap-1 border-r border-[var(--ck-border)] bg-[#0e0a0a] py-3 lg:flex">
-        {RAIL.map((t, i) => (
-          <div
-            key={t}
-            className="flex h-11 w-11 flex-col items-center justify-center gap-1 rounded-xl text-[8px] font-bold uppercase tracking-wide text-[var(--ck-faint)]"
-            style={i === 0 ? { color: "var(--ck-accent2)", background: "color-mix(in srgb, var(--ck-accent) 12%, transparent)" } : undefined}
+    <div className="relative flex flex-1 overflow-hidden">
+      {/* Icon rail */}
+      <Rail active={activeDrawer} onOpen={handleRailOpen} />
+
+      {/* Invisible backdrop — clicking outside the drawer closes it */}
+      {activeDrawer && (
+        <div
+          className="fixed inset-0 z-10"
+          onClick={() => setActiveDrawer(null)}
+        />
+      )}
+
+      {/* Slide-out drawer */}
+      <AnimatePresence mode="popLayout">
+        {activeDrawer && (
+          <Drawer
+            key={activeDrawer}
+            title={DRAWER_TITLES[activeDrawer]}
+            onClose={() => setActiveDrawer(null)}
           >
-            <div className="h-[18px] w-[18px] rounded border border-current opacity-70" />
-            {t}
-          </div>
-        ))}
-      </nav>
+            <DrawerBody id={activeDrawer} />
+          </Drawer>
+        )}
+      </AnimatePresence>
 
-      {/* persistent stage */}
-      <div className="overflow-y-auto p-5">
-        <Stage />
-      </div>
-
-      {/* work column — temporary controls until Tasks 8–11 restyle them */}
-      <aside className="flex flex-col gap-4 overflow-y-auto border-t border-[var(--ck-border)] p-5 lg:border-l lg:border-t-0">
-        <Panel title="Build · temporary controls">
-          <div className="flex flex-col gap-3 text-sm">
-            <CharacterPicker />
-            <WeaponPicker />
-            <LevelInputs />
-            <TalentInputs />
+      {/* Main area: Stage (flex-1) + Breakdown column */}
+      <div className="flex flex-1 overflow-hidden lg:flex-row flex-col">
+        <div className="flex-1 overflow-y-auto p-5">
+          <Stage />
+        </div>
+        <aside className="flex flex-col gap-4 overflow-y-auto border-t border-[var(--ck-border)] p-5 lg:w-[440px] lg:flex-none lg:border-l lg:border-t-0">
+          <div className="text-[11px] font-bold uppercase tracking-[0.15em] text-[var(--ck-faint)]">
+            Damage Breakdown
           </div>
-        </Panel>
-        <Panel><ConditionsPanel /></Panel>
-        <Panel><ArtifactPanel /></Panel>
-        <Panel><EnemyPanel /></Panel>
-        <Panel title="Damage Breakdown">
           <Breakdown />
-        </Panel>
-      </aside>
+        </aside>
+      </div>
     </div>
   );
 }
