@@ -82,6 +82,20 @@ const ENEMY_FILES = [
   "LocalLegends.js",
 ];
 
+/** Maps each source filename to its human-readable category label. */
+const CATEGORY_MAP = /** @type {Record<string,string>} */ ({
+  "Hilichurl.js": "Hilichurls",
+  "Elemental.js": "Elemental Lifeforms",
+  "Automaton.js": "Automatons",
+  "Fatui.js": "Fatui",
+  "Abyss.js": "Abyss Order",
+  "Magical.js": "Mystical Beasts",
+  "TreasureHoarders.js": "Treasure Hoarders",
+  "HydroMimics.js": "Hydro Mimics",
+  "Bosses.js": "Bosses",
+  "LocalLegends.js": "Local Legends",
+});
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 /**
@@ -280,9 +294,10 @@ const allEnemies = [];
 for (const filename of ENEMY_FILES) {
   const filepath = join(ENEMIES_DIR, filename);
   const text = readFileSync(filepath, "utf8");
+  const category = CATEGORY_MAP[filename];
   const enemies = extractEnemiesFromFile(text, filename);
-  allEnemies.push(...enemies);
-  console.log(`  ${filename}: ${enemies.length} enemies`);
+  allEnemies.push(...enemies.map((e) => ({ ...e, category })));
+  console.log(`  ${filename} (${category}): ${enemies.length} enemies`);
 }
 
 console.log(`\nTotal: ${allEnemies.length} enemies`);
@@ -309,6 +324,8 @@ const lines = [
   "  name: string;",
   "  /** Internal slug from raw db (e.g. \"pyro_regisvine\"). */",
   "  slug: string;",
+  "  /** Enemy category derived from its source file (e.g. \"Hilichurls\"). */",
+  "  category: string;",
   "  /**",
   "   * Per-element resistances (%) in engine key format.",
   "   * raw 'phys' is mapped to 'physical' so these keys match",
@@ -331,7 +348,7 @@ const lines = [
 
 for (const enemy of allEnemies) {
   lines.push(
-    `  { name: ${JSON.stringify(enemy.name)}, slug: ${JSON.stringify(enemy.slug)}, resistances: ${fmtRes(enemy.resistances)} },`
+    `  { name: ${JSON.stringify(enemy.name)}, slug: ${JSON.stringify(enemy.slug)}, category: ${JSON.stringify(enemy.category)}, resistances: ${fmtRes(enemy.resistances)} },`
   );
 }
 

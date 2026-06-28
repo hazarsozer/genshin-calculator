@@ -345,6 +345,19 @@ export function EnemyDrawer() {
           renderMeta={(e) => (
             <ResistanceIconRow resistances={e.resistances} />
           )}
+          groupBy={(e) => e.category}
+          groupOrder={[
+            "Hilichurls",
+            "Elemental Lifeforms",
+            "Mystical Beasts",
+            "Automatons",
+            "Fatui",
+            "Abyss Order",
+            "Treasure Hoarders",
+            "Hydro Mimics",
+            "Local Legends",
+            "Bosses",
+          ]}
         />
       </CatalogModal>
     </div>
