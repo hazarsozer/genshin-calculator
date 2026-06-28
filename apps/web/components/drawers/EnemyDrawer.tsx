@@ -35,6 +35,69 @@ function SectionHead({ label }: { label: string }) {
 
 // ── Enemy Preset Browser ───────────────────────────────────────────────────────
 
+const IMMUNE_THRESHOLD = 9000;
+
+/** Short display abbreviations for the 8 resistance elements. */
+const EL_ABBREV: Record<ResEl, string> = {
+  physical: "Phy",
+  pyro:     "Pyro",
+  hydro:    "Hydr",
+  electro:  "Elec",
+  cryo:     "Cryo",
+  anemo:    "Anem",
+  geo:      "Geo",
+  dendro:   "Dend",
+};
+
+/**
+ * 8-column mini-grid of per-element resistance values.
+ * Color scheme: green < 10% (player advantage), neutral = 10%, red > 10% (resist), dim = immune.
+ * Element label is tinted with the element's accent color.
+ */
+function ResistanceMiniGrid({
+  resistances,
+}: {
+  resistances: Record<string, number>;
+}) {
+  return (
+    <div className="grid grid-cols-8 gap-x-0.5">
+      {/* Element abbreviation row */}
+      {RESISTANCE_ELEMENTS.map((el) => {
+        const { accent } = elementAccent(el);
+        return (
+          <span
+            key={`${el}-label`}
+            className="block text-center text-[8px] font-semibold leading-tight"
+            style={{ color: accent }}
+          >
+            {EL_ABBREV[el]}
+          </span>
+        );
+      })}
+      {/* Resistance value row */}
+      {RESISTANCE_ELEMENTS.map((el) => {
+        const val = resistances[el] ?? 10;
+        const isImmune = val >= IMMUNE_THRESHOLD;
+        const valueColor = isImmune
+          ? "text-[var(--ck-faint)]"
+          : val < 10
+          ? "text-green-400"
+          : val > 10
+          ? "text-red-400"
+          : "text-[var(--ck-muted)]";
+        return (
+          <span
+            key={`${el}-val`}
+            className={`block text-center text-[8px] leading-tight ${valueColor}`}
+          >
+            {isImmune ? "∞" : `${val}%`}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
 /** Searchable list of enemy presets shown inside the CatalogModal. */
 function EnemyPresetList({
   onPick,
@@ -73,19 +136,6 @@ function EnemyPresetList({
         <ul className="flex flex-col divide-y divide-[var(--ck-border)]">
           {filtered.map((preset) => {
             const isActive = preset.slug === activeSlug;
-            // Show a compact resistance summary: unique non-10 values, or "10% all"
-            const entries = RESISTANCE_ELEMENTS.map((el) => ({
-              el,
-              v: preset.resistances[el],
-            }));
-            const nonDefault = entries.filter((e) => e.v !== 10);
-            const resSummary =
-              nonDefault.length === 0
-                ? "10% all"
-                : nonDefault
-                    .map((e) => `${e.el.slice(0, 4)}: ${e.v}%`)
-                    .join(" · ");
-
             return (
               <li key={preset.slug}>
                 <button
@@ -93,7 +143,7 @@ function EnemyPresetList({
                   onClick={() => onPick(preset)}
                   aria-current={isActive ? "true" : undefined}
                   className={[
-                    "flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left text-[13px] transition-colors",
+                    "flex w-full flex-col gap-1.5 px-3 py-2.5 text-left text-[13px] transition-colors",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--ck-accent)]",
                     isActive
                       ? "bg-[color-mix(in_srgb,var(--ck-accent)_10%,transparent)] font-semibold text-[var(--ck-accent)]"
@@ -101,9 +151,7 @@ function EnemyPresetList({
                   ].join(" ")}
                 >
                   <span className="truncate">{preset.name}</span>
-                  <span className="flex-none text-[10px] text-[var(--ck-faint)]">
-                    {resSummary}
-                  </span>
+                  <ResistanceMiniGrid resistances={preset.resistances} />
                 </button>
               </li>
             );
