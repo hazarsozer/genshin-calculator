@@ -14,6 +14,8 @@ import { useBuildStore } from "@/lib/store";
 import { assembleArtifactStats, ARTIFACT_SETS } from "@genshin/data";
 import type { EquippedSet } from "@genshin/data";
 import type { ArtifactSlotData } from "@/lib/types";
+import { FallbackImage } from "@/components/catalog/Catalog";
+import { artifactSetIconSources } from "@/lib/enkaArt";
 
 // ─────────────────────────── constants ───────────────────────────
 
@@ -223,13 +225,17 @@ function SlotCard({ slotDef, data, onUpdate }: SlotCardProps) {
       {/* Header: icon + slot label + clear */}
       <div className="flex items-center gap-1.5">
         <div
-          className="h-7 w-7 flex-none rounded-[8px] border"
+          className="h-7 w-7 flex-none overflow-hidden rounded-[8px] border"
           style={{
             borderColor: "color-mix(in srgb, var(--ck-accent) 25%, transparent)",
-            background:
-              "radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--ck-accent) 55%, transparent), color-mix(in srgb, var(--ck-accent) 70%, var(--ck-bg)))",
           }}
-        />
+        >
+          <FallbackImage
+            sources={data?.setKey ? artifactSetIconSources(data.setKey) : []}
+            alt={data?.setKey ?? ""}
+            className="h-full w-full"
+          />
+        </div>
         <span className="flex-1 text-[9.5px] font-bold uppercase tracking-[1px] text-[var(--ck-faint)]">
           {slotDef.label}
         </span>

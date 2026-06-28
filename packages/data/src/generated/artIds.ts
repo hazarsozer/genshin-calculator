@@ -3,9 +3,11 @@
 // Sources:
 //   tools/art-ids/vendor/enka-characters.json  (SideIconName → strip UI_AvatarIcon_Side_ → icon name)
 //   tools/art-ids/vendor/ambr-weapons.json      (items[gameId].icon → full UI_EquipIcon_… name)
+//   raw/genshin_calc_pub/src/js/db/Artifacts/Set/*.js  (ArtifactSet.goodId + ArtifactSet.gameId)
 //
 // CHAR_ICON:   113/121 of @genshin/data ALL_CHARACTERS matched
 // WEAPON_ICON: 223/223 of @genshin/data ALL_WEAPONS matched
+// SET_ICON:    55/61 of @genshin/data ARTIFACT_SETS matched (6 v6+ sets lack a raw gameId)
 
 export const CHAR_ICON: Record<string, string> = {
   "aino": "Aino",
@@ -347,4 +349,62 @@ export const WEAPON_ICON: Record<string, string> = {
   "wolf_fang": "UI_EquipIcon_Sword_Boreas",
   "wolfs_gravestone": "UI_EquipIcon_Claymore_Wolfmound",
   "xiphos_moonlight": "UI_EquipIcon_Sword_Pleroma",
+};
+
+export const SET_ICON: Record<string, number> = {
+  "Adventurer": 10010,
+  "ArchaicPetra": 15014,
+  "Berserker": 10005,
+  "BlizzardStrayer": 14001,
+  "BloodstainedChivalry": 15008,
+  "BraveHeart": 10002,
+  "CrimsonWitch": 15006,
+  "DeepwoodMemories": 15025,
+  "DefendersWill": 10003,
+  "DesertPavilionChronicle": 15027,
+  "DewflowersGlow": 15030,
+  "EchoesofanOffering": 15024,
+  "EmblemofSeveredFate": 15020,
+  "Exile": 10009,
+  "FinaleOfTheDeepGalleries": 15040,
+  "FlowerOfParadiseLost": 15028,
+  "FragmentOfHarmonicWhimsy": 15035,
+  "Gambler": 10008,
+  "GildedDreams": 15026,
+  "GladiatorFinale": 15001,
+  "GoldenTroupe": 15032,
+  "HeartofDepth": 15016,
+  "HuskofOpulentDreams": 15021,
+  "Instructor": 10007,
+  "Lavawalker": 14003,
+  "LongNightsOath": 15039,
+  "LuckyDog": 10011,
+  "MaidenBeloved": 14004,
+  "MarechausseeHunter": 15031,
+  "MartialArtist": 10006,
+  "NighttimeWhispersInTheEchoingWoods": 15034,
+  "NoblesseOblige": 15007,
+  "NymphsDream": 15029,
+  "ObsidianCodex": 15038,
+  "OceanHuedClam": 15022,
+  "PaleFlame": 15018,
+  "PrayersForDestiny": 15010,
+  "PrayersForIllumination": 15009,
+  "PrayersForSpringtime": 15013,
+  "PrayersForWisdom": 15011,
+  "ResolutionofSojourner": 10001,
+  "RetracingBolide": 15015,
+  "Scholar": 10012,
+  "ScrollOfTheEmberedCitysHero": 15037,
+  "ShimenawasReminiscence": 15019,
+  "SongOfDaysPast": 15033,
+  "TenacityofMillelith": 15017,
+  "ThunderingFury": 15005,
+  "Thundersoother": 14002,
+  "TinyMiracle": 10004,
+  "TravelingDoctor": 10013,
+  "UnfinishedReverie": 15036,
+  "VermillionHereafter": 15023,
+  "ViridescentVenerer": 15002,
+  "WandererTroupe": 15003,
 };

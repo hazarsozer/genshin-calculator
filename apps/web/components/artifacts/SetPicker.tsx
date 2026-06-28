@@ -10,6 +10,8 @@
 
 import { useState } from "react";
 import { useBuildStore } from "@/lib/store";
+import { FallbackImage } from "@/components/catalog/Catalog";
+import { artifactSetIconSources } from "@/lib/enkaArt";
 import {
   SLOTS,
   defaultData,
@@ -90,8 +92,15 @@ export function SetPicker() {
           {manualSets.map((s: EquippedSet) => (
             <li
               key={s.setKey}
-              className="flex items-center rounded-lg border border-[var(--ck-border)] bg-[var(--ck-surface)] px-3 py-2 text-[12px] text-[var(--ck-text)]"
+              className="flex items-center gap-2 rounded-lg border border-[var(--ck-border)] bg-[var(--ck-surface)] px-3 py-2 text-[12px] text-[var(--ck-text)]"
             >
+              <div className="h-6 w-6 flex-none overflow-hidden rounded-[6px]">
+                <FallbackImage
+                  sources={artifactSetIconSources(s.setKey)}
+                  alt={s.setKey}
+                  className="h-full w-full"
+                />
+              </div>
               {humanizeSetKey(s.setKey)}{" "}
               <span className="ml-1 text-[var(--ck-faint)]">({Math.min(s.pieces, 4)}pc)</span>
             </li>

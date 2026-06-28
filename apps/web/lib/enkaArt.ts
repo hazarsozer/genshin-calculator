@@ -7,7 +7,7 @@
 //   2. ART_OVERRIDES (kept as safety net for any future gaps)
 //   3. PascalCase heuristic (last resort; 404s degrade to gradient)
 
-import { CHAR_ICON, WEAPON_ICON } from "@genshin/data";
+import { CHAR_ICON, WEAPON_ICON, SET_ICON } from "@genshin/data";
 
 const ART_OVERRIDES: Record<string, string> = {
   hu_tao: "Hutao",
@@ -77,6 +77,15 @@ const WEAPON_TYPE_TOKEN: Record<string, string> = {
   catalyst: "Catalyst",
   bow: "Bow",
 };
+
+// Empirically verified (2026-06-28 curl): UI_RelicIcon_<gameId>_4 → HTTP 200 on enka.
+// Position 4 = goblet. Positions 1–5 all resolve; 4 is the consistent representative piece.
+// yatta.moe does not host UI_RelicIcon_* assets; enka is the sole CDN for artifact set icons.
+export function artifactSetIconSources(setKey: string): readonly string[] {
+  const gameId = SET_ICON[setKey];
+  if (gameId === undefined) return [];
+  return [`https://enka.network/ui/UI_RelicIcon_${gameId}_4.png`];
+}
 
 export function weaponIconSources(weapon: { name: string; weapon: string }): readonly string[] {
   // Hit path: use the full icon name from the generated table directly.
