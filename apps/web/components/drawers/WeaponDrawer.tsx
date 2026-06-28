@@ -5,6 +5,7 @@ import { ALL_CHARACTERS, ALL_WEAPONS } from "@genshin/data";
 import { useBuildStore } from "@/lib/store";
 import { collectGroupedConditions } from "@/lib/conditions";
 import { humanizeSlug } from "@/lib/utils";
+import { formatWeaponMeta } from "@/lib/weaponStats";
 import { LevelSlider } from "@/components/controls/LevelSlider";
 import { LevelLine } from "@/components/controls/LevelLine";
 import { ConditionControlWidget } from "./ConditionControl";
@@ -146,6 +147,7 @@ export function WeaponDrawer() {
           getIconSources={(w) => weaponIconSources(w)}
           filters={rarityFilters}
           activeKey={form.weaponKey}
+          renderMeta={(w) => formatWeaponMeta(w)}
           onPick={(w) => {
             handlePick(w.name);
             setCatalogOpen(false);
