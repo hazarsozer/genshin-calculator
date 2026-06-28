@@ -241,8 +241,10 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
-// C1: ConditionStatic with arlecchino_all_reprisals:2 (affects BoL multiplier
-//   bonusValues only — BoL=0 in our build → 0 net effect). SKIP.
+// C1: ConditionStatic sets arlecchino_all_reprisals:2 → the masque multiplier's +100%
+//   bonusValues lever (active only when BoL≥30). PORTED below — previously skipped as
+//   "BoL=0 → 0 net effect" (true for the golden build, but it dropped the +100% masque
+//   for real BoL>0 + C1 builds; the BoL slider surfaced the gap). Raw Arlecchino.js:429-432.
 // C2: ConditionStatic display-only (text_percent_dmg:900). The actual damage is
 //   the arlecchino_balemoon_bloodfire_dmg feature above. No flat stat needed.
 // C3: +3 levels to Invitation to a Beheading (attack). Raw cons[2] settings
@@ -255,6 +257,9 @@ const features: readonly Feature[] = [
 //   config → crit bonuses 0. FeatureMultiplierBondOfLife on burst (BoL=0 → 0).
 //   Effectively inert at the base build. SKIP.
 const constellationConditions: readonly Condition[] = [
+  // C1: arlecchino_all_reprisals:2 → feeds the masque multiplier's +100% bonusValues lever
+  // (only active when BoL≥30, so base-inert vs the BoL=0 goldens). Raw Arlecchino.js:429-432.
+  { type: "constellation", constellation: 1, settings: { arlecchino_all_reprisals: 2 } },
   // C3: +3 levels to attack talent (Invitation to a Beheading).
   { type: "constellation", constellation: 3, settings: { char_skill_attack_bonus: 3 } },
   // C5: +3 levels to burst talent (Balemoon Rising).
