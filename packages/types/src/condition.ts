@@ -159,6 +159,14 @@ export interface ConditionNumber extends ConditionBase {
    * existing number condition sets `stat`).
    */
   readonly stat?: string;
+  /**
+   * When true, the condition still gates and its control still writes its `name`
+   * setting, but it contributes NO bag stat — her `params.noStat`
+   * (raw/.../classes/Condition/Number/BondOfLife.js:8). Lets a per-owner input
+   * slider coexist with a single global emit (e.g. ConditionBoLStat) without
+   * double-counting. Absent → emits as before (base-inert).
+   */
+  readonly noStat?: boolean;
 }
 
 /**

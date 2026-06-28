@@ -243,7 +243,9 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
         ? Math.min(max, Math.max(min, rawNum))
         : Math.max(min, rawNum);
       // Key the clamped value by `stat || name` (her `params.stat || params.name`).
-      // Absent `stat` → keyed by `name` (prior behavior, base-inert).
+      // `noStat` (her params.noStat) suppresses the emit entirely — the slider still
+      // gates + writes its setting, but contributes no bag stat.
+      if (condition.noStat) return base;
       return { ...base, [condition.stat ?? condition.name]: clamped };
     }
     case "custom-buffs":
