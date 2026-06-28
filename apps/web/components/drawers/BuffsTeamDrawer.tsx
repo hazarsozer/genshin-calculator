@@ -8,7 +8,7 @@ import { ConditionControlWidget } from "./ConditionControl";
 import { CharAvatar } from "@/components/controls/CharAvatar";
 import { Catalog } from "@/components/catalog/Catalog";
 import { CatalogModal } from "@/components/catalog/CatalogModal";
-import { addMember, removeMember, setMemberSetting, activeResonances } from "@/lib/party";
+import { addMember, removeMember, setMemberSetting, activeResonances, teammateLevelDefaults } from "@/lib/party";
 import { humanizeSlug } from "@/lib/utils";
 import { avatarIconSources } from "@/lib/enkaArt";
 import type { ConditionControl } from "@/lib/conditions";
@@ -111,7 +111,7 @@ function TeamRow({
 }: {
   activeSlug: string;
   members: readonly PartyMemberForm[];
-  onPickSlot: (index: number) => void;
+  onPickSlot: () => void;
   onRemove: (index: number) => void;
 }) {
   const slots = Array.from({ length: MAX_TEAMMATES }, (_, i) => members[i]);
@@ -141,7 +141,7 @@ function TeamRow({
           <button
             key={i}
             type="button"
-            onClick={() => onPickSlot(i)}
+            onClick={() => onPickSlot()}
             className="flex h-12 w-12 items-center justify-center rounded-xl border border-dashed border-[var(--ck-border)] text-[var(--ck-faint)] transition-colors hover:border-[var(--ck-accent)] hover:text-[var(--ck-accent)]"
           >
             +
@@ -243,6 +243,7 @@ export function BuffsTeamDrawer() {
         if (!tchar) return null;
         const ctrls = collectPartyConditions(tchar);
         if (ctrls.length === 0) return null;
+        const levelDefaults = teammateLevelDefaults(tchar);
         return (
           <div key={m.slug} className="rounded-xl border border-[var(--ck-border)] p-3">
             <div className="mb-2 flex items-center gap-2">
@@ -255,7 +256,7 @@ export function BuffsTeamDrawer() {
                   key={ctrl.name}
                   ctrl={ctrl}
                   binding={{
-                    value: m.settings[ctrl.name] ?? (ctrl.kind === "boolean" ? false : 0),
+                    value: m.settings[ctrl.name] ?? (ctrl.name in levelDefaults ? 10 : ctrl.kind === "boolean" ? false : 0),
                     setValue: (v) => patchMembers(setMemberSetting(members, i, ctrl.name, v)),
                   }}
                 />

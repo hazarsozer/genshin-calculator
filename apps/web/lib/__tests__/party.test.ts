@@ -3,6 +3,7 @@ import { ALL_CHARACTERS } from "@genshin/data";
 import type { DbObjectChar } from "@genshin/types";
 import {
   buildPartyInput,
+  teammateLevelDefaults,
   addMember,
   removeMember,
   setMemberSetting,
@@ -41,6 +42,15 @@ describe("buildPartyInput", () => {
     ];
     const m = buildPartyInput(members, resolve)!.members![0] as { settings: Record<string, unknown> };
     expect(m.settings.bennet_char_skill_burst).toBe(7);
+  });
+
+  it("defaults a multiplier-leveling talent key to 10 (Shenhe Icy Quill)", () => {
+    const m = buildPartyInput([{ slug: "shenhe", settings: {} }], resolve)!.members![0] as { settings: Record<string, unknown> };
+    expect(m.settings.shenhe_char_skill_elemental).toBe(10);
+  });
+
+  it("drops a member whose slug does not resolve (stale URL degrades gracefully)", () => {
+    expect(buildPartyInput([{ slug: "not_a_real_char_xyz", settings: {} }], resolve)).toBeUndefined();
   });
 });
 
@@ -97,5 +107,12 @@ describe("collectPartyConditions", () => {
     // pick any char whose partyData is absent; fall back to a synthetic if none
     const noParty = ALL_CHARACTERS.find((c) => c.partyData === undefined);
     if (noParty) expect(collectPartyConditions(noParty)).toEqual([]);
+  });
+});
+
+describe("teammateLevelDefaults", () => {
+  it("includes the multiplier leveling key (Shenhe Icy Quill)", () => {
+    const shenhe = ALL_CHARACTERS.find((c) => c.name === "shenhe")!;
+    expect(teammateLevelDefaults(shenhe).shenhe_char_skill_elemental).toBe(10);
   });
 });

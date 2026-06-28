@@ -24,9 +24,10 @@ const RESONANCE_LABELS: Readonly<Record<string, string>> = {
 /**
  * Every talent-level setting a teammate's partyData buffs reference → 10.
  * Scans the buff-scaling post-effect forms (ratioFromTalent / talentBonus /
- * ratioPerStack) that read a `levelSetting`.
+ * ratioPerStack) that read a `levelSetting`, AND multiplier entries that carry
+ * a `leveling` key (FeatureMultiplierEntry.leveling).
  */
-function teammateLevelDefaults(char: DbObjectChar): Record<string, number> {
+export function teammateLevelDefaults(char: DbObjectChar): Record<string, number> {
   const out: Record<string, number> = {};
   for (const pe of char.partyData?.postEffects ?? []) {
     const ls =
@@ -35,6 +36,9 @@ function teammateLevelDefaults(char: DbObjectChar): Record<string, number> {
       pe.ratioPerStack?.levelSetting;
     if (ls) out[ls] = 10;
   }
+  for (const m of char.partyData?.multipliers ?? []) {
+    if (m.leveling) out[m.leveling] = 10; // multiplier talent-level key (FeatureMultiplierEntry.leveling)
+  }
   return out;
 }
 
@@ -42,10 +46,11 @@ export function buildPartyInput(
   members: readonly PartyMemberForm[],
   resolveChar: (slug: string) => DbObjectChar | undefined
 ): PartyInput | undefined {
-  if (members.length === 0) return undefined;
+  const resolved = members.filter((m) => resolveChar(m.slug) !== undefined);
+  if (resolved.length === 0) return undefined;
   return {
-    members: members.map((m) => {
-      const char = resolveChar(m.slug);
+    members: resolved.map((m) => {
+      const char = resolveChar(m.slug); // defined by the filter above
       const levelDefaults = char ? teammateLevelDefaults(char) : {};
       // user settings win over level defaults
       return { character: m.slug, settings: { ...levelDefaults, ...m.settings } };

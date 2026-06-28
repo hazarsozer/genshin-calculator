@@ -104,8 +104,6 @@ describe("computeBuild anchor", () => {
   });
 });
 
-// (calc.test.ts already imports describe/it/expect, TOLERANCE, computeBuild, BuildForm,
-//  and defines bennettTogglesForm + SAMPLE_BLOCK — this block needs no new imports.)
 describe("computeBuild — party", () => {
   function normalHit(form: BuildForm) {
     const { features, error } = computeBuild(form, SAMPLE_BLOCK, []);
@@ -156,6 +154,7 @@ describe("computeBuild — party", () => {
       []
     );
     expect(withStat.error).toBeUndefined();
+    expect(withZeroStat.error).toBeUndefined();
     expect(withStat.stats!.atk_total).toBeGreaterThan(withZeroStat.stats!.atk_total);
   });
 });
