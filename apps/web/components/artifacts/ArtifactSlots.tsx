@@ -11,14 +11,15 @@
  */
 
 import { useBuildStore } from "@/lib/store";
-import { assembleArtifactStats } from "@genshin/data";
+import { assembleArtifactStats, ARTIFACT_SETS } from "@genshin/data";
+import type { EquippedSet } from "@genshin/data";
 import type { ArtifactSlotData } from "@/lib/types";
 
 // ─────────────────────────── constants ───────────────────────────
 
-type SlotKey = "flower" | "plume" | "sands" | "goblet" | "circlet";
+export type SlotKey = "flower" | "plume" | "sands" | "goblet" | "circlet";
 
-const SLOTS = [
+export const SLOTS = [
   { slot: "flower" as SlotKey, label: "Flower", fixedMain: "hp", mains: null as string[] | null },
   { slot: "plume" as SlotKey, label: "Plume", fixedMain: "atk", mains: null as string[] | null },
   {
@@ -45,7 +46,7 @@ const SLOTS = [
   },
 ] as const;
 
-type SlotDef = (typeof SLOTS)[number];
+export type SlotDef = (typeof SLOTS)[number];
 
 const SUBSTAT_KEYS = [
   "hp", "atk", "def",
@@ -71,9 +72,20 @@ const IS_PERCENT = new Set([
   "anemo_dmg_", "geo_dmg_", "dendro_dmg_", "physical_dmg_",
 ]);
 
+// ─────────────────────── set helpers ────────────────────────────
+
+/** Split PascalCase goodId into a readable display name. */
+export function humanizeSetKey(goodId: string): string {
+  return goodId.replace(/([A-Z])/g, " $1").trim();
+}
+
+export const SET_KEYS = Object.keys(ARTIFACT_SETS).sort((a, b) =>
+  humanizeSetKey(a).localeCompare(humanizeSetKey(b))
+);
+
 // ──────────────────────── slot→flat adapter ──────────────────────
 
-function buildManualStats(
+export function buildManualStats(
   slots: Partial<Record<string, ArtifactSlotData>>
 ): Record<string, number> {
   const entries = Object.entries(slots).filter(
@@ -105,9 +117,22 @@ function buildManualStats(
   }
 }
 
+/** Count setKey occurrences across slots → EquippedSet[] for manualSets. */
+export function deriveManualSets(
+  slots: Partial<Record<string, ArtifactSlotData>>
+): EquippedSet[] {
+  const counts = new Map<string, number>();
+  for (const data of Object.values(slots)) {
+    if (data?.setKey) {
+      counts.set(data.setKey, (counts.get(data.setKey) ?? 0) + 1);
+    }
+  }
+  return Array.from(counts.entries()).map(([setKey, pieces]) => ({ setKey, pieces }));
+}
+
 // ─────────────────────── default slot data ───────────────────────
 
-function defaultData(slotDef: SlotDef): ArtifactSlotData {
+export function defaultData(slotDef: SlotDef): ArtifactSlotData {
   return {
     mainStatKey: slotDef.fixedMain ?? slotDef.mains?.[0] ?? "hp_",
     rarity: 5,
@@ -157,6 +182,11 @@ function SlotCard({ slotDef, data, onUpdate }: SlotCardProps) {
   function setLevel(l: number) {
     if (!data) return;
     onUpdate({ ...data, level: Math.max(0, Math.min(20, l)) });
+  }
+
+  function setSetKey(key: string) {
+    if (!data) return;
+    onUpdate({ ...data, setKey: key || undefined });
   }
 
   function addSub() {
@@ -230,6 +260,23 @@ function SlotCard({ slotDef, data, onUpdate }: SlotCardProps) {
           {slotDef.mains?.map((k) => (
             <option key={k} value={k}>
               {LABEL[k] ?? k}
+            </option>
+          ))}
+        </select>
+      )}
+
+      {/* Set selector — only when active */}
+      {isActive && (
+        <select
+          value={data?.setKey ?? ""}
+          onChange={(e) => setSetKey(e.target.value)}
+          aria-label={`${slotDef.label} artifact set`}
+          className={`${INPUT_CLS} w-full`}
+        >
+          <option value="">No set</option>
+          {SET_KEYS.map((k) => (
+            <option key={k} value={k}>
+              {humanizeSetKey(k)}
             </option>
           ))}
         </select>
@@ -350,7 +397,7 @@ export function ArtifactSlots() {
     } else {
       delete newSlots[slotKey];
     }
-    setForm({ artifactSlots: newSlots, manualStats: buildManualStats(newSlots) });
+    setForm({ artifactSlots: newSlots, manualStats: buildManualStats(newSlots), manualSets: deriveManualSets(newSlots) });
   }
 
   return (

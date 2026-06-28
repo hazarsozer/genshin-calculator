@@ -73,10 +73,10 @@ export function ArtifactsDrawer() {
         <GoodImport />
       ) : (
         <>
-          <SectionHead label="Artifact Slots" />
-          <ArtifactSlots />
           <SectionHead label="Artifact Sets" />
           <SetPicker />
+          <SectionHead label="Artifact Slots" />
+          <ArtifactSlots />
         </>
       )}
 

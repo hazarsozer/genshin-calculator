@@ -16,6 +16,7 @@ export interface ArtifactSlotData {
   rarity: 1 | 2 | 3 | 4 | 5;
   level: number;                    // 0..20
   substats: Array<{ key: string; value: number }>;
+  setKey?: string;                  // GOOD artifact set id; drives manualSets derivation
 }
 
 export interface BuildForm {
