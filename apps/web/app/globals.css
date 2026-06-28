@@ -181,4 +181,21 @@
   --ck-accent:#ff7a45; --ck-accent2:#ffb36b; --ck-glow:rgba(255,122,69,.35);
   --ck-art-gradient:linear-gradient(150deg,#3a1012,#7d241a 55%,#c0492c);
 }
-/* Vision skin tokens are added in Task 16. */
+/* ---- Vision skin (D3 · diegetic in-game UI, ported from visual-directions.html) ---- */
+[data-skin="vision"] {
+  /* Warm dark brown surfaces (richer / more antique than default dark) */
+  --ck-bg: #1a160f;
+  --ck-surface: #211c14;
+  --ck-surface2: #241f17;
+  --ck-border: #4a3a17;
+  /* Text scale */
+  --ck-text: #f3ead0;
+  --ck-muted: #b6a079;
+  --ck-faint: #9a865c;
+  /* Gold filigree frame accent (used in borders, corner ornaments, VisionMedallion) */
+  --ck-vision-frame: #6a521f;
+  --ck-vision-frame2: #4a3a17;
+}
+/* Note: --ck-accent / --ck-accent2 / --ck-glow in vision are injected as gold by ThemeRoot
+   so every component that reads those tokens automatically picks up the gold UI chrome.
+   --ck-el-* always carries the element colour for the Vision gem. */

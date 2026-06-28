@@ -1,8 +1,19 @@
+"use client";
+
+import { useSkinStore } from "@/lib/store";
+import type { Skin } from "@/lib/theme";
+
 const HUB_TABS = ["Calculator", "Database", "Guides", "Tier List", "Lore"] as const;
 const MODES = ["Calculator", "Optimizer", "Compare"] as const;
+const SKIN_OPTIONS: { value: Skin; label: string }[] = [
+  { value: "dark", label: "Dark" },
+  { value: "vision", label: "Vision" },
+];
 
-/** Hub nav + tool-mode switch. Only Calculator is live; the rest are doors. */
+/** Hub nav + tool-mode switch + skin switcher. Only Calculator is live; the rest are doors. */
 export function TopBar() {
+  const { skin, setSkin } = useSkinStore();
+
   return (
     <header className="sticky top-0 z-40 flex h-14 items-center gap-6 border-b border-[var(--ck-border)] bg-[rgba(10,8,9,0.86)] px-6 backdrop-blur">
       <div className="flex items-center gap-2 font-bold">
@@ -34,30 +45,58 @@ export function TopBar() {
         })}
       </nav>
 
-      <div className="ml-auto flex items-center gap-2">
-        <span className="text-[10px] font-bold tracking-[0.15em] text-[var(--ck-faint)]">MODE</span>
-        <div className="flex gap-1 rounded-[10px] border border-[var(--ck-border)] bg-[var(--ck-surface)] p-[3px]">
-          {MODES.map((m) => {
-            const active = m === "Calculator";
-            return (
+      <div className="ml-auto flex items-center gap-4">
+        {/* Skin switcher */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-bold tracking-[0.15em] text-[var(--ck-faint)]">SKIN</span>
+          <div
+            className="flex gap-1 rounded-[10px] border border-[var(--ck-border)] bg-[var(--ck-surface)] p-[3px]"
+            role="group"
+            aria-label="Theme skin"
+          >
+            {SKIN_OPTIONS.map(({ value, label }) => (
               <button
-                key={m}
-                disabled={!active}
+                key={value}
+                onClick={() => setSkin(value)}
+                aria-pressed={skin === value}
                 className={
-                  active
+                  skin === value
                     ? "rounded-md bg-[var(--ck-accent)] px-3 py-1.5 text-xs font-semibold text-black"
-                    : "flex cursor-not-allowed items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-[var(--ck-muted)] opacity-60"
+                    : "rounded-md px-3 py-1.5 text-xs font-medium text-[var(--ck-muted)] hover:text-[var(--ck-text)] transition-colors"
                 }
               >
-                {m}
-                {!active && (
-                  <span className="rounded bg-white/5 px-1 py-px text-[8px] font-bold tracking-wider text-[var(--ck-faint)]">
-                    SOON
-                  </span>
-                )}
+                {label}
               </button>
-            );
-          })}
+            ))}
+          </div>
+        </div>
+
+        {/* Mode switch */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-bold tracking-[0.15em] text-[var(--ck-faint)]">MODE</span>
+          <div className="flex gap-1 rounded-[10px] border border-[var(--ck-border)] bg-[var(--ck-surface)] p-[3px]">
+            {MODES.map((m) => {
+              const active = m === "Calculator";
+              return (
+                <button
+                  key={m}
+                  disabled={!active}
+                  className={
+                    active
+                      ? "rounded-md bg-[var(--ck-accent)] px-3 py-1.5 text-xs font-semibold text-black"
+                      : "flex cursor-not-allowed items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-[var(--ck-muted)] opacity-60"
+                  }
+                >
+                  {m}
+                  {!active && (
+                    <span className="rounded bg-white/5 px-1 py-px text-[8px] font-bold tracking-wider text-[var(--ck-faint)]">
+                      SOON
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </header>

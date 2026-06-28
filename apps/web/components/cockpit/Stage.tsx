@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useResults } from "@/lib/useResults";
-import { useBuildStore } from "@/lib/store";
+import { useBuildStore, useSkinStore } from "@/lib/store";
 import { ALL_CHARACTERS } from "@genshin/data";
 import { humanizeSlug } from "@/lib/utils";
 import { stageEntranceVariants, stageEntranceTransition, useCountUp, fmt } from "@/lib/motion";
@@ -11,6 +11,7 @@ import { SplashArt } from "./SplashArt";
 import { StatChip } from "@/components/results/StatChip";
 import { ShareControls } from "@/components/share/ShareControls";
 import { BuildCard } from "@/components/share/BuildCard";
+import { VisionMedallion } from "@/components/skins/vision/VisionMedallion";
 
 const ELEMENT_LABEL: Record<string, string> = {
   pyro: "Pyro", hydro: "Hydro", electro: "Electro", cryo: "Cryo",
@@ -25,6 +26,7 @@ export function Stage() {
   const cardRef = useRef<HTMLDivElement>(null);
   const result = useResults();
   const form = useBuildStore((s) => s.form);
+  const skin = useSkinStore((s) => s.skin);
   const char = ALL_CHARACTERS.find((c) => c.name === form.characterKey);
   const element = char?.element ?? "physical";
   const stats = result.stats ?? {};
@@ -75,27 +77,37 @@ export function Stage() {
       </p>
 
       {headline ? (
-        <>
-          <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ck-accent2)]">
-            {headline.label}
-          </div>
-          <div
-            className="font-[family-name:var(--font-display)] text-7xl leading-none tabular-nums text-white"
-            style={{ textShadow: "0 0 34px var(--ck-glow)" }}
-          >
-            {avgDisplay}
-          </div>
-          <div className="mb-4 mt-2 flex gap-6">
-            <div>
-              <div className="text-[9.5px] font-bold uppercase tracking-wider text-[var(--ck-faint)]">Non-crit</div>
-              <div className="font-[family-name:var(--font-display)] text-2xl tabular-nums">{nonCritDisplay}</div>
+        skin === "vision" ? (
+          <VisionMedallion
+            elementLabel={ELEMENT_LABEL[element]}
+            featureLabel={headline.label}
+            avgDisplay={avgDisplay}
+            nonCritDisplay={nonCritDisplay}
+            critDisplay={critDisplay}
+          />
+        ) : (
+          <>
+            <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ck-accent2)]">
+              {headline.label}
             </div>
-            <div>
-              <div className="text-[9.5px] font-bold uppercase tracking-wider text-[var(--ck-faint)]">Crit</div>
-              <div className="font-[family-name:var(--font-display)] text-2xl tabular-nums text-[var(--ck-accent2)]">{critDisplay}</div>
+            <div
+              className="font-[family-name:var(--font-display)] text-7xl leading-none tabular-nums text-white"
+              style={{ textShadow: "0 0 34px var(--ck-glow)" }}
+            >
+              {avgDisplay}
             </div>
-          </div>
-        </>
+            <div className="mb-4 mt-2 flex gap-6">
+              <div>
+                <div className="text-[9.5px] font-bold uppercase tracking-wider text-[var(--ck-faint)]">Non-crit</div>
+                <div className="font-[family-name:var(--font-display)] text-2xl tabular-nums">{nonCritDisplay}</div>
+              </div>
+              <div>
+                <div className="text-[9.5px] font-bold uppercase tracking-wider text-[var(--ck-faint)]">Crit</div>
+                <div className="font-[family-name:var(--font-display)] text-2xl tabular-nums text-[var(--ck-accent2)]">{critDisplay}</div>
+              </div>
+            </div>
+          </>
+        )
       ) : (
         <div className="mb-4 mt-2 text-sm text-[var(--ck-muted)]">
           {result.error ?? "Configure a build to see damage."}
