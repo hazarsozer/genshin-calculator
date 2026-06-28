@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { splashSources } from "@/lib/enkaArt";
+import { splashSources, avatarIconSources } from "@/lib/enkaArt";
 
 interface SplashArtProps {
   name: string;
@@ -15,7 +15,7 @@ interface SplashArtProps {
  * a missing asset never breaks layout.
  */
 export function SplashArt({ name, className, objectPosition = "center 22%" }: SplashArtProps) {
-  const sources = splashSources(name);
+  const sources = [...splashSources(name), ...avatarIconSources(name)];
   const [idx, setIdx] = useState(0);
   const [failed, setFailed] = useState(false);
 

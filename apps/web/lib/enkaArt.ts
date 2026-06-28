@@ -14,6 +14,10 @@ const ART_OVERRIDES: Record<string, string> = {
   arataki_itto: "Itto",
   shikanoin_heizou: "Heizo",
   kuki_shinobu: "Shinobu",
+  kujou_sara: "Sara",
+  yun_jin: "Yunjin",
+  lan_yan: "Lanyan",
+  yumemizuki_mizuki: "Mizuki",
   yanfei: "Feiyan",
   noelle: "Noel",
   amber: "Ambor",
@@ -22,6 +26,13 @@ const ART_OVERRIDES: Record<string, string> = {
   lyney: "Liney",
   alhaitham: "Alhatham",
   yae: "Yae",
+  // Traveler variants all share the PlayerBoy CDN asset (gender toggle out of scope)
+  traveler_anemo: "PlayerBoy",
+  traveler_geo: "PlayerBoy",
+  traveler_electro: "PlayerBoy",
+  traveler_dendro: "PlayerBoy",
+  traveler_hydro: "PlayerBoy",
+  traveler_pyro: "PlayerBoy",
 };
 
 function artId(name: string): string {
@@ -48,5 +59,14 @@ export function avatarIconSources(name: string): readonly string[] {
   return [
     `https://enka.network/ui/UI_AvatarIcon_${id}.png`,
     `https://gi.yatta.moe/assets/UI/UI_AvatarIcon_${id}.png`,
+  ];
+}
+
+export function weaponIconSources(weapon: { name: string; weapon: string }): readonly string[] {
+  const type = weapon.weapon.charAt(0).toUpperCase() + weapon.weapon.slice(1);
+  const id = artId(weapon.name);
+  return [
+    `https://enka.network/ui/UI_EquipIcon_${type}_${id}.png`,
+    `https://gi.yatta.moe/assets/UI/UI_EquipIcon_${type}_${id}.png`,
   ];
 }
