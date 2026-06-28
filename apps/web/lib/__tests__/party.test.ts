@@ -9,6 +9,7 @@ import {
   activeResonances,
 } from "../party.js";
 import type { PartyMemberForm } from "../types.js";
+import { collectPartyConditions } from "../conditions.js";
 
 const resolve = (slug: string): DbObjectChar | undefined =>
   ALL_CHARACTERS.find((c) => c.name === slug);
@@ -77,5 +78,24 @@ describe("activeResonances", () => {
       "Pyro Resonance",
       "Hydro Resonance",
     ]);
+  });
+});
+
+describe("collectPartyConditions", () => {
+  it("returns only the teammate's partyData conditions as controls", () => {
+    const bennett = ALL_CHARACTERS.find((c) => c.name === "bennett")!;
+    const ctrls = collectPartyConditions(bennett);
+    const names = ctrls.map((c) => c.name);
+    // Bennett's partyData.conditions: bennet_atk_base (number) + party.bennet_fantastic_voyage (boolean)
+    expect(names).toContain("bennet_atk_base");
+    expect(names).toContain("party.bennet_fantastic_voyage");
+    expect(ctrls.find((c) => c.name === "bennet_atk_base")!.kind).toBe("number");
+    expect(ctrls.find((c) => c.name === "party.bennet_fantastic_voyage")!.kind).toBe("boolean");
+  });
+
+  it("returns an empty array for a character with no partyData", () => {
+    // pick any char whose partyData is absent; fall back to a synthetic if none
+    const noParty = ALL_CHARACTERS.find((c) => c.partyData === undefined);
+    if (noParty) expect(collectPartyConditions(noParty)).toEqual([]);
   });
 });

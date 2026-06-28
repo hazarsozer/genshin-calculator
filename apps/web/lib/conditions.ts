@@ -369,3 +369,22 @@ export function collectGroupedConditions(
     enemy: enemyG.controls,
   };
 }
+
+/**
+ * Collect the UI controls a TEAMMATE contributes — only `char.partyData.conditions`
+ * (the buffs they grant the active character), deduped by name. Distinct from
+ * harvestCharConditions, which mixes a character's own kit conditions with their
+ * party conditions for the ACTIVE character.
+ */
+export function collectPartyConditions(char: DbObjectChar): ConditionControl[] {
+  const seen = new Set<string>();
+  const out: ConditionControl[] = [];
+  for (const cond of char.partyData?.conditions ?? []) {
+    const ctrl = conditionToControl(cond);
+    if (!ctrl) continue;
+    if (seen.has(ctrl.name)) continue;
+    seen.add(ctrl.name);
+    out.push(ctrl);
+  }
+  return out;
+}
