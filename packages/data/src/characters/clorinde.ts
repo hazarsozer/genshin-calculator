@@ -39,6 +39,7 @@
 import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Clorinde as ClorindeStatTable } from "../generated/charTables.js";
 import { Clorinde as ClorindeTalents } from "../generated/charTalentTables.js";
+import { BOND_OF_LIFE_INPUT } from "../characterConditions.js";
 
 // ---------------------------------------------------------------------------
 // TalentResolver
@@ -294,6 +295,6 @@ export const clorinde: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: constellationConditions,
+  conditions: [...constellationConditions, BOND_OF_LIFE_INPUT],
   postEffects: c4PostEffects,
 };

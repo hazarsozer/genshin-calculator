@@ -45,6 +45,7 @@
 import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Arlecchino as ArlecchinoStatTable } from "../generated/charTables.js";
 import { Arlecchino as ArlecchinoTalents } from "../generated/charTalentTables.js";
+import { BOND_OF_LIFE_INPUT } from "../characterConditions.js";
 
 // ---------------------------------------------------------------------------
 // TalentResolver
@@ -329,5 +330,5 @@ export const arlecchino: DbObjectChar = {
   talents,
   features,
   multipliers: charMultipliers,
-  conditions: [...constellationConditions, bolInfusion],
+  conditions: [...constellationConditions, bolInfusion, BOND_OF_LIFE_INPUT],
 };

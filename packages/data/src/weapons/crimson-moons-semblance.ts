@@ -13,6 +13,7 @@
 
 import type { ConditionStaticRefine, DbObjectWeapon } from "@genshin/types";
 import { CrimsonMoonsSemblanceStatTable } from "../generated/weaponStatTables.js";
+import { BOND_OF_LIFE_INPUT } from "../characterConditions.js";
 
 // DMG +12..28% while Bond-of-Life > 0 (INERT in solo: common.bond_of_life absent → 0 >= 1 false).
 const bolDmg: ConditionStaticRefine = {
@@ -39,5 +40,5 @@ export const crimsonMoonsSemblance: DbObjectWeapon = {
   rarity: 5,
   weapon: "polearm",
   statTable: CrimsonMoonsSemblanceStatTable,
-  conditions: [bolDmg, bolDmgHigh],
+  conditions: [bolDmg, bolDmgHigh, BOND_OF_LIFE_INPUT],
 };

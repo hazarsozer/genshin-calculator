@@ -29,6 +29,7 @@ import type {
   TalentTable,
 } from "@genshin/types";
 import { FlowingPurityStatTable } from "../generated/weaponStatTables.js";
+import { BOND_OF_LIFE_INPUT } from "../characterConditions.js";
 
 function refineTable(values: readonly number[]): TalentTable {
   return { getValue: (refine: number): number => values[refine - 1] ?? 0 };
@@ -74,6 +75,6 @@ export const flowingPurity: DbObjectWeapon = {
   rarity: 4,
   weapon: "catalyst",
   statTable: FlowingPurityStatTable,
-  conditions: [elementBuff],
+  conditions: [elementBuff, BOND_OF_LIFE_INPUT],
   postEffects: bolPostEffects,
 };

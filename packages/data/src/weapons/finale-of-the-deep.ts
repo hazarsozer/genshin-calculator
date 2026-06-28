@@ -28,6 +28,7 @@ import type {
   TalentTable,
 } from "@genshin/types";
 import { FinaleOfTheDeepStatTable } from "../generated/weaponStatTables.js";
+import { BOND_OF_LIFE_INPUT } from "../characterConditions.js";
 
 function refineTable(values: readonly number[]): TalentTable {
   return { getValue: (refine: number): number => values[refine - 1] ?? 0 };
@@ -72,6 +73,6 @@ export const finaleOfTheDeep: DbObjectWeapon = {
   rarity: 4,
   weapon: "sword",
   statTable: FinaleOfTheDeepStatTable,
-  conditions: [atkBuff],
+  conditions: [atkBuff, BOND_OF_LIFE_INPUT],
   postEffects: [bolPostEffect],
 };

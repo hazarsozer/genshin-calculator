@@ -959,6 +959,22 @@ const bondOfLifeStat: Condition = {
   type: "number",
   name: "common.bond_of_life",
   stat: "bond_of_life",
+  max: 200,
+};
+
+/**
+ * Bond of Life INPUT slider (max 200) — owned per-entity (her per-owner
+ * ConditionNumberBondOfLife, noStat:true). Renders the slider in the owning
+ * char/weapon drawer; the global `bondOfLifeStat` above is the single bag emit,
+ * so this carries NO stat (noStat) → no double-count when a char-owner and a
+ * weapon-owner are equipped together (e.g. Arlecchino + Crimson Moon's Semblance).
+ * Source: raw/.../classes/Condition/Number/BondOfLife.js (noStat:true, max 200).
+ */
+export const BOND_OF_LIFE_INPUT: Condition = {
+  type: "number",
+  name: "common.bond_of_life",
+  noStat: true,
+  max: 200,
 };
 
 /**
