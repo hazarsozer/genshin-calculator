@@ -83,3 +83,6 @@ export type { EnemyPreset } from "./generated/enemyCatalog.js";
 
 // Condition/passive strings — generated from raw CSV string tables
 export { CONDITION_STRINGS } from "./generated/conditionStrings.js";
+
+// Artifact-set effect strings — generated from artifact_set_bonuses.csv
+export { SET_EFFECTS } from "./generated/setEffectStrings.js";

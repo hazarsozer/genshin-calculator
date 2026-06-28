@@ -71,6 +71,11 @@ export interface CatalogProps<T> {
   /** Key of the currently-selected item; highlights its tile. */
   activeKey?: string;
   onPick: (item: T) => void;
+  /**
+   * Optional metadata rendered beneath the name label in each tile.
+   * When omitted the tile layout is unchanged (icon + name only).
+   */
+  renderMeta?: (item: T) => React.ReactNode;
 }
 
 // ─── Catalog ──────────────────────────────────────────────────────────────────
@@ -84,6 +89,7 @@ export function Catalog<T>({
   searchText,
   activeKey,
   onPick,
+  renderMeta,
 }: CatalogProps<T>) {
   const uid = useId();
   const searchId = `${uid}-search`;
@@ -228,6 +234,11 @@ export function Catalog<T>({
                 >
                   {label}
                 </span>
+                {renderMeta && (
+                  <div className="w-full text-[9px] leading-tight text-[var(--ck-faint)]">
+                    {renderMeta(item)}
+                  </div>
+                )}
               </button>
             );
           })}
