@@ -23,13 +23,13 @@
 
 import type {
   CharPostEffect,
+  Condition,
   ConditionBoolean,
   ConditionBooleanRefine,
   DbObjectWeapon,
   TalentTable,
 } from "@genshin/types";
 import { FlowingPurityStatTable } from "../generated/weaponStatTables.js";
-import { BOND_OF_LIFE_INPUT } from "../characterConditions.js";
 
 function refineTable(values: readonly number[]): TalentTable {
   return { getValue: (refine: number): number => values[refine - 1] ?? 0 };
@@ -44,6 +44,11 @@ const elementBuff: ConditionBooleanRefine = {
     dmg_anemo: v, dmg_geo: v, dmg_pyro: v, dmg_electro: v, dmg_hydro: v, dmg_cryo: v, dmg_dendro: v,
   })),
 };
+
+// BoL input slider — Flowing Purity reads its OWN BoL setting (weapon_flowing_purity_bol,
+// via PostEffectStatsBondOfLife.bolSettingName), NOT the shared common.bond_of_life. noStat: the
+// buff reads the SETTING (fromStatFactorSetting), not a bag stat. Raw: FlowingPurity.js:17,58.
+const bolInput: Condition = { type: "number", name: "weapon_flowing_purity_bol", noStat: true, max: 200 };
 
 // Active iff the BoL setting is truthy (>0) — her ConditionBoolean({name:'weapon_flowing_purity_bol'}).
 const bolGate: ConditionBoolean = {
@@ -75,6 +80,6 @@ export const flowingPurity: DbObjectWeapon = {
   rarity: 4,
   weapon: "catalyst",
   statTable: FlowingPurityStatTable,
-  conditions: [elementBuff, BOND_OF_LIFE_INPUT],
+  conditions: [elementBuff, bolInput],
   postEffects: bolPostEffects,
 };

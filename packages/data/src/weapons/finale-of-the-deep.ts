@@ -22,13 +22,13 @@
 
 import type {
   CharPostEffect,
+  Condition,
   ConditionBoolean,
   ConditionBooleanRefine,
   DbObjectWeapon,
   TalentTable,
 } from "@genshin/types";
 import { FinaleOfTheDeepStatTable } from "../generated/weaponStatTables.js";
-import { BOND_OF_LIFE_INPUT } from "../characterConditions.js";
 
 function refineTable(values: readonly number[]): TalentTable {
   return { getValue: (refine: number): number => values[refine - 1] ?? 0 };
@@ -41,6 +41,11 @@ const atkBuff: ConditionBooleanRefine = {
   description: "talent_descr.weapon_finale_of_the_deep_1",
   refinementStats: [{ atk_percent: 12 }, { atk_percent: 15 }, { atk_percent: 18 }, { atk_percent: 21 }, { atk_percent: 24 }],
 };
+
+// BoL input slider — Finale of the Deep reads its OWN BoL setting (weapon_finale_of_the_deep_bol,
+// via PostEffectStatsBondOfLife.bolSettingName), NOT the shared common.bond_of_life. noStat: the
+// buff reads the SETTING (fromStatFactorSetting), not a bag stat. Raw: FinaleOfTheDeep.js:13,40.
+const bolInput: Condition = { type: "number", name: "weapon_finale_of_the_deep_bol", noStat: true, max: 200 };
 
 // Active iff the BoL setting is truthy (>0) — her ConditionBoolean({name:'weapon_finale_of_the_deep_bol'}).
 const bolGate: ConditionBoolean = {
@@ -73,6 +78,6 @@ export const finaleOfTheDeep: DbObjectWeapon = {
   rarity: 4,
   weapon: "sword",
   statTable: FinaleOfTheDeepStatTable,
-  conditions: [atkBuff, BOND_OF_LIFE_INPUT],
+  conditions: [atkBuff, bolInput],
   postEffects: [bolPostEffect],
 };
