@@ -34,21 +34,9 @@ export const drawerVariants = {
   },
 } as const;
 
-/**
- * Bar grow variant — exported for reference.
- * Breakdown bars use CSS `transition-[width]`; these variants are here if
- * bars ever migrate to framer-motion.
- */
-export const barGrowVariants = {
-  hidden: { scaleX: 0 },
-  visible: { scaleX: 1 },
-};
-
-export const barGrowTransition = { duration: 0.45, ease: "easeOut" as const };
-
 // ─── useCountUp ──────────────────────────────────────────────────────────────
 
-const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
+export const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
 
 /**
  * Animates a number from the old value to the new value when it changes.
@@ -81,6 +69,7 @@ export function useCountUp(value: number): string {
       return;
     }
 
+    if (motionVal.get() === value) return;
     const controls = animate(motionVal, value, {
       duration: 0.35,
       ease: "easeOut",

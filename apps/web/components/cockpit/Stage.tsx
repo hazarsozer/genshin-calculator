@@ -5,7 +5,7 @@ import { useResults } from "@/lib/useResults";
 import { useBuildStore } from "@/lib/store";
 import { ALL_CHARACTERS } from "@genshin/data";
 import { humanizeSlug } from "@/lib/utils";
-import { stageEntranceVariants, stageEntranceTransition, useCountUp } from "@/lib/motion";
+import { stageEntranceVariants, stageEntranceTransition, useCountUp, fmt } from "@/lib/motion";
 import { SplashArt } from "./SplashArt";
 import { StatChip } from "@/components/results/StatChip";
 
@@ -14,7 +14,6 @@ const ELEMENT_LABEL: Record<string, string> = {
   anemo: "Anemo", geo: "Geo", dendro: "Dendro", physical: "Physical",
 };
 
-const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
 // Engine stores ratio-type stats as fractions (0.05 = 5%); ×100 for display.
 const pct = (n: number | undefined) => `${((n ?? 0) * 100).toFixed(1)}%`;
 
@@ -42,7 +41,7 @@ export function Stage() {
   return (
     <motion.section
       variants={stageEntranceVariants}
-      initial={prefersReduced ? "visible" : "hidden"}
+      initial={prefersReduced === false ? "hidden" : "visible"}
       animate="visible"
       transition={stageEntranceTransition}
       className="flex flex-col rounded-2xl border border-[var(--ck-border)] bg-gradient-to-b from-[#140d0c] to-[#0e0a0a] p-5"
