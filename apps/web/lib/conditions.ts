@@ -58,6 +58,17 @@ function harvestCharConditions(char: DbObjectChar): readonly Condition[] {
   return out;
 }
 
+/**
+ * Conditions that share a combined pool cap (same + different ≤ cap).
+ * ATFD: party_elements_same + party_elements_different ≤ 3.
+ * Only `stacks` conditions surfaced as user sliders need this; others use static-level/boolean-value.
+ */
+const SHARED_POOL_GROUPS: ReadonlyMap<string, { siblings: readonly string[]; cap: number }> =
+  new Map([
+    ["party_elements_same", { siblings: ["party_elements_different"], cap: 3 }],
+    ["party_elements_different", { siblings: ["party_elements_same"], cap: 3 }],
+  ]);
+
 /** A single renderable UI control derived from a Condition. */
 export interface ConditionControl {
   /** The condition's settings key, e.g. "hutao_paramita_papilio". */
@@ -68,6 +79,11 @@ export interface ConditionControl {
   label: string;
   /** For kind:"number", the maximum value (from ConditionStacks.maxStacks or ConditionNumber.max). */
   max?: number;
+  /**
+   * For mutually-constrained conditions (e.g. ATFD same+different ≤ 3):
+   * siblings whose current sum reduces this slider's available room.
+   */
+  sharedPool?: { siblings: readonly string[]; cap: number };
 }
 
 /**
@@ -88,7 +104,14 @@ function conditionToControl(cond: Condition): ConditionControl | null {
     case "stacks": {
       const name = cond.name;
       if (!name) return null;
-      return { name, kind: "number", label: humanizeSlug(name), max: cond.maxStacks };
+      const poolEntry = SHARED_POOL_GROUPS.get(name);
+      return {
+        name,
+        kind: "number",
+        label: humanizeSlug(name),
+        max: cond.maxStacks,
+        ...(poolEntry ? { sharedPool: poolEntry } : {}),
+      };
     }
     case "number": {
       const name = cond.name;

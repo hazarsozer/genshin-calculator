@@ -30,15 +30,6 @@ export function ConditionControlWidget({ ctrl }: ConditionControlProps) {
     });
   }
 
-  function handleStack(v: number) {
-    setForm({
-      conditions: {
-        ...form.conditions,
-        stacks: { ...form.conditions.stacks, [ctrl.name]: v },
-      },
-    });
-  }
-
   if (ctrl.kind === "boolean") {
     const checked = form.conditions.toggles[ctrl.name] ?? false;
     return (
@@ -74,9 +65,35 @@ export function ConditionControlWidget({ ctrl }: ConditionControlProps) {
   }
 
   // kind === "number"
-  const currentValue = form.conditions.stacks[ctrl.name] ?? 0;
-  const max = ctrl.max ?? 10;
+  const rawValue = form.conditions.stacks[ctrl.name] ?? 0;
+  const baseMax = ctrl.max ?? 10;
+
+  // For mutually-constrained conditions (e.g. ATFD same+different ≤ 3),
+  // the effective max shrinks by the sum of sibling values.
+  const effectiveMax = ctrl.sharedPool
+    ? Math.max(
+        0,
+        ctrl.sharedPool.cap -
+          ctrl.sharedPool.siblings.reduce(
+            (s, k) => s + (form.conditions.stacks[k] ?? 0),
+            0,
+          ),
+      )
+    : baseMax;
+
+  const currentValue = Math.min(rawValue, effectiveMax);
   const active = currentValue > 0;
+
+  function handleStack(v: number) {
+    const clamped = Math.min(v, effectiveMax);
+    setForm({
+      conditions: {
+        ...form.conditions,
+        stacks: { ...form.conditions.stacks, [ctrl.name]: clamped },
+      },
+    });
+  }
+
   return (
     <div
       className="flex flex-col gap-2 rounded-xl border p-3"
@@ -95,10 +112,10 @@ export function ConditionControlWidget({ ctrl }: ConditionControlProps) {
           className="text-[12px] font-bold tabular-nums"
           style={{ color: active ? "var(--ck-accent2)" : "var(--ck-faint)" }}
         >
-          {currentValue}/{max}
+          {currentValue}/{effectiveMax}
         </span>
       </div>
-      <Range min={0} max={max} value={currentValue} onChange={handleStack} />
+      <Range min={0} max={effectiveMax} value={currentValue} onChange={handleStack} />
     </div>
   );
 }
