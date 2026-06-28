@@ -22,21 +22,25 @@ export function ShareControls({ cardRef }: ShareControlsProps) {
   const [copied, setCopied] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [fallbackUrl, setFallbackUrl] = useState<string | null>(null);
 
   function handleCopyLink() {
     const hash = encodeBuild(form);
     const url = `${location.origin}${location.pathname}#${hash}`;
 
     if (!navigator.clipboard) {
-      // Clipboard API unavailable (non-HTTPS or restricted). Silently skip.
+      // Clipboard API unavailable (non-HTTPS or restricted). Show URL for manual copy.
+      setFallbackUrl(url);
       return;
     }
 
     navigator.clipboard.writeText(url).then(() => {
+      setFallbackUrl(null);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }).catch(() => {
-      // Permission denied or another error — swallow silently.
+      // Permission denied — show URL for manual copy.
+      setFallbackUrl(url);
     });
   }
 
@@ -142,7 +146,17 @@ export function ShareControls({ cardRef }: ShareControlsProps) {
       </button>
 
       {exportError && (
-        <span className="text-[11px] text-red-400">{exportError}</span>
+        <span className="text-[11px]" style={{ color: "var(--destructive)" }}>{exportError}</span>
+      )}
+      {fallbackUrl && (
+        <input
+          readOnly
+          value={fallbackUrl}
+          onClick={(e) => (e.target as HTMLInputElement).select()}
+          autoFocus
+          className="ml-1 w-48 rounded border border-[var(--ck-border)] bg-[var(--ck-surface)] px-2 py-1 text-[11px] text-[var(--ck-text)] outline-none"
+          title="Copy this link manually"
+        />
       )}
     </div>
   );

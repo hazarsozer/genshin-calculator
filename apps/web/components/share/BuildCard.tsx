@@ -86,7 +86,7 @@ export const BuildCard = forwardRef<HTMLDivElement>(function BuildCard(_, ref) {
           position: "absolute",
           inset: 0,
           background:
-            "linear-gradient(90deg, var(--ck-bg) 0%, var(--ck-bg) 30%, rgba(11,8,9,0.88) 48%, rgba(11,8,9,0.3) 68%, rgba(11,8,9,0) 100%)",
+            "linear-gradient(90deg, var(--ck-bg) 0%, var(--ck-bg) 30%, color-mix(in srgb, var(--ck-bg) 88%, transparent) 48%, color-mix(in srgb, var(--ck-bg) 30%, transparent) 68%, transparent 100%)",
         }}
       />
 
@@ -190,11 +190,11 @@ export const BuildCard = forwardRef<HTMLDivElement>(function BuildCard(_, ref) {
                 {headline.label}
               </div>
               <div
+                className="text-white"
                 style={{
                   fontSize: 64,
                   fontWeight: 900,
                   lineHeight: 1,
-                  color: "#fff",
                   fontVariantNumeric: "tabular-nums",
                   textShadow: "0 0 34px var(--ck-glow)",
                 }}
@@ -273,7 +273,7 @@ export const BuildCard = forwardRef<HTMLDivElement>(function BuildCard(_, ref) {
                 padding: "7px 10px",
                 borderRadius: 9,
                 border: "1px solid var(--ck-border)",
-                background: "rgba(255,255,255,0.04)",
+                background: "color-mix(in srgb, var(--ck-text) 4%, transparent)",
               }}
             >
               <span
@@ -311,7 +311,7 @@ export const BuildCard = forwardRef<HTMLDivElement>(function BuildCard(_, ref) {
           zIndex: 20,
           fontSize: 11,
           fontWeight: 700,
-          color: "rgba(245,236,231,0.35)",
+          color: "color-mix(in srgb, var(--ck-text) 35%, transparent)",
           letterSpacing: 0.5,
         }}
       >
