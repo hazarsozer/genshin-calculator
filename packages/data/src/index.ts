@@ -73,3 +73,6 @@ export type {
   ReconstructToggles,
   ReconstructEnemy,
 } from "./reconstruct.js";
+
+// Art/icon id tables — generated from Enka characters + ambr weapons vendor JSONs
+export { CHAR_ICON, WEAPON_ICON } from "./generated/artIds.js";

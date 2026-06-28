@@ -1,7 +1,13 @@
 // Maps a character slug (DbObjectChar.name, snake_case) to the HoYo/Enka
-// internal art id used by the public CDNs. Most are first-letter-capitalized;
-// irregular internal names need an override. Unknown ids still resolve to a URL
+// internal art id used by the public CDNs. Unknown ids still resolve to a URL
 // — the <img> falls back to a gradient if the asset 404s.
+//
+// Resolution order for chars:
+//   1. CHAR_ICON (generated table, 113/121 chars covered — covers all current chars)
+//   2. ART_OVERRIDES (kept as safety net for any future gaps)
+//   3. PascalCase heuristic (last resort; 404s degrade to gradient)
+
+import { CHAR_ICON, WEAPON_ICON } from "@genshin/data";
 
 const ART_OVERRIDES: Record<string, string> = {
   hu_tao: "Hutao",
@@ -36,6 +42,7 @@ const ART_OVERRIDES: Record<string, string> = {
 };
 
 function artId(name: string): string {
+  if (CHAR_ICON[name]) return CHAR_ICON[name];
   if (ART_OVERRIDES[name]) return ART_OVERRIDES[name];
   // single-token slug → capitalize first letter (bennett → Bennett)
   if (!name.includes("_")) return name.charAt(0).toUpperCase() + name.slice(1);
@@ -72,6 +79,15 @@ const WEAPON_TYPE_TOKEN: Record<string, string> = {
 };
 
 export function weaponIconSources(weapon: { name: string; weapon: string }): readonly string[] {
+  // Hit path: use the full icon name from the generated table directly.
+  const fullIcon = WEAPON_ICON[weapon.name];
+  if (fullIcon) {
+    return [
+      `https://enka.network/ui/${fullIcon}.png`,
+      `https://gi.yatta.moe/assets/UI/${fullIcon}.png`,
+    ];
+  }
+  // Fallback: reconstruct from type token + PascalCase heuristic.
   const type =
     WEAPON_TYPE_TOKEN[weapon.weapon] ??
     (weapon.weapon.charAt(0).toUpperCase() + weapon.weapon.slice(1));
