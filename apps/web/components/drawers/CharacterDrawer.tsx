@@ -12,6 +12,7 @@ import { CatalogModal } from "@/components/catalog/CatalogModal";
 import { CharAvatar } from "@/components/controls/CharAvatar";
 import { LevelSlider } from "@/components/controls/LevelSlider";
 import { LevelLine } from "@/components/controls/LevelLine";
+import { talentCap } from "@/lib/levelTable";
 import { ConditionControlWidget } from "./ConditionControl";
 import type { EquippedSet } from "@genshin/data";
 
@@ -186,7 +187,20 @@ export function CharacterDrawer() {
       <LevelSlider
         level={form.charLevel}
         ascension={form.ascension}
-        onChange={(l, a) => setForm({ charLevel: l, ascension: a })}
+        onChange={(l, a) => {
+          // Talent level is capped by ascension (her SKILL_LEVELS, Character.js:99) —
+          // lowering ascension clamps any talent above the new cap.
+          const cap = talentCap(a);
+          setForm({
+            charLevel: l,
+            ascension: a,
+            talents: {
+              attack: Math.min(form.talents.attack, cap),
+              elemental: Math.min(form.talents.elemental, cap),
+              burst: Math.min(form.talents.burst, cap),
+            },
+          });
+        }}
       />
 
       {/* ── Talents ── */}
@@ -195,14 +209,14 @@ export function CharacterDrawer() {
         label="Normal Attack"
         value={form.talents.attack}
         min={1}
-        max={10}
+        max={talentCap(form.ascension)}
         onChange={(v) => setForm({ talents: { ...form.talents, attack: v } })}
       />
       <LevelLine
         label="Elemental Skill"
         value={form.talents.elemental}
         min={1}
-        max={10}
+        max={talentCap(form.ascension)}
         onChange={(v) =>
           setForm({ talents: { ...form.talents, elemental: v } })
         }
@@ -211,7 +225,7 @@ export function CharacterDrawer() {
         label="Elemental Burst"
         value={form.talents.burst}
         min={1}
-        max={10}
+        max={talentCap(form.ascension)}
         onChange={(v) => setForm({ talents: { ...form.talents, burst: v } })}
       />
 

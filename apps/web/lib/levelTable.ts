@@ -31,6 +31,20 @@ export const LEVEL_STOPS: readonly LevelStop[] = [
 /** Max level for each ascension phase (index = ascension 0–6). */
 export const ASC_CAPS = [20, 40, 50, 60, 70, 80, 90] as const;
 
+/**
+ * Max talent (skill) level per ascension phase (index = ascension 0–6):
+ * [1, 1, 2, 4, 6, 8, 10]. Faithful to her engine's
+ * `SKILL_LEVELS = new StatTable('', [1,2,4,6,8,10])` read via
+ * `getValue(this.levels.ascension || 1)` (raw/.../classes/CalcObject/Character.js:4,99) —
+ * ascension 0 and 1 both cap at 1, A2→2, A3→4, A4→6, A5→8, A6→10.
+ */
+export const TALENT_CAPS = [1, 1, 2, 4, 6, 8, 10] as const;
+
+/** Max talent level allowed at the given ascension phase (ascension clamped to [0,6]). */
+export function talentCap(ascension: number): number {
+  return TALENT_CAPS[Math.max(0, Math.min(6, ascension))];
+}
+
 /** Min level at which each ascension becomes valid. */
 const ASC_MIN = [1, 20, 40, 50, 60, 70, 80] as const;
 
