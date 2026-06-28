@@ -7,6 +7,7 @@ import { collectGroupedConditions } from "@/lib/conditions";
 import { ALL_WEAPONS } from "@genshin/data";
 import { humanizeSlug } from "@/lib/utils";
 import { avatarIconSources } from "@/lib/enkaArt";
+import { Catalog } from "@/components/catalog/Catalog";
 import { LevelSlider } from "@/components/controls/LevelSlider";
 import { LevelLine } from "@/components/controls/LevelLine";
 import { ConditionControlWidget } from "./ConditionControl";
@@ -143,6 +144,40 @@ export function CharacterDrawer() {
           </div>
         )}
       </div>
+
+      {/* ── Character catalog ── */}
+      <Catalog
+        items={ALL_CHARACTERS}
+        getKey={(c) => c.name}
+        getLabel={(c) => humanizeSlug(c.name)}
+        getIconSources={(c) => avatarIconSources(c.name)}
+        activeKey={form.characterKey}
+        onPick={(c) => handlePick(c.name)}
+        filters={[
+          {
+            group: "Element",
+            options: [
+              { label: "Pyro",     value: "pyro",     test: (c) => c.element === "pyro" },
+              { label: "Hydro",    value: "hydro",    test: (c) => c.element === "hydro" },
+              { label: "Electro",  value: "electro",  test: (c) => c.element === "electro" },
+              { label: "Cryo",     value: "cryo",     test: (c) => c.element === "cryo" },
+              { label: "Anemo",    value: "anemo",    test: (c) => c.element === "anemo" },
+              { label: "Geo",      value: "geo",      test: (c) => c.element === "geo" },
+              { label: "Dendro",   value: "dendro",   test: (c) => c.element === "dendro" },
+            ],
+          },
+          {
+            group: "Weapon",
+            options: [
+              { label: "Sword",    value: "sword",    test: (c) => c.weapon === "sword" },
+              { label: "Claymore", value: "claymore", test: (c) => c.weapon === "claymore" },
+              { label: "Polearm",  value: "polearm",  test: (c) => c.weapon === "polearm" },
+              { label: "Catalyst", value: "catalyst", test: (c) => c.weapon === "catalyst" },
+              { label: "Bow",      value: "bow",      test: (c) => c.weapon === "bow" },
+            ],
+          },
+        ]}
+      />
 
       {/* Currently selected character pill */}
       {char && (
