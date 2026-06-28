@@ -30,6 +30,18 @@ import type { EquippedSet } from "@genshin/data";
 import { humanizeSlug } from "./utils";
 
 /**
+ * Engine bag-emit-only globals: their INPUT sliders are owned per-entity
+ * (Character/Weapon/Artifacts) and render via harvesting. Never surface them
+ * from the global CHARACTER_CONDITIONS dump — that is exactly the leak
+ * (Bond of Life / Neuvillette discipline / Song-of-Days-Past team input).
+ */
+const GLOBAL_EMIT_ONLY: ReadonlySet<string> = new Set([
+  "common.bond_of_life",
+  "neuvillette_the_high_arbitrators_discipline",
+  "party_days_past_healing_recorded",
+]);
+
+/**
  * Harvest every candidate Condition from all buff channels on a character:
  *   - char.conditions (top-level toggles)
  *   - char.postEffects[].conditions (gating conditions on each post-effect)
@@ -297,7 +309,11 @@ export function collectConditions(
   }
 
   // 4 & 5. Global conditions (elemental resonance, imaginarium theatre, superconduct)
-  for (const c of CHARACTER_CONDITIONS) push(c);
+  for (const c of CHARACTER_CONDITIONS) {
+    const name = (c as { name?: string }).name;
+    if (name !== undefined && GLOBAL_EMIT_ONLY.has(name)) continue;
+    push(c);
+  }
   for (const c of ENEMY_CONDITIONS) push(c);
 
   return controls;
@@ -358,7 +374,11 @@ export function collectGroupedConditions(
     }
   }
 
-  for (const c of CHARACTER_CONDITIONS) globalG.push(c);
+  for (const c of CHARACTER_CONDITIONS) {
+    const name = (c as { name?: string }).name;
+    if (name !== undefined && GLOBAL_EMIT_ONLY.has(name)) continue;
+    globalG.push(c);
+  }
   for (const c of ENEMY_CONDITIONS) enemyG.push(c);
 
   return {
