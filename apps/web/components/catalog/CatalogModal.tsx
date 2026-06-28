@@ -98,8 +98,9 @@ export function CatalogModal({ open, onClose, title, children }: CatalogModalPro
       className="border-none bg-transparent p-0 [&::backdrop]:bg-black/60 [&::backdrop]:backdrop-blur-sm"
       style={{ margin: 0, width: "100vw", height: "100vh", maxWidth: "100vw", maxHeight: "100vh" }}
     >
-      {/* Center the panel in the transparent dialog overlay */}
-      <div className="flex h-full items-center justify-center p-4">
+      {/* Center the panel in the transparent dialog overlay.
+          Mobile: no padding → full-screen panel. sm+: centred with rounded corners. */}
+      <div className="flex h-full items-center justify-center p-0 sm:p-4">
         <AnimatePresence>
           {rendered && (
             <motion.div
@@ -109,7 +110,7 @@ export function CatalogModal({ open, onClose, title, children }: CatalogModalPro
               animate={variants.animate}
               exit={variants.exit}
               transition={{ duration: 0.2, ease: [0.2, 0.8, 0.2, 1] as [number, number, number, number] }}
-              className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-[var(--ck-border)] shadow-2xl"
+              className="flex h-full w-full flex-col overflow-hidden border border-[var(--ck-border)] shadow-2xl sm:h-auto sm:max-h-[85vh] sm:max-w-2xl sm:rounded-2xl"
               style={{ background: "linear-gradient(180deg, var(--ck-surface), var(--ck-bg))" }}
             >
               {/* Header */}

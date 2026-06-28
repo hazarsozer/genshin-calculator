@@ -15,7 +15,7 @@ export function TopBar() {
         </span>
       </div>
 
-      <nav className="flex gap-4 text-[13px]">
+      <nav className="hidden gap-4 text-[13px] md:flex">
         {HUB_TABS.map((t) => {
           const active = t === "Calculator";
           return (

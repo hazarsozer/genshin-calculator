@@ -50,7 +50,7 @@ export function Stage() {
       transition={stageEntranceTransition}
       className="flex flex-col rounded-2xl border border-[var(--ck-border)] bg-gradient-to-b from-[#140d0c] to-[#0e0a0a] p-5"
     >
-      <SplashArt name={form.characterKey} className="mb-4 h-[300px] w-full rounded-xl" />
+      <SplashArt name={form.characterKey} className="mb-4 h-[200px] w-full rounded-xl lg:h-[300px]" />
 
       <div className="mb-1 flex items-center gap-2">
         <span

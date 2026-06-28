@@ -15,9 +15,10 @@ export const stageEntranceTransition = {
 };
 
 /**
- * Drawer slide — 280ms ease-out.
- * `normal`: translates in from the left + fade.
- * `reduced`: opacity only — no translation.
+ * Drawer slide variants.
+ * `normal`:      desktop — translates in from the left + fade.
+ * `reduced`:     opacity only — no translation (prefers-reduced-motion).
+ * `mobileSheet`: mobile — slides up from the bottom + fade.
  */
 export const drawerVariants = {
   normal: {
@@ -31,6 +32,12 @@ export const drawerVariants = {
     animate: { opacity: 1 },
     exit: { opacity: 0 },
     transition: { duration: 0.28, ease: [0.2, 0.8, 0.2, 1] as [number, number, number, number] },
+  },
+  mobileSheet: {
+    initial: { y: "100%", opacity: 0.9 },
+    animate: { y: 0, opacity: 1 },
+    exit: { y: "100%", opacity: 0.9 },
+    transition: { duration: 0.32, ease: [0.2, 0.8, 0.2, 1] as [number, number, number, number] },
   },
 } as const;
 

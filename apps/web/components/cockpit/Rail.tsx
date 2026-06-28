@@ -80,6 +80,38 @@ interface RailProps {
   onOpen: (id: DrawerId) => void;
 }
 
+/** Fixed bottom tab bar — shown on small screens instead of the left rail. */
+export function MobileTabBar({ active, onOpen }: RailProps) {
+  return (
+    <nav
+      className="fixed bottom-0 inset-x-0 z-30 flex lg:hidden border-t border-[var(--ck-border)]"
+      style={{ background: "#0e0a0a" }}
+    >
+      {ITEMS.map((item) => {
+        const isOn = active === item.id;
+        return (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => onOpen(isOn ? null : item.id)}
+            aria-label={item.label}
+            className="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors"
+            style={{
+              color: isOn ? "var(--ck-accent2)" : "var(--ck-faint)",
+              background: isOn
+                ? "color-mix(in srgb, var(--ck-accent) 10%, transparent)"
+                : "transparent",
+            }}
+          >
+            <span className="h-[18px] w-[18px]">{item.icon}</span>
+            <span className="text-[8px] font-bold uppercase tracking-wide">{item.label}</span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
 export function Rail({ active, onOpen }: RailProps) {
   return (
     <nav className="relative z-30 hidden flex-col items-center gap-1 border-r border-[var(--ck-border)] bg-[#0e0a0a] py-3 lg:flex" style={{ width: 64, flexShrink: 0 }}>
