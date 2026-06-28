@@ -19,4 +19,5 @@ export const DEFAULT_FORM: BuildForm = {
   goodJson: "",
   manualStats: {},
   manualSets: [],
+  party: { members: [] },
 };

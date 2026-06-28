@@ -9,6 +9,13 @@ import type { EquippedSet } from "@genshin/data";
 
 export type ArtifactMode = "good" | "manual";
 
+/** One teammate in the party roster. `settings` keys are the engine's partyData
+ *  condition names (e.g. "party.bennet_fantastic_voyage", "bennet_atk_base"). */
+export interface PartyMemberForm {
+  slug: string; // DbObjectChar.name
+  settings: Record<string, number | boolean>;
+}
+
 /** Per-slot artifact data for the slot-based manual input UI.
  *  Uses GOOD stat key strings so `assembleArtifactStats` can derive the flat block. */
 export interface ArtifactSlotData {
@@ -41,6 +48,8 @@ export interface BuildForm {
   manualSets: EquippedSet[]; // manual-mode set picker
   /** Per-slot data for the slot-based input UI. When set, manualStats is derived from this. Optional so existing builds without slots still work. */
   artifactSlots?: Partial<Record<string, ArtifactSlotData>>;
+  /** Party roster (up to 3 teammates). Optional: absent → no party passed → engine call byte-identical. */
+  party?: { members: PartyMemberForm[] };
 }
 
 export interface FeatureResult {
