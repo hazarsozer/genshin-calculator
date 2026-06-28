@@ -20,8 +20,16 @@ import { Range } from "@/components/controls/Range";
  * clears all sibling keys in the group (only one active at a time).
  */
 
+/** When `binding` is set, the widget is CONTROLLED (drives external state, e.g. a
+ *  teammate's settings) instead of the global build store. */
+interface ConditionBinding {
+  value: number | boolean;
+  setValue: (v: number | boolean) => void;
+}
+
 interface ConditionControlProps {
   ctrl: ConditionControl;
+  binding?: ConditionBinding;
 }
 
 /**
@@ -80,11 +88,15 @@ function InfoTooltip({ text }: { text: string }) {
   );
 }
 
-export function ConditionControlWidget({ ctrl }: ConditionControlProps) {
+export function ConditionControlWidget({ ctrl, binding }: ConditionControlProps) {
   const form = useBuildStore((s) => s.form);
   const setForm = useBuildStore((s) => s.setForm);
 
   function handleToggle(v: boolean) {
+    if (binding) {
+      binding.setValue(v);
+      return;
+    }
     // If exclusive group is set and we're turning ON, clear all siblings first.
     const newToggles = { ...form.conditions.toggles };
     if (v && ctrl.exclusiveGroup) {
@@ -99,7 +111,7 @@ export function ConditionControlWidget({ ctrl }: ConditionControlProps) {
   }
 
   if (ctrl.kind === "boolean") {
-    const checked = form.conditions.toggles[ctrl.name] ?? false;
+    const checked = binding ? Boolean(binding.value) : (form.conditions.toggles[ctrl.name] ?? false);
     return (
       <button
         type="button"
@@ -134,12 +146,13 @@ export function ConditionControlWidget({ ctrl }: ConditionControlProps) {
   }
 
   // kind === "number"
-  const rawValue = form.conditions.stacks[ctrl.name] ?? 0;
+  const rawValue = binding ? Number(binding.value) : (form.conditions.stacks[ctrl.name] ?? 0);
   const baseMax = ctrl.max ?? 10;
 
   // For mutually-constrained conditions (e.g. ATFD same+different ≤ 3),
   // the effective max shrinks by the sum of sibling values.
-  const effectiveMax = ctrl.sharedPool
+  // Bound widgets skip sharedPool shrink — teammate conditions have no shared pools.
+  const effectiveMax = !binding && ctrl.sharedPool
     ? Math.max(
         0,
         ctrl.sharedPool.cap -
@@ -155,6 +168,10 @@ export function ConditionControlWidget({ ctrl }: ConditionControlProps) {
 
   function handleStack(v: number) {
     const clamped = Math.min(v, effectiveMax);
+    if (binding) {
+      binding.setValue(clamped);
+      return;
+    }
     setForm({
       conditions: {
         ...form.conditions,
