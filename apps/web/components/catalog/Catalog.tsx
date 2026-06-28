@@ -202,14 +202,14 @@ export function Catalog<T>({
               <button
                 key={key}
                 type="button"
-                aria-pressed={isActive}
+                aria-current={isActive ? "true" : undefined}
                 aria-label={label}
                 onClick={() => onPick(item)}
                 className={[
                   "flex flex-col items-center gap-1 rounded-xl border p-1.5 text-center transition-colors",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ck-accent)]",
                   isActive
-                    ? "border-[var(--ck-accent)] bg-[var(--ck-surface)]"
+                    ? "border-[var(--ck-accent)] bg-[color-mix(in_srgb,var(--ck-accent)_10%,transparent)]"
                     : "border-[var(--ck-border)] bg-[var(--ck-surface)] hover:border-[var(--ck-accent)]",
                 ].join(" ")}
               >
