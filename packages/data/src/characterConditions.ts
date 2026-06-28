@@ -977,37 +977,6 @@ export const BOND_OF_LIFE_INPUT: Condition = {
   max: 200,
 };
 
-/**
- * Neuvillette A4 input slider → bag stat — faithful port of her per-character
- * `ConditionNumber` `neuvillette_the_high_arbitrators_discipline`
- * (db/Char/Neuvillette.js:309-324). Her `ConditionNumber.getStats`
- * (Condition/Number.js:58-70) clamps the raw settings value to [0, max] and adds it
- * to the bag under the condition's `name` (no `stat`/`noStat` override → keyed by
- * `name`); `isActive` requires it `> 0` (Number.js:8-11). The A4 PostEffectStats
- * then reads this bag value via `makeStatItem(from)` and converts it to a damage-%
- * pct (the HP-ratio branch when > 100).
- *
- * The bag value is RAW (NOT percent-folded): `isPercent('neuvillette_the_high…')` is
- * false (it has no isPercent prefix), so her `processPercent` leaves it untouched —
- * verified empirically (setting 30000 → bag 30000). `max` mirrors her
- * `CHARACTER_MAX_POSSIBLE_HP` ceiling; we use a large constant (no build can exceed
- * it) so the clamp never binds here. Although her DB instance carries the A4
- * `ConditionAscensionChar(4)` gate, every build is A6 and we do not thread an
- * ascension type (Mizuki/Emilie precedent) — the slider being `> 0` is the real
- * gate. This is a NEUVILLETTE-only input but lives in the global registry (like the
- * BoL stat) so the setting→stat emit is shared infra, decoupled from the
- * post-effect; it is gated on its own char-specific setting → inert for every other
- * character and every golden.
- *
- * Source: raw/genshin_calc_pub/src/js/db/Char/Neuvillette.js:309-324 (ConditionNumber)
- *         raw/genshin_calc_pub/src/js/classes/Condition/Number.js:58-70 (getStats)
- *         raw/genshin_calc_pub/src/js/classes/Stats.js:327-336 (isPercent — no match)
- */
-const neuvilletteDisciplineSlider: Condition = {
-  type: "number",
-  name: "neuvillette_the_high_arbitrators_discipline",
-  max: 1_000_000,
-};
 
 /**
  * All global character conditions, in source order (imaginarium_theatre, then the Elemental
@@ -1065,11 +1034,9 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
   // v6 5★ catalyst off-field team buff (Nightweaver's Looking Glass) — inert unless
   // `weapon_other.weapon_millennial_hymn` is published; NOT(self toggle) guards double-count.
   weaponOtherMillennialHymn,
-  // BoL/stat input emits (ConditionBoLStat + Neuvillette's A4 slider) — global
-  // setting→stat conditions read by per-char post-effects (Clorinde C4 / Neuvillette
-  // A4). Each gated on its own input being > 0 → inert for every golden.
+  // BoL stat input (ConditionBoLStat) — global setting→stat condition read by
+  // per-char post-effects (Clorinde C4). Gated on its input being > 0 → inert for every golden.
   bondOfLifeStat,
-  neuvilletteDisciplineSlider,
 ];
 
 /**

@@ -215,6 +215,16 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
+// A4 "High Arbitrator's Discipline" HP-input slider — owned by Neuvillette (her per-char
+// ConditionNumber, raw/.../db/Char/Neuvillette.js:309-324). Emits the bag stat his A4
+// post-effect reads (fromStat:"neuvillette_the_high_arbitrators_discipline"). Moved here
+// from the global registry (single owner → no double-count).
+const disciplineInput: Condition = {
+  type: "number",
+  name: "neuvillette_the_high_arbitrators_discipline",
+  max: 1_000_000,
+};
+
 // ---------------------------------------------------------------------------
 // Post-effects
 // ---------------------------------------------------------------------------
@@ -271,6 +281,6 @@ export const neuvillette: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: constellationConditions,
+  conditions: [...constellationConditions, disciplineInput],
   postEffects: a4PostEffects,
 };
