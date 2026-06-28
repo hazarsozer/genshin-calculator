@@ -62,8 +62,19 @@ export function avatarIconSources(name: string): readonly string[] {
   ];
 }
 
+// Empirically verified (2026-06-28 curl): polearm icons use "Pole", not "Polearm".
+const WEAPON_TYPE_TOKEN: Record<string, string> = {
+  sword: "Sword",
+  claymore: "Claymore",
+  polearm: "Pole",
+  catalyst: "Catalyst",
+  bow: "Bow",
+};
+
 export function weaponIconSources(weapon: { name: string; weapon: string }): readonly string[] {
-  const type = weapon.weapon.charAt(0).toUpperCase() + weapon.weapon.slice(1);
+  const type =
+    WEAPON_TYPE_TOKEN[weapon.weapon] ??
+    (weapon.weapon.charAt(0).toUpperCase() + weapon.weapon.slice(1));
   const id = artId(weapon.name);
   return [
     `https://enka.network/ui/UI_EquipIcon_${type}_${id}.png`,

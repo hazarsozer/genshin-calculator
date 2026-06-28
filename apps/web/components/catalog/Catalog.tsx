@@ -13,7 +13,7 @@ interface FallbackImageProps {
   className?: string;
 }
 
-function FallbackImage({ sources, alt, className }: FallbackImageProps) {
+export function FallbackImage({ sources, alt, className }: FallbackImageProps) {
   const [idx, setIdx] = useState(0);
   const [failed, setFailed] = useState(false);
 

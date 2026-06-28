@@ -8,6 +8,10 @@ import { humanizeSlug } from "@/lib/utils";
 import { LevelSlider } from "@/components/controls/LevelSlider";
 import { LevelLine } from "@/components/controls/LevelLine";
 import { ConditionControlWidget } from "./ConditionControl";
+import { Catalog, FallbackImage } from "@/components/catalog/Catalog";
+import { weaponIconSources } from "@/lib/enkaArt";
+import type { CatalogFilterGroup } from "@/components/catalog/Catalog";
+import type { DbObjectWeapon } from "@genshin/types";
 import type { EquippedSet } from "@genshin/data";
 
 function SectionHead({ label }: { label: string }) {
@@ -28,6 +32,17 @@ export function WeaponDrawer() {
   const weaponType = char?.weapon ?? "sword";
 
   const compatibleWeapons = ALL_WEAPONS.filter((w) => w.weapon === weaponType);
+
+  const rarityFilters: CatalogFilterGroup<DbObjectWeapon>[] = [
+    {
+      group: "Rarity",
+      options: [
+        { label: "3★", value: "3", test: (w) => w.rarity === 3 },
+        { label: "4★", value: "4", test: (w) => w.rarity === 4 },
+        { label: "5★", value: "5", test: (w) => w.rarity === 5 },
+      ],
+    },
+  ];
 
   // Reset weapon when character weapon type changes
   useEffect(() => {
@@ -79,6 +94,11 @@ export function WeaponDrawer() {
                   onClick={() => handlePick(w.name)}
                   className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-[var(--ck-text)] transition-colors hover:bg-[var(--ck-surface2)]"
                 >
+                  <FallbackImage
+                    sources={weaponIconSources(w)}
+                    alt=""
+                    className="h-7 w-7 shrink-0 rounded-md"
+                  />
                   {humanizeSlug(w.name)}
                 </button>
               ))
@@ -96,6 +116,18 @@ export function WeaponDrawer() {
           </div>
         </div>
       )}
+
+      {/* ── Weapon catalog ── */}
+      <SectionHead label="All Weapons" />
+      <Catalog<DbObjectWeapon>
+        items={compatibleWeapons}
+        getKey={(w) => w.name}
+        getLabel={(w) => humanizeSlug(w.name)}
+        getIconSources={(w) => weaponIconSources(w)}
+        filters={rarityFilters}
+        activeKey={form.weaponKey}
+        onPick={(w) => handlePick(w.name)}
+      />
 
       {/* ── Level ── */}
       <SectionHead label="Weapon Level" />
