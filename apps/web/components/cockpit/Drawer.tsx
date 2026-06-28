@@ -1,6 +1,7 @@
 "use client";
 
 import { useReducedMotion, motion } from "framer-motion";
+import { drawerVariants } from "@/lib/motion";
 
 /**
  * Drawer — a ~360px panel that slides in from the rail.
@@ -16,14 +17,15 @@ interface DrawerProps {
 
 export function Drawer({ title, onClose, children }: DrawerProps) {
   const prefersReduced = useReducedMotion();
+  const v = prefersReduced ? drawerVariants.reduced : drawerVariants.normal;
 
   return (
     <motion.aside
       key="drawer"
-      initial={prefersReduced ? { opacity: 0 } : { x: -14, opacity: 0.4 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={prefersReduced ? { opacity: 0 } : { x: -14, opacity: 0.4 }}
-      transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
+      initial={v.initial}
+      animate={v.animate}
+      exit={v.exit}
+      transition={v.transition}
       className="relative z-20 flex flex-col border-r border-[var(--ck-border)] overflow-hidden"
       style={{
         width: 360,

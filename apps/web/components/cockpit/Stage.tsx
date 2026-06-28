@@ -1,9 +1,11 @@
 "use client";
 
+import { motion, useReducedMotion } from "framer-motion";
 import { useResults } from "@/lib/useResults";
 import { useBuildStore } from "@/lib/store";
 import { ALL_CHARACTERS } from "@genshin/data";
 import { humanizeSlug } from "@/lib/utils";
+import { stageEntranceVariants, stageEntranceTransition, useCountUp } from "@/lib/motion";
 import { SplashArt } from "./SplashArt";
 import { StatChip } from "@/components/results/StatChip";
 
@@ -29,8 +31,22 @@ export function Stage() {
     ? [...result.features].sort((a, b) => b.triple[2] - a.triple[2])[0]
     : null;
 
+  // Count-up hooks — called unconditionally (rules of hooks); inactive when headline is null.
+  const triple = headline?.triple ?? [0, 0, 0];
+  const avgDisplay = useCountUp(triple[2]);
+  const nonCritDisplay = useCountUp(triple[0]);
+  const critDisplay = useCountUp(triple[1]);
+
+  const prefersReduced = useReducedMotion();
+
   return (
-    <section className="flex flex-col rounded-2xl border border-[var(--ck-border)] bg-gradient-to-b from-[#140d0c] to-[#0e0a0a] p-5">
+    <motion.section
+      variants={stageEntranceVariants}
+      initial={prefersReduced ? "visible" : "hidden"}
+      animate="visible"
+      transition={stageEntranceTransition}
+      className="flex flex-col rounded-2xl border border-[var(--ck-border)] bg-gradient-to-b from-[#140d0c] to-[#0e0a0a] p-5"
+    >
       <SplashArt name={form.characterKey} className="mb-4 h-[300px] w-full rounded-xl" />
 
       <div className="mb-1 flex items-center gap-2">
@@ -64,16 +80,16 @@ export function Stage() {
             className="font-[family-name:var(--font-display)] text-7xl leading-none tabular-nums text-white"
             style={{ textShadow: "0 0 34px var(--ck-glow)" }}
           >
-            {fmt(headline.triple[2])}
+            {avgDisplay}
           </div>
           <div className="mb-4 mt-2 flex gap-6">
             <div>
               <div className="text-[9.5px] font-bold uppercase tracking-wider text-[var(--ck-faint)]">Non-crit</div>
-              <div className="font-[family-name:var(--font-display)] text-2xl tabular-nums">{fmt(headline.triple[0])}</div>
+              <div className="font-[family-name:var(--font-display)] text-2xl tabular-nums">{nonCritDisplay}</div>
             </div>
             <div>
               <div className="text-[9.5px] font-bold uppercase tracking-wider text-[var(--ck-faint)]">Crit</div>
-              <div className="font-[family-name:var(--font-display)] text-2xl tabular-nums text-[var(--ck-accent2)]">{fmt(headline.triple[1])}</div>
+              <div className="font-[family-name:var(--font-display)] text-2xl tabular-nums text-[var(--ck-accent2)]">{critDisplay}</div>
             </div>
           </div>
         </>
@@ -91,6 +107,6 @@ export function Stage() {
         <StatChip label="EM" value={fmt(stats.elemental_mastery_total ?? stats.elemental_mastery ?? 0)} />
         <StatChip label={`${ELEMENT_LABEL[element]} DMG`} value={pct(stats[`dmg_${element}`])} hot />
       </div>
-    </section>
+    </motion.section>
   );
 }

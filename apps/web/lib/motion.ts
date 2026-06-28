@@ -1,0 +1,92 @@
+import { animate, useMotionValue, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+
+// ─── Shared Variants ─────────────────────────────────────────────────────────
+
+/** Stage section entrance — subtle rise/fade on mount (180ms). */
+export const stageEntranceVariants = {
+  hidden: { y: 10, opacity: 0 },
+  visible: { y: 0, opacity: 1 },
+};
+
+export const stageEntranceTransition = {
+  duration: 0.18,
+  ease: [0.2, 0.8, 0.2, 1] as [number, number, number, number],
+};
+
+/**
+ * Drawer slide — 280ms ease-out.
+ * `normal`: translates in from the left + fade.
+ * `reduced`: opacity only — no translation.
+ */
+export const drawerVariants = {
+  normal: {
+    initial: { x: -14, opacity: 0.4 },
+    animate: { x: 0, opacity: 1 },
+    exit: { x: -14, opacity: 0.4 },
+    transition: { duration: 0.28, ease: [0.2, 0.8, 0.2, 1] as [number, number, number, number] },
+  },
+  reduced: {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
+    transition: { duration: 0.28, ease: [0.2, 0.8, 0.2, 1] as [number, number, number, number] },
+  },
+} as const;
+
+/**
+ * Bar grow variant — exported for reference.
+ * Breakdown bars use CSS `transition-[width]`; these variants are here if
+ * bars ever migrate to framer-motion.
+ */
+export const barGrowVariants = {
+  hidden: { scaleX: 0 },
+  visible: { scaleX: 1 },
+};
+
+export const barGrowTransition = { duration: 0.45, ease: "easeOut" as const };
+
+// ─── useCountUp ──────────────────────────────────────────────────────────────
+
+const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
+
+/**
+ * Animates a number from the old value to the new value when it changes.
+ * - First render: returns the value directly (no animation; no hydration mismatch).
+ * - Subsequent changes: smooth count-up (~350ms ease-out).
+ * - prefers-reduced-motion: snaps instantly.
+ * Returns a formatted string (comma-separated integer).
+ */
+export function useCountUp(value: number): string {
+  const motionVal = useMotionValue(value);
+  const [display, setDisplay] = useState(value);
+  const prefersReduced = useReducedMotion();
+  const isFirst = useRef(true);
+
+  // Mirror the motion value into React state so renders stay in sync
+  useEffect(() => {
+    return motionVal.on("change", (v) => setDisplay(v));
+  }, [motionVal]);
+
+  useEffect(() => {
+    // Skip animation on initial mount — prevents hydration mismatch
+    if (isFirst.current) {
+      isFirst.current = false;
+      motionVal.set(value);
+      return;
+    }
+
+    if (prefersReduced) {
+      motionVal.set(value);
+      return;
+    }
+
+    const controls = animate(motionVal, value, {
+      duration: 0.35,
+      ease: "easeOut",
+    });
+    return () => controls.stop();
+  }, [value, motionVal, prefersReduced]);
+
+  return fmt(display);
+}

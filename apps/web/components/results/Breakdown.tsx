@@ -120,7 +120,7 @@ export function Breakdown() {
                   </div>
                   <div className="mt-1 h-2 overflow-hidden rounded bg-[#1a1311]">
                     <div
-                      className="h-full rounded transition-[width] duration-500"
+                      className="h-full rounded transition-[width] duration-500 motion-reduce:transition-none"
                       style={{
                         width: `${Math.max(2, (node.feat.triple[mode] / max) * 100)}%`,
                         background: "linear-gradient(90deg, var(--ck-accent), var(--ck-accent2))",
