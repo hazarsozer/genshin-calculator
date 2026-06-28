@@ -93,7 +93,7 @@ export function SetPicker() {
               className="flex items-center rounded-lg border border-[var(--ck-border)] bg-[var(--ck-surface)] px-3 py-2 text-[12px] text-[var(--ck-text)]"
             >
               {humanizeSetKey(s.setKey)}{" "}
-              <span className="ml-1 text-[var(--ck-faint)]">({s.pieces}pc)</span>
+              <span className="ml-1 text-[var(--ck-faint)]">({Math.min(s.pieces, 4)}pc)</span>
             </li>
           ))}
         </ul>
