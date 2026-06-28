@@ -8,6 +8,7 @@ import { ALL_WEAPONS } from "@genshin/data";
 import { humanizeSlug } from "@/lib/utils";
 import { avatarIconSources } from "@/lib/enkaArt";
 import { Catalog } from "@/components/catalog/Catalog";
+import { CatalogModal } from "@/components/catalog/CatalogModal";
 import { LevelSlider } from "@/components/controls/LevelSlider";
 import { LevelLine } from "@/components/controls/LevelLine";
 import { ConditionControlWidget } from "./ConditionControl";
@@ -70,6 +71,7 @@ export function CharacterDrawer() {
   const form = useBuildStore((s) => s.form);
   const setForm = useBuildStore((s) => s.setForm);
   const [search, setSearch] = useState("");
+  const [catalogOpen, setCatalogOpen] = useState(false);
 
   const char = ALL_CHARACTERS.find((c) => c.name === form.characterKey);
   const weapon = ALL_WEAPONS.find((w) => w.name === form.weaponKey);
@@ -145,56 +147,72 @@ export function CharacterDrawer() {
         )}
       </div>
 
-      {/* ── Character catalog ── */}
-      <Catalog
-        items={ALL_CHARACTERS}
-        getKey={(c) => c.name}
-        getLabel={(c) => humanizeSlug(c.name)}
-        getIconSources={(c) => avatarIconSources(c.name)}
-        activeKey={form.characterKey}
-        onPick={(c) => handlePick(c.name)}
-        filters={[
-          {
-            group: "Element",
-            options: [
-              { label: "Pyro",     value: "pyro",     test: (c) => c.element === "pyro" },
-              { label: "Hydro",    value: "hydro",    test: (c) => c.element === "hydro" },
-              { label: "Electro",  value: "electro",  test: (c) => c.element === "electro" },
-              { label: "Cryo",     value: "cryo",     test: (c) => c.element === "cryo" },
-              { label: "Anemo",    value: "anemo",    test: (c) => c.element === "anemo" },
-              { label: "Geo",      value: "geo",      test: (c) => c.element === "geo" },
-              { label: "Dendro",   value: "dendro",   test: (c) => c.element === "dendro" },
-            ],
-          },
-          {
-            group: "Weapon",
-            options: [
-              { label: "Sword",    value: "sword",    test: (c) => c.weapon === "sword" },
-              { label: "Claymore", value: "claymore", test: (c) => c.weapon === "claymore" },
-              { label: "Polearm",  value: "polearm",  test: (c) => c.weapon === "polearm" },
-              { label: "Catalyst", value: "catalyst", test: (c) => c.weapon === "catalyst" },
-              { label: "Bow",      value: "bow",      test: (c) => c.weapon === "bow" },
-            ],
-          },
-        ]}
-      />
-
-      {/* Currently selected character pill */}
+      {/* Currently selected character pill + Browse trigger */}
       {char && (
         <div className="flex items-center gap-3 rounded-xl border border-[var(--ck-border)] bg-[var(--ck-surface)] p-3">
           <CharAvatar
             name={char.name}
             className="h-10 w-10 flex-none rounded-full"
           />
-          <div>
+          <div className="min-w-0 flex-1">
             <div className="text-[14px] font-bold">{humanizeSlug(char.name)}</div>
             <div className="text-[11px] text-[var(--ck-muted)]">
               {char.element.charAt(0).toUpperCase() + char.element.slice(1)} ·{" "}
               {"★".repeat(char.rarity)}
             </div>
           </div>
+          <button
+            type="button"
+            onClick={() => setCatalogOpen(true)}
+            className="flex-none rounded-lg border border-[var(--ck-border)] px-2.5 py-1.5 text-[11px] text-[var(--ck-muted)] transition-colors hover:border-[var(--ck-accent)] hover:text-[var(--ck-accent)]"
+          >
+            Browse
+          </button>
         </div>
       )}
+
+      {/* Character Browse modal */}
+      <CatalogModal
+        open={catalogOpen}
+        onClose={() => setCatalogOpen(false)}
+        title="Browse Characters"
+      >
+        <Catalog
+          items={ALL_CHARACTERS}
+          getKey={(c) => c.name}
+          getLabel={(c) => humanizeSlug(c.name)}
+          getIconSources={(c) => avatarIconSources(c.name)}
+          activeKey={form.characterKey}
+          onPick={(c) => {
+            handlePick(c.name);
+            setCatalogOpen(false);
+          }}
+          filters={[
+            {
+              group: "Element",
+              options: [
+                { label: "Pyro",     value: "pyro",     test: (c) => c.element === "pyro" },
+                { label: "Hydro",    value: "hydro",    test: (c) => c.element === "hydro" },
+                { label: "Electro",  value: "electro",  test: (c) => c.element === "electro" },
+                { label: "Cryo",     value: "cryo",     test: (c) => c.element === "cryo" },
+                { label: "Anemo",    value: "anemo",    test: (c) => c.element === "anemo" },
+                { label: "Geo",      value: "geo",      test: (c) => c.element === "geo" },
+                { label: "Dendro",   value: "dendro",   test: (c) => c.element === "dendro" },
+              ],
+            },
+            {
+              group: "Weapon",
+              options: [
+                { label: "Sword",    value: "sword",    test: (c) => c.weapon === "sword" },
+                { label: "Claymore", value: "claymore", test: (c) => c.weapon === "claymore" },
+                { label: "Polearm",  value: "polearm",  test: (c) => c.weapon === "polearm" },
+                { label: "Catalyst", value: "catalyst", test: (c) => c.weapon === "catalyst" },
+                { label: "Bow",      value: "bow",      test: (c) => c.weapon === "bow" },
+              ],
+            },
+          ]}
+        />
+      </CatalogModal>
 
       {/* ── Level ── */}
       <SectionHead label="Level" />

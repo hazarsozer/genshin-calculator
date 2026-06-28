@@ -9,6 +9,7 @@ import { LevelSlider } from "@/components/controls/LevelSlider";
 import { LevelLine } from "@/components/controls/LevelLine";
 import { ConditionControlWidget } from "./ConditionControl";
 import { Catalog, FallbackImage } from "@/components/catalog/Catalog";
+import { CatalogModal } from "@/components/catalog/CatalogModal";
 import { weaponIconSources } from "@/lib/enkaArt";
 import type { CatalogFilterGroup } from "@/components/catalog/Catalog";
 import type { DbObjectWeapon } from "@genshin/types";
@@ -26,6 +27,7 @@ export function WeaponDrawer() {
   const form = useBuildStore((s) => s.form);
   const setForm = useBuildStore((s) => s.setForm);
   const [search, setSearch] = useState("");
+  const [catalogOpen, setCatalogOpen] = useState(false);
 
   const char = ALL_CHARACTERS.find((c) => c.name === form.characterKey);
   const weapon = ALL_WEAPONS.find((w) => w.name === form.weaponKey);
@@ -107,27 +109,49 @@ export function WeaponDrawer() {
         )}
       </div>
 
-      {/* Currently selected weapon pill */}
+      {/* Currently selected weapon pill + Browse trigger */}
       {weapon && (
-        <div className="flex flex-col gap-0.5 rounded-xl border border-[var(--ck-border)] bg-[var(--ck-surface)] p-3">
-          <div className="text-[14px] font-bold">{humanizeSlug(weapon.name)}</div>
-          <div className="text-[11px] capitalize text-[var(--ck-muted)]">
-            {weaponType} · {"★".repeat(weapon.rarity ?? 5)}
+        <div className="flex items-center gap-3 rounded-xl border border-[var(--ck-border)] bg-[var(--ck-surface)] p-3">
+          <FallbackImage
+            sources={weaponIconSources(weapon)}
+            alt=""
+            className="h-9 w-9 flex-none rounded-md"
+          />
+          <div className="min-w-0 flex-1">
+            <div className="text-[14px] font-bold">{humanizeSlug(weapon.name)}</div>
+            <div className="text-[11px] capitalize text-[var(--ck-muted)]">
+              {weaponType} · {"★".repeat(weapon.rarity ?? 5)}
+            </div>
           </div>
+          <button
+            type="button"
+            onClick={() => setCatalogOpen(true)}
+            className="flex-none rounded-lg border border-[var(--ck-border)] px-2.5 py-1.5 text-[11px] text-[var(--ck-muted)] transition-colors hover:border-[var(--ck-accent)] hover:text-[var(--ck-accent)]"
+          >
+            Browse
+          </button>
         </div>
       )}
 
-      {/* ── Weapon catalog ── */}
-      <SectionHead label="All Weapons" />
-      <Catalog<DbObjectWeapon>
-        items={compatibleWeapons}
-        getKey={(w) => w.name}
-        getLabel={(w) => humanizeSlug(w.name)}
-        getIconSources={(w) => weaponIconSources(w)}
-        filters={rarityFilters}
-        activeKey={form.weaponKey}
-        onPick={(w) => handlePick(w.name)}
-      />
+      {/* Weapon Browse modal */}
+      <CatalogModal
+        open={catalogOpen}
+        onClose={() => setCatalogOpen(false)}
+        title="Browse Weapons"
+      >
+        <Catalog<DbObjectWeapon>
+          items={compatibleWeapons}
+          getKey={(w) => w.name}
+          getLabel={(w) => humanizeSlug(w.name)}
+          getIconSources={(w) => weaponIconSources(w)}
+          filters={rarityFilters}
+          activeKey={form.weaponKey}
+          onPick={(w) => {
+            handlePick(w.name);
+            setCatalogOpen(false);
+          }}
+        />
+      </CatalogModal>
 
       {/* ── Level ── */}
       <SectionHead label="Weapon Level" />
