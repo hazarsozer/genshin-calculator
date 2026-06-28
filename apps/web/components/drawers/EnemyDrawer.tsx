@@ -9,7 +9,9 @@ import { clamp } from "@/lib/utils";
 import { Range } from "@/components/controls/Range";
 import { ConditionControlWidget } from "./ConditionControl";
 import { elementAccent } from "@/lib/theme";
+import { Catalog, FallbackImage } from "@/components/catalog/Catalog";
 import { CatalogModal } from "@/components/catalog/CatalogModal";
+import { elementIconSources, enemyIconSources } from "@/lib/enkaArt";
 import type { EquippedSet } from "@genshin/data";
 
 /** Engine element order — must match buildStats.ts ELEMENTS exactly so Record keys resolve. */
@@ -37,127 +39,55 @@ function SectionHead({ label }: { label: string }) {
 
 const IMMUNE_THRESHOLD = 9000;
 
-/** Short display abbreviations for the 8 resistance elements. */
-const EL_ABBREV: Record<ResEl, string> = {
-  physical: "Phy",
-  pyro:     "Pyro",
-  hydro:    "Hydr",
-  electro:  "Elec",
-  cryo:     "Cryo",
-  anemo:    "Anem",
-  geo:      "Geo",
-  dendro:   "Dend",
-};
-
 /**
- * 8-column mini-grid of per-element resistance values.
- * Color scheme: green < 10% (player advantage), neutral = 10%, red > 10% (resist), dim = immune.
- * Element label is tinted with the element's accent color.
+ * Compact 8-column resistance row for use as Catalog renderMeta.
+ * Each column: element icon (14px) + colored value.
+ * physical has no element icon → shows a neutral "Ph" label.
  */
-function ResistanceMiniGrid({
+function ResistanceIconRow({
   resistances,
 }: {
   resistances: Record<string, number>;
 }) {
   return (
-    <div className="grid grid-cols-8 gap-x-0.5">
-      {/* Element abbreviation row */}
-      {RESISTANCE_ELEMENTS.map((el) => {
-        const { accent } = elementAccent(el);
-        return (
-          <span
-            key={`${el}-label`}
-            className="block text-center text-[8px] font-semibold leading-tight"
-            style={{ color: accent }}
-          >
-            {EL_ABBREV[el]}
-          </span>
-        );
-      })}
-      {/* Resistance value row */}
+    <div className="flex gap-1.5">
       {RESISTANCE_ELEMENTS.map((el) => {
         const val = resistances[el] ?? 10;
         const isImmune = val >= IMMUNE_THRESHOLD;
         const valueColor = isImmune
-          ? "text-[var(--ck-faint)]"
+          ? "var(--ck-faint)"
           : val < 10
-          ? "text-green-400"
+          ? "color-mix(in srgb, #4ade80 80%, var(--ck-text))"
           : val > 10
-          ? "text-red-400"
-          : "text-[var(--ck-muted)]";
+          ? "color-mix(in srgb, #f87171 80%, var(--ck-text))"
+          : "var(--ck-muted)";
+        const sources = elementIconSources(el);
         return (
-          <span
-            key={`${el}-val`}
-            className={`block text-center text-[8px] leading-tight ${valueColor}`}
-          >
-            {isImmune ? "∞" : `${val}%`}
-          </span>
+          <div key={el} className="flex flex-col items-center gap-[1px]" style={{ minWidth: 0 }}>
+            {sources.length > 0 ? (
+              <FallbackImage
+                sources={sources}
+                alt={el}
+                className="h-[14px] w-[14px] flex-none rounded-sm"
+              />
+            ) : (
+              /* physical — neutral glyph */
+              <span
+                className="flex h-[14px] w-[14px] items-center justify-center rounded-sm text-[7px] font-bold leading-none"
+                style={{
+                  background: elementAccent("physical").glow,
+                  color: elementAccent("physical").accent,
+                }}
+              >
+                Ph
+              </span>
+            )}
+            <span className="text-[8px] leading-none tabular-nums" style={{ color: valueColor }}>
+              {isImmune ? "∞" : `${val}%`}
+            </span>
+          </div>
         );
       })}
-    </div>
-  );
-}
-
-/** Searchable list of enemy presets shown inside the CatalogModal. */
-function EnemyPresetList({
-  onPick,
-  activeSlug,
-}: {
-  onPick: (preset: EnemyPreset) => void;
-  activeSlug: string | null;
-}) {
-  const [search, setSearch] = useState("");
-
-  const filtered =
-    search.trim() === ""
-      ? ENEMY_CATALOG
-      : ENEMY_CATALOG.filter((e) =>
-          e.name.toLowerCase().includes(search.toLowerCase())
-        );
-
-  return (
-    <div className="flex flex-col gap-3">
-      {/* Search */}
-      <input
-        type="text"
-        placeholder="Search enemies…"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        aria-label="Search enemies"
-        className="w-full rounded-lg border border-[var(--ck-border)] bg-[var(--ck-surface2)] px-3 py-1.5 text-[13px] text-[var(--ck-text)] placeholder-[var(--ck-faint)] focus:outline-none focus:ring-1 focus:ring-[var(--ck-accent)]"
-      />
-
-      {/* List */}
-      {filtered.length === 0 ? (
-        <p className="py-8 text-center text-[13px] text-[var(--ck-muted)]">
-          No enemies match your search.
-        </p>
-      ) : (
-        <ul className="flex flex-col divide-y divide-[var(--ck-border)]">
-          {filtered.map((preset) => {
-            const isActive = preset.slug === activeSlug;
-            return (
-              <li key={preset.slug}>
-                <button
-                  type="button"
-                  onClick={() => onPick(preset)}
-                  aria-current={isActive ? "true" : undefined}
-                  className={[
-                    "flex w-full flex-col gap-1.5 px-3 py-2.5 text-left text-[13px] transition-colors",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--ck-accent)]",
-                    isActive
-                      ? "bg-[color-mix(in_srgb,var(--ck-accent)_10%,transparent)] font-semibold text-[var(--ck-accent)]"
-                      : "text-[var(--ck-text)] hover:bg-[var(--ck-surface2)]",
-                  ].join(" ")}
-                >
-                  <span className="truncate">{preset.name}</span>
-                  <ResistanceMiniGrid resistances={preset.resistances} />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      )}
     </div>
   );
 }
@@ -405,7 +335,17 @@ export function EnemyDrawer() {
         onClose={() => setCatalogOpen(false)}
         title="Browse Enemy Presets"
       >
-        <EnemyPresetList onPick={applyPreset} activeSlug={activeSlug} />
+        <Catalog
+          items={ENEMY_CATALOG}
+          getKey={(e) => e.slug}
+          getLabel={(e) => e.name}
+          getIconSources={(e) => enemyIconSources(e.slug)}
+          activeKey={activeSlug ?? undefined}
+          onPick={applyPreset}
+          renderMeta={(e) => (
+            <ResistanceIconRow resistances={e.resistances} />
+          )}
+        />
       </CatalogModal>
     </div>
   );

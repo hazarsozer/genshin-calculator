@@ -7,7 +7,7 @@
 //   2. ART_OVERRIDES (kept as safety net for any future gaps)
 //   3. PascalCase heuristic (last resort; 404s degrade to gradient)
 
-import { CHAR_ICON, WEAPON_ICON, SET_ICON } from "@genshin/data";
+import { CHAR_ICON, WEAPON_ICON, SET_ICON, ENEMY_ICON } from "@genshin/data";
 
 const ART_OVERRIDES: Record<string, string> = {
   hu_tao: "Hutao",
@@ -85,6 +85,40 @@ export function artifactSetIconSources(setKey: string): readonly string[] {
   const gameId = SET_ICON[setKey];
   if (gameId === undefined) return [];
   return [`https://enka.network/ui/UI_RelicIcon_${gameId}_4.png`];
+}
+
+// ── Element icons ─────────────────────────────────────────────────────────────
+// UI_Buff_Element_<X> — served on enka (primary) then yatta (fallback).
+// cryo: enka 404s for Ice; yatta serves it — the 2-source chain covers it.
+// physical: no in-game element-buff icon; callers should render a neutral glyph.
+
+const ELEMENT_ICON_NAME: Record<string, string> = {
+  pyro:     "Fire",
+  hydro:    "Water",
+  electro:  "Electric",
+  cryo:     "Ice",
+  anemo:    "Wind",
+  geo:      "Rock",
+  dendro:   "Grass",
+};
+
+export function elementIconSources(element: string): readonly string[] {
+  const name = ELEMENT_ICON_NAME[element];
+  if (!name) return []; // physical → no element icon
+  return [
+    `https://enka.network/ui/UI_Buff_Element_${name}.png`,
+    `https://gi.yatta.moe/assets/UI/UI_Buff_Element_${name}.png`,
+  ];
+}
+
+// ── Enemy icons ───────────────────────────────────────────────────────────────
+// Monster icons served by yatta only (enka 404s); unmatched slugs return []
+// and FallbackImage shows the gradient fallback.
+
+export function enemyIconSources(slug: string): readonly string[] {
+  const icon = ENEMY_ICON[slug];
+  if (!icon) return [];
+  return [`https://gi.yatta.moe/assets/UI/monster/${icon}.png`];
 }
 
 export function weaponIconSources(weapon: { name: string; weapon: string }): readonly string[] {
