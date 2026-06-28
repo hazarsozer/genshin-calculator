@@ -3,22 +3,22 @@
 import { useState } from "react";
 import { ALL_CHARACTERS, ALL_WEAPONS } from "@genshin/data";
 import { useBuildStore } from "@/lib/store";
-import { collectGroupedConditions } from "@/lib/conditions";
+import { collectGroupedConditions, collectPartyConditions } from "@/lib/conditions";
 import { ConditionControlWidget } from "./ConditionControl";
+import { CharAvatar } from "@/components/controls/CharAvatar";
+import { Catalog } from "@/components/catalog/Catalog";
+import { CatalogModal } from "@/components/catalog/CatalogModal";
+import { addMember, removeMember, setMemberSetting, activeResonances } from "@/lib/party";
+import { humanizeSlug } from "@/lib/utils";
+import { avatarIconSources } from "@/lib/enkaArt";
 import type { ConditionControl } from "@/lib/conditions";
+import type { PartyMemberForm } from "@/lib/types";
 import type { EquippedSet } from "@genshin/data";
 
-/**
- * BuffsTeamDrawer — displays all global CONDITIONS (CHARACTER_CONDITIONS):
- *   - Elemental Resonance (names starting with "buffs.resonance" or containing "resonance")
- *   - Set Buffs (names starting with "set_other")
- *   - Weapon Buffs (names starting with "weapon_other" or "weapon.")
- *   - Other (imaginarium theatre, bond of life, neuvillette, etc.)
- *
- * Rendered as a single-open accordion.
- */
+const MAX_TEAMMATES = 3;
 
-type SectionId = "resonance" | "set" | "weapon" | "other";
+// ── Global-condition accordion sections (resonance now roster-driven → dropped) ──
+type SectionId = "set" | "weapon" | "other";
 
 interface Section {
   id: SectionId;
@@ -27,35 +27,24 @@ interface Section {
 }
 
 const SECTIONS: Section[] = [
-  {
-    id: "resonance",
-    label: "Elemental Resonance",
-    filter: (c) =>
-      c.name.includes("resonance") || c.name.startsWith("buffs.resonance"),
-  },
-  {
-    id: "set",
-    label: "Set Buffs",
-    filter: (c) => c.name.startsWith("set_other"),
-  },
+  { id: "set", label: "Set Buffs", filter: (c) => c.name.startsWith("set_other") },
   {
     id: "weapon",
     label: "Weapon Buffs",
-    filter: (c) =>
-      c.name.startsWith("weapon_other") || c.name.startsWith("weapon."),
+    filter: (c) => c.name.startsWith("weapon_other") || c.name.startsWith("weapon."),
   },
-  {
-    id: "other",
-    label: "Other",
-    filter: () => true, // catch-all
-  },
+  { id: "other", label: "Other", filter: () => true },
 ];
 
-function countActive(ctrls: ConditionControl[], form: ReturnType<typeof useBuildStore.getState>["form"]): number {
-  return ctrls.filter((c) => {
-    if (c.kind === "boolean") return form.conditions.toggles[c.name] ?? false;
-    return (form.conditions.stacks[c.name] ?? 0) > 0;
-  }).length;
+function countActive(
+  ctrls: ConditionControl[],
+  form: ReturnType<typeof useBuildStore.getState>["form"]
+): number {
+  return ctrls.filter((c) =>
+    c.kind === "boolean"
+      ? (form.conditions.toggles[c.name] ?? false)
+      : (form.conditions.stacks[c.name] ?? 0) > 0
+  ).length;
 }
 
 function AccordionSection({
@@ -71,7 +60,6 @@ function AccordionSection({
 }) {
   const form = useBuildStore((s) => s.form);
   const active = countActive(controls, form);
-
   if (controls.length === 0) return null;
 
   return (
@@ -114,13 +102,65 @@ function AccordionSection({
   );
 }
 
+// ── Team row ──
+function TeamRow({
+  activeSlug,
+  members,
+  onPickSlot,
+  onRemove,
+}: {
+  activeSlug: string;
+  members: readonly PartyMemberForm[];
+  onPickSlot: (index: number) => void;
+  onRemove: (index: number) => void;
+}) {
+  const slots = Array.from({ length: MAX_TEAMMATES }, (_, i) => members[i]);
+  return (
+    <div className="flex items-center gap-2">
+      {/* Active character (read-only) */}
+      <div className="flex flex-col items-center gap-1">
+        <CharAvatar name={activeSlug} className="h-12 w-12 rounded-xl ring-2 ring-[var(--ck-accent)]" />
+        <span className="text-[9px] text-[var(--ck-faint)]">You</span>
+      </div>
+      <span className="text-[var(--ck-faint)]">+</span>
+      {slots.map((m, i) =>
+        m ? (
+          <button
+            key={i}
+            type="button"
+            onClick={() => onRemove(i)}
+            title={`Remove ${humanizeSlug(m.slug)}`}
+            className="group relative flex flex-col items-center gap-1"
+          >
+            <CharAvatar name={m.slug} className="h-12 w-12 rounded-xl border border-[var(--ck-border)]" />
+            <span className="text-[9px] text-[var(--ck-muted)] group-hover:text-[var(--ck-accent)]">
+              {humanizeSlug(m.slug).split(" ")[0]} ✕
+            </span>
+          </button>
+        ) : (
+          <button
+            key={i}
+            type="button"
+            onClick={() => onPickSlot(i)}
+            className="flex h-12 w-12 items-center justify-center rounded-xl border border-dashed border-[var(--ck-border)] text-[var(--ck-faint)] transition-colors hover:border-[var(--ck-accent)] hover:text-[var(--ck-accent)]"
+          >
+            +
+          </button>
+        )
+      )}
+    </div>
+  );
+}
+
 export function BuffsTeamDrawer() {
   const form = useBuildStore((s) => s.form);
-  const [openSection, setOpenSection] = useState<SectionId | null>("resonance");
+  const setForm = useBuildStore((s) => s.setForm);
+  const [openSection, setOpenSection] = useState<SectionId | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const char = ALL_CHARACTERS.find((c) => c.name === form.characterKey);
   const weapon = ALL_WEAPONS.find((w) => w.name === form.weaponKey);
-  const equipped: readonly EquippedSet[] = form.manualSets;
+  const members = form.party?.members ?? [];
 
   if (!char || !weapon) {
     return (
@@ -130,19 +170,27 @@ export function BuffsTeamDrawer() {
     );
   }
 
-  const grouped = collectGroupedConditions(char, weapon, equipped);
-  const global = grouped.global;
+  // Resonance from the four elements (active + teammates).
+  const elements = [
+    char.element,
+    ...members.map((m) => ALL_CHARACTERS.find((c) => c.name === m.slug)?.element).filter(Boolean),
+  ] as string[];
+  const resonances = activeResonances(elements);
 
-  // Partition global conditions into sections (stop at first match)
+  // Characters available to add: exclude active + already-picked.
+  const takenSlugs = new Set<string>([form.characterKey, ...members.map((m) => m.slug)]);
+  const pickable = ALL_CHARACTERS.filter((c) => !takenSlugs.has(c.name));
+
+  function patchMembers(next: PartyMemberForm[]) {
+    setForm({ party: { members: next } });
+  }
+
+  // Existing global conditions (set/weapon/other) — resonance section dropped.
+  const grouped = collectGroupedConditions(char, weapon, form.manualSets as readonly EquippedSet[]);
   const seen = new Set<string>();
-  const sections: Record<SectionId, ConditionControl[]> = {
-    resonance: [],
-    set: [],
-    weapon: [],
-    other: [],
-  };
-
-  for (const ctrl of global) {
+  const sections: Record<SectionId, ConditionControl[]> = { set: [], weapon: [], other: [] };
+  for (const ctrl of grouped.global) {
+    if (ctrl.name.includes("resonance")) continue; // resonance is roster-driven now
     if (seen.has(ctrl.name)) continue;
     seen.add(ctrl.name);
     for (const sec of SECTIONS) {
@@ -155,17 +203,106 @@ export function BuffsTeamDrawer() {
 
   return (
     <div className="flex flex-col gap-3">
+      {/* ── Team ── */}
+      <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--ck-faint)]">
+        Team
+      </div>
+      <TeamRow
+        activeSlug={char.name}
+        members={members}
+        onPickSlot={() => setPickerOpen(true)}
+        onRemove={(i) => patchMembers(removeMember(members, i))}
+      />
+
+      {/* ── Resonance (derived) ── */}
+      <div className="flex flex-wrap items-center gap-1.5">
+        <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--ck-faint)]">
+          Resonance
+        </span>
+        {resonances.length === 0 ? (
+          <span className="text-[11px] text-[var(--ck-faint)]">None</span>
+        ) : (
+          resonances.map((r) => (
+            <span
+              key={r}
+              className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+              style={{
+                background: "color-mix(in srgb, var(--ck-accent) 15%, transparent)",
+                color: "var(--ck-accent2)",
+              }}
+            >
+              {r}
+            </span>
+          ))
+        )}
+      </div>
+
+      {/* ── Per-teammate buffs ── */}
+      {members.map((m, i) => {
+        const tchar = ALL_CHARACTERS.find((c) => c.name === m.slug);
+        if (!tchar) return null;
+        const ctrls = collectPartyConditions(tchar);
+        if (ctrls.length === 0) return null;
+        return (
+          <div key={m.slug} className="rounded-xl border border-[var(--ck-border)] p-3">
+            <div className="mb-2 flex items-center gap-2">
+              <CharAvatar name={m.slug} className="h-6 w-6 rounded-full" />
+              <span className="text-[12px] font-bold">{humanizeSlug(m.slug)}</span>
+            </div>
+            <div className="flex flex-col gap-2">
+              {ctrls.map((ctrl) => (
+                <ConditionControlWidget
+                  key={ctrl.name}
+                  ctrl={ctrl}
+                  binding={{
+                    value: m.settings[ctrl.name] ?? (ctrl.kind === "boolean" ? false : 0),
+                    setValue: (v) => patchMembers(setMemberSetting(members, i, ctrl.name, v)),
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      })}
+
+      {/* ── Global buffs (set / weapon / other) ── */}
       {SECTIONS.map((sec) => (
         <AccordionSection
           key={sec.id}
           label={sec.label}
           controls={sections[sec.id]}
           isOpen={openSection === sec.id}
-          onToggle={() =>
-            setOpenSection((prev) => (prev === sec.id ? null : sec.id))
-          }
+          onToggle={() => setOpenSection((prev) => (prev === sec.id ? null : sec.id))}
         />
       ))}
+
+      {/* ── Teammate picker ── */}
+      <CatalogModal open={pickerOpen} onClose={() => setPickerOpen(false)} title="Add Teammate">
+        <Catalog
+          items={pickable}
+          getKey={(c) => c.name}
+          getLabel={(c) => humanizeSlug(c.name)}
+          getIconSources={(c) => avatarIconSources(c.name)}
+          onPick={(c) => {
+            patchMembers(addMember(members, c.name));
+            setPickerOpen(false);
+          }}
+          filters={[
+            {
+              group: "Element",
+              options: [
+                { label: "Pyro", value: "pyro", test: (c) => c.element === "pyro" },
+                { label: "Hydro", value: "hydro", test: (c) => c.element === "hydro" },
+                { label: "Electro", value: "electro", test: (c) => c.element === "electro" },
+                { label: "Cryo", value: "cryo", test: (c) => c.element === "cryo" },
+                { label: "Anemo", value: "anemo", test: (c) => c.element === "anemo" },
+                { label: "Geo", value: "geo", test: (c) => c.element === "geo" },
+                { label: "Dendro", value: "dendro", test: (c) => c.element === "dendro" },
+              ],
+            },
+          ]}
+        />
+      </CatalogModal>
     </div>
   );
 }
