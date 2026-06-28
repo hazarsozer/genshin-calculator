@@ -197,14 +197,56 @@ export function Catalog<T>({
       ) : (
         <div
           className="grid gap-2"
-          style={{ gridTemplateColumns: "repeat(auto-fill, minmax(72px, 1fr))" }}
+          style={{
+            gridTemplateColumns: renderMeta
+              ? "repeat(auto-fill, minmax(240px, 1fr))"
+              : "repeat(auto-fill, minmax(72px, 1fr))",
+          }}
         >
           {filtered.map((item) => {
             const key = getKey(item);
             const label = getLabel(item);
             const isActive = key === activeKey;
 
-            return (
+            return renderMeta ? (
+              // Horizontal card — weapons / artifacts / enemies (renderMeta present)
+              <button
+                key={key}
+                type="button"
+                aria-current={isActive ? "true" : undefined}
+                aria-label={label}
+                onClick={() => onPick(item)}
+                className={[
+                  "flex items-center gap-3 rounded-xl border p-2 text-left transition-colors",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ck-accent)]",
+                  isActive
+                    ? "border-[var(--ck-accent)] bg-[color-mix(in_srgb,var(--ck-accent)_10%,transparent)]"
+                    : "border-[var(--ck-border)] bg-[var(--ck-surface)] hover:border-[var(--ck-accent)]",
+                ].join(" ")}
+              >
+                <FallbackImage
+                  sources={getIconSources(item)}
+                  alt={label}
+                  className="h-12 w-12 flex-none rounded-lg"
+                />
+                <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span
+                    className={[
+                      "text-[12px] font-medium leading-tight",
+                      isActive
+                        ? "text-[var(--ck-accent)]"
+                        : "text-[var(--ck-text)]",
+                    ].join(" ")}
+                  >
+                    {label}
+                  </span>
+                  <div className="text-[10px] leading-tight text-[var(--ck-faint)]">
+                    {renderMeta(item)}
+                  </div>
+                </div>
+              </button>
+            ) : (
+              // Square icon tile — characters (renderMeta absent)
               <button
                 key={key}
                 type="button"
@@ -234,11 +276,6 @@ export function Catalog<T>({
                 >
                   {label}
                 </span>
-                {renderMeta && (
-                  <div className="w-full text-[9px] leading-tight text-[var(--ck-faint)]">
-                    {renderMeta(item)}
-                  </div>
-                )}
               </button>
             );
           })}
