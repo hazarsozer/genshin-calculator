@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useBuildStore } from "@/lib/store";
 import type { ConditionControl } from "@/lib/conditions";
 import { Range } from "@/components/controls/Range";
@@ -25,13 +25,14 @@ interface ConditionControlProps {
 }
 
 /**
- * A small inline tooltip triggered by hover / keyboard focus on the (ⓘ) button.
- * Rendered as a CSS-only tooltip via `group` + `group-hover:opacity-100` so it
- * works without JS state and respects `prefers-reduced-motion` (the transition
- * is short and non-disruptive; the class list below doesn't animate layout).
+ * A small inline tooltip triggered by clicking the (ⓘ) button (click-toggle).
+ * Keyboard users press Enter or Space to open/close. The tooltip element is
+ * linked to the button via aria-describedby so screen readers announce the
+ * description when the button receives focus.
  */
 function InfoTooltip({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
+  const tooltipId = useId();
 
   return (
     <span className="relative flex-none" style={{ lineHeight: 0 }}>
@@ -39,6 +40,7 @@ function InfoTooltip({ text }: { text: string }) {
         type="button"
         aria-label="Condition description"
         aria-expanded={open}
+        aria-describedby={tooltipId}
         onClick={(e) => {
           e.stopPropagation();
           setOpen((v) => !v);
@@ -62,6 +64,7 @@ function InfoTooltip({ text }: { text: string }) {
       </button>
       {open && (
         <span
+          id={tooltipId}
           role="tooltip"
           className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 w-56 -translate-x-1/2 rounded-lg px-3 py-2 text-[11px] leading-relaxed shadow-lg"
           style={{
@@ -115,7 +118,7 @@ export function ConditionControlWidget({ ctrl }: ConditionControlProps) {
         <span
           className="h-1.5 w-1.5 flex-none rounded-full"
           style={{
-            background: checked ? "var(--ck-accent)" : "#3a2c28",
+            background: checked ? "var(--ck-accent)" : "color-mix(in srgb, var(--ck-accent) 20%, var(--ck-surface))",
             boxShadow: checked ? "0 0 7px var(--ck-accent)" : "none",
           }}
         />

@@ -85,4 +85,37 @@ describe("collectConditions", () => {
     const names = controls.map((c) => c.name);
     expect(names.filter((n) => n === "hutao_paramita_papilio")).toHaveLength(1);
   });
+
+  it("weapon condition with explicit i18n keys resolves to the correct pretty label and description", () => {
+    // Aqua Simulacra's boolean-refine condition carries:
+    //   title: "talent_name.aqua_simulacra"   → CONDITION_STRINGS["aqua_simulacra"].title
+    //   description: "talent_descr.aqua_simulacra_2" → CONDITION_STRINGS["aqua_simulacra_2"].description
+    const aquaSim = findByName(ALL_WEAPONS, "aqua_simulacra");
+    const controls = collectConditions(huTao, aquaSim, []);
+    const weaponCtrl = controls.find((c) => c.name === "weapon_aqua_simulacra");
+    expect(weaponCtrl).toBeDefined();
+    expect(weaponCtrl!.label).toBe("The Cleansing Form");
+    expect(weaponCtrl!.description).toBeDefined();
+  });
+
+  it("condition with key absent everywhere falls back to humanized slug without crashing", () => {
+    // A boolean-refine condition with an unknown name and no title/description
+    // keys must resolve gracefully via humanizeSlug, not throw.
+    const weaponWithUnknown: DbObjectWeapon = {
+      ...stubWeapon,
+      conditions: [
+        {
+          type: "boolean-refine",
+          name: "weapon_totally_absent_xyz",
+          serializeId: 99,
+          refinementStats: [{}],
+        },
+      ],
+    };
+    const controls = collectConditions(huTao, weaponWithUnknown, []);
+    const ctrl = controls.find((c) => c.name === "weapon_totally_absent_xyz");
+    expect(ctrl).toBeDefined();
+    // humanizeSlug("weapon_totally_absent_xyz") → "Weapon Totally Absent Xyz"
+    expect(ctrl!.label).toBe("Weapon Totally Absent Xyz");
+  });
 });

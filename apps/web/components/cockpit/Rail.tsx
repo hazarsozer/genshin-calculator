@@ -85,7 +85,7 @@ export function MobileTabBar({ active, onOpen }: RailProps) {
   return (
     <nav
       className="fixed bottom-0 inset-x-0 z-30 flex lg:hidden border-t border-[var(--ck-border)]"
-      style={{ background: "#0e0a0a" }}
+      style={{ background: "var(--ck-bg)" }}
     >
       {ITEMS.map((item) => {
         const isOn = active === item.id;
@@ -114,7 +114,7 @@ export function MobileTabBar({ active, onOpen }: RailProps) {
 
 export function Rail({ active, onOpen }: RailProps) {
   return (
-    <nav className="relative z-30 hidden flex-col items-center gap-1 border-r border-[var(--ck-border)] bg-[#0e0a0a] py-3 lg:flex" style={{ width: 64, flexShrink: 0 }}>
+    <nav className="relative z-30 hidden flex-col items-center gap-1 border-r border-[var(--ck-border)] bg-[var(--ck-bg)] py-3 lg:flex" style={{ width: 64, flexShrink: 0 }}>
       {ITEMS.map((item) => {
         const isOn = active === item.id;
         return (

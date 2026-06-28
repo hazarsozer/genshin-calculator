@@ -58,7 +58,7 @@ export function VisionMedallion({
         <span
           className="text-[11px] font-bold tracking-widest uppercase"
           style={{
-            color: "rgba(255,255,255,0.92)",
+            color: "var(--ck-text)",
             fontFamily: "var(--font-display, serif)",
             textShadow: "0 1px 6px rgba(0,0,0,.6)",
           }}
