@@ -20,12 +20,14 @@ import {
   type EquippedSet,
   type ReconstructInput,
 } from "@genshin/data";
+import type { DbObjectChar } from "@genshin/types";
 import {
   buildSetRegistry,
   findCharacter,
   findWeapon,
   resolveWeaponStatTable,
 } from "./catalog";
+import { buildPartyInput } from "./party";
 import type { BuildForm, ComputeResult, FeatureResult } from "./types";
 
 const humanize = (key: string): string =>
@@ -52,6 +54,13 @@ export function computeBuild(
     stacks: form.conditions.stacks,
     ...(form.conditions.infusion ? { infusion: form.conditions.infusion } : {}),
   });
+
+  const party = buildPartyInput(form.party?.members ?? [], findCharacter);
+  const partySlugResolver = (slug: string): DbObjectChar => {
+    const c = findCharacter(slug);
+    if (!c) throw new Error(`Unknown teammate: ${slug}`);
+    return c;
+  };
 
   const setRegistry = buildSetRegistry();
   const artifactSets: Record<string, number> = {};
@@ -81,6 +90,7 @@ export function computeBuild(
       levels: levels as ReconstructInput["levels"],
       talents: form.talents,
       enemy: form.enemy,
+      ...(party ? { party, partySlugResolver } : {}),
     });
 
     const features: FeatureResult[] = Object.entries(compiled).map(([key, fn]) => {

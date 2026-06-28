@@ -103,3 +103,59 @@ describe("computeBuild anchor", () => {
     expect(result.stats!.crit_rate_total).toBeGreaterThanOrEqual(0);
   });
 });
+
+// (calc.test.ts already imports describe/it/expect, TOLERANCE, computeBuild, BuildForm,
+//  and defines bennettTogglesForm + SAMPLE_BLOCK — this block needs no new imports.)
+describe("computeBuild — party", () => {
+  function normalHit(form: BuildForm) {
+    const { features, error } = computeBuild(form, SAMPLE_BLOCK, []);
+    expect(error).toBeUndefined();
+    return features.find((x) => x.key === "attack.normal_hit_1")!.triple[0];
+  }
+
+  it("an empty roster is inert (identical to no party)", () => {
+    const baseline = normalHit(bennettTogglesForm);
+    const emptyParty = normalHit({ ...bennettTogglesForm, party: { members: [] } });
+    expect(emptyParty).toBe(baseline);
+  });
+
+  it("a Zhongli teammate (universal res shred) raises every hit", () => {
+    const baseline = normalHit(bennettTogglesForm);
+    const withZhongli = normalHit({
+      ...bennettTogglesForm,
+      party: { members: [{ slug: "zhongli", settings: { "party.zhongli_jade_shield": true } }] },
+    });
+    expect(withZhongli).toBeGreaterThan(baseline);
+  });
+
+  it("a Bennett teammate's ATK battery raises the active character's ATK (explicit stat field)", () => {
+    const withStat = computeBuild(
+      {
+        ...bennettTogglesForm,
+        characterKey: "xiangling", // active char ≠ the Bennett teammate
+        party: {
+          members: [
+            { slug: "bennett", settings: { bennet_atk_base: 800, "party.bennet_fantastic_voyage": true } },
+          ],
+        },
+      },
+      SAMPLE_BLOCK,
+      []
+    );
+    const withZeroStat = computeBuild(
+      {
+        ...bennettTogglesForm,
+        characterKey: "xiangling",
+        party: {
+          members: [
+            { slug: "bennett", settings: { bennet_atk_base: 0, "party.bennet_fantastic_voyage": true } },
+          ],
+        },
+      },
+      SAMPLE_BLOCK,
+      []
+    );
+    expect(withStat.error).toBeUndefined();
+    expect(withStat.stats!.atk_total).toBeGreaterThan(withZeroStat.stats!.atk_total);
+  });
+});
