@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useResults } from "@/lib/useResults";
 import { useBuildStore } from "@/lib/store";
@@ -8,6 +9,8 @@ import { humanizeSlug } from "@/lib/utils";
 import { stageEntranceVariants, stageEntranceTransition, useCountUp, fmt } from "@/lib/motion";
 import { SplashArt } from "./SplashArt";
 import { StatChip } from "@/components/results/StatChip";
+import { ShareControls } from "@/components/share/ShareControls";
+import { BuildCard } from "@/components/share/BuildCard";
 
 const ELEMENT_LABEL: Record<string, string> = {
   pyro: "Pyro", hydro: "Hydro", electro: "Electro", cryo: "Cryo",
@@ -19,6 +22,7 @@ const pct = (n: number | undefined) => `${((n ?? 0) * 100).toFixed(1)}%`;
 
 /** The persistent showcase: splash art, identity, the live headline result, stat strip. */
 export function Stage() {
+  const cardRef = useRef<HTMLDivElement>(null);
   const result = useResults();
   const form = useBuildStore((s) => s.form);
   const char = ALL_CHARACTERS.find((c) => c.name === form.characterKey);
@@ -105,6 +109,18 @@ export function Stage() {
         <StatChip label="HP" value={fmt(stats.hp_total ?? 0)} />
         <StatChip label="EM" value={fmt(stats.elemental_mastery_total ?? stats.elemental_mastery ?? 0)} />
         <StatChip label={`${ELEMENT_LABEL[element]} DMG`} value={pct(stats[`dmg_${element}`])} hot />
+      </div>
+
+      <div className="mt-4 flex justify-end">
+        <ShareControls cardRef={cardRef} />
+      </div>
+
+      {/* Off-screen BuildCard — painted but not visible; html-to-image reads it */}
+      <div
+        style={{ position: "fixed", left: -9999, top: 0, pointerEvents: "none", zIndex: -1 }}
+        aria-hidden
+      >
+        <BuildCard ref={cardRef} />
       </div>
     </motion.section>
   );
