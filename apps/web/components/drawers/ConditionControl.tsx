@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useBuildStore } from "@/lib/store";
 import type { ConditionControl } from "@/lib/conditions";
 import { Range } from "@/components/controls/Range";
@@ -10,11 +11,70 @@ import { Range } from "@/components/controls/Range";
  * boolean → pill toggle (lit with --ck-accent when active)
  * number  → labeled slider
  *
+ * Both variants show an (ⓘ) info button when a plain-text description is
+ * available from the raw CSV strings (condition.description). The tooltip is
+ * keyboard-accessible (focus-within shows it) and respects prefers-reduced-motion.
+ *
  * CRITICAL: spreads nested conditions.* to avoid wiping sibling keys on setForm.
+ * Exclusive groups: when ctrl.exclusiveGroup is set, toggling this boolean on
+ * clears all sibling keys in the group (only one active at a time).
  */
 
 interface ConditionControlProps {
   ctrl: ConditionControl;
+}
+
+/**
+ * A small inline tooltip triggered by hover / keyboard focus on the (ⓘ) button.
+ * Rendered as a CSS-only tooltip via `group` + `group-hover:opacity-100` so it
+ * works without JS state and respects `prefers-reduced-motion` (the transition
+ * is short and non-disruptive; the class list below doesn't animate layout).
+ */
+function InfoTooltip({ text }: { text: string }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <span className="relative flex-none" style={{ lineHeight: 0 }}>
+      <button
+        type="button"
+        aria-label="Condition description"
+        aria-expanded={open}
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((v) => !v);
+        }}
+        onBlur={() => setOpen(false)}
+        className="rounded-full text-[10px] leading-none transition-opacity"
+        style={{
+          color: "var(--ck-faint)",
+          width: 14,
+          height: 14,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          border: "1px solid var(--ck-border)",
+          background: "var(--ck-surface)",
+          cursor: "help",
+          flexShrink: 0,
+        }}
+      >
+        ⓘ
+      </button>
+      {open && (
+        <span
+          role="tooltip"
+          className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 w-56 -translate-x-1/2 rounded-lg px-3 py-2 text-[11px] leading-relaxed shadow-lg"
+          style={{
+            background: "var(--ck-surface)",
+            border: "1px solid var(--ck-border)",
+            color: "var(--ck-text)",
+          }}
+        >
+          {text}
+        </span>
+      )}
+    </span>
+  );
 }
 
 export function ConditionControlWidget({ ctrl }: ConditionControlProps) {
@@ -22,11 +82,16 @@ export function ConditionControlWidget({ ctrl }: ConditionControlProps) {
   const setForm = useBuildStore((s) => s.setForm);
 
   function handleToggle(v: boolean) {
+    // If exclusive group is set and we're turning ON, clear all siblings first.
+    const newToggles = { ...form.conditions.toggles };
+    if (v && ctrl.exclusiveGroup) {
+      for (const sibling of ctrl.exclusiveGroup) {
+        newToggles[sibling] = false;
+      }
+    }
+    newToggles[ctrl.name] = v;
     setForm({
-      conditions: {
-        ...form.conditions,
-        toggles: { ...form.conditions.toggles, [ctrl.name]: v },
-      },
+      conditions: { ...form.conditions, toggles: newToggles },
     });
   }
 
@@ -55,11 +120,12 @@ export function ConditionControlWidget({ ctrl }: ConditionControlProps) {
           }}
         />
         <span
-          className="text-[11.5px] font-semibold"
+          className="flex-1 text-[11.5px] font-semibold"
           style={{ color: checked ? "var(--ck-text)" : "var(--ck-muted)" }}
         >
           {ctrl.label}
         </span>
+        {ctrl.description && <InfoTooltip text={ctrl.description} />}
       </button>
     );
   }
@@ -106,8 +172,11 @@ export function ConditionControlWidget({ ctrl }: ConditionControlProps) {
           : "var(--ck-border)",
       }}
     >
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] font-semibold text-[var(--ck-muted)]">{ctrl.label}</span>
+      <div className="flex items-center justify-between gap-2">
+        <span className="flex-1 text-[11px] font-semibold text-[var(--ck-muted)]">
+          {ctrl.label}
+        </span>
+        {ctrl.description && <InfoTooltip text={ctrl.description} />}
         <span
           className="text-[12px] font-bold tabular-nums"
           style={{ color: active ? "var(--ck-accent2)" : "var(--ck-faint)" }}

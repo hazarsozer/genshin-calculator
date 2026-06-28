@@ -22,6 +22,7 @@
 import {
   ARTIFACT_SETS,
   CHARACTER_CONDITIONS,
+  CONDITION_STRINGS,
   ENEMY_CONDITIONS,
 } from "@genshin/data";
 import type { DbObjectChar, DbObjectWeapon, Condition } from "@genshin/types";
@@ -60,8 +61,18 @@ function harvestCharConditions(char: DbObjectChar): readonly Condition[] {
 
 /**
  * Conditions that share a combined pool cap (same + different ≤ cap).
- * ATFD: party_elements_same + party_elements_different ≤ 3.
- * Only `stacks` conditions surfaced as user sliders need this; others use static-level/boolean-value.
+ *
+ * Audit (2026-06-28) — only USER-SURFACED stacks conditions were checked:
+ *
+ *   ATFD (a_thousand_floating_dreams): the only weapon with explicit `stacks`-type
+ *     party_elements_same + party_elements_different conditions surfaced as sliders.
+ *     Game constraint: same + different ≤ 3 (party size cap).
+ *
+ *   All other entities that mention party_elements use either:
+ *     - `boolean-value` gate conditions (not user-surfaced) — Gilded Dreams, First Great Magic
+ *     - `static-level` (not user-surfaced) — Ballad of the Fjords
+ *
+ * Map is keyed by condition name → { siblings, cap }.
  */
 const SHARED_POOL_GROUPS: ReadonlyMap<string, { siblings: readonly string[]; cap: number }> =
   new Map([
@@ -69,14 +80,30 @@ const SHARED_POOL_GROUPS: ReadonlyMap<string, { siblings: readonly string[]; cap
     ["party_elements_different", { siblings: ["party_elements_same"], cap: 3 }],
   ]);
 
+/**
+ * Mutually-exclusive boolean groups: when one is turned on, its siblings are
+ * cleared (only one in the group can be active at a time).
+ *
+ * Audit (2026-06-28): no user-surfaced exclusive-boolean pairs were found in
+ * the existing packages/data weapon/set/character corpus. Conditions that look
+ * mutually exclusive (e.g. "HP above/below threshold") are implemented as
+ * gate-only boolean-value conditions (not user-toggleable booleans), so they
+ * don't surface as UI controls. This map is kept for future additions.
+ */
+const EXCLUSIVE_GROUPS: ReadonlyMap<string, readonly string[]> = new Map([
+  // (empty — no user-surfaced exclusive-boolean pairs found in audit)
+]);
+
 /** A single renderable UI control derived from a Condition. */
 export interface ConditionControl {
   /** The condition's settings key, e.g. "hutao_paramita_papilio". */
   name: string;
   /** boolean → checkbox; number → slider/number-input */
   kind: "boolean" | "number";
-  /** Humanized label for display, e.g. "Hutao Paramita Papilio". */
+  /** Humanized label for display, e.g. "Paramita Papilio" (from CSV title, or slug-humanized). */
   label: string;
+  /** Plain-text in-game description from the raw CSV strings, if found. */
+  description?: string;
   /** For kind:"number", the maximum value (from ConditionStacks.maxStacks or ConditionNumber.max). */
   max?: number;
   /**
@@ -84,6 +111,73 @@ export interface ConditionControl {
    * siblings whose current sum reduces this slider's available room.
    */
   sharedPool?: { siblings: readonly string[]; cap: number };
+  /**
+   * For mutually-exclusive boolean groups (e.g. day/night, before/after skill):
+   * activating this control clears all siblings.
+   */
+  exclusiveGroup?: readonly string[];
+}
+
+/**
+ * Strip known scope prefixes from a condition name so it can be looked up in
+ * CONDITION_STRINGS, which indexes by the raw CSV name column.
+ *
+ * Examples:
+ *   "party.bennet_fantastic_voyage"  → "bennet_fantastic_voyage"
+ *   "buffs.resonance_cryo"           → "resonance_cryo"
+ *   "set.noblesse_oblige_4"          → "noblesse_oblige_4"
+ *   "hutao_paramita_papilio"         → "hutao_paramita_papilio"  (no-op)
+ */
+function normalizeConditionName(name: string): string {
+  return name.replace(
+    /^(?:party|buffs|set|set_other|set_bonus|common)\./,
+    ""
+  );
+}
+
+/**
+ * Resolve a human-readable label and optional description for a Condition,
+ * looking up CONDITION_STRINGS with the following priority:
+ *
+ *   1. Weapon conditions carry explicit i18n KEYS on .title / .description
+ *      (e.g. "talent_name.aqua_simulacra" / "talent_descr.aqua_simulacra_2").
+ *      Split on "." to get the name part and look it up.
+ *
+ *   2. Character/global conditions: look up CONDITION_STRINGS[normalizeConditionName(name)]
+ *      directly (the condition name IS the CSV name column value).
+ *
+ *   3. Fall back to humanizeSlug(name) for the label if nothing found.
+ */
+function resolveLabel(cond: Condition): { label: string; description?: string } {
+  // Access base fields (all Condition members extend ConditionBase).
+  const base = cond as { title?: string; description?: string; name?: string };
+  const condName = base.name;
+
+  let label: string | undefined;
+  let description: string | undefined;
+
+  // Strategy 1: explicit i18n keys on weapon conditions.
+  if (base.title) {
+    const keyName = base.title.split(".").slice(1).join(".");
+    label = CONDITION_STRINGS[keyName]?.title;
+  }
+  if (base.description) {
+    const keyName = base.description.split(".").slice(1).join(".");
+    description = CONDITION_STRINGS[keyName]?.description;
+  }
+
+  // Strategy 2: look up by condition name (char / global conditions).
+  if (condName && (!label || !description)) {
+    const normalized = normalizeConditionName(condName);
+    const entry = CONDITION_STRINGS[normalized];
+    if (!label) label = entry?.title;
+    if (!description) description = entry?.description;
+  }
+
+  return {
+    label: label ?? humanizeSlug(condName ?? ""),
+    ...(description ? { description } : {}),
+  };
 }
 
 /**
@@ -99,16 +193,26 @@ function conditionToControl(cond: Condition): ConditionControl | null {
     case "boolean-refine": {
       const name = cond.name;
       if (!name) return null;
-      return { name, kind: "boolean", label: humanizeSlug(name) };
+      const { label, description } = resolveLabel(cond);
+      const exclusiveEntry = EXCLUSIVE_GROUPS.get(name);
+      return {
+        name,
+        kind: "boolean",
+        label,
+        ...(description ? { description } : {}),
+        ...(exclusiveEntry ? { exclusiveGroup: exclusiveEntry } : {}),
+      };
     }
     case "stacks": {
       const name = cond.name;
       if (!name) return null;
+      const { label, description } = resolveLabel(cond);
       const poolEntry = SHARED_POOL_GROUPS.get(name);
       return {
         name,
         kind: "number",
-        label: humanizeSlug(name),
+        label,
+        ...(description ? { description } : {}),
         max: cond.maxStacks,
         ...(poolEntry ? { sharedPool: poolEntry } : {}),
       };
@@ -116,10 +220,12 @@ function conditionToControl(cond: Condition): ConditionControl | null {
     case "number": {
       const name = cond.name;
       if (!name) return null;
+      const { label, description } = resolveLabel(cond);
       return {
         name,
         kind: "number",
-        label: humanizeSlug(name),
+        label,
+        ...(description ? { description } : {}),
         ...(cond.max !== undefined ? { max: cond.max } : {}),
       };
     }
@@ -127,10 +233,12 @@ function conditionToControl(cond: Condition): ConditionControl | null {
       // Dropdown is a multi-state selector — render as a number control (option index).
       const name = cond.name;
       if (!name) return null;
+      const { label, description } = resolveLabel(cond);
       return {
         name,
         kind: "number",
-        label: humanizeSlug(name),
+        label,
+        ...(description ? { description } : {}),
         max: cond.options.length,
       };
     }

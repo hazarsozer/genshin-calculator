@@ -80,3 +80,6 @@ export { CHAR_ICON, WEAPON_ICON, SET_ICON } from "./generated/artIds.js";
 // Enemy preset catalog — generated from raw/genshin_calc_pub/src/js/db/Enemies/
 export { ENEMY_CATALOG } from "./generated/enemyCatalog.js";
 export type { EnemyPreset } from "./generated/enemyCatalog.js";
+
+// Condition/passive strings — generated from raw CSV string tables
+export { CONDITION_STRINGS } from "./generated/conditionStrings.js";

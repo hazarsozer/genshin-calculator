@@ -7,11 +7,15 @@ import type { DbObjectWeapon } from "@genshin/types";
  * Unit test for collectConditions.
  *
  * Asserts that Hu Tao's `hutao_paramita_papilio` boolean condition surfaces as a
- * ConditionControl with kind:"boolean" and a humanized label.
+ * ConditionControl with kind:"boolean" and the CSV-resolved in-game name.
  *
  * `hutao_paramita_papilio` is the first condition in Hu Tao's conditions array:
  *   raw/genshin_calc_pub/src/js/db/Char/Hutao.js → conditions: [paramita, ...]
  *   where paramita = { type:"boolean", name:"hutao_paramita_papilio", ... }
+ *
+ * Since Task 24, `label` is resolved from CONDITION_STRINGS using the CSV
+ * `talent_name` entry for the condition name — "Paramita Papilio" (the in-game
+ * name) rather than the old humanized slug "Hutao Paramita Papilio".
  */
 
 function findByName<T extends { name: string }>(arr: readonly T[], n: string): T {
@@ -37,7 +41,11 @@ describe("collectConditions", () => {
     const paramita = controls.find((c) => c.name === "hutao_paramita_papilio");
     expect(paramita).toBeDefined();
     expect(paramita!.kind).toBe("boolean");
-    expect(paramita!.label).toBe("Hutao Paramita Papilio");
+    // Task 24: label now comes from CONDITION_STRINGS (CSV talent_name entry),
+    // not from humanizeSlug — "Paramita Papilio" is the in-game name.
+    expect(paramita!.label).toBe("Paramita Papilio");
+    // description should also be populated from CONDITION_STRINGS
+    expect(paramita!.description).toBeDefined();
   });
 
   it("dedupes by name across char, weapon, and globals", () => {
