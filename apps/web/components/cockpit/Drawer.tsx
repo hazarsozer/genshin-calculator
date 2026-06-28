@@ -30,7 +30,7 @@ export function Drawer({ title, onClose, children }: DrawerProps) {
       style={{
         width: 360,
         flexShrink: 0,
-        background: "linear-gradient(180deg, #140d0c, #0e0a0b)",
+        background: "linear-gradient(180deg, var(--ck-surface), var(--ck-bg))",
       }}
     >
       {/* Header */}

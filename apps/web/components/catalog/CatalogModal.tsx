@@ -110,7 +110,7 @@ export function CatalogModal({ open, onClose, title, children }: CatalogModalPro
               exit={variants.exit}
               transition={{ duration: 0.2, ease: [0.2, 0.8, 0.2, 1] as [number, number, number, number] }}
               className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-[var(--ck-border)] shadow-2xl"
-              style={{ background: "linear-gradient(180deg, #140d0c, #0e0a0b)" }}
+              style={{ background: "linear-gradient(180deg, var(--ck-surface), var(--ck-bg))" }}
             >
               {/* Header */}
               <div className="flex flex-none items-center border-b border-[var(--ck-border)] px-5 py-4">
