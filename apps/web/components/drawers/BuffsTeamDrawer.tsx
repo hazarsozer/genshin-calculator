@@ -9,6 +9,7 @@ import { CharAvatar } from "@/components/controls/CharAvatar";
 import { Catalog } from "@/components/catalog/Catalog";
 import { CatalogModal } from "@/components/catalog/CatalogModal";
 import { addMember, removeMember, setMemberSetting, activeResonances, teammateLevelDefaults } from "@/lib/party";
+import { resonatingElements, partitionResonanceSubs } from "@/lib/resonanceSubs";
 import { humanizeSlug } from "@/lib/utils";
 import { avatarIconSources } from "@/lib/enkaArt";
 import type { ConditionControl } from "@/lib/conditions";
@@ -33,7 +34,7 @@ const SECTIONS: Section[] = [
     label: "Weapon Buffs",
     filter: (c) => c.name.startsWith("weapon_other") || c.name.startsWith("weapon."),
   },
-  { id: "other", label: "Other", filter: () => true },
+  { id: "other", label: "Global", filter: () => true },
 ];
 
 function countActive(
@@ -185,19 +186,17 @@ export function BuffsTeamDrawer() {
     setForm({ party: { members: next } });
   }
 
-  // Existing global conditions (set/weapon/other) — resonance section dropped.
+  // Existing global conditions (set/weapon/other) — resonance subs routed under Resonance.
   const grouped = collectGroupedConditions(char, weapon, form.manualSets as readonly EquippedSet[]);
+  const resonating = resonatingElements(elements);
+  const { resonanceSubs, rest } = partitionResonanceSubs(grouped.global, resonating);
   const seen = new Set<string>();
   const sections: Record<SectionId, ConditionControl[]> = { set: [], weapon: [], other: [] };
-  for (const ctrl of grouped.global) {
-    if (ctrl.name.includes("resonance")) continue; // resonance is roster-driven now
+  for (const ctrl of rest) {
     if (seen.has(ctrl.name)) continue;
     seen.add(ctrl.name);
     for (const sec of SECTIONS) {
-      if (sec.filter(ctrl)) {
-        sections[sec.id].push(ctrl);
-        break;
-      }
+      if (sec.filter(ctrl)) { sections[sec.id].push(ctrl); break; }
     }
   }
 
@@ -236,6 +235,13 @@ export function BuffsTeamDrawer() {
           ))
         )}
       </div>
+      {resonanceSubs.length > 0 && (
+        <div className="mt-2 flex w-full flex-col gap-2">
+          {resonanceSubs.map((ctrl) => (
+            <ConditionControlWidget key={ctrl.name} ctrl={ctrl} />
+          ))}
+        </div>
+      )}
 
       {/* ── Per-teammate buffs ── */}
       {members.map((m, i) => {
