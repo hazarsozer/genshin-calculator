@@ -10,11 +10,13 @@
  * using var(--ck-*) tokens throughout.
  */
 
+import { useState } from "react";
 import { useBuildStore } from "@/lib/store";
-import { assembleArtifactStats, ARTIFACT_SETS } from "@genshin/data";
+import { assembleArtifactStats, ARTIFACT_SETS, SET_EFFECTS } from "@genshin/data";
 import type { EquippedSet } from "@genshin/data";
 import type { ArtifactSlotData } from "@/lib/types";
-import { FallbackImage } from "@/components/catalog/Catalog";
+import { FallbackImage, Catalog } from "@/components/catalog/Catalog";
+import { CatalogModal } from "@/components/catalog/CatalogModal";
 import { artifactSetIconSources } from "@/lib/enkaArt";
 
 // ─────────────────────────── constants ───────────────────────────
@@ -84,6 +86,24 @@ export function humanizeSetKey(goodId: string): string {
 export const SET_KEYS = Object.keys(ARTIFACT_SETS).sort((a, b) =>
   humanizeSetKey(a).localeCompare(humanizeSetKey(b))
 );
+
+/**
+ * Renders 2pc/4pc effect text for the set catalog tiles.
+ * Returns null for the ~10 sets without SET_EFFECTS entries
+ * (Prayers + post-v5.8 sets).
+ *
+ * Exported so SetPicker can reuse the same renderMeta without duplication.
+ */
+export function renderSetMeta(k: string) {
+  if (!(k in SET_EFFECTS)) return null;
+  const fx = SET_EFFECTS[k];
+  return (
+    <>
+      <div className="truncate text-left">2pc: {fx.two.desc}</div>
+      <div className="truncate text-left">4pc: {fx.four.desc}</div>
+    </>
+  );
+}
 
 // ──────────────────────── slot→flat adapter ──────────────────────
 
@@ -162,6 +182,7 @@ function SlotCard({ slotDef, data, onUpdate }: SlotCardProps) {
   const isActive = !!data;
   const substats = data?.substats ?? [];
   const mainKey = data?.mainStatKey ?? slotDef.fixedMain ?? slotDef.mains?.[0] ?? "";
+  const [browseOpen, setBrowseOpen] = useState(false);
 
   function activate() {
     onUpdate(defaultData(slotDef));
@@ -271,21 +292,48 @@ function SlotCard({ slotDef, data, onUpdate }: SlotCardProps) {
         </select>
       )}
 
-      {/* Set selector — only when active */}
+      {/* Set selector — Browse trigger + CatalogModal */}
       {isActive && (
-        <select
-          value={data?.setKey ?? ""}
-          onChange={(e) => setSetKey(e.target.value)}
-          aria-label={`${slotDef.label} artifact set`}
-          className={`${INPUT_CLS} w-full`}
-        >
-          <option value="">No set</option>
-          {SET_KEYS.map((k) => (
-            <option key={k} value={k}>
-              {humanizeSetKey(k)}
-            </option>
-          ))}
-        </select>
+        <>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setBrowseOpen(true)}
+              aria-label={`Browse ${slotDef.label} artifact set`}
+              className={`${INPUT_CLS} flex-1 truncate text-left`}
+            >
+              {data?.setKey ? humanizeSetKey(data.setKey) : "No set — Browse…"}
+            </button>
+            {data?.setKey && (
+              <button
+                type="button"
+                onClick={() => setSetKey("")}
+                aria-label={`Clear ${slotDef.label} set`}
+                className="flex-none text-[10px] leading-none text-[var(--ck-faint)] transition-colors hover:text-[var(--ck-muted)]"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+          <CatalogModal
+            open={browseOpen}
+            onClose={() => setBrowseOpen(false)}
+            title={`${slotDef.label} — Artifact Set`}
+          >
+            <Catalog
+              items={SET_KEYS}
+              getKey={(k) => k}
+              getLabel={humanizeSetKey}
+              getIconSources={artifactSetIconSources}
+              activeKey={data?.setKey}
+              renderMeta={renderSetMeta}
+              onPick={(k) => {
+                setSetKey(k);
+                setBrowseOpen(false);
+              }}
+            />
+          </CatalogModal>
+        </>
       )}
 
       {/* Rarity + Level — only when active */}

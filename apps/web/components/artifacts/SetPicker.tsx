@@ -10,7 +10,8 @@
 
 import { useState } from "react";
 import { useBuildStore } from "@/lib/store";
-import { FallbackImage } from "@/components/catalog/Catalog";
+import { FallbackImage, Catalog } from "@/components/catalog/Catalog";
+import { CatalogModal } from "@/components/catalog/CatalogModal";
 import { artifactSetIconSources } from "@/lib/enkaArt";
 import {
   SLOTS,
@@ -19,6 +20,7 @@ import {
   deriveManualSets,
   humanizeSetKey,
   SET_KEYS,
+  renderSetMeta,
 } from "@/components/artifacts/ArtifactSlots";
 import type { ArtifactSlotData } from "@/lib/types";
 import type { EquippedSet } from "@genshin/data";
@@ -34,6 +36,7 @@ export function SetPicker() {
   const setForm = useBuildStore((s) => s.setForm);
 
   const [pendingKey, setPendingKey] = useState("");
+  const [browseOpen, setBrowseOpen] = useState(false);
 
   function applyToAllSlots() {
     if (!pendingKey) return;
@@ -55,25 +58,17 @@ export function SetPicker() {
       {/* Picker row */}
       <div className="flex flex-wrap items-end gap-2">
         <div className="flex flex-col gap-1">
-          <label
-            htmlFor="set-picker-select"
-            className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--ck-faint)]"
-          >
+          <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--ck-faint)]">
             Set
-          </label>
-          <select
-            id="set-picker-select"
-            value={pendingKey}
-            onChange={(e) => setPendingKey(e.target.value)}
-            className={`${inputBase} w-48 px-3 py-1.5`}
+          </span>
+          <button
+            type="button"
+            onClick={() => setBrowseOpen(true)}
+            aria-label="Browse artifact set"
+            className={`${inputBase} w-48 truncate px-3 py-1.5 text-left`}
           >
-            <option value="">Choose set…</option>
-            {SET_KEYS.map((key) => (
-              <option key={key} value={key}>
-                {humanizeSetKey(key)}
-              </option>
-            ))}
-          </select>
+            {pendingKey ? humanizeSetKey(pendingKey) : "Choose set — Browse…"}
+          </button>
         </div>
 
         <button
@@ -85,6 +80,26 @@ export function SetPicker() {
           Apply to all slots
         </button>
       </div>
+
+      {/* Set browse modal */}
+      <CatalogModal
+        open={browseOpen}
+        onClose={() => setBrowseOpen(false)}
+        title="Artifact Set"
+      >
+        <Catalog
+          items={SET_KEYS}
+          getKey={(k) => k}
+          getLabel={humanizeSetKey}
+          getIconSources={artifactSetIconSources}
+          activeKey={pendingKey}
+          renderMeta={renderSetMeta}
+          onPick={(k) => {
+            setPendingKey(k);
+            setBrowseOpen(false);
+          }}
+        />
+      </CatalogModal>
 
       {/* Derived sets (read-only — driven by per-slot setKey selections) */}
       {manualSets.length > 0 && (
