@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { ALL_CHARACTERS, ALL_WEAPONS } from "@genshin/data";
+import { ALL_CHARACTERS, ALL_WEAPONS, ENEMY_CATALOG } from "@genshin/data";
+import type { EnemyPreset } from "@genshin/data";
 import { useBuildStore } from "@/lib/store";
 import { collectGroupedConditions } from "@/lib/conditions";
 import { clamp } from "@/lib/utils";
 import { Range } from "@/components/controls/Range";
 import { ConditionControlWidget } from "./ConditionControl";
 import { elementAccent } from "@/lib/theme";
+import { CatalogModal } from "@/components/catalog/CatalogModal";
 import type { EquippedSet } from "@genshin/data";
 
 /** Engine element order — must match buildStats.ts ELEMENTS exactly so Record keys resolve. */
@@ -31,9 +33,93 @@ function SectionHead({ label }: { label: string }) {
   );
 }
 
+// ── Enemy Preset Browser ───────────────────────────────────────────────────────
+
+/** Searchable list of enemy presets shown inside the CatalogModal. */
+function EnemyPresetList({
+  onPick,
+  activeSlug,
+}: {
+  onPick: (preset: EnemyPreset) => void;
+  activeSlug: string | null;
+}) {
+  const [search, setSearch] = useState("");
+
+  const filtered =
+    search.trim() === ""
+      ? ENEMY_CATALOG
+      : ENEMY_CATALOG.filter((e) =>
+          e.name.toLowerCase().includes(search.toLowerCase())
+        );
+
+  return (
+    <div className="flex flex-col gap-3">
+      {/* Search */}
+      <input
+        type="text"
+        placeholder="Search enemies…"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        aria-label="Search enemies"
+        className="w-full rounded-lg border border-[var(--ck-border)] bg-[var(--ck-surface2)] px-3 py-1.5 text-[13px] text-[var(--ck-text)] placeholder-[var(--ck-faint)] focus:outline-none focus:ring-1 focus:ring-[var(--ck-accent)]"
+      />
+
+      {/* List */}
+      {filtered.length === 0 ? (
+        <p className="py-8 text-center text-[13px] text-[var(--ck-muted)]">
+          No enemies match your search.
+        </p>
+      ) : (
+        <ul className="flex flex-col divide-y divide-[var(--ck-border)]">
+          {filtered.map((preset) => {
+            const isActive = preset.slug === activeSlug;
+            // Show a compact resistance summary: unique non-10 values, or "10% all"
+            const entries = RESISTANCE_ELEMENTS.map((el) => ({
+              el,
+              v: preset.resistances[el],
+            }));
+            const nonDefault = entries.filter((e) => e.v !== 10);
+            const resSummary =
+              nonDefault.length === 0
+                ? "10% all"
+                : nonDefault
+                    .map((e) => `${e.el.slice(0, 4)}: ${e.v}%`)
+                    .join(" · ");
+
+            return (
+              <li key={preset.slug}>
+                <button
+                  type="button"
+                  onClick={() => onPick(preset)}
+                  aria-current={isActive ? "true" : undefined}
+                  className={[
+                    "flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left text-[13px] transition-colors",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--ck-accent)]",
+                    isActive
+                      ? "bg-[color-mix(in_srgb,var(--ck-accent)_10%,transparent)] font-semibold text-[var(--ck-accent)]"
+                      : "text-[var(--ck-text)] hover:bg-[var(--ck-surface2)]",
+                  ].join(" ")}
+                >
+                  <span className="truncate">{preset.name}</span>
+                  <span className="flex-none text-[10px] text-[var(--ck-faint)]">
+                    {resSummary}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+// ── EnemyDrawer ────────────────────────────────────────────────────────────────
+
 export function EnemyDrawer() {
   const form = useBuildStore((s) => s.form);
   const setForm = useBuildStore((s) => s.setForm);
+  const [catalogOpen, setCatalogOpen] = useState(false);
 
   const char = ALL_CHARACTERS.find((c) => c.name === form.characterKey);
   const weapon = ALL_WEAPONS.find((w) => w.name === form.weaponKey);
@@ -62,6 +148,15 @@ export function EnemyDrawer() {
     typeof form.enemy.resistance === "object" && form.enemy.resistance !== null
       ? (form.enemy.resistance as Record<string, number>)
       : {};
+
+  // Find the currently active preset slug (if a per-element resistance matches one)
+  const activeSlug: string | null = (() => {
+    if (mode !== "per-element") return null;
+    const preset = ENEMY_CATALOG.find((p) =>
+      RESISTANCE_ELEMENTS.every((el) => perElResistance[el] === p.resistances[el])
+    );
+    return preset?.slug ?? null;
+  })();
 
   function handleLevel(raw: string) {
     const parsed = parseInt(raw, 10);
@@ -120,6 +215,17 @@ export function EnemyDrawer() {
     setForm({ enemy: { ...form.enemy, resistance: uniformRef.current } });
   }
 
+  /** Apply a preset: switch to per-element mode and fill all 8 resistances. */
+  function applyPreset(preset: EnemyPreset) {
+    const res: Record<string, number> = {};
+    for (const el of RESISTANCE_ELEMENTS) {
+      res[el] = preset.resistances[el];
+    }
+    setMode("per-element");
+    setForm({ enemy: { ...form.enemy, resistance: res } });
+    setCatalogOpen(false);
+  }
+
   return (
     <div className="flex flex-col gap-2">
       {/* ── Enemy Level ── */}
@@ -145,6 +251,22 @@ export function EnemyDrawer() {
 
       {/* ── Resistance ── */}
       <SectionHead label="Resistance %" />
+
+      {/* Preset browse row */}
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setCatalogOpen(true)}
+          className="flex-none rounded-lg border border-[var(--ck-border)] px-2.5 py-1.5 text-[11px] text-[var(--ck-muted)] transition-colors hover:border-[var(--ck-accent)] hover:text-[var(--ck-accent)]"
+        >
+          Browse Presets
+        </button>
+        {activeSlug && (
+          <span className="truncate text-[11px] text-[var(--ck-muted)]">
+            {ENEMY_CATALOG.find((e) => e.slug === activeSlug)?.name}
+          </span>
+        )}
+      </div>
 
       {/* Uniform / Per-element toggle */}
       <div className="flex gap-1 rounded-md border border-[var(--ck-border)] p-0.5 text-[11px]">
@@ -228,6 +350,15 @@ export function EnemyDrawer() {
           </div>
         </>
       )}
+
+      {/* ── Enemy preset catalog modal ── */}
+      <CatalogModal
+        open={catalogOpen}
+        onClose={() => setCatalogOpen(false)}
+        title="Browse Enemy Presets"
+      >
+        <EnemyPresetList onPick={applyPreset} activeSlug={activeSlug} />
+      </CatalogModal>
     </div>
   );
 }

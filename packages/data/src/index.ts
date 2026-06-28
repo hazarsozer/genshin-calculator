@@ -76,3 +76,7 @@ export type {
 
 // Art/icon id tables — generated from Enka characters + ambr weapons vendor JSONs
 export { CHAR_ICON, WEAPON_ICON } from "./generated/artIds.js";
+
+// Enemy preset catalog — generated from raw/genshin_calc_pub/src/js/db/Enemies/
+export { ENEMY_CATALOG } from "./generated/enemyCatalog.js";
+export type { EnemyPreset } from "./generated/enemyCatalog.js";
