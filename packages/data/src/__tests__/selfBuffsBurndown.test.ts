@@ -319,6 +319,19 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     jean: true,
     jean_lands_of_dandelion: true,
   },
+  // Diluc C1 "Conviction" dmg_all+15 (every hit) + C2 "Searing Ember" atk_percent+10/stack
+  // (diluc_searing_ember:3 → +30% ATK) + C4 "Flowing Flame" dmg_skill_diluc_bonus+40 (skill_hit_2/3)
+  // + C6 "Flaming Sword" dmg_normal+30 (normals). diluc_dawn:true keeps the pre-modelled infusion +
+  // A4 dmg_pyro active (the A4 is gated on diluc_dawn). char_constellation:6 threads ALL cons gates ON,
+  // matching the oracle dump at constellation 6.
+  "diluc-self-buffs": {
+    char_constellation: 6,
+    diluc_dawn: true,
+    diluc_conviction: true,
+    diluc_searing_ember: 3,
+    diluc_flowing_flame: true,
+    diluc_flaming_sword_nemesis_of_the_dark: true,
+  },
 };
 
 interface ManifestItem {

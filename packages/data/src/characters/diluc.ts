@@ -113,16 +113,21 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_hit_1") }],
   },
+  // skill_hit_2 / skill_hit_3 declare damageBonuses:['dmg_skill_diluc_bonus'] (raw Diluc.js:227-248)
+  // → the C4 "Flowing Flame" +40% skill DMG (the diluc_flowing_flame toggle below) reaches them.
+  // Base-inert until C4+toggle (absent key reads 0).
   {
     name: "skill_hit_2",
     category: "skill",
     element: "pyro",
+    damageBonuses: ["dmg_skill_diluc_bonus"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_hit_2") }],
   },
   {
     name: "skill_hit_3",
     category: "skill",
     element: "pyro",
+    damageBonuses: ["dmg_skill_diluc_bonus"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_hit_3") }],
   },
   // --- Burst: Dawn ---
@@ -149,11 +154,16 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
-// C1 "Conviction" (dmg_all toggle), C2 "Searing Ember" (stacks toggle),
-// C4 "Flowing Flame" (dmg_skill toggle), C6 "Flaming Sword Nemesis of the Dark"
-// (dmg_normal/atk_speed toggle): all ConditionBoolean/Stacks → SKIPPED (toggles
-// are off in the constellations config; validated in a later wave).
-// No cons-gated features or char multipliers in raw data.
+// SELF buffs (were golden-blind SKIPPED — the port modelled only the party.* mirrors / nothing,
+// and the self toggles are OFF in the fixed canonical build, so the 58k DAMAGE goldens never
+// exercised them; a diff-parity sweep surfaced every Diluc hit diverging from cons 1). Modelled below:
+//   C1 "Conviction": +15% DMG (dmg_all), ConditionBoolean gated C1. raw Diluc.js:322-334.
+//   C2 "Searing Ember": +10% ATK/stack (atk_percent), ConditionStacks max 3, gated C2 (the
+//     atk_speed_normal:5/stack term is damage-inert → skipped). raw Diluc.js:335-349.
+//   C4 "Flowing Flame": +40% skill DMG (dmg_skill_diluc_bonus → skill_hit_2/3), ConditionBoolean
+//     gated C4. raw Diluc.js:359-371.
+//   C6 "Flaming Sword, Nemesis of the Dark": +30% Normal Attack DMG (dmg_normal), ConditionBoolean
+//     gated C6 (the atk_speed_normal:30 term is damage-inert → skipped). raw Diluc.js:381-394.
 //
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Diluc.js:321-395
 
@@ -164,6 +174,42 @@ const constellationConditions: readonly Condition[] = [
   // C5 "Phoenix, Harbinger of Dawn": +3 levels to Dawn (Elemental Burst).
   // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF "Conviction" (C1) — +15% DMG (dmg_all) vs enemies above 50% HP, lifting EVERY Diluc hit.
+  // ConditionBoolean gated at C1 (constellation[0] → THE CONSTELLATION IS A GATE). raw Diluc.js:322-334.
+  {
+    type: "boolean",
+    name: "diluc_conviction",
+    stats: { dmg_all: 15 },
+    condition: { type: "constellation", constellation: 1 },
+  },
+  // SELF "Searing Ember" (C2) — +10% ATK per stack (atk_percent), max 3 (= +30% ATK), lifting every
+  // Diluc hit. ConditionStacks gated at C2 (constellation[1] → THE CONSTELLATION IS A GATE). The
+  // atk_speed_normal:5/stack term is damage-inert → skipped. raw Diluc.js:335-349.
+  {
+    type: "stacks",
+    name: "diluc_searing_ember",
+    maxStacks: 3,
+    stats: { atk_percent: 10 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  // SELF "Flowing Flame" (C4) — +40% skill DMG (dmg_skill_diluc_bonus → skill_hit_2/3, which declare
+  // it in damageBonuses). ConditionBoolean gated at C4 (constellation[3] → THE CONSTELLATION IS A
+  // GATE). raw Diluc.js:359-371.
+  {
+    type: "boolean",
+    name: "diluc_flowing_flame",
+    stats: { dmg_skill_diluc_bonus: 40 },
+    condition: { type: "constellation", constellation: 4 },
+  },
+  // SELF "Flaming Sword, Nemesis of the Dark" (C6) — +30% Normal Attack DMG (dmg_normal), lifting
+  // Diluc's normals. ConditionBoolean gated at C6 (constellation[5] → THE CONSTELLATION IS A GATE).
+  // The atk_speed_normal:30 term is damage-inert → skipped. raw Diluc.js:381-394.
+  {
+    type: "boolean",
+    name: "diluc_flaming_sword_nemesis_of_the_dark",
+    stats: { dmg_normal: 30 },
+    condition: { type: "constellation", constellation: 6 },
+  },
   // Dawn pyro infusion on normals/charged/plunge. Raw Diluc.js:286-294
   // (ConditionBoolean { name:'diluc_dawn', settings:{ attack_infusion_pyro:1 } }
   //  → canonical key: attack_infusion:"pyro").
