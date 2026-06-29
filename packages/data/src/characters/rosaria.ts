@@ -229,18 +229,47 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C Wave-1)
 // ---------------------------------------------------------------------------
-// C1 "Unholy Revelation": ConditionBoolean toggle (atk_speed_normal + dmg_normal) → SKIP.
+// SELF buffs (golden-blind SKIPPED — the port modelled only the party.* / no self mirror):
+//   A1 "Regina Probationum": +12% CRIT Rate (ConditionBoolean, ascension passive). Ported below.
+//   C1 "Unholy Revelation": +10% Normal-attack DMG (ConditionBoolean; atk_speed_normal is
+//      display-only). Ported below, gated at C1.
+//   C6 "Divine Retribution": enemy Physical RES -20% (ConditionBoolean). Ported below, gated at C6
+//      (the SELF mirror of party.rosaria_divine_retribution).
 // C2 "Land Without Promise": ConditionStatic with no real stats (description only) → SKIP.
 // C3 "The Wages of Sin": +3 Elemental Skill talent levels.
 //    Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
 // C4 "Painful Grace": ConditionStatic with no real stats (description only) → SKIP.
 // C5 "Last Rites": +3 Elemental Burst talent levels.
 //    Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
-// C6 "Divine Retribution": ConditionBoolean toggle (enemy_res_phys -20) → SKIP.
 //
-// Sources: raw/genshin_calc_pub/src/js/db/Char/Rosaria.js:407-469
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Rosaria.js:381-469
 
 const constellationConditions: readonly Condition[] = [
+  // SELF "Regina Probationum" (A1) — +12% CRIT Rate, lifting the avg of every Rosaria damage
+  // feature. ConditionBoolean ascension passive (rep at A6 → modelled ungated, the toggle is the
+  // gate). Her engine gates it ONLY on ascension (no enemy-status subcondition), so a plain toggle
+  // is faithful. Was golden-blind SKIPPED (no party.* mirror existed either).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Rosaria.js:382-394 (conditions[0], info.ascension 1).
+  { type: "boolean", name: "rosaria_regina_probationum", stats: { crit_rate: 12 } },
+  // SELF "Unholy Revelation" (C1) — +10% Normal-attack DMG (atk_speed_normal:10 is display-only,
+  // dropped). ConditionBoolean gated at C1 (lives in constellation[0] → THE CONSTELLATION IS A GATE).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Rosaria.js:410-419 (constellation[0], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "rosaria_unholy_revelation",
+    stats: { dmg_normal: 10 },
+    condition: { type: "constellation", constellation: 1 },
+  },
+  // SELF "Divine Retribution" (C6) — enemy Physical RES -20%, buffing every Rosaria physical hit
+  // (reaction.shatter too). ConditionBoolean gated at C6. SELF mirror of party.rosaria_divine_retribution.
+  // Raw key `enemy_res_phys` → engine bag key `enemy_res_physical`.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Rosaria.js:457-467 (constellation[5], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "rosaria_divine_retribution",
+    stats: { enemy_res_physical: -20 },
+    condition: { type: "constellation", constellation: 6 },
+  },
   // C3: +3 Elemental Skill (Ravaging Confession).
   // Raw cons[2]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },

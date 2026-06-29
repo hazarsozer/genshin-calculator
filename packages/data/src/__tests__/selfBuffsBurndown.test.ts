@@ -95,6 +95,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     xinyan_now_thats_rock: true,
     xinyan_wildfire_rhythm: true,
   },
+  // Rosaria A1 crit_rate+12 (ungated) + C1 dmg_normal+10 (≥C1) + C6 enemy_res_physical−20 (≥C6).
+  // char_constellation:6 threads the cons gates ON, matching the oracle dump at constellation 6.
+  "rosaria-self-buffs": {
+    char_constellation: 6,
+    rosaria_regina_probationum: true,
+    rosaria_unholy_revelation: true,
+    rosaria_divine_retribution: true,
+  },
 };
 
 interface ManifestItem {
