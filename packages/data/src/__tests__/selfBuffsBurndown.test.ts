@@ -400,6 +400,15 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 4,
     yelan_bait_and_switch: 4,
   },
+  // Emilie C2 "Lakelight Top Note" emilie_lakelight_top_note (enemy_res_dendro−30 → dendro hits +
+  // reactions) + C6 "Marcotte Sillage" emilie_marcotte_sillage (dendro infusion on physical normals/
+  // charged/plunge + atk*−300% normal/charged bonus). char_constellation:6 threads BOTH cons gates
+  // ON, matching the oracle dump at constellation 6.
+  "emilie-self-buffs": {
+    char_constellation: 6,
+    emilie_lakelight_top_note: true,
+    emilie_marcotte_sillage: true,
+  },
 };
 
 interface ManifestItem {

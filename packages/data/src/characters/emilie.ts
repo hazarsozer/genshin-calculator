@@ -20,7 +20,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Emilie)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Emilie as EmilieStatTable } from "../generated/charTables.js";
 import { Emilie as EmilieTalents } from "../generated/charTalentTables.js";
 
@@ -193,13 +193,22 @@ const features: readonly Feature[] = [
 // Constellations (P2.C)
 // ---------------------------------------------------------------------------
 // C1 "Light Fragrance Leaching": dmg_skill_emilie +20. ConditionStatic (always-on at C1).
-// C2 "Lakelight Top Note": enemy_res_dendro toggle → SKIP.
+// C2 "Lakelight Top Note": SELF enemy_res_dendro −30 toggle — modelled below (was golden-blind
+//   SKIPPED: the port modelled only party.emilie_lakelight_top_note; a diff-parity sweep surfaced
+//   her dendro hits + dendro reactions diverging from cons 2 when the self toggle is on). raw
+//   Emilie.js:359-371 (constellation[1] ConditionBoolean, enemy_res_dendro:C2DendroRes=−30).
 // C3 "Exquisite Sillage": +3 Elemental Burst talent levels.
 // C4 "Lumidouce Heart Note": ConditionStatic with no real stats (display text) → SKIP.
 // C5 "Pique-Nique pour Deux": +3 Elemental Skill talent levels.
-// C6 "Marcotte Sillage": ConditionBoolean toggle (attack_infusion:'dendro') → SKIP.
+// C6 "Marcotte Sillage": SELF dendro infusion (attack_infusion:'dendro' on her physical normals/
+//   charged/plunge) PLUS a +300%-ATK damage-instance bonus on her normal/charged hits — both
+//   modelled below (was golden-blind SKIPPED: the port modelled neither; a diff-parity sweep
+//   surfaced her normals/charged/plunge diverging at cons 6 when emilie_marcotte_sillage is on).
+//   raw Emilie.js:332-344 (the atk* normal/charged FeatureMultiplier, ValueTable[C6DamageBonus=300],
+//   ConditionAnd[marcotte_sillage, cons 6]) + :398-413 (constellation[5] ConditionBoolean,
+//   settings attack_infusion:'dendro').
 //
-// Sources: raw/genshin_calc_pub/src/js/db/Char/Emilie.js:347-428
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Emilie.js:332-428
 
 const constellationConditions: readonly Condition[] = [
   // C1: dmg_skill_emilie +20. ConditionStatic{ stats:{ dmg_skill_emilie:20 } }
@@ -211,7 +220,47 @@ const constellationConditions: readonly Condition[] = [
   // C5: +3 Elemental Skill talent levels.
   // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF C2 "Lakelight Top Note" — enemy Dendro RES −30%, lifting her dendro hits + dendro reactions.
+  // ConditionBoolean gated at C2 (constellation[1] → THE CONSTELLATION IS A GATE; base-inert below
+  // C2 / when untoggled). The SELF mirror of party.emilie_lakelight_top_note. raw Emilie.js:359-371.
+  {
+    type: "boolean",
+    name: "emilie_lakelight_top_note",
+    stats: { enemy_res_dendro: -30 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  // SELF C6 "Marcotte Sillage" — dendro infusion on her physical normals/charged/plunge. ConditionBoolean
+  // settings-publisher gated at C6 (constellation[5] → THE CONSTELLATION IS A GATE; base-inert below C6 /
+  // when untoggled). The atk*-300% damage bonus on normal/charged is the c6MarcotteMultiplier below. raw
+  // Emilie.js:398-413 (settings attack_infusion:'dendro'). (The c6MarcotteMultiplier carries the AND gate.)
+  {
+    type: "boolean",
+    name: "emilie_marcotte_sillage",
+    settings: { attack_infusion: "dendro" },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
+
+// SELF C6 "Marcotte Sillage" — +300% of ATK added to each normal/charged hit (a damage-instance
+// multiplier, the SELF Dehya-C1/Itto-A4-class CharMultiplier). Gated by ConditionAnd[marcotte_sillage,
+// cons 6] (THE CONSTELLATION IS A GATE; base-inert below C6 / when untoggled). raw Emilie.js:332-344
+// (FeatureMultiplier scaling:'atk*', source:'constellation6', ValueTable[C6DamageBonus=300],
+// target:normal/charged).
+const C6_DAMAGE_BONUS = 300;
+const c6MarcotteMultiplier: CharMultiplier = {
+  leveling: "",
+  scaling: "atk*",
+  source: "constellation6",
+  values: { getValue: () => C6_DAMAGE_BONUS },
+  target: { damageTypes: ["normal", "charged"] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "boolean", name: "emilie_marcotte_sillage" },
+      { type: "constellation", constellation: 6 },
+    ],
+  },
+};
 
 // ---------------------------------------------------------------------------
 // DbObjectChar
@@ -227,7 +276,7 @@ export const emilie: DbObjectChar = {
   statTable: EmilieStatTable,
   talents,
   features,
-  multipliers: [],
+  multipliers: [c6MarcotteMultiplier],
   conditions: constellationConditions,
   // A4 "Rectification": dmg_all += total ATK × (A4DamageBonus/1000 = 15/1000 = 0.015),
   // capped at A4DamageBonusMax = 36 (in dmg_all percent units). Gated by the enemy_burning
