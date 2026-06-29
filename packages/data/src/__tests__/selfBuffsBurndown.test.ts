@@ -289,6 +289,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     dori_sprinkling_weight: true,
   },
+  // Diona C6 +200 EM gated by NOT(diona_cats_tail). diona_cats_tail:true suppresses the EM (the
+  // toggle swaps it for healing_recv), so her reactions drop to base — the port's NOT-gate must
+  // match. char_constellation:6 + diona_cats_tail:true is the discriminating config; without the
+  // NOT-gate the port's EM stays on (reactions ~2x). (The C6 healing_recv is non-damage → not asserted.)
+  "diona-self-buffs": {
+    char_constellation: 6,
+    diona_cats_tail: true,
+  },
 };
 
 interface ManifestItem {
