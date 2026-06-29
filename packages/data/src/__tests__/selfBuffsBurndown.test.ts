@@ -169,6 +169,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     ningguang_strategic_reserve: true,
     ningguang_exquisite_be_the_jade_outshining_all_beneath: true,
   },
+  // Albedo A1 dmg_skill_albedo+25 (ungated, lifts albedo_blossom) + C2 def*-stacks burst bonus
+  // (albedo_opening_of_hanerozoic:4 → 120% DEF on burst) + C4 dmg_plunge+30 + C6 dmg_all+17.
+  // char_constellation:6 threads the C4/C6 gates ON, matching the oracle dump at constellation 6 / 4 stacks.
+  "albedo-self-buffs": {
+    char_constellation: 6,
+    albedo_calcite_might: true,
+    albedo_opening_of_hanerozoic: 4,
+    albedo_descent_of_divinity: true,
+    albedo_dust_of_purification: true,
+  },
 };
 
 interface ManifestItem {
