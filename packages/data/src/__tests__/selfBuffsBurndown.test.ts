@@ -187,6 +187,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     lisa_static_electricity_field: true,
     lisa_electromagnetic_field: true,
   },
+  // Mika A1 dmg_phys+10/stack (mika_suppressive_barrage:5 → +50% at C6 max-5) + C6 crit_dmg_phys+60.
+  // char_constellation:6 threads the C6 gate ON (→ the stacks max becomes 5 and the phys crit DMG fires),
+  // matching the oracle dump at constellation 6. Lifts every physical hit's normal/crit/avg.
+  "mika-self-buffs": {
+    char_constellation: 6,
+    mika_suppressive_barrage: 5,
+    mika_companions_counsel: true,
+  },
 };
 
 interface ManifestItem {

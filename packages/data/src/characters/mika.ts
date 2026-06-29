@@ -61,21 +61,31 @@ const talents: TalentResolver = {
 // Features
 // ---------------------------------------------------------------------------
 
+// C6 "Companion's Counsel" physical CRIT DMG key, declared on every PHYSICAL feature so the
+// crit_dmg_phys:60 self condition (gated C6) reaches each hit's crit term. Her getDefaultStatsCritDamage
+// auto-includes crit_dmg_<element>, but the port does NOT fold ELEMENT crit generically (compileFeature.ts
+// §critBonusTypeKeys folds type-crit only) → the feature must declare it, exactly like Gorou's crit_dmg_geo.
+// Base-inert: crit_dmg_phys reads 0 until the C6 toggle fires.
+const PHYS_CRIT: readonly string[] = ["crit_dmg_phys"];
+
 const features: readonly Feature[] = [
   // --- Normal attacks (physical polearm, no element override) ---
   // raw/genshin_calc_pub/src/js/db/Char/Mika.js:151-169
   {
     name: "normal_hit_1",
+    critDamageBonuses: PHYS_CRIT,
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
   },
   {
     name: "normal_hit_2",
+    critDamageBonuses: PHYS_CRIT,
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }],
   },
   {
     name: "normal_hit_3",
+    critDamageBonuses: PHYS_CRIT,
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
   },
@@ -83,6 +93,7 @@ const features: readonly Feature[] = [
   // raw/genshin_calc_pub/src/js/db/Char/Mika.js:178-195
   {
     name: "normal_hit_4",
+    critDamageBonuses: PHYS_CRIT,
     category: "attack",
     items: [
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }] },
@@ -93,11 +104,13 @@ const features: readonly Feature[] = [
   // raw/genshin_calc_pub/src/js/db/Char/Mika.js:196-206
   {
     name: "normal_hit_4_1",
+    critDamageBonuses: PHYS_CRIT,
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }],
   },
   {
     name: "normal_hit_5",
+    critDamageBonuses: PHYS_CRIT,
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5") }],
   },
@@ -105,6 +118,7 @@ const features: readonly Feature[] = [
   // raw/genshin_calc_pub/src/js/db/Char/Mika.js:215-224
   {
     name: "charged_hit",
+    critDamageBonuses: PHYS_CRIT,
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }],
@@ -113,12 +127,14 @@ const features: readonly Feature[] = [
   // raw/genshin_calc_pub/src/js/db/Char/Mika.js:225-251
   {
     name: "plunge",
+    critDamageBonuses: PHYS_CRIT,
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
   },
   {
     name: "plunge_low",
+    critDamageBonuses: PHYS_CRIT,
     tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
@@ -126,6 +142,7 @@ const features: readonly Feature[] = [
   },
   {
     name: "plunge_high",
+    critDamageBonuses: PHYS_CRIT,
     tags: ["plunge_shockwave"],
     category: "attack",
     damageType: "plunge",
@@ -209,6 +226,40 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 Elemental Skill (Starfrost Swirl) levels.
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "Suppressive Barrage" (A1) — +10% Physical DMG per Detector stack (A1PhysBonus=10), lifting
+  // every Mika PHYSICAL hit (normals/charged/plunge). ConditionStacks read from mika_suppressive_barrage.
+  // Her maxStacks is gated: 3 (no A4) / 4 (A4 xor C6) / 5 (A4 and C6). At the oracle rep (ascension 6 →
+  // A4 always active) that collapses to max 4 below C6 and max 5 at C6 — modelled as TWO mutually-exclusive
+  // gated stacks conditions (the port's ConditionStacks maxStacks is a fixed number; the variable gate
+  // can't live on one entry). SELF mirror of party.mika_suppressive_barrage (which assumes max 5); the
+  // port modelled only the party.* version → golden-blind SKIP. (The asc<4 max-3 case never occurs in our
+  // asc-6 surface.) Base-inert: mika_suppressive_barrage absent → 0 stacks → 0% dmg_phys.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Mika.js:324-363 (conditions[2], ConditionStacks, info.ascension 1).
+  {
+    type: "stacks",
+    name: "mika_suppressive_barrage",
+    maxStacks: 4,
+    stats: { dmg_phys: 10 },
+    condition: { type: "not", items: [{ type: "constellation", constellation: 6 }] }, // cons < 6 → max 4
+  },
+  {
+    type: "stacks",
+    name: "mika_suppressive_barrage",
+    maxStacks: 5,
+    stats: { dmg_phys: 10 },
+    condition: { type: "constellation", constellation: 6 }, // C6 → max 5
+  },
+  // SELF "Companion's Counsel" (C6) — +60% Physical CRIT DMG (C6PhysCritDmg=60), lifting the crit/avg of
+  // every Mika physical hit (via each physical feature's critDamageBonuses:['crit_dmg_phys']). ConditionBoolean
+  // gated at C6 (lives in constellation[5] → THE CONSTELLATION IS A GATE). SELF mirror of
+  // party.mika_companions_counsel; the port modelled only the party.* version → golden-blind SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Mika.js:414-422 (constellation[5], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "mika_companions_counsel",
+    stats: { crit_dmg_phys: 60 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------
