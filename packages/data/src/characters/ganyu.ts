@@ -5,17 +5,14 @@
  * two Frostflake Arrow parts (arrow + bloom — both cryo, both +20% crit via A1),
  * plunge, cryo skill (Ice Lotus DMG), cryo burst (Celestial Shower).
  *
- * NOT folded (user-toggleable buffs, OFF in the fixed canonical build — verified
- * against the oracle: folding them inflates every cryo hit ~+20%):
- *   - A1 "Undivided Heart": +20% crit rate to the two Frostflake hits. A
- *     ConditionBoolean (serializeId 1, default OFF), NOT a ConditionStatic — the
- *     ConditionAscensionChar(1) subcondition only gates the toggle's availability,
- *     not auto-activation. Raw: Ganyu.js:290-302. (Contrast Amber's A1, which IS a
- *     ConditionStatic and therefore folds.)
- *   - A4 "Harmony Between Heaven and Earth": +20% Cryo DMG. Also a ConditionBoolean
- *     toggle (serializeId 2, default OFF), gated by ConditionAscensionChar(4).
- *     Raw: Ganyu.js:303-315.
- * Both omitted → no baseStats, no critRateBonuses on the Frostflake hits.
+ * SELF buffs modelled as toggle-gated conditions (were golden-blind SKIPPED — the port
+ * modelled only the party.* mirrors; the self toggles are OFF in the fixed canonical build,
+ * so the goldens never exercised them; a diff-parity sweep surfaced them):
+ *   - A1 "Undivided Heart": +20% crit rate to the two Frostflake hits (each declares
+ *     critRateBonuses:['crit_rate_ganyu']). ConditionBoolean toggle. Raw: Ganyu.js:290-302.
+ *   - A4 "Harmony Between Heaven and Earth": +20% Cryo DMG. ConditionBoolean toggle. Raw: Ganyu.js:303-315.
+ *   - C1 "Dew-Drinker": −15% enemy Cryo RES. C4 "Westward Sojourn": +5% dmg_all/stack (max 5).
+ * All base-inert until toggled (no baseStats).
  *
  * Non-damage output:
  *   - skill.ganyu_lotus_hp — Ice Lotus HP (talent% of Max HP), modelled as
@@ -121,21 +118,26 @@ const features: readonly Feature[] = [
     element: "cryo",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_aimed") }],
   },
-  // ganyu_frostflake: Frostflake Arrow itself (cryo). A1 crit bonus is a toggle, OFF here.
+  // ganyu_frostflake: Frostflake Arrow itself (cryo). A1 "Undivided Heart" crit_rate_ganyu (base-inert
+  // until the A1 self toggle fires; raw declares critRateBonuses:['crit_rate_ganyu'] on this feature
+  // → the port must too so the A1 +20% Crit Rate reaches its crit term). raw Ganyu.js:208-216.
   {
     name: "ganyu_frostflake",
     isAimed: true,
     category: "attack",
     damageType: "charged",
     element: "cryo",
+    critRateBonuses: ["crit_rate_ganyu"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.ganyu_frostflake") }],
   },
-  // ganyu_frostflake_bloom: Frostflake Arrow bloom (FeatureDamageCharged → damageType="charged"; cryo). A1 crit OFF here.
+  // ganyu_frostflake_bloom: Frostflake Arrow bloom (FeatureDamageCharged → damageType="charged"; cryo).
+  // A1 crit_rate_ganyu (base-inert; same note as ganyu_frostflake). raw Ganyu.js:219-227.
   {
     name: "ganyu_frostflake_bloom",
     category: "attack",
     damageType: "charged",
     element: "cryo",
+    critRateBonuses: ["crit_rate_ganyu"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.ganyu_frostflake_bloom") }],
   },
   // --- Plunge attacks ---
@@ -189,22 +191,52 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
-// C1 "Dew Drinker": ConditionBoolean toggle — OFF in constellations config. Skip.
+// SELF buffs (were golden-blind SKIPPED — the port modelled only the party.* mirrors of harmony/
+// dew_drinker/westward_sojourn and omitted ALL self versions; a diff-parity sweep surfaced them):
+//   A1 "Undivided Heart" (crit_rate_ganyu:20 → the 2 frostflake hits), A4 "Harmony" (dmg_cryo:20,
+//   ungated), C1 "Dew-Drinker" (enemy_res_cryo:-15, gated C1), C4 "Westward Sojourn" (dmg_all:5/stack,
+//   max 5, gated C4). Modelled below.
 // C2 "The Auspicious": ConditionStatic, no stats/settings, display only. Skip.
 // C3 "Preserved for the Hunt": +3 levels to Celestial Shower (burst).
 //    Raw cons[2]: new Condition({ settings: { char_skill_burst_bonus: 3 } })
 //    Burst features compile at talent level 10+3=13 from C3.
-// C4 "Westward Sojourn": ConditionStacks (toggle, default 0 stacks) — OFF. Skip.
 // C5 "The Merciful": +3 levels to Trail of the Qilin (skill).
 //    Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } })
 //    Skill features compile at talent level 10+3=13 from C5.
 // C6 "The Clement": ConditionStatic, no stats/settings, display only. Skip.
-// Sources: raw/genshin_calc_pub/src/js/db/Char/Ganyu.js:317-380
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Ganyu.js:289-380
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Celestial Shower (elemental burst).
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 levels to Trail of the Qilin (elemental skill).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "Undivided Heart" (A1) — +20% Crit Rate (A1CritRate=20) to the two Frostflake hits (each
+  // declares critRateBonuses:['crit_rate_ganyu']). ConditionBoolean ascension passive (rep at A6 →
+  // modelled ungated, the toggle is the gate). Self-only → golden-blind SKIP. raw Ganyu.js:290-302.
+  { type: "boolean", name: "ganyu_undivided_heart", stats: { crit_rate_ganyu: 20 } },
+  // SELF "Harmony Between Heaven and Earth" (A4) — +20% Cryo DMG (A4CryoDmg=20), lifting every Ganyu
+  // cryo hit. ConditionBoolean ascension passive (rep at A6 → ungated). SELF mirror of party.ganyu_harmony.
+  // raw Ganyu.js:303-315.
+  { type: "boolean", name: "ganyu_harmony", stats: { dmg_cryo: 20 } },
+  // SELF "Dew-Drinker" (C1) — −15% enemy Cryo RES (C1EnemyResCryo=-15), lifting every cryo hit + cryo
+  // reactions (e.g. superconduct). ConditionBoolean gated at C1 (constellation[0] → THE CONSTELLATION
+  // IS A GATE). SELF mirror of party.ganyu_dew_drinker. raw Ganyu.js:320-329.
+  {
+    type: "boolean",
+    name: "ganyu_dew_drinker",
+    stats: { enemy_res_cryo: -15 },
+    condition: { type: "constellation", constellation: 1 },
+  },
+  // SELF "Westward Sojourn" (C4) — +5% DMG per stack (C4DmgBonus=5), max 5 (= +25% dmg_all), lifting
+  // EVERY Ganyu hit. ConditionStacks gated at C4 (constellation[3] → THE CONSTELLATION IS A GATE).
+  // SELF mirror of party.ganyu_westward_sojourn. raw Ganyu.js:351-360.
+  {
+    type: "stacks",
+    name: "ganyu_westward_sojourn",
+    maxStacks: 5,
+    stats: { dmg_all: 5 },
+    condition: { type: "constellation", constellation: 4 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

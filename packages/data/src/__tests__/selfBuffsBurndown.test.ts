@@ -223,6 +223,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     sayu_egress_prep: 20,
   },
+  // Ganyu A1 crit_rate_ganyu+20 (2 frostflake hits) + A4 dmg_cryo+20 (cryo hits) + C1 enemy_res_cryo−15
+  // (cryo hits + reactions) + C4 dmg_all+5/stack (westward:5 → +25%). char_constellation:6 threads the
+  // C1/C4 gates ON, matching the oracle dump at constellation 6.
+  "ganyu-self-buffs": {
+    char_constellation: 6,
+    ganyu_undivided_heart: true,
+    ganyu_harmony: true,
+    ganyu_dew_drinker: true,
+    ganyu_westward_sojourn: 5,
+  },
 };
 
 interface ManifestItem {
