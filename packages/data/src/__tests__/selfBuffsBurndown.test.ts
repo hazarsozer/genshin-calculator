@@ -393,6 +393,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     ayato_bloomwater_blades: true,
     char_skill_burst: 10,
   },
+  // Yelan C4 "Bait-and-Switch" yelan_bait_and_switch:4 → +40% Max HP, lifting every HP-scaled hit
+  // (barb/skill/burst/exquisite/taking-all-comers/c6-barb). char_constellation:4 threads the C4 gate
+  // ON, matching the oracle dump at constellation 4 / 4 stacks.
+  "yelan-self-buffs": {
+    char_constellation: 4,
+    yelan_bait_and_switch: 4,
+  },
 };
 
 interface ManifestItem {
