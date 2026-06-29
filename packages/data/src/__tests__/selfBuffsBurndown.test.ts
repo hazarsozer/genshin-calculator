@@ -207,6 +207,15 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     chasca_showdown_the_glory_of_battle: true,
   },
+  // Ororon C1 dmg_skill_ororon+50 (hypersense hits) + C2 dmg_electro+8/stack (king_bee:4 → +32%) +
+  // C6 atk_percent+10/stack (ode:3 → +30%). char_constellation:6 threads ALL three cons gates ON,
+  // matching the oracle dump at constellation 6.
+  "ororon-self-buffs": {
+    char_constellation: 6,
+    ororon_trails_amidst_the_forest_fog: true,
+    ororon_king_bee_of_the_hidden_honeyed_wine: 4,
+    ororon_ode_to_deep_springs: 3,
+  },
 };
 
 interface ManifestItem {
