@@ -358,6 +358,17 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     thoma_burning_heart: true,
   },
+  // Chongyun SELF buffs — Frost Field cryo infusion (chongyun_frost_field → her physical normals/
+  // charged/plunge become cryo) + A4 enemy_res_cryo−10 (chongyun_rimechaser_blade) + C6
+  // dmg_burst_chongyun+15 (chongyun_rally_of_four_blades). char_constellation:6 threads the C6 gate
+  // ON, matching the oracle dump at constellation 6. The infusion + res-shred lift every cryo hit +
+  // cryo reaction; C6 lifts the burst.
+  "chongyun-self-buffs": {
+    char_constellation: 6,
+    chongyun_frost_field: true,
+    chongyun_rimechaser_blade: true,
+    chongyun_rally_of_four_blades: true,
+  },
 };
 
 interface ManifestItem {
