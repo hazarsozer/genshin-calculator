@@ -430,6 +430,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     traveler_swordfighting_techniques: true,
     traveler_special_training: true,
   },
+  // Traveler (Anemo) shared passives + C6 traveler_intertwined_winds (enemy_res_anemo−20 + the
+  // pyro dropdown enemy_res_pyro−20). char_constellation:6 threads the C6 gate ON, matching the
+  // oracle dump at constellation 6.
+  "traveler-anemo-self-buffs": {
+    char_constellation: 6,
+    traveler_intertwined_winds: true,
+    traveler_intertwined_winds_element: "pyro",
+    traveler_swordfighting_techniques: true,
+    traveler_special_training: true,
+  },
 };
 
 interface ManifestItem {
