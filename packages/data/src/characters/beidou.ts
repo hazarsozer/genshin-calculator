@@ -234,13 +234,36 @@ const features: readonly Feature[] = [
 // C4 "Stunning Revenge": ConditionStatic (text_percent_dmg:20) display-only → SKIP.
 //   The actual C4 damage comes from the beidou_stunning_revenge feature above.
 // C5: +3 levels to Stormbreaker (burst). Raw cons[4] settings char_skill_burst_bonus:3.
-// C6 "Bane of Evil": ConditionBoolean (enemy_res_electro:-15 toggle) → SKIP (toggle OFF).
+// C6 "Bane of Evil": SELF enemy Electro RES -15% (ConditionBoolean). Ported below as the SELF
+//   mirror of party.beidou_bane_of_the_evil (was golden-blind SKIPPED).
 // Raw: Beidou.js:374-437 (constellation array).
+//
+// A4 "Lightning Storm" (char-level ConditionBoolean, NOT a constellation): SELF +15% Normal DMG +
+//   +15% Charged DMG (atk_speed:15 is display-only, dropped). Ported below as an ungated toggle
+//   (ascension-4 gate always satisfied at the canonical A6 build) — was golden-blind SKIPPED (the
+//   port had no self mirror; there is no party.* version of this self-only passive).
+//   Raw: Beidou.js:357-372 (char.conditions[1], ConditionBoolean, info.ascension 4).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Tidecaller (skill).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Stormbreaker (burst).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF "Lightning Storm" (A4) — +15% Normal-Attack DMG + +15% Charged-Attack DMG after Tidecaller
+  // releases lightning, lifting every Beidou normal/charged hit. ConditionBoolean ascension passive
+  // (rep at A6 → modelled ungated, the toggle is the gate). atk_speed:15 (raw) is display-only → dropped.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Beidou.js:357-372 (char.conditions[1], info.ascension 4).
+  { type: "boolean", name: "beidou_lightning_storm", stats: { dmg_normal: 15, dmg_charged: 15 } },
+  // SELF "Bane of Evil" (C6) — enemy Electro RES -15%, lifting every Beidou electro hit (skill/burst/
+  // counters + reaction.electrocharged). ConditionBoolean gated at C6 (lives in constellation[5] →
+  // THE CONSTELLATION IS A GATE). SELF mirror of party.beidou_bane_of_the_evil; the port modelled only
+  // the party.* version → golden-blind SKIP. (C6ElectroRes = -15, Beidou.js:133.)
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Beidou.js:424-436 (constellation[5], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "beidou_bane_of_the_evil",
+    stats: { enemy_res_electro: -15 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

@@ -126,6 +126,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     xiangling_crispy: true,
     xiangling_condensed_pyronado: true,
   },
+  // Beidou A4 dmg_normal+15 & dmg_charged+15 (ungated) + C6 enemy_res_electro−15 (≥C6).
+  // char_constellation:6 threads the C6 gate ON, matching the oracle dump at constellation 6.
+  "beidou-self-buffs": {
+    char_constellation: 6,
+    beidou_lightning_storm: true,
+    beidou_bane_of_the_evil: true,
+  },
 };
 
 interface ManifestItem {
