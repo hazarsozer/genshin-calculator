@@ -440,6 +440,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     traveler_swordfighting_techniques: true,
     traveler_special_training: true,
   },
+  // Traveler (Electro) shared passives + C2 traveler_violet_vehemence (enemy_res_electro−15).
+  // traveler_abundance_amulet is set (sweep) but damage-inert (recharge-only). char_constellation:2
+  // threads the C2 gate ON, matching the oracle dump at constellation 2.
+  "traveler-electro-self-buffs": {
+    char_constellation: 2,
+    traveler_violet_vehemence: true,
+    traveler_abundance_amulet: true,
+    traveler_swordfighting_techniques: true,
+    traveler_special_training: true,
+  },
 };
 
 interface ManifestItem {
