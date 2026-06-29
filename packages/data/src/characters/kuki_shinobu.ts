@@ -224,12 +224,25 @@ const features: readonly Feature[] = [
 // C4 "To Sever Sealing" damage: cons-added feature above; cons array slot is
 //   ConditionStatic (display-only text_percent:9.7) → no stat entry needed here.
 // C5 "To Ward Weakness": +3 levels to burst. Kuki.js:401-409.
-// C6 "To Ward Weakness" mastery: ConditionBoolean toggle (+150 mastery) → SKIP.
+// C6 "To Ward Weakness" mastery: ConditionBoolean toggle (+150 EM, modelled below) — was golden-
+//   blind SKIPPED (the self toggle is OFF in the fixed build, so the goldens never exercised it; a
+//   diff-parity sweep surfaced her skill hits + reactions diverging from cons 6). +150 EM lifts her
+//   skill damage (via the A4 mastery→skill multiplier) AND her transformative reactions.
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Sanctifying Ring (elemental skill). Kuki.js:382-390.
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Gyoei Narukami Kariyama Rite (burst). Kuki.js:401-409.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF C6 "To Ward Weakness" — +150 Elemental Mastery (mastery). ConditionBoolean toggle gated at
+  // C6 (constellation[5] → THE CONSTELLATION IS A GATE; base-inert below C6 / when untoggled). Lifts
+  // her skill damage through the A4 mastery→skill multiplier + her reactions (EM scales them). No
+  // party mirror (self-only). raw Kuki.js:411-423 (C6Mastery = 150).
+  {
+    type: "boolean",
+    name: "kuki_shinobu_to_ward_weakness",
+    stats: { mastery: 150 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

@@ -378,6 +378,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     dehya_the_sand_blades_glittering: true,
     dehya_the_burning_claws_cleaving: 4,
   },
+  // Kuki Shinobu C6 "To Ward Weakness" mastery+150 (kuki_shinobu_to_ward_weakness) — lifts her skill
+  // hits (via the A4 mastery→skill multiplier) + her reactions (EM-scaled). char_constellation:6
+  // threads the C6 gate ON, matching the oracle dump at constellation 6.
+  "kuki-shinobu-self-buffs": {
+    char_constellation: 6,
+    kuki_shinobu_to_ward_weakness: true,
+  },
 };
 
 interface ManifestItem {
