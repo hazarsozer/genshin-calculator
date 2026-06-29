@@ -179,6 +179,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     albedo_descent_of_divinity: true,
     albedo_dust_of_purification: true,
   },
+  // Lisa A4 enemy_def_reduce+15 (ungated, lifts every hit) + C2 def_percent+25 (damage-inert, gated C2 →
+  // char_constellation:6 threads the cons gate ON, matching the oracle dump at constellation 6). All damage
+  // triples lift only by the A4 enemy-DEF shred.
+  "lisa-self-buffs": {
+    char_constellation: 6,
+    lisa_static_electricity_field: true,
+    lisa_electromagnetic_field: true,
+  },
 };
 
 interface ManifestItem {

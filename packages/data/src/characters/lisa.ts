@@ -166,7 +166,8 @@ const features: readonly Feature[] = [
 // Constellations (P2.C Wave-1)
 // ---------------------------------------------------------------------------
 // C1 "Infinite Circuit" (ConditionStatic description-only) → SKIP.
-// C2 "Electromagnetic Field" (ConditionBoolean def_percent toggle) → SKIP (off).
+// C2 "Electromagnetic Field" (ConditionBoolean def_percent toggle) → modelled below as a SELF
+//   condition (damage-inert for Lisa's ATK-scaled kit; was golden-blind SKIPPED).
 // C3 "Resonant Thunder" → +3 Elemental Burst (Lightning Rose) levels.
 //   raw: constellation[2]: Condition{ settings:{char_skill_burst_bonus:3} }
 // C4 "Plasma Eruption" (ConditionStatic description-only) → SKIP.
@@ -181,6 +182,23 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 Elemental Skill (Violet Arc) levels.
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "Static Electricity Field" (A4) — enemy DEF −15% (A4DefReduce=15) on an Electro-Charged target,
+  // lifting every Lisa damage feature (the enemy-DEF multiplier on each hit). ConditionBoolean ascension
+  // passive (rep at A6 → modelled ungated, the toggle is the gate). SELF mirror of
+  // party.lisa_static_electricity_field; the port modelled only the party.* version → golden-blind SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Lisa.js:288-300 (conditions[1], ConditionBoolean, info.ascension 4).
+  { type: "boolean", name: "lisa_static_electricity_field", stats: { enemy_def_reduce: 15 } },
+  // SELF "Electromagnetic Field" (C2) — +25% DEF (C2DefPercent=25). DAMAGE-INERT for Lisa's OWN kit (all
+  // her hits are ATK-scaled — no DEF-scaling feature), modelled for faithful self-condition coverage.
+  // ConditionBoolean gated at C2 (lives in constellation[1] → THE CONSTELLATION IS A GATE). Self-only
+  // (no party.* mirror).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Lisa.js:311-322 (constellation[1], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "lisa_electromagnetic_field",
+    stats: { def_percent: 25 },
+    condition: { type: "constellation", constellation: 2 },
+  },
 ];
 
 // ---------------------------------------------------------------------------
