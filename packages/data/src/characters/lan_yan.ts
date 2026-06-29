@@ -305,7 +305,8 @@ const features: readonly Feature[] = [
 // C2 "Dance Vestments Billow Like Rainbow Jade" (ConditionStatic description-only) → SKIP.
 // C3 "..."  → +3 Elemental Skill levels.
 //   raw: constellation[2]: Condition{ settings:{char_skill_elemental_bonus:3} }
-// C4 "With Drakefalcon's Blood Pearls Adorned" (ConditionBoolean mastery toggle) → SKIP (off).
+// C4 "With Drakefalcon's Blood Pearls Adorned" (ConditionBoolean mastery toggle). Ported below as
+//   the SELF mirror of party.lanyan_with_drakefalcons_blood_pearls_adorned (was golden-blind SKIP).
 // C5 "..."  → +3 Elemental Burst levels.
 //   raw: constellation[4]: Condition{ settings:{char_skill_burst_bonus:3} }
 // C6 "Let Us Away on Sylphic Wing..." (ConditionStatic description-only) → SKIP.
@@ -313,6 +314,17 @@ const features: readonly Feature[] = [
 // Sources: raw/genshin_calc_pub/src/js/db/Char/LanYan.js:390-446
 
 const constellationConditions: readonly Condition[] = [
+  // SELF "With Drakefalcon's Blood, Pearls Adorned" (C4) — +60 Elemental Mastery, lifting her
+  // EM-scaled A4 skill/burst terms AND every transformative reaction (swirl/burning/superconduct/…).
+  // ConditionBoolean gated at C4 (lives in constellation[3] → THE CONSTELLATION IS A GATE). SELF
+  // mirror of party.lanyan_with_drakefalcons_blood_pearls_adorned; the port modelled only the party.*.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/LanYan.js:416-428 (constellation[3], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "lanyan_with_drakefalcons_blood_pearls_adorned",
+    stats: { mastery: 60 },
+    condition: { type: "constellation", constellation: 4 },
+  },
   // C3: +3 Elemental Skill (Swallow-Wisp Pinion Dance) levels.
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 Elemental Burst (Lustrous Moonrise) levels.

@@ -108,6 +108,11 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     kirara_countless_sights_to_see: true,
   },
+  // LanYan C4 mastery+60 (gated C4 → char_constellation:4 threads the cons gate ON).
+  "lanyan-self-buffs": {
+    char_constellation: 4,
+    lanyan_with_drakefalcons_blood_pearls_adorned: true,
+  },
 };
 
 interface ManifestItem {
