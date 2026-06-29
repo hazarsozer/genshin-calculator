@@ -180,13 +180,15 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
-// C1 "Crispy Outside, Tender Inside": ConditionBoolean toggle → SKIP (toggle OFF).
+// C1 "Crispy Outside, Tender Inside": SELF enemy Pyro RES -15% (ConditionBoolean). Ported below
+//   as the SELF mirror of party.xiangling_crispy (was golden-blind SKIPPED).
 // C2 "Oil Meets Fire": ConditionStatic with text_percent_dmg:75 (display-only) → SKIP.
 //   The actual C2 damage comes from the xiangling_oil_meets_fire feature above.
 // C3 "Slow-Bake It": +3 levels to Pyronado (burst). Raw cons[2] settings char_skill_burst_bonus:3.
 // C4 "Slowbake": ConditionStatic with text_percent:40 (display-only) → SKIP.
 // C5 "Guoba Mad": +3 levels to Guoba Attack (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
-// C6 "Condensed Pyronado": ConditionBoolean toggle (dmg_pyro:15) → SKIP (toggle OFF).
+// C6 "Condensed Pyronado": SELF +15% Pyro DMG (ConditionBoolean). Ported below as the SELF mirror
+//   of party.xiangling_condensed_pyronado (was golden-blind SKIPPED).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Pyronado (elemental burst).
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
@@ -197,6 +199,27 @@ const constellationConditions: readonly Condition[] = [
   // (ConditionBoolean { name:'xiangling_beware', stats:{ atk_percent:10 } }; asc-4 gate
   // always true at oracle asc 6 → no gate needed here).
   { type: "boolean", name: "xiangling_beware", stats: { atk_percent: 10 } },
+  // SELF "Crispy Outside, Tender Inside" (C1) — enemy Pyro RES -15%, lifting every Xiangling pyro
+  // hit (and reaction.burning/overloaded). ConditionBoolean gated at C1 (lives in constellation[0]
+  // → THE CONSTELLATION IS A GATE). SELF mirror of party.xiangling_crispy; the port modelled only
+  // the party.* version → golden-blind SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Xiangling.js:320-332 (constellation[0], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "xiangling_crispy",
+    stats: { enemy_res_pyro: -15 },
+    condition: { type: "constellation", constellation: 1 },
+  },
+  // SELF "Condensed Pyronado" (C6) — +15% Pyro DMG, lifting every Xiangling pyro hit. ConditionBoolean
+  // gated at C6 (lives in constellation[5] → THE CONSTELLATION IS A GATE). SELF mirror of
+  // party.xiangling_condensed_pyronado; the port modelled only the party.* version → golden-blind SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Xiangling.js:373-385 (constellation[5], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "xiangling_condensed_pyronado",
+    stats: { dmg_pyro: 15 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

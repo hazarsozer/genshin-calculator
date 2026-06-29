@@ -119,6 +119,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     sucrose_chaotic_entropy: "pyro",
   },
+  // Xiangling C1 enemy_res_pyro−15 (≥C1) + C6 dmg_pyro+15 (≥C6). char_constellation:6 threads BOTH
+  // cons gates ON, matching the oracle dump at constellation 6.
+  "xiangling-self-buffs": {
+    char_constellation: 6,
+    xiangling_crispy: true,
+    xiangling_condensed_pyronado: true,
+  },
 };
 
 interface ManifestItem {
