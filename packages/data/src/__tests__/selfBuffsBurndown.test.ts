@@ -343,6 +343,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_skill_burst: 10,
     bennet_fantastic_voyage: true,
   },
+  // Layla C4 "Starry Illumination" — 5% of her own Max HP added to each normal/charged hit (a SELF
+  // CharMultiplier targeting normal/charged). char_constellation:6 threads the C4 gate ON (with
+  // layla_starry_illumination), matching the oracle dump at constellation 6. (Shields are non-damage
+  // → not asserted.)
+  "layla-self-buffs": {
+    char_constellation: 6,
+    layla_starry_illumination: true,
+  },
 };
 
 interface ManifestItem {

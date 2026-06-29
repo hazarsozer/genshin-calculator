@@ -200,7 +200,12 @@ const features: readonly Feature[] = [
 // C2 "Light's Remit" (ConditionStatic description-only) → SKIP.
 // C3 "Starstream Calculations" → +3 Elemental Skill (Night's Formal Focus) levels.
 //   raw: constellation[2]: Condition{ settings:{char_skill_elemental_bonus:3} }
-// C4 "Starry Illumination" (ConditionBoolean HP→normal/charged multiplier toggle) → SKIP (off).
+// C4 "Starry Illumination" — SELF HP→normal/charged damage-instance multiplier (5% of Max HP added
+//   to each normal/charged hit), gated by the layla_starry_illumination toggle AND constellation 4.
+//   Modelled below in char.multipliers as the SELF mirror of the party.layla_starry_illumination
+//   multiplier (same CharMultiplier+target machinery, scaling off her OWN hp_total instead of the
+//   teammate-lifted layla_max_hp) → was golden-blind SKIPPED (no golden toggles it; a diff-parity
+//   sweep surfaced normal/charged diverging from cons 4). raw Layla.js:319-332.
 // C5 "Parallax Zenith" → +3 Elemental Burst (Dream of the Star-Stream Shaker) levels.
 //   raw: constellation[4]: Condition{ settings:{char_skill_burst_bonus:3} }
 // C6 "Radiant Soulfire" (ConditionStatic — always-on at C6, REAL stats):
@@ -249,6 +254,30 @@ const laylaPartyMultipliers: readonly CharMultiplier[] = [
   } satisfies CharMultiplier,
 ];
 
+// SELF C4 "Starry Illumination" — 5% of her OWN Max HP added to each normal/charged hit, gated by
+// the layla_starry_illumination toggle AND constellation 4. The SELF mirror of laylaPartyMultipliers
+// above (same CharMultiplier shape + target), scaling off her own hp_total instead of the teammate-
+// lifted layla_max_hp. Base-inert: the AND gate is off below C4 / when untoggled (the 58k goldens
+// never set the toggle). raw/genshin_calc_pub/src/js/db/Char/Layla.js:319-332 (FeatureMultiplier
+// scaling:'hp*', source:'constellation4', values:[C4NormalBonus=5], condition:ConditionAnd([
+//   ConditionBoolean(layla_starry_illumination), ConditionConstellation(4)]), target:normal/charged).
+const laylaSelfMultipliers: readonly CharMultiplier[] = [
+  {
+    source: "constellation4",
+    scaling: "hp",
+    leveling: "",
+    values: { getValue: (): number => C4_NORMAL_BONUS },
+    condition: {
+      type: "and",
+      items: [
+        { type: "boolean", name: "layla_starry_illumination" },
+        { type: "constellation", constellation: 4 },
+      ],
+    },
+    target: { damageTypes: ["normal", "charged"] },
+  } satisfies CharMultiplier,
+];
+
 export const layla: DbObjectChar = {
   name: "layla",
   gameId: 10000074,
@@ -259,7 +288,7 @@ export const layla: DbObjectChar = {
   statTable: LaylaStatTable,
   talents,
   features,
-  multipliers: [],
+  multipliers: laylaSelfMultipliers,
   conditions: constellationConditions,
   partyData: {
     // loadStats mirrors raw Layla.js:427-429 (hp_total stat).

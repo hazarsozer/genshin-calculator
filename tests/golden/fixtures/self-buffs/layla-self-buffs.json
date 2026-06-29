@@ -1,0 +1,237 @@
+{
+  "element": "cryo",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 2024.917057106976,
+      "category": "attack",
+      "crit": 3681.667376558138,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1840.833688279069
+    },
+    "attack.charged_hit_2": {
+      "average": 2138.866314944907,
+      "category": "attack",
+      "crit": 3888.8478453543767,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1944.4239226771883
+    },
+    "attack.charged_hit_total": {
+      "average": 4163.783372051883,
+      "category": "attack",
+      "crit": 7570.515221912515,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3785.2576109562574
+    },
+    "attack.normal_hit_1": {
+      "average": 1966.9332933886467,
+      "category": "attack",
+      "crit": 3576.242351615721,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1788.1211758078605
+    },
+    "attack.normal_hit_2": {
+      "average": 1906.5591782775164,
+      "category": "attack",
+      "crit": 3466.4712332318477,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1733.2356166159238
+    },
+    "attack.normal_hit_3": {
+      "average": 2447.3813475193115,
+      "category": "attack",
+      "crit": 4449.784268216929,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2224.8921341084647
+    },
+    "attack.plunge": {
+      "average": 1310.9862114254004,
+      "category": "attack",
+      "crit": 2383.6112935007277,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1191.8056467503638
+    },
+    "attack.plunge_high": {
+      "average": 3274.291227809444,
+      "category": "attack",
+      "crit": 5953.256777835352,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2976.628388917676
+    },
+    "attack.plunge_low": {
+      "average": 2621.4174388954343,
+      "category": "attack",
+      "crit": 4766.213525264426,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2383.106762632213
+    },
+    "burst.layla_starlight_slug_dmg": {
+      "average": 3008.0986925149755,
+      "category": "burst",
+      "crit": 5469.270350027228,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2734.635175013614
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "reaction.superconduct": {
+      "average": 3584.3021786316276,
+      "category": "reaction",
+      "crit": 3584.3021786316276,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3584.3021786316276
+    },
+    "skill.layla_base_shield_dmg_absorption": {
+      "average": 11736.967218165186,
+      "category": "skill",
+      "crit": 11736.967218165186,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 11736.967218165186
+    },
+    "skill.layla_party_shield": {
+      "average": 4107.938526357815,
+      "category": "skill",
+      "crit": 4107.938526357815,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 4107.938526357815
+    },
+    "skill.layla_shooting_star_dmg": {
+      "average": 921.7541062959068,
+      "category": "skill",
+      "crit": 1675.9165569016486,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 837.9582784508243
+    },
+    "skill.skill_dmg": {
+      "average": 358.1262389192129,
+      "category": "skill",
+      "crit": 651.1386162167506,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 325.5693081083753
+    },
+    "stats.atk": {
+      "average": 2015.0605819740001,
+      "category": "stats",
+      "crit": 2015.0605819740001,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2015.0605819740001
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1531.220664,
+      "category": "stats",
+      "crit": 1531.220664,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1531.220664
+    },
+    "stats.hp": {
+      "average": 30154.832309968,
+      "category": "stats",
+      "crit": 30154.832309968,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 30154.832309968
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Layla",
+  "repSlug": "layla",
+  "schema": 1,
+  "slug": "layla-self-buffs",
+  "weapon": "weapon_name.the_alley_flash",
+  "weaponType": "sword"
+}
