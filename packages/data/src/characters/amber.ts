@@ -204,6 +204,21 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 levels to Explosive Puppet (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "Precise Shot" (A4) — +15% ATK (A4AtkBonus=15) while a weak-spot is hit, lifting every Amber
+  // damage feature. ConditionBoolean ascension passive (rep at A6 → modelled ungated, the toggle is the
+  // gate). Self-only (no party.* mirror); the port SKIPPED it → golden-blind SKIP (no golden toggles it).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Amber.js:301-313 (conditions[1], ConditionBoolean, info.ascension 4).
+  { type: "boolean", name: "amber_precise_shot", stats: { atk_percent: 15 } },
+  // SELF "Wildfire" (C6) — +15% ATK (C6AtkBonus=15; move_speed is display-only), lifting every Amber
+  // damage feature. ConditionBoolean gated at C6 (lives in constellation[5] → THE CONSTELLATION IS A
+  // GATE). SELF mirror of party.amber_wildfire; the port modelled only the party.* version → golden-blind SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Amber.js:368-381 (constellation[5], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "amber_wildfire",
+    stats: { atk_percent: 15 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

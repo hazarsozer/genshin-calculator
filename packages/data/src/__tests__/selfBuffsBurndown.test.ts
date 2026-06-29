@@ -154,6 +154,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     gorou_heedless_of_the_wind_and_weather: true,
     gorou_generals_war_banner: true,
   },
+  // Amber A4 atk_percent+15 (ungated) + C6 atk_percent+15 (gated C6 → char_constellation:6 threads the
+  // cons gate ON, matching the oracle dump at constellation 6).
+  "amber-self-buffs": {
+    char_constellation: 6,
+    amber_precise_shot: true,
+    amber_wildfire: true,
+  },
 };
 
 interface ManifestItem {
