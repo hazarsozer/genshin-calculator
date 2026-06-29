@@ -144,6 +144,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     venti_storm: true,
     venti_storm_element: "pyro",
   },
+  // Gorou A1 def_percent+25 (ungated) + standing_firm flat DEF (banner-gated, scaled by skill level)
+  // + C6 crit_dmg_geo+10 (banner+C6). char_skill_elemental:10 feeds the standing_firm static-level
+  // (this burndown's buildStats call omits talentLevels, so the skill level is threaded here);
+  // char_constellation:6 threads the C6 gate ON. Matches the oracle dump at constellation 6 / skill 10.
+  "gorou-self-buffs": {
+    char_constellation: 6,
+    char_skill_elemental: 10,
+    gorou_heedless_of_the_wind_and_weather: true,
+    gorou_generals_war_banner: true,
+  },
 };
 
 interface ManifestItem {

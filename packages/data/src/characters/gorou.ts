@@ -125,6 +125,10 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "charged",
     element: "geo",
+    // crit_dmg_geo (C6 "Inviolable Essence") folds into the crit term of Gorou's geo hits — her
+    // getDefaultStatsCritDamage auto-includes crit_dmg_<element>; the port requires the feature to
+    // declare it (collectFeatureBonusKeys). Base-inert: crit_dmg_geo=0 until the C6 condition fires.
+    critDamageBonuses: ["crit_dmg_geo"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_aimed") }],
   },
   // --- Plunge attacks (physical) ---
@@ -157,6 +161,7 @@ const features: readonly Feature[] = [
     name: "skill_dmg",
     category: "skill",
     element: "geo",
+    critDamageBonuses: ["crit_dmg_geo"], // C6 geo crit DMG (base-inert; see charged_aimed note)
     multipliers: [
       { leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") },
       a4SkillDefTerm,
@@ -170,6 +175,7 @@ const features: readonly Feature[] = [
     name: "burst_dmg",
     category: "burst",
     element: "geo",
+    critDamageBonuses: ["crit_dmg_geo"], // C6 geo crit DMG (base-inert; see charged_aimed note)
     multipliers: [
       { leveling: "char_skill_burst", scaling: "def", values: talents.get("burst.burst_dmg") },
       a4BurstDefTerm,
@@ -181,6 +187,7 @@ const features: readonly Feature[] = [
     name: "gorou_crystal_collapse_dmg",
     category: "burst",
     element: "geo",
+    critDamageBonuses: ["crit_dmg_geo"], // C6 geo crit DMG (base-inert; see charged_aimed note)
     multipliers: [
       { leveling: "char_skill_burst", scaling: "def", values: talents.get("burst.gorou_crystal_collapse_dmg") },
       a4BurstDefTerm,
@@ -201,36 +208,9 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Constellation conditions (P2.C Wave-1)
-// ---------------------------------------------------------------------------
-// C1 "Rushing Hound: Swift as the Wind": ConditionStatic, no real stats → SKIP.
-// C2 "Steady Hound: Steadfast as a Clock": ConditionStatic, no real stats → SKIP.
-// C4 "Lapping Hound: Warm as Water": FeatureHeal gated by ConditionConstellation(4)
-//   (heal feature, not a damage triple → not in golden suite) → SKIP.
-// C6 "Inviolable Essence": Condition(crit_dmg_geo) gated by ConditionBoolean toggles
-//   (gorou_generals_war_banner + ConditionElementsCount) → OFF at baseline → SKIP.
-//
-// Always-on: C3 (+3 skill talent), C5 (+3 burst talent).
-// Sources: raw/genshin_calc_pub/src/js/db/Char/Gorou.js — char.conditions C3 + constellation C5.
-
-const constellationConditions: readonly Condition[] = [
-  // C3 "Mauling Hound: Fierce as Fire" — +3 Elemental Skill.
-  // Raw char.conditions: new Condition({ settings: { char_skill_elemental_bonus: 3 },
-  //   condition: new ConditionConstellation({ constellation: 3 }) }).
-  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
-  // C5 "Flowerfall" — +3 Elemental Burst.
-  // Raw constellation[4]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
-  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
-];
-
-// ---------------------------------------------------------------------------
-// DbObjectChar
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
 // gorou_def_bonus talent table — General's War Banner's flat DEF bonus by skill
 // level (raw Gorou.js:76 `new StatTable('gorou_def_bonus', charTalentTables.Gorou.s2.p2)`).
-// standing_firm reads it via `getAlias('skill.gorou_def_bonus','def')` (Gorou.js:470),
+// standing_firm reads it via `getAlias('skill.gorou_def_bonus','def')` (Gorou.js:339/470),
 // i.e. these values are added under the `def` stat key, indexed by the skill level.
 // Inlined as a raw number[] because `static-level`'s `levelStats` consumes a value
 // array (StatTable.getValue semantics), not a TalentTable. Values mirror
@@ -241,6 +221,75 @@ const GOROU_DEF_BONUS = [
   206.16, 221.622, 237.084, 257.7, 273.162, 288.624, 309.24, 329.856, 350.472, 371.088, 391.704,
   412.32, 438.09, 463.86, 489.63,
 ] as const;
+
+// ---------------------------------------------------------------------------
+// Constellation + self conditions (P2.C Wave-1)
+// ---------------------------------------------------------------------------
+// C1 "Rushing Hound: Swift as the Wind": ConditionStatic, no real stats → SKIP.
+// C2 "Steady Hound: Steadfast as a Clock": ConditionStatic, no real stats → SKIP.
+// C4 "Lapping Hound: Warm as Water": FeatureHeal gated by ConditionConstellation(4)
+//   (heal feature, not a damage triple → not in golden suite) → SKIP.
+// C6 "Inviolable Essence": Condition(crit_dmg_geo) gated by gorou_generals_war_banner
+//   (+ ConditionElementsCount tiers). The banner-only tier (crit_dmg_geo +10) is ported
+//   below; the geo-count≥2/≥3 tiers are inert solo (1 geo) → deferred (see note).
+//
+// Always-on: C3 (+3 skill talent), C5 (+3 burst talent).
+// SELF buffs golden-blind SKIPPED (the port modelled only the party.* mirrors): A1 heedless
+//   (+25% DEF), standing_firm (banner-gated flat DEF by skill level), C6 crit_dmg_geo. Ported below.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Gorou.js — char.conditions + constellation.
+
+const constellationConditions: readonly Condition[] = [
+  // C3 "Mauling Hound: Fierce as Fire" — +3 Elemental Skill.
+  // Raw char.conditions: new Condition({ settings: { char_skill_elemental_bonus: 3 },
+  //   condition: new ConditionConstellation({ constellation: 3 }) }).
+  { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C5 "Flowerfall" — +3 Elemental Burst.
+  // Raw constellation[4]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
+  { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF "Heedless of the Wind and Weather" (A1) — +25% DEF (A1DefBonus=25). A DEF stat buff that
+  // flows through Gorou's OWN A4 DEF→damage terms (skill_dmg +156% DEF, burst/crystal_collapse +15.6%
+  // DEF, all already modelled per-feature) → lifts every DEF-scaling Gorou hit. ConditionBoolean
+  // ascension passive (rep at A6 → modelled ungated, the toggle is the gate). SELF mirror of
+  // party.gorou_heedless_of_the_wind_and_weather; the port modelled only the party.* version → golden-blind SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Gorou.js:307-317 (char.conditions, ConditionBoolean, info.ascension 1).
+  { type: "boolean", name: "gorou_heedless_of_the_wind_and_weather", stats: { def_percent: 25 } },
+  // SELF "Standing Firm" (General's War Banner field) — flat DEF scaled by Gorou's OWN Elemental Skill
+  // level (the gorou_def_bonus table), gated by the gorou_generals_war_banner master toggle. The SELF
+  // mirror of party.gorou_standing_firm (modelled below in partyData via the same static-level pattern,
+  // but reading the LIFTED teammate level gorou_char_skill_elemental); the self version reads the char's
+  // own char_skill_elemental. ConditionStaticLevel (extends ConditionStatic → always active once gated;
+  // no own toggle, the banner is the only gate). The extra flat DEF flows through the A4 DEF terms.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Gorou.js:334-342 (char.conditions, ConditionStaticLevel).
+  {
+    type: "static-level",
+    levelSetting: "char_skill_elemental",
+    levelStats: { def: GOROU_DEF_BONUS },
+    condition: { type: "boolean", name: "gorou_generals_war_banner" },
+  },
+  // SELF "Inviolable Essence" (C6, banner-only tier) — +10% Geo CRIT DMG (C6CritDmgGeo1=10) while
+  // General's War Banner is active, lifting the crit/avg of every Gorou geo hit. A plain static
+  // crit_dmg_geo buff gated on (constellation 6) AND (gorou_generals_war_banner). SELF mirror of the
+  // first crit_dmg_geo tier of party.gorou_mountainous_fealty.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Gorou.js:407-412 (constellation[5], first Condition tier).
+  {
+    type: "static",
+    stats: { crit_dmg_geo: 10 },
+    condition: { type: "and", items: [
+      { type: "constellation", constellation: 6 },
+      { type: "boolean", name: "gorou_generals_war_banner" },
+    ] },
+  },
+  // ── Deferred (NOT ported — inert under the single-char self-buffs sweep) ──
+  //   - gorou_crunch (dmg_geo +15, Gorou.js:351-361): gated banner AND ConditionElementsCount(geo,3).
+  //   - C6 crit_dmg_geo tiers 2/3 (+10 / +20, Gorou.js:413-431): gated banner AND ElementsCount(geo,2)/(3).
+  // All require ≥2/≥3 geo party members; solo (1 geo) leaves them OFF in her engine, so omitting them
+  // is faithful here. They need an `elements-count` core Condition variant (the union has none) + a
+  // multi-teammate rep — out of scope for this DATA port (mirrors the partyData deferral below).
+];
+
+// ---------------------------------------------------------------------------
+// DbObjectChar
+// ---------------------------------------------------------------------------
 
 export const gorou: DbObjectChar = {
   name: "gorou",
