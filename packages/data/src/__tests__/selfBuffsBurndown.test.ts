@@ -263,6 +263,15 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     mona_prophecy_of_oblivion: true,
     mona_rhetorics_of_calamitas: 3,
   },
+  // Charlotte C2 charlotte_pursue_truth:3 (atk_percent +30%, ≥C2) + C4 charlotte_a_responsibility_to_
+  // oversee (×1.1 scalingMultiplier on the 3 burst damage features, ≥C4). char_constellation:6 threads
+  // both cons gates ON, matching the oracle dump at constellation 6. (A4 diff-origin dmg_cryo is party-
+  // derived → not a self toggle, not set here.)
+  "charlotte-self-buffs": {
+    char_constellation: 6,
+    charlotte_pursue_truth: 3,
+    charlotte_a_responsibility_to_oversee: true,
+  },
 };
 
 interface ManifestItem {
