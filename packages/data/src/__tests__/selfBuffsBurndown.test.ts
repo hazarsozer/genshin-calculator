@@ -450,6 +450,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     traveler_swordfighting_techniques: true,
     traveler_special_training: true,
   },
+  // Traveler (Dendro) A1 verdant_overgrowth:10 (+60 EM) + shared passives (+15 EM) + C6
+  // traveler_withering_aggregation_1 (dmg_dendro+12). The +75 EM lifts the A4 dynamic EM→DMG +
+  // every dendro reaction. char_constellation:6 threads the C6 gate ON, matching the oracle dump.
+  "traveler-dendro-self-buffs": {
+    char_constellation: 6,
+    traveler_verdant_overgrowth: 10,
+    traveler_withering_aggregation_1: true,
+    traveler_swordfighting_techniques: true,
+    traveler_special_training: true,
+  },
 };
 
 interface ManifestItem {
