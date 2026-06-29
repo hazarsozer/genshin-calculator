@@ -33,7 +33,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Aloy)
  */
 
-import type { DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Aloy as AloyStatTable } from "../generated/charTables.js";
 import { Aloy as AloyTalents } from "../generated/charTalentTables.js";
 
@@ -193,6 +193,51 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// SELF conditions (golden-blind SKIPPED — the port modelled ONLY party.aloy_combat_override; her
+// SELF coil/combat-override/strong-strike toggles are OFF in the fixed solo-C0 build, so the 58k
+// DAMAGE goldens never exercised them; a diff-parity sweep surfaced every Aloy hit diverging when
+// aloy_coils/aloy_combat_override/aloy_strong_strike are on). All additive stat buffs + a cryo
+// infusion — no stat-conversion, no new multiplier surface. raw Aloy.js:305-398.
+// ---------------------------------------------------------------------------
+
+// A1 "Combat Override" SELF ATK bonus (the SELF +16% vs the party +8% mirror). raw A1AtkSelf:16,
+// ConditionAscensionChar(1) → auto-active at canonical asc6, so ungated. raw Aloy.js:368-382.
+const A1_ATK_SELF = 16;
+// A4 "Strong Strike" SELF cryo-DMG per coil (3.5%/stack, max 10 = +35%). raw A4CryoDmg:3.5,
+// ConditionAscensionChar(4) → auto-active at asc6, ungated. raw Aloy.js:383-398.
+const A4_CRYO_DMG = 3.5;
+
+// Coil "Normal Attack DMG Bonus" tiers — dmg_normal indexed by skill talent level
+// (char_skill_elemental), each gated by the EXACT coil count (aloy_coils == N). At the max tier
+// (== 4, "Rushing Ice") the bonus is larger AND her physical normals gain a cryo infusion
+// (attack_infusion:'cryo'). raw Aloy.js:313-367 (ConditionLevels, getAlias skill.aloy_coil_bonus*
+// → dmg_normal, subConditions ConditionBooleanValue(aloy_coils eq N)). Values = CharTalentTables
+// Aloy.s2.p5/p6/p7/p8 (talent levels 1..15).
+const COIL_BONUS_1: readonly number[] = [5.845, 6.195, 6.545, 7, 7.35, 7.7, 8.155, 8.61, 9.065, 9.52, 9.975, 10.43, 10.885, 11.34, 11.795];
+const COIL_BONUS_2: readonly number[] = [11.69, 12.39, 13.09, 14, 14.7, 15.4, 16.31, 17.22, 18.13, 19.04, 19.95, 20.86, 21.77, 22.68, 23.59];
+const COIL_BONUS_3: readonly number[] = [17.535, 18.585, 19.635, 21, 22.05, 23.1, 24.465, 25.83, 27.195, 28.56, 29.925, 31.29, 32.655, 34.02, 35.385];
+const RUSHING_ICE_BONUS: readonly number[] = [29.225, 30.975, 32.725, 35, 36.75, 38.5, 40.775, 43.05, 45.325, 47.6, 49.875, 52.15, 54.425, 56.7, 58.975];
+
+const selfConditions: readonly Condition[] = [
+  // A1 "Combat Override" — SELF +16% ATK (lifting every hit). ConditionBoolean (asc-1 gate vacuous at A6).
+  { type: "boolean", name: "aloy_combat_override", stats: { atk_percent: A1_ATK_SELF } },
+  // A4 "Strong Strike" — +3.5% Cryo DMG per stack (max 10 = +35%), lifting her cryo hits. ConditionStacks.
+  { type: "stacks", name: "aloy_strong_strike", maxStacks: 10, stats: { dmg_cryo: A4_CRYO_DMG } },
+  // Coil tiers — dmg_normal at EXACTLY N coils (char_skill_elemental-indexed). aloy_coils == 1/2/3.
+  { type: "static-level", levelSetting: "char_skill_elemental", levelStats: { dmg_normal: COIL_BONUS_1 }, condition: { type: "boolean-value", setting: "aloy_coils", cond: "eq", value: 1 } },
+  { type: "static-level", levelSetting: "char_skill_elemental", levelStats: { dmg_normal: COIL_BONUS_2 }, condition: { type: "boolean-value", setting: "aloy_coils", cond: "eq", value: 2 } },
+  { type: "static-level", levelSetting: "char_skill_elemental", levelStats: { dmg_normal: COIL_BONUS_3 }, condition: { type: "boolean-value", setting: "aloy_coils", cond: "eq", value: 3 } },
+  // Max tier "Rushing Ice" (== 4 coils) — bigger dmg_normal + cryo infusion on her physical normals.
+  {
+    type: "static-level",
+    levelSetting: "char_skill_elemental",
+    levelStats: { dmg_normal: RUSHING_ICE_BONUS },
+    settings: { attack_infusion: "cryo" },
+    condition: { type: "boolean-value", setting: "aloy_coils", cond: "eq", value: 4 },
+  },
+];
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -207,6 +252,7 @@ export const aloy: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  conditions: selfConditions,
   // partyData — teammate kit buffs (P3.5.2 Bucket A)
   // A1 "Combat Override": ConditionBoolean(party.aloy_combat_override) → atk_percent:8.
   //   text_percent_1/text_percent_2 are display-only, skipped.

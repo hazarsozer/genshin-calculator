@@ -1,0 +1,246 @@
+{
+  "element": "cryo",
+  "features": {
+    "attack.aimed": {
+      "average": 2081.59943105581,
+      "category": "attack",
+      "crit": 3784.7262382832905,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1892.3631191416453
+    },
+    "attack.charged_aimed": {
+      "average": 5358.858050884161,
+      "category": "attack",
+      "crit": 9743.378274334837,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 4871.689137167418
+    },
+    "attack.normal_hit_1": {
+      "average": 2345.820770865086,
+      "category": "attack",
+      "crit": 4265.1286743001565,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2132.5643371500782
+    },
+    "attack.normal_hit_1_1": {
+      "average": 1103.9156568776875,
+      "category": "attack",
+      "crit": 2007.11937614125,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1003.559688070625
+    },
+    "attack.normal_hit_1_2": {
+      "average": 1241.9051139873982,
+      "category": "attack",
+      "crit": 2258.009298158906,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1129.004649079453
+    },
+    "attack.normal_hit_2": {
+      "average": 2253.827799458612,
+      "category": "attack",
+      "crit": 4097.868726288385,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2048.9343631441925
+    },
+    "attack.normal_hit_3": {
+      "average": 2759.789142194219,
+      "category": "attack",
+      "crit": 5017.798440353125,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2508.8992201765627
+    },
+    "attack.normal_hit_4": {
+      "average": 3431.337833461478,
+      "category": "attack",
+      "crit": 6238.796060839051,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3119.3980304195256
+    },
+    "attack.plunge": {
+      "average": 2457.0909298133765,
+      "category": "attack",
+      "crit": 4467.438054206139,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2233.7190271030695
+    },
+    "attack.plunge_high": {
+      "average": 6136.777951822028,
+      "category": "attack",
+      "crit": 11157.778094221869,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 5578.889047110934
+    },
+    "attack.plunge_low": {
+      "average": 4913.140719402256,
+      "category": "attack",
+      "crit": 8932.98312618592,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4466.49156309296
+    },
+    "burst.burst_dmg": {
+      "average": 19667.580140376183,
+      "category": "burst",
+      "crit": 35759.23661886579,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 17879.618309432895
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.aloy_atk_decrease": {
+      "average": 15,
+      "category": "skill",
+      "crit": 15,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 15
+    },
+    "skill.aloy_chillwater_bomblets": {
+      "average": 1882.4938217430097,
+      "category": "skill",
+      "crit": 3422.7160395327446,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1711.3580197663723
+    },
+    "skill.aloy_freeze_bomb_dmg": {
+      "average": 8358.272568538963,
+      "category": "skill",
+      "crit": 15196.859215525386,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 7598.429607762693
+    },
+    "stats.atk": {
+      "average": 2697.6349319764,
+      "category": "stats",
+      "crit": 2697.6349319764,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2697.6349319764
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1552.3278456,
+      "category": "stats",
+      "crit": 1552.3278456,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1552.3278456
+    },
+    "stats.hp": {
+      "average": 24124.8604972,
+      "category": "stats",
+      "crit": 24124.8604972,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 24124.8604972
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Aloy",
+  "repSlug": "aloy",
+  "schema": 1,
+  "slug": "aloy-self-buffs",
+  "weapon": "weapon_name.alley_hunter",
+  "weaponType": "bow"
+}

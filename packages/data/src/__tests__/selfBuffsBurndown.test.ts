@@ -409,6 +409,17 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     emilie_lakelight_top_note: true,
     emilie_marcotte_sillage: true,
   },
+  // Aloy A1 "Combat Override" aloy_combat_override (SELF +16% ATK) + A4 "Strong Strike"
+  // aloy_strong_strike:10 (+35% Cryo DMG) + aloy_coils:4 (Rushing Ice: dmg_normal + cryo infusion on
+  // her physical normals). char_skill_elemental:10 feeds the coil static-level (this burndown's
+  // buildStats omits talentLevels → thread the skill level), matching the oracle dump at skill 10.
+  // NOT cons-gated → dumped at cons 0.
+  "aloy-self-buffs": {
+    aloy_coils: 4,
+    aloy_combat_override: true,
+    aloy_strong_strike: 10,
+    char_skill_elemental: 10,
+  },
 };
 
 interface ManifestItem {
