@@ -282,6 +282,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     kaveh_painted_dome: true,
     kaveh_a_craftsmans_curious_conceptions: 4,
   },
+  // Dori C6 "Sprinkling Weight" (dori_sprinkling_weight → attack_infusion:electro on her physical
+  // normals/charged/plunge). char_constellation:6 threads the C6 gate ON, matching the oracle dump at
+  // constellation 6. (The C6 dori_sprinkling_weight heal is non-damage → not asserted by the burndown.)
+  "dori-self-buffs": {
+    char_constellation: 6,
+    dori_sprinkling_weight: true,
+  },
 };
 
 interface ManifestItem {

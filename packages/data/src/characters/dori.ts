@@ -217,14 +217,27 @@ const features: readonly Feature[] = [
 // C4: ConditionBoolean toggles (healing_recv:50, recharge:30) — SKIP (toggles OFF).
 // C5: +3 levels to Alcazarzaray's Exactitude (burst). Raw cons[4] settings
 //   char_skill_burst_bonus:3. Raw Dori.js:396-403.
-// C6: Condition {allowed_infusion_electro:1} + ConditionBoolean toggle for
-//   electro infusion + dori_sprinkling_weight heal feature. Toggle OFF in
-//   constellations config → no infusion → normals stay physical. SKIP.
+// C6 "Sprinkling Weight": ConditionBoolean toggle that infuses her physical normals/charged/
+//   plunge with ELECTRO (her physical attacks → electro). Raw Dori.js constellation[5] is a
+//   Condition({settings:{allowed_infusion_electro:1}}) (always-on at C6) + a ConditionBoolean
+//   dori_sprinkling_weight {settings:{attack_infusion_electro:1}, text_percent: C6Heal heal}.
+//   The canonical port collapses attack_infusion_electro:1 → attack_infusion:"electro" (the
+//   Diluc-dawn pattern; allowed_infusion is not read by resolveElement). SELF-only (the C6
+//   heal is non-damage, out of scope) → was golden-blind SKIPPED (a diff-parity sweep at
+//   dori_sprinkling_weight surfaced the 30 physical-attack rows diverging only at cons 6).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to elemental skill (Troubleshooter Cannon).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to burst (Alcazarzaray's Exactitude).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF C6 "Sprinkling Weight" electro infusion — gated by the toggle AND constellation 6
+  // (THE CONSTELLATION IS A GATE; base-inert below C6 / when untoggled). raw Dori.js:constellation[5].
+  {
+    type: "boolean",
+    name: "dori_sprinkling_weight",
+    settings: { attack_infusion: "electro" },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------
