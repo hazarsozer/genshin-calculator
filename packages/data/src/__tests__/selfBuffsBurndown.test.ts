@@ -251,6 +251,18 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     tighnari_withering_glimpsed_in_the_leaves_1: true,
     tighnari_withering_glimpsed_in_the_leaves_2: true,
   },
+  // Mona burst "Omen" (mona_omen → +dmg_all per burst talent level; char_skill_burst:10 feeds the
+  // static-level → +60% dmg_all) + C1 dmg_reaction electrocharged/vaporize/swirl_hydro +15 (≥C1) +
+  // C4 crit_rate+15 (≥C4) + C6 dmg_charged+60/stack (rhetorics:3 → +180%, ≥C6). char_constellation:6
+  // threads the C1/C4/C6 gates ON, matching the oracle dump at constellation 6.
+  "mona-self-buffs": {
+    char_constellation: 6,
+    char_skill_burst: 10,
+    mona_omen: true,
+    mona_prophecy_of_submersion: true,
+    mona_prophecy_of_oblivion: true,
+    mona_rhetorics_of_calamitas: 3,
+  },
 };
 
 interface ManifestItem {
