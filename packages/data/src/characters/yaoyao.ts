@@ -236,6 +236,26 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Moonjade Descent (burst).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF "Adeptus' Tutelage" (C1) — +15% Dendro DMG (dmg_dendro:15), lifting Yaoyao's OWN dendro hits
+  // (skill yaoyao_radish_dmg, burst burst_dmg + yaoyao_white_radish_dmg, and the C6 yaoyao_megaradish_dmg).
+  // ConditionBoolean gated at C1 (lives in constellation[0] → THE CONSTELLATION IS A GATE). SELF mirror of
+  // party.yaoyao_adeptus_tutelage; the port modelled only the party.* version → golden-blind SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Yaoyao.js:379-387 (constellation[0], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "yaoyao_adeptus_tutelage",
+    stats: { dmg_dendro: 15 },
+    condition: { type: "constellation", constellation: 1 },
+  },
+  // ── DEFERRED (Tier-B, NOT ported) — C4 "Winsome" (yaoyao_winsome) ────────────────────────────────
+  // C4 gates the masteryBonusPost: a HP→EM stat-CONVERSION postEffect (EM += min(0.3% Max HP, 120),
+  // PostEffectStatsHP gated by ConditionConstellation(4) AND ConditionBoolean('yaoyao_winsome'); raw
+  // Yaoyao.js:134-141 + :407-420). The yaoyao_winsome boolean itself carries only display stats
+  // (text_percent_hp / text_value_max). The granted EM is INERT for Yaoyao's own ATK/physical-scaled
+  // hits but boosts her EM-scaled transformative reactions (diff-parity shows reaction.burning/
+  // electrocharged/rupture/shatter diverge at cons≥4 when yaoyao_winsome:true). Modelling it requires a
+  // real HP→EM postEffect emit (a stat conversion) — a Tier-B engine-surface item, deferred per the
+  // self-buffs DATA-port scope. The mastery_bonus *readout* feature is already modelled (display only).
 ];
 
 // ---------------------------------------------------------------------------

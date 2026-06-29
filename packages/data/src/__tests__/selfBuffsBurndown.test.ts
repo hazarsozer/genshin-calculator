@@ -195,6 +195,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     mika_suppressive_barrage: 5,
     mika_companions_counsel: true,
   },
+  // Yaoyao C1 dmg_dendro+15 (gated C1 → char_constellation:6 threads the cons gate ON), lifting her
+  // dendro hits. (C4 "Winsome" HP→EM is Tier-B deferred → not toggled; only the dendro damage triples.)
+  "yaoyao-self-buffs": {
+    char_constellation: 6,
+    yaoyao_adeptus_tutelage: true,
+  },
 };
 
 interface ManifestItem {
