@@ -241,6 +241,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     klee_explosive_frags: true,
     klee_blazing_delight: true,
   },
+  // Tighnari A1 mastery+50 (→ A4 dmg_charged/burst_tighnari EM→dmg + dendro reactions) + C2 dmg_dendro+20
+  // (dendro hits) + C4 mastery+60 ×2 (2nd needs 1st). char_constellation:6 threads the C2/C4 gates ON,
+  // matching the oracle dump at constellation 6.
+  "tighnari-self-buffs": {
+    char_constellation: 6,
+    tighnari_keen_sight: true,
+    tighnari_origins_known_from_the_stem: true,
+    tighnari_withering_glimpsed_in_the_leaves_1: true,
+    tighnari_withering_glimpsed_in_the_leaves_2: true,
+  },
 };
 
 interface ManifestItem {
