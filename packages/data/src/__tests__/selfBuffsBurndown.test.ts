@@ -304,6 +304,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     kaeya_excellent_blood: true,
   },
+  // Barbara C2 "Vitality Burst" dmg_hydro+15 on every hydro hit (all her normals/charged/plunge +
+  // droplet skill). char_constellation:6 threads the C2 gate ON, matching the oracle dump at
+  // constellation 6.
+  "barbara-self-buffs": {
+    char_constellation: 6,
+    barbara_vitality_burst: true,
+  },
 };
 
 interface ManifestItem {

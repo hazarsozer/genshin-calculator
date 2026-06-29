@@ -189,7 +189,10 @@ const features: readonly Feature[] = [
 // the reverse of most characters. Raw cons[2]=burst_bonus, cons[4]=elemental_bonus.
 //
 // C1 "Gleeful Songs": ConditionStatic no stats → display-only, SKIP.
-// C2 "Vitality Burst": ConditionBoolean dmg_hydro toggle → SKIP.
+// C2 "Vitality Burst": SELF ConditionBoolean (dmg_hydro:15 + display-only text_percent_cd:15).
+//   Ported below as the SELF mirror of party.barbara_vitality_burst (golden-blind SKIP — no golden
+//   toggles it, so the 58k DAMAGE goldens are blind; a diff-parity sweep surfaced every hydro hit
+//   diverging from cons 2). raw Barbara.js:306-319 (constellation[1], ConditionBoolean).
 // C4 "Attentiveness Be My Power": ConditionStatic no stats → display-only, SKIP.
 // C6 "Dedicating Everything to You": ConditionStatic no stats → display-only, SKIP.
 //
@@ -202,6 +205,18 @@ const constellationConditions: readonly Condition[] = [
   // C5 "Ethereal Dance": +3 levels to Let the Show Begin (Elemental Skill).
   // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus: 3 } }.
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "Vitality Burst" (C2) — +15% Hydro DMG (dmg_hydro), lifting every Barbara hit (all her
+  // normals/charged/plunge + droplet skill are hydro). ConditionBoolean gated at C2 (constellation[1]
+  // → THE CONSTELLATION IS A GATE; base-inert below C2 / when untoggled). SELF mirror of
+  // party.barbara_vitality_burst; the port modelled only the party.* version → golden-blind SKIP.
+  // The accompanying text_percent_cd:15 is a display-only CD reduction → skipped.
+  // raw Barbara.js:306-319 (constellation[1], ConditionBoolean stats:{dmg_hydro:15, text_percent_cd:15}).
+  {
+    type: "boolean",
+    name: "barbara_vitality_burst",
+    stats: { dmg_hydro: 15 },
+    condition: { type: "constellation", constellation: 2 },
+  },
 ];
 
 // ---------------------------------------------------------------------------
