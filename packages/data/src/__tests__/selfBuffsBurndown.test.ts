@@ -216,6 +216,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     ororon_king_bee_of_the_hidden_honeyed_wine: 4,
     ororon_ode_to_deep_springs: 3,
   },
+  // Sayu C2 dmg_skill_sayu_hold+3.3/stack (sayu_egress_prep:20 → +66%) on the 5 hold-kick features,
+  // gated C2 → char_constellation:6 threads the cons gate ON, matching the oracle dump at constellation 6.
+  // (Only damage triples are asserted; the pre-existing C6 mastery-heal value gap is filtered out.)
+  "sayu-self-buffs": {
+    char_constellation: 6,
+    sayu_egress_prep: 20,
+  },
 };
 
 interface ManifestItem {
