@@ -57,6 +57,22 @@ const talents: TalentResolver = {
 };
 
 // ---------------------------------------------------------------------------
+// C4 "Evilsoother" — while Guhua Sword: Raincutter (burst) is active, the Rain Swords' Elemental
+// Skill DMG is increased by 50%. Her raw models it as scalingMultiplier:1.5 on the skill_dmg
+// multipliers, gated AND(ConditionConstellation(4), ConditionBoolean(xingqiu_evilsoother))
+// (Xingqiu.js:288-349). The port has no conditional scalingMultiplier field, so the ×1.5 is folded
+// as a SECOND base-term multiplier of +0.5× the same talent% (talent%×atk + talent%×atk×0.5 =
+// talent%×atk×1.5), gated by this condition — the proven Charlotte-C4 mirror. SELF buff (no party.*
+// mirror) → was golden-blind SKIPPED (no golden sets the toggle). THE CONSTELLATION IS A GATE.
+const c4EvilsootherGate: Condition = {
+  type: "and",
+  items: [
+    { type: "constellation", constellation: 4 },
+    { type: "boolean", name: "xingqiu_evilsoother" },
+  ],
+};
+
+// ---------------------------------------------------------------------------
 // Features
 // ---------------------------------------------------------------------------
 
@@ -165,29 +181,44 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
   // --- Skill: Fatal Rainscreen (hydro) ---
-  // skill_dmg: 2-hit multihit parent (skill_1 + skill_2). Xingqiu.js:281-317
+  // skill_dmg: 2-hit multihit parent (skill_1 + skill_2). Xingqiu.js:281-317.
+  // Each item carries the C4 evilsoother +0.5× term (folded ×1.5, gated AND(cons4, evilsoother)).
   {
     name: "skill_dmg",
     category: "skill",
     element: "hydro",
     items: [
-      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.xingqiu_skill_1_dmg") }] },
-      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.xingqiu_skill_2_dmg") }] },
+      { multipliers: [
+        { leveling: "char_skill_elemental", values: talents.get("skill.xingqiu_skill_1_dmg") },
+        { leveling: "char_skill_elemental", values: talents.get("skill.xingqiu_skill_1_dmg"), scalingMultiplier: 0.5, source: "constellation4", condition: c4EvilsootherGate },
+      ] },
+      { multipliers: [
+        { leveling: "char_skill_elemental", values: talents.get("skill.xingqiu_skill_2_dmg") },
+        { leveling: "char_skill_elemental", values: talents.get("skill.xingqiu_skill_2_dmg"), scalingMultiplier: 0.5, source: "constellation4", condition: c4EvilsootherGate },
+      ] },
     ],
   },
-  // raw: FeatureDamageSkill xingqiu_skill_1_dmg (isChild:true). Xingqiu.js:318-333
+  // raw: FeatureDamageSkill xingqiu_skill_1_dmg (isChild:true). Xingqiu.js:318-333.
+  // + C4 evilsoother +0.5× term (folded ×1.5, gated AND(cons4, evilsoother)). Xingqiu.js:320-332.
   {
     name: "xingqiu_skill_1_dmg",
     category: "skill",
     element: "hydro",
-    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.xingqiu_skill_1_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_elemental", values: talents.get("skill.xingqiu_skill_1_dmg") },
+      { leveling: "char_skill_elemental", values: talents.get("skill.xingqiu_skill_1_dmg"), scalingMultiplier: 0.5, source: "constellation4", condition: c4EvilsootherGate },
+    ],
   },
-  // raw: FeatureDamageSkill xingqiu_skill_2_dmg (isChild:true). Xingqiu.js:334-349
+  // raw: FeatureDamageSkill xingqiu_skill_2_dmg (isChild:true). Xingqiu.js:334-349.
+  // + C4 evilsoother +0.5× term (folded ×1.5, gated AND(cons4, evilsoother)). Xingqiu.js:336-348.
   {
     name: "xingqiu_skill_2_dmg",
     category: "skill",
     element: "hydro",
-    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.xingqiu_skill_2_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_elemental", values: talents.get("skill.xingqiu_skill_2_dmg") },
+      { leveling: "char_skill_elemental", values: talents.get("skill.xingqiu_skill_2_dmg"), scalingMultiplier: 0.5, source: "constellation4", condition: c4EvilsootherGate },
+    ],
   },
   // --- Burst: Guhua Sword: Raincutter (hydro) ---
   // raw: FeatureDamageBurst xingqiu_rain_sword. Xingqiu.js:376-384
@@ -231,13 +262,20 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// Constellations (P2.C Wave-1)
+// Constellations (P2.C Wave-1) + SELF buffs
 // ---------------------------------------------------------------------------
+// SELF buffs (golden-blind SKIPPED — the port modelled only the party.* C2 mirror + the C4
+// scalingMultiplier was skipped; both OFF in the fixed solo build, so the 58k DAMAGE goldens never
+// exercised them — a diff-parity sweep surfaced her hydro skill hits diverging from cons 2/4):
+//   C2 "Rainbow Upon the Azure Sky" (xingqiu_rainbow_upon_the_azure_sky): enemy Hydro RES −15 (lifts
+//     her hydro skill + burst hits + hydro reactions). ConditionBoolean gated at C2 (THE CONSTELLATION
+//     IS A GATE). The SELF mirror of party.xingqiu_rainbow_upon_the_azure_sky. raw Xingqiu.js:433-441.
+//   C4 "Evilsoother" (xingqiu_evilsoother): +50% Elemental Skill DMG — the scalingMultiplier folded
+//     into the skill_dmg / xingqiu_skill_1/2_dmg multipliers above (c4EvilsootherGate). raw
+//     Xingqiu.js:288-349. (Its own ConditionBoolean stat is text_percent:50 → display, no stat here.)
 // C1: ConditionStatic no real stats → SKIP.
-// C2: ConditionBoolean toggle (enemy_res_hydro:-15) → SKIP.
 // C3 "Weaver of Verses" — +3 Burst talent levels (constellation[2]).
 //   raw/genshin_calc_pub/src/js/db/Char/Xingqiu.js:446-451.
-// C4: ConditionBoolean toggle → SKIP.
 // C5 "Embrace of Rain" — +3 Elemental Skill talent levels (char-level conditions:).
 //   raw/genshin_calc_pub/src/js/db/Char/Xingqiu.js:387-393.
 // C6: ConditionStatic no real stats → SKIP.
@@ -247,6 +285,15 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5 — char_skill_elemental_bonus +3 (skill talent level up).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF C2 "Rainbow Upon the Azure Sky" — enemy Hydro RES −15% (lifts her hydro hits + reactions).
+  // ConditionBoolean gated at C2 (THE CONSTELLATION IS A GATE; base-inert below C2 / when untoggled).
+  // raw Xingqiu.js:433-441.
+  {
+    type: "boolean",
+    name: "xingqiu_rainbow_upon_the_azure_sky",
+    stats: { enemy_res_hydro: -15 },
+    condition: { type: "constellation", constellation: 2 },
+  },
 ];
 
 export const xingqiu: DbObjectChar = {
