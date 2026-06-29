@@ -272,6 +272,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     charlotte_pursue_truth: 3,
     charlotte_a_responsibility_to_oversee: true,
   },
+  // Kaveh burst "Painted Dome" (kaveh_painted_dome → attack_infusion:dendro on his physical normals/
+  // charged/plunge + the bloom dmg_reaction_rupture bonus, fixed burst-level-10) + A4 "An Architect's
+  // Undertaking" (kaveh_a_craftsmans_curious_conceptions → mastery +25/stack, max 4 = +100 EM on every
+  // reaction). char_constellation:6 threads the C4 dmg_reaction_rupture:60 + C6 pairidaezas_light feature
+  // ON, matching the oracle dump at constellation 6.
+  "kaveh-self-buffs": {
+    char_constellation: 6,
+    kaveh_painted_dome: true,
+    kaveh_a_craftsmans_curious_conceptions: 4,
+  },
 };
 
 interface ManifestItem {

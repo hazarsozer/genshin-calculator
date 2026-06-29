@@ -53,6 +53,14 @@ const talents: TalentResolver = {
   },
 };
 
+// Burst "Painted Dome" bloom DMG bonus per burst talent level (raw burst.kaveh_bloom_dmg_bonus,
+// hardcoded). Consumed by BOTH the SELF static-level (conditions[], levelSetting char_skill_burst)
+// and the party.kaveh_painted_dome mirror (partyData, levelSetting kaveh_char_skill_burst).
+const bloomDmgBonusByBurstLevel: readonly number[] = [
+  27.49, 29.55, 31.61, 34.36, 36.42, 38.48, 41.23,
+  43.98, 46.73, 49.48, 52.23, 54.98, 58.41, 61.85, 65.28,
+];
+
 // ---------------------------------------------------------------------------
 // Features
 // ---------------------------------------------------------------------------
@@ -175,9 +183,18 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
-// C1 "Sublime Salutations": ConditionBoolean toggle (res_dendro/healing_recv) — SKIP (toggle OFF).
-// C2 "Grace of Royal Roads": ConditionStatic subgated by kaveh_painted_dome boolean →
-//   atk_speed_normal:15 (non-damage, toggle-gated) — SKIP.
+// SELF buffs (were golden-blind SKIPPED — the port modelled only the party.* painted_dome mirror
+// and omitted the SELF infusion/bloom + the A4 mastery stacks; a diff-parity sweep surfaced them):
+//   - Burst "Painted Dome" (kaveh_painted_dome) — (a) attack_infusion: dendro (his physical normals/
+//     charged/plunge become DENDRO, exactly the Diluc-dawn settings pattern) + (b) +dmg_reaction_rupture
+//     per BURST talent level (bloom bonus), gated on the painted_dome toggle. NOT cons-gated (burst kit).
+//     raw Kaveh.js:260-277 (conditions[0] settings infusion + conditions[1] ConditionLevels bloom).
+//   - A4 "An Architect's Undertaking" (kaveh_a_craftsmans_curious_conceptions) — ConditionStacks
+//     mastery +25/stack, max 4 (= +100 EM, boosting every reaction). Ungated (A4 passive, rep at A6).
+//     raw Kaveh.js:289-299 (conditions[3]).
+// C1 "Sublime Salutations": ConditionBoolean toggle (res_dendro/healing_recv, non-damage) — SKIP.
+// C2 "Grace of Royal Roads": ConditionStatic subgated by kaveh_painted_dome → atk_speed_normal:15
+//   (non-damage, rotation-speed stat) — SKIP.
 // C3: +3 levels to Painted Dome (burst). Raw cons[2] char_skill_burst_bonus:3.
 // C4 "Feast of Apadana": ConditionStatic (always-on at C≥4) dmg_reaction_rupture:60.
 //   Raw: no toggle, auto-active at constellation≥4. Kaveh.js:341-349.
@@ -191,6 +208,34 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 4, stats: { dmg_reaction_rupture: 60 } },
   // C5: +3 levels to Artistic Ingenuity (skill).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "Painted Dome" infusion — kaveh_painted_dome injects attack_infusion: dendro (physical
+  // normals/charged/plunge → dendro). Ungated boolean. raw Kaveh.js:260-268 (conditions[0]).
+  { type: "boolean", name: "kaveh_painted_dome", settings: { attack_infusion: "dendro" } },
+  // SELF "Painted Dome" bloom — +dmg_reaction_rupture, gated on the painted_dome toggle (ungated by
+  // constellation — the burst kit grants it at C0). raw Kaveh.js:269-277 is a ConditionLevels keyed
+  // on char_skill_burst. KEY ENGINE ASYMMETRY (verified vs her oracle): her plain ConditionLevels
+  // (Condition/Levels.js → getSkillLevelByName) does NOT pick up the C3 `char_skill_burst_bonus:+3`
+  // — her rupture is IDENTICAL at cons 0 and cons 3 (6818.15) with painted_dome on. Our `static-level`
+  // shares one ctx `char_skill_burst_bonus` key between feature leveling AND conditions (resolveStaticLevel
+  // / compileFeature.skillLevelBonus), so it would over-apply +3 at C≥3 (overshoot rupture ~+2.7%).
+  // No data-only lever reads char_skill_burst WITHOUT the bonus, so model the bloom as the FIXED burst-
+  // level-10 value (bloomDmgBonusByBurstLevel[9] = the golden/sweep operating point) → matches her at
+  // every cons. Trade-off: loses scaling with a non-default burst talent (a non-gated axis; the talent
+  // audit never sets painted_dome, so the bloom is unexercised there).
+  {
+    type: "boolean",
+    name: "kaveh_painted_dome",
+    stats: { dmg_reaction_rupture: bloomDmgBonusByBurstLevel[9] },
+  },
+  // SELF "An Architect's Undertaking" (A4) — +25 EM per stack, max 4 (= +100 Elemental Mastery,
+  // boosting every reaction). ConditionStacks ungated (A4 passive, rep at A6 → the stacks setting is
+  // the gate, base-inert when absent). raw Kaveh.js:289-299 (conditions[3]).
+  {
+    type: "stacks",
+    name: "kaveh_a_craftsmans_curious_conceptions",
+    maxStacks: 4,
+    stats: { mastery: 25 },
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -229,12 +274,7 @@ export const kaveh: DbObjectChar = {
       {
         type: "static-level",
         levelSetting: "kaveh_char_skill_burst",
-        levelStats: {
-          dmg_reaction_rupture: [
-            27.49, 29.55, 31.61, 34.36, 36.42, 38.48, 41.23,
-            43.98, 46.73, 49.48, 52.23, 54.98, 58.41, 61.85, 65.28,
-          ],
-        },
+        levelStats: { dmg_reaction_rupture: bloomDmgBonusByBurstLevel },
         condition: { type: "boolean", name: "party.kaveh_painted_dome" },
       },
     ],
