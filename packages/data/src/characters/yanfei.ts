@@ -186,11 +186,28 @@ const features: readonly Feature[] = [
   },
 ];
 
+// Burst "Done Deal" — "Brilliance" Scarlet-Seal regeneration grants Charged-Attack DMG% per her OWN
+// burst talent level (her ConditionBooleanLevels yanfei_brilliance, levelSetting char_skill_burst,
+// StatTable('yanfei_charged_bonus', s3.p2) aliased to dmg_charged). Values = YanFeiTalents.s3.p2
+// (burst levels 1..15). raw YanFei.js:301-310.
+const BRILLIANCE_DMG_CHARGED: readonly number[] = [
+  33.4, 35.4, 37.4, 40, 42, 44, 46.6, 49.2, 51.8, 54.4, 57, 59.6, 62.2, 64.8, 67.4,
+];
+
 // ---------------------------------------------------------------------------
-// Constellation conditions (P2.C)
-// ---------------------------------------------------------------------------
+// Conditions (P2.C) — SELF buffs (golden-blind SKIPPED: the port modelled nothing here; all are
+// toggle/stack/cons-gated → OFF in the fixed solo build, so the 58k DAMAGE goldens never exercised
+// them — a diff-parity sweep surfaced her pyro/charged hits diverging):
+//   "Brilliance" (yanfei_brilliance): +Charged DMG% per OWN burst talent level (above table),
+//     ConditionBooleanLevels toggle. raw YanFei.js:301-310.
+//   A1 "Proviso" / Scarlet Seal (yanfei_scarlet_seal): +5% Pyro DMG per consumed Scarlet Seal
+//     (table [5,10,15,20] indexed by the seal count), ConditionLevels gated boolean(yanfei_scarlet_seal)
+//     [+ ascension-1, vacuous at A6]. raw YanFei.js:331-341. (The seal ConditionStacks itself only
+//     adds stamina_consume — damage-inert, omitted.)
+//   C2 "Right of Final Interpretation" (yanfei_interpretation): +20% Charged-Attack CRIT Rate
+//     (crit_rate_charged auto-applies to charged hits by damageType), gated C2 (THE CONSTELLATION IS
+//     A GATE). text_percent_hp display omitted. raw YanFei.js:379-388.
 // C1: ConditionStatic stats:{text_percent:10} — display-only, SKIP.
-// C2: ConditionBoolean toggle stats:{crit_rate_charged:20} — toggle OFF, SKIP.
 // C3: +3 levels to Signed Edict (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
 // C4: ConditionStatic stats:{text_percent_hp:45} — display-only; shield feature has damageType:""
 //     → skipped per brief (no damage triple, category 'other' in fixture).
@@ -198,12 +215,36 @@ const features: readonly Feature[] = [
 //     subConditions:[ConditionConstellation({constellation:5})].
 // C6: cons-ADDED feature yanfei_charged_4 handled above in features array.
 //     Raw cons[5] has ConditionStatic — display only, SKIP.
-// Raw: db/Char/YanFei.js constellation array + conditions array (YanFei.js:365-420, 292-364).
+// Raw: db/Char/YanFei.js constellation array + conditions array (YanFei.js:292-420).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to elemental skill talent.
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to burst talent (raw: char conditions entry gated by ConditionConstellation(5)).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF "Brilliance" — +Charged DMG% per OWN burst talent level. ConditionBooleanLevels toggle
+  // (ungated; reads char_skill_burst incl. the C5 +3 bonus). raw YanFei.js:301-310.
+  {
+    type: "static-level",
+    levelSetting: "char_skill_burst",
+    levelStats: { dmg_charged: BRILLIANCE_DMG_CHARGED },
+    condition: { type: "boolean", name: "yanfei_brilliance" },
+  },
+  // SELF A1 Scarlet Seal — +5/10/15/20% Pyro DMG at 1/2/3/4 consumed seals (yanfei_scarlet_seal-
+  // indexed). Gated boolean(yanfei_scarlet_seal) (ascension-1 sub vacuous at A6). raw YanFei.js:331-341.
+  {
+    type: "static-level",
+    levelSetting: "yanfei_scarlet_seal",
+    levelStats: { dmg_pyro: [5, 10, 15, 20] },
+    condition: { type: "boolean", name: "yanfei_scarlet_seal" },
+  },
+  // SELF C2 "Right of Final Interpretation" — +20% Charged CRIT Rate (crit_rate_charged auto-applies
+  // to charged hits). ConditionBoolean gated at C2 (THE CONSTELLATION IS A GATE). raw YanFei.js:379-388.
+  {
+    type: "boolean",
+    name: "yanfei_interpretation",
+    stats: { crit_rate_charged: 20 },
+    condition: { type: "constellation", constellation: 2 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

@@ -460,6 +460,17 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     traveler_swordfighting_techniques: true,
     traveler_special_training: true,
   },
+  // YanFei "Brilliance" (dmg_charged per OWN burst level; char_skill_burst:10 is the BASE burst
+  // level — this burndown's buildStats omits talentLevels → thread it) + A1 scarlet_seal:3
+  // (dmg_pyro+15) + C2 yanfei_interpretation (crit_rate_charged+20). char_constellation:2 threads
+  // the C2 gate ON, matching the oracle dump at constellation 2.
+  "yanfei-self-buffs": {
+    char_constellation: 2,
+    char_skill_burst: 10,
+    yanfei_brilliance: true,
+    yanfei_scarlet_seal: 3,
+    yanfei_interpretation: true,
+  },
 };
 
 interface ManifestItem {
