@@ -307,6 +307,26 @@ const features: readonly Feature[] = [
 // C6: ConditionStatic with text_percent_* (display-only) → SKIP.
 
 const constellationConditions: readonly Condition[] = [
+  // SELF Jade Shield — universal RES shred: all 7 elements + physical, -20% each, buffing
+  // every one of Zhongli's OWN damage features. A C0 base-skill ConditionBoolean toggle
+  // (no ascension/constellation gate) — the SELF mirror of the party.zhongli_jade_shield
+  // buff below. Was golden-blind SKIPPED (no golden sets zhongli_jade_shield, so the goldens
+  // never exercised it); a diff-parity sweep surfaced it.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Zhongli.js:316-331 (self) — mirrors :447-463 (party).
+  {
+    type: "boolean",
+    name: "zhongli_jade_shield",
+    stats: {
+      enemy_res_physical: -20,
+      enemy_res_anemo: -20,
+      enemy_res_geo: -20,
+      enemy_res_pyro: -20,
+      enemy_res_electro: -20,
+      enemy_res_hydro: -20,
+      enemy_res_cryo: -20,
+      enemy_res_dendro: -20,
+    },
+  },
   // C3 — char_skill_elemental_bonus +3 (skill talent level up).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5 — char_skill_burst_bonus +3 (burst talent level up).

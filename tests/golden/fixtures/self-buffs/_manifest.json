@@ -1,0 +1,74 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Skip-class SELF-condition sweep — SELF conditions (res-shred/dmg/etc.) the port SKIPPED because no golden toggles them (the 58k DAMAGE goldens are blind to them; surfaced by tools/oracle/diff-parity.mjs). The port systematically modelled the `party.*` teammate mirror but skipped the SELF version. Each rep bakes the char's SELF toggle via mergeCharSettings (a char-axis setting, infusionItems' diluc_dawn channel) so her engine applies the self condition to EVERY one of the char's own damage features; dump-oracle branches on cfg.partyItems and writes one <slug>.json per rep via engine.computeParty. zhongli-jade-shield: Zhongli's own Jade Shield (raw Zhongli.js:316-331, a C0 ConditionBoolean, NO ascension/cons gate) grants −20 enemy RES to all 7 elements + physical, buffing every Zhongli damage feature. The port modelled party.zhongli_jade_shield (the teammate mirror, Zhongli.js:447-463) but SKIPPED the SELF version → every Zhongli damage triple undershot by the res-shred at zhongli_jade_shield:true. GREEN once the SELF condition is ported into zhongli.ts (conditions[]). selfBuffsBurndown threads the SAME toggle into buildStats + compileCharacter and asserts the buffed triples. To add the next char: one item in selfBuffsItems + one SETTINGS_BY_SLUG row + re-dump (`node tools/oracle/dump-oracle.mjs self-buffs`).",
+    "id": "self-buffs"
+  },
+  "featureTotal": 30,
+  "itemCount": 1,
+  "items": [
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "settings": {
+          "zhongli_jade_shield": true
+        }
+      },
+      "repKey": "Zhongli",
+      "repSlug": "zhongli",
+      "resonanceElements": {},
+      "slug": "zhongli-jade-shield",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    }
+  ]
+}

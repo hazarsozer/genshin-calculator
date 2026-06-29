@@ -1,0 +1,282 @@
+{
+  "element": "geo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3357.6791061690224,
+      "category": "attack",
+      "crit": 7415.956976185238,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2906.759342833887
+    },
+    "attack.normal_hit_1": {
+      "average": 1059.0434545332591,
+      "category": "attack",
+      "crit": 2339.0623244191233,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 916.819135657052
+    },
+    "attack.normal_hit_2": {
+      "average": 1068.9369600106552,
+      "category": "attack",
+      "crit": 2360.9136713299167,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 925.3839920862928
+    },
+    "attack.normal_hit_3": {
+      "average": 1260.8709662721415,
+      "category": "attack",
+      "crit": 2784.829801399316,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1091.5422068135665
+    },
+    "attack.normal_hit_4": {
+      "average": 1373.6569287144582,
+      "category": "attack",
+      "crit": 3033.9351561823646,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1189.181570106913
+    },
+    "attack.normal_hit_5": {
+      "average": 2166.0522855233426,
+      "category": "attack",
+      "crit": 4784.06364923194,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1875.1621340001648
+    },
+    "attack.normal_hit_5_1": {
+      "average": 541.5130713808356,
+      "category": "attack",
+      "crit": 1196.015912307985,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 468.7905335000412
+    },
+    "attack.normal_hit_6": {
+      "average": 1672.440794131823,
+      "category": "attack",
+      "crit": 3693.8458328883353,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1447.8402342699883
+    },
+    "attack.plunge": {
+      "average": 1779.4927835194985,
+      "category": "attack",
+      "crit": 3930.286815606258,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1540.5156688431919
+    },
+    "attack.plunge_high": {
+      "average": 4077.8509765180106,
+      "category": "attack",
+      "crit": 9006.568656781645,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3530.2156787109398
+    },
+    "attack.plunge_low": {
+      "average": 3313.5592290705663,
+      "category": "attack",
+      "crit": 7318.511359730829,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2868.5645478860924
+    },
+    "attack.zhongli_additional_dmg": {
+      "average": 388.10319514639997,
+      "category": "attack",
+      "crit": 388.10319514639997,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 388.10319514639997
+    },
+    "burst.burst_dmg": {
+      "average": 31028.404218589443,
+      "category": "burst",
+      "crit": 68531.0607264328,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 26861.442384384623
+    },
+    "burst.zhongli_additional_dmg": {
+      "average": 9213.96074808,
+      "category": "burst",
+      "crit": 9213.96074808,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 9213.96074808
+    },
+    "reaction.crystalize": {
+      "average": 2161.7331008659794,
+      "category": "reaction",
+      "crit": 2161.7331008659794,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2161.7331008659794
+    },
+    "reaction.electrocharged": {
+      "average": 4339.504402554744,
+      "category": "reaction",
+      "crit": 4339.504402554744,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4339.504402554744
+    },
+    "reaction.shatter": {
+      "average": 6509.2566038321165,
+      "category": "reaction",
+      "crit": 6509.2566038321165,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 6509.2566038321165
+    },
+    "skill.hold_dmg": {
+      "average": 3221.105300868688,
+      "category": "skill",
+      "crit": 7114.312467536295,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2788.526726794509
+    },
+    "skill.shield": {
+      "average": 9144.5291677504,
+      "category": "skill",
+      "crit": 9144.5291677504,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 9144.5291677504
+    },
+    "skill.zhongli_additional_dmg": {
+      "average": 530.500770344,
+      "category": "skill",
+      "crit": 530.500770344,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 530.500770344
+    },
+    "skill.zhongli_resonance_dmg": {
+      "average": 1598.8356991063129,
+      "category": "skill",
+      "crit": 3531.277522851107,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1384.1199409124467
+    },
+    "skill.zhongli_stele_dmg": {
+      "average": 1058.079165185521,
+      "category": "skill",
+      "crit": 2336.9325412893772,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 915.9843456184258
+    },
+    "stats.atk": {
+      "average": 1925.4570208399998,
+      "category": "stats",
+      "crit": 1925.4570208399998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1925.4570208399998
+    },
+    "stats.crit_dmg": {
+      "average": 155.128,
+      "category": "stats",
+      "crit": 155.128,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 155.128
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1613.8121952000001,
+      "category": "stats",
+      "crit": 1613.8121952000001,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1613.8121952000001
+    },
+    "stats.hp": {
+      "average": 27921.093176,
+      "category": "stats",
+      "crit": 27921.093176,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 27921.093176
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Zhongli",
+  "repSlug": "zhongli",
+  "schema": 1,
+  "slug": "zhongli-jade-shield",
+  "weapon": "weapon_name.blackcliff_pole",
+  "weaponType": "polearm"
+}
