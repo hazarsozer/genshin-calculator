@@ -420,6 +420,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     aloy_strong_strike: 10,
     char_skill_elemental: 10,
   },
+  // Traveler (Geo) shared passives traveler_swordfighting_techniques (+3 base ATK) +
+  // traveler_special_training (+7 base ATK / +15 EM / +50 base HP), both ungated, + C1
+  // traveler_invincible_stonewall (+10% CRIT Rate, gated C1). char_constellation:1 threads the
+  // C1 gate ON, matching the oracle dump at constellation 1.
+  "traveler-geo-self-buffs": {
+    char_constellation: 1,
+    traveler_invincible_stonewall: true,
+    traveler_swordfighting_techniques: true,
+    traveler_special_training: true,
+  },
 };
 
 interface ManifestItem {
