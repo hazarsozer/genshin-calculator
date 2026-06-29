@@ -161,6 +161,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     amber_precise_shot: true,
     amber_wildfire: true,
   },
+  // Ningguang A4 dmg_geo+12 (ungated) + C4 self-RES+10 (damage-inert, gated C4 → char_constellation:6
+  // threads the cons gate ON, matching the oracle dump at constellation 6). Only the geo damage triples
+  // are asserted (the C4 self-RES never lifts damage).
+  "ningguang-self-buffs": {
+    char_constellation: 6,
+    ningguang_strategic_reserve: true,
+    ningguang_exquisite_be_the_jade_outshining_all_beneath: true,
+  },
 };
 
 interface ManifestItem {

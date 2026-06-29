@@ -4,9 +4,9 @@
  * 1-hit normal (geo), charged hit (geo), star jade charged hit (geo),
  * plunge/low/high (geo), geo skill, geo burst (gem hits).
  *
- * A4 "Strategic Reserve": +12% Geo DMG on passing through Jade Screen — gated by
- * ConditionBoolean (requires a toggle), so it is OFF in the canonical solo build
- * and is NOT included here.
+ * A4 "Strategic Reserve": +12% Geo DMG on passing through Jade Screen — a ConditionBoolean
+ * toggle (OFF in the default golden build). The SELF version is now ported as a self condition
+ * (the port previously modelled only the party.* mirror → golden-blind SKIP; see below).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Ningguang.js
@@ -146,6 +146,31 @@ const constellationConditions: readonly Condition[] = [
   // C5: +3 Elemental Skill (Jade Screen).
   // Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "Strategic Reserve" (A4) — +12% Geo DMG (A4GeoDmgBonus=12), lifting every Ningguang geo hit.
+  // ConditionBoolean ascension passive (rep at A6 → modelled ungated, the toggle is the gate). SELF
+  // mirror of party.ningguang_strategic_reserve; the port modelled only the party.* version → golden-blind SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Ningguang.js:206-218 (conditions[1], ConditionBoolean, info.ascension 4).
+  { type: "boolean", name: "ningguang_strategic_reserve", stats: { dmg_geo: 12 } },
+  // SELF "Exquisite Be the Jade, Outshining All Beneath" (C4) — +10% to all 7 SELF resistances
+  // (res_*; DAMAGE-INERT — these are Ningguang's OWN resistances, never in an outgoing-damage formula).
+  // ConditionBoolean gated at C4 (lives in constellation[3] → THE CONSTELLATION IS A GATE). SELF mirror
+  // of party.ningguang_exquisite_be_the_jade_outshining_all_beneath; modelled for self/party parity +
+  // faithfulness (contributes no DAMAGE, so diff-parity is unaffected by it).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Ningguang.js:248-263 (constellation[3], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "ningguang_exquisite_be_the_jade_outshining_all_beneath",
+    stats: {
+      res_anemo: 10,
+      res_pyro: 10,
+      res_hydro: 10,
+      res_cryo: 10,
+      res_electro: 10,
+      res_dendro: 10,
+      res_geo: 10,
+    },
+    condition: { type: "constellation", constellation: 4 },
+  },
 ];
 
 // ---------------------------------------------------------------------------
