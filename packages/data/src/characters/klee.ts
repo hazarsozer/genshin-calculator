@@ -6,14 +6,12 @@
  * All normals/charged/plunge are pyro (catalyst infuses innately; raw marks every
  * feature element: 'pyro').
  *
- * Folded bonuses: NONE active in the solo C0 fixed build.
- *   - A1 "Pounding Surprise" (+50% charged DMG) is a ConditionBoolean (user toggle,
- *     default OFF). The fixture is generated with settings:{}, so it is not applied —
- *     charged_hit gets only the build's standard dmg_charged. Modelling it would
- *     diverge from the oracle, so it is omitted.
+ * SELF buffs modelled as toggle-gated conditions (were golden-blind SKIPPED — OFF in the
+ * fixed canonical build, so the goldens never exercised them; a diff-parity sweep surfaced them):
+ *   - A1 "Pounding Surprise" (+50% dmg_charged → charged_hit). ConditionBoolean toggle.
+ *   - C2 "Explosive Frags" (−23% enemy DEF, gated C2). C6 "Blazing Delight" (+10% dmg_pyro, gated C6).
  *   - A4 "Sparkling Burst" is energy-regen only (no damage stat) → nothing to fold.
  *   - The pyro ascension DMG% (dmg_pyro_base) comes from the statTable via buildStats.
- *   - Constellations skipped (C0 build).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Klee.js
@@ -169,19 +167,44 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
+// SELF buffs (were golden-blind SKIPPED — the port modelled only the party.* mirrors of
+// explosive_frags/blazing_delight and omitted A1 + the SELF versions; a diff-parity sweep surfaced them):
+//   A1 "Pounding Surprise" (dmg_charged:50 → charged_hit, ungated), C2 "Explosive Frags"
+//   (enemy_def_reduce:23, gated C2), C6 "Blazing Delight" (dmg_pyro:10, gated C6). Modelled below.
 // C1 "Chained Reactions": ConditionStatic text_percent_dmg:120 → display-only;
 //   actual damage from klee_chained_reactions feature above. Raw Klee.js:269-280.
-// C2 "Explosive Frags": ConditionBoolean toggle (enemy_def_reduce:23) → SKIP (toggle OFF).
 // C3: +3 levels to Jumpy Dumpty (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
 // C4 "Sparkly Explosion": ConditionStatic text_percent_dmg:555 → display-only;
 //   actual damage from klee_sparkly_explosion feature above. Raw Klee.js:300-311.
 // C5: +3 levels to Sparks 'n' Splash (burst). Raw cons[4] settings char_skill_burst_bonus:3.
-// C6 "Blazing Delight": ConditionBoolean toggle (dmg_pyro:10) → SKIP (toggle OFF).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Jumpy Dumpty (elemental skill). Raw cons[2] settings.
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Sparks 'n' Splash (elemental burst). Raw cons[4] settings.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF "Pounding Surprise" (A1) — +50% Charged Attack DMG (A1ChargedBonus=50), lifting charged_hit
+  // (the only charged feature; dmg_charged is a built-in type key the feature reads automatically).
+  // ConditionBoolean ascension passive (rep at A6 → modelled ungated, the toggle is the gate).
+  // Self-only → golden-blind SKIP. Source: raw/genshin_calc_pub/src/js/db/Char/Klee.js:247-259.
+  { type: "boolean", name: "klee_pounding_surprise", stats: { dmg_charged: 50 } },
+  // SELF "Explosive Frags" (C2) — −23% enemy DEF (C2DefReduce=23), lifting EVERY Klee hit.
+  // ConditionBoolean gated at C2 (constellation[1] → THE CONSTELLATION IS A GATE). SELF mirror of
+  // party.klee_explosive_frags. Source: raw/genshin_calc_pub/src/js/db/Char/Klee.js:283-291.
+  {
+    type: "boolean",
+    name: "klee_explosive_frags",
+    stats: { enemy_def_reduce: 23 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  // SELF "Blazing Delight" (C6) — +10% Pyro DMG (C6PyroBonus=10), lifting every pyro Klee hit.
+  // ConditionBoolean gated at C6 (constellation[5] → THE CONSTELLATION IS A GATE). SELF mirror of
+  // party.klee_blazing_delight. Source: raw/genshin_calc_pub/src/js/db/Char/Klee.js:325-333.
+  {
+    type: "boolean",
+    name: "klee_blazing_delight",
+    stats: { dmg_pyro: 10 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

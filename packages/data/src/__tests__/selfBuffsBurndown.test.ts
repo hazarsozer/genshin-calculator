@@ -233,6 +233,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     ganyu_dew_drinker: true,
     ganyu_westward_sojourn: 5,
   },
+  // Klee A1 dmg_charged+50 (charged_hit) + C2 enemy_def_reduce+23 (every hit) + C6 dmg_pyro+10 (pyro
+  // hits). char_constellation:6 threads the C2/C6 gates ON, matching the oracle dump at constellation 6.
+  "klee-self-buffs": {
+    char_constellation: 6,
+    klee_pounding_surprise: true,
+    klee_explosive_frags: true,
+    klee_blazing_delight: true,
+  },
 };
 
 interface ManifestItem {
