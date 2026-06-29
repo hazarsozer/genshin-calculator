@@ -369,6 +369,15 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     chongyun_rimechaser_blade: true,
     chongyun_rally_of_four_blades: true,
   },
+  // Dehya SELF buffs — C2 dmg_skill_dehya+50 (dehya_the_sand_blades_glittering → dehya_field_dmg) +
+  // C6 crit_dmg_burst+15/stack (dehya_the_burning_claws_cleaving:4 → +60% on her burst hits).
+  // char_constellation:6 threads BOTH cons gates ON, matching the oracle dump at constellation 6 / 4
+  // stacks. (The C4 heal is non-damage → not asserted.)
+  "dehya-self-buffs": {
+    char_constellation: 6,
+    dehya_the_sand_blades_glittering: true,
+    dehya_the_burning_claws_cleaving: 4,
+  },
 };
 
 interface ManifestItem {
