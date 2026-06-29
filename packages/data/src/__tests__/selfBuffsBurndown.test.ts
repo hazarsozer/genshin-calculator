@@ -103,6 +103,11 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     rosaria_unholy_revelation: true,
     rosaria_divine_retribution: true,
   },
+  // Kirara C6 dmg_<all 7 elements>+12 (gated C6 → char_constellation:6 threads the cons gate ON).
+  "kirara-self-buffs": {
+    char_constellation: 6,
+    kirara_countless_sights_to_see: true,
+  },
 };
 
 interface ManifestItem {
