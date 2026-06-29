@@ -201,6 +201,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     yaoyao_adeptus_tutelage: true,
   },
+  // Chasca C6 crit_dmg_chasca+120 on her shadowhunt shells (base anemo + 4 shining shells), gated C6
+  // → char_constellation:6 threads the cons gate ON, matching the oracle dump at constellation 6.
+  "chasca-self-buffs": {
+    char_constellation: 6,
+    chasca_showdown_the_glory_of_battle: true,
+  },
 };
 
 interface ManifestItem {
