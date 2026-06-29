@@ -311,6 +311,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     barbara_vitality_burst: true,
   },
+  // Jean C1 "Spiraling Tempest" dmg_skill_jean+40 (skill_dmg) + C4 "Land's of Dandelion"
+  // enemy_res_anemo−40 (skill + burst + field). char_constellation:6 threads BOTH cons gates ON,
+  // matching the oracle dump at constellation 6.
+  "jean-self-buffs": {
+    char_constellation: 6,
+    jean: true,
+    jean_lands_of_dandelion: true,
+  },
 };
 
 interface ManifestItem {
