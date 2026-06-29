@@ -297,6 +297,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     diona_cats_tail: true,
   },
+  // Kaeya C1 "Excellent Blood" crit_rate_kaeya+15 on every normal + charged hit (only the avg
+  // component lifts; crit rate raises expected DMG). char_constellation:6 threads the C1 gate ON,
+  // matching the oracle dump at constellation 6.
+  "kaeya-self-buffs": {
+    char_constellation: 6,
+    kaeya_excellent_blood: true,
+  },
 };
 
 interface ManifestItem {
