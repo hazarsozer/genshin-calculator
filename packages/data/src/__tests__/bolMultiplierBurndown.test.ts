@@ -113,10 +113,16 @@ const TOLERANCE = 0.1;
 // Per-rep settings — mirrors the bol-multiplier oracle config (build-configs.mjs §bolMultiplierItems).
 // Each value is EXACTLY the input(s) the oracle item set for that rep, injected verbatim into both
 // buildStats and compileCharacter:
-//   arlecchino-masque  — setBuffsSettings({common.bond_of_life:50, attack_infusion:'pyro'}).
-//   clorinde-bol-heal  — setBuffsSettings({common.bond_of_life:50}).
+//   arlecchino-masque    — setBuffsSettings({common.bond_of_life:50, attack_infusion:'pyro'}).
+//   arlecchino-masque-c6 — setConstellation(6) + setBuffsSettings({common.bond_of_life:50,
+//                          attack_infusion:'pyro'}); char_constellation:6 threads C6 so buildStats
+//                          runs Arlecchino's C1/C3/C5 conditions AND compileFeature activates the
+//                          burst's C6 FeatureMultiplierBondOfLife (700% × atk_total × bond_of_life,
+//                          ConditionConstellation(6)) — the burst_dmg term this rep locks.
+//   clorinde-bol-heal    — setBuffsSettings({common.bond_of_life:50}).
 const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>>>> = {
   "arlecchino-masque": { "common.bond_of_life": 50, attack_infusion: "pyro" },
+  "arlecchino-masque-c6": { "common.bond_of_life": 50, attack_infusion: "pyro", char_constellation: 6 },
   "clorinde-bol-heal": { "common.bond_of_life": 50 },
 };
 

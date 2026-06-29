@@ -202,7 +202,30 @@ const features: readonly Feature[] = [
     name: "burst_dmg",
     category: "burst",
     element: "pyro",
-    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") },
+      // C6 "From This Day On, We Shall Delight in New Life Together": a SECOND burst
+      // multiplier — a fixed `700% × atk_total × bond_of_life` term, gated by
+      // ConditionConstellation(6). Faithful port of her FeatureMultiplierBondOfLife
+      // (raw Arlecchino.js:333-337): source 'constellation6', values ValueTable([700])
+      // (C6BurstDamage, NOT talent-leveled), no `scaling` → her default 'atk*' = atk_total,
+      // bondOfLifeFactor:true (the `bond_of_life` out-fraction third factor — the SAME factor
+      // the masque/heal terms read), condition ConditionConstellation(6). Per-feature
+      // multiplier conditions ARE honoured (compileFeature.activeOwnMultipliers filters them
+      // via evaluate — her FeatureMultiplier.isActive checks the gate at the per-feature level
+      // too; cf. Fischl C2), so this contributes 0 at C<6. Base-inert: inactive at C<6 AND
+      // ×0 at BoL=0 (the `bond_of_life` out-fraction is 0 for every BoL-free build) → the 58k
+      // damage goldens are byte-identical. The C6 ConditionBoolean crit toggle (raw :490-501:
+      // crit_rate/crit_dmg_{normal,burst}_arlecchino +10/+70) is OFF in the constellations
+      // config and unmodelled — no golden or diff-parity spec sets it, so it is inert here.
+      {
+        leveling: "char_skill_burst",
+        values: { getValue: (_level: number) => 700 },
+        source: "constellation6",
+        bondOfLifeFactor: true,
+        condition: { type: "constellation", constellation: 6 },
+      },
+    ],
   },
   // --- arlecchino_heal: burst heal (FeatureHeal, subtractBoL:true) ---
   // raw: FeatureHeal({ category:'burst', name:'arlecchino_heal', subtractBoL:true,
@@ -252,10 +275,14 @@ const features: readonly Feature[] = [
 // C4: ConditionStatic display-only. SKIP.
 // C5: +3 levels to Balemoon Rising (burst). Raw cons[4] settings
 //   char_skill_burst_bonus:3. Raw Arlecchino.js:473-480.
-// C6: ConditionStatic (display text_percent_dmg:700) + ConditionBoolean toggle
-//   (crit_rate/crit_dmg for normal+burst). Toggle is OFF in the constellations
-//   config → crit bonuses 0. FeatureMultiplierBondOfLife on burst (BoL=0 → 0).
-//   Effectively inert at the base build. SKIP.
+// C6: the FeatureMultiplierBondOfLife on the burst (`700% × atk_total × bond_of_life`,
+//   ConditionConstellation(6)) is PORTED as the second `burst_dmg` multiplier above —
+//   previously SKIPPED as "BoL=0 → 0" (true for the golden build, but it dropped the
+//   C6 burst term for real BoL>0 builds; diff-parity surfaced a ~31% burst undershoot
+//   at C6+BoL=50). Raw Arlecchino.js:333-337. The C6 ConditionStatic (display-only
+//   text_percent_dmg:700) needs no stat. The C6 ConditionBoolean crit toggle
+//   (crit_rate/crit_dmg_{normal,burst}_arlecchino +10/+70, raw :490-501) is OFF in the
+//   constellations config and unmodelled (no golden/spec sets it → inert).
 const constellationConditions: readonly Condition[] = [
   // C1: arlecchino_all_reprisals:2 → feeds the masque multiplier's +100% bonusValues lever
   // (only active when BoL≥30, so base-inert vs the BoL=0 goldens). Raw Arlecchino.js:429-432.
