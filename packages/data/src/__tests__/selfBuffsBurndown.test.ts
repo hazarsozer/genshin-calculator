@@ -385,6 +385,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     kuki_shinobu_to_ward_weakness: true,
   },
+  // Kamisato Ayato Burst "Bloomwater Blades" (ayato_bloomwater_blades → dmg_normal per his own burst
+  // talent level) lifting his physical normals (the SELF mirror of party.ayato_bloomwater_blades).
+  // NOT cons-gated → dumped at cons 0. char_skill_burst:10 is the BASE burst level (this burndown's
+  // buildStats omits talentLevels → thread it for the static-level), matching the oracle dump.
+  "ayato-self-buffs": {
+    ayato_bloomwater_blades: true,
+    char_skill_burst: 10,
+  },
 };
 
 interface ManifestItem {
