@@ -351,6 +351,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     layla_starry_illumination: true,
   },
+  // Thoma C6 "Burning Heart" dmg_normal/charged/plunge +15 on his own physical attacks (the SELF
+  // mirror of party.thoma_burning_heart). char_constellation:6 threads the C6 gate ON, matching the
+  // oracle dump at constellation 6. (His shields are non-damage → not asserted.)
+  "thoma-self-buffs": {
+    char_constellation: 6,
+    thoma_burning_heart: true,
+  },
 };
 
 interface ManifestItem {
