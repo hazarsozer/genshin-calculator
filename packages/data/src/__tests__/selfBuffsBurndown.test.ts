@@ -332,6 +332,17 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     diluc_flowing_flame: true,
     diluc_flaming_sword_nemesis_of_the_dark: true,
   },
+  // Bennett C6 "Fire Ventures with Me" (pyro infusion + dmg_pyro+15 on his physical attacks) +
+  // the self Fantastic Voyage ATK battery scaling with the C5 +3 burst (fantasticVoyageAtk's
+  // ratioFromTalent reads char_skill_burst). char_skill_burst:10 is the BASE burst level (this
+  // burndown's buildStats omits talentLevels → thread it; the C5 +3 _bonus is added by the condition
+  // loop via char_constellation:6). bennet_fantastic_voyage gates both the battery and the C6 effect.
+  // Matches the oracle dump at constellation 6 (burst 10+3=13). (atk_bonus readout is non-damage → not asserted.)
+  "bennett-self-buffs": {
+    char_constellation: 6,
+    char_skill_burst: 10,
+    bennet_fantastic_voyage: true,
+  },
 };
 
 interface ManifestItem {
