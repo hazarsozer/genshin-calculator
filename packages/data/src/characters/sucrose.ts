@@ -180,7 +180,8 @@ const features: readonly Feature[] = [
 // C4 "Alchemania": ConditionStatic no real stats → SKIP.
 // C5 "Carefree Wishes": +3 Elemental Burst talent levels.
 //   Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
-// C6 "Chaotic Entropy": ConditionDropdownElement (element toggle for DMG%) → SKIP.
+// C6 "Chaotic Entropy": ConditionDropdownElement — SELF +20% DMG of the swirled element.
+//   Ported below as the SELF mirror of party.sucrose_chaotic_entropy (was golden-blind SKIPPED).
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Sucrose.js:277-363
 
 const constellationConditions: readonly Condition[] = [
@@ -190,6 +191,46 @@ const constellationConditions: readonly Condition[] = [
   // C5 "Carefree Wishes" — +3 Elemental Burst talent levels.
   // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF "Chaotic Entropy" (C6) — the swirl element selected in the `sucrose_chaotic_entropy`
+  // single-select dropdown grants +20% DMG of that element, lifting Sucrose's OWN matching-element
+  // hits (her burst's absorb variants anemoskill_<el>_dmg). ConditionDropdownElement gated at C6
+  // (lives in constellation[5] → THE CONSTELLATION IS A GATE). SELF mirror of
+  // party.sucrose_chaotic_entropy; the port modelled only the party.* version → golden-blind SKIP.
+  // Modelled with the dropdown-element consumer pattern (cf. venti_storm_element / ViridescentVenerer
+  // 4pc): one static dmg_<el>:+20 per element, gated on (dropdown selects <el>) AND constellation 6.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Sucrose.js:320-359 (constellation[5], ConditionDropdownElement).
+  {
+    type: "static",
+    stats: { dmg_cryo: 20 },
+    condition: { type: "and", items: [
+      { type: "dropdown-element", name: "sucrose_chaotic_entropy", element: "cryo" },
+      { type: "constellation", constellation: 6 },
+    ] },
+  },
+  {
+    type: "static",
+    stats: { dmg_electro: 20 },
+    condition: { type: "and", items: [
+      { type: "dropdown-element", name: "sucrose_chaotic_entropy", element: "electro" },
+      { type: "constellation", constellation: 6 },
+    ] },
+  },
+  {
+    type: "static",
+    stats: { dmg_hydro: 20 },
+    condition: { type: "and", items: [
+      { type: "dropdown-element", name: "sucrose_chaotic_entropy", element: "hydro" },
+      { type: "constellation", constellation: 6 },
+    ] },
+  },
+  {
+    type: "static",
+    stats: { dmg_pyro: 20 },
+    condition: { type: "and", items: [
+      { type: "dropdown-element", name: "sucrose_chaotic_entropy", element: "pyro" },
+      { type: "constellation", constellation: 6 },
+    ] },
+  },
 ];
 
 // ---------------------------------------------------------------------------

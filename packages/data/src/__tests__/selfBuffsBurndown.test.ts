@@ -113,6 +113,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 4,
     lanyan_with_drakefalcons_blood_pearls_adorned: true,
   },
+  // Sucrose C6 dmg_<swirled element>+20 (gated C6 → char_constellation:6 threads the cons gate ON).
+  // sucrose_chaotic_entropy:"pyro" selects pyro → dmg_pyro+20 on her pyro absorb variant.
+  "sucrose-self-buffs": {
+    char_constellation: 6,
+    sucrose_chaotic_entropy: "pyro",
+  },
 };
 
 interface ManifestItem {
