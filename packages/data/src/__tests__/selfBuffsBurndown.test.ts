@@ -133,6 +133,17 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     beidou_lightning_storm: true,
     beidou_bane_of_the_evil: true,
   },
+  // Venti C2 breeze ×2 (anemo/phys res −12 each) + C4 hurricane (dmg_anemo+25) + C6 storm
+  // (anemo res −20) + storm_element:"pyro" (pyro res −20). char_constellation:6 threads ALL the
+  // C2/C4/C6 gates ON, matching the oracle dump at constellation 6.
+  "venti-self-buffs": {
+    char_constellation: 6,
+    venti_breeze: true,
+    venti_breeze_2: true,
+    venti_hurricane: true,
+    venti_storm: true,
+    venti_storm_element: "pyro",
+  },
 };
 
 interface ManifestItem {
