@@ -205,12 +205,35 @@ const features: readonly Feature[] = [
 //   raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:341-351 (constellation[1]).
 // C3 "Double-Stop" — +3 Elemental Skill talent levels.
 //   raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:352-360 (constellation[2]).
-// C4: ConditionBoolean toggle (enemy_res_phys:-15) → SKIP.
+// C4 "Wildfire Rhythm" — SELF enemy Physical RES -15% (ConditionBoolean toggle). Ported
+//   below as the SELF mirror of party.xinyan_wildfire_rhythm (was golden-blind SKIPPED).
+//   raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:362-373 (constellation[3]).
 // C5 "Banned Music" — +3 Burst talent levels.
 //   raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:373-381 (constellation[4]).
-// C6: ConditionBoolean toggle (PostEffectStatsDef gated) → SKIP.
+// C6 "Rockin' in a Flaming World": a PostEffectStatsDef (ATK += 30% DEF, gated boolean
+//   xinyan_rockin_in_a_flaming_world AND C6) — a DEF→ATK stat CONVERSION, not an additive
+//   stat buff → out of this additive-self-buff sweep's scope; still SKIP (Tier-B).
+//   raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:294-302.
 
 const constellationConditions: readonly Condition[] = [
+  // SELF "Now That's Rock 'N' Roll!" (A4) — +15% Physical DMG, buffing every one of Xinyan's
+  // OWN physical damage features. A4 ascension passive (ConditionBoolean toggle; rep always at
+  // ascension 6 → modelled ungated, the toggle is the gate). The SELF mirror of
+  // party.xinyan_now_thats_rock (the teammate version, below) — was golden-blind SKIPPED (no
+  // golden sets the self toggle). Raw key `dmg_phys` (matches the partyData entry).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:312-324 (conditions[1], ConditionBoolean, info.ascension 4).
+  { type: "boolean", name: "xinyan_now_thats_rock", stats: { dmg_phys: 15 } },
+  // SELF "Wildfire Rhythm" (C4) — enemy Physical RES -15%, buffing every Xinyan physical hit
+  // (and reaction.shatter). ConditionBoolean toggle gated at C4 (lives in constellation[3] →
+  // THE CONSTELLATION IS A GATE). SELF mirror of party.xinyan_wildfire_rhythm. Raw key
+  // `enemy_res_phys` → engine bag key `enemy_res_physical`.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:362-373 (constellation[3], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "xinyan_wildfire_rhythm",
+    stats: { enemy_res_physical: -15 },
+    condition: { type: "constellation", constellation: 4 },
+  },
   // C2 — crit_rate_xinyan +100% (always-on ConditionStatic; wired to burst_dmg above).
   { type: "constellation", constellation: 2, stats: { crit_rate_xinyan: 100 } },
   // C3 — char_skill_elemental_bonus +3 (skill talent level up).

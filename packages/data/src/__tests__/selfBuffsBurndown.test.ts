@@ -88,6 +88,13 @@ const TOLERANCE = 0.1;
 // entry, then re-dump (`node tools/oracle/dump-oracle.mjs --config=self-buffs`).
 const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>>>> = {
   "zhongli-jade-shield": { zhongli_jade_shield: true },
+  // Xinyan A4 dmg_phys+15 (ungated) + C4 enemy_res_physical−15 (gated at C4 → char_constellation:4
+  // threads the cons gate ON, matching the oracle dump at constellation 4).
+  "xinyan-self-buffs": {
+    char_constellation: 4,
+    xinyan_now_thats_rock: true,
+    xinyan_wildfire_rhythm: true,
+  },
 };
 
 interface ManifestItem {
