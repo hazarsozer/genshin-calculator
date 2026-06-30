@@ -504,6 +504,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     hu_tao_sanguine_rouge: true,
     hu_tao_butterflys_embrace: true,
   },
+  // Itto C4 "Jailhouse Bread and Butter" (SELF toggle, +20% DEF + +20% ATK). Gated C4
+  // (char_constellation:4) + the toggle, matching the oracle dump at constellation 4.
+  "itto-self-buffs": {
+    char_constellation: 4,
+    itto_jailhouse_bread_and_butter: true,
+  },
   // Xingqiu C2 xingqiu_rainbow_upon_the_azure_sky (enemy_res_hydro−15) + C4 xingqiu_evilsoother
   // (+50% skill DMG, the folded ×1.5 on skill_dmg/skill_1/skill_2). char_constellation:4 threads
   // BOTH cons gates ON, matching the oracle dump at constellation 4.

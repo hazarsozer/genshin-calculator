@@ -226,11 +226,23 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // C1 "Stay a While and Listen Up": ConditionStatic no real stats → SKIP.
 // C2 "Gather 'Round, It's a Brawl!": ConditionStatic no real stats → SKIP.
-// C4 "Jailhouse Bread and Butter": ConditionBoolean def_percent/atk_percent toggle → SKIP.
+// C4 "Jailhouse Bread and Butter": SELF ConditionBoolean (def_percent:20 + atk_percent:20),
+//   gated C4. Now ported (the port had only party.itto_jailhouse_bread_and_butter → golden-blind
+//   SKIP of the SELF). Note: DEF% matters here — Itto's charged hits scale on DEF (A4 multiplier).
 //
 // Source: raw/genshin_calc_pub/src/js/db/Char/Itto.js:334-394
 
 const constellationConditions: readonly Condition[] = [
+  // C4 "Jailhouse Bread and Butter": SELF toggle granting +20% DEF and +20% ATK, gated C4.
+  // Raw cons[3]: ConditionBoolean{ name:'itto_jailhouse_bread_and_butter',
+  //   stats:{ def_percent:20, atk_percent:20 } }. Modelled as a boolean toggle with a
+  //   constellation-4 sub-gate (the party.* mirror lives in partyData below).
+  {
+    type: "boolean",
+    name: "itto_jailhouse_bread_and_butter",
+    stats: { def_percent: 20, atk_percent: 20 },
+    condition: { type: "constellation", constellation: 4 },
+  },
   // C3 "Horns Lowered, Coming Through": +3 levels to Masatsu Zetsugi: Akaushi Burst (Elemental Skill).
   // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus: 3 } }.
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
