@@ -1,0 +1,228 @@
+{
+  "element": "cryo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2280.6648998322003,
+      "category": "attack",
+      "crit": 3315.787415068187,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1657.8937075340934
+    },
+    "attack.normal_hit_1": {
+      "average": 929.1323203833563,
+      "category": "attack",
+      "crit": 1350.8364403235676,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 675.4182201617838
+    },
+    "attack.normal_hit_2": {
+      "average": 830.8059974328773,
+      "category": "attack",
+      "crit": 1207.8828726016652,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 603.9414363008326
+    },
+    "attack.normal_hit_3": {
+      "average": 1150.9739143732913,
+      "category": "attack",
+      "crit": 1673.365000106556,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 836.682500053278
+    },
+    "attack.plunge": {
+      "average": 1236.910476279344,
+      "category": "attack",
+      "crit": 1798.3054814912973,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 899.1527407456487
+    },
+    "attack.plunge_high": {
+      "average": 3089.281250077829,
+      "category": "attack",
+      "crit": 4491.409453167732,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2245.704726583866
+    },
+    "attack.plunge_low": {
+      "average": 2473.2968379500953,
+      "category": "attack",
+      "crit": 3595.848969134505,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1797.9244845672524
+    },
+    "burst.citlali_ice_storm_dmg": {
+      "average": 24225.474540586212,
+      "category": "burst",
+      "crit": 35220.66026080401,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 17610.330130402006
+    },
+    "burst.citlali_spiritvessel_skull_dmg": {
+      "average": 5157.287748554554,
+      "category": "burst",
+      "crit": 7498.019465201004,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3749.009732600502
+    },
+    "other.citlali_obsidian_spiritvessel_skull_dmg": {
+      "average": 3289.3203168,
+      "category": "other",
+      "crit": 4782.24,
+      "damageType": "none",
+      "format": "",
+      "isReacted": false,
+      "normal": 2391.12
+    },
+    "reaction.electrocharged": {
+      "average": 7963.695489682816,
+      "category": "reaction",
+      "crit": 7963.695489682816,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7963.695489682816
+    },
+    "reaction.shatter": {
+      "average": 11945.543234524222,
+      "category": "reaction",
+      "crit": 11945.543234524222,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 11945.543234524222
+    },
+    "reaction.superconduct": {
+      "average": 5972.771617262111,
+      "category": "reaction",
+      "crit": 5972.771617262111,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5972.771617262111
+    },
+    "skill.citlali_frostfall_storm_dmg": {
+      "average": 742.88691624924,
+      "category": "skill",
+      "crit": 1080.0600684034196,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 540.0300342017098
+    },
+    "skill.citlali_obsidian_tzitzimitl_dmg": {
+      "average": 2253.3933228875994,
+      "category": "skill",
+      "crit": 3276.13812172894,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1638.06906086447
+    },
+    "skill.shield_absorption": {
+      "average": 7426.9439999999995,
+      "category": "skill",
+      "crit": 7426.9439999999995,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 7426.9439999999995
+    },
+    "stats.atk": {
+      "average": 1778.697124392,
+      "category": "stats",
+      "crit": 1778.697124392,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1778.697124392
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 37.564,
+      "category": "stats",
+      "crit": 37.564,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 37.564
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1639.1745768,
+      "category": "stats",
+      "crit": 1639.1745768,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1639.1745768
+    },
+    "stats.hp": {
+      "average": 24859.615306,
+      "category": "stats",
+      "crit": 24859.615306,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 24859.615306
+    },
+    "stats.mastery": {
+      "average": 295.2,
+      "category": "stats",
+      "crit": 295.2,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 295.2
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Citlali",
+  "repSlug": "citlali",
+  "schema": 1,
+  "slug": "citlali-self-buffs",
+  "weapon": "weapon_name.solar_pearl",
+  "weaponType": "catalyst"
+}

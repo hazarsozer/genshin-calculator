@@ -136,12 +136,25 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.citlali_obsidian_tzitzimitl_dmg") }],
   },
   // raw: FeatureDamageSkill citlali_frostfall_storm_dmg (element: 'cryo')
-  // A4 mastery* term (source:'ascension4') is gated OFF at baseline → plain ATK hit.
+  // A4 "Itzpapalotl's Star Garments": SELF +90% (mastery*) EM-scaled damage-instance term added in
+  // parallel to the ATK base, gated by the citlali_itzpapalotls_star_garments toggle (ascension-4
+  // auto-true at the rep). The aino-A4 / alhaitham mastery* mirror; scales off her OWN EM. Was
+  // golden-blind SKIPPED ("gated OFF at baseline") → her frostfall undershot the oracle when the
+  // garments toggle is on. raw Citlali.js:236-244. Base-inert when untoggled.
   {
     name: "citlali_frostfall_storm_dmg",
     category: "skill",
     element: "cryo",
-    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.citlali_frostfall_storm_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_elemental", values: talents.get("skill.citlali_frostfall_storm_dmg") },
+      {
+        scaling: "mastery*",
+        leveling: "",
+        source: "ascension4",
+        values: { getValue: () => 90 }, // A4SkillBonus
+        condition: { type: "boolean", name: "citlali_itzpapalotls_star_garments" },
+      },
+    ],
   },
   // --- Shield (FeatureShield): skill.shield_absorption ---
   // FeatureMultiplierList: (percent/100 × mastery_total) + flat, then × (1 + shield).
@@ -157,12 +170,24 @@ const features: readonly Feature[] = [
   },
   // --- Burst: Edict of Entwined Splendor (cryo) ---
   // raw: FeatureDamageBurst citlali_ice_storm_dmg (element: 'cryo')
-  // A4 mastery* term (source:'ascension4') is gated OFF at baseline → plain ATK hit.
+  // A4 "Itzpapalotl's Star Garments": SELF +1200% (mastery*) EM-scaled damage-instance term added in
+  // parallel to the ATK base, gated by the citlali_itzpapalotls_star_garments toggle (the aino-A4 /
+  // alhaitham mastery* mirror, scaling off her OWN EM). Was golden-blind SKIPPED → her ice-storm
+  // undershot the oracle when the garments toggle is on. raw Citlali.js:265-273. Base-inert when untoggled.
   {
     name: "citlali_ice_storm_dmg",
     category: "burst",
     element: "cryo",
-    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.citlali_ice_storm_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.citlali_ice_storm_dmg") },
+      {
+        scaling: "mastery*",
+        leveling: "",
+        source: "ascension4",
+        values: { getValue: () => 1200 }, // A4BurstBonus
+        condition: { type: "boolean", name: "citlali_itzpapalotls_star_garments" },
+      },
+    ],
   },
   // raw: FeatureDamageBurst citlali_spiritvessel_skull_dmg (element: 'cryo')
   {
@@ -197,17 +222,37 @@ const features: readonly Feature[] = [
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
 // C1 "Radiant Blades of Centzon Mimixcoah": ConditionStatic display-only (text_percent) → SKIP.
-// C2 "Heart Devourer's Travail": ConditionBoolean toggle (mastery:125 + res shred) → SKIP (toggle OFF).
 // C3 "Death Defier's Spirit Skull": +3 levels to Dawnfrost Darkstar (skill). Raw cons[2] settings.
 // C4 "Death Defier's Spirit Skull" damage: cons-added feature above.
 // C5 "Teoiztac's Secret Pact": +3 levels to Edict of Entwined Splendor (burst). Raw cons[4] settings.
-// C6 "Teoiztac's Secret Pact": ConditionNumberCitlali (number/slider toggle) → SKIP (toggle OFF).
 // Raw: Citlali.js constellation array (Citlali.js:328-416).
+//
+// SELF buffs (were golden-blind SKIPPED — the port modelled only the party.* mirror; these SELF
+// conditions default OFF in the fixed build, so the 58k DAMAGE goldens never exercised them; a
+// diff-parity sweep surfaced her frostfall/ice-storm (the A4 mastery* features) + EM-scaled reactions
+// diverging when the toggles are on):
+//   - A4 "Itzpapalotl's Star Garments": the two mastery* terms on frostfall/ice-storm (ported above
+//     on those features, gated by citlali_itzpapalotls_star_garments).
+//   - C2 "Heart Devourer's Travail" (citlali_heart_devourers_travail): SELF mastery +125, lifting her
+//     A4 mastery* terms, the C4 skull mastery* term, and her EM-scaled transformative reactions.
+//     ConditionBoolean in constellation[1] → THE CONSTELLATION IS A GATE. raw Citlali.js:342-352.
+//     (Its sibling A1 res-shred enemy_res_pyro/hydro is damage-inert for her CRYO hits → SKIP.)
+// DEFERRED — Tier-B (needs new engine surface, NOT ported here): C6 "Teoiztac's Secret Pact"
+// (citlali_points → ConditionNumberCitlali emits dmg_all += points × 2.5 via a getStats override the
+// generic ConditionNumber can't express — it emits only the raw clamped value). Its dmg_all self-bonus
+// drives the c6 normals/plunge/burst ×1.9-2.0 explosion. Documented for an engine-extension pass.
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Dawnfrost Darkstar (elemental skill).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Edict of Entwined Splendor (elemental burst).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF C2 "Heart Devourer's Travail" — +125 EM, gated at C2. raw Citlali.js:342-352.
+  {
+    type: "boolean",
+    name: "citlali_heart_devourers_travail",
+    stats: { mastery: 125 },
+    condition: { type: "constellation", constellation: 2 },
+  },
 ];
 
 // ---------------------------------------------------------------------------
