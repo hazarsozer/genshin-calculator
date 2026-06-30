@@ -545,6 +545,15 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     baizhu_all_things_are_of_the_earth: true,
     baizhu_ancient_art_of_perception: true,
   },
+  // Nahida SELF buffs — A1 EM share (compassion + illusory_heart + party_max_mastery cap) + the C2
+  // Root of All Fullness enemy_def_reduce:30 toggle (the skipped golden-blind gate).
+  "nahida-self-buffs": {
+    char_constellation: 6,
+    nahida_compassion_illuminated: true,
+    nahida_illusory_heart: true,
+    party_max_mastery: 1000,
+    nahida_the_root_of_all_fullness: true,
+  },
   // Xingqiu C2 xingqiu_rainbow_upon_the_azure_sky (enemy_res_hydro−15) + C4 xingqiu_evilsoother
   // (+50% skill DMG, the folded ×1.5 on skill_dmg/skill_1/skill_2). char_constellation:4 threads
   // BOTH cons gates ON, matching the oracle dump at constellation 4.
