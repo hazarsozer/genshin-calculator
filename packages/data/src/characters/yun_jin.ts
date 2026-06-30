@@ -260,6 +260,44 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5 — char_skill_elemental_bonus +3 (skill talent level up).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF C2 "Myriad Mise-en-Scène" — dmg_normal +15 on her own normals, gated C2. raw YunJin.js:418-427.
+  {
+    type: "boolean",
+    name: "yunjin_myriad",
+    stats: { dmg_normal: 15 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  // SELF C4 "Flower and a Fighter" — def_percent +20 (lifts every DEF-scaled hit), gated C4. raw YunJin.js:441-449.
+  {
+    type: "boolean",
+    name: "yunjin_flower",
+    stats: { def_percent: 20 },
+    condition: { type: "constellation", constellation: 4 },
+  },
+];
+
+// SELF "Flying Cloud Flag Formation" NA DEF-buff (PARTIAL) — the burst grants an additive base-damage
+// term on her OWN normals = DEF × (yunjin_dmg_bonus%(burstLevel) + bonusValues[traditionalist_stacks]),
+// gated by the yunjin_flag master toggle. The SELF mirror of the partyData multiplier, scaling off her
+// OWN def_total (scaling:"def") + own burst level. The port carried multipliers:[] → golden-blind SKIP
+// (raw YunJin.js:369-382). The bonusValues element-count term defaults to the 1-element tier (2.5%) at
+// SOLO, which is FAITHFUL (char_element geo alone → her party_elements_count_level=1 → 2.5%). DEFERRED
+// Tier-B: the bonusValues element-count REFINEMENT for 2-4 distinct-element parties — her engine
+// derives yunjin_traditionalist_stacks via ConditionCalcElements + the A4 mapper, which have no SELF
+// publisher in our port (same gap as the already-merged partyData side); the value would fall back to
+// 2.5% (correct for 1 element, undershooting for 2-4). Fixed only by a self-side element-count engine
+// extension — NOT baked here (the prior YunJin revert proved baking stacks=1 is a gamed gate).
+const yunjinSelfMultipliers: readonly CharMultiplier[] = [
+  {
+    source: "talent_burst",
+    scaling: "def",
+    leveling: "char_skill_burst",
+    values: talents.get("burst.yunjin_dmg_bonus"),
+    bonusLeveling: "yunjin_traditionalist_stacks",
+    bonusValues: yunjinTradBonus,
+    target: { damageTypes: ["normal"] },
+    condition: { type: "boolean", name: "yunjin_flag" },
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -316,7 +354,7 @@ export const yunJin: DbObjectChar = {
   statTable: YunJinStatTable,
   talents,
   features,
-  multipliers: [],
+  multipliers: yunjinSelfMultipliers,
   conditions: constellationConditions,
   partyData: {
     // loadStats: raw YunJin.js:478-482 lists settings:['char_skill_elemental'], but that's a

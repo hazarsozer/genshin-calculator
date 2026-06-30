@@ -562,6 +562,17 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     xingqiu_rainbow_upon_the_azure_sky: true,
     xingqiu_evilsoother: true,
   },
+  // YunJin SELF buffs — Flying Cloud Flag Formation NA DEF-buff (yunjin_flag → DEF×(burst%+2.5%) on
+  // her own normals) + C2 yunjin_myriad (dmg_normal+15) + C4 yunjin_flower (def_percent+20).
+  // char_constellation:6 threads both cons gates ON, matching the oracle dump at constellation 6.
+  // SOLO (no resonance) → the bonusValues element-count tier is the faithful 1-element 2.5%; the 2-4
+  // element refinement is a deferred Tier-B engine-extension (no self-side element-count publisher).
+  "yunjin-self-buffs": {
+    char_constellation: 6,
+    yunjin_flag: true,
+    yunjin_myriad: true,
+    yunjin_flower: true,
+  },
   // Citlali SELF buffs (PARTIAL) — A4 citlali_itzpapalotls_star_garments (mastery* EM terms on
   // frostfall/ice-storm) + C2 citlali_heart_devourers_travail (mastery+125). frigid_rain set (its
   // res-shred is pyro/hydro = inert for cryo). char_constellation:6 threads the C2 gate ON, matching
