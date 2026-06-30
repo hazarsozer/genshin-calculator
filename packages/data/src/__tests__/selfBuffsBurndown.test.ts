@@ -797,6 +797,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   "xiao-yaksha-mask": {
     xiao_yaksha_mask: true,
   },
+  // Cyno Pactsworn Pathclearer (cyno_wolfs_swiftness): the physical ground normals/charged/plunge are
+  // NOT-gated OFF; the parallel ELECTRO burst-stance set (char_skill_burst) + duststalker bolt + A4
+  // EM→Normal multiplier are gated ON. C0 / A6 (A1+A4 are stance-gated, active once the toggle is on).
+  "cyno-wolfs-swiftness": {
+    cyno_wolfs_swiftness: true,
+  },
 };
 
 interface ManifestItem {
