@@ -638,6 +638,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     eula_tidal_illusion: true,
     eula_obstinacy: true,
   },
+  // Chevreuse SELF buffs — A1 chevreuse_tactics (enemy_res_pyro/electro−40, party-element gate) + A4
+  // chevreuse_force_coordination (own HP→atk_percent capped 40) + C6 chevreuse_in_pursuit:3
+  // (dmg_pyro/electro+60%). char_constellation:6 threads the C6 gate ON, matching the oracle dump at
+  // constellation 6. The atk% + dmg buffs lift every hit; the res-shred her pyro damage.
+  "chevreuse-self-buffs": {
+    char_constellation: 6,
+    chevreuse_tactics: true,
+    chevreuse_force_coordination: true,
+    chevreuse_in_pursuit: 3,
+  },
 };
 
 interface ManifestItem {

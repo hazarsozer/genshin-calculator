@@ -252,6 +252,33 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Ring of Bursting Grenades (burst).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF C6 "In Pursuit of Ending Evil" (chevreuse_in_pursuit): dmg_pyro +20 / dmg_electro +20 per
+  // stack (max 3 = +60% each), gated C6. text_percent_heal is a display key → skip. The SELF mirror
+  // of party.chevreuse_in_pursuit; lifts her own pyro hits. Was golden-blind SKIPPED. raw
+  // constellation[5] ConditionStacks. THE CONSTELLATION IS A GATE.
+  {
+    type: "stacks",
+    name: "chevreuse_in_pursuit",
+    maxStacks: 3,
+    stats: { dmg_pyro: 20, dmg_electro: 20 },
+    condition: { type: "constellation", constellation: 6 },
+  },
+];
+
+// SELF A4 "Vertical Force Coordination" (chevreuse_force_coordination): own HP → atk_percent at
+// 0.001/HP (AtkBuffValue/1000), hard-capped at AtkBuffCap=40, gated by the chevreuse_force_coordination
+// boolean (the in-game "an Electro/Pyro teammate triggered Overcharged" trigger). Lifts EVERY one of
+// her ATK-scaled hits. The port previously modelled only the other.atk_bonus DISPLAY readout (a static
+// feature) + the party.* HP→atk battery, but DROPPED the SELF buff postEffect → golden-blind SKIP. raw
+// Chevreuse.js atkBuffPost = PostEffectStatsHP (own HP), conditions [Ascension4, chevreuse_force_coordination].
+const selfPostEffects: readonly CharPostEffect[] = [
+  {
+    fromStat: "hp",
+    toStat: "atk_percent",
+    ratio: 0.001, // AtkBuffValue=1 / 1000
+    capValue: 40, // AtkBuffCap=40
+    conditions: [{ type: "boolean", name: "chevreuse_force_coordination" }],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -270,6 +297,7 @@ export const chevreuse: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  postEffects: selfPostEffects,
   // partyData — teammate kit buffs (P3.5.2 Bucket B).
   // Source: raw/genshin_calc_pub/src/js/db/Char/Chevreuse.js:471-541
   // Scope: oracle-gated core only — A4 "Vertical Force Coordination" HP→atk_percent battery.
