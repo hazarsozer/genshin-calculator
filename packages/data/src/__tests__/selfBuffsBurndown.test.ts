@@ -108,6 +108,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 4,
     yaoyao_winsome: true,
   },
+  // Kazuha A4 Poetics of Fuubutsu (EM→dmg_cryo, dropdown="cryo") + C6 Crimson Momiji
+  // (EM→dmg_normal/charged/plunge + anemo infusion). char_constellation:6 threads the C6 gate ON,
+  // matching the oracle dump at constellation 6.
+  "kazuha-windsong": {
+    char_constellation: 6,
+    kaedehara_kazuha_poetics_of_fuubutsu: "cryo",
+    kaedehara_kazuha_crimson_momiji: true,
+  },
   // Xinyan A4 dmg_phys+15 (ungated) + C4 enemy_res_physical−15 (gated at C4 → char_constellation:4
   // threads the cons gate ON, matching the oracle dump at constellation 4).
   "xinyan-self-buffs": {
