@@ -126,6 +126,15 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     faruzan_wind_benefit: true,
     faruzan_lost_wisdom_of_the_seven_caverns: true,
   },
+  // Lynette A1 sophisticated_synergy (atk_percent by party_elements_count_level=1 solo → +8%) + A4
+  // props_positively_prepped (dmg_burst_lynette+15) + C6 watchful_eye (dmg_anemo+20 + anemo infusion).
+  // char_constellation:6 threads the C6 gate ON, matching the oracle dump at constellation 6.
+  "lynette-self-buffs": {
+    char_constellation: 6,
+    lynette_sophisticated_synergy: true,
+    lynette_props_positively_prepped: true,
+    lynette_watchful_eye: true,
+  },
   // Xinyan A4 dmg_phys+15 (ungated) + C4 enemy_res_physical−15 (gated at C4 → char_constellation:4
   // threads the cons gate ON, matching the oracle dump at constellation 4).
   "xinyan-self-buffs": {

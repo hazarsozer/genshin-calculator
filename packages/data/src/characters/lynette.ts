@@ -253,6 +253,33 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
   // C6 (a): always-on anemo infusion enablement.
   { type: "constellation", constellation: 6, settings: { allowed_infusion_anemo: 1 } },
+  // SELF A4 "Props Positively Prepped" (lynette_props_positively_prepped) — dmg_burst_lynette +15
+  // (the burst features carry damageBonuses:['dmg_burst_lynette']), a ConditionBoolean gated only by
+  // ConditionAscensionChar(4) (auto-true at A6 → the toggle is the gate). Was golden-blind SKIPPED.
+  // raw Lynette.js:399-411.
+  { type: "boolean", name: "lynette_props_positively_prepped", stats: { dmg_burst_lynette: 15 } },
+  // SELF A1 "Sophisticated Synergy" (lynette_sophisticated_synergy) — atk_percent indexed by the
+  // party's distinct-element count (party_elements_count_level → 8/12/16/20% at 1/2/3/4), a
+  // ConditionBooleanLevels gated only by ConditionAscensionChar(1) (auto at A6). The SELF mirror of
+  // partyData.party.lynette_sophisticated_synergy; party_elements_count_level is published by the
+  // build for the active char too. raw Lynette.js:384-398 (A1AtkBonus = [8,12,16,20]).
+  {
+    type: "static-level",
+    levelSetting: "party_elements_count_level",
+    levelStats: { atk_percent: [8, 12, 16, 20] },
+    condition: { type: "boolean", name: "lynette_sophisticated_synergy" },
+  },
+  // SELF C6 "Watchful Eye" (lynette_watchful_eye) — dmg_anemo +20 + anemo infusion on her normals
+  // (attack_infusion_anemo), gated C6. raw constellation[5] conditions[1] ConditionBoolean.
+  // attack_infusion_anemo:1 → attack_infusion:"anemo" (the Diluc-dawn/dori collapse the port's
+  // resolveElement reads; allowed_infusion is the C6(a) always-on enabler above).
+  {
+    type: "boolean",
+    name: "lynette_watchful_eye",
+    stats: { dmg_anemo: 20 },
+    settings: { attack_infusion: "anemo" },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------
