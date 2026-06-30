@@ -1,0 +1,246 @@
+{
+  "element": "cryo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 4323.277227964712,
+      "category": "attack",
+      "crit": 9548.630737166626,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3742.682393608944
+    },
+    "attack.normal_hit_1": {
+      "average": 1589.6672313288827,
+      "category": "attack",
+      "crit": 3511.027534563054,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1376.1827531917525
+    },
+    "attack.normal_hit_2": {
+      "average": 1479.05420330401,
+      "category": "attack",
+      "crit": 3266.7214436888844,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1280.4245099279126
+    },
+    "attack.normal_hit_3": {
+      "average": 1959.4307821548846,
+      "category": "attack",
+      "crit": 4327.707895485274,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1696.2888806737303
+    },
+    "attack.normal_hit_4": {
+      "average": 1934.1478043206282,
+      "category": "attack",
+      "crit": 4271.866503285464,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1674.401282213424
+    },
+    "attack.normal_hit_4_1": {
+      "average": 967.0739021603141,
+      "category": "attack",
+      "crit": 2135.933251642732,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 837.200641106712
+    },
+    "attack.normal_hit_5": {
+      "average": 2411.3640109422213,
+      "category": "attack",
+      "crit": 5325.872781056879,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2087.529703151704
+    },
+    "attack.plunge": {
+      "average": 2201.4257095633607,
+      "category": "attack",
+      "crit": 4862.191362597747,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1905.7850814484286
+    },
+    "attack.plunge_high": {
+      "average": 5498.2339453138175,
+      "category": "attack",
+      "crit": 12143.705546052242,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4759.848211898437
+    },
+    "attack.plunge_low": {
+      "average": 4401.919482591394,
+      "category": "attack",
+      "crit": 9722.324398288129,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3810.763380847312
+    },
+    "burst.burst_dmg": {
+      "average": 8952.754756128339,
+      "category": "burst",
+      "crit": 20667.736664394288,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 7651.090099654346
+    },
+    "burst.dot_dmg": {
+      "average": 4815.52281005057,
+      "category": "burst",
+      "crit": 11116.797013944972,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4115.3812318400805
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 6354.2743037408745,
+      "category": "reaction",
+      "crit": 6354.2743037408745,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 6354.2743037408745
+    },
+    "reaction.superconduct": {
+      "average": 3177.1371518704373,
+      "category": "reaction",
+      "crit": 3177.1371518704373,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3177.1371518704373
+    },
+    "skill.hold_dmg": {
+      "average": 11968.070956276719,
+      "category": "skill",
+      "crit": 27628.695931360646,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 10228.001514600726
+    },
+    "skill.press_dmg": {
+      "average": 9436.183013842638,
+      "category": "skill",
+      "crit": 21783.747121368633,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 8064.231446339749
+    },
+    "skill.shenhe_dmg_bonus": {
+      "average": 2398.934595985548,
+      "category": "skill",
+      "crit": 2398.934595985548,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2398.934595985548
+    },
+    "stats.atk": {
+      "average": 2472.6441171168,
+      "category": "stats",
+      "crit": 2472.6441171168,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2472.6441171168
+    },
+    "stats.crit_dmg": {
+      "average": 155.128,
+      "category": "stats",
+      "crit": 155.128,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 155.128
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1706.0387196000001,
+      "category": "stats",
+      "crit": 1706.0387196000001,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1706.0387196000001
+    },
+    "stats.hp": {
+      "average": 26218.9111775,
+      "category": "stats",
+      "crit": 26218.9111775,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26218.9111775
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Shenhe",
+  "repSlug": "shenhe",
+  "schema": 1,
+  "slug": "shenhe-self-buffs",
+  "weapon": "weapon_name.blackcliff_pole",
+  "weaponType": "polearm"
+}
