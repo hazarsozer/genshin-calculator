@@ -135,6 +135,11 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     lynette_props_positively_prepped: true,
     lynette_watchful_eye: true,
   },
+  // Furina skill HP-offerings scaling (furina_hp_offers:4 → ×1.4 on the three summon hits via the
+  // scalingOffset field). No cons gate → dumped at C0. (The fanfare→dmg_all clamp is a deferred S3 item.)
+  "furina-self-buffs": {
+    furina_hp_offers: 4,
+  },
   // Xinyan A4 dmg_phys+15 (ungated) + C4 enemy_res_physical−15 (gated at C4 → char_constellation:4
   // threads the cons gate ON, matching the oracle dump at constellation 4).
   "xinyan-self-buffs": {
