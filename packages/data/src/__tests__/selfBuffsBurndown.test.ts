@@ -693,6 +693,19 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   "sigewinne-self-buffs": {
     sigewinne_requires_appropriate_rest: true,
   },
+  // TravelerPyro: ungated swordfighting/special_training base-stat passives + C1 Starfire's Flowing
+  // Light (dmg_all+6 boolean + Nightsoul static dmg_all+9) + C4 Ravaging Flame (dmg_pyro+20) + C6
+  // The Sacred Flame Imperishable (crit_dmg normal/charged/plunge +40 + pyro infusion).
+  // char_constellation:6 threads every C1/C4/C6 gate ON, matching the oracle dump at constellation 6.
+  "travelerpyro-self-buffs": {
+    char_constellation: 6,
+    traveler_swordfighting_techniques: true,
+    traveler_special_training: true,
+    traveler_pyro_starfires_flowing_light: true,
+    "common.nightsoul_blessing_state": true,
+    traveler_ravaging_flame: true,
+    traveler_pyro_the_sacred_flame_imperishable: true,
+  },
 };
 
 interface ManifestItem {

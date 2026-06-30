@@ -177,6 +177,50 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5 — +3 Elemental Burst (Plains Scorcher).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF ungated passive toggles (char.conditions, raw TravelerPyro.js:302-321) — were golden-blind
+  // SKIPPED. "Swordfighting Techniques": +3 base ATK. "Special Training": +7 base ATK, +15 EM,
+  // +50 base HP. Plain ConditionBooleans, the toggle is the gate (mirror of every other Traveler).
+  { type: "boolean", name: "traveler_swordfighting_techniques", stats: { atk_base: 3 } },
+  { type: "boolean", name: "traveler_special_training", stats: { atk_base: 7, mastery: 15, hp_base: 50 } },
+  // SELF C1 "Starfire's Flowing Light" (raw cons[0], TravelerPyro.js:325-346) — SELF mirror of the
+  // ported party.* pair. Part 1: boolean → dmg_all+6 (C1DmgBonus), gated on constellation 1.
+  // Part 2: a static +9 (C1DmgBonusNightsoul) gated on the part-1 toggle AND Nightsoul state.
+  {
+    type: "boolean",
+    name: "traveler_pyro_starfires_flowing_light",
+    stats: { dmg_all: 6 },
+    condition: { type: "constellation", constellation: 1 },
+  },
+  {
+    type: "static",
+    stats: { dmg_all: 9 },
+    condition: {
+      type: "and",
+      items: [
+        { type: "constellation", constellation: 1 },
+        { type: "boolean", name: "traveler_pyro_starfires_flowing_light" },
+        { type: "boolean", name: "common.nightsoul_blessing_state" },
+      ],
+    },
+  },
+  // SELF C4 "Ravaging Flame" (raw cons[3], TravelerPyro.js:366-375) — boolean → dmg_pyro+20
+  // (C4PyroDmg), gated on constellation 4.
+  {
+    type: "boolean",
+    name: "traveler_ravaging_flame",
+    stats: { dmg_pyro: 20 },
+    condition: { type: "constellation", constellation: 4 },
+  },
+  // SELF C6 "The Sacred Flame Imperishable" (raw cons[5], TravelerPyro.js:388-402) — boolean adding
+  // +40% crit DMG to normals/charged/plunge (C6CritDmg) AND a pyro attack infusion, gated on
+  // constellation 6.
+  {
+    type: "boolean",
+    name: "traveler_pyro_the_sacred_flame_imperishable",
+    stats: { crit_dmg_normal: 40, crit_dmg_charged: 40, crit_dmg_plunge: 40 },
+    settings: { attack_infusion: "pyro" },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------
