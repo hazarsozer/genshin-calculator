@@ -149,6 +149,9 @@ const features: readonly Feature[] = [
     name: "varesa_flying_kick_dmg",
     category: "burst",
     element: "electro",
+    // raw feature damageBonuses: ['dmg_burst_varesa'] (Varesa.js:289) — base-inert (the key reads 0
+    // until C4 "The Courage to Press On" toggles varesa_the_courage_to_press_on_2 → dmg_burst_varesa:100).
+    damageBonuses: ["dmg_burst_varesa"],
     multipliers: [
       { leveling: "char_skill_burst", values: talents.get("burst.varesa_flying_kick_dmg") },
     ],
@@ -161,6 +164,8 @@ const features: readonly Feature[] = [
     category: "burst",
     damageType: "plunge",
     element: "electro",
+    // raw feature damageBonuses: ['dmg_burst_varesa'] (Varesa.js:306) — base-inert (see flying kick).
+    damageBonuses: ["dmg_burst_varesa"],
     multipliers: [
       { leveling: "char_skill_burst", values: talents.get("burst.varesa_volcanic_collapse_dmg") },
     ],
@@ -183,6 +188,32 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5 — +3 Normal Attack (standard attacks).
   { type: "constellation", constellation: 5, settings: { char_skill_attack_bonus: 3 } },
+  // SELF C4 "The Courage to Press On" part 2 (raw cons[3] conditions[1], Varesa.js:443-451) — boolean
+  // varesa_the_courage_to_press_on_2 → +100% burst DMG (dmg_burst_varesa = C4BurstBonus), gated on
+  // constellation 4. Lifts the two burst features (flying kick + volcanic collapse) via the restored
+  // damageBonuses key. Was golden-blind SKIPPED. (Part 1's ATK-scaled plunge multiplier
+  // [varesa_plunge_c4 tags + capValue] stays Tier-B — feature-tags + cap surface.)
+  {
+    type: "boolean",
+    name: "varesa_the_courage_to_press_on_2",
+    stats: { dmg_burst_varesa: 100 },
+    condition: { type: "constellation", constellation: 4 },
+  },
+  // SELF C6 "A Hero of Justice's Triumph" (raw cons[5], Varesa.js:465-474) — boolean
+  // varesa_a_hero_of_justices_triumph → +10% crit rate / +100% crit DMG to plunge AND burst
+  // (C6CritRate / C6CritDmg), gated on constellation 6. The damageType-scoped crit keys apply to her
+  // plunge (plunge/plunge_low/plunge_high + volcanic collapse) and burst (flying kick) features.
+  {
+    type: "boolean",
+    name: "varesa_a_hero_of_justices_triumph",
+    stats: {
+      crit_rate_plunge: 10,
+      crit_rate_burst: 10,
+      crit_dmg_plunge: 100,
+      crit_dmg_burst: 100,
+    },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

@@ -714,6 +714,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     iansan_enhanced_resistance_training: true,
     iansan_teachings_of_the_collective_of_plenty: true,
   },
+  // Varesa C4 dmg_burst_varesa+100 (varesa_the_courage_to_press_on_2, ≥C4) + C6 crit_rate/crit_dmg
+  // plunge/burst (varesa_a_hero_of_justices_triumph, ≥C6). char_constellation:6 threads both cons
+  // gates ON, matching the oracle dump at constellation 6.
+  "varesa-self-buffs": {
+    char_constellation: 6,
+    varesa_the_courage_to_press_on_2: true,
+    varesa_a_hero_of_justices_triumph: true,
+  },
 };
 
 interface ManifestItem {
