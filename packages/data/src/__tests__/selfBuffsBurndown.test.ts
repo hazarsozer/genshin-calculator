@@ -791,6 +791,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   "mizuki-self-buffs": {
     mizuki_thoughts_by_day_bring_dreams_by_night: true,
   },
+  // ── Tier-B stance / feature-swap self-buffs (Class A — Feature.condition gated) ──
+  // Xiao Yaksha Mask: same attacks gain anemo infusion + per-burst-level dmg_normal/charged/plunge.
+  // Not a swap; the toggle publishes attack_infusion:"anemo" + a static-level dmg bonus. C0.
+  "xiao-yaksha-mask": {
+    xiao_yaksha_mask: true,
+  },
 };
 
 interface ManifestItem {

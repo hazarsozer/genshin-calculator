@@ -181,11 +181,34 @@ const features: readonly Feature[] = [
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Xiao.js:257-270 (char conditions),
 //          raw/genshin_calc_pub/src/js/db/Char/Xiao.js:314-400 (constellation array).
 
+// Yaksha Mask "xiao_burst_bonus" (burst.s3.p1): the per-burst-talent-level DMG% that the
+// mask grants to Normal/Charged/Plunge. raw Xiao.js:88,279-283 (Talents.getAlias of
+// burst.xiao_burst_bonus aliased to dmg_normal/dmg_charged/dmg_plunge). Indexed by burst
+// talent level via the static-level (her ConditionBooleanLevels.getLevel adds char_skill_burst_bonus).
+const YAKSHA_MASK_DMG: readonly number[] = [
+  58.45, 61.95, 65.45, 70, 73.5, 77, 81.55, 86.1, 90.65, 95.2, 99.75, 104.3, 108.85, 113.4, 117.95,
+];
+
 const constellationConditions: readonly Condition[] = [
   // C3 — +3 Elemental Skill (Lemniscatic Wind Cycling).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5 — +3 Elemental Burst (Bane of All Evil).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // Yaksha Mask (Bane of All Evil burst stance) — NOT a feature swap: while the mask is up
+  // Xiao's SAME normals/charged/plunge gain (a) ANEMO infusion (attack_infusion:"anemo" → his
+  // physical attacks resolve anemo) and (b) +DMG% to Normal/Charged/Plunge scaling with his OWN
+  // burst talent level. The port had modelled only the OFF-stance physical attacks → golden-blind
+  // SKIP (no fixture toggles xiao_yaksha_mask). raw Xiao.js:270-284 — a ConditionBooleanLevels with
+  // settings{attack_infusion:'anemo'} + per-level stats getAlias(burst.xiao_burst_bonus → dmg_*).
+  // Modelled as a boolean (publishing the infusion) + a static-level gated on it (the level-scaled
+  // dmg bonus, all three keys share the one xiao_burst_bonus table). Base-inert when untoggled.
+  { type: "boolean", name: "xiao_yaksha_mask", settings: { attack_infusion: "anemo" } },
+  {
+    type: "static-level",
+    levelSetting: "char_skill_burst",
+    levelStats: { dmg_normal: YAKSHA_MASK_DMG, dmg_charged: YAKSHA_MASK_DMG, dmg_plunge: YAKSHA_MASK_DMG },
+    condition: { type: "boolean", name: "xiao_yaksha_mask" },
+  },
 ];
 
 // ---------------------------------------------------------------------------
