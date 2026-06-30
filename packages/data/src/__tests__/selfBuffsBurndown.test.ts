@@ -95,6 +95,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     noelle_sweeping_time: true,
   },
+  // Xinyan C6 Rockin' in a Flaming World: DEF→ATK conversion (fixed ratio 0.3), gated boolean AND
+  // constellation 6. char_constellation:6 threads the C6 gate ON, matching the oracle dump.
+  "xinyan-rockin": {
+    char_constellation: 6,
+    xinyan_rockin_in_a_flaming_world: true,
+  },
   // Xinyan A4 dmg_phys+15 (ungated) + C4 enemy_res_physical−15 (gated at C4 → char_constellation:4
   // threads the cons gate ON, matching the oracle dump at constellation 4).
   "xinyan-self-buffs": {

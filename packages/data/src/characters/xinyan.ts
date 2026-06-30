@@ -18,7 +18,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Xinyan)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Xinyan as XinyanStatTable } from "../generated/charTables.js";
 import { Xinyan as XinyanTalents } from "../generated/charTalentTables.js";
 
@@ -215,6 +215,25 @@ const features: readonly Feature[] = [
 //   stat buff → out of this additive-self-buff sweep's scope; still SKIP (Tier-B).
 //   raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:294-302.
 
+// SELF "Rockin' in a Flaming World" (C6) — DEF→ATK conversion (PostEffectStatsDef, fixed
+// ratio 0.3) lifting every ATK-scaled hit, gated on the boolean AND ConditionConstellation(6).
+// The DEFERRED Tier-B C6 stat CONVERSION from the self-buff arc (the additive xinyan-self-buffs
+// rep noted it out of scope). Data-only (existing CharPostEffect fixed-ratio + conditions).
+// Source: raw/genshin_calc_pub/src/js/db/Char/Xinyan.js:295-302 (PostEffectStatsDef,
+//   percent StatTable('atk',[0.3]), ConditionAnd([Boolean xinyan_rockin_in_a_flaming_world,
+//   Constellation 6])).
+const selfPostEffects: readonly CharPostEffect[] = [
+  {
+    fromStat: "def",
+    toStat: "atk",
+    ratio: 0.3,
+    conditions: [
+      { type: "boolean", name: "xinyan_rockin_in_a_flaming_world" },
+      { type: "constellation", constellation: 6 },
+    ],
+  },
+];
+
 const constellationConditions: readonly Condition[] = [
   // SELF "Now That's Rock 'N' Roll!" (A4) — +15% Physical DMG, buffing every one of Xinyan's
   // OWN physical damage features. A4 ascension passive (ConditionBoolean toggle; rep always at
@@ -254,6 +273,7 @@ export const xinyan: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  postEffects: selfPostEffects,
   // A4 "Now That's Rock 'N' Roll!" — +15% Physical DMG.
   // C4 "Wildfire Rhythm" — enemy Physical RES -15%.
   // Source: raw/genshin_calc_pub/src/js/db/Char/Xinyan.js (partyData conditions)
