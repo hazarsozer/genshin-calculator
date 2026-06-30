@@ -241,15 +241,24 @@ const features: readonly Feature[] = [
 // C1 "Dance of the Waning Moon": ConditionStatic — dmg_skill_nilou +65 (always-on).
 //    Raw cons[0]: ConditionStatic{ stats:{ dmg_skill_nilou: C1SkillDmg=65 } }
 //    nilou_watery_moon_dmg feature already carries damageBonuses:['dmg_skill_nilou'].
-// C2 "The Starry Skies Their Flowers Rain": ConditionBoolean (enemy hydro/dendro RES,
-//    gated by NilouParty + stance_bonus + ascension) → SKIP (toggle+party condition).
+// C2 "The Starry Skies Their Flowers Rain": TWO ConditionBooleans —
+//    nilou_the_starry_skies_2 (enemy_res_dendro −35, gated ONLY by ascension4 → activatable solo,
+//      lifts her bloom/rupture reaction) is PORTED below.
+//    nilou_the_starry_skies_1 (enemy_res_hydro −35) is gated by NilouParty (needs a Dendro
+//      teammate) + stance_bonus → DEFERRED (party-axis, can't activate in a solo/char-axis build).
 // C3 "Orchestrated Pearls of Slaughter": +3 Elemental Burst talent levels.
 //    Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
-// C4 "Fricative Pulse": ConditionBoolean toggle (dmg_burst) → SKIP.
+// C4 "Fricative Pulse": ConditionBoolean dmg_burst +50 (no party gate) → PORTED below.
 // C5 "Twirling Lotus": +3 Elemental Skill talent levels.
 //    Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
 // C6 "Frostbreaker's Melody": ConditionStatic with ONLY text_percent display keys → SKIP.
 //    (text_percent_rate/max, text_percent_dmg/max are display-only, not real stat keys.)
+//
+// DEFERRED (Tier-B — NilouParty-gated, needs a Dendro teammate → party-axis, not solo-verifiable):
+//    A1 "Court of Dancing Petals" nilou_stance_attacked mastery +100 (gated NilouParty + stance_bonus);
+//    C2 nilou_the_starry_skies_1 enemy_res_hydro −35 (gated NilouParty + stance_bonus). Both fire only
+//    in a Hydro+Dendro party. (The bloom HP→dmg_reaction_rupture postEffect is already modelled with the
+//    same party gate.) mastery is damage-inert for her HP-scaling direct hits anyway (reactions only).
 //
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Nilou.js:459-546
 
@@ -263,6 +272,22 @@ const constellationConditions: readonly Condition[] = [
   // C5: +3 Elemental Skill (Dance of Haftkarsvar).
   // Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF C2 "The Starry Skies..." (nilou_the_starry_skies_2) — enemy_res_dendro −35, gated C2 (asc4
+  // always-on, NO party gate), lifting her bloom/rupture reaction. raw constellation[1] ConditionBoolean.
+  {
+    type: "boolean",
+    name: "nilou_the_starry_skies_2",
+    stats: { enemy_res_dendro: -35 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  // SELF C4 "Fricative Pulse" (nilou_fricative_pulse) — dmg_burst +50, gated C4, lifting her bursts
+  // (burst_dmg + nilou_lingering_aeon). raw constellation[3] ConditionBoolean.
+  {
+    type: "boolean",
+    name: "nilou_fricative_pulse",
+    stats: { dmg_burst: 50 },
+    condition: { type: "constellation", constellation: 4 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

@@ -657,6 +657,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     navia_undisclosed_distribution_channels: true,
     navia_the_oathsworn_never_capitulate: true,
   },
+  // Nilou SELF buffs — C2 nilou_the_starry_skies_2 (enemy_res_dendro−35, lifts her bloom/rupture) + C4
+  // nilou_fricative_pulse (dmg_burst+50). char_constellation:4 threads both cons gates ON, matching the
+  // oracle dump at constellation 4. (A1 stance mastery + C2 hydro-res are NilouParty-gated → party-axis.)
+  "nilou-self-buffs": {
+    char_constellation: 4,
+    nilou_the_starry_skies_2: true,
+    nilou_fricative_pulse: true,
+  },
 };
 
 interface ManifestItem {
