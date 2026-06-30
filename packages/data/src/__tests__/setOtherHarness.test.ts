@@ -6,7 +6,7 @@
  * Self-validated against an EXISTING v5.8 `set_other` buff (Noblesse Oblige) so
  * no new game-data is needed — the condition already lives in `characterConditions.ts`.
  *
- * Proves: passing `party: { setOther: ["noblesse_oblige_4"] }` to `reconstructPort`
+ * Proves: passing `party: { setOther: { noblesse_oblige_4: true } }` to `reconstructPort`
  * raises `context.stats.atk_total` by ~20% ATK vs the same build without it.
  */
 
@@ -54,7 +54,7 @@ describe("setOther harness — party thread-through (additive, base-inert)", () 
 
     const { context: withParty } = reconstructPort({
       ...BASE_ARGS,
-      party: { setOther: ["noblesse_oblige_4"] },
+      party: { setOther: { noblesse_oblige_4: true } },
     });
     const buffed = withParty.stats["atk_total"] as number;
 

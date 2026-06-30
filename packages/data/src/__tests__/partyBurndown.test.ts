@@ -318,7 +318,9 @@ function partyInputFromManifest(party: ManifestParty): PartyInput {
     members,
     ...(party.enemyStatus !== undefined ? { enemyStatus: party.enemyStatus } : {}),
     ...(party.bondOfLife !== undefined ? { bondOfLife: party.bondOfLife } : {}),
-    ...(plainSetOther.length ? { setOther: plainSetOther } : {}),
+    ...(plainSetOther.length
+      ? { setOther: Object.fromEntries(plainSetOther.map((t) => [t, true])) }
+      : {}),
   };
 }
 

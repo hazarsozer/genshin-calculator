@@ -19,7 +19,15 @@ export type PartyMember =
 export interface PartyInput {
   readonly members?: readonly PartyMember[];
   readonly enemyStatus?: string;
-  readonly setOther?: readonly string[];
+  /**
+   * Off-field Artifact Set team buffs: a TEAMMATE's 4pc that buffs the active char
+   * (the `set_other.<name>` gate; db/Buffs/Artifacts.js). Keyed by her EXACT gate name.
+   * The value is `true` for a plain boolean set (Noblesse, Deepwood, …) and the
+   * ELEMENT STRING for `dropdown-element`-gated sets (Viridescent-Venerer / Archaic-Petra),
+   * whose condition reads `ctx[gate]` as an element string (`evaluateDropdownElement`).
+   * Published verbatim (`out["set_other." + gate] = value`). Absent → no keys → base-inert.
+   */
+  readonly setOther?: Readonly<Record<string, string | true>>;
   /**
    * @deprecated Dead stub — no ported condition reads `party_weapon_*` keys.
    * Use `weaponOther` for off-field weapon team buffs (gated on `weapon_other.*` settings).
@@ -95,7 +103,7 @@ export function buildPartyContext(
   // Raw passthrough inputs
   if (party.enemyStatus !== undefined) out["common.enemy_status"] = party.enemyStatus;
   if (party.bondOfLife !== undefined) out["common.bond_of_life"] = party.bondOfLife;
-  for (const s of party.setOther ?? []) out[`set_other.${s}`] = true;
+  for (const [gate, value] of Object.entries(party.setOther ?? {})) out[`set_other.${gate}`] = value;
   for (const [k, v] of Object.entries(party.partyWeapons ?? {})) out[`party_weapon_${k}`] = v;
   // weapon_other off-field weapon buffs: published by their EXACT gate name (her setting names),
   // value = the teammate's weapon refine/level. The ported global conditions in characterConditions

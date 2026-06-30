@@ -53,7 +53,9 @@ function buildWith(opts: {
     settings: opts.settings ?? {},
     ...(opts.setBonuses !== undefined ? { setBonuses: opts.setBonuses } : {}),
     ...(opts.setRegistry !== undefined ? { setRegistry: opts.setRegistry } : {}),
-    ...(opts.setOther !== undefined ? { party: { setOther: opts.setOther } } : {}),
+    ...(opts.setOther !== undefined
+      ? { party: { setOther: Object.fromEntries(opts.setOther.map((g) => [g, true])) } }
+      : {}),
   });
 }
 

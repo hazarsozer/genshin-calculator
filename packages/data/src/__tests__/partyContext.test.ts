@@ -32,7 +32,7 @@ describe("buildPartyContext — element counts (CalcElements.js:4-51)", () => {
   it("passes raw inputs through unchanged", () => {
     const ctx = buildPartyContext(
       { members: [{ element: "hydro", origin: "fontaine" }], enemyStatus: "cryo", bondOfLife: 0.5,
-        setOther: ["noblesse_oblige_4"], partyWeapons: { skyward_blade: 5 } },
+        setOther: { noblesse_oblige_4: true }, partyWeapons: { skyward_blade: 5 } },
       { element: "cryo", origin: "natlan" }
     );
     expect(ctx.resonance_element_1).toBe("hydro");
@@ -58,6 +58,20 @@ describe("buildPartyContext — element counts (CalcElements.js:4-51)", () => {
     );
     expect(ctx["weapon_other.weapon_wolfs_gravestone"]).toBe(5);
     expect(ctx["weapon.thrilling_tales"]).toBe(3);
+  });
+
+  it("publishes set_other gates as element string (VV/Archaic) vs true (boolean set)", () => {
+    // Boolean sets (Noblesse, …) publish `true`; dropdown-element sets (Viridescent-Venerer,
+    // Archaic-Petra) publish the ELEMENT STRING that their `dropdown-element` condition reads.
+    const ctx = buildPartyContext(
+      {
+        members: [{ element: "pyro" }],
+        setOther: { viridescent_venerer_4: "pyro", noblesse_oblige_4: true },
+      },
+      { element: "pyro" }
+    );
+    expect(ctx["set_other.viridescent_venerer_4"]).toBe("pyro");
+    expect(ctx["set_other.noblesse_oblige_4"]).toBe(true);
   });
 
   it("omits the weapon_other channel entirely when absent (base-safety)", () => {
