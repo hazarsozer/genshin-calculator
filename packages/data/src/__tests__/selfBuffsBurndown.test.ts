@@ -628,6 +628,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     alhaitham_elucidation: 3,
     alhaitham_structuration: true,
   },
+  // Eula SELF buffs — Icewhirl Brand (eula_icewhirl_brand → phys+cryo RES shred, level-scaled on her
+  // own skill level, NOT cons-gated) + C1 eula_tidal_illusion (dmg_phys+30) + C4 eula_obstinacy
+  // (dmg_burst_eula+25). char_constellation:4 threads both cons gates ON, matching the oracle dump at
+  // constellation 4. The res-shred lifts every physical + cryo hit; C1 the physical; C4 the bursts.
+  "eula-self-buffs": {
+    char_constellation: 4,
+    eula_icewhirl_brand: true,
+    eula_tidal_illusion: true,
+    eula_obstinacy: true,
+  },
 };
 
 interface ManifestItem {
