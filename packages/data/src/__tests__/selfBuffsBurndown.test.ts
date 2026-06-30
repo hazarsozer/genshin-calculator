@@ -682,6 +682,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     kinich_tiger_beetles_palm_2: true,
     kinich_hummingbirds_feather: true,
   },
+  // Xianyun C2 atk_percent+20 (xianyun_aloof_from_the_world, gated C2). char_constellation:2 threads
+  // the C2 gate ON, matching the oracle dump at constellation 2. Lifts every ATK-scaled feature.
+  "xianyun-self-buffs": {
+    char_constellation: 2,
+    xianyun_aloof_from_the_world: true,
+  },
 };
 
 interface ManifestItem {

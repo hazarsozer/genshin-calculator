@@ -215,6 +215,18 @@ const features: readonly Feature[] = [
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Xianyun.js:364-445
 
 const constellationConditions: readonly Condition[] = [
+  // SELF "Aloof from the World" (C2) — +20% ATK, lifting every Xianyun (ATK-scaled) damage feature.
+  // ConditionBoolean gated at C2. SELF mirror of party.xianyun_aloof_from_the_world; the port
+  // modelled only the party.* version → golden-blind SKIP. (The accompanying ConditionStatic — an
+  // A4 plunge-DMG cap upgrade via setting xianyun_a4_level:2 — is part of the deferred Tier-B
+  // ATK→plunge-dmg conversion, not this additive ATK buff.) atk_percent:20.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Xianyun.js:374-383 (constellation[1] conditions[0]).
+  {
+    type: "boolean",
+    name: "xianyun_aloof_from_the_world",
+    stats: { atk_percent: 20 },
+    condition: { type: "constellation", constellation: 2 },
+  },
   // C3 — +3 Elemental Burst (Stars Gather at Dusk).
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5 — +3 Elemental Skill (White Clouds at Dawn).
