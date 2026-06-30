@@ -665,6 +665,11 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     nilou_the_starry_skies_2: true,
     nilou_fricative_pulse: true,
   },
+  // Kachina A1 dmg_geo+20 (kachina_mountain_echoes, an ungated ascension boolean — the toggle is the
+  // gate). Lifts every Kachina geo feature. Dumped at constellation 0.
+  "kachina-self-buffs": {
+    kachina_mountain_echoes: true,
+  },
 };
 
 interface ManifestItem {
