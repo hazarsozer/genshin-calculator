@@ -198,11 +198,48 @@ const features: readonly Feature[] = [
 //
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Navia.js:356-429
 
+// SELF buffs (were golden-blind SKIPPED — the port modelled only the party.* C4 res-shred mirror;
+// a diff-parity sweep surfaced her own hits diverging when the toggles are on):
+//   - A1 "Undisclosed Distribution Channels" (navia_undisclosed_distribution_channels): dmg_normal /
+//     dmg_charged / dmg_plunge +40 + geo infusion on her own normals/charged/plunge. raw conditions
+//     ConditionBoolean (stats + settings.attack_infusion:'geo'). The Keqing infusion pattern.
+//   - C4 "The Oathsworn Never Capitulate" (navia_the_oathsworn_never_capitulate): SELF enemy_res_geo
+//     −20 (the SELF mirror of party.navia_the_oathsworn_never_capitulate below), gated C4. raw
+//     constellation[3] ConditionBoolean. THE CONSTELLATION IS A GATE.
+//
+// DEFERRED (Tier-B — needs new engine surface / party-axis input, not pure self-data):
+//   - A4 "Mutual Assistance Network": atk_percent [0,20,40] by nearby Pyro/Hydro/Electro/Cryo count.
+//     navia_chars_count is NOT a manual toggle — it is PUBLISHED by ConditionCalcElementsNavia from the
+//     party's resonance_element_1/2/3 (a PARTY-axis input). In any solo/char-axis context the publisher
+//     forces it to 0 (verified: her engine emits BASE damage at navia_chars_count=2). Modeling it in the
+//     port would require replicating the publisher (new surface) and belongs to the party axis.
+//   - The Ceremonial Crystalshot cannon bulletMultiplier (navia_bullets → FeatureMultiplierNaviaSkill,
+//     a non-linear bullet-count table scaling the shardshot) — a custom feature multiplier.
+//   - ConditionStaticNavia's shrapnel-split bonus keys (crit_rate_navia [C2], dmg_skill_navia +
+//     crit_dmg_navia [C6]): shrapnel1=min(3,n) / shrapnel2=min(3,n−3) with cons gates baked into the
+//     custom condition — a non-linear split-stack rule the static stats/stacks primitives can't express.
+//   All stay at 0 in any build that doesn't toggle navia_bullets / navia_shrapnel_charge / set resonance
+//   elements (the port's shardshot already reduces to bulletMultiplier=1, shrapnel=0), so out of scope.
 const constellationConditions: readonly Condition[] = [
   // C3: +3 Elemental Skill (Ceremonial Crystalshot) levels.
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 Elemental Burst (As the Sunlit Sky's Singing Salute) levels.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF A1 "Undisclosed Distribution Channels" — dmg_normal/charged/plunge +40 + geo infusion.
+  // raw conditions ConditionBoolean. Base-inert when untoggled.
+  {
+    type: "boolean",
+    name: "navia_undisclosed_distribution_channels",
+    stats: { dmg_normal: 40, dmg_charged: 40, dmg_plunge: 40 },
+    settings: { attack_infusion: "geo" },
+  },
+  // SELF C4 "The Oathsworn Never Capitulate" — enemy_res_geo −20, gated C4. raw constellation[3].
+  {
+    type: "boolean",
+    name: "navia_the_oathsworn_never_capitulate",
+    stats: { enemy_res_geo: -20 },
+    condition: { type: "constellation", constellation: 4 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

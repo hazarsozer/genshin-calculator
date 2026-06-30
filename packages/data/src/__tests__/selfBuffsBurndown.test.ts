@@ -648,6 +648,15 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     chevreuse_force_coordination: true,
     chevreuse_in_pursuit: 3,
   },
+  // Navia SELF buffs — A1 navia_undisclosed_distribution_channels (dmg_normal/charged/plunge+40 + geo
+  // infusion) + C4 navia_the_oathsworn_never_capitulate (enemy_res_geo−20). char_constellation:4
+  // threads the C4 gate ON, matching the oracle dump at constellation 4. The A1 dmg + infusion lift her
+  // normals/charged/plunge; the C4 res-shred her geo hits. (A4 atk% party-axis + cannon/shrapnel Tier-B.)
+  "navia-self-buffs": {
+    char_constellation: 4,
+    navia_undisclosed_distribution_channels: true,
+    navia_the_oathsworn_never_capitulate: true,
+  },
 };
 
 interface ManifestItem {
