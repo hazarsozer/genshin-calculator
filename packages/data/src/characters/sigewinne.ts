@@ -233,6 +233,13 @@ const features: readonly Feature[] = [
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Sigewinne.js:388-460
 
 const constellationConditions: readonly Condition[] = [
+  // SELF "Requires Appropriate Rest" (A1) — +8% Hydro DMG while Sigewinne's HP is full (modelled as
+  // the toggle, the engine gate is only ascension), lifting every Sigewinne hydro feature (skill/
+  // burst + reaction.rupture/electrocharged). ConditionBoolean ascension passive (rep at A6 →
+  // modelled ungated, the toggle is the gate). The port modelled the party.* HP→skill-dmg
+  // multiplier but SKIPPED this self dmg_hydro toggle → golden-blind SKIP. A1HydroDmg = 8.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Sigewinne.js:317-330 (char.conditions[0], info.ascension 1).
+  { type: "boolean", name: "sigewinne_requires_appropriate_rest", stats: { dmg_hydro: 8 } },
   // C1 "Can the Happiest of Spirits Understand Anxiety" — sigewinne_buff_level→2.
   // Upgrades PostEffectStatsHP from A1 tier to C1 tier; inert in damage fixture
   // (partyData toggle OFF). Ported for engine fidelity.

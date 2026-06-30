@@ -688,6 +688,11 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 2,
     xianyun_aloof_from_the_world: true,
   },
+  // Sigewinne A1 dmg_hydro+8 (sigewinne_requires_appropriate_rest, an ungated ascension boolean — the
+  // toggle is the gate). Lifts every Sigewinne hydro feature. Dumped at constellation 0.
+  "sigewinne-self-buffs": {
+    sigewinne_requires_appropriate_rest: true,
+  },
 };
 
 interface ManifestItem {
