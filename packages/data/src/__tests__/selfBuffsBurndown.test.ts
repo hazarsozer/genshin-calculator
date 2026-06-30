@@ -706,6 +706,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     traveler_ravaging_flame: true,
     traveler_pyro_the_sacred_flame_imperishable: true,
   },
+  // Iansan A1 atk_percent+20 (iansan_enhanced_resistance_training, ascension boolean) + C6 dmg_all+25
+  // (iansan_teachings_of_the_collective_of_plenty, ≥C6). char_constellation:6 threads the C6 gate ON,
+  // matching the oracle dump at constellation 6.
+  "iansan-self-buffs": {
+    char_constellation: 6,
+    iansan_enhanced_resistance_training: true,
+    iansan_teachings_of_the_collective_of_plenty: true,
+  },
 };
 
 interface ManifestItem {

@@ -180,6 +180,20 @@ const constellationConditions: readonly Condition[] = [
   // C5 "Never Idle" — +3 Elemental Burst.
   // Raw cons[4]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF A1 "Enhanced Resistance Training" (raw conditions, Iansan.js:295-305) — +20% ATK
+  // (A1AtkPercent), a ConditionBoolean gated only by ConditionAscensionChar({ascension:1}) (auto-true
+  // at the canonical A6 → the toggle is the gate). Lifts every Iansan ATK-scaled feature. Was
+  // golden-blind SKIPPED (no party.* mirror of the SELF version).
+  { type: "boolean", name: "iansan_enhanced_resistance_training", stats: { atk_percent: 20 } },
+  // SELF C6 "Teachings of the Collective of Plenty" (raw cons[5], Iansan.js:373-381) — +25% DMG
+  // (C6DmgBonus, dmg_all), a ConditionBoolean gated on constellation 6. Lifts every Iansan damage
+  // feature. (The iansan_points kinetic-energy stacks / ATK-conversion surface remains Tier-B.)
+  {
+    type: "boolean",
+    name: "iansan_teachings_of_the_collective_of_plenty",
+    stats: { dmg_all: 25 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

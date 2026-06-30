@@ -1,0 +1,237 @@
+{
+  "element": "electro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3963.535195834124,
+      "category": "attack",
+      "crit": 8754.084460274256,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3431.2519442296643
+    },
+    "attack.iansan_charged_hit": {
+      "average": 3281.9721820026607,
+      "category": "attack",
+      "crit": 7248.7464493110265,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2841.2194856350643
+    },
+    "attack.normal_hit_1": {
+      "average": 1754.3340078831543,
+      "category": "attack",
+      "crit": 3874.719743294365,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1518.735592837464
+    },
+    "attack.normal_hit_2": {
+      "average": 1597.056420848319,
+      "category": "attack",
+      "crit": 3527.347709848518,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1382.579610959408
+    },
+    "attack.normal_hit_3": {
+      "average": 2404.609544884238,
+      "category": "attack",
+      "crit": 5310.954491339712,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2081.6823286114077
+    },
+    "attack.plunge": {
+      "average": 2248.166299942144,
+      "category": "attack",
+      "crit": 4965.425232282823,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1946.24864079318
+    },
+    "attack.plunge_high": {
+      "average": 5614.972247918456,
+      "category": "attack",
+      "crit": 12401.540259321388,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4860.909135540352
+    },
+    "attack.plunge_low": {
+      "average": 4495.380876506431,
+      "category": "attack",
+      "crit": 9928.748435336454,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3891.673369969762
+    },
+    "burst.burst_dmg": {
+      "average": 24089.723171084344,
+      "category": "burst",
+      "crit": 53205.9035292401,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 20854.59202017815
+    },
+    "burst.iansan_bonus_max": {
+      "average": 716.28916896162,
+      "category": "burst",
+      "crit": 716.28916896162,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 716.28916896162
+    },
+    "other.iansan_heal": {
+      "average": 1591.7537088036,
+      "category": "other",
+      "crit": 1591.7537088036,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1591.7537088036
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.hyperbloom": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.skill_dmg": {
+      "average": 13344.315988482289,
+      "category": "skill",
+      "crit": 29472.999091957852,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 11552.240088096114
+    },
+    "stats.atk": {
+      "average": 2652.922848006,
+      "category": "stats",
+      "crit": 2652.922848006,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2652.922848006
+    },
+    "stats.crit_dmg": {
+      "average": 155.128,
+      "category": "stats",
+      "crit": 155.128,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 155.128
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1514.1577846,
+      "category": "stats",
+      "crit": 1514.1577846,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1514.1577846
+    },
+    "stats.hp": {
+      "average": 23883.4168648,
+      "category": "stats",
+      "crit": 23883.4168648,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23883.4168648
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Iansan",
+  "repSlug": "iansan",
+  "schema": 1,
+  "slug": "iansan-self-buffs",
+  "weapon": "weapon_name.blackcliff_pole",
+  "weaponType": "polearm"
+}
