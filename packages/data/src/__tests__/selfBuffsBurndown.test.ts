@@ -528,6 +528,15 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     shenhe_spirit_seal_hold: true,
     shenhe_talisman_spirit: true,
   },
+  // Chiori SELF buffs — A1 Tailor-Made geo infusion (attack_infusion:'geo') + A4 Finishing Touch
+  // (+20% Geo DMG) + C6 DEF-scaled flat geo damage-instance on normals (C6 + sole_principle_pursuit).
+  "chiori-self-buffs": {
+    char_constellation: 6,
+    attack_infusion: "geo",
+    chiori_tailor_made: true,
+    chiori_the_finishing_touch: true,
+    chiori_sole_principle_pursuit: true,
+  },
   // Xingqiu C2 xingqiu_rainbow_upon_the_azure_sky (enemy_res_hydro−15) + C4 xingqiu_evilsoother
   // (+50% skill DMG, the folded ×1.5 on skill_dmg/skill_1/skill_2). char_constellation:4 threads
   // BOTH cons gates ON, matching the oracle dump at constellation 4.
