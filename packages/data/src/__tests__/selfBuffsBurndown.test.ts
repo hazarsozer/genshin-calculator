@@ -562,6 +562,17 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     xingqiu_rainbow_upon_the_azure_sky: true,
     xingqiu_evilsoother: true,
   },
+  // Clorinde SELF buffs — A4 clorinde_lawful_remuneration:2 (crit_rate+20) + C6
+  // clorinde_and_so_shall_i_never_despair (crit_rate+10/crit_dmg+70) + A1 clorinde_dark_shattering_flame:3
+  // (additive electro base term on her electro normal/burst, perStack 30% at C2+). char_constellation:6
+  // threads the C6 crit toggle + the C2 perStack-30 ON, matching the oracle dump at constellation 6.
+  // The crit buffs lift every hit; the A1 base term lifts her electro burst (+ the c6 glimbright normal).
+  "clorinde-self-buffs": {
+    char_constellation: 6,
+    clorinde_lawful_remuneration: 2,
+    clorinde_and_so_shall_i_never_despair: true,
+    clorinde_dark_shattering_flame: 3,
+  },
   // Candace SELF buffs — prayer_of_the_crimson_crown (flat dmg_normal_<el>+20 + own hydro infusion
   // on normals/charged/plunge; also gates the A4 HP→Normal-DMG post-effect) + C2
   // candace_moon_piercing_brilliance (hp_percent+20). char_constellation:6 threads the C2 gate ON,
