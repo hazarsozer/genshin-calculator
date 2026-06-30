@@ -101,6 +101,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     xinyan_rockin_in_a_flaming_world: true,
   },
+  // Yaoyao C4 Winsome: HP→EM conversion (ratio 0.003, capped +120), gated boolean AND constellation 4.
+  // The +EM lifts her EM-scaled transformative reactions. char_constellation:4 threads the C4 gate ON,
+  // matching the oracle dump at constellation 4.
+  "yaoyao-winsome": {
+    char_constellation: 4,
+    yaoyao_winsome: true,
+  },
   // Xinyan A4 dmg_phys+15 (ungated) + C4 enemy_res_physical−15 (gated at C4 → char_constellation:4
   // threads the cons gate ON, matching the oracle dump at constellation 4).
   "xinyan-self-buffs": {

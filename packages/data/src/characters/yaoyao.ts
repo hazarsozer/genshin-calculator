@@ -19,7 +19,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Yaoyao)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Yaoyao as YaoyaoStatTable } from "../generated/charTables.js";
 import { Yaoyao as YaoyaoTalents } from "../generated/charTalentTables.js";
 
@@ -247,15 +247,27 @@ const constellationConditions: readonly Condition[] = [
     stats: { dmg_dendro: 15 },
     condition: { type: "constellation", constellation: 1 },
   },
-  // ── DEFERRED (Tier-B, NOT ported) — C4 "Winsome" (yaoyao_winsome) ────────────────────────────────
-  // C4 gates the masteryBonusPost: a HP→EM stat-CONVERSION postEffect (EM += min(0.3% Max HP, 120),
-  // PostEffectStatsHP gated by ConditionConstellation(4) AND ConditionBoolean('yaoyao_winsome'); raw
-  // Yaoyao.js:134-141 + :407-420). The yaoyao_winsome boolean itself carries only display stats
-  // (text_percent_hp / text_value_max). The granted EM is INERT for Yaoyao's own ATK/physical-scaled
-  // hits but boosts her EM-scaled transformative reactions (diff-parity shows reaction.burning/
-  // electrocharged/rupture/shatter diverge at cons≥4 when yaoyao_winsome:true). Modelling it requires a
-  // real HP→EM postEffect emit (a stat conversion) — a Tier-B engine-surface item, deferred per the
-  // self-buffs DATA-port scope. The mastery_bonus *readout* feature is already modelled (display only).
+];
+
+// SELF "Winsome" (C4) — HP→EM stat CONVERSION (masteryBonusPost): EM += min(0.3% Max HP, 120),
+// gated on ConditionConstellation(4) AND ConditionBoolean('yaoyao_winsome'). The granted EM is inert
+// for Yaoyao's own HP-scaled hits but lifts her EM-scaled transformative reactions (diff-parity:
+// reaction.burning/electrocharged/rupture/shatter diverge at cons≥4 when yaoyao_winsome:true). The
+// DEFERRED Tier-B C4 from the yaoyao-self-buffs arc. Data-only (existing CharPostEffect ratio + capValue).
+// Source: raw/genshin_calc_pub/src/js/db/Char/Yaoyao.js:134-141 (PostEffectStatsHP,
+//   percent StatTable('mastery',[0.003]), statCap ValueTable([120]), conditions
+//   [Constellation 4, Boolean yaoyao_winsome]).
+const selfPostEffects: readonly CharPostEffect[] = [
+  {
+    fromStat: "hp",
+    toStat: "mastery",
+    ratio: 0.003,
+    capValue: 120,
+    conditions: [
+      { type: "constellation", constellation: 4 },
+      { type: "boolean", name: "yaoyao_winsome" },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -274,6 +286,7 @@ export const yaoyao: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  postEffects: selfPostEffects,
   // C1 "Adeptus Tutelage" — +15% Dendro DMG to party.
   // Source: raw/genshin_calc_pub/src/js/db/Char/Yaoyao.js (partyData conditions)
   partyData: {
