@@ -7,6 +7,7 @@ import {
   addMember,
   removeMember,
   setMemberSetting,
+  setMemberField,
   activeResonances,
 } from "../party.js";
 import type { PartyMemberForm } from "../types.js";
@@ -73,6 +74,103 @@ describe("roster mutation helpers (immutable)", () => {
     const next = setMemberSetting(base, 0, "bennet_atk_base", 900);
     expect(next[0].settings.bennet_atk_base).toBe(900);
     expect(base[0].settings.bennet_atk_base).toBeUndefined(); // original unchanged
+  });
+});
+
+describe("buildPartyInput — off-field Set/Weapon lanes", () => {
+  it("omits both lanes when no teammate has a pick (byte-identical to pre-1.5)", () => {
+    const input = buildPartyInput([{ slug: "bennett", settings: {} }], resolve)!;
+    expect("setOther" in input).toBe(false);
+    expect("weaponOther" in input).toBe(false);
+  });
+
+  it("a VV(pyro) teammate publishes setOther.viridescent_venerer_4 = 'pyro'", () => {
+    const input = buildPartyInput(
+      [{ slug: "bennett", settings: {}, setKey: "viridescent_venerer_4", setElement: "pyro" }],
+      resolve
+    )!;
+    expect(input.setOther).toEqual({ viridescent_venerer_4: "pyro" });
+  });
+
+  it("two VV teammates (pyro + cryo) ;-join the elements on the shared gate", () => {
+    const input = buildPartyInput(
+      [
+        { slug: "bennett", settings: {}, setKey: "viridescent_venerer_4", setElement: "pyro" },
+        { slug: "sucrose", settings: {}, setKey: "viridescent_venerer_4", setElement: "cryo" },
+      ],
+      resolve
+    )!;
+    expect(input.setOther!.viridescent_venerer_4).toBe("pyro;cryo");
+  });
+
+  it("dedups a repeated element on the shared VV gate", () => {
+    const input = buildPartyInput(
+      [
+        { slug: "bennett", settings: {}, setKey: "viridescent_venerer_4", setElement: "pyro" },
+        { slug: "sucrose", settings: {}, setKey: "viridescent_venerer_4", setElement: "pyro" },
+      ],
+      resolve
+    )!;
+    expect(input.setOther!.viridescent_venerer_4).toBe("pyro");
+  });
+
+  it("a plain set publishes a boolean true under its slug gate", () => {
+    const input = buildPartyInput(
+      [{ slug: "bennett", settings: {}, setKey: "noblesse_oblige_4" }],
+      resolve
+    )!;
+    expect(input.setOther).toEqual({ noblesse_oblige_4: true });
+  });
+
+  it("Scroll tier pick publishes the tier-specific boolean gate", () => {
+    const input = buildPartyInput(
+      [{ slug: "bennett", settings: {}, setKey: "scroll_of_the_hero_of_cinder_city_4", setTier: "2" }],
+      resolve
+    )!;
+    expect(input.setOther).toEqual({ scroll_of_the_hero_of_cinder_city_4_2: true });
+  });
+
+  it("Wolf's Gravestone R5 publishes weaponOther[full gate] = 5", () => {
+    const input = buildPartyInput(
+      [{ slug: "bennett", settings: {}, weaponKey: "weapon_other.weapon_wolfs_gravestone", weaponRefine: 5 }],
+      resolve
+    )!;
+    expect(input.weaponOther).toEqual({ "weapon_other.weapon_wolfs_gravestone": 5 });
+  });
+
+  it("defaults an off-field weapon refine to 1 when unset", () => {
+    const input = buildPartyInput(
+      [{ slug: "bennett", settings: {}, weaponKey: "weapon.thrilling_tales" }],
+      resolve
+    )!;
+    expect(input.weaponOther).toEqual({ "weapon.thrilling_tales": 1 });
+  });
+
+  it("two teammates with the same off-field weapon keep the higher refine", () => {
+    const input = buildPartyInput(
+      [
+        { slug: "bennett", settings: {}, weaponKey: "weapon_other.weapon_wolfs_gravestone", weaponRefine: 2 },
+        { slug: "sucrose", settings: {}, weaponKey: "weapon_other.weapon_wolfs_gravestone", weaponRefine: 4 },
+      ],
+      resolve
+    )!;
+    expect(input.weaponOther).toEqual({ "weapon_other.weapon_wolfs_gravestone": 4 });
+  });
+});
+
+describe("setMemberField (immutable)", () => {
+  const base: PartyMemberForm[] = [{ slug: "bennett", settings: {} }];
+
+  it("sets a pick field on one member without mutating the input", () => {
+    const next = setMemberField(base, 0, "setKey", "viridescent_venerer_4");
+    expect(next[0].setKey).toBe("viridescent_venerer_4");
+    expect(base[0].setKey).toBeUndefined();
+  });
+
+  it("clears a field when value is undefined", () => {
+    const withKey = setMemberField(base, 0, "setKey", "noblesse_oblige_4");
+    const cleared = setMemberField(withKey, 0, "setKey", undefined);
+    expect("setKey" in cleared[0]).toBe(false);
   });
 });
 
