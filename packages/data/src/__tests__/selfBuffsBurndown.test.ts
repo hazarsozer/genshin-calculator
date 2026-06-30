@@ -496,6 +496,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 2,
     gaming_plum_blossoms_underfoot: true,
   },
+  // Hu Tao A4 "Sanguine Rouge" (+33% Pyro DMG, always-on at ascension 6) + C6 "Butterfly's
+  // Embrace" (+100% CRIT Rate, gated C6). char_constellation:6 threads the C6 gate ON, matching
+  // the oracle dump at constellation 6 with both toggles set.
+  "hu-tao-self-buffs": {
+    char_constellation: 6,
+    hu_tao_sanguine_rouge: true,
+    hu_tao_butterflys_embrace: true,
+  },
   // Xingqiu C2 xingqiu_rainbow_upon_the_azure_sky (enemy_res_hydro−15) + C4 xingqiu_evilsoother
   // (+50% skill DMG, the folded ×1.5 on skill_dmg/skill_1/skill_2). char_constellation:4 threads
   // BOTH cons gates ON, matching the oracle dump at constellation 4.
