@@ -1,0 +1,282 @@
+{
+  "element": "dendro",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 2451.2362529214965,
+      "category": "attack",
+      "crit": 4939.05812155824,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1829.2807857623109
+    },
+    "attack.charged_hit_total": {
+      "average": 4902.472505842993,
+      "category": "attack",
+      "crit": 9878.11624311648,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3658.5615715246217
+    },
+    "attack.normal_hit_1": {
+      "average": 2096.518277963918,
+      "category": "attack",
+      "crit": 4224.327873509387,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1564.5658790775508
+    },
+    "attack.normal_hit_2": {
+      "average": 2148.3232635432514,
+      "category": "attack",
+      "crit": 4328.711053408044,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1603.226316077053
+    },
+    "attack.normal_hit_3": {
+      "average": 2893.686740281959,
+      "category": "attack",
+      "crit": 5830.562834896484,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2159.4677166283273
+    },
+    "attack.normal_hit_3_1": {
+      "average": 1446.8433701409795,
+      "category": "attack",
+      "crit": 2915.281417448242,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1079.7338583141636
+    },
+    "attack.normal_hit_4": {
+      "average": 2826.4115709224952,
+      "category": "attack",
+      "crit": 5695.0083891721915,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2109.2623663600707
+    },
+    "attack.normal_hit_5": {
+      "average": 3549.569851701048,
+      "category": "attack",
+      "crit": 7152.118357905096,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2648.9327251500354
+    },
+    "attack.plunge": {
+      "average": 2576.5802031091744,
+      "category": "attack",
+      "crit": 5191.616827160277,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1922.8210470963988
+    },
+    "attack.plunge_high": {
+      "average": 6435.211814787201,
+      "category": "attack",
+      "crit": 12966.47156710854,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4802.396876706866
+    },
+    "attack.plunge_low": {
+      "average": 5152.069654340126,
+      "category": "attack",
+      "crit": 10381.03587068533,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3844.828100253825
+    },
+    "burst.alhaitham_single_instance_dmg": {
+      "average": 9401.495681994445,
+      "category": "burst",
+      "crit": 18943.312195063434,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 7016.041553727197
+    },
+    "reaction.burning": {
+      "average": 1024.7912635570842,
+      "category": "reaction",
+      "crit": 1024.7912635570842,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1024.7912635570842
+    },
+    "reaction.electrocharged": {
+      "average": 8198.330108456674,
+      "category": "reaction",
+      "crit": 8198.330108456674,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8198.330108456674
+    },
+    "reaction.rupture": {
+      "average": 8198.330108456674,
+      "category": "reaction",
+      "crit": 8198.330108456674,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8198.330108456674
+    },
+    "reaction.shatter": {
+      "average": 12297.495162685009,
+      "category": "reaction",
+      "crit": 12297.495162685009,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 12297.495162685009
+    },
+    "skill.alhaitham_mirror_1_dmg": {
+      "average": 5251.332803831527,
+      "category": "skill",
+      "crit": 10581.043709212778,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3918.905077486214
+    },
+    "skill.alhaitham_mirror_2_dmg": {
+      "average": 5251.332803831527,
+      "category": "skill",
+      "crit": 10581.043709212778,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3918.905077486214
+    },
+    "skill.alhaitham_mirror_2_total_dmg": {
+      "average": 10502.665607663053,
+      "category": "skill",
+      "crit": 21162.087418425555,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 7837.810154972428
+    },
+    "skill.alhaitham_mirror_3_dmg": {
+      "average": 5251.332803831527,
+      "category": "skill",
+      "crit": 10581.043709212778,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3918.905077486214
+    },
+    "skill.alhaitham_mirror_3_total_dmg": {
+      "average": 15753.998411494582,
+      "category": "skill",
+      "crit": 31743.131127638335,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 11756.715232458642
+    },
+    "skill.alhaitham_rush_dmg": {
+      "average": 11252.09989570584,
+      "category": "skill",
+      "crit": 22672.141580899828,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 8397.089474407343
+    },
+    "stats.atk": {
+      "average": 2129.140775374,
+      "category": "stats",
+      "crit": 2129.140775374,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2129.140775374
+    },
+    "stats.crit_dmg": {
+      "average": 170,
+      "category": "stats",
+      "crit": 170,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 170
+    },
+    "stats.crit_rate": {
+      "average": 20,
+      "category": "stats",
+      "crit": 20,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 20
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1657.6197069,
+      "category": "stats",
+      "crit": 1657.6197069,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1657.6197069
+    },
+    "stats.hp": {
+      "average": 26574.042793200002,
+      "category": "stats",
+      "crit": 26574.042793200002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26574.042793200002
+    },
+    "stats.mastery": {
+      "average": 310.128,
+      "category": "stats",
+      "crit": 310.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 310.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Alhaitham",
+  "repSlug": "alhaitham",
+  "schema": 1,
+  "slug": "alhaitham-self-buffs",
+  "weapon": "weapon_name.the_alley_flash",
+  "weaponType": "sword"
+}

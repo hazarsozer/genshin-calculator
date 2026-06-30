@@ -616,6 +616,18 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     keqing_attunement: true,
     keqing_tenacious_star: 4,
   },
+  // Alhaitham SELF buffs — A1 alhaitham_mirror (dendro infusion → his normals/charged/plunge become
+  // dendro) + C2 alhaitham_debate:4 (mastery+200) + C4 alhaitham_elucidation:3 (dmg_dendro+30%) + C6
+  // alhaitham_structuration (crit_rate+10/crit_dmg+70). char_constellation:6 threads both cons gates
+  // ON, matching the oracle dump at constellation 6. The infusion lifts his physical attacks to dendro
+  // (so the C4 dendro DMG + EM land on them); the C2 EM also lifts his skill/burst mastery* terms.
+  "alhaitham-self-buffs": {
+    char_constellation: 6,
+    alhaitham_mirror: true,
+    alhaitham_debate: 4,
+    alhaitham_elucidation: 3,
+    alhaitham_structuration: true,
+  },
 };
 
 interface ManifestItem {
