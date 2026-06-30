@@ -730,6 +730,11 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     ifa_mutual_aid_agreement: true,
     ifa_decayed_vessels_permutation: true,
   },
+  // Mizuki A4 mastery+100 (mizuki_thoughts_by_day_bring_dreams_by_night, ascension boolean) lifting
+  // every Mizuki reaction output. Dumped at constellation 0 (the A4 toggle is the only gate).
+  "mizuki-self-buffs": {
+    mizuki_thoughts_by_day_bring_dreams_by_night: true,
+  },
 };
 
 interface ManifestItem {

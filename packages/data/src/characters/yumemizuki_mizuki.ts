@@ -250,6 +250,12 @@ const postEffects: readonly CharPostEffect[] = [
 //   scope — not this task.)
 
 const constellationConditions: readonly Condition[] = [
+  // SELF A4 "Thoughts by Day, Bring Dreams by Night" (raw conditions, Mizuki.js:314-324) — +100 EM
+  // (A4Mastery), a ConditionBoolean gated only by ConditionAscensionChar({ascension:4}) (auto-true at
+  // A6 → the toggle is the gate). Plain mastery stat (proven mirror) — lifts every Mizuki reaction
+  // output (swirl + transformative, all EM-scaled). Was golden-blind SKIPPED (the +100 was noted as
+  // "NOT folded in" at the C0 baseline).
+  { type: "boolean", name: "mizuki_thoughts_by_day_bring_dreams_by_night", stats: { mastery: 100 } },
   // C3 — char_skill_elemental_bonus +3 (skill talent level up).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5 — char_skill_burst_bonus +3 (burst talent level up).
