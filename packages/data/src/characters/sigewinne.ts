@@ -50,7 +50,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Sigewinne)
  */
 
-import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Sigewinne as SigewinneStatTable } from "../generated/charTables.js";
 import { Sigewinne as SigewinneTalents } from "../generated/charTalentTables.js";
 
@@ -309,6 +309,42 @@ const sigewinnePartyMultipliers: readonly CharMultiplier[] = [
   } satisfies CharMultiplier,
 ];
 
+// ---------------------------------------------------------------------------
+// SELF C6 "Would the Most Radiant of Spirits Pray for Me" — own max-HP → crit, gated by the C6 toggle
+// sigewinne_would_the_most_radiant_of_spirits_pray_for_me AND constellation 6. Two PostEffectStatsHP
+// (raw Sigewinne.js:371-386). These emit as RAW percents (/100 at emit), so `ratio` is her un-/100'd
+// StatTable value and `capValue` is the raw cap (her statCap; the /100 of both happens once at emit):
+//   crit_rate ratio = C6CritRate/10 = 0.04 (cap C6CritRateMax 20)
+//   crit_dmg  ratio = C6CritDmgMax/10 = 11 (cap C6CritDmgMax 110)
+// FAITHFUL asymmetry: her crit_dmg StatTable keys off C6CritDmgMax/10, NOT C6CritDmg/10 as crit_rate
+// does off C6CritRate/10 (Sigewinne.js:372,380). Both bonuses cap for any realistic HP (her cap is
+// reached at HP≥500 / HP≥10), so the net crit gain is ~+20% rate / +110% DMG. The SELF mirror of the
+// crit battery; was golden-blind SKIPPED. (The A1/C1 HP→skill-dmg level-cap table part stays Tier-B
+// deferred — needs a capValueFromTable engine extension.)
+// ---------------------------------------------------------------------------
+const sigewinneSelfPostEffects: readonly CharPostEffect[] = [
+  {
+    fromStat: "hp",
+    toStat: "crit_rate",
+    ratio: 0.04, // C6CritRate(0.4)/10 (raw percent per HP; /100 at emit)
+    capValue: 20, // C6CritRateMax (raw percent)
+    conditions: [
+      { type: "boolean", name: "sigewinne_would_the_most_radiant_of_spirits_pray_for_me" },
+      { type: "constellation", constellation: 6 },
+    ],
+  },
+  {
+    fromStat: "hp",
+    toStat: "crit_dmg",
+    ratio: 11, // C6CritDmgMax(110)/10 (raw percent per HP; /100 at emit)
+    capValue: 110, // C6CritDmgMax (raw percent)
+    conditions: [
+      { type: "boolean", name: "sigewinne_would_the_most_radiant_of_spirits_pray_for_me" },
+      { type: "constellation", constellation: 6 },
+    ],
+  },
+];
+
 export const sigewinne: DbObjectChar = {
   name: "sigewinne",
   gameId: 10000095,
@@ -321,6 +357,7 @@ export const sigewinne: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  postEffects: sigewinneSelfPostEffects,
   partyData: {
     // Descriptive metadata mirroring her loadStats (the teammate input contract).
     // raw Sigewinne.js:469-471 → stats:['hp_total'].

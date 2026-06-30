@@ -735,10 +735,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 2,
     xianyun_aloof_from_the_world: true,
   },
-  // Sigewinne A1 dmg_hydro+8 (sigewinne_requires_appropriate_rest, an ungated ascension boolean — the
-  // toggle is the gate). Lifts every Sigewinne hydro feature. Dumped at constellation 0.
+  // Sigewinne A1 dmg_hydro+8 (sigewinne_requires_appropriate_rest, ungated ascension boolean) + C6
+  // own-HP→crit (sigewinne_would_the_most_radiant_of_spirits_pray_for_me → +20% crit_rate / +110%
+  // crit_dmg, two HP postEffects gated C6). char_constellation:6 threads the C6 gate ON, matching
+  // the oracle dump at constellation 6.
   "sigewinne-self-buffs": {
+    char_constellation: 6,
     sigewinne_requires_appropriate_rest: true,
+    sigewinne_would_the_most_radiant_of_spirits_pray_for_me: true,
   },
   // TravelerPyro: ungated swordfighting/special_training base-stat passives + C1 Starfire's Flowing
   // Light (dmg_all+6 boolean + Nightsoul static dmg_all+9) + C4 Ravaging Flame (dmg_pyro+20) + C6

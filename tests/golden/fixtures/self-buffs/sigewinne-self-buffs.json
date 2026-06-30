@@ -2,103 +2,112 @@
   "element": "hydro",
   "features": {
     "attack.aimed": {
-      "average": 1220.6746139262966,
+      "average": 1808.817836999876,
       "category": "attack",
-      "crit": 2219.408388956903,
+      "crit": 3440.0830028831997,
       "damageType": "charged",
       "format": "",
       "isReacted": false,
       "normal": 1109.7041944784514
     },
     "attack.charged_aimed": {
-      "average": 3247.2479002994355,
+      "average": 4811.830979534618,
       "category": "attack",
-      "crit": 5904.087091453519,
+      "crit": 9151.334991752954,
       "damageType": "charged",
       "format": "",
       "isReacted": false,
       "normal": 2952.0435457267595
     },
     "attack.normal_hit_1": {
-      "average": 1366.6864455889631,
+      "average": 2025.180823918191,
       "category": "attack",
-      "crit": 2484.8844465253874,
+      "crit": 3851.5708921143505,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
       "normal": 1242.4422232626937
     },
     "attack.normal_hit_2": {
-      "average": 1326.6100225780178,
+      "average": 1965.7948516383356,
       "category": "attack",
-      "crit": 2412.0182228691233,
+      "crit": 3738.628245447141,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
       "normal": 1206.0091114345616
     },
     "attack.normal_hit_3": {
-      "average": 2033.666245944472,
+      "average": 3013.5236189904454,
       "category": "attack",
-      "crit": 3697.5749926263125,
+      "crit": 5731.241238570785,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
       "normal": 1848.7874963131562
     },
     "attack.plunge": {
-      "average": 1370.7298305192753,
+      "average": 2031.1723852240175,
       "category": "attack",
-      "crit": 2492.2360554895918,
+      "crit": 3862.9658860088675,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
       "normal": 1246.1180277447959
     },
     "attack.plunge_high": {
-      "average": 3423.505617870782,
+      "average": 5073.012870117613,
       "category": "attack",
-      "crit": 6224.555668855966,
+      "crit": 9648.061286726748,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
       "normal": 3112.277834427983
     },
     "attack.plunge_low": {
-      "average": 2740.8788433137556,
+      "average": 4061.4841041831105,
       "category": "attack",
-      "crit": 4983.416078752282,
+      "crit": 7724.2949220660375,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
       "normal": 2491.708039376141
     },
     "attack.sigewinnne_mini_stration_bubble_dmg": {
-      "average": 649.4495800598872,
+      "average": 962.3661959069238,
       "category": "attack",
-      "crit": 1180.817418290704,
+      "crit": 1830.2669983505912,
       "damageType": "charged",
       "format": "",
       "isReacted": false,
       "normal": 590.408709145352
     },
     "burst.burst_dmg": {
-      "average": 6174.258448433675,
+      "average": 10801.053194826232,
       "category": "burst",
-      "crit": 11225.92445169759,
+      "crit": 20541.880309178723,
       "damageType": "burst",
       "format": "",
       "isReacted": false,
-      "normal": 5612.962225848795
+      "normal": 6626.413002960879
     },
-    "other.sigewinne_hp_buff": {
-      "average": 338.18936941132824,
+    "other.sigewinne_bubbly_shield": {
+      "average": 10268.21013529248,
       "category": "other",
-      "crit": 338.18936941132824,
+      "crit": 10268.21013529248,
       "damageType": "",
       "format": "",
       "isReacted": false,
-      "normal": 338.18936941132824
+      "normal": 10268.21013529248
+    },
+    "other.sigewinne_hp_buff": {
+      "average": 422.7367117641603,
+      "category": "other",
+      "crit": 422.7367117641603,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 422.7367117641603
     },
     "reaction.electrocharged": {
       "average": 3719.5752021897806,
@@ -128,22 +137,22 @@
       "normal": 5579.362803284671
     },
     "skill.sigewinne_bolstering_bubblebalm_dmg": {
-      "average": 973.450964530052,
+      "average": 1702.9246355509936,
       "category": "skill",
-      "crit": 1769.9108446000946,
+      "crit": 3238.691024667534,
       "damageType": "skill",
       "format": "",
       "isReacted": false,
-      "normal": 884.9554223000473
+      "normal": 1044.7390402153335
     },
     "skill.sigewinne_bolstering_bubblebalm_heal": {
-      "average": 2318.2934027291367,
+      "average": 2778.0802434996754,
       "category": "skill",
-      "crit": 2318.2934027291367,
+      "crit": 2778.0802434996754,
       "damageType": "",
       "format": "",
       "isReacted": false,
-      "normal": 2318.2934027291367
+      "normal": 2778.0802434996754
     },
     "skill.sigewinne_bounce_end_heal": {
       "average": 17113.6835588208,
@@ -155,13 +164,13 @@
       "normal": 17113.6835588208
     },
     "skill.surging_blade_dmg": {
-      "average": 292.0352893590156,
+      "average": 510.8773906652981,
       "category": "skill",
-      "crit": 530.9732533800284,
+      "crit": 971.6073074002602,
       "damageType": "skill",
       "format": "",
       "isReacted": false,
-      "normal": 265.4866266900142
+      "normal": 313.42171206460006
     },
     "stats.atk": {
       "average": 2370.2511736478523,
@@ -173,22 +182,22 @@
       "normal": 2370.2511736478523
     },
     "stats.crit_dmg": {
-      "average": 100,
+      "average": 210,
       "category": "stats",
-      "crit": 100,
+      "crit": 210,
       "damageType": "",
       "format": "percent",
       "isReacted": false,
-      "normal": 100
+      "normal": 210
     },
     "stats.crit_rate": {
-      "average": 10,
+      "average": 30.000000000000004,
       "category": "stats",
-      "crit": 10,
+      "crit": 30.000000000000004,
       "damageType": "",
       "format": "percent",
       "isReacted": false,
-      "normal": 10
+      "normal": 30.000000000000004
     },
     "stats.crit_value": {
       "average": 0,
