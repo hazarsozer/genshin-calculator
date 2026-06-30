@@ -484,6 +484,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 2,
     "common.enemy_status": "cryo",
   },
+  // Yae Miko C4 "Sakura Channeling" (SELF toggle, +20% Electro DMG). Gated C4
+  // (char_constellation:4) + the toggle, matching the oracle dump at constellation 4.
+  "yae-miko-self-buffs": {
+    char_constellation: 4,
+    miko_sakura_channeling: true,
+  },
   // Xingqiu C2 xingqiu_rainbow_upon_the_azure_sky (enemy_res_hydro−15) + C4 xingqiu_evilsoother
   // (+50% skill DMG, the folded ×1.5 on skill_dmg/skill_1/skill_2). char_constellation:4 threads
   // BOTH cons gates ON, matching the oracle dump at constellation 4.
