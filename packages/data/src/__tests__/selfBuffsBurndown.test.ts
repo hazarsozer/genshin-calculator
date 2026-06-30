@@ -116,6 +116,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     kaedehara_kazuha_poetics_of_fuubutsu: "cryo",
     kaedehara_kazuha_crimson_momiji: true,
   },
+  // Faruzan SELF buffs — wind_bale (enemy_res_anemo −30) + wind_benefit (dmg_anemo% by burst level,
+  // char_skill_burst:10 feeds the static-level) + A4 self atk_base→anemo multiplier + C6 crit_dmg_anemo
+  // +40 (gated C6 AND wind_benefit). char_constellation:6 threads the C6 gate ON, matching the oracle dump.
+  "faruzan-self-buffs": {
+    char_constellation: 6,
+    char_skill_burst: 10,
+    faruzan_wind_bale: true,
+    faruzan_wind_benefit: true,
+    faruzan_lost_wisdom_of_the_seven_caverns: true,
+  },
   // Xinyan A4 dmg_phys+15 (ungated) + C4 enemy_res_physical−15 (gated at C4 → char_constellation:4
   // threads the cons gate ON, matching the oracle dump at constellation 4).
   "xinyan-self-buffs": {

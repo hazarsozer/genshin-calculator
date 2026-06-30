@@ -91,6 +91,9 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "charged",
     element: "anemo",
+    // C6 crit_dmg_anemo reaches anemo hits via her getDefaultStatsCritDamage element push
+    // (Damage.js: 'crit_dmg_'+element). Base-inert: crit_dmg_anemo reads 0 until C6 fires.
+    critDamageBonuses: ["crit_dmg_anemo"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_aimed") }],
   },
   // --- Plunge attacks (bow — physical) ---
@@ -121,6 +124,7 @@ const features: readonly Feature[] = [
     name: "skill_dmg",
     category: "skill",
     element: "anemo",
+    critDamageBonuses: ["crit_dmg_anemo"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
   },
   // faruzan_pressurized_collapse_vortex_dmg: Pressurized Collapse vortex hit
@@ -129,6 +133,7 @@ const features: readonly Feature[] = [
     name: "faruzan_pressurized_collapse_vortex_dmg",
     category: "skill",
     element: "anemo",
+    critDamageBonuses: ["crit_dmg_anemo"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.faruzan_pressurized_collapse_vortex_dmg") }],
   },
   // --- Burst: The Wind's Secret Ways (anemo) ---
@@ -137,6 +142,7 @@ const features: readonly Feature[] = [
     name: "burst_dmg",
     category: "burst",
     element: "anemo",
+    critDamageBonuses: ["crit_dmg_anemo"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
 ];
@@ -157,6 +163,15 @@ const features: readonly Feature[] = [
 //
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Faruzan.js:316-371
 
+// A4AtkScale constant: 32 (TalentValues.A4AtkScale in raw/…/Faruzan.js:120)
+const A4_ATK_SCALE = 32;
+
+// faruzan_wind_benefit dmg_anemo% by burst talent level (burst.faruzan_anemo_dmg_bonus = s3.p2).
+// raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.ts Faruzan.s3.p2.
+const WIND_BENEFIT_DMG_ANEMO: readonly number[] = [
+  18, 19.35, 20.7, 22.5, 23.85, 25.2, 27, 28.8, 30.6, 32.4, 34.2, 36, 38.25, 40.5, 42.75,
+];
+
 const constellationConditions: readonly Condition[] = [
   // C3: +3 Elemental Skill talent levels.
   // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
@@ -165,6 +180,53 @@ const constellationConditions: readonly Condition[] = [
   // subConditions:[ConditionConstellation(5)] (NOT the cons array, whose index 4 is {}) —
   // Faruzan.js:251-258. Modelled as the equivalent constellation condition.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF buffs (the never-swept SELF mirror of partyData — golden-blind SKIP).
+  // wind_bale: enemy Anemo RES −30 (burst.faruzan_anemo_res_decrease = s3.p4 = [30], ×−1, flat
+  // across burst level → single-element levelStats), gated by the faruzan_wind_bale toggle.
+  // raw Faruzan.js:258-271 (ConditionBooleanLevels, levelSetting char_skill_burst).
+  {
+    type: "static-level",
+    levelSetting: "char_skill_burst",
+    levelStats: { enemy_res_anemo: [-30] },
+    condition: { type: "boolean", name: "faruzan_wind_bale" },
+  },
+  // wind_benefit: dmg_anemo% by burst talent level (s3.p2), gated by the faruzan_wind_benefit
+  // toggle. raw Faruzan.js:272-281 (ConditionBooleanLevels, getAlias dmg_anemo).
+  {
+    type: "static-level",
+    levelSetting: "char_skill_burst",
+    levelStats: { dmg_anemo: WIND_BENEFIT_DMG_ANEMO },
+    condition: { type: "boolean", name: "faruzan_wind_benefit" },
+  },
+  // C6 "The Wondrous Path of Truth": crit_dmg_anemo +40, gated C6 AND wind_benefit (raw
+  // Faruzan.js:351-362, ConditionStatic stats crit_dmg_anemo, subConditions wind_benefit).
+  // Modelled as `static` gated by `and[C6, wind_benefit]` — NOT a `constellation` condition,
+  // whose evaluator ignores the nested `.condition` gate (would mis-apply at C6 wind_benefit-off).
+  {
+    type: "static",
+    stats: { crit_dmg_anemo: 40 },
+    condition: {
+      type: "and",
+      items: [
+        { type: "constellation", constellation: 6 },
+        { type: "boolean", name: "faruzan_wind_benefit" },
+      ],
+    },
+  },
+];
+
+// A4 SELF multiplier — atk_base% × atk_base added to each ANEMO hit, gated by the A4 toggle
+// faruzan_lost_wisdom_of_the_seven_caverns (raw Faruzan.js:305-315; the SELF mirror of the
+// partyData multiplier below). Dropped in the original port (multipliers was []).
+const faruzanSelfMultipliers: readonly CharMultiplier[] = [
+  {
+    source: "ascension4",
+    scaling: "atk_base",
+    leveling: "",
+    values: { getValue: (): number => A4_ATK_SCALE },
+    condition: { type: "boolean", name: "faruzan_lost_wisdom_of_the_seven_caverns" },
+    target: { damageTypes: [], damageElements: ["anemo"] },
+  } satisfies CharMultiplier,
 ];
 
 // ---------------------------------------------------------------------------
@@ -179,9 +241,6 @@ const constellationConditions: readonly Condition[] = [
 // is active. Condition ported = ONLY the lift the multiplier reads + the master gate.
 // The many constellation/passive boolean conditions are deferred to the variant-rep pass.
 // ---------------------------------------------------------------------------
-
-// A4AtkScale constant: 32 (TalentValues.A4AtkScale in raw/…/Faruzan.js:120)
-const A4_ATK_SCALE = 32;
 
 const faruzanPartyMultipliers: readonly CharMultiplier[] = [
   // A4: faruzan_atk_base% × faruzan_atk_base added to each ANEMO hit of the recipient.
@@ -209,7 +268,7 @@ export const faruzan: DbObjectChar = {
   statTable: FaruzanStatTable,
   talents,
   features,
-  multipliers: [],
+  multipliers: faruzanSelfMultipliers,
   conditions: constellationConditions,
   partyData: {
     loadStats: {
