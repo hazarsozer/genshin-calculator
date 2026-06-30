@@ -40,8 +40,8 @@
     "description": "Skip-class SELF-condition sweep — SELF conditions (res-shred/dmg/etc.) the port SKIPPED because no golden toggles them (the 58k DAMAGE goldens are blind to them; surfaced by tools/oracle/diff-parity.mjs). The port systematically modelled the `party.*` teammate mirror but skipped the SELF version. Each rep bakes the char's SELF toggle via mergeCharSettings (a char-axis setting, infusionItems' diluc_dawn channel) so her engine applies the self condition to EVERY one of the char's own damage features; dump-oracle branches on cfg.partyItems and writes one <slug>.json per rep via engine.computeParty. zhongli-jade-shield: Zhongli's own Jade Shield (raw Zhongli.js:316-331, a C0 ConditionBoolean, NO ascension/cons gate) grants −20 enemy RES to all 7 elements + physical, buffing every Zhongli damage feature. The port modelled party.zhongli_jade_shield (the teammate mirror, Zhongli.js:447-463) but SKIPPED the SELF version → every Zhongli damage triple undershot by the res-shred at zhongli_jade_shield:true. GREEN once the SELF condition is ported into zhongli.ts (conditions[]). selfBuffsBurndown threads the SAME toggle into buildStats + compileCharacter and asserts the buffed triples. To add the next char: one item in selfBuffsItems + one SETTINGS_BY_SLUG row + re-dump (`node tools/oracle/dump-oracle.mjs self-buffs`).",
     "id": "self-buffs"
   },
-  "featureTotal": 1420,
-  "itemCount": 47,
+  "featureTotal": 1449,
+  "itemCount": 48,
   "items": [
     {
       "derived": {
@@ -132,6 +132,33 @@
       "weapon": {
         "name": "weapon_name.alley_hunter",
         "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "fontain",
+      "party": {
+        "settings": {
+          "arlecchino_cinders_alone_shall_nourish": true
+        }
+      },
+      "repKey": "Arlecchino",
+      "repSlug": "arlecchino",
+      "resonanceElements": {},
+      "slug": "arlecchino-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
       }
     },
     {

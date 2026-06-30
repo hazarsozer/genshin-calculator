@@ -310,6 +310,21 @@ const bolInfusion: Condition = {
   settings: { attack_infusion: "pyro" },
 };
 
+// A1 "Cinders Alone Shall Nourish" — a from-C0 ConditionBoolean granting +40% Pyro DMG
+// while toggled (her in-game A1 is active whenever Arlecchino's masque is lit; the engine
+// exposes it as a user toggle). Raw Arlecchino.js:414-422 (ConditionBoolean{ name:
+// 'arlecchino_cinders_alone_shall_nourish', stats:{ dmg_pyro: 40 } } — NO ascension/
+// constellation gate). The port modelled her masque/infusion/C1/C6 but SKIPPED this A1 self
+// toggle entirely → golden-blind (no golden or constellations config sets it; every Arlecchino
+// hit is pyro so it lifts the WHOLE kit by +40% Pyro DMG when active). Base-inert: the toggle is
+// OFF in every golden → the 58k damage goldens are byte-identical. Diff-parity surfaced it as the
+// canary (BoL+infusion alone = clean; adding this toggle = −27% on every normal).
+const a1Cinders: Condition = {
+  type: "boolean",
+  name: "arlecchino_cinders_alone_shall_nourish",
+  stats: { dmg_pyro: 40 },
+};
+
 // ---------------------------------------------------------------------------
 // Char-level multipliers
 // ---------------------------------------------------------------------------
@@ -362,5 +377,5 @@ export const arlecchino: DbObjectChar = {
   talents,
   features,
   multipliers: charMultipliers,
-  conditions: [...constellationConditions, bolInfusion, BOND_OF_LIFE_INPUT],
+  conditions: [...constellationConditions, a1Cinders, bolInfusion, BOND_OF_LIFE_INPUT],
 };
