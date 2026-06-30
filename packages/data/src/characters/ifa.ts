@@ -237,6 +237,19 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Compound Sedation Field (burst). Raw cons[4] settings char_skill_burst_bonus:3.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF A4 "Mutual Aid Agreement" (raw conditions, Ifa.js:301-307) — +80 EM (A4Mastery), a
+  // ConditionBoolean gated only by ConditionAscensionChar({ascension:4}) (auto-true at A6 → the toggle
+  // is the gate). Plain mastery stat (proven mirror) — lifts her swirl/EC reaction outputs. Was
+  // golden-blind SKIPPED.
+  { type: "boolean", name: "ifa_mutual_aid_agreement", stats: { mastery: 80 } },
+  // SELF C4 "Decayed Vessels Permutation" (raw cons[3], Ifa.js:344-351) — +100 EM (C4Mastery), a
+  // ConditionBoolean gated on constellation 4. Same plain-mastery lift of her reaction outputs.
+  {
+    type: "boolean",
+    name: "ifa_decayed_vessels_permutation",
+    stats: { mastery: 100 },
+    condition: { type: "constellation", constellation: 4 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

@@ -722,6 +722,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     varesa_the_courage_to_press_on_2: true,
     varesa_a_hero_of_justices_triumph: true,
   },
+  // Ifa A4 mastery+80 (ifa_mutual_aid_agreement, ascension boolean) + C4 mastery+100
+  // (ifa_decayed_vessels_permutation, ≥C4). Plain EM lifts her swirl/EC reaction outputs.
+  // char_constellation:4 threads the C4 gate ON, matching the oracle dump at constellation 4.
+  "ifa-self-buffs": {
+    char_constellation: 4,
+    ifa_mutual_aid_agreement: true,
+    ifa_decayed_vessels_permutation: true,
+  },
 };
 
 interface ManifestItem {
