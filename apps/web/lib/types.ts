@@ -10,10 +10,19 @@ import type { EquippedSet } from "@genshin/data";
 export type ArtifactMode = "good" | "manual";
 
 /** One teammate in the party roster. `settings` keys are the engine's partyData
- *  condition names (e.g. "party.bennet_fantastic_voyage", "bennet_atk_base"). */
+ *  condition names (e.g. "party.bennet_fantastic_voyage", "bennet_atk_base").
+ *
+ *  The optional `set*`/`weapon*` fields carry this teammate's off-field
+ *  Set/Weapon-buff picks (Wave 1.5), folded into PartyInput.setOther/weaponOther by
+ *  buildPartyInput. All optional → existing serialized builds round-trip unchanged. */
 export interface PartyMemberForm {
   slug: string; // DbObjectChar.name
   settings: Record<string, number | boolean>;
+  setKey?: string;        // set_other gate slug (TEAM_BUFF_SETS gate); absent → no set buff
+  setElement?: string;    // VV/Archaic absorbed element (only when the picked set has elementPick)
+  setTier?: string;       // Scroll tier "1"|"2" (only when the picked set has tierPick)
+  weaponKey?: string;     // off-field weapon gate (OFF_FIELD_WEAPONS gate); absent → no weapon buff
+  weaponRefine?: number;  // teammate weapon refine 1–5 (default 1)
 }
 
 /** Per-slot artifact data for the slot-based manual input UI.
