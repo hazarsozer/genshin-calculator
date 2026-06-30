@@ -510,6 +510,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 4,
     itto_jailhouse_bread_and_butter: true,
   },
+  // Sara "Tengu Juurai" SELF ATK battery (sara_tengu_juurai → her own ATK += atk_base × skill
+  // atk_bonus). The port had ONLY the party.sara_tengu_juurai mirror → golden-blind SKIP of the
+  // SELF postEffect. char_constellation:6 threads C6 + the C5 skill +3 bonus into the dump.
+  "sara-self-buffs": {
+    char_constellation: 6,
+    sara_tengu_juurai: true,
+  },
   // Xingqiu C2 xingqiu_rainbow_upon_the_azure_sky (enemy_res_hydro−15) + C4 xingqiu_evilsoother
   // (+50% skill DMG, the folded ×1.5 on skill_dmg/skill_1/skill_2). char_constellation:4 threads
   // BOTH cons gates ON, matching the oracle dump at constellation 4.
@@ -620,6 +627,11 @@ for (const item of manifest.items) {
       statBlock: STAT_BLOCK,
       levels: LEVELS,
       enemy: ENEMY,
+      // Inject the L10 talent levels so buildStats sees char_skill_attack/elemental/burst — required
+      // by talent-scaled stat post-effects that fire during stat aggregation (Sara's Tengu Juurai
+      // self ATK battery reads char_skill_elemental). Inert for reps with no talent-scaled self
+      // post-effect (their stat bag is unchanged); the oracle fixtures were dumped at L10.
+      talentLevels: TALENTS,
       settings,
     });
 
