@@ -477,6 +477,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   "arlecchino-self-buffs": {
     arlecchino_cinders_alone_shall_nourish: true,
   },
+  // Qiqi C2 "Frozen to the Bone" (+15% Normal/Charged DMG vs cryo-afflicted enemies). Gated C2
+  // (char_constellation:2) AND the enemy cryo status (common.enemy_status:'cryo'), matching the
+  // oracle dump at constellation 2 with the cryo status set.
+  "qiqi-self-buffs": {
+    char_constellation: 2,
+    "common.enemy_status": "cryo",
+  },
   // Xingqiu C2 xingqiu_rainbow_upon_the_azure_sky (enemy_res_hydro−15) + C4 xingqiu_evilsoother
   // (+50% skill DMG, the folded ×1.5 on skill_dmg/skill_1/skill_2). char_constellation:4 threads
   // BOTH cons gates ON, matching the oracle dump at constellation 4.
