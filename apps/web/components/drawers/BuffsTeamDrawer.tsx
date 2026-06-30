@@ -8,12 +8,22 @@ import { ConditionControlWidget } from "./ConditionControl";
 import { CharAvatar } from "@/components/controls/CharAvatar";
 import { Catalog } from "@/components/catalog/Catalog";
 import { CatalogModal } from "@/components/catalog/CatalogModal";
-import { addMember, removeMember, setMemberSetting, activeResonances, teammateLevelDefaults } from "@/lib/party";
+import { addMember, removeMember, setMemberSetting, setMemberField, activeResonances, teammateLevelDefaults } from "@/lib/party";
+import {
+  TEAM_BUFF_SETS,
+  OFF_FIELD_WEAPONS,
+  ELEMENT_PICK_OPTIONS,
+  SCROLL_TIER_OPTIONS,
+  type TeamBuffSet,
+  type OffFieldWeapon,
+} from "@/lib/teamBuffs";
 import { resonatingElements, partitionResonanceSubs } from "@/lib/resonanceSubs";
 import { humanizeSlug } from "@/lib/utils";
 import { avatarIconSources } from "@/lib/enkaArt";
+import { LevelLine } from "@/components/controls/LevelLine";
 import type { ConditionControl } from "@/lib/conditions";
 import type { PartyMemberForm } from "@/lib/types";
+import type { DbObjectChar } from "@genshin/types";
 import type { EquippedSet } from "@genshin/data";
 
 const MAX_TEAMMATES = 3;
@@ -153,6 +163,200 @@ function TeamRow({
   );
 }
 
+// ── Per-teammate off-field Set / Weapon buff pickers (Wave 1.5) ──
+function PickPill({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize transition-colors"
+      style={{
+        background: active
+          ? "color-mix(in srgb, var(--ck-accent) 22%, transparent)"
+          : "var(--ck-surface2)",
+        color: active ? "var(--ck-accent2)" : "var(--ck-muted)",
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function ChosenRow({ label, onClear }: { label: string; onClear: () => void }) {
+  return (
+    <div className="flex items-center justify-between gap-2 rounded-lg bg-[var(--ck-surface2)] px-2.5 py-1.5">
+      <span className="text-[11px] font-semibold text-[var(--ck-text)]">{label}</span>
+      <button
+        type="button"
+        onClick={onClear}
+        className="text-[10px] font-bold text-[var(--ck-faint)] transition-colors hover:text-[var(--ck-accent)]"
+      >
+        Clear ✕
+      </button>
+    </div>
+  );
+}
+
+function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-lg border border-dashed border-[var(--ck-border)] px-2.5 py-1.5 text-left text-[11px] text-[var(--ck-faint)] transition-colors hover:border-[var(--ck-accent)] hover:text-[var(--ck-accent)]"
+    >
+      ＋ {label}
+    </button>
+  );
+}
+
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--ck-faint)]">
+      {children}
+    </span>
+  );
+}
+
+function TeammateOffFieldBuffs({
+  member,
+  index,
+  members,
+  weaponType,
+  patchMembers,
+}: {
+  member: PartyMemberForm;
+  index: number;
+  members: readonly PartyMemberForm[];
+  weaponType: DbObjectChar["weapon"];
+  patchMembers: (next: PartyMemberForm[]) => void;
+}) {
+  const [setModalOpen, setSetModalOpen] = useState(false);
+  const [weaponModalOpen, setWeaponModalOpen] = useState(false);
+
+  const pickedSet = TEAM_BUFF_SETS.find((s) => s.gate === member.setKey);
+  const pickedWeapon = OFF_FIELD_WEAPONS.find((w) => w.gate === member.weaponKey);
+  const availableWeapons = OFF_FIELD_WEAPONS.filter((w) => w.weaponType === weaponType);
+
+  function chooseSet(def: TeamBuffSet) {
+    let next = setMemberField(members, index, "setKey", def.gate);
+    // Seed a default element/tier so the buff is live immediately; clear the other variant's field.
+    next = setMemberField(next, index, "setElement", def.elementPick ? ELEMENT_PICK_OPTIONS[0] : undefined);
+    next = setMemberField(next, index, "setTier", def.tierPick ? SCROLL_TIER_OPTIONS[0] : undefined);
+    patchMembers(next);
+    setSetModalOpen(false);
+  }
+  function clearSet() {
+    let next = setMemberField(members, index, "setKey", undefined);
+    next = setMemberField(next, index, "setElement", undefined);
+    next = setMemberField(next, index, "setTier", undefined);
+    patchMembers(next);
+  }
+  function chooseWeapon(w: OffFieldWeapon) {
+    let next = setMemberField(members, index, "weaponKey", w.gate);
+    if (member.weaponRefine === undefined) next = setMemberField(next, index, "weaponRefine", 1);
+    patchMembers(next);
+    setWeaponModalOpen(false);
+  }
+  function clearWeapon() {
+    let next = setMemberField(members, index, "weaponKey", undefined);
+    next = setMemberField(next, index, "weaponRefine", undefined);
+    patchMembers(next);
+  }
+
+  return (
+    <div className="mt-2 flex flex-col gap-2.5 border-t border-[var(--ck-border)] pt-2.5">
+      {/* ── Off-field Set buff ── */}
+      <div className="flex flex-col gap-1.5">
+        <FieldLabel>Set Buff</FieldLabel>
+        {pickedSet ? (
+          <>
+            <ChosenRow label={pickedSet.label} onClear={clearSet} />
+            {pickedSet.elementPick && (
+              <div className="flex flex-wrap items-center gap-1.5">
+                {ELEMENT_PICK_OPTIONS.map((el) => (
+                  <PickPill
+                    key={el}
+                    label={el}
+                    active={member.setElement === el}
+                    onClick={() => patchMembers(setMemberField(members, index, "setElement", el))}
+                  />
+                ))}
+              </div>
+            )}
+            {pickedSet.tierPick && (
+              <div className="flex flex-wrap items-center gap-1.5">
+                {SCROLL_TIER_OPTIONS.map((t) => (
+                  <PickPill
+                    key={t}
+                    label={`Tier ${t}`}
+                    active={member.setTier === t}
+                    onClick={() => patchMembers(setMemberField(members, index, "setTier", t))}
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <AddButton label="Add set buff" onClick={() => setSetModalOpen(true)} />
+        )}
+      </div>
+
+      {/* ── Off-field Weapon buff (filtered to the teammate's weapon type) ── */}
+      <div className="flex flex-col gap-1.5">
+        <FieldLabel>Weapon Buff</FieldLabel>
+        {availableWeapons.length === 0 ? (
+          <span className="text-[11px] text-[var(--ck-faint)]">
+            No off-field buffs for {weaponType}
+          </span>
+        ) : pickedWeapon ? (
+          <>
+            <ChosenRow label={pickedWeapon.label} onClear={clearWeapon} />
+            <LevelLine
+              label="Refine"
+              value={member.weaponRefine ?? 1}
+              min={1}
+              max={5}
+              onChange={(v) => patchMembers(setMemberField(members, index, "weaponRefine", v))}
+            />
+          </>
+        ) : (
+          <AddButton label="Add weapon buff" onClick={() => setWeaponModalOpen(true)} />
+        )}
+      </div>
+
+      {/* ── Modals ── */}
+      <CatalogModal open={setModalOpen} onClose={() => setSetModalOpen(false)} title="Off-field Set Buff">
+        <Catalog
+          items={TEAM_BUFF_SETS}
+          getKey={(s) => s.gate}
+          getLabel={(s) => s.label}
+          getIconSources={() => []}
+          activeKey={member.setKey}
+          onPick={chooseSet}
+        />
+      </CatalogModal>
+      <CatalogModal open={weaponModalOpen} onClose={() => setWeaponModalOpen(false)} title="Off-field Weapon Buff">
+        <Catalog
+          items={availableWeapons}
+          getKey={(w) => w.gate}
+          getLabel={(w) => w.label}
+          getIconSources={() => []}
+          activeKey={member.weaponKey}
+          onPick={chooseWeapon}
+        />
+      </CatalogModal>
+    </div>
+  );
+}
+
 export function BuffsTeamDrawer() {
   const form = useBuildStore((s) => s.form);
   const setForm = useBuildStore((s) => s.setForm);
@@ -248,7 +452,6 @@ export function BuffsTeamDrawer() {
         const tchar = ALL_CHARACTERS.find((c) => c.name === m.slug);
         if (!tchar) return null;
         const ctrls = collectPartyConditions(tchar);
-        if (ctrls.length === 0) return null;
         const levelDefaults = teammateLevelDefaults(tchar);
         return (
           <div key={m.slug} className="rounded-xl border border-[var(--ck-border)] p-3">
@@ -256,18 +459,27 @@ export function BuffsTeamDrawer() {
               <CharAvatar name={m.slug} className="h-6 w-6 rounded-full" />
               <span className="text-[12px] font-bold">{humanizeSlug(m.slug)}</span>
             </div>
-            <div className="flex flex-col gap-2">
-              {ctrls.map((ctrl) => (
-                <ConditionControlWidget
-                  key={ctrl.name}
-                  ctrl={ctrl}
-                  binding={{
-                    value: m.settings[ctrl.name] ?? (ctrl.name in levelDefaults ? 10 : ctrl.kind === "boolean" ? false : 0),
-                    setValue: (v) => patchMembers(setMemberSetting(members, i, ctrl.name, v)),
-                  }}
-                />
-              ))}
-            </div>
+            {ctrls.length > 0 && (
+              <div className="flex flex-col gap-2">
+                {ctrls.map((ctrl) => (
+                  <ConditionControlWidget
+                    key={ctrl.name}
+                    ctrl={ctrl}
+                    binding={{
+                      value: m.settings[ctrl.name] ?? (ctrl.name in levelDefaults ? 10 : ctrl.kind === "boolean" ? false : 0),
+                      setValue: (v) => patchMembers(setMemberSetting(members, i, ctrl.name, v)),
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+            <TeammateOffFieldBuffs
+              member={m}
+              index={i}
+              members={members}
+              weaponType={tchar.weapon}
+              patchMembers={patchMembers}
+            />
           </div>
         );
       })}
