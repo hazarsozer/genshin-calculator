@@ -670,6 +670,18 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   "kachina-self-buffs": {
     kachina_mountain_echoes: true,
   },
+  // Kinich C1 crit_dmg_skill_kinich+100 (kinich_parrots_beak, ≥C1) + C2 enemy_res_dendro−30
+  // (kinich_tiger_beetles_palm_1) & dmg_skill_kinich+100 (kinich_tiger_beetles_palm_2, ≥C2) + C4
+  // dmg_burst_kinich+70 (kinich_hummingbirds_feather, ≥C4). char_constellation:4 threads ALL three
+  // cons gates ON, matching the oracle dump at constellation 4. dmg_skill_kinich/crit_dmg_skill_kinich
+  // are feature-scoped to the Scalespiker-Cannon hits; dmg_burst_kinich to the bursts.
+  "kinich-self-buffs": {
+    char_constellation: 4,
+    kinich_parrots_beak: true,
+    kinich_tiger_beetles_palm_1: true,
+    kinich_tiger_beetles_palm_2: true,
+    kinich_hummingbirds_feather: true,
+  },
 };
 
 interface ManifestItem {
