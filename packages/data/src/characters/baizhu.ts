@@ -261,6 +261,34 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 levels to skill.
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // A1 "Five Fortunes Forever" — +25% Dendro DMG while NOT shielding (the Gossamer Sprite shield
+  // toggle is OFF). Raw ConditionStatic gated [A1, NOT(baizhu_five_fortunes_forever)] (Baizhu.js:
+  // 376-401). Previously hardcoded as an UNCONDITIONAL `baseStats: {dmg_dendro:25}` → golden-blind
+  // SKIP of the NOT gate: with the shield toggle ON the oracle DROPS the +25%, but the port kept it
+  // (over-reporting every dendro hit). Now gated on NOT(toggle); A1 is always-on at A6 so the live
+  // gate is the boolean. Base-inert: at baseline the toggle is OFF → NOT fires → +25% applies,
+  // exactly as the retired baseStats (7353 root goldens byte-identical).
+  {
+    type: "static",
+    name: "baizhu_five_fortunes_forever_dmg",
+    stats: { dmg_dendro: 25 },
+    condition: { type: "not", items: [{ type: "boolean", name: "baizhu_five_fortunes_forever" }] },
+  },
+  // C4 "Ancient Art of Perception" — +80 Elemental Mastery, a SELF boolean toggle (C4-gated). EM
+  // feeds Baizhu's reaction outputs (bloom/burning/quicken). evaluateConstellation is level-only, so
+  // the C4 gate is folded via and[constellation:4, the toggle]. Raw Baizhu.js:452-465. The port
+  // SKIPPED it → golden-blind SKIP (reactions under-EM'd at C4+ when toggled). Base-inert.
+  {
+    type: "static",
+    stats: { mastery: 80 },
+    condition: {
+      type: "and",
+      items: [
+        { type: "constellation", constellation: 4 },
+        { type: "boolean", name: "baizhu_ancient_art_of_perception" },
+      ],
+    },
+  },
 ];
 
 // C6 "Elimination of Malicious Qi": +8% HP-scaling added to baizu_spiritvein_dmg (the only burst
@@ -296,6 +324,26 @@ const a4PostEffects: readonly CharPostEffect[] = [
     capValue: 40,
     conditions: [{ type: "boolean", name: "baizhu_all_things_are_of_the_earth" }],
   },
+  // buffBloom (Baizhu.js:145-152): dmg_reaction_bloom = 0.002 × hp_total, capped at 100 — the
+  // SAME PostEffectStatsHP surface as quicken, feeding Bloom/Hyperbloom/Burgeon (rupture) DMG.
+  // The port had only the quicken entry → golden-blind SKIP of bloom (reaction.rupture under-
+  // reported when all_things is ON). Gated OFF by default → base-inert.
+  {
+    fromStat: "hp",
+    toStat: "dmg_reaction_bloom",
+    ratio: 0.002,
+    capValue: 100,
+    conditions: [{ type: "boolean", name: "baizhu_all_things_are_of_the_earth" }],
+  },
+  // Burning bonus (Baizhu.js:414-420): dmg_reaction_burning = 0.002 × hp_total, capped at 100 (same
+  // A4BloomBonus/Cap constants). Feeds Burning reaction DMG. Also SKIPPED by the port. Base-inert.
+  {
+    fromStat: "hp",
+    toStat: "dmg_reaction_burning",
+    ratio: 0.002,
+    capValue: 100,
+    conditions: [{ type: "boolean", name: "baizhu_all_things_are_of_the_earth" }],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -315,9 +363,4 @@ export const baizhu: DbObjectChar = {
   multipliers: charMultipliers,
   conditions: constellationConditions,
   postEffects: a4PostEffects,
-  // A1 "Five Fortunes Forever" — auto-active at A6 under canonical solo C0 build:
-  // ConditionStatic with subConditions [ConditionAscensionChar(1), ConditionNot([bool toggle])].
-  // Since the boolean 'baizhu_five_fortunes_forever' is OFF by default, the NOT fires → +25% dendro DMG.
-  // raw/genshin_calc_pub/src/js/db/Char/Baizhu.js:376-392
-  baseStats: { dmg_dendro: 25 },
 };

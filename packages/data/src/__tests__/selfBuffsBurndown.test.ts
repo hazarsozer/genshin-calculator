@@ -537,6 +537,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     chiori_the_finishing_touch: true,
     chiori_sole_principle_pursuit: true,
   },
+  // Baizhu SELF buffs — A1 +25% Dendro DMG NOT-gate (dropped when five_fortunes ON) + A4 bloom/
+  // burning reaction bonuses (port had only quicken) + C4 ancient-art +80 EM.
+  "baizhu-self-buffs": {
+    char_constellation: 6,
+    baizhu_five_fortunes_forever: true,
+    baizhu_all_things_are_of_the_earth: true,
+    baizhu_ancient_art_of_perception: true,
+  },
   // Xingqiu C2 xingqiu_rainbow_upon_the_azure_sky (enemy_res_hydro−15) + C4 xingqiu_evilsoother
   // (+50% skill DMG, the folded ×1.5 on skill_dmg/skill_1/skill_2). char_constellation:4 threads
   // BOTH cons gates ON, matching the oracle dump at constellation 4.
