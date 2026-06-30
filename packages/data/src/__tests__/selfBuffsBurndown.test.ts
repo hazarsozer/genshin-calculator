@@ -562,6 +562,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     xingqiu_rainbow_upon_the_azure_sky: true,
     xingqiu_evilsoother: true,
   },
+  // Candace SELF buffs — prayer_of_the_crimson_crown (flat dmg_normal_<el>+20 + own hydro infusion
+  // on normals/charged/plunge; also gates the A4 HP→Normal-DMG post-effect) + C2
+  // candace_moon_piercing_brilliance (hp_percent+20). char_constellation:6 threads the C2 gate ON,
+  // matching the oracle dump at constellation 6. The infusion lifts charged/plunge to hydro; the
+  // dmg_normal_<el> (flat + HP) lifts normals; +20% HP lifts every HP-scaled skill/burst hit.
+  "candace-self-buffs": {
+    char_constellation: 6,
+    candace_prayer_of_the_crimson_crown: true,
+    candace_moon_piercing_brilliance: true,
+  },
   // Keqing SELF buffs — A1 keqing_penance (electro infusion → her normals/charged/plunge become
   // electro) + A4 keqing_dignity (crit_rate+15) + C4 keqing_attunement (atk_percent+25) + C6
   // keqing_tenacious_star:4 (dmg_electro+24%). char_constellation:6 threads both cons gates ON,
