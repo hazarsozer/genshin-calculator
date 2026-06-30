@@ -126,6 +126,30 @@ describe("computeBuild — party", () => {
     expect(withZhongli).toBeGreaterThan(baseline);
   });
 
+  it("a teammate's Viridescent Venerer(pyro) pick shreds enemy Pyro RES (raises a pyro hit), reverting when removed", () => {
+    // Active Bennett (pyro); skill.press_dmg is a Pyro instance → benefits from enemy_res_pyro −40.
+    const pyroSkill = (form: BuildForm) => {
+      const { features, error } = computeBuild(form, SAMPLE_BLOCK, []);
+      expect(error).toBeUndefined();
+      return features.find((x) => x.key === "skill.press_dmg")!.triple[0];
+    };
+    const noPick: BuildForm = {
+      ...bennettTogglesForm,
+      party: { members: [{ slug: "sucrose", settings: {} }] },
+    };
+    const withVV: BuildForm = {
+      ...bennettTogglesForm,
+      party: {
+        members: [
+          { slug: "sucrose", settings: {}, setKey: "viridescent_venerer_4", setElement: "pyro" },
+        ],
+      },
+    };
+    const baseline = pyroSkill(noPick);
+    expect(pyroSkill(withVV)).toBeGreaterThan(baseline); // VV(pyro) shred applied via the set_other string lane
+    expect(pyroSkill(noPick)).toBe(baseline); // removing the pick reverts exactly (lane omitted)
+  });
+
   it("a Bennett teammate's ATK battery raises the active character's ATK (explicit stat field)", () => {
     const withStat = computeBuild(
       {
