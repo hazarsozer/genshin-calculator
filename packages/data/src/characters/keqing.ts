@@ -248,15 +248,52 @@ const features: readonly Feature[] = [
 // C1 "Thundering Might": cons-added feature keqing_thundering_might above.
 // C2 "Keen Extraction": ConditionStatic display-only → SKIP.
 // C3: +3 levels to Starward Sword (burst). Raw cons[2] settings char_skill_burst_bonus:3.
-// C4 "Attunement": ConditionBoolean (atk_percent:25 toggle) → SKIP.
 // C5: +3 levels to Stellar Restoration (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
-// C6 "Tenacious Star": ConditionStacks (dmg_electro per stack, toggle) → SKIP.
 // Raw: Keqing.js:418-484 (constellation array).
+//
+// SELF buffs (were golden-blind SKIPPED — Keqing is a pure solo DPS with NO party.* mirror;
+// the port dropped her four conditional self-buffs because they default OFF in the fixed canonical
+// build, so the 58k DAMAGE goldens never exercised them; a diff-parity sweep surfaced every one of
+// her own hits diverging when the toggles are on):
+//   - A1 "Thundering Penance": SELF electro infusion (attack_infusion:"electro") on her own physical
+//     normals/charged/plunge, gated by keqing_penance. raw Keqing.js:390-402 (settings
+//     attack_infusion_electro:1; the unconditional allowed_infusion_electro permission flag is
+//     implicit in our model — resolveElement infuses any un-elemented attack/plunge). The Diluc-dawn
+//     infusion pattern. Ascension-1 auto-true at the rep → the toggle IS the gate.
+//   - A4 "Aristocratic Dignity": SELF crit_rate +15 (+ recharge +15, damage-inert), gated by
+//     keqing_dignity. raw Keqing.js:403-416. Ascension-4 auto-true at the rep → toggle is the gate.
+//   - C4 "Attunement": SELF atk_percent +25, gated by keqing_attunement. raw Keqing.js:447-460
+//     (constellation[3] → THE CONSTELLATION IS A GATE).
+//   - C6 "Tenacious Star": SELF dmg_electro +6 per stack (max 4 = +24%), gated by
+//     keqing_tenacious_star stacks. raw Keqing.js:470-483 (constellation[5] → cons-gated).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Starward Sword (burst).
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 levels to Stellar Restoration (skill).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF A1 "Thundering Penance" electro infusion — her own physical normals/charged/plunge become
+  // electro while the toggle is on. Base-inert when untoggled. raw Keqing.js:390-402.
+  { type: "boolean", name: "keqing_penance", settings: { attack_infusion: "electro" } },
+  // SELF A4 "Aristocratic Dignity" — crit_rate +15 (recharge +15 damage-inert), lifting every hit's
+  // expected/crit damage. raw Keqing.js:403-416.
+  { type: "boolean", name: "keqing_dignity", stats: { crit_rate: 15, recharge: 15 } },
+  // SELF C4 "Attunement" — atk_percent +25, lifting every (ATK-scaled) hit. Gated at C6-display C4.
+  // raw Keqing.js:447-460.
+  {
+    type: "boolean",
+    name: "keqing_attunement",
+    stats: { atk_percent: 25 },
+    condition: { type: "constellation", constellation: 4 },
+  },
+  // SELF C6 "Tenacious Star" — dmg_electro +6 per stack (max 4 = +24%), lifting her electro hits
+  // (skill/burst always; normals/charged/plunge once penance infuses them electro). raw Keqing.js:470-483.
+  {
+    type: "stacks",
+    name: "keqing_tenacious_star",
+    maxStacks: 4,
+    stats: { dmg_electro: 6 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

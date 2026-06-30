@@ -562,6 +562,18 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     xingqiu_rainbow_upon_the_azure_sky: true,
     xingqiu_evilsoother: true,
   },
+  // Keqing SELF buffs — A1 keqing_penance (electro infusion → her normals/charged/plunge become
+  // electro) + A4 keqing_dignity (crit_rate+15) + C4 keqing_attunement (atk_percent+25) + C6
+  // keqing_tenacious_star:4 (dmg_electro+24%). char_constellation:6 threads both cons gates ON,
+  // matching the oracle dump at constellation 6. The infusion lifts her physical attacks to electro
+  // (so the C6 electro DMG lands on them); crit/atk lift every hit.
+  "keqing-self-buffs": {
+    char_constellation: 6,
+    keqing_penance: true,
+    keqing_dignity: true,
+    keqing_attunement: true,
+    keqing_tenacious_star: 4,
+  },
 };
 
 interface ManifestItem {
