@@ -101,13 +101,22 @@
       "normal": 5579.362803284671
     },
     "skill.mualani_shark_bite_dmg": {
-      "average": 34248.62573926739,
+      "average": 24659.010532272518,
       "category": "skill",
-      "crit": 43694.50350752391,
+      "crit": 31460.04252541721,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 21847.251753761953
+      "normal": 15730.021262708606
+    },
+    "skill.mualani_shark_missile_dmg": {
+      "average": 24659.010532272518,
+      "category": "skill",
+      "crit": 31460.04252541721,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 15730.021262708606
     },
     "stats.atk": {
       "average": 1843.610153244,

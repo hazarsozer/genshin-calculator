@@ -34,16 +34,14 @@
  *   shark_byte multiplier, gated C1) + C4 "Sharky Eats Puffies" (dmg_burst_mualani +75,
  *   gated C4). C3/C5 talent-level bumps. C2/C6 no real stats.
  *
- * DEFERRED (needs a new core surface — S2 group B-α):
- *   `mualani_byte_targets` (ConditionDropdown, 1-3) and the shark-missile feature it
- *   gates (>=2). Her `FeatureDamageNormalMualani.getReactionMultipliers` pushes a
- *   settings-keyed whole-hit `CMultiplierCustom` (byte_targets 2 → 0.86, 3 → 0.72) that
- *   scales BOTH the shark bite AND the missile — a conditional/settings-indexed whole-hit
- *   multiplier the port has no primitive for (the un-modelled `scalingMultiplierCondition`
- *   / custom-reaction-multiplier). Since the ratio scales the bite too, the whole
- *   byte_targets>=2 surface (missile feature + the ratio) is deferred together; at
- *   byte_targets=1 (default) the missile is OFF and the ratio is 1.0 → the ported scope
- *   is exact. Source: raw/.../Feature2/Damage/Normal/Mualani.js:11-31 + Mualani.js:212-229.
+ * BYTE TARGETS (`mualani_byte_targets`, ConditionDropdown 1-3): her
+ *   `FeatureDamageNormalMualani.getReactionMultipliers` pushes a settings-keyed whole-hit
+ *   `CMultiplierCustom` (byte_targets 2 → 0.86, 3 → 0.72) scaling BOTH the shark bite AND the
+ *   shark-missile feature it gates (>=2). Ported via the `wholeHitMultiplierFromTable` field
+ *   (table [1, 0.86, 0.72] by mualani_byte_targets) on both the bite and the (now-added)
+ *   missile. At byte_targets=1 (default) the ratio is 1.0 (no push) and the missile is OFF →
+ *   the base build is byte-identical. Source: raw/.../Feature2/Damage/Normal/Mualani.js:11-31
+ *   + Mualani.js:212-229.
  *
  * Reaction features (electrocharged / rupture / shatter) are emitted generically
  * by the engine from element=hydro — not declared here (cf. neuvillette.ts).
@@ -94,6 +92,12 @@ const a4GuideTable: TalentTable = {
   getValue: (level: number): number =>
     level > 0 ? A4_GUIDE_VALUES[Math.min(level, A4_GUIDE_VALUES.length) - 1]! : 0,
 };
+
+// Byte-ratio whole-hit multiplier — her FeatureDamageNormalMualani.getReactionMultipliers pushes a
+// CMultiplierCustom scaling the WHOLE shark hit by 0.86 at mualani_byte_targets>=2 and 0.72 at >=3
+// (bytesCnt>1 branch), i.e. the table [1, 0.86, 0.72] indexed 1-based by mualani_byte_targets
+// (index 1 → ratio 1, exact — no push). raw/.../Feature2/Damage/Normal/Mualani.js:11-31.
+const MUALANI_BYTE_RATIO = [1, 0.86, 0.72] as const;
 
 // ---------------------------------------------------------------------------
 // Features
@@ -156,17 +160,36 @@ const features: readonly Feature[] = [
     element: "hydro",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
-  // --- Skill: Surfshark Wavebreaker (the shark bite) ---
+  // --- Skill: Surfshark Wavebreaker (the shark bite + missile) ---
   // raw: FeatureDamageNormalMualani mualani_shark_bite_dmg —
   //   category:'skill', damageType:'normal' (forced by FeatureDamageNormal),
   //   HP-scaled off s2.p1, tags:['shark_byte'] (the char-level multipliers target it).
-  //   The byte-ratio extra multiplier (byte_targets>=2) is DEFERRED — see header.
+  //   The byte-ratio whole-hit multiplier (byte_targets>=2 → 0.86, >=3 → 0.72) rides the
+  //   wholeHitMultiplierFromTable field (her getReactionMultipliers CMultiplierCustom).
   {
     name: "mualani_shark_bite_dmg",
     category: "skill",
     damageType: "normal",
     element: "hydro",
     tags: ["shark_byte"],
+    wholeHitMultiplierFromTable: { table: MUALANI_BYTE_RATIO, levelSetting: "mualani_byte_targets" },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.mualani_shark_base_dmg") },
+    ],
+  },
+  // raw: FeatureDamageNormalMualani mualani_shark_missile_dmg — the same shark hit fired at EXTRA
+  //   targets, produced ONLY when mualani_byte_targets>=2 (her ConditionBooleanValue produce-gate,
+  //   Mualani.js:212-229). Same base (s2.p1) + tags:['shark_byte'] + the same byte-ratio whole-hit
+  //   multiplier as the bite, so at byte_targets=2 it equals the bite (base × 0.86). Absent at
+  //   byte_targets<2 (default 1) → base build unaffected.
+  {
+    name: "mualani_shark_missile_dmg",
+    category: "skill",
+    damageType: "normal",
+    element: "hydro",
+    tags: ["shark_byte"],
+    condition: { type: "boolean-value", setting: "mualani_byte_targets", cond: "ge", value: 2 },
+    wholeHitMultiplierFromTable: { table: MUALANI_BYTE_RATIO, levelSetting: "mualani_byte_targets" },
     multipliers: [
       { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.mualani_shark_base_dmg") },
     ],

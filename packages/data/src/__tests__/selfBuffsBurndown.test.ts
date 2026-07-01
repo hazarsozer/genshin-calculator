@@ -796,14 +796,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   // Mualani Wave Momentum stacks (mualani_wave_momentum:3 → s2.p2 HP term ×3 + s2.p3 flat HP at >=3, both
   // over the shark_byte tag) + A4 mualani_natlans_greatest_guide:3 (+45% HP on the burst 2nd mult) + C1
   // mualani_the_leisurely_meztli (+66% HP shark_byte mult) + C4 mualani_sharky_eats_puffies (dmg_burst_
-  // mualani+75). char_constellation:6 threads the C1/C4 gates ON, matching the oracle dump at constellation
-  // 6. (byte_targets>=2 + the shark-missile feature stay Tier-B — see mualani.ts header.)
+  // mualani+75) + mualani_byte_targets:3 (→ the byte-ratio 0.72 whole-hit multiplier on the shark bite AND
+  // the shark-missile feature it gates, both via wholeHitMultiplierFromTable). char_constellation:6 threads
+  // the C1/C4 gates ON, matching the oracle dump at constellation 6.
   "mualani-self-buffs": {
     char_constellation: 6,
     mualani_wave_momentum: 3,
     mualani_natlans_greatest_guide: 3,
     mualani_the_leisurely_meztli: true,
     mualani_sharky_eats_puffies: true,
+    mualani_byte_targets: 3,
   },
   // Mavuika Flamestrider STANCE (mavuika_stance swaps the on-foot combo → the pyro Flamestrider moveset)
   // + per-point global multipliers (mavuika_crucible_of_death_and_life + mavuika_points:200 → ATK×points
