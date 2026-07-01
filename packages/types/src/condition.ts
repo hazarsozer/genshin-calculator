@@ -167,6 +167,19 @@ export interface ConditionNumber extends ConditionBase {
    * double-counting. Absent → emits as before (base-inert).
    */
   readonly noStat?: boolean;
+  /**
+   * Per-value damage-bonus distribution: for each `[stat, ratio]` entry, the clamped slider
+   * value × ratio is added under `stat`, ON TOP of the base `stat||name` emit, and ONLY when
+   * the value is > 0. Ports the `ConditionNumberCitlali.getStats` override
+   * (raw/genshin_calc_pub/src/js/classes/Condition/Number/Citlali.js:4-19):
+   *   `if (value > 0) { stats.add('dmg_all', value*selfBonus);
+   *                     stats.add('dmg_pyro'|'dmg_hydro', value*otherBonus) }`.
+   * The single `.stat` form writes the value to ONE key at an implicit ratio 1; this writes it
+   * to MANY keys, each at its own ratio (e.g. Citlali C6 `citlali_points` →
+   * `{ dmg_all: 2.5, dmg_pyro: 1.5, dmg_hydro: 1.5 }`). Keys are assumed disjoint from `name`
+   * and `stats` (true for the sole user). Absent → no per-value bonus (base-inert).
+   */
+  readonly bonusPerValue?: Readonly<Record<string, number>>;
 }
 
 /**

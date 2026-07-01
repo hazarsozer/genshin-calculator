@@ -242,11 +242,22 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
       const clamped = max !== undefined
         ? Math.min(max, Math.max(min, rawNum))
         : Math.max(min, rawNum);
+      // Per-value damage-bonus distribution (her ConditionNumberCitlali.getStats override,
+      // Condition/Number/Citlali.js:4-19): when value > 0, add `clamped × ratio` under each
+      // key, layered ON TOP of the base emit. Absent `bonusPerValue` → nothing added, so the
+      // returns below are byte-identical to the prior behavior (base-inert).
+      const bonus: Record<string, number> = {};
+      if (condition.bonusPerValue !== undefined && clamped > 0) {
+        for (const [key, ratio] of Object.entries(condition.bonusPerValue)) {
+          bonus[key] = clamped * ratio;
+        }
+      }
       // Key the clamped value by `stat || name` (her `params.stat || params.name`).
-      // `noStat` (her params.noStat) suppresses the emit entirely — the slider still
-      // gates + writes its setting, but contributes no bag stat.
-      if (condition.noStat) return base;
-      return { ...base, [condition.stat ?? condition.name]: clamped };
+      // `noStat` (her params.noStat) suppresses THAT emit — the slider still gates + writes
+      // its setting, but contributes no base bag stat. The per-value bonus still applies,
+      // mirroring her subclass getStats running after (a possibly-noStat) super.getStats.
+      if (condition.noStat) return { ...base, ...bonus };
+      return { ...base, [condition.stat ?? condition.name]: clamped, ...bonus };
     }
     case "custom-buffs":
       // The universal manual-buff escape-hatch: strip the `custom_buffs.` prefix from each
