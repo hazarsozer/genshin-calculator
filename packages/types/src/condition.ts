@@ -180,6 +180,20 @@ export interface ConditionNumber extends ConditionBase {
    * and `stats` (true for the sole user). Absent → no per-value bonus (base-inert).
    */
   readonly bonusPerValue?: Readonly<Record<string, number>>;
+  /**
+   * Constellation-gated increase to the clamp `max`. When `ctx.char_constellation >=
+   * constellation`, the effective upper clamp becomes `max + bonus` (requires `max` set).
+   * Ports her ConditionNumberIfa.getMaxValue override
+   * (raw/genshin_calc_pub/src/js/classes/Condition/Number/Ifa.js:4-12):
+   *   `let value = super.getMaxValue(settings);
+   *    if (settings.char_constellation >= 2) value += this.params.c2bonus;`
+   * — Ifa's "Field Medic's Vision" slider cap rises 150 → 200 at C2. Absent → the clamp uses
+   * `max` unchanged (base-inert; sole user is Ifa).
+   */
+  readonly maxBonusFromConstellation?: {
+    readonly constellation: number;
+    readonly bonus: number;
+  };
 }
 
 /**

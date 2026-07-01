@@ -246,7 +246,18 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
       const raw = ctx[condition.name];
       const rawNum = typeof raw === "number" ? raw : 0;
       const min = condition.min ?? 0;
-      const max = condition.max;
+      // Effective upper clamp. Her getMaxValue is normally `params.max`, but a subclass may
+      // raise it — ConditionNumberIfa.getMaxValue adds `c2bonus` at char_constellation >= 2
+      // (Ifa's cap 150 → 200). `maxBonusFromConstellation` ports that: absent → `max` is used
+      // unchanged (base-inert). Applies only when a base `max` exists (matches her super call).
+      let max = condition.max;
+      if (max !== undefined && condition.maxBonusFromConstellation !== undefined) {
+        const consInCtx = ctx["char_constellation"];
+        const consLevel = typeof consInCtx === "number" ? consInCtx : 0;
+        if (consLevel >= condition.maxBonusFromConstellation.constellation) {
+          max += condition.maxBonusFromConstellation.bonus;
+        }
+      }
       const clamped = max !== undefined
         ? Math.min(max, Math.max(min, rawNum))
         : Math.max(min, rawNum);
