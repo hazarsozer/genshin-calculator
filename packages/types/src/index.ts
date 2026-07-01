@@ -112,6 +112,7 @@ export type {
   ConditionBooleanEnemyType,
   ConditionResonance,
   ConditionPartyElements,
+  ConditionElementsCount,
   ConditionAnd,
   ConditionOr,
   ConditionStaticLevel,

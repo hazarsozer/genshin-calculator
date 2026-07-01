@@ -39,6 +39,7 @@ import type {
   ConditionBooleanEnemyType,
   ConditionBooleanCharElement,
   ConditionDropdownElement,
+  ConditionElementsCount,
   ConditionAnd,
   ConditionOr,
 } from "@genshin/types";
@@ -772,5 +773,76 @@ describe("Noblesse 4pc ATK gate (self-set OR team)", () => {
 
   it("teammate has it (set_other) → active even with no self pieces", () => {
     expect(evaluate(gate, { "set_other.noblesse_oblige_4": true })).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 13. ConditionElementsCount (Gorou General's Glory geo-count tiers)
+//
+//   Counts `element` across the four resonance slots (char_element +
+//   resonance_element_1/2/3); active iff that count >= `count`. Base-inert:
+//   a solo build only ever sets char_element, so any count >= 2 gate is
+//   inactive by construction. Source: .../Condition/ElementsCount.js
+// ---------------------------------------------------------------------------
+
+describe("ConditionElementsCount", () => {
+  it("is inactive with only char_element set (base-inert, solo)", () => {
+    const c: ConditionElementsCount = { type: "elements-count", element: "geo", count: 2 };
+    expect(evaluate(c, { char_element: "geo" })).toBe(false);
+  });
+
+  it("is inactive when the resonance slot holds a different element", () => {
+    const c: ConditionElementsCount = { type: "elements-count", element: "geo", count: 2 };
+    expect(evaluate(c, { char_element: "geo", resonance_element_1: "pyro" })).toBe(false);
+  });
+
+  it("is active once the count threshold is met", () => {
+    const c: ConditionElementsCount = { type: "elements-count", element: "geo", count: 2 };
+    expect(evaluate(c, { char_element: "geo", resonance_element_1: "geo" })).toBe(true);
+  });
+
+  it("count:3 requires char_element plus two matching resonance slots", () => {
+    const c: ConditionElementsCount = { type: "elements-count", element: "geo", count: 3 };
+    expect(evaluate(c, { char_element: "geo", resonance_element_1: "geo" })).toBe(false);
+    expect(
+      evaluate(c, { char_element: "geo", resonance_element_1: "geo", resonance_element_2: "geo" })
+    ).toBe(true);
+  });
+
+  it("respects a gating condition", () => {
+    const gate: ConditionBoolean = { type: "boolean", name: "gate" };
+    const c: ConditionElementsCount = {
+      type: "elements-count",
+      element: "geo",
+      count: 2,
+      condition: gate,
+    };
+    const ctx: EvalContext = { char_element: "geo", resonance_element_1: "geo" };
+    expect(evaluate(c, ctx)).toBe(false);
+    expect(evaluate(c, { ...ctx, gate: true })).toBe(true);
+  });
+
+  it("invert: flips the result", () => {
+    const c: ConditionElementsCount = {
+      type: "elements-count",
+      element: "geo",
+      count: 2,
+      invert: true,
+    };
+    expect(evaluate(c, { char_element: "geo", resonance_element_1: "geo" })).toBe(false);
+    expect(evaluate(c, { char_element: "geo" })).toBe(true);
+  });
+
+  it("conditionStats: returns the stats bag only when active", () => {
+    const c: ConditionElementsCount = {
+      type: "elements-count",
+      element: "geo",
+      count: 2,
+      stats: { crit_dmg_geo: 10 },
+    };
+    expect(conditionStats(c, { char_element: "geo" })).toEqual({});
+    expect(conditionStats(c, { char_element: "geo", resonance_element_1: "geo" })).toEqual({
+      crit_dmg_geo: 10,
+    });
   });
 });

@@ -440,6 +440,20 @@ export interface ConditionPartyElements extends ConditionBase {
 }
 
 /**
+ * Element-count gate. Counts params.element across the resonance slots
+ * (char_element + resonance_element_1/2/3) and is active iff that count >= `count`.
+ * Ports ConditionElementsCount.isActive (getType()='static'). May carry stats when used
+ * stat-bearing (like ConditionStatic); Gorou uses it purely as a gate inside `and`.
+ * Inert with no party: only char_element present → count 1 < 2 → inactive.
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/ElementsCount.js
+ */
+export interface ConditionElementsCount extends ConditionBase {
+  readonly type: "elements-count";
+  readonly element: string;
+  readonly count: number;
+}
+
+/**
  * Logical AND of all items — all must evaluate to true.
  * Vacuous truth: empty items list → true.
  */
@@ -584,6 +598,7 @@ export type Condition =
   | ConditionBooleanEnemyType
   | ConditionResonance
   | ConditionPartyElements
+  | ConditionElementsCount
   | ConditionAnd
   | ConditionOr
   | ConditionStaticLevel

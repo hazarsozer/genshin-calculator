@@ -40,6 +40,7 @@ import type {
   ConditionBooleanEnemyType,
   ConditionResonance,
   ConditionPartyElements,
+  ConditionElementsCount,
   ConditionStaticLevel,
   ConditionBooleanCharElement,
   ConditionDropdownElement,
@@ -104,6 +105,8 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return evaluateResonance(condition, ctx);
     case "party-elements":
       return evaluatePartyElements(condition, ctx);
+    case "elements-count":
+      return evaluateElementsCount(condition, ctx);
     case "and":
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
@@ -214,6 +217,7 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "boolean":
     case "static":
     case "constellation":
+    case "elements-count":
       // Plain stat-bearing variants — `cond.stats` as-is.
       return toNumberBag(condition.stats);
     case "static-level":
@@ -677,6 +681,21 @@ function evaluatePartyElements(condition: ConditionPartyElements, ctx: EvalConte
   }
 
   const active = hasA && hasB && !hasOther;
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionElementsCount.isActive — counts `element` across the four resonance slots
+ * (char_element + resonance_element_1/2/3) and is active iff count >= `count`, after the
+ * optional gate. `invert` flips. Source: .../Condition/ElementsCount.js
+ */
+function evaluateElementsCount(condition: ConditionElementsCount, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  let n = 0;
+  for (const slot of RESONANCE_SLOTS) {
+    if (ctx[slot] === condition.element) n += 1;
+  }
+  const active = n >= condition.count;
   return condition.invert ? !active : active;
 }
 
