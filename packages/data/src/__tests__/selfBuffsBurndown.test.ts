@@ -803,6 +803,23 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     mualani_the_leisurely_meztli: true,
     mualani_sharky_eats_puffies: true,
   },
+  // Mavuika Flamestrider STANCE (mavuika_stance swaps the on-foot combo → the pyro Flamestrider moveset)
+  // + per-point global multipliers (mavuika_crucible_of_death_and_life + mavuika_points:200 → ATK×points
+  // on flamestrider normals/charged + the burst + the C2 flat 60/90/120% terms) + A1 mavuika_gift_of_
+  // flaming_flowers (+30% ATK) + A4 mavuika_kiongozi:40 (dmg_all+40) + C1 (+40% ATK) + C4 dmg_all+10
+  // (kiongozi-gated) + C2/C6 enemy_def_reduce−20. char_constellation:6 threads every gate ON, matching the
+  // oracle dump at constellation 6.
+  "mavuika-self-buffs": {
+    char_constellation: 6,
+    mavuika_stance: true,
+    mavuika_crucible_of_death_and_life: true,
+    mavuika_points: 200,
+    mavuika_kiongozi: 40,
+    mavuika_gift_of_flaming_flowers: true,
+    mavuika_the_night_lords_explication: true,
+    mavuika_the_ashen_price: true,
+    mavuika_humanitys_name_unfettered: true,
+  },
   // Ifa A4 mastery+80 (ifa_mutual_aid_agreement, ascension boolean) + C4 mastery+100
   // (ifa_decayed_vessels_permutation, ≥C4). Plain EM lifts her swirl/EC reaction outputs.
   // char_constellation:4 threads the C4 gate ON, matching the oracle dump at constellation 4.
