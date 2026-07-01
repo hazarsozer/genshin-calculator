@@ -151,14 +151,23 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.lyney_prop_arrow_dmg") }],
   },
-  // raw: FeatureDamageCharged lyney_pyrotechnic_strike_dmg (pyro). The A1 +80% second
-  // multiplier is ConditionBoolean-gated (off in fixed build) → base term only. Lyney.js:284-301
+  // raw: FeatureDamageCharged lyney_pyrotechnic_strike_dmg (pyro). The A1 "Perilous Performance"
+  // +80% ATK second multiplier is ConditionBoolean-gated (off in fixed build). Lyney.js:284-301.
+  // (The ascension-1 gate is dropped — always true at ascension 6.)
   {
     name: "lyney_pyrotechnic_strike_dmg",
     category: "attack",
     damageType: "charged",
     element: "pyro",
-    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.lyney_pyrotechnic_strike_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_attack", values: talents.get("attack.lyney_pyrotechnic_strike_dmg") },
+      {
+        leveling: "",
+        values: { getValue: (): number => 80 },
+        source: "ascension1",
+        condition: { type: "boolean", name: "lyney_perilous_performance" },
+      },
+    ],
   },
   // raw: FeatureDamageCharged spiritbreath_thorn_dmg (pyro, cannotReact — irrelevant for
   // the non-reacted triple). Lyney.js:315-325
@@ -294,6 +303,33 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_attack_bonus: 3 } },
   // C5: +3 levels to Miracle Parade (burst). Raw cons[4] settings char_skill_burst_bonus:3.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // A4 "Conclusive Ovation" — +dmg_all by party_elements_same (60/80/100 at 0/1/2+ same-element
+  // members, fromZero → solo=level 1 → 60), gated on the enemy having a pyro status. Data-only
+  // static-level (her ConditionStaticLevel). The ascension-4 gate is dropped (always true at A6).
+  // raw Lyney.js:400-416.
+  {
+    type: "static-level",
+    levelSetting: "party_elements_same",
+    fromZero: true,
+    levelStats: { dmg_all: [60, 80, 100] },
+    condition: { type: "enemy-status", statuses: ["pyro"] },
+  },
+  // C2 "Loquacious Cajoling" — +20% CRIT DMG per stack (0-3), gated C2. raw Lyney.js:428-439.
+  {
+    type: "stacks",
+    name: "lyney_locquacious_cajoling",
+    maxStacks: 3,
+    stats: { crit_dmg: 20 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  // C4 "Well-Versed, Well-Rehearsed" (SELF) — enemy Pyro RES -20%, gated C4 + the toggle.
+  // raw Lyney.js:451-461 (the SELF mirror of party.lyney_well_versed_well_rehearsed).
+  {
+    type: "boolean",
+    name: "lyney_well_versed_well_rehearsed",
+    stats: { enemy_res_pyro: -20 },
+    condition: { type: "constellation", constellation: 4 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

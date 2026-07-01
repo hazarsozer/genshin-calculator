@@ -833,6 +833,18 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     skirk_reason_beyond_reason: 3,
     skirk_into_the_abyss: true,
   },
+  // Lyney residual self buffs — A1 lyney_perilous_performance (+80% ATK pyrotechnic strike) + A4 Conclusive
+  // Ovation (common.enemy_status:'pyro' → +dmg_all by party_elements_same, solo=60%) + C2 lyney_locquacious_
+  // cajoling:3 (+60% CRIT DMG) + C4 lyney_well_versed_well_rehearsed (enemy Pyro RES −20) + lyney_surplus_
+  // stacks:5 (skill 2nd term + heal). char_constellation:6 threads the C2/C4 gates ON, matching the oracle dump.
+  "lyney-self-buffs": {
+    char_constellation: 6,
+    lyney_perilous_performance: true,
+    lyney_locquacious_cajoling: 3,
+    lyney_well_versed_well_rehearsed: true,
+    lyney_surplus_stacks: 5,
+    "common.enemy_status": "pyro",
+  },
   // Ifa A4 mastery+80 (ifa_mutual_aid_agreement, ascension boolean) + C4 mastery+100
   // (ifa_decayed_vessels_permutation, ≥C4). Plain EM lifts her swirl/EC reaction outputs.
   // char_constellation:4 threads the C4 gate ON, matching the oracle dump at constellation 4.
