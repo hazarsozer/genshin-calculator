@@ -20,18 +20,37 @@
  *   Gate-skirk party fixture: stance ON → only this set fires.
  *
  * Burst (Havoc: Ruin, cryo, always emitted):
- *   skirk_slash_dmg (5-hit per raw, engine reports per-slash), skirk_final_dmg.
- *   FeatureMultiplierSkirkBurst scaling → 1 at 0 skirk_return_to_oblivion stacks.
+ *   skirk_slash_dmg (5-hit per raw, engine reports per-slash), skirk_final_dmg. Each carries a
+ *   SECOND multiplier — the Serpent's Subtlety per-stack ATK bonus (skirk_burst_bonus ×
+ *   skirk_serpents_subtlety, her stacksLeveling → stacksFactor), gated on the subtlety toggle.
+ *   Her FeatureMultiplierSkirkBurst also multiplies BOTH burst terms by the skirk_return_to_oblivion
+ *   partyBonus table — DEFERRED (see below); at 0 return-to-oblivion it is ×1.
+ *
+ * REASON BEYOND REASON (`skirk_reason_beyond_reason`, 0-3) + HAVOC EXTINCTION
+ *   (`skirk_havoc_extinction`): four ConditionLevels add dmg_normal_skirk from the
+ *   skirk_absorption_N_bonus table (indexed by char_skill_burst level) when havoc_extinction is on and
+ *   reason_beyond_reason == N — modelled as talentBonus CharPostEffects (Nahida precedent). Lifts the
+ *   stance normals + the C6 normal-coordinated feature (damageBonuses:['dmg_normal_skirk']).
+ *
+ * SERPENT'S SUBTLETY (`skirk_serpents_subtlety`, 0-12; +10 max at C2): the burst 2nd term above.
+ *
+ * C2 "Into the Abyss" (`skirk_into_the_abyss`): +70% ATK, gated stance + C2.
+ * C4 "Fractured Flow": +10/20/40% ATK by skirk_return_to_oblivion (static-level), gated C4 + the toggle.
+ *
+ * DEFERRED (needs a new core surface — S2-α): the skirk_return_to_oblivion partyBonus
+ *   scalingMultiplier — her FeatureMultiplierSkirkNormal (ValueTable[1.1,1.2,1.7]) and
+ *   FeatureMultiplierSkirkBurst (ValueTable[1.05,1.15,1.6]) multiply every stance-normal (SkirkNormal)
+ *   and burst (SkirkBurst) term by a `skirk_return_to_oblivion`-INDEXED scalingMultiplier — a
+ *   settings-keyed scalingMultiplier the port's constant `scalingMultiplier` can't express. At
+ *   return_to_oblivion=0 the factor is ×1 so the ported scope is exact; at >0 ONLY the SkirkNormal
+ *   stance normals + the two burst terms diverge (the plain charged/plunge + C4 atk% stay correct).
+ *   Source: raw/.../classes/Feature2/Multiplier/SkirkNormal.js + SkirkBurst.js (getScalingMultiplier).
  *
  * A1 "skirk_mutual_weapons_mentorship": gated by party-elements(cryo+hydro).
  *   Contributes char_skill_elemental_bonus_2:+1 (skill talent level +1 for stance
  *   normals) + char_skill_elemental_bonus_party:+1 (party buff).
  *   Raw Skirk.js:597-607: ConditionBoolean(skirk_mutual_weapons_mentorship) gated
  *   by ConditionBooleanSkirkParty (cryo+hydro-ONLY).
- *
- * No other always-on passive stat bonuses: A1 (skirk_reason_beyond_reason) and
- * A4 (skirk_return_to_oblivion) are ConditionStacks (0 stacks). Cryo-DMG ascension
- * secondary and crit_dmg ascension secondary already in statTable. C0 build.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Skirk.js
@@ -40,7 +59,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Skirk)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Skirk as SkirkStatTable } from "../generated/charTables.js";
 import { Skirk as SkirkTalents } from "../generated/charTalentTables.js";
 
@@ -79,6 +98,13 @@ const talents: TalentResolver = {
     if (talent === "burst") {
       if (name === "skirk_slash_dmg") return SkirkTalents.s3.p1;
       if (name === "skirk_final_dmg") return SkirkTalents.s3.p2;
+      // Serpent's Subtlety per-stack burst bonus (s3.p3) + the 4 reason_beyond_reason
+      // absorption dmg_normal_skirk tables (s3.p4-p7, indexed by char_skill_burst level).
+      if (name === "skirk_burst_bonus") return SkirkTalents.s3.p3;
+      if (name === "skirk_absorption_0_bonus") return SkirkTalents.s3.p4;
+      if (name === "skirk_absorption_1_bonus") return SkirkTalents.s3.p5;
+      if (name === "skirk_absorption_2_bonus") return SkirkTalents.s3.p6;
+      if (name === "skirk_absorption_3_bonus") return SkirkTalents.s3.p7;
     }
     throw new Error(`skirk talents: unknown path '${path}'`);
   },
@@ -324,13 +350,36 @@ const features: readonly Feature[] = [
     name: "skirk_slash_dmg",
     category: "burst",
     element: "cryo",
-    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.skirk_slash_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.skirk_slash_dmg") },
+      // Serpent's Subtlety per-stack ATK bonus (skirk_burst_bonus × skirk_serpents_subtlety), gated on
+      // the subtlety toggle (>0). Her FeatureMultiplierSkirkBurst also multiplies by the
+      // skirk_return_to_oblivion partyBonus table — DEFERRED (S2-α); at 0 return-to-oblivion it is ×1.
+      {
+        scaling: "atk",
+        leveling: "char_skill_burst",
+        values: talents.get("burst.skirk_burst_bonus"),
+        stacksFactor: { setting: "skirk_serpents_subtlety", maxStacks: 22 },
+        source: "ascension1",
+        condition: { type: "boolean", name: "skirk_serpents_subtlety" },
+      },
+    ],
   },
   {
     name: "skirk_final_dmg",
     category: "burst",
     element: "cryo",
-    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.skirk_final_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.skirk_final_dmg") },
+      {
+        scaling: "atk",
+        leveling: "char_skill_burst",
+        values: talents.get("burst.skirk_burst_bonus"),
+        stacksFactor: { setting: "skirk_serpents_subtlety", maxStacks: 22 },
+        source: "ascension1",
+        condition: { type: "boolean", name: "skirk_serpents_subtlety" },
+      },
+    ],
   },
 
   // =========================================================================
@@ -429,8 +478,57 @@ const constellationConditions: readonly Condition[] = [
   },
   // C3: +3 levels to Havoc: Ruin (elemental burst). Raw cons[2].
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C2 "Into the Abyss" — +70% ATK, gated Seven-Phase-Flash stance AND C2. raw Skirk.js:667-676.
+  {
+    type: "boolean",
+    name: "skirk_into_the_abyss",
+    stats: { atk_percent: 70 },
+    condition: { type: "and", items: [stanceCond, { type: "constellation", constellation: 2 }] },
+  },
+  // C4 "Fractured Flow" — +10/20/40% ATK by skirk_return_to_oblivion (1/2/3), gated C4 + the stacks
+  // toggle. Data-only static-level (her ConditionLevels). raw Skirk.js:680-691. NOTE: at
+  // return_to_oblivion>0 the SkirkNormal/SkirkBurst partyBonus scalingMultiplier is DEFERRED (S2-α), so
+  // this atk% is exact only on the non-scalingMultiplier features until S2-α lands.
+  {
+    type: "static-level",
+    levelSetting: "skirk_return_to_oblivion",
+    levelStats: { atk_percent: [10, 20, 40] },
+    condition: {
+      type: "and",
+      items: [{ type: "constellation", constellation: 4 }, { type: "boolean", name: "skirk_return_to_oblivion" }],
+    },
+  },
   // C5: +3 levels to Warp (elemental skill). Raw cons[4].
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
+// Reason Beyond Reason absorption bonuses (A1/A4) — her 4 ConditionLevels contribute
+// dmg_normal_skirk from the skirk_absorption_N_bonus table (indexed by char_skill_burst level),
+// gated on `skirk_havoc_extinction` AND `skirk_reason_beyond_reason == N` (N = 0..3). Modelled as
+// talentBonus CharPostEffects (Nahida ConditionLevels precedent). OFF (havoc_extinction unset) → inert.
+// raw Skirk.js:608-647. (The stance normals + C6 normal-coordinated feature carry damageBonuses:
+// ['dmg_normal_skirk'], so this lifts them.)
+// ---------------------------------------------------------------------------
+const absorptionPost = (n: number): CharPostEffect => ({
+  priority: 3,
+  fromStat: "atk", // ignored when talentBonus is set
+  toStat: "dmg_normal_skirk",
+  talentBonus: {
+    table: talents.get(`burst.skirk_absorption_${n}_bonus`),
+    levelSetting: "char_skill_burst",
+  },
+  conditions: [
+    { type: "boolean", name: "skirk_havoc_extinction" },
+    { type: "boolean-value", setting: "skirk_reason_beyond_reason", cond: "eq", value: n },
+  ],
+});
+
+const postEffects: readonly CharPostEffect[] = [
+  absorptionPost(0),
+  absorptionPost(1),
+  absorptionPost(2),
+  absorptionPost(3),
 ];
 
 // ---------------------------------------------------------------------------
@@ -448,6 +546,7 @@ export const skirk: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  postEffects,
   conditions: constellationConditions,
   // partyData — teammate kit buffs (P3.5.2 Bucket A)
   // A4 "Mutual Weapons Mentorship": ConditionBoolean(party.skirk_mutual_weapons_mentorship)

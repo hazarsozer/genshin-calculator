@@ -820,6 +820,19 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     mavuika_the_ashen_price: true,
     mavuika_humanitys_name_unfettered: true,
   },
+  // Skirk Seven-Phase-Flash STANCE (skirk_seven_phase_flash → cryo stance moveset) + Serpent's Subtlety
+  // (skirk_serpents_subtlety:22 → the burst 2nd term via stacksFactor) + Reason Beyond Reason absorption
+  // (skirk_havoc_extinction + skirk_reason_beyond_reason:3 → dmg_normal_skirk on the stance normals) + C2
+  // skirk_into_the_abyss (+70% ATK). skirk_return_to_oblivion=0 so the DEFERRED partyBonus scalingMultiplier
+  // (S2-α) is ×1 — the ported scope is exact. char_constellation:6 threads the C2 gate ON.
+  "skirk-self-buffs": {
+    char_constellation: 6,
+    skirk_seven_phase_flash: true,
+    skirk_serpents_subtlety: 22,
+    skirk_havoc_extinction: true,
+    skirk_reason_beyond_reason: 3,
+    skirk_into_the_abyss: true,
+  },
   // Ifa A4 mastery+80 (ifa_mutual_aid_agreement, ascension boolean) + C4 mastery+100
   // (ifa_decayed_vessels_permutation, ≥C4). Plain EM lifts her swirl/EC reaction outputs.
   // char_constellation:4 threads the C4 gate ON, matching the oracle dump at constellation 4.
