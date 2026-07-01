@@ -816,6 +816,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   "raiden-musou-isshin": {
     baal_musou_isshin: true,
   },
+  // Sethos Twilight Meditation (sethos_twilight_meditation): the ground normals/aimed/Shadow-Piercing
+  // shot are NOT-gated OFF; the ELECTRO CHARGED meditation normals (+ a char-level Dusk Bolt mastery
+  // multiplier over charged) are gated ON. C0 (C2/C4 self buffs are cons-gated, off here).
+  "sethos-twilight-meditation": {
+    sethos_twilight_meditation: true,
+  },
 };
 
 interface ManifestItem {
