@@ -927,6 +927,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   "wriothesley-chilling-penalty": {
     wriothesley_chilling_penalty: true,
   },
+  // Wanderer WINDFAVORED (wanderer_windfavored): normals ×(fushoudan/100), charged ×(toufukai/100),
+  // both keyed by char_skill_elemental, via the gated scalingMultiplierFromTable (raw
+  // Multiplier/Wanderer.js:getTreeBonusMultiplier). C0 (avoids the C1 wind-arrow passive bump).
+  "wanderer-windfavored": {
+    wanderer_windfavored: true,
+  },
 };
 
 interface ManifestItem {
