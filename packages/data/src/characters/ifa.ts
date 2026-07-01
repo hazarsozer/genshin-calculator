@@ -263,10 +263,15 @@ const constellationConditions: readonly Condition[] = [
   // lunarcharged (reactionDmgPost2, Ifa.js:131-141, dmg_reaction_lunarcharged × 0.2) is OUT of
   // scope: Ifa is anemo → she produces no self lunarcharged reaction output to lift (party-buffs
   // only). Deferred to the party-buffs channel.
+  // C2 "Guiding Spirit of Ballistic Prayer" raises the slider cap 150 → 200 (C2Stacks=50) via
+  // her ConditionNumberIfa.getMaxValue (raw Number/Ifa.js:4-12, params.c2bonus=50; Ifa.js:297).
+  // Ported via the base-inert maxBonusFromConstellation: at char_constellation ≥ 2 the clamp max
+  // becomes 200, so vision:200 lifts swirl/EC by +300% (vs +225% capped at 150 below C2).
   {
     type: "number",
     name: "ifa_field_medics_vision",
     max: 150,
+    maxBonusFromConstellation: { constellation: 2, bonus: 50 },
     bonusPerValue: { dmg_reaction_swirl: 1.5, dmg_reaction_electrocharged: 1.5 },
     condition: { type: "boolean", name: "common.nightsoul_blessing_state" },
   },

@@ -40,8 +40,8 @@
     "description": "Skip-class SELF-condition sweep — SELF conditions (res-shred/dmg/etc.) the port SKIPPED because no golden toggles them (the 58k DAMAGE goldens are blind to them; surfaced by tools/oracle/diff-parity.mjs). The port systematically modelled the `party.*` teammate mirror but skipped the SELF version. Each rep bakes the char's SELF toggle via mergeCharSettings (a char-axis setting, infusionItems' diluc_dawn channel) so her engine applies the self condition to EVERY one of the char's own damage features; dump-oracle branches on cfg.partyItems and writes one <slug>.json per rep via engine.computeParty. zhongli-jade-shield: Zhongli's own Jade Shield (raw Zhongli.js:316-331, a C0 ConditionBoolean, NO ascension/cons gate) grants −20 enemy RES to all 7 elements + physical, buffing every Zhongli damage feature. The port modelled party.zhongli_jade_shield (the teammate mirror, Zhongli.js:447-463) but SKIPPED the SELF version → every Zhongli damage triple undershot by the res-shred at zhongli_jade_shield:true. GREEN once the SELF condition is ported into zhongli.ts (conditions[]). selfBuffsBurndown threads the SAME toggle into buildStats + compileCharacter and asserts the buffed triples. To add the next char: one item in selfBuffsItems + one SETTINGS_BY_SLUG row + re-dump (`node tools/oracle/dump-oracle.mjs self-buffs`).",
     "id": "self-buffs"
   },
-  "featureTotal": 2997,
-  "itemCount": 101,
+  "featureTotal": 3033,
+  "itemCount": 102,
   "items": [
     {
       "derived": {
@@ -1030,6 +1030,37 @@
       "weapon": {
         "name": "weapon_name.blackcliff_pole",
         "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 36,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "constellation": 2,
+        "settings": {
+          "char_constellation": 2,
+          "common.nightsoul_blessing_state": true,
+          "ifa_field_medics_vision": 200,
+          "ifa_mutual_aid_agreement": true
+        }
+      },
+      "repKey": "Ifa",
+      "repSlug": "ifa",
+      "resonanceElements": {},
+      "slug": "ifa-c2-vision",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
       }
     },
     {

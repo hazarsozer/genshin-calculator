@@ -863,6 +863,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     "common.nightsoul_blessing_state": true,
     ifa_field_medics_vision: 150,
   },
+  // Ifa C2 cap: vision slider cap rises 150 → 200 at C2 (maxBonusFromConstellation). vision:200 at
+  // constellation 2 → clamped 200 → +300% swirl/EC (vs +225% the base 150 cap would give below C2).
+  "ifa-c2-vision": {
+    char_constellation: 2,
+    ifa_mutual_aid_agreement: true,
+    "common.nightsoul_blessing_state": true,
+    ifa_field_medics_vision: 200,
+  },
   // Mizuki A4 mastery+100 (mizuki_thoughts_by_day_bring_dreams_by_night, ascension boolean) lifting
   // every Mizuki reaction output. Dumped at constellation 0 (the A4 toggle is the only gate).
   "mizuki-self-buffs": {
