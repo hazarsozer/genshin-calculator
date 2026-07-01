@@ -605,7 +605,13 @@ function toPostEffect(effect: CharPostEffect): PostEffect {
       const fromFactored = effect.fromStatFactorSetting !== undefined
         ? fromBase * ((settings[effect.fromStatFactorSetting] as number | undefined ?? 0) / 100)
         : fromBase;
-      const fromValue = effect.offset !== undefined ? Math.max(0, fromFactored - effect.offset) : fromFactored;
+      // Absolute cap on the base itself, BEFORE offset/ratio (her PostEffectStats.maxBase —
+      // the mutually-exclusive sibling of `offset`/exceed). Absent → unchanged (base-inert).
+      // Source: raw/.../classes/PostEffect/Stats.js:67-70.
+      const fromCapped = effect.fromStatCapValue !== undefined
+        ? Math.min(fromFactored, effect.fromStatCapValue)
+        : fromFactored;
+      const fromValue = effect.offset !== undefined ? Math.max(0, fromCapped - effect.offset) : fromCapped;
       let bonus = fromValue * ratio;
       if (effect.cap !== undefined) {
         const capBase = effect.capUsesBase

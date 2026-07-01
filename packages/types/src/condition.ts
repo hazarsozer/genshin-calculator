@@ -181,19 +181,22 @@ export interface ConditionNumber extends ConditionBase {
    */
   readonly bonusPerValue?: Readonly<Record<string, number>>;
   /**
-   * Constellation-gated increase to the clamp `max`. When `ctx.char_constellation >=
-   * constellation`, the effective upper clamp becomes `max + bonus` (requires `max` set).
-   * Ports her ConditionNumberIfa.getMaxValue override
+   * Constellation-gated increases to the clamp `max`, ADDITIVE across every entry whose
+   * threshold is met (requires `max` set): `effectiveMax = max + Σ{bonus : char_constellation
+   * >= constellation}`. Ports her ConditionNumberIfa.getMaxValue override
    * (raw/genshin_calc_pub/src/js/classes/Condition/Number/Ifa.js:4-12):
    *   `let value = super.getMaxValue(settings);
    *    if (settings.char_constellation >= 2) value += this.params.c2bonus;`
-   * — Ifa's "Field Medic's Vision" slider cap rises 150 → 200 at C2. Absent → the clamp uses
-   * `max` unchanged (base-inert; sole user is Ifa).
+   * — Ifa's "Field Medic's Vision" slider cap rises 150 → 200 at C2 (single-entry array).
+   * Generalized (array, not a single object) for ConditionNumberFurina.getMaxValue
+   * (raw/.../Condition/Number/Furina.js:14-26), whose fanfare cap stacks TWO independent
+   * bonuses — 300 → 400 at C1 (`c1bonus`) → 800 at C2 (`c2bonus`), both additive when their
+   * constellation is met. Absent → the clamp uses `max` unchanged (base-inert).
    */
-  readonly maxBonusFromConstellation?: {
+  readonly maxBonusFromConstellation?: readonly {
     readonly constellation: number;
     readonly bonus: number;
-  };
+  }[];
 }
 
 /**
