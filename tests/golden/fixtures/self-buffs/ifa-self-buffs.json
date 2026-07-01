@@ -110,22 +110,22 @@
       "normal": 2662.7445109726846
     },
     "other.ifa_reaction_bonus": {
-      "average": 0,
+      "average": 225,
       "category": "other",
-      "crit": 0,
+      "crit": 225,
       "damageType": "",
       "format": "percent",
       "isReacted": false,
-      "normal": 0
+      "normal": 225
     },
     "other.ifa_reaction_bonus_2": {
-      "average": 0,
+      "average": 30,
       "category": "other",
-      "crit": 0,
+      "crit": 30,
       "damageType": "",
       "format": "percent",
       "isReacted": false,
-      "normal": 0
+      "normal": 30
     },
     "reaction.burgeon": {
       "average": 12782.02893185328,
@@ -146,13 +146,13 @@
       "normal": 1065.1690776544401
     },
     "reaction.electrocharged": {
-      "average": 8521.352621235521,
+      "average": 14381.109296235521,
       "category": "reaction",
-      "crit": 8521.352621235521,
+      "crit": 14381.109296235521,
       "damageType": "reaction",
       "format": "",
       "isReacted": false,
-      "normal": 8521.352621235521
+      "normal": 14381.109296235521
     },
     "reaction.hyperbloom": {
       "average": 12782.02893185328,
@@ -200,40 +200,40 @@
       "normal": 6391.01446592664
     },
     "reaction.swirl_cryo": {
-      "average": 2556.405786370656,
+      "average": 4314.332788870656,
       "category": "reaction",
-      "crit": 2556.405786370656,
+      "crit": 4314.332788870656,
       "damageType": "reaction",
       "format": "",
       "isReacted": false,
-      "normal": 2556.405786370656
+      "normal": 4314.332788870656
     },
     "reaction.swirl_electro": {
-      "average": 2556.405786370656,
+      "average": 4314.332788870656,
       "category": "reaction",
-      "crit": 2556.405786370656,
+      "crit": 4314.332788870656,
       "damageType": "reaction",
       "format": "",
       "isReacted": false,
-      "normal": 2556.405786370656
+      "normal": 4314.332788870656
     },
     "reaction.swirl_hydro": {
-      "average": 2556.405786370656,
+      "average": 4314.332788870656,
       "category": "reaction",
-      "crit": 2556.405786370656,
+      "crit": 4314.332788870656,
       "damageType": "reaction",
       "format": "",
       "isReacted": false,
-      "normal": 2556.405786370656
+      "normal": 4314.332788870656
     },
     "reaction.swirl_pyro": {
-      "average": 2556.405786370656,
+      "average": 4314.332788870656,
       "category": "reaction",
-      "crit": 2556.405786370656,
+      "crit": 4314.332788870656,
       "damageType": "reaction",
       "format": "",
       "isReacted": false,
-      "normal": 2556.405786370656
+      "normal": 4314.332788870656
     },
     "skill.ifa_tonicshot_dmg": {
       "average": 3485.4521310677183,

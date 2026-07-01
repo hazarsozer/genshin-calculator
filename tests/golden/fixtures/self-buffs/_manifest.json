@@ -40,7 +40,7 @@
     "description": "Skip-class SELF-condition sweep — SELF conditions (res-shred/dmg/etc.) the port SKIPPED because no golden toggles them (the 58k DAMAGE goldens are blind to them; surfaced by tools/oracle/diff-parity.mjs). The port systematically modelled the `party.*` teammate mirror but skipped the SELF version. Each rep bakes the char's SELF toggle via mergeCharSettings (a char-axis setting, infusionItems' diluc_dawn channel) so her engine applies the self condition to EVERY one of the char's own damage features; dump-oracle branches on cfg.partyItems and writes one <slug>.json per rep via engine.computeParty. zhongli-jade-shield: Zhongli's own Jade Shield (raw Zhongli.js:316-331, a C0 ConditionBoolean, NO ascension/cons gate) grants −20 enemy RES to all 7 elements + physical, buffing every Zhongli damage feature. The port modelled party.zhongli_jade_shield (the teammate mirror, Zhongli.js:447-463) but SKIPPED the SELF version → every Zhongli damage triple undershot by the res-shred at zhongli_jade_shield:true. GREEN once the SELF condition is ported into zhongli.ts (conditions[]). selfBuffsBurndown threads the SAME toggle into buildStats + compileCharacter and asserts the buffed triples. To add the next char: one item in selfBuffsItems + one SETTINGS_BY_SLUG row + re-dump (`node tools/oracle/dump-oracle.mjs self-buffs`).",
     "id": "self-buffs"
   },
-  "featureTotal": 2996,
+  "featureTotal": 2997,
   "itemCount": 101,
   "items": [
     {
@@ -1048,7 +1048,9 @@
         "constellation": 4,
         "settings": {
           "char_constellation": 4,
+          "common.nightsoul_blessing_state": true,
           "ifa_decayed_vessels_permutation": true,
+          "ifa_field_medics_vision": 150,
           "ifa_mutual_aid_agreement": true
         }
       },
@@ -1712,13 +1714,14 @@
         "level": 90,
         "res": 10
       },
-      "featureCount": 20,
+      "featureCount": 21,
       "kind": "party",
       "origin": "natlan",
       "party": {
         "constellation": 6,
         "settings": {
           "char_constellation": 6,
+          "mualani_byte_targets": 3,
           "mualani_natlans_greatest_guide": 3,
           "mualani_sharky_eats_puffies": true,
           "mualani_the_leisurely_meztli": true,
@@ -2227,6 +2230,7 @@
           "skirk_havoc_extinction": true,
           "skirk_into_the_abyss": true,
           "skirk_reason_beyond_reason": 3,
+          "skirk_return_to_oblivion": 3,
           "skirk_serpents_subtlety": 22,
           "skirk_seven_phase_flash": true
         }

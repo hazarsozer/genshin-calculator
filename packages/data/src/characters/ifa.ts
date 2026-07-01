@@ -250,6 +250,26 @@ const constellationConditions: readonly Condition[] = [
     stats: { mastery: 100 },
     condition: { type: "constellation", constellation: 4 },
   },
+  // A1 "Field Medic's Vision" reaction-DMG% self-buff (raw Ifa.js:110-129,291-300).
+  // ifa_field_medics_vision = ConditionNumberIfa slider, max 150 (A1Stacks). reactionDmgPost
+  // (Ifa.js:118-129) emits dmg_reaction_swirl/_electrocharged += value × 1.5 (A1ReactionDmg),
+  // gated and[common.nightsoul_blessing_state, ifa_field_medics_vision(>0), ascension 1].
+  // Ported via bonusPerValue (clamped value × 1.5 per key, ÷100 at emit — Citlali C6 pattern):
+  //   - the `>0` half of the gate is implicit in bonusPerValue (fires only when clamped > 0);
+  //   - ascension 1 auto-true at level 90 → dropped, exactly as the A4 boolean above drops its
+  //     ascension-4 gate (level-90 convention);
+  //   - the name-keyed value emit (ifa_field_medics_vision: clamped) feeds the ifa_reaction_bonus
+  //     readouts above (they scale on this stat × 1.5/0.2 → 225% / 30% at value 150).
+  // lunarcharged (reactionDmgPost2, Ifa.js:131-141, dmg_reaction_lunarcharged × 0.2) is OUT of
+  // scope: Ifa is anemo → she produces no self lunarcharged reaction output to lift (party-buffs
+  // only). Deferred to the party-buffs channel.
+  {
+    type: "number",
+    name: "ifa_field_medics_vision",
+    max: 150,
+    bonusPerValue: { dmg_reaction_swirl: 1.5, dmg_reaction_electrocharged: 1.5 },
+    condition: { type: "boolean", name: "common.nightsoul_blessing_state" },
+  },
 ];
 
 // ---------------------------------------------------------------------------
