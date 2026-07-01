@@ -900,6 +900,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     ayaka_eikyo_ryuuhan: true,
     ayaka_ai_suigetsu: true,
   },
+  // Freminet frost ×2 (freminet_stalking_mode): his frost DMG's scalingMultiplier:2 gated by the
+  // burst-stance toggle (raw Freminet.js:268-274, a C0 ConditionBoolean). Ported via the new
+  // scalingMultiplierCondition field → the gate-ON ×2 lifts the frost triple. No cons gate → C0.
+  "freminet-stalking-mode": {
+    freminet_stalking_mode: true,
+  },
 };
 
 interface ManifestItem {

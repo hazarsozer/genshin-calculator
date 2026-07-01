@@ -23,8 +23,9 @@
  *   Both are therefore left off entirely; the pressure hits are plain skill hits.
  *
  * FROST DMG: raw gives frost a conditional ×2 multiplier gated by the burst stance
- * (`freminet_stalking_mode`, a ConditionBoolean). That stance is OFF in the fixed
- * fixture build, so frost is the plain base cryo skill hit (talent s2.p3).
+ * (`freminet_stalking_mode`, a ConditionBoolean). Modelled via scalingMultiplierCondition
+ * (S2-α): OFF in the fixed fixture build → factor 1 (the plain base cryo skill hit, talent
+ * s2.p3); ON → ×2 the whole frost triple.
  *
  * Feature-name vs talent-table mapping is deliberate: the cryo pressure hits are
  * NAMED `..._cryo_dmg` (→ fixture key) but read the raw `..._dmg` talent table
@@ -151,13 +152,22 @@ const features: readonly Feature[] = [
       { leveling: "char_skill_elemental", values: talents.get("skill.freminet_upward_thrust_dmg") },
     ],
   },
-  // Frost: stalking-mode ×2 is OFF in this build → plain base cryo hit.
+  // Frost: her FeatureMultiplier carries scalingMultiplier:2 gated by the burst-stance
+  // toggle `freminet_stalking_mode` (a ConditionBoolean, raw Freminet.js:268-274). Ported
+  // via the base-inert scalingMultiplierCondition field: gate OFF (default) → factor 1
+  // (plain base cryo hit); gate ON → ×2 the whole frost triple. At stalking_mode OFF the
+  // 58k goldens are byte-identical (the gate is off in every base build).
   {
     name: "freminet_frost_dmg",
     category: "skill",
     element: "cryo",
     multipliers: [
-      { leveling: "char_skill_elemental", values: talents.get("skill.freminet_frost_dmg") },
+      {
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.freminet_frost_dmg"),
+        scalingMultiplier: 2,
+        scalingMultiplierCondition: { type: "boolean", name: "freminet_stalking_mode" },
+      },
     ],
   },
   // Pressurized Floe stages. Cryo hits carry element:'cryo'; phys hits carry
