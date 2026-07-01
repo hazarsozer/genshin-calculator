@@ -1,0 +1,228 @@
+{
+  "element": "geo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2234.8801848523626,
+      "category": "attack",
+      "crit": 4063.418517913387,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2031.7092589566935
+    },
+    "attack.normal_hit_1": {
+      "average": 1182.8478664237878,
+      "category": "attack",
+      "crit": 2150.6324844068868,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1075.3162422034434
+    },
+    "attack.normal_hit_2": {
+      "average": 1250.354435623239,
+      "category": "attack",
+      "crit": 2273.371701133162,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1136.685850566581
+    },
+    "attack.normal_hit_2_1": {
+      "average": 625.1772178116195,
+      "category": "attack",
+      "crit": 1136.685850566581,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 568.3429252832905
+    },
+    "attack.normal_hit_2_2": {
+      "average": 625.1772178116195,
+      "category": "attack",
+      "crit": 1136.685850566581,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 568.3429252832905
+    },
+    "attack.normal_hit_3": {
+      "average": 1666.0589852614085,
+      "category": "attack",
+      "crit": 3029.1981550207424,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1514.5990775103712
+    },
+    "attack.plunge": {
+      "average": 1597.9192780699236,
+      "category": "attack",
+      "crit": 2905.307778308952,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1452.653889154476
+    },
+    "attack.plunge_high": {
+      "average": 3990.929141232751,
+      "category": "attack",
+      "crit": 7256.234802241365,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3628.1174011206826
+    },
+    "attack.plunge_low": {
+      "average": 3195.162103898344,
+      "category": "attack",
+      "crit": 5809.385643451535,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2904.6928217257673
+    },
+    "burst.burst_dmg": {
+      "average": 10094.974480928551,
+      "category": "burst",
+      "crit": 18354.49905623373,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 9177.249528116865
+    },
+    "burst.heal_dot": {
+      "average": 5699.512529421184,
+      "category": "burst",
+      "crit": 5699.512529421184,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 5699.512529421184
+    },
+    "burst.xilonen_beat_dmg": {
+      "average": 10094.974480928551,
+      "category": "burst",
+      "crit": 18354.49905623373,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 9177.249528116865
+    },
+    "reaction.crystalize": {
+      "average": 2450.4199868011824,
+      "category": "reaction",
+      "crit": 2450.4199868011824,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2450.4199868011824
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "skill.xilonen_rush_dmg": {
+      "average": 5176.479047908089,
+      "category": "skill",
+      "crit": 9411.780087105617,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4705.8900435528085
+    },
+    "stats.atk": {
+      "average": 2083.9839113900002,
+      "category": "stats",
+      "crit": 2083.9839113900002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2083.9839113900002
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 2456.093071272,
+      "category": "stats",
+      "crit": 2456.093071272,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2456.093071272
+    },
+    "stats.hp": {
+      "average": 25631.106980900004,
+      "category": "stats",
+      "crit": 25631.106980900004,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 25631.106980900004
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Xilonen",
+  "repSlug": "xilonen",
+  "schema": 1,
+  "slug": "xilonen-samplers-suppressed",
+  "weapon": "weapon_name.the_alley_flash",
+  "weaponType": "sword"
+}

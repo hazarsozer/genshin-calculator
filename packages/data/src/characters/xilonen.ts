@@ -202,8 +202,20 @@ const features: readonly Feature[] = [
 // concern handled by partyData). MUST be ordered before the res-shred staticLevel so its gate
 // reads the published key. Base-safe: it only PUBLISHES a setting; no stat-bearing effect fires
 // until `xilonen_active_sampler_geo` is also set (C2 / nightsoul), which no base build does.
+//
+// getSamplers (Xilonen.js:38-55) pads to 3 with 'geo' ONLY while fewer than 3 real (non-geo)
+// samplers were found among the 4 slots (char_element + resonance_element_1/2/3; geo itself is
+// excluded from samplersElements, so Xilonen's own char_element never counts). The party-axis
+// gap: this padding is unconditional here, but her engine SUPPRESSES it once the party supplies
+// >= 3 non-geo sampler elements (pyro/hydro/cryo/electro) via the 3 resonance slots. Gated with
+// the existing `elements-count` Condition (inverted): active iff count(pyro,hydro,cryo,electro) < 3.
+// Solo/no-party -> count 0 < 3 -> unchanged (padding still fires) -> base-inert.
 const geoSamplerSetup: readonly Condition[] = [
-  { type: "static", settings: { xilonen_sampler_geo: 1 } },
+  {
+    type: "static",
+    settings: { xilonen_sampler_geo: 1 },
+    condition: { type: "elements-count", element: ["pyro", "hydro", "cryo", "electro"], count: 3, invert: true },
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -223,19 +235,36 @@ const constellationConditions: readonly Condition[] = [
   // (Xilonen.js:409-416) sets `xilonen_active_sampler_geo:1` gated ConditionConstellation(2).
   // With the geo sampler now ACTIVE (active_sampler_geo) AND available (sampler_geo, always-on
   // for geo), BOTH sampler-gated effects fire:
-  //   • dmg_all:50 (C2GeoBonus) — her cons[1] (Xilonen.js:571-579), gated by the same samplers.
-  //     A real FLAT constant (not build-coupled), kept here. Modelled constellation:2-gated:
-  //     equivalent because C2 is exactly what turns the geo sampler on in this nightsoul-off config.
+  //   • dmg_all:50 (C2GeoBonus) — her cons[1] (Xilonen.js:571-579), explicitly AND-gated in raw on
+  //     BOTH `xilonen_sampler_geo` AND `xilonen_active_sampler_geo` (the SAME AND-gate as the
+  //     res-shred below) — NOT bare constellation:2. Previously modelled as unconditional-at-C2
+  //     (sound only while `xilonen_sampler_geo` was itself unconditional); the resonance-sampler
+  //     party-axis gate (geoSamplerSetup) makes `xilonen_sampler_geo` suppressible when >=3 non-geo
+  //     teammates are present, so this must now carry the same explicit AND-gate to stay faithful
+  //     (evaluateConstellation ignores a nested `.condition`, so this is a `static` + `and[...]`).
   //   • the geo RES-shred — emitted DYNAMICALLY by skillResShredConditions below (NOT folded here):
   //     it reads the live skill level so it is correct at any build (skill 10 → -36, skill 13 → -45).
   // This retires the former build-coupled `enemy_res_geo:-45` fold (Task 4b): the -45 was the shred
   // at skill 13 (10 + C3) — correct ONLY at the constellations C6 build. The dynamic shred below
   // reproduces -45 there (level 13) AND -36 at skill 10, firing EXACTLY ONCE per build.
-  { type: "constellation", constellation: 2, stats: { dmg_all: 50 } },
+  //
   // C2 also publishes the active-sampler setting (her cons[0]) — split into a SEPARATE condition
-  // mirroring the raw two-condition structure (cons[0] settings-publish, cons[1] dmg_all stat),
-  // both ordered before the res-shred so the gate reads the propagated active-sampler key.
+  // mirroring the raw two-condition structure (cons[0] settings-publish, cons[1] dmg_all stat).
+  // ORDERED BEFORE the dmg_all gate below so its AND-gate reads the propagated active-sampler key
+  // (same propagation discipline as the res-shred, which is also ordered after this publish).
   { type: "constellation", constellation: 2, settings: { xilonen_active_sampler_geo: 1 } },
+  {
+    type: "static",
+    stats: { dmg_all: 50 },
+    condition: {
+      type: "and",
+      items: [
+        { type: "constellation", constellation: 2 },
+        { type: "boolean", name: "xilonen_sampler_geo" },
+        { type: "boolean", name: "xilonen_active_sampler_geo" },
+      ],
+    },
+  },
   // C3 — char_skill_elemental_bonus +3 (skill talent level up). MUST precede the res-shred so the
   // staticLevel resolves at skill 13 in the C6 config (her getSkillLevelByName adds `_bonus`).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },

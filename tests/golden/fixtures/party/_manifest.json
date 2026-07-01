@@ -40,8 +40,8 @@
     "description": "Party-composition effects on representative active chars exercising each effect's scaling: 6 elemental resonances + none, the 3 two-element gates (Chevreuse/Nilou/Skirk), GildedDreams 4pc (same 1-3 / different 1-3), BlizzardStrayer 4pc (cryo / cryo+frozen), ViridescentVenerer 4pc (per swirl element), all v5.8 set_other team buffs, bond-of-life, Nahida party-pyro-2, CalcOrigin counts (same/different), Gorou General's Glory geo-count tiers (crunch + C6 crit_dmg_geo 2/3), YunJin Breaking Conventions distinct-element NA DEF-buff tiers (2/3/4), and the four inert party-element weapons. Fillers are buff-clean (probe-verified) so only the active char's own party-reading conditions move.",
     "id": "party"
   },
-  "featureTotal": 1741,
-  "itemCount": 60,
+  "featureTotal": 1789,
+  "itemCount": 62,
   "items": [
     {
       "derived": {
@@ -2200,6 +2200,95 @@
       "weapon": {
         "name": "weapon_name.waveriding_whirl",
         "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 3
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "charSettings": {
+          "char_constellation": 2,
+          "char_skill_elemental": 10
+        },
+        "constellation": 2,
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Xilonen",
+      "repSlug": "xilonen",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "hydro"
+      },
+      "slug": "xilonen-samplers-active-2",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "charSettings": {
+          "char_constellation": 2,
+          "char_skill_elemental": 10
+        },
+        "constellation": 2,
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "cryo",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Xilonen",
+      "repSlug": "xilonen",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "hydro",
+        "resonance_element_3": "cryo"
+      },
+      "slug": "xilonen-samplers-suppressed",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
       }
     },
     {
