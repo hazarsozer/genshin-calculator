@@ -921,6 +921,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   "razor-wolf-within": {
     razor_wolf_within: true,
   },
+  // Wriothesley CHILLING PENALTY (wriothesley_chilling_penalty): his 6 normal hits gain an extra
+  // ×(enhanced_repelling_fist(char_skill_elemental)/100) factor while ON, via the gated
+  // scalingMultiplierFromTable (raw Multiplier/Wriothesley.js:18-21). No cons gate → C0.
+  "wriothesley-chilling-penalty": {
+    wriothesley_chilling_penalty: true,
+  },
 };
 
 interface ManifestItem {

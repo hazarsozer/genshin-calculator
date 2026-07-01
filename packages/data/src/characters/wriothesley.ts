@@ -10,13 +10,18 @@
  * CHILLING PENALTY (n1..n5 + n4 multihit use FeatureMultiplierWriothesley in raw):
  *   raw's FeatureMultiplierWriothesley applies an EXTRA scaling multiplier
  *   (skill.wriothesley_enhanced_repelling_fist) to every normal hit ONLY when the
- *   setting `wriothesley_chilling_penalty` is ON
+ *   setting `wriothesley_chilling_penalty` is ON — `result *= scalingValues.getValue(
+ *   getLevel('char_skill_elemental'))/100`
  *   (raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/Wriothesley.js:18-21).
- *   It is a ConditionBoolean toggle (default OFF). The canonical golden build runs
- *   with settings:{} → chilling penalty OFF → the boost factor is absent and the
- *   normals reduce to a plain FeatureMultiplier (talent% × ATK). Verified numerically
- *   against the fixture (normal_hit_1.normal = 1023.205 matches the un-boosted value).
- *   So the normals are modelled as ordinary multipliers, identical to any ATK scaler.
+ *   It is a ConditionBoolean toggle (default OFF). Ported via the gated
+ *   `scalingMultiplierFromTable`: the enhanced-repelling-fist fractions (÷100) form the
+ *   table keyed by `char_skill_elemental`, gated by `wriothesley_chilling_penalty`; the
+ *   base normal% stays the `values` path. Wriothesley has NO char_skill_elemental_bonus
+ *   at any constellation (C3 bumps char_skill_attack, C5 char_skill_burst), so the
+ *   bonus-aware level read is inert here — the GATE is the load-bearing part. The
+ *   canonical golden build runs with settings:{} → the gate is OFF → the table factor is
+ *   1 → the normals reduce to the plain talent% × ATK term (verified: normal_hit_1.normal
+ *   = 1023.205, the un-boosted value) → base-inert.
  *
  * normal_hit_4: raw FeatureDamageMultihit({ items:[{ hits:2, multipliers:[p4] }] }) —
  *   the same p4 multiplier landing twice. Modelled as the multiplier listed twice
@@ -57,7 +62,14 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Wriothesley)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type {
+  Condition,
+  DbObjectChar,
+  Feature,
+  FeatureMultiplierEntry,
+  TalentResolver,
+  TalentTable,
+} from "@genshin/types";
 import { Wriothesley as WriothesleyStatTable } from "../generated/charTables.js";
 import { Wriothesley as WriothesleyTalents } from "../generated/charTalentTables.js";
 
@@ -79,11 +91,27 @@ const talents: TalentResolver = {
       if (name === "plunge_low") return WriothesleyTalents.s1.p10;
       if (name === "plunge_high") return WriothesleyTalents.s1.p11;
     }
+    if (talent === "skill") {
+      // Icefang Rush "Enhanced Repelling Fist" (s2.p1) — the CHILLING PENALTY normal-hit boost.
+      if (name === "enhanced_repelling_fist") return WriothesleyTalents.s2.p1;
+    }
     if (talent === "burst") {
       if (name === "burst_dmg") return WriothesleyTalents.s3.p1;
     }
     throw new Error(`wriothesley talents: unknown path '${path}'`);
   },
+};
+
+// CHILLING PENALTY boost (raw FeatureMultiplierWriothesley): the enhanced-repelling-fist
+// fractions (÷100), 15 talent levels, keyed by char_skill_elemental — multiplied into every
+// normal hit ONLY while `wriothesley_chilling_penalty` is ON. Shared by n1..n5 + the n4
+// multihit. OFF in every base build → the table factor reverts to 1 → base-inert.
+const frac = (t: TalentTable): readonly number[] =>
+  Array.from({ length: 15 }, (_unused, i) => t.getValue(i + 1) / 100);
+const chillingPenaltyBoost: NonNullable<FeatureMultiplierEntry["scalingMultiplierFromTable"]> = {
+  table: frac(talents.get("skill.enhanced_repelling_fist")),
+  levelSetting: "char_skill_elemental",
+  condition: { type: "boolean", name: "wriothesley_chilling_penalty" },
 };
 
 // ---------------------------------------------------------------------------
@@ -103,24 +131,24 @@ const baseStats: Readonly<Record<string, number>> = {
 // ---------------------------------------------------------------------------
 
 const features: readonly Feature[] = [
-  // --- Normal attacks (cryo, chilling penalty OFF → plain ATK multipliers) ---
+  // --- Normal attacks (cryo; gated CHILLING PENALTY boost, inert while the toggle is OFF) ---
   {
     name: "normal_hit_1",
     category: "attack",
     element: "cryo",
-    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1"), scalingMultiplierFromTable: chillingPenaltyBoost }],
   },
   {
     name: "normal_hit_2",
     category: "attack",
     element: "cryo",
-    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }],
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2"), scalingMultiplierFromTable: chillingPenaltyBoost }],
   },
   {
     name: "normal_hit_3",
     category: "attack",
     element: "cryo",
-    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3"), scalingMultiplierFromTable: chillingPenaltyBoost }],
   },
   // normal_hit_4: 2-hit multihit (p4 × 2). Parent models the total.
   // raw: FeatureDamageMultihit({ items: [{ hits: 2, multipliers: [p4] }] })
@@ -130,8 +158,8 @@ const features: readonly Feature[] = [
     element: "cryo",
     damageType: "normal",
     items: [
-      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }] },
-      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4"), scalingMultiplierFromTable: chillingPenaltyBoost }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4"), scalingMultiplierFromTable: chillingPenaltyBoost }] },
     ],
   },
   // normal_hit_4_1: single sub-hit of normal_hit_4 (raw isChild:true → dropped to emit).
@@ -140,13 +168,13 @@ const features: readonly Feature[] = [
     name: "normal_hit_4_1",
     category: "attack",
     element: "cryo",
-    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }],
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4"), scalingMultiplierFromTable: chillingPenaltyBoost }],
   },
   {
     name: "normal_hit_5",
     category: "attack",
     element: "cryo",
-    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5") }],
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5"), scalingMultiplierFromTable: chillingPenaltyBoost }],
   },
   // --- Charged attacks (cryo) ---
   {
