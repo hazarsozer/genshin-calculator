@@ -803,6 +803,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   "cyno-wolfs-swiftness": {
     cyno_wolfs_swiftness: true,
   },
+  // Tartaglia Raging Tide (tartaglia_raging_tide): the ranged bow moveset (normals/aimed/plunge +
+  // ranged burst) is NOT-gated OFF; the HYDRO melee moveset (char_skill_elemental normals/charged
+  // + melee burst) is gated ON, with attack_infusion:'hydro' published by the toggle. C0.
+  "tartaglia-raging-tide": {
+    tartaglia_raging_tide: true,
+  },
 };
 
 interface ManifestItem {

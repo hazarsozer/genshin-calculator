@@ -1,10 +1,15 @@
 /**
  * Tartaglia (Childe) — hydro bow.
  *
- * The fixture is the RANGED build (his "Raging Tide" melee stance toggle OFF):
- *   - normal_hit_1..6: physical bow ranged normals (char_skill_attack). The melee
- *     stance normals (char_skill_elemental, gated on `tartaglia_raging_tide`) and
- *     their multihit children are OFF, so they are not produced.
+ * STANCE SWAP: the "Raging Tide" (Foul Legacy) melee toggle `tartaglia_raging_tide`
+ * swaps his ranged bow moveset for a HYDRO melee moveset. Her engine gates the ranged
+ * set with `ConditionNot([tartaglia_raging_tide])` and the melee set with
+ * `ConditionBoolean(it)`, and the toggle publishes `attack_infusion: 'hydro'` so the
+ * (otherwise-physical) melee normals/charged resolve hydro. Both stances are modelled;
+ * the golden/fixture build has the stance OFF (the RANGED set produced).
+ *
+ * RANGED set (stance OFF, `NOT tartaglia_raging_tide`):
+ *   - normal_hit_1..6: physical bow ranged normals (char_skill_attack).
  *   - aimed: physical charged shot; charged_aimed: fully-charged HYDRO arrow.
  *   - tartaglia_tide_flash / tartaglia_tide_burst: hydro normals, unconditional.
  *     (raw `tide_flash` carries `hits: 3`, but FeatureDamageNormal ignores `hits`
@@ -12,9 +17,17 @@
  *     the small fixture average.)
  *   - plunge / plunge_low / plunge_high: physical, ranged (NOT raging_tide).
  *   - skill.activation_dmg / skill.tartaglia_slash_dmg: hydro skill, unconditional.
- *   - burst.burst_dmg: hydro burst, RANGED variant (s3.p3 `tartaglia_burst_dmg_ranged`,
- *     gated on NOT raging_tide; the melee s3.p1 variant is OFF).
+ *   - burst.burst_dmg: hydro burst, RANGED variant (s3.p3 `tartaglia_burst_dmg_ranged`).
  *   - burst.tartaglia_riptide_blast_dmg: hydro burst, unconditional.
+ *
+ * MELEE set (stance ON, `tartaglia_raging_tide`) — all char_skill_elemental, hydro-infused:
+ *   - normal_hit_1..5 (skill.normal_hit_1..5); normal_hit_6 = 2-hit multihit + its two
+ *     sub-hit rows normal_hit_6_1/_2 (raw models the sub-hits as FeatureDamageCharged →
+ *     damageType 'charged'); charged_hit_total = 2-hit multihit + sub-hits charged_hit_1/_2.
+ *   - burst.burst_dmg: MELEE variant (s3.p1 `tartaglia_burst_dmg_melee`).
+ *   (The +1 Normal-attack level from A1 does NOT lift the melee set — it is
+ *   char_skill_elemental-leveled, so no plusOneLevel wrap. The ranged aimed/plunges have
+ *   no melee counterpart → produced only in the ranged stance.)
  *
  * Reactions (electrocharged / rupture / shatter) are auto-emitted generically from
  * the hydro element by the engine; not declared here.
@@ -81,10 +94,22 @@ const talents: TalentResolver = {
     if (talent === "skill") {
       if (name === "activation_dmg") return TartagliaTalents.s2.p1;
       if (name === "tartaglia_slash_dmg") return TartagliaTalents.s2.p11;
+      // MELEE stance normals/charged (Raging Tide) — char_skill_elemental leveling,
+      // tables live in the SKILL talent group (s2). raw Tartaglia.js:84-113.
+      if (name === "normal_hit_1") return TartagliaTalents.s2.p2;
+      if (name === "normal_hit_2") return TartagliaTalents.s2.p3;
+      if (name === "normal_hit_3") return TartagliaTalents.s2.p4;
+      if (name === "normal_hit_4") return TartagliaTalents.s2.p5;
+      if (name === "normal_hit_5") return TartagliaTalents.s2.p6;
+      if (name === "normal_hit_6_1") return TartagliaTalents.s2.p7;
+      if (name === "normal_hit_6_2") return TartagliaTalents.s2.p8;
+      if (name === "charged_hit_1") return TartagliaTalents.s2.p9;
+      if (name === "charged_hit_2") return TartagliaTalents.s2.p10;
     }
     if (talent === "burst") {
-      // RANGED burst (NOT raging_tide). Melee variant is s3.p1, OFF here.
+      // RANGED burst (NOT raging_tide) = s3.p3; MELEE burst (raging_tide) = s3.p1.
       if (name === "tartaglia_burst_dmg_ranged") return TartagliaTalents.s3.p3;
+      if (name === "tartaglia_burst_dmg_melee") return TartagliaTalents.s3.p1;
       if (name === "tartaglia_riptide_blast_dmg") return TartagliaTalents.s3.p2;
     }
     throw new Error(`tartaglia talents: unknown path '${path}'`);
@@ -92,42 +117,60 @@ const talents: TalentResolver = {
 };
 
 // ---------------------------------------------------------------------------
+// Raging Tide (Foul Legacy) MELEE STANCE toggle
+// ---------------------------------------------------------------------------
+// When ON, Childe's ranged bow moveset (normals/aimed/plunges + the ranged burst) is
+// replaced by a HYDRO melee moveset (char_skill_elemental-leveled normals/charged + the
+// melee burst). Her engine gates the ranged set with ConditionNot([tartaglia_raging_tide])
+// and the melee set with ConditionBoolean(it), and the toggle publishes
+// `attack_infusion: 'hydro'` so the melee normals/charged (no explicit element) resolve
+// hydro. raw Tartaglia.js:183-514 (per-feature gates) + 522-533 (the toggle + infusion).
+const STANCE: Condition = { type: "boolean", name: "tartaglia_raging_tide" };
+const NOT_STANCE: Condition = { type: "not", items: [{ type: "boolean", name: "tartaglia_raging_tide" }] };
+
+// ---------------------------------------------------------------------------
 // Features
 // ---------------------------------------------------------------------------
 
 const features: readonly Feature[] = [
-  // --- Ranged normal attacks (physical bow, char_skill_attack) ---
+  // --- Ranged normal attacks (physical bow, char_skill_attack) — gated OFF in melee stance ---
   {
     name: "normal_hit_1",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.normal_hit_1")) }],
+    condition: NOT_STANCE,
   },
   {
     name: "normal_hit_2",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.normal_hit_2")) }],
+    condition: NOT_STANCE,
   },
   {
     name: "normal_hit_3",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.normal_hit_3")) }],
+    condition: NOT_STANCE,
   },
   {
     name: "normal_hit_4",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.normal_hit_4")) }],
+    condition: NOT_STANCE,
   },
   {
     name: "normal_hit_5",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.normal_hit_5")) }],
+    condition: NOT_STANCE,
   },
   {
     name: "normal_hit_6",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.normal_hit_6")) }],
+    condition: NOT_STANCE,
   },
-  // --- Charged (aimed) shots ---
+  // --- Charged (aimed) shots — ranged, gated OFF in melee stance ---
   // aimed: physical charged shot
   {
     name: "aimed",
@@ -135,6 +178,7 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.aimed")) }],
+    condition: NOT_STANCE,
   },
   // charged_aimed: fully-charged hydro arrow
   {
@@ -144,8 +188,9 @@ const features: readonly Feature[] = [
     damageType: "charged",
     element: "hydro",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.charged_aimed")) }],
+    condition: NOT_STANCE,
   },
-  // --- Hydro normal variants (unconditional; FeatureDamageNormal, element hydro) ---
+  // --- Hydro normal variants (unconditional; FeatureDamageNormal, element hydro; present in BOTH stances) ---
   {
     name: "tartaglia_tide_flash",
     category: "attack",
@@ -160,12 +205,13 @@ const features: readonly Feature[] = [
     element: "hydro",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.tartaglia_tide_burst")) }],
   },
-  // --- Plunge attacks (physical, ranged stance) ---
+  // --- Plunge attacks (physical, RANGED stance only — no melee plunge in raw) ---
   {
     name: "plunge",
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.plunge")) }],
+    condition: NOT_STANCE,
   },
   {
     name: "plunge_low",
@@ -173,6 +219,7 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.plunge_low")) }],
+    condition: NOT_STANCE,
   },
   {
     name: "plunge_high",
@@ -180,6 +227,7 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: plusOneLevel(talents.get("attack.plunge_high")) }],
+    condition: NOT_STANCE,
   },
   // --- Skill: Foul Legacy: Raging Tide (hydro, unconditional) ---
   {
@@ -195,18 +243,122 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.tartaglia_slash_dmg") }],
   },
   // --- Burst: Havoc: Obliteration (hydro) ---
-  // burst_dmg: ranged variant (NOT raging_tide).
+  // burst_dmg: RANGED variant (s3.p3), gated OFF in melee stance.
   {
     name: "burst_dmg",
     category: "burst",
     element: "hydro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.tartaglia_burst_dmg_ranged") }],
+    condition: NOT_STANCE,
   },
   {
     name: "tartaglia_riptide_blast_dmg",
     category: "burst",
     element: "hydro",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.tartaglia_riptide_blast_dmg") }],
+  },
+  // ========================================================================
+  // RAGING TIDE (melee stance) moveset — parallel HYDRO normals/charged, gated ON.
+  // char_skill_elemental leveling; element via the stance's attack_infusion:'hydro'
+  // (no explicit element on the normals/charged, so resolveElement infuses them).
+  // raw Tartaglia.js:249-408, 495-505. The +1 Normal-attack level (char_skill_attack_bonus)
+  // does NOT apply here (these are char_skill_elemental-leveled) → no plusOneLevel wrap.
+  // ========================================================================
+  {
+    name: "normal_hit_1",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_1") }],
+    condition: STANCE,
+  },
+  {
+    name: "normal_hit_2",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_2") }],
+    condition: STANCE,
+  },
+  {
+    name: "normal_hit_3",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_3") }],
+    condition: STANCE,
+  },
+  {
+    name: "normal_hit_4",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_4") }],
+    condition: STANCE,
+  },
+  {
+    name: "normal_hit_5",
+    category: "attack",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_5") }],
+    condition: STANCE,
+  },
+  // normal_hit_6: 2-hit multihit (skill.normal_hit_6_1 + skill.normal_hit_6_2). raw keeps
+  // damageType 'attack' on the multihit parent (FeatureDamageMultihit does NOT force a type),
+  // so it gets dmg_all + dmg_hydro but NOT dmg_normal (dmg_attack reads 0) — matched here.
+  {
+    name: "normal_hit_6",
+    category: "attack",
+    damageType: "attack",
+    items: [
+      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_6_1") }] },
+      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_6_2") }] },
+    ],
+    condition: STANCE,
+  },
+  // normal_hit_6_1 / normal_hit_6_2: the two sub-hits of normal_hit_6, emitted as standalone
+  // rows. raw models them as FeatureDamageCharged (isChild) → damageType 'charged' (NOT normal),
+  // so they carry dmg_charged. The loader drops isChild → emit plain. raw Tartaglia.js:319-338.
+  {
+    name: "normal_hit_6_1",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_6_1") }],
+    condition: STANCE,
+  },
+  {
+    name: "normal_hit_6_2",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_6_2") }],
+    condition: STANCE,
+  },
+  // charged_hit_total: 2-hit multihit (skill.charged_hit_1 + skill.charged_hit_2), damageType
+  // 'charged'. raw Tartaglia.js:362-386.
+  {
+    name: "charged_hit_total",
+    category: "attack",
+    damageType: "charged",
+    items: [
+      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.charged_hit_1") }] },
+      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.charged_hit_2") }] },
+    ],
+    condition: STANCE,
+  },
+  // charged_hit_1 / charged_hit_2: the two sub-hits (FeatureDamageCharged isChild → damageType
+  // 'charged'), emitted standalone. raw Tartaglia.js:387-408.
+  {
+    name: "charged_hit_1",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.charged_hit_1") }],
+    condition: STANCE,
+  },
+  {
+    name: "charged_hit_2",
+    category: "attack",
+    damageType: "charged",
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.charged_hit_2") }],
+    condition: STANCE,
+  },
+  // burst_dmg: MELEE variant (s3.p1), gated ON in melee stance.
+  {
+    name: "burst_dmg",
+    category: "burst",
+    element: "hydro",
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.tartaglia_burst_dmg_melee") }],
+    condition: STANCE,
   },
 ];
 
@@ -248,7 +400,15 @@ export const tartaglia: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: constellationConditions,
+  // Raging Tide melee-stance toggle: publishes `attack_infusion: 'hydro'` so the
+  // char_skill_elemental-leveled melee normals/charged (no explicit element) resolve hydro.
+  // The moveset swap itself is via the per-feature STANCE / NOT_STANCE gates above.
+  // (raw's display-only `charged_stamina_cost: 20` stat is omitted — inert for damage.)
+  // raw/genshin_calc_pub/src/js/db/Char/Tartaglia.js:522-533.
+  conditions: [
+    { type: "boolean", name: "tartaglia_raging_tide", settings: { attack_infusion: "hydro" } },
+    ...constellationConditions,
+  ],
   // partyData — teammate kit buffs (P3.5.2 Bucket A)
   // A1 "Master of Weaponry": always-active static.
   //   settings: { char_skill_attack_bonus_2: 1 } → +1 normal attack talent level to party.
