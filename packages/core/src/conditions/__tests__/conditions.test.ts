@@ -846,6 +846,37 @@ describe("ConditionElementsCount", () => {
       crit_dmg_geo: 10,
     });
   });
+
+  // Element SET form (Navia A4: count nearby Pyro/Hydro/Electro/Cryo members).
+  // A resonance slot counts if its element is IN the set. Base-inert: a geo active char
+  // (whose element is NOT in the set) with no party → count 0 < 1 → inactive.
+  it("element-set: counts each slot whose element is in the set", () => {
+    const set = ["pyro", "hydro", "electro", "cryo"] as const;
+    const c1: ConditionElementsCount = { type: "elements-count", element: set, count: 1 };
+    const c2: ConditionElementsCount = { type: "elements-count", element: set, count: 2 };
+    // Navia (geo) solo → 0 in-set → both inactive (base-inert).
+    expect(evaluate(c1, { char_element: "geo" })).toBe(false);
+    // one in-set teammate → count 1 → tier-1 active, tier-2 inactive.
+    expect(evaluate(c1, { char_element: "geo", resonance_element_1: "pyro" })).toBe(true);
+    expect(evaluate(c2, { char_element: "geo", resonance_element_1: "pyro" })).toBe(false);
+    // two in-set teammates → count 2 → both active.
+    const two = { char_element: "geo", resonance_element_1: "pyro", resonance_element_2: "hydro" };
+    expect(evaluate(c1, two)).toBe(true);
+    expect(evaluate(c2, two)).toBe(true);
+  });
+
+  it("element-set: out-of-set slots (geo/anemo/dendro) are not counted", () => {
+    const set = ["pyro", "hydro", "electro", "cryo"] as const;
+    const c1: ConditionElementsCount = { type: "elements-count", element: set, count: 1 };
+    expect(
+      evaluate(c1, {
+        char_element: "geo",
+        resonance_element_1: "anemo",
+        resonance_element_2: "dendro",
+        resonance_element_3: "geo",
+      })
+    ).toBe(false);
+  });
 });
 
 // ---------------------------------------------------------------------------

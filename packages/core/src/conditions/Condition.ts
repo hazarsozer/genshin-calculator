@@ -700,13 +700,20 @@ function evaluatePartyElements(condition: ConditionPartyElements, ctx: EvalConte
 /**
  * Ports ConditionElementsCount.isActive — counts `element` across the four resonance slots
  * (char_element + resonance_element_1/2/3) and is active iff count >= `count`, after the
- * optional gate. `invert` flips. Source: .../Condition/ElementsCount.js
+ * optional gate. `invert` flips.
+ *
+ * `element` may be a SET (array): a slot counts if its element is in the set — the
+ * CalcElementsNavia "count a family of elements" idiom (Navia A4). Source:
+ *   raw/genshin_calc_pub/src/js/classes/Condition/ElementsCount.js
+ *   raw/genshin_calc_pub/src/js/classes/Condition/CalcElementsNavia.js
  */
 function evaluateElementsCount(condition: ConditionElementsCount, ctx: EvalContext): boolean {
   if (!checkGate(condition, ctx)) return false;
+  const targets = Array.isArray(condition.element) ? condition.element : [condition.element];
   let n = 0;
   for (const slot of RESONANCE_SLOTS) {
-    if (ctx[slot] === condition.element) n += 1;
+    const el = ctx[slot];
+    if (typeof el === "string" && targets.includes(el)) n += 1;
   }
   const active = n >= condition.count;
   return condition.invert ? !active : active;

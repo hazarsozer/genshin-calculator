@@ -440,16 +440,23 @@ export interface ConditionPartyElements extends ConditionBase {
 }
 
 /**
- * Element-count gate. Counts params.element across the resonance slots
+ * Element-count gate. Counts `element` across the resonance slots
  * (char_element + resonance_element_1/2/3) and is active iff that count >= `count`.
  * Ports ConditionElementsCount.isActive (getType()='static'). May carry stats when used
  * stat-bearing (like ConditionStatic); Gorou uses it purely as a gate inside `and`.
  * Inert with no party: only char_element present → count 1 < 2 → inactive.
+ *
+ * `element` may be a SET (array) — a slot counts if its element is IN the set. This ports
+ * the CalcElementsNavia count-a-family idiom (Navia A4: count nearby Pyro/Hydro/Electro/Cryo
+ * members). The single-string form is unchanged. Note: like ConditionElementsCount (and unlike
+ * CalcElementsNavia, which scans only resonance_element_1/2/3), the count includes char_element;
+ * this is equivalent whenever the SET excludes the char's own element (Navia is geo ∉ the set).
  * Source: raw/genshin_calc_pub/src/js/classes/Condition/ElementsCount.js
+ *         raw/genshin_calc_pub/src/js/classes/Condition/CalcElementsNavia.js
  */
 export interface ConditionElementsCount extends ConditionBase {
   readonly type: "elements-count";
-  readonly element: string;
+  readonly element: string | readonly string[];
   readonly count: number;
 }
 
