@@ -116,19 +116,43 @@ export interface FeatureMultiplierEntry {
    * (the subclass override ignores both) — set exactly one of the constant/conditional
    * form OR the table form (compileFeature throws if both are present).
    *
-   * The sole v5.8 user is Neuvillette's two equitable-judgment charged attacks
-   * (`neuvillette_ancient_seas_legacy` Sourcewater-droplet stacks → `[1.1, 1.25, 1.6]`,
-   * raw Neuvillette.js:194-213). Absent ⇒ the constant path; and even when set, the level
-   * is 0 in every base build (all 58k goldens) → factor 1 → base-inert.
+   * Two OPTIONAL extensions cover the char-skill-leveled gated variant (her
+   * FeatureMultiplier{Wriothesley,Wanderer,Yoimiya}, which multiply a talent-leveled
+   * ValueTable factor into the term only while a toggle is on):
+   *   - {@link condition} — a boolean/other gate. When present and INACTIVE the table
+   *     factor reverts to `1` (her `if (settings.<gate>) result *= table.getValue(level)/100`
+   *     — an off gate leaves `result` at 1). Absent ⇒ the table always applies
+   *     (Neuvillette). Evaluated at COMPILE time against the build settings.
+   *   - the `_bonus`-aware level read — when `levelSetting` is a char-skill slot
+   *     (`char_skill_attack`/`elemental`/`burst`) the level is the build's talent level
+   *     PLUS the constellation `_bonus` (her `getLevel('char_skill_elemental')` = base +
+   *     `_bonus`, e.g. Wanderer C5 / Yoimiya C3 give `char_skill_elemental_bonus:3`),
+   *     matching the talent% path. For any OTHER key (Neuvillette's droplet stacks) no
+   *     `<key>_bonus` exists → the read is UNCHANGED → Neuvillette stays byte-identical.
+   *
+   * v5.8 users: Neuvillette's two equitable-judgment charged attacks (droplet stacks
+   * `neuvillette_ancient_seas_legacy` → `[1.1, 1.25, 1.6]`, no gate/bonus — raw
+   * Neuvillette.js:194-213); Wriothesley normals (`enhanced_repelling_fist` keyed by
+   * `char_skill_elemental`, gated `wriothesley_chilling_penalty`); Wanderer normals/charged
+   * (`fushoudan`/`toufukai`, gated `wanderer_windfavored`); Yoimiya Niwabi normals
+   * (`yoimiya_bonus_dmg`, gated `yoimiya_teika_enshou`). Absent ⇒ the constant path; and
+   * even when set, every base build leaves the gate OFF / the level 0 → factor 1 → all 58k
+   * goldens are base-inert.
    *
    * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/NeuvilleteCharged.js
-   *         (getScalingMultiplier); raw/.../classes/ValueTable.js (getValue indexing).
+   *         (getScalingMultiplier); raw/.../Multiplier/{Wriothesley,Wanderer,Yoimiya}.js
+   *         (the toggle-gated, char-skill-leveled factor); raw/.../classes/ValueTable.js.
    */
   readonly scalingMultiplierFromTable?: {
     /** The value table (her `new ValueTable([...])`), 1-indexed by the resolved level. */
     readonly table: readonly number[];
     /** The settings key holding the integer level (e.g. `neuvillette_ancient_seas_legacy`). */
     readonly levelSetting: string;
+    /**
+     * Optional gate: an INACTIVE gate reverts the table factor to `1` (her toggle-gated
+     * `result *= table.getValue(level)/100`). Absent ⇒ the table always applies.
+     */
+    readonly condition?: Condition;
   };
   /**
    * Settings-driven additive offset to the scaling fraction.

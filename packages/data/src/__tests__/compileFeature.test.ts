@@ -756,6 +756,56 @@ describe("compileFeature — scalingMultiplierCondition + scalingMultiplierFromT
     expect(normalUnder(tableMult(), { legacy: 5 })).toBeCloseTo(normalUnder(BASE, {}) * 1.6, 6);
   });
 
+  // --- gated table (Wriothesley/Wanderer/Yoimiya toggle form) -----------------
+  // Her FeatureMultiplier{Wriothesley,Wanderer,Yoimiya} multiply the table factor into the
+  // term ONLY while a toggle is on; an INACTIVE gate leaves the term un-boosted (factor 1).
+
+  function gatedTableMult(): FeatureMultiplierEntry {
+    return {
+      ...BASE,
+      scalingMultiplierFromTable: {
+        table: [1.1, 1.25, 1.6],
+        levelSetting: "legacy",
+        condition: { type: "boolean", name: "gate" },
+      },
+    };
+  }
+
+  it("gated table with an INACTIVE gate → factor 1 even when the level is set", () => {
+    // gate off → factor 1 despite legacy 3 (her `result` stays 1 when the toggle is off).
+    expect(normalUnder(gatedTableMult(), { legacy: 3 })).toBe(normalUnder(BASE, {}));
+  });
+
+  it("gated table with an ACTIVE gate → the table lookup applies (== plain × 1.6)", () => {
+    expect(normalUnder(gatedTableMult(), { legacy: 3, gate: true })).toBeCloseTo(
+      normalUnder(BASE, {}) * 1.6,
+      6
+    );
+  });
+
+  // --- `_bonus`-aware level read for a char-skill levelSetting ----------------
+  // A char-skill leveling key reads the build's talent level (ctx.talentLevels[slot]=10 here)
+  // PLUS the constellation `_bonus` — her getLevel('char_skill_elemental') = base + `_bonus`.
+  // A non-char-skill key has no `<key>_bonus` → the read is unchanged (proven above/Neuvillette).
+
+  // A 15-entry ramp: level L → L/10, so the resolved level is directly observable in the factor.
+  const RAMP: readonly number[] = Array.from({ length: 15 }, (_u, i) => (i + 1) / 10);
+
+  function charSkillTableMult(): FeatureMultiplierEntry {
+    return { ...BASE, scalingMultiplierFromTable: { table: RAMP, levelSetting: "char_skill_elemental" } };
+  }
+
+  it("char-skill levelSetting reads talentLevels[slot] (no `_bonus` → level 10 → ×1.0)", () => {
+    expect(normalUnder(charSkillTableMult(), {})).toBeCloseTo(normalUnder(BASE, {}) * 1.0, 6);
+  });
+
+  it("char-skill levelSetting adds the constellation `_bonus` (level 10+3=13 → ×1.3)", () => {
+    expect(normalUnder(charSkillTableMult(), { char_skill_elemental_bonus: 3 })).toBeCloseTo(
+      normalUnder(BASE, {}) * 1.3,
+      6
+    );
+  });
+
   // --- fail-loud: the table form is a full override --------------------------
 
   it("throws when scalingMultiplierFromTable co-occurs with scalingMultiplier", () => {

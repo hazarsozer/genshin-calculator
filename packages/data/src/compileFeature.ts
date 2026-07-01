@@ -406,11 +406,32 @@ function baseDamageTerm(
         `with scalingMultiplier/scalingMultiplierCondition — the table form replaces both`
       );
     }
-    const { table, levelSetting } = entry.scalingMultiplierFromTable;
-    const rawLevel = ctx.settings[levelSetting];
-    const level = typeof rawLevel === "number" ? rawLevel : 0;
-    // her NeuvilleteCharged.getScalingMultiplier: level>0 → table.getValue(level), else 1.
-    scalingFactor = level > 0 ? valueTableGet(table, level) : 1;
+    const { table, levelSetting, condition } = entry.scalingMultiplierFromTable;
+    // Optional gate (her FeatureMultiplier{Wriothesley,Wanderer,Yoimiya}: the table factor
+    // multiplies in ONLY while a toggle is on — `if (settings.<gate>) result *= table.getValue
+    // (level)/100`, else `result` stays 1). An INACTIVE gate ⇒ factor 1; absent ⇒ always
+    // applied (Neuvillette's NeuvilleteCharged override has no gate).
+    if (condition !== undefined && !evaluate(condition, ctx.settings)) {
+      scalingFactor = 1;
+    } else {
+      // Resolve the table level the SAME way the talent% path resolves its level (above):
+      // a char-skill leveling key reads the build's talent level (ctx.talentLevels[slot])
+      // and adds the constellation `_bonus` (her getLevel('char_skill_elemental') = base +
+      // `_bonus`, e.g. Wanderer C5 / Yoimiya C3 → +3); any OTHER key reads the raw setting
+      // with NO `_bonus` (Neuvillette's droplet stacks: `<key>_bonus` never exists →
+      // skillLevelBonus returns 0 → the read is byte-identical to before).
+      const slot = LEVELING_TO_SLOT[levelSetting];
+      let baseLevel: number;
+      if (slot !== undefined) {
+        baseLevel = ctx.talentLevels[slot];
+      } else {
+        const rawLevel = ctx.settings[levelSetting];
+        baseLevel = typeof rawLevel === "number" ? rawLevel : 0;
+      }
+      const level = baseLevel + skillLevelBonus(ctx.settings, levelSetting);
+      // her NeuvilleteCharged.getScalingMultiplier: level>0 → table.getValue(level), else 1.
+      scalingFactor = level > 0 ? valueTableGet(table, level) : 1;
+    }
   } else {
     scalingFactor = entry.scalingMultiplier ?? 1;
     // Conditional gate: an INACTIVE gate reverts the constant to 1 (her `return 1`).
