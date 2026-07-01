@@ -881,6 +881,15 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   "mizuki-self-buffs": {
     mizuki_thoughts_by_day_bring_dreams_by_night: true,
   },
+  // Ineffa A4 mastery+6%ATK (ineffa_panoramic_permutation_protocol, ascension boolean) + C1
+  // dmg_reaction_lunarcharged +2.5%ATK/cap50 (ineffa_rectifying_processor, gated ≥C1). Both lift her
+  // lunarcharged/lunardirect reaction outputs. char_constellation:1 threads the C1 gate ON, matching
+  // the oracle dump at constellation 1.
+  "ineffa-self-buffs": {
+    char_constellation: 1,
+    ineffa_panoramic_permutation_protocol: true,
+    ineffa_rectifying_processor: true,
+  },
   // ── Tier-B stance / feature-swap self-buffs (Class A — Feature.condition gated) ──
   // Xiao Yaksha Mask: same attacks gain anemo infusion + per-burst-level dmg_normal/charged/plunge.
   // Not a swap; the toggle publishes attack_infusion:"anemo" + a static-level dmg bonus. C0.

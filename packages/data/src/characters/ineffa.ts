@@ -116,6 +116,72 @@ const lunarMultiFromAtk: CharPostEffect = {
   capValue: PASSIVE_LUNAR_SCALE_CAP / 100,
 };
 
+/**
+ * A4 "Panoramic Permutation Protocol" — SELF-side ATK→EM conversion (the
+ * teammate mirror already exists on `partyData.postEffects`; this is the
+ * missing self version).
+ *
+ * Her `emBuffPost` (Ineffa.js:130-133) is a `PostEffectStatsAtk` writing the
+ * FLAT stat `mastery` at `A4EmScale/100 = 6/100 = 0.06` of ATK, gated by
+ * `ConditionBoolean('ineffa_panoramic_permutation_protocol')` (the A4 toggle,
+ * `ConditionAscensionChar({ascension:4})`-gated in her `conditions` list — the
+ * toggle's own visibility gate, not re-checked by the post-effect itself).
+ * `mastery` is NOT `isPercent` (Stats.js:332) → no extra /100 fold, matching
+ * the already-ported `partyData` mirror's `ratio: 0.06` exactly.
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Ineffa.js:130-133,190-199
+ *         raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/Atk.js
+ */
+const A4_EM_SCALE = 6; // raw A4EmScale
+const emFromAtk: CharPostEffect = {
+  priority: 1,
+  fromStat: "atk",
+  toStat: "mastery",
+  ratio: A4_EM_SCALE / 100,
+  conditions: [{ type: "boolean", name: "ineffa_panoramic_permutation_protocol" }],
+};
+
+/**
+ * C1 "Rectifying Processor" — SELF-side ATK→`dmg_reaction_lunarcharged` bonus,
+ * feeding the SAME `LUNAR_REACTION_BONUS_KEYS` every lunarcharged/lunardirect
+ * feature above already reads.
+ *
+ * Her `lunarPost2` (Ineffa.js:144-151) is a `PostEffectStatsAtk` writing the
+ * percent stat `dmg_reaction_lunarcharged` at `C1AtkScale/100 = 2.5/100 = 0.025`
+ * of ATK, capped at `C1AtkScaleCap = 50`, gated by
+ * `ConditionAnd([ConditionConstellation(1), ConditionBoolean('ineffa_rectifying_processor')])`.
+ *
+ * IMPORTANT scale note (differs from `lunarMultiFromAtk` above): raw applies a
+ * SECOND `isPercent` /100 fold inside `PostEffectStats.getTree` because
+ * `dmg_reaction_lunarcharged` is a percent stat there. In THIS engine that key
+ * is emitted via `REACTION_BONUS_PERCENT_KEYS` (buildStats.ts), which expects
+ * every contribution in the shared `raw` bag to be a RAW PERCENT (e.g.
+ * FracturedHalo 40-80, ThunderingFury 20) and applies the /100 fold ONCE,
+ * uniformly, at emit time — a post-effect contribution sharing that same bag
+ * key must therefore write a RAW PERCENT too (single fold, `C1AtkScale/100`),
+ * NOT the doubly-folded fraction, so it combines correctly with any
+ * condition-sourced contribution to the same key. `capValue` is likewise the
+ * raw `C1AtkScaleCap` (50), not `/100`, for the same reason: at emit the
+ * capped raw-percent bonus is divided by 100 exactly once, landing on the same
+ * 0.5 fraction ceiling her double-folded engine produces.
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Ineffa.js:144-151,392-409
+ *         packages/data/src/buildStats.ts (`REACTION_BONUS_PERCENT_KEYS`)
+ */
+const C1_ATK_SCALE = 2.5; // raw C1AtkScale
+const C1_ATK_SCALE_CAP = 50; // raw C1AtkScaleCap (raw-percent units, not /100)
+const lunarReactionBonusFromAtk: CharPostEffect = {
+  priority: 1,
+  fromStat: "atk",
+  toStat: "dmg_reaction_lunarcharged",
+  ratio: C1_ATK_SCALE / 100,
+  capValue: C1_ATK_SCALE_CAP,
+  conditions: [
+    { type: "constellation", constellation: 1 },
+    { type: "boolean", name: "ineffa_rectifying_processor" },
+  ],
+};
+
 // ---------------------------------------------------------------------------
 // Features (normal damage + the crit-bearing Lunar-Charged family)
 // ---------------------------------------------------------------------------
@@ -365,8 +431,9 @@ const features: readonly Feature[] = [
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
 // C1: ConditionBoolean toggle (ineffa_rectifying_processor → dmg_reaction_lunarcharged
-//     via lunarPost2 PostEffect) → SKIP (toggle OFF). ineffa_lunar_bonus_2 display
-//     value also skipped (damageType:"" → not in coverage gate).
+//     via the `lunarReactionBonusFromAtk` postEffect, gated `and[constellation1, boolean toggle]`).
+//     ineffa_lunar_bonus_2 display value (her `ineffa_lunar_bonus_2` static readout,
+//     damageType:"") still skipped — not in the damage-output coverage gate.
 // C2: ineffa_punishment_edict_dmg feature (cons-added, gated above).
 // C3: +3 levels to Carrier Frequency (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
 // C4: ConditionStatic display-only → SKIP.
@@ -397,7 +464,7 @@ export const ineffa: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
-  postEffects: [lunarMultiFromAtk],
+  postEffects: [lunarMultiFromAtk, emFromAtk, lunarReactionBonusFromAtk],
   // Her `allowed_lunarcharged: 1` default (Char/Ineffa.js:355) — suppresses the
   // generic `electrocharged` contribution; the Lunar-Charged variants are declared
   // explicitly in `features` above.
