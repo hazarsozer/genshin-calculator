@@ -736,11 +736,16 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     kinich_tiger_beetles_palm_2: true,
     kinich_hummingbirds_feather: true,
   },
-  // Xianyun C2 atk_percent+20 (xianyun_aloof_from_the_world, gated C2). char_constellation:2 threads
-  // the C2 gate ON, matching the oracle dump at constellation 2. Lifts every ATK-scaled feature.
+  // Xianyun C2 atk_percent+20 (xianyun_aloof_from_the_world, gated C2) + A1 galefeather stacks=3
+  // (crit_rate_plunge:8, non-cumulative table lookup) + A4/C2 ATK→plunge-shockwave-DMG conversion
+  // (xianyun_consider_the_adeptus_in_her_realm, level 2 via the C2 xianyun_a4_level publisher →
+  // 400%×ATK capped 18000). char_constellation:2 threads the C2 gate ON (both the ATK buff and the
+  // A4 level-2 publisher), matching the oracle dump at constellation 2.
   "xianyun-self-buffs": {
     char_constellation: 2,
     xianyun_aloof_from_the_world: true,
+    xianyun_galefeather_pursuit: 3,
+    xianyun_consider_the_adeptus_in_her_realm: true,
   },
   // Sigewinne A1 dmg_hydro+8 (sigewinne_requires_appropriate_rest, ungated ascension boolean) + C6
   // own-HP→crit (sigewinne_would_the_most_radiant_of_spirits_pray_for_me → +20% crit_rate / +110%

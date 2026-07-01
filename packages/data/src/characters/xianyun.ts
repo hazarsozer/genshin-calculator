@@ -12,12 +12,18 @@
  * Heals (burst.heal, burst.heal_dot) modelled as output:{kind:"heal"} (ATK-scaled,
  * P3.5.3). The 3 C4 "mystery" heals (ConditionConstellation(4)) stay omitted (solo C0).
  *
- * SOLO-C0 OFF passives (deliberately not folded):
+ * SELF passives (Tier-B, ported):
  *   - A1 `xianyun_galefeather_pursuit` — a plunge crit-rate stacks condition
- *     (crit_rate_plunge), party/stack-gated → 0 in solo build.
- *   - A4 `xianyun_consider_the_adeptus_in_her_realm` — a Boolean-gated flat ATK%
- *     bonus to plunge_shockwave hits; the char-level multiplier is condition-gated
- *     OFF (and char-level `multipliers` are not applied by compileCharacter anyway).
+ *     (crit_rate_plunge 4/6/8/10 by stack 1-4). Ported as a `static-level` table
+ *     gated by a `boolean-value` (settings[name] >= 1), so 0 stacks stays inert —
+ *     raw/genshin_calc_pub/src/js/db/Char/Xianyun.js:299-317.
+ *   - A4/C2 `xianyun_consider_the_adeptus_in_her_realm` — a Boolean-gated ATK→
+ *     plunge-SHOCKWAVE DMG conversion (min(200%×ATK, 9000); C2 raises it to
+ *     min(400%×ATK, 18000) via `xianyun_a4_level`). Ported as a self `CharMultiplier`
+ *     (the same primitive as the already-ported teammate mirror) — raw Xianyun.js:319-328
+ *     (self multiplier) + :374-383 (C2 level-2 publisher).
+ *
+ * SOLO-C0 OFF passive (deliberately not folded):
  *   - C6 `xianyun_cloudkeepers_spirit` (crit_dmg_xianyun on the driftcloud waves) —
  *     a constellation stacks bonus → absent at C0; the raw critDamageBonuses key
  *     reads 0 and is dropped here.
@@ -206,7 +212,8 @@ const features: readonly Feature[] = [
 // Constellations (P2.C Wave-1)
 // ---------------------------------------------------------------------------
 // C1 "Purifying Wind": ConditionStatic, no real stats — SKIP.
-// C2 "Aloof from the World": ConditionBoolean toggle (atk_percent:20) — SKIP.
+// C2 "Aloof from the World": ConditionBoolean toggle (atk_percent:20) + a settings-publisher
+//   (xianyun_a4_level:2, the A4 conversion's level-2 tier) — both ported below.
 // C3 "Creations of Star and Moon": +3 burst talent (char_skill_burst_bonus).
 // C4 "Mystery Millet Gourmet": ConditionStatic with text_percent (display-only) — SKIP.
 // C5 "Astride Rose-Tinted Clouds": +3 skill talent (char_skill_elemental_bonus).
@@ -217,9 +224,7 @@ const features: readonly Feature[] = [
 const constellationConditions: readonly Condition[] = [
   // SELF "Aloof from the World" (C2) — +20% ATK, lifting every Xianyun (ATK-scaled) damage feature.
   // ConditionBoolean gated at C2. SELF mirror of party.xianyun_aloof_from_the_world; the port
-  // modelled only the party.* version → golden-blind SKIP. (The accompanying ConditionStatic — an
-  // A4 plunge-DMG cap upgrade via setting xianyun_a4_level:2 — is part of the deferred Tier-B
-  // ATK→plunge-dmg conversion, not this additive ATK buff.) atk_percent:20.
+  // modelled only the party.* version → golden-blind SKIP. atk_percent:20.
   // Source: raw/genshin_calc_pub/src/js/db/Char/Xianyun.js:374-383 (constellation[1] conditions[0]).
   {
     type: "boolean",
@@ -227,11 +232,34 @@ const constellationConditions: readonly Condition[] = [
     stats: { atk_percent: 20 },
     condition: { type: "constellation", constellation: 2 },
   },
+  // C2's second condition (constellation[1] conditions[1]) — a settings-publisher raising the A4
+  // ATK→plunge-dmg conversion's `xianyun_a4_level` to 2 (400%×ATK, cap 18000; see `multipliers`
+  // below). Same idiom as C3/C5's talent-bonus publishers.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Xianyun.js:384-393 (settings: {xianyun_a4_level: 2}).
+  { type: "constellation", constellation: 2, settings: { xianyun_a4_level: 2 } },
   // C3 — +3 Elemental Burst (Stars Gather at Dusk).
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5 — +3 Elemental Skill (White Clouds at Dawn).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
+
+// A1 "Galefeather Pursuit" (raw Xianyun.js:299-317, ConditionStacksLevels) — a plunge crit-rate
+// stacks condition. realStats crit_rate_plunge = [4,6,8,10] indexed DIRECTLY by stack count
+// (1-4, non-cumulative table lookup — her ConditionStacksLevels.getStats calls
+// `real.getValue(stacksCnt)`, NOT the base ConditionStacks per-stack×count multiply). Ported as
+// `static-level` (levelSetting reads the stack-count setting as-is, no `fromZero`) gated by a
+// `boolean-value` (>=1) so 0 stacks stays inactive — static-level alone defaults level to 1 when
+// the setting is absent (her `getLevel || 1`), which would wrongly contribute crit_rate_plunge:4
+// at rest; the gate reproduces her `ConditionStacks.isActive` (settings[name] > 0) exactly.
+// The ascension-1 subcondition is dropped (always true at full ascension, matching every other
+// A1/A4 gate in this port). maxStacks=4 clamping is inherited free from staticLevelGetValue's
+// level>length→last-value clamp (identical to StatTable.getValue).
+const galefeatherPursuit: Condition = {
+  type: "static-level",
+  levelSetting: "xianyun_galefeather_pursuit",
+  levelStats: { crit_rate_plunge: [4, 6, 8, 10] },
+  condition: { type: "boolean-value", setting: "xianyun_galefeather_pursuit", cond: "ge", value: 1 },
+};
 
 // ---------------------------------------------------------------------------
 // DbObjectChar
@@ -252,10 +280,23 @@ export const xianyun: DbObjectChar = {
   statTable: XianyunStatTable,
   talents,
   features,
-  // Xianyun's OWN A4 self-multiplier (Xianyun.js:319-328, also tags:['plunge_shockwave'])
-  // stays unported — pre-existing scope decision; her solo golden matches at HEAD without it.
-  multipliers: [],
-  conditions: constellationConditions,
+  // Xianyun's OWN A4 self-multiplier (Xianyun.js:319-328) — the SELF mirror of the already-ported
+  // teammate version, reusing the SAME CharMultiplier primitive (Shenhe Icy Quill precedent).
+  // min(ratio×her own atk_total, cap); ratio/cap read `xianyun_a4_level` (1 → 200%/9000, 2 →
+  // 400%/18000 via the C2 publisher above). Gated by the A4 master toggle; targets
+  // plunge_shockwave-tagged features only (damageTypes:[] = no type filter).
+  multipliers: [
+    {
+      source: "ascension4",
+      scaling: "atk",
+      leveling: "xianyun_a4_level",
+      values: { getValue: (level) => (level >= 2 ? 400 : 200) },
+      capValueFromTable: { table: [9000, 18000], levelSetting: "xianyun_a4_level" },
+      condition: { type: "boolean", name: "xianyun_consider_the_adeptus_in_her_realm" },
+      target: { damageTypes: [], tags: ["plunge_shockwave"] },
+    } satisfies CharMultiplier,
+  ],
+  conditions: [...constellationConditions, galefeatherPursuit],
   partyData: {
     loadStats: { stats: ["atk_total"] },
     conditions: [

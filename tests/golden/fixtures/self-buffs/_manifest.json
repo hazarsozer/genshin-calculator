@@ -2751,7 +2751,9 @@
         "constellation": 2,
         "settings": {
           "char_constellation": 2,
-          "xianyun_aloof_from_the_world": true
+          "xianyun_aloof_from_the_world": true,
+          "xianyun_consider_the_adeptus_in_her_realm": true,
+          "xianyun_galefeather_pursuit": 3
         }
       },
       "repKey": "Xianyun",

@@ -38,7 +38,7 @@
       "normal": 1223.472747092918
     },
     "attack.plunge": {
-      "average": 1989.8109606382416,
+      "average": 2105.527919181944,
       "category": "attack",
       "crit": 2892.92396359257,
       "damageType": "plunge",
@@ -47,22 +47,22 @@
       "normal": 1446.461981796285
     },
     "attack.plunge_high": {
-      "average": 4969.709457380984,
+      "average": 12755.972483458709,
       "category": "attack",
-      "crit": 7225.305250473937,
+      "crit": 17526.273643838736,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 3612.6526252369686
+      "normal": 8763.136821919368
     },
     "attack.plunge_low": {
-      "average": 3978.7787810389254,
+      "average": 11707.414481575546,
       "category": "attack",
-      "crit": 5784.622111946331,
+      "crit": 16085.590505311131,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 2892.3110559731654
+      "normal": 8042.7952526555655
     },
     "burst.burst_dmg": {
       "average": 5647.197436501583,
@@ -218,31 +218,31 @@
       "normal": 758.7281279816777
     },
     "skill.xianyun_driftcloud_wave_1_dmg": {
-      "average": 3698.48070592922,
+      "average": 11410.815742041446,
       "category": "skill",
-      "crit": 5377.105501336426,
+      "crit": 15678.073894701227,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 2688.552750668213
+      "normal": 7839.036947350613
     },
     "skill.xianyun_driftcloud_wave_2_dmg": {
-      "average": 4718.7512454959015,
+      "average": 12490.41985955391,
       "category": "skill",
-      "crit": 6860.444949980956,
+      "crit": 17161.413343345757,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 3430.222474990478
+      "normal": 8580.706671672879
     },
     "skill.xianyun_driftcloud_wave_3_dmg": {
-      "average": 10763.85419242849,
+      "average": 18887.07425581525,
       "category": "skill",
-      "crit": 15649.231183199805,
+      "crit": 25950.199576564606,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 7824.6155915999025
+      "normal": 12975.099788282303
     },
     "stats.atk": {
       "average": 2861.380109268,
