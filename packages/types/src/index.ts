@@ -113,6 +113,7 @@ export type {
   ConditionResonance,
   ConditionPartyElements,
   ConditionElementsCount,
+  ConditionSettingsCopy,
   ConditionAnd,
   ConditionOr,
   ConditionStaticLevel,

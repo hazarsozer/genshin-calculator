@@ -454,6 +454,26 @@ export interface ConditionElementsCount extends ConditionBase {
 }
 
 /**
+ * Settings-copy: a base-inert DYNAMIC settings-publisher. When active (its optional
+ * `.condition` gate passes; no gate → always active — `invert` is NOT applied), publishes
+ * `ctx[from]` under the `to` key. A generic port of the getData-settings dynamic-alias idiom
+ * several of her per-char `ConditionStatic` subclasses use, e.g. `ConditionStaticYunJin.getData`:
+ * `settings.yunjin_traditionalist_stacks = settings.party_elements_count_level`.
+ * A pure settings-publisher — contributes NO stats of its own (narrowed to `never`, like `lithic`).
+ * Inert with no party: `from` (typically a `party_*` key) is absent from `ctx` → publishes
+ * `{ [to]: undefined }`, and a consumer's `ctx.settings[key] || 1`-style default is unchanged.
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Static/YunJin.js (getData)
+ */
+export interface ConditionSettingsCopy extends ConditionBase {
+  readonly type: "settings-copy";
+  /** The source ctx key to read (e.g. "party_elements_count_level"). */
+  readonly from: string;
+  /** The published settings key (e.g. "yunjin_traditionalist_stacks"). */
+  readonly to: string;
+  readonly stats?: never;
+}
+
+/**
  * Logical AND of all items — all must evaluate to true.
  * Vacuous truth: empty items list → true.
  */
@@ -599,6 +619,7 @@ export type Condition =
   | ConditionResonance
   | ConditionPartyElements
   | ConditionElementsCount
+  | ConditionSettingsCopy
   | ConditionAnd
   | ConditionOr
   | ConditionStaticLevel

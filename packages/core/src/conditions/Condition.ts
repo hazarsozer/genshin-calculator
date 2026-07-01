@@ -41,6 +41,7 @@ import type {
   ConditionResonance,
   ConditionPartyElements,
   ConditionElementsCount,
+  ConditionSettingsCopy,
   ConditionStaticLevel,
   ConditionBooleanCharElement,
   ConditionDropdownElement,
@@ -107,6 +108,8 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return evaluatePartyElements(condition, ctx);
     case "elements-count":
       return evaluateElementsCount(condition, ctx);
+    case "settings-copy":
+      return checkGate(condition, ctx);
     case "and":
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
@@ -212,6 +215,7 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "party-elements":
     case "char-element":
     case "dropdown-element":
+    case "settings-copy":
       // Pure gates / logical containers / settings-publishers carry no stats of their own.
       return {};
     case "boolean":
@@ -317,6 +321,15 @@ export function conditionSettings(
   // Source: raw/genshin_calc_pub/src/js/classes/Condition/Lithic.js:4-32
   if (condition.type === "lithic") {
     return { weapon_lithic_stacks: ctx["char_origin"] === "liyue" ? 1 : 0 };
+  }
+  // Settings-copy publishes a DYNAMIC settings value: ctx[from] verbatim, under the `to` key.
+  // A generic port of the getData-settings dynamic-alias idiom used by her per-char Static
+  // subclasses (e.g. ConditionStaticYunJin.getData: yunjin_traditionalist_stacks =
+  // party_elements_count_level). `from` absent (no party) → publishes `{ [to]: undefined }`,
+  // which a downstream `ctx.settings[key] || 1`-style consumer treats the same as absent.
+  // Source: raw/genshin_calc_pub/src/js/classes/Condition/Static/YunJin.js (getData)
+  if (condition.type === "settings-copy") {
+    return { [condition.to]: ctx[condition.from] };
   }
   // Every other variant extends ConditionBase, which may carry `.settings`.
   return condition.settings ? { ...condition.settings } : {};

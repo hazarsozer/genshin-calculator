@@ -40,6 +40,7 @@ import type {
   ConditionBooleanCharElement,
   ConditionDropdownElement,
   ConditionElementsCount,
+  ConditionSettingsCopy,
   ConditionAnd,
   ConditionOr,
 } from "@genshin/types";
@@ -844,5 +845,65 @@ describe("ConditionElementsCount", () => {
     expect(conditionStats(c, { char_element: "geo", resonance_element_1: "geo" })).toEqual({
       crit_dmg_geo: 10,
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 14. ConditionSettingsCopy (dynamic party-count → char stacks key, e.g. YunJin A4)
+//
+//   A base-inert generic settings-publisher: when active (its optional `.condition` gate
+//   passes; absent → always active), republishes `ctx[from]` under the `to` key. Ports the
+//   getData-settings dynamic-alias idiom (cf. ConditionStaticYunJin: yunjin_traditionalist_stacks
+//   = party_elements_count_level). Source: .../Condition/Static/YunJin.js
+// ---------------------------------------------------------------------------
+
+describe("ConditionSettingsCopy", () => {
+  it("ungated: always active, publishes ctx[from] under the `to` key", () => {
+    const c: ConditionSettingsCopy = {
+      type: "settings-copy",
+      from: "party_elements_count_level",
+      to: "yunjin_traditionalist_stacks",
+    };
+    expect(evaluate(c, { party_elements_count_level: 3 })).toBe(true);
+    expect(conditionSettings(c, { party_elements_count_level: 3 })).toEqual({
+      yunjin_traditionalist_stacks: 3,
+    });
+  });
+
+  it("absent `from` key (no party) publishes undefined — a `|| 1`-style consumer default holds", () => {
+    const c: ConditionSettingsCopy = {
+      type: "settings-copy",
+      from: "party_elements_count_level",
+      to: "yunjin_traditionalist_stacks",
+    };
+    const result = conditionSettings(c, {});
+    expect(result.yunjin_traditionalist_stacks).toBeUndefined();
+    expect((result.yunjin_traditionalist_stacks as number | undefined) || 1).toBe(1);
+  });
+
+  it("respects a gating condition — inactive (and publishes nothing) until the gate passes", () => {
+    const gate: ConditionBoolean = { type: "boolean", name: "gate" };
+    const c: ConditionSettingsCopy = {
+      type: "settings-copy",
+      from: "party_elements_count_level",
+      to: "yunjin_traditionalist_stacks",
+      condition: gate,
+    };
+    const ctx: EvalContext = { party_elements_count_level: 3 };
+    expect(evaluate(c, ctx)).toBe(false);
+    expect(conditionSettings(c, ctx)).toEqual({});
+    expect(evaluate(c, { ...ctx, gate: true })).toBe(true);
+    expect(conditionSettings(c, { ...ctx, gate: true })).toEqual({
+      yunjin_traditionalist_stacks: 3,
+    });
+  });
+
+  it("conditionStats: always returns {} — a pure settings-publisher, no stats", () => {
+    const c: ConditionSettingsCopy = {
+      type: "settings-copy",
+      from: "party_elements_count_level",
+      to: "yunjin_traditionalist_stacks",
+    };
+    expect(conditionStats(c, { party_elements_count_level: 3 })).toEqual({});
   });
 });
