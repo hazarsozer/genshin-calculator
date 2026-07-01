@@ -2,166 +2,166 @@
   "element": "cryo",
   "features": {
     "attack.charged_hit": {
-      "average": 2205.1854457784393,
+      "average": 2674.373838497256,
       "category": "attack",
-      "crit": 4618.0271457622985,
+      "crit": 5600.586112945765,
       "damageType": "charged",
       "format": "",
       "isReacted": false,
-      "normal": 1937.0919235580106
+      "normal": 2349.2391413363107
     },
     "attack.charged_hit_total": {
-      "average": 6615.556337335319,
+      "average": 8023.121515491768,
       "category": "attack",
-      "crit": 13854.081437286895,
+      "crit": 16801.758338837295,
       "damageType": "charged",
       "format": "",
       "isReacted": false,
-      "normal": 5811.275770674032
+      "normal": 7047.717424008932
     },
     "attack.normal_hit_1": {
-      "average": 7425.199278163586,
+      "average": 15308.5491500862,
       "category": "attack",
-      "crit": 15549.60917001229,
+      "crit": 32058.662310089167,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 6522.4870679581745
+      "normal": 13447.425465641427
     },
     "attack.normal_hit_2": {
-      "average": 6697.087692073652,
+      "average": 13807.399943870998,
       "category": "attack",
-      "crit": 14024.821730414254,
+      "crit": 28915.004801641306,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 5882.895021146918
+      "normal": 12128.77718189652
     },
     "attack.normal_hit_3": {
-      "average": 8466.19018226724,
+      "average": 17454.762311950974,
       "category": "attack",
-      "crit": 17729.618231311582,
+      "crit": 36553.19163008707,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 7436.920399040092
+      "normal": 15332.71460993585
     },
     "attack.normal_hit_3_1": {
-      "average": 4233.09509113362,
+      "average": 8727.381155975487,
       "category": "attack",
-      "crit": 8864.809115655791,
+      "crit": 18276.595815043536,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 3718.460199520046
+      "normal": 7666.357304967925
     },
     "attack.normal_hit_4": {
-      "average": 9004.641800900934,
+      "average": 18564.8891597298,
       "category": "attack",
-      "crit": 18857.225977993523,
+      "crit": 38877.982920586655,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 7909.910225668423
+      "normal": 16307.878741856815
     },
     "attack.normal_hit_4_1": {
-      "average": 4502.320900450467,
+      "average": 9282.4445798649,
       "category": "attack",
-      "crit": 9428.612988996761,
+      "crit": 19438.991460293328,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 3954.9551128342114
+      "normal": 8153.939370928408
     },
     "attack.normal_hit_5": {
-      "average": 10991.76912060379,
+      "average": 22661.753782691645,
       "category": "attack",
-      "crit": 23018.602937033942,
+      "crit": 47457.50265103381,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 9655.45425211155
+      "normal": 19906.67057509807
     },
     "attack.plunge": {
-      "average": 2728.2233730390294,
+      "average": 3308.6964311324396,
       "category": "attack",
-      "crit": 5713.356044733878,
+      "crit": 6928.963713826192,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 2396.541965072935
+      "normal": 2906.444510833134
     },
     "attack.plunge_high": {
-      "average": 6813.952564866244,
+      "average": 8263.729706327147,
       "category": "attack",
-      "crit": 14269.556319958825,
+      "crit": 17305.632132716026,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 5985.552147633734
+      "normal": 7259.073881172828
     },
     "attack.plunge_low": {
-      "average": 5455.290541073304,
+      "average": 6615.990656195282,
       "category": "attack",
-      "crit": 11424.29080280987,
+      "crit": 13854.990973620479,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 4792.06828976924
+      "normal": 5811.657287592482
     },
     "burst.skirk_final_dmg": {
-      "average": 39096.325209788214,
+      "average": 75863.50764112096,
       "category": "burst",
-      "crit": 81874.24393898025,
+      "crit": 158870.8733454255,
       "damageType": "burst",
       "format": "",
       "isReacted": false,
-      "normal": 34343.22312876688
+      "normal": 66640.46700730934
     },
     "burst.skirk_slash_dmg": {
-      "average": 34015.21574448346,
+      "average": 66003.99310418918,
       "category": "burst",
-      "crit": 71233.55089146923,
+      "crit": 138223.40087876582,
       "damageType": "burst",
       "format": "",
       "isReacted": false,
-      "normal": 29879.84517259615
+      "normal": 57979.61446256955
     },
     "other.skirk_burst_coordinated_attack_dmg": {
-      "average": 21912.668040817487,
+      "average": 42519.90053877777,
       "category": "other",
-      "crit": 45888.791821248145,
+      "crit": 89043.78327867728,
       "damageType": "burst",
       "format": "",
       "isReacted": false,
-      "normal": 19248.6542874363
+      "normal": 37350.58023434449
     },
     "other.skirk_charged_coordinated_attack_dmg": {
-      "average": 3719.809013758285,
+      "average": 4511.257740089835,
       "category": "other",
-      "crit": 7789.9022213631,
+      "crit": 9447.32822590844,
       "damageType": "charged",
       "format": "",
       "isReacted": false,
-      "normal": 3267.576435135528
+      "normal": 3962.805463887768
     },
     "other.skirk_crystal_blade_dmg": {
-      "average": 10332.802815995237,
+      "average": 12531.271500249542,
       "category": "other",
-      "crit": 21638.61728156417,
+      "crit": 26242.57840530122,
       "damageType": "charged",
       "format": "",
       "isReacted": false,
-      "normal": 9076.6012087098
+      "normal": 11007.7929552438
     },
     "other.skirk_normal_coordinated_attack_dmg": {
-      "average": 4200.8188000201335,
+      "average": 8660.837057913848,
       "category": "other",
-      "crit": 8797.217163780742,
+      "crit": 18137.241344050086,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 3690.1078707133984
+      "normal": 7607.903248343156
     },
     "reaction.electrocharged": {
       "average": 4779.069571508837,
@@ -191,13 +191,13 @@
       "normal": 3584.3021786316276
     },
     "stats.atk": {
-      "average": 3477.62498418,
+      "average": 4217.54519358,
       "category": "stats",
-      "crit": 3477.62498418,
+      "crit": 4217.54519358,
       "damageType": "",
       "format": "",
       "isReacted": false,
-      "normal": 3477.62498418
+      "normal": 4217.54519358
     },
     "stats.crit_dmg": {
       "average": 138.4,

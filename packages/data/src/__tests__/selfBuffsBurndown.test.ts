@@ -823,8 +823,10 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   // Skirk Seven-Phase-Flash STANCE (skirk_seven_phase_flash → cryo stance moveset) + Serpent's Subtlety
   // (skirk_serpents_subtlety:22 → the burst 2nd term via stacksFactor) + Reason Beyond Reason absorption
   // (skirk_havoc_extinction + skirk_reason_beyond_reason:3 → dmg_normal_skirk on the stance normals) + C2
-  // skirk_into_the_abyss (+70% ATK). skirk_return_to_oblivion=0 so the DEFERRED partyBonus scalingMultiplier
-  // (S2-α) is ×1 — the ported scope is exact. char_constellation:6 threads the C2 gate ON.
+  // skirk_into_the_abyss (+70% ATK) + Return to Oblivion (skirk_return_to_oblivion:3 → the SkirkNormal
+  // 1.7× / SkirkBurst 1.6× partyBonus base multiplier on the stance normals + both burst terms + the C6
+  // coordinated features, PLUS the C4 "Fractured Flow" +40% ATK gated on the same toggle). This rep
+  // EXERCISES the scalingMultiplierFromTable sub-effect. char_constellation:6 threads the C2/C4 gates ON.
   "skirk-self-buffs": {
     char_constellation: 6,
     skirk_seven_phase_flash: true,
@@ -832,6 +834,7 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     skirk_havoc_extinction: true,
     skirk_reason_beyond_reason: 3,
     skirk_into_the_abyss: true,
+    skirk_return_to_oblivion: 3,
   },
   // Lyney residual self buffs — A1 lyney_perilous_performance (+80% ATK pyrotechnic strike) + A4 Conclusive
   // Ovation (common.enemy_status:'pyro' → +dmg_all by party_elements_same, solo=60%) + C2 lyney_locquacious_
