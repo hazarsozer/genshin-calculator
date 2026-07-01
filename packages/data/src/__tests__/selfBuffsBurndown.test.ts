@@ -906,6 +906,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   "freminet-stalking-mode": {
     freminet_stalking_mode: true,
   },
+  // Neuvillette equitable-judgment ValueTable (neuvillette_ancient_seas_legacy=3 → ×1.6): the two
+  // equitable-judgment charged hits scale by scalingMultiplierFromTable [1.1,1.25,1.6]. Dumped at
+  // cons 6 so the co-driven C2 crit_dmg_neuvillette (+42% at legacy 3) + the C6 current-HP hit are
+  // active. char_constellation:6 threads the cons gate ON, matching the oracle dump.
+  "neuvillette-ancient-seas-legacy": {
+    char_constellation: 6,
+    neuvillette_ancient_seas_legacy: 3,
+  },
 };
 
 interface ManifestItem {

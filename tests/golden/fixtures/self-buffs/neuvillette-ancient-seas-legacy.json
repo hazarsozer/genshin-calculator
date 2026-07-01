@@ -1,0 +1,228 @@
+{
+  "element": "hydro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 4324.27489436879,
+      "category": "attack",
+      "crit": 6782.7935621787765,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2845.1315277595536
+    },
+    "attack.neuvillette_equitable_judgment_current_dmg": {
+      "average": 3912.239604441995,
+      "category": "attack",
+      "crit": 6538.8430445748945,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2331.96970205952
+    },
+    "attack.neuvillette_equitable_judgment_dmg": {
+      "average": 6858.390760963081,
+      "category": "attack",
+      "crit": 11462.98418772246,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 4088.082805892461
+    },
+    "attack.normal_hit_1": {
+      "average": 1606.2052136228676,
+      "category": "attack",
+      "crit": 2519.395424348812,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1056.7933826966491
+    },
+    "attack.normal_hit_2": {
+      "average": 1361.016472697514,
+      "category": "attack",
+      "crit": 2134.807336382225,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 895.4728759992553
+    },
+    "attack.normal_hit_3": {
+      "average": 2128.908808522404,
+      "category": "attack",
+      "crit": 3339.276367401068,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1400.7031742454142
+    },
+    "attack.plunge": {
+      "average": 1745.611233114399,
+      "category": "attack",
+      "crit": 2738.0591944915172,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1148.5147627900658
+    },
+    "attack.plunge_high": {
+      "average": 4359.801421204607,
+      "category": "attack",
+      "crit": 6838.518302949154,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2868.5059995592082
+    },
+    "attack.plunge_low": {
+      "average": 3490.482543979871,
+      "category": "attack",
+      "crit": 5474.95779212249,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2296.542698037957
+    },
+    "burst.burst_dmg": {
+      "average": 14812.95094260179,
+      "category": "burst",
+      "crit": 23234.690380389293,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 9746.094958216983
+    },
+    "burst.neuvillette_waterfall_dmg": {
+      "average": 6059.83075535058,
+      "category": "burst",
+      "crit": 9505.080513916904,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3987.030416911453
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.skill_dmg": {
+      "average": 5836.847484943454,
+      "category": "skill",
+      "crit": 9155.322571155082,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3840.3198704509564
+    },
+    "skill.spiritbreath_thorn_dmg": {
+      "average": 633.7530239126161,
+      "category": "skill",
+      "crit": 994.0662968035683,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 416.9741177867316
+    },
+    "stats.atk": {
+      "average": 1874.93757818,
+      "category": "stats",
+      "crit": 1874.93757818,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1874.93757818
+    },
+    "stats.crit_dmg": {
+      "average": 138.4,
+      "category": "stats",
+      "crit": 138.4,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 138.4
+    },
+    "stats.crit_rate": {
+      "average": 37.564,
+      "category": "stats",
+      "crit": 37.564,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 37.564
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1452.4157775,
+      "category": "stats",
+      "crit": 1452.4157775,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1452.4157775
+    },
+    "stats.hp": {
+      "average": 27921.093176,
+      "category": "stats",
+      "crit": 27921.093176,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 27921.093176
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Neuvillette",
+  "repSlug": "neuvillette",
+  "schema": 1,
+  "slug": "neuvillette-ancient-seas-legacy",
+  "weapon": "weapon_name.solar_pearl",
+  "weaponType": "catalyst"
+}
