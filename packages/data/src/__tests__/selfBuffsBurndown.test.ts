@@ -778,6 +778,19 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     varesa_the_courage_to_press_on_2: true,
     varesa_a_hero_of_justices_triumph: true,
   },
+  // Varesa Fiery Passion STANCE + A1 + C4-part1 + A4 — varesa_fiery_passion swaps every normal/charged/
+  // plunge/rush/flying-kick to its Fiery-Passion slot; varesa_tag_team_triple_jump adds the A1 ATK-scaled
+  // plunge term (varesa_a1_level→getValue(2)=180% since stance is on) over plunge_low/high + the C1 copy on
+  // Volcanic Collapse; varesa_the_hero_twice_returned:2 adds +70% ATK (A4 stacks); varesa_the_courage_to_
+  // press_on_1 adds the 500%-ATK capped-20000 term over plunge_low/high + Volcanic Collapse. char_constellation:6
+  // threads the C1/C4 gates ON, matching the oracle dump at constellation 6.
+  "varesa-fiery-passion": {
+    char_constellation: 6,
+    varesa_fiery_passion: true,
+    varesa_tag_team_triple_jump: true,
+    varesa_the_hero_twice_returned: 2,
+    varesa_the_courage_to_press_on_1: true,
+  },
   // Ifa A4 mastery+80 (ifa_mutual_aid_agreement, ascension boolean) + C4 mastery+100
   // (ifa_decayed_vessels_permutation, ≥C4). Plain EM lifts her swirl/EC reaction outputs.
   // char_constellation:4 threads the C4 gate ON, matching the oracle dump at constellation 4.
