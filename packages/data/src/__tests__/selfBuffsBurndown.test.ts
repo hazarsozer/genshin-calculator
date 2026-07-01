@@ -929,9 +929,11 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   },
   // Wanderer WINDFAVORED (wanderer_windfavored): normals ×(fushoudan/100), charged ×(toufukai/100),
   // both keyed by char_skill_elemental, via the gated scalingMultiplierFromTable (raw
-  // Multiplier/Wanderer.js:getTreeBonusMultiplier). C0 (avoids the C1 wind-arrow passive bump).
+  // Multiplier/Wanderer.js:getTreeBonusMultiplier). Dumped at C6: char_constellation:6 threads the
+  // C1 wanderer_passive_level:2 wind-arrow bump AND the C6 duplicate normals ON, matching the oracle.
   "wanderer-windfavored": {
     wanderer_windfavored: true,
+    char_constellation: 6,
   },
 };
 

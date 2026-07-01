@@ -2,49 +2,49 @@
   "element": "anemo",
   "features": {
     "attack.charged_hit": {
-      "average": 5607.001681587949,
+      "average": 5848.653038192868,
       "category": "attack",
-      "crit": 7153.430228353383,
+      "crit": 7461.72978259405,
       "damageType": "charged",
       "format": "",
       "isReacted": false,
-      "normal": 3576.7151141766917
+      "normal": 3730.864891297025
     },
     "attack.normal_hit_1": {
-      "average": 3206.63715927666,
+      "average": 3367.3132113149672,
       "category": "attack",
-      "crit": 4091.0376863012684,
+      "crit": 4296.028694489764,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 2045.5188431506342
+      "normal": 2148.014347244882
     },
     "attack.normal_hit_2": {
-      "average": 3034.0646963869276,
+      "average": 3186.0936016947626,
       "category": "attack",
-      "crit": 3870.869200054767,
+      "crit": 4064.82815148218,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 1935.4346000273836
+      "normal": 2032.41407574109
     },
     "attack.normal_hit_3": {
-      "average": 4446.750904228459,
+      "average": 4669.5657548648105,
       "category": "attack",
-      "crit": 5673.178668863336,
+      "crit": 5957.4465500558945,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 2836.589334431668
+      "normal": 2978.7232750279472
     },
     "attack.normal_hit_3_1": {
-      "average": 2223.3754521142296,
+      "average": 2334.7828774324053,
       "category": "attack",
-      "crit": 2836.589334431668,
+      "crit": 2978.7232750279472,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 1418.294667215834
+      "normal": 1489.3616375139736
     },
     "attack.plunge": {
       "average": 1597.4193640766039,
@@ -73,14 +73,50 @@
       "isReacted": false,
       "normal": 2037.5608274484648
     },
+    "attack.wanderer_normal_hit_1": {
+      "average": 1346.925284525987,
+      "category": "attack",
+      "crit": 1718.411477795906,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 859.205738897953
+    },
+    "attack.wanderer_normal_hit_2": {
+      "average": 1274.4374406779052,
+      "category": "attack",
+      "crit": 1625.9312605928724,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 812.9656302964362
+    },
+    "attack.wanderer_normal_hit_3": {
+      "average": 1867.8263019459241,
+      "category": "attack",
+      "crit": 2382.9786200223575,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1191.4893100111788
+    },
+    "attack.wanderer_normal_hit_3_1": {
+      "average": 933.9131509729621,
+      "category": "attack",
+      "crit": 1191.4893100111788,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 595.7446550055894
+    },
     "burst.burst_dmg": {
-      "average": 6179.084753929363,
+      "average": 7294.752834499939,
       "category": "burst",
-      "crit": 7883.295595837517,
+      "crit": 9306.668411752622,
       "damageType": "burst",
       "format": "",
       "isReacted": false,
-      "normal": 3941.6477979187584
+      "normal": 4653.334205876311
     },
     "reaction.burgeon": {
       "average": 5579.362803284671,
@@ -191,22 +227,22 @@
       "normal": 1115.8725606569342
     },
     "skill.skill_dmg": {
-      "average": 3216.498651733908,
+      "average": 3797.2553527414193,
       "category": "skill",
-      "crit": 4103.619009126978,
+      "crit": 4844.550219108239,
       "damageType": "skill",
       "format": "",
       "isReacted": false,
-      "normal": 2051.809504563489
+      "normal": 2422.2751095541194
     },
     "skill.wanderer_wind_arrow_dmg": {
-      "average": 497.70044992416626,
+      "average": 853.2007712985708,
       "category": "skill",
-      "crit": 634.96778587452,
+      "crit": 1088.51620435632,
       "damageType": "none",
       "format": "",
       "isReacted": false,
-      "normal": 317.48389293726
+      "normal": 544.25810217816
     },
     "stats.atk": {
       "average": 2015.770748808,
