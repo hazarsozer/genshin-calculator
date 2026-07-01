@@ -556,6 +556,17 @@ function baseDamageTerm(
     const stacks = typeof rawStacks === "number" ? rawStacks : 0;
     factors.push(cConst(Math.min(stacks, entry.stacksFactor.maxStacks)));
   }
+  // Runtime stat factor — her FeatureMultiplier{Kokomi,TravelerHydro}.getTreeBonusMultiplier
+  // OVERRIDE pushes `makeStatItem(key)` into the multiplier's CMulti (Kokomi.js:19-21,
+  // TravelerHydro.js:19-21), so the term becomes `talent% × scalingStat × cStat(key)`. A BARE
+  // `× stat` (no `+1`, unlike the base class's string-scalingSource `1 + stat`). Read VERBATIM
+  // (her makeStatItem, no `_total`); the key is a percent stat the bag carries as a fraction. The
+  // two v5.8 users are Kokomi's A4 (`healing`) + Traveler(Hydro)'s A4 (`traveler_clear_waters_percent`).
+  // Absent ⇒ no factor; and when set, `cStat` reads 0 for every build that leaves the stat unset
+  // (all 58k goldens) → ×0 → the term vanishes (base-inert).
+  if (entry.bonusStatFactor !== undefined) {
+    factors.push(cStat(entry.bonusStatFactor));
+  }
   let term: Block = cMulti(factors);
   // Flat additive term from FeatureMultiplierList (her CConst(getValueFlat)):
   // `(levelMult × stat) + flat` — the flat component is talent-level-indexed and added

@@ -345,6 +345,32 @@ export interface FeatureMultiplierEntry {
    */
   readonly stacksFactor?: { readonly setting: string; readonly maxStacks: number };
   /**
+   * RUNTIME stat factor: append `cStat(bonusStatFactor)` — the LIVE bag value read verbatim — as an
+   * EXTRA factor in this term's product: `talent% × scalingStat × stat` (a multiplicative factor on
+   * the base term). Ports her `FeatureMultiplier{Kokomi,TravelerHydro}.getTreeBonusMultiplier`
+   * OVERRIDE, which returns `makeStatItem(key)` and `getTree` pushes it into the multiplier's `CMulti`
+   * items (raw/.../Multiplier/{Kokomi,TravelerHydro}.js:19-21).
+   *
+   * THE KEY DISTINCTION: this is a BARE `× stat` (no `+1`) — the subclass override REPLACES the base
+   * class's `getTreeBonusMultiplier`, which for a string `scalingSource` would return `1 + stat`
+   * (`CSumPlusOne`, still deferred — see {@link scalingMultiplier}). So this field is NOT the
+   * `(1 + stat)` amplifying form; it is the raw stat as a multiplier. The read is VERBATIM (her
+   * `makeStatItem` → `stats.get(key)`, no `_total`) — the key is a percent stat the bag carries as a
+   * FRACTION (buildStats' emit `/100`), so a slider `50` reads `0.5`. `cStat` defaults an absent key
+   * to 0, so the whole term is `×0` (vanishes) whenever the source stat is unset.
+   *
+   * The two v5.8 users: Kokomi's A4 Song-of-Pearls (`healing` — her Normal/Charged bonus scales the
+   * Healing Bonus, on the two `kokomi_ceremonial_garment`-gated char multipliers) and Traveler(Hydro)'s
+   * A4 Clear-Waters (`traveler_clear_waters_percent` — a ConditionNumber slider 0..100, on the torrent-
+   * surge skill's second multiplier, capped by {@link capValue}). Absent ⇒ no factor; and even when set,
+   * every base build leaves the source stat 0/unset (all 58k goldens) → the term is ×0 (Traveler's whole
+   * A4 vanishes; Kokomi's multipliers are further garment-gated OFF) → base-inert.
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/{Kokomi,TravelerHydro}.js:19-21
+   *         (getTreeBonusMultiplier → makeStatItem), classes/Feature2/Multiplier.js:217-240 (getTree CMulti).
+   */
+  readonly bonusStatFactor?: string;
+  /**
    * CHAR-LEVEL multipliers only: which features this multiplier applies to.
    * When set (only on `char.multipliers` entries), the multiplier is summed into
    * a feature's base-damage term iff `target.damageTypes` includes the feature's

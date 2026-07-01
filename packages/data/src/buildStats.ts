@@ -42,6 +42,7 @@ import type {
   Element,
   EvalContext,
   Feature,
+  FeatureMultiplierEntry,
   StatTableEntry,
 } from "@genshin/types";
 import { getArtifactSet } from "./artifacts/sets/index.js";
@@ -643,6 +644,29 @@ function collectFeatureBonusKeys(features: readonly Feature[]): readonly string[
   return [...keys];
 }
 
+/**
+ * The set of `bonusStatFactor` keys referenced by any multiplier (per-feature OR char-level).
+ * A multiplier's `bonusStatFactor` appends `cStat(key)` as an EXTRA base-term factor (her
+ * FeatureMultiplier{Kokomi,TravelerHydro}.getTreeBonusMultiplier — a bare `× stat`), so buildStats
+ * must emit each present key as a FRACTION (all v5.8 users are percent stats — Kokomi's `healing`,
+ * already emitted via HEAL_BONUS_KEYS, and Traveler(Hydro)'s `traveler_clear_waters_percent`, a
+ * ConditionNumber). De-duped; a re-emit of an already-emitted key (`healing`) is idempotent (same
+ * value). Absent for every char with no `bonusStatFactor` multiplier → empty → no emit (base-inert).
+ * Source: raw/.../Feature2/Multiplier/{Kokomi,TravelerHydro}.js:19-21 (makeStatItem override).
+ */
+function collectBonusStatFactorKeys(char: DbObjectChar): readonly string[] {
+  const keys = new Set<string>();
+  const addFrom = (mults: readonly FeatureMultiplierEntry[] | undefined): void => {
+    for (const m of mults ?? []) if (m.bonusStatFactor !== undefined) keys.add(m.bonusStatFactor);
+  };
+  for (const f of char.features) {
+    addFrom(f.multipliers);
+    for (const item of f.items ?? []) addFrom(item.multipliers);
+  }
+  addFrom(char.multipliers);
+  return [...keys];
+}
+
 /** What an equipped-set's `setBonuses` resolve to: gated conditions + piece-count settings + post-effects. */
 interface ResolvedSetBonuses {
   /** Piece-count-gated conditions (tiers `t <= pieces`), still subject to their own gate. */
@@ -1030,6 +1054,16 @@ export function buildStats(input: BuildInput): BuildResult {
   for (const key of collectFeatureBonusKeys(input.char.features)) {
     if (!raw.isSet(key)) continue;
     out[key] = raw.get(key) / 100;
+  }
+
+  // Multiplier `bonusStatFactor` keys — the bare `× stat` factor her FeatureMultiplier{Kokomi,
+  // TravelerHydro} appends (makeStatItem, read verbatim). Emitted as FRACTIONS (all v5.8 users are
+  // percent stats); a re-emit of an already-emitted key (Kokomi's `healing`, HEAL_BONUS_KEYS) is
+  // idempotent. The sole NOT-otherwise-emitted key is Traveler(Hydro)'s `traveler_clear_waters_percent`
+  // (a ConditionNumber slider): absent (slider 0/unset) for every golden → not in raw → not emitted →
+  // the A4 factor reads 0 → its whole term is ×0 → base-inert (58k damage goldens byte-identical).
+  for (const key of collectBonusStatFactorKeys(input.char)) {
+    if (raw.isSet(key)) out[key] = raw.get(key) / 100;
   }
 
   // Heal-bonus stats (her FeatureHeal.getStatsHealBonus → healing/healing_base/healing_recv),
