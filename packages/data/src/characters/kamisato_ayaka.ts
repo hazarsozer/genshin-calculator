@@ -6,17 +6,18 @@
  * hit), plunge/low/high, cryo skill (Kamisato Art: Hyouka), cryo burst
  * (Kamisato Art: Soumetsu = slashing + bladestorm hits).
  *
- * NORMAL/CHARGED ELEMENT: physical (no `element` field). Ayaka's cryo infusion
- * (`attack_infusion_cryo` on the Senho ConditionBoolean) is a TOGGLE, OFF in the
- * fixed solo build, so the oracle computes normals/charged as physical. The
- * unconditional `allowed_infusion_cryo` Condition only ENABLES infusion; it does
- * not apply it. Leaving these features un-elemented matches the fixture.
+ * NORMAL/CHARGED ELEMENT: physical by default; Ayaka's Senho CRYO infusion
+ * (`ayaka_senho` ConditionBoolean) is a user TOGGLE — OFF in the golden/fixture build
+ * (normals/charged/plunge compute PHYSICAL), ON it infuses them cryo. Now modelled: the
+ * toggle publishes `attack_infusion: 'cryo'` (her raw `attack_infusion_cryo: 1`; the
+ * getInfusionElement resolves both to cryo). The unconditional `allowed_infusion_cryo`
+ * enabler is inert for the damage path (getElement only checks allowInfusion + phys).
  *
- * No always-on passive DMG bonuses folded: A1 (`dmg_normal`/`dmg_charged` +30) is
- * the `ayaka_amatsumi…` ConditionBoolean toggle; A4 (`dmg_cryo` +18) is the
- * `ayaka_kanten…` ConditionBoolean toggle. Both are OFF in the solo build, so no
- * baseStats. The ascension crit-DMG secondary is already folded into the stat
- * table via the generated charTables (oracle stats.crit_dmg = 138.4 ✓).
+ * SELF DMG toggles (also previously SKIPPED, now modelled as booleans; OFF in the golden):
+ *   - A1 `ayaka_amatsumi_kunitsumi_ihahigoto`: +30% Normal / +30% Charged DMG.
+ *   - A4 `ayaka_kanten_senmyou_norito`: +18% Cryo DMG (lifts every cryo hit incl. skill/burst).
+ *   - C4 `ayaka_eikyo_ryuuhan` (SELF): −30% enemy DEF (C≥4). C6 `ayaka_ai_suigetsu`: +298% Charged (C≥6).
+ * The ascension crit-DMG secondary is already folded into the stat table (oracle crit_dmg = 138.4 ✓).
  *
  * C2 adds `ayaka_add_slashing_dmg` / `ayaka_add_bladestorm_dmg` (20% scalingMultiplier
  * on the burst talent, FeatureDamageBurst, gated at constellation≥2). C3/C5 are
@@ -211,15 +212,49 @@ const features: readonly Feature[] = [
 // C2 "Blizzard Blade Seki no To": ConditionStatic text_percent_dmg:20 — display-only
 //   (the actual C2 damage comes from ayaka_add_slashing_dmg / ayaka_add_bladestorm_dmg above).
 // C3: +3 levels to Kamisato Art: Soumetsu (burst). Raw cons[2] char_skill_burst_bonus:3.
-// C4 "Ebb and Flow": ConditionBoolean toggle (enemy_def_reduce:30) — SKIP (toggle OFF).
+// C4 "Ebb and Flow": SELF ConditionBoolean toggle (enemy_def_reduce:30) — ported below.
 // C5: +3 levels to Kamisato Art: Hyouka (skill). Raw cons[4] char_skill_elemental_bonus:3.
-// C6 "Dance of Suigetsu": ConditionBoolean toggle (dmg_charged:298) — SKIP (toggle OFF).
+// C6 "Dance of Suigetsu": ConditionBoolean toggle (dmg_charged:298) — ported below.
 // Raw: db/Char/Ayaka.js constellation array (Ayaka.js:364-431).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Kamisato Art: Soumetsu (burst).
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C4 "Ebb and Flow" (SELF): −30% enemy DEF, a self ConditionBoolean gated at C≥4 (the party
+  // mirror lives in partyData). raw Ayaka.js:396-408 (cons[3]). Base-inert unless toggled.
+  {
+    type: "boolean",
+    name: "ayaka_eikyo_ryuuhan",
+    stats: { enemy_def_reduce: 30 },
+    condition: { type: "constellation", constellation: 4 },
+  },
   // C5: +3 levels to Kamisato Art: Hyouka (skill).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // C6 "Dance of Suigetsu": +298% Charged DMG, a ConditionBoolean gated at C≥6. raw Ayaka.js:418-429
+  // (cons[5]). Base-inert unless toggled.
+  {
+    type: "boolean",
+    name: "ayaka_ai_suigetsu",
+    stats: { dmg_charged: 298 },
+    condition: { type: "constellation", constellation: 6 },
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Senho infusion + A1/A4 self toggles
+// ---------------------------------------------------------------------------
+// These are user toggles (OFF in the golden/fixture solo build) that the port previously SKIPPED.
+//   - ayaka_senho: Kamisato Art: Senho grants CRYO infusion on the normals/charged/plunge (her raw
+//     publishes `attack_infusion_cryo: 1`; the port models the equivalent string `attack_infusion:
+//     'cryo'` — her getInfusionElement resolves both to cryo, the Aloy/Alhaitham precedent). The
+//     unconditional `allowed_infusion_cryo` enabler is inert for the damage path (getElement only
+//     checks allowInfusion + phys). raw Ayaka.js:322-336.
+//   - ayaka_amatsumi_kunitsumi_ihahigoto (A1): +30% Normal / +30% Charged DMG. raw Ayaka.js:337-349.
+//   - ayaka_kanten_senmyou_norito (A4): +18% Cryo DMG. raw Ayaka.js:350-362.
+// The A1/A4 ascension sub-gates are dropped (every modelled build is A6). Base-inert untoggled.
+const selfToggles: readonly Condition[] = [
+  { type: "boolean", name: "ayaka_senho", settings: { attack_infusion: "cryo" } },
+  { type: "boolean", name: "ayaka_amatsumi_kunitsumi_ihahigoto", stats: { dmg_normal: 30, dmg_charged: 30 } },
+  { type: "boolean", name: "ayaka_kanten_senmyou_norito", stats: { dmg_cryo: 18 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -237,7 +272,7 @@ export const kamisatoAyaka: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: constellationConditions,
+  conditions: [...selfToggles, ...constellationConditions],
   // C4 "Ebb and Flow" — enemy DEF -30%.
   // Source: raw/genshin_calc_pub/src/js/db/Char/Ayaka.js (partyData conditions)
   partyData: {

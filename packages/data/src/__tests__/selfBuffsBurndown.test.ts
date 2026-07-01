@@ -822,6 +822,17 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   "sethos-twilight-meditation": {
     sethos_twilight_meditation: true,
   },
+  // Kamisato Ayaka Senho (ayaka_senho + A1/A4/C4/C6 self toggles): CRYO infusion on normals/charged/
+  // plunge (attack_infusion:'cryo') + A1 +30% Normal/Charged + A4 +18% Cryo + C4 SELF −30% enemy DEF +
+  // C6 +298% Charged. char_constellation:6 threads C4/C6 ON, matching the oracle dump at C6.
+  "kamisato-ayaka-senho": {
+    char_constellation: 6,
+    ayaka_senho: true,
+    ayaka_amatsumi_kunitsumi_ihahigoto: true,
+    ayaka_kanten_senmyou_norito: true,
+    ayaka_eikyo_ryuuhan: true,
+    ayaka_ai_suigetsu: true,
+  },
 };
 
 interface ManifestItem {
