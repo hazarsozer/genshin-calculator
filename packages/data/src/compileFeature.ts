@@ -570,6 +570,33 @@ function baseDamageTerm(
   // applied to THIS term before it enters the base-damage sum and before the
   // dmg-bonus/res/def factors. The sole v5.8 user is Ocean-Hued Clam's foam
   // (`min(0.9 × accumulated_healing, 30000)`). Absent → no cap (every other multiplier).
+  //
+  // capValueFromTable is the LEVEL-INDEXED form — her `capValue.getValue(this.getLevel(data))`
+  // (Multiplier.js:233-237), a ValueTable indexed by the SAME level as the talent% (her
+  // `getLevel(leveling) || 1`). The cap = `table[level]` (1-indexed, clamped via valueTableGet),
+  // the level resolved from its own levelSetting exactly as the talent% path above (char-skill
+  // slot → talent level + `_bonus`; else `settings[levelSetting]` default 1) and floored at 1 to
+  // mirror her `|| 1`. Mutually exclusive with the numeric capValue (fail loud if both). The v5.8
+  // user is Sigewinne's A1/C1 buff (`[2800, 3500]` by sigewinne_buff_level). Absent → the numeric
+  // path; no entry sets it ⇒ base-inert.
+  if (entry.capValueFromTable !== undefined) {
+    if (entry.capValue !== undefined) {
+      throw new Error(
+        `baseDamageTerm: entry '${entry.source ?? "(unnamed)"}' sets both capValue and ` +
+        `capValueFromTable — set exactly one`
+      );
+    }
+    const { table, levelSetting } = entry.capValueFromTable;
+    const capSlot = LEVELING_TO_SLOT[levelSetting];
+    const capBaseLevel =
+      capSlot !== undefined
+        ? ctx.talentLevels[capSlot]
+        : typeof ctx.settings[levelSetting] === "number"
+          ? (ctx.settings[levelSetting] as number)
+          : 1;
+    const capLevel = capBaseLevel + skillLevelBonus(ctx.settings, levelSetting);
+    return cMin([term, cConst(valueTableGet(table, Math.max(1, capLevel)))]);
+  }
   return entry.capValue !== undefined ? cMin([term, cConst(entry.capValue)]) : term;
 }
 

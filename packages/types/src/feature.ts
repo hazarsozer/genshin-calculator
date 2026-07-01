@@ -213,6 +213,28 @@ export interface FeatureMultiplierEntry {
    */
   readonly capValue?: number;
   /**
+   * LEVEL-INDEXED cap on THIS multiplier's base term — her `FeatureMultiplier.capValue`
+   * is a `ValueTable` resolved at `capValue.getValue(this.getLevel(data))`
+   * (Multiplier.js:233-237), so the cap TIER rises with the multiplier's level. The
+   * numeric {@link capValue} ports only a single constant tier; this table form indexes
+   * the cap by `levelSetting` (1-indexed, clamped — her `ValueTable.getValue`), the level
+   * resolved exactly as the talent% path resolves the entry's leveling (char-skill slot →
+   * talent level, else `settings[levelSetting]` defaulting to 1, matching her
+   * `getLevel || 1`). Mutually exclusive with {@link capValue} (set exactly one).
+   *
+   * The v5.8 user is Sigewinne's A1/C1 HP-above-30000 → skill-DMG buff, whose cap is her
+   * `new ValueTable([A1DmgBonusMax, C1DmgBonusMax])` = `[2800, 3500]` indexed by
+   * `sigewinne_buff_level` (1 = A1 tier, 2 = C1 tier). Absent ⇒ no table cap; and no
+   * existing entry sets it ⇒ the 58k damage goldens are byte-identical.
+   *
+   * Source: raw/.../Feature2/Multiplier.js:233-237 (CValueCap, capValue.getValue(getLevel));
+   *         raw/.../db/Char/Sigewinne.js:286,532 (statCap/capValue ValueTable([2800,3500])).
+   */
+  readonly capValueFromTable?: {
+    readonly table: readonly number[];
+    readonly levelSetting: string;
+  };
+  /**
    * Optional floor-at-zero threshold subtracted from the SCALING STAT before the
    * talent% multiply: the scaling factor becomes `max(scalingStat − exceedStatValue, 0)`
    * (her FeatureMultiplier.getTreeStatValue, Multiplier.js:281-301 — `CMax([CSubtract([stat,
