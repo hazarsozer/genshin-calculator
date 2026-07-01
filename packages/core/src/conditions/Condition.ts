@@ -248,18 +248,14 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
       const min = condition.min ?? 0;
       // Effective upper clamp. Her getMaxValue is normally `params.max`, but a subclass may
       // raise it — ConditionNumberIfa.getMaxValue adds `c2bonus` at char_constellation >= 2
-      // (Ifa's cap 150 → 200; single-entry array). ConditionNumberFurina.getMaxValue stacks
-      // TWO such bonuses (300 → 400 at C1 → 800 at C2, raw Condition/Number/Furina.js:14-26) —
-      // `maxBonusFromConstellation` sums every entry whose threshold is met. Absent → `max` is
-      // used unchanged (base-inert). Applies only when a base `max` exists (matches her super call).
+      // (Ifa's cap 150 → 200). `maxBonusFromConstellation` ports that: absent → `max` is used
+      // unchanged (base-inert). Applies only when a base `max` exists (matches her super call).
       let max = condition.max;
       if (max !== undefined && condition.maxBonusFromConstellation !== undefined) {
         const consInCtx = ctx["char_constellation"];
         const consLevel = typeof consInCtx === "number" ? consInCtx : 0;
-        for (const entry of condition.maxBonusFromConstellation) {
-          if (consLevel >= entry.constellation) {
-            max += entry.bonus;
-          }
+        if (consLevel >= condition.maxBonusFromConstellation.constellation) {
+          max += condition.maxBonusFromConstellation.bonus;
         }
       }
       const clamped = max !== undefined

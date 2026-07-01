@@ -219,22 +219,6 @@ export interface CharPostEffect {
    * Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/BondOfLife.js:6-15
    */
   readonly fromStatFactorSetting?: string;
-  /**
-   * Optional ABSOLUTE cap on the `fromStat` BASE itself (before the ratio multiply),
-   * applied AFTER `fromStatMax`/`fromStatDivide`/`fromStatAddend`/`fromStatFactorSetting`
-   * and BEFORE `offset`/ratio/stacks. Mirrors her `PostEffectStats.maxBase`
-   * (`base = CValueCap([base], {value: maxBase})`, PostEffect/Stats.js:67-70) — the
-   * mutually-exclusive sibling of `offset` (her `exceed` branch subtracts instead of
-   * capping; only one of the two is set per raw instance). Furina's fanfare→dmg_all/
-   * healing_recv self post-effects cap the stack count at 400 (`BurstFanfareLimit +
-   * C1FanfareLimit`) even though the C2 slider clamp itself (`maxBonusFromConstellation`
-   * on the feeding `ConditionNumber`) can reach 800 — the two caps are independent.
-   * Absent → the base is unchanged (base-inert; sole user is Furina's self fanfare bonus).
-   *
-   * Source: raw/genshin_calc_pub/src/js/classes/PostEffect/Stats.js:67-70,
-   *         raw/genshin_calc_pub/src/js/db/Char/Furina.js:175-183 (fanfareDmgPost maxBase).
-   */
-  readonly fromStatCapValue?: number;
   /** Stat the bonus is written TO (e.g. `atk`). */
   readonly toStat: string;
   /**
