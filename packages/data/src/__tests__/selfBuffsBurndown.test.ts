@@ -935,6 +935,14 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     wanderer_windfavored: true,
     char_constellation: 6,
   },
+  // Yoimiya NIWABI FIRE-DANCE (yoimiya_teika_enshou): normals ×(yoimiya_bonus_dmg/100) keyed by
+  // char_skill_elemental (gated scalingMultiplierFromTable, raw Multiplier/Yoimiya.js:16-33) + the
+  // normals/aimed/plunge pyro-infused (the toggle publishes attack_infusion:'pyro'). Dumped at C6:
+  // char_constellation:6 threads the C6 duplicate normals ON, matching the oracle dump.
+  "yoimiya-teika-enshou": {
+    yoimiya_teika_enshou: true,
+    char_constellation: 6,
+  },
 };
 
 interface ManifestItem {
