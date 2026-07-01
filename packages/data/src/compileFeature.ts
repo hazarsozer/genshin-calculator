@@ -317,6 +317,16 @@ function catalyzeEmCurve(): Block {
   return cDivide([cMulti([cConst(5), em]), cSum([em, cConst(1200)])]);
 }
 
+/**
+ * Her `ValueTable.getValue(level)` for the `level > 0` branch: 1-indexed and clamped
+ * to `table.length` (`return values[min(level, length) - 1]`, ValueTable.js). The
+ * `scalingMultiplierFromTable` caller invokes this only for `level > 0`, matching her
+ * `FeatureMultiplierNeuvilleteCharged` guard.
+ */
+function valueTableGet(table: readonly number[], level: number): number {
+  return table[Math.min(level, table.length) - 1]!;
+}
+
 /** Build the base-damage term for one multiplier: talent% × scalingStatTotal. */
 function baseDamageTerm(
   entry: FeatureMultiplierEntry,
@@ -377,10 +387,43 @@ function baseDamageTerm(
   // `scalingMultiplier` is the flat extra factor on the base term (her
   // getTreeBonusMultiplier CConst — "bonus hit = X% of a base hit", e.g. Amber C1's
   // second arrow at 0.20). Absent = ×1.
+  //
+  // Three ways her `getScalingMultiplier(data)` resolves this factor:
+  //   1. the plain constant `scalingMultiplier` (default 1) — the base class;
+  //   2. that constant GATED by `scalingMultiplierCondition` (Multiplier.js:157-162:
+  //      active/absent gate → the constant; inactive gate → 1) — Freminet's frost ×2;
+  //   3. a `ValueTable` lookup keyed by a settings level, via `scalingMultiplierFromTable`
+  //      (her FeatureMultiplierNeuvilleteCharged subclass OVERRIDE: `level > 0 ?
+  //      table.getValue(level) : 1`) — Neuvillette's equitable judgment. The table form
+  //      is a full override → it REPLACES the constant + condition (fail loud if combined).
+  // Read at COMPILE time against the build settings (like `scalingOffset` below); the
+  // factor bakes into the base term, so a settings change recompiles the feature.
+  let scalingFactor: number;
+  if (entry.scalingMultiplierFromTable !== undefined) {
+    if (entry.scalingMultiplier !== undefined || entry.scalingMultiplierCondition !== undefined) {
+      throw new Error(
+        `baseDamageTerm: entry '${entry.source ?? "(unnamed)"}' sets scalingMultiplierFromTable ` +
+        `with scalingMultiplier/scalingMultiplierCondition — the table form replaces both`
+      );
+    }
+    const { table, levelSetting } = entry.scalingMultiplierFromTable;
+    const rawLevel = ctx.settings[levelSetting];
+    const level = typeof rawLevel === "number" ? rawLevel : 0;
+    // her NeuvilleteCharged.getScalingMultiplier: level>0 → table.getValue(level), else 1.
+    scalingFactor = level > 0 ? valueTableGet(table, level) : 1;
+  } else {
+    scalingFactor = entry.scalingMultiplier ?? 1;
+    // Conditional gate: an INACTIVE gate reverts the constant to 1 (her `return 1`).
+    if (
+      entry.scalingMultiplierCondition !== undefined &&
+      !evaluate(entry.scalingMultiplierCondition, ctx.settings)
+    ) {
+      scalingFactor = 1;
+    }
+  }
   // `scalingOffset` adds a settings-driven additive offset to the scaling factor —
   // faithful to FurinaSkill.getScalingMultiplier: `result += perStack × min(maxStacks, stacks)`.
   // Absent or 0 stacks → offset 0 → no change.
-  let scalingFactor = entry.scalingMultiplier ?? 1;
   if (entry.scalingOffset !== undefined) {
     const raw = ctx.settings[entry.scalingOffset.setting];
     const stacks = typeof raw === "number" ? raw : 0;
@@ -429,13 +472,20 @@ function baseDamageTerm(
   // the build-coupled constant fold (sayu C6 30.2, kirara C1 scalingMultiplier 3).
   // Absent → the children are exactly [talentPercent, scalingStat] as before.
   if (entry.coefficientFromStat !== undefined) {
-    // Fail loud: mutually exclusive with scalingMultiplier / scalingOffset (either would
-    // double-count the coefficient — the convention is coefficientFromStat XOR scalar).
-    if (entry.scalingMultiplier !== undefined || entry.scalingOffset !== undefined) {
+    // Fail loud: mutually exclusive with the whole scaling-multiplier family
+    // (scalingMultiplier / scalingOffset / scalingMultiplierCondition /
+    // scalingMultiplierFromTable) — any of them would double-count the coefficient
+    // (the convention is coefficientFromStat XOR the scalar/conditional/table factor).
+    const scalarConflict =
+      entry.scalingMultiplier !== undefined ? "scalingMultiplier"
+      : entry.scalingOffset !== undefined ? "scalingOffset"
+      : entry.scalingMultiplierCondition !== undefined ? "scalingMultiplierCondition"
+      : entry.scalingMultiplierFromTable !== undefined ? "scalingMultiplierFromTable"
+      : undefined;
+    if (scalarConflict !== undefined) {
       throw new Error(
         `baseDamageTerm: entry '${entry.source ?? "(unnamed)"}' sets coefficientFromStat ` +
-        `alongside ${entry.scalingMultiplier !== undefined ? "scalingMultiplier" : "scalingOffset"} ` +
-        `— these are mutually exclusive`
+        `alongside ${scalarConflict} — these are mutually exclusive`
       );
     }
     // Fail loud: exactly one of ratio | divisor required (both or neither silently mis-computes).

@@ -674,3 +674,109 @@ describe("compileFeature — Clam foam suppression flags (no-crit / no-dmg-bonus
     expect(result.crit).toBeGreaterThan(result.normal * 1.9);
   });
 });
+
+// ===========================================================================
+// scalingMultiplierCondition + scalingMultiplierFromTable (S2-α) — the two new
+// base-inert scaling-multiplier forms. Her getScalingMultiplier (Multiplier.js:157-162)
+// gates the constant on a condition (INACTIVE → 1); FeatureMultiplierNeuvilleteCharged
+// overrides it with a ValueTable lookup keyed by a settings level (level>0 → getValue,
+// else 1). Both read ctx.settings at compile time and REPLACE nothing when absent.
+// ===========================================================================
+
+describe("compileFeature — scalingMultiplierCondition + scalingMultiplierFromTable (S2-α)", () => {
+  const { context } = buildHuTao();
+
+  /** Compile a single-multiplier pyro-skill feature under `settings`, return its normal. */
+  function normalUnder(
+    multiplier: FeatureMultiplierEntry,
+    settings: Record<string, unknown>
+  ): number {
+    const feature: Feature = {
+      name: "sm_probe",
+      category: "skill",
+      element: "pyro",
+      multipliers: [multiplier],
+    };
+    const ctx: CompileContext = {
+      charElement: "pyro",
+      talentLevels: { attack: 10, elemental: 10, burst: 10 },
+      settings,
+    };
+    return compile(compileFeature(feature, ctx))(context).normal;
+  }
+
+  // A plain 100%-of-ATK skill term (talentPercent 1.0 × atk_total); every case below
+  // varies ONLY the scaling factor, so the whole triple scales linearly with it.
+  const BASE: FeatureMultiplierEntry = { scaling: "atk", leveling: "", values: constTable(100) };
+
+  // --- scalingMultiplierCondition (Freminet frost ×2 form) --------------------
+
+  it("conditional gate INACTIVE → factor reverts to 1 (byte-identical to the plain term)", () => {
+    const gated = normalUnder(
+      { ...BASE, scalingMultiplier: 2, scalingMultiplierCondition: { type: "boolean", name: "gate" } },
+      {} // gate off → her getScalingMultiplier returns 1
+    );
+    expect(gated).toBe(normalUnder(BASE, {}));
+  });
+
+  it("conditional gate ACTIVE → the constant applies (== plain × 2)", () => {
+    const gated = normalUnder(
+      { ...BASE, scalingMultiplier: 2, scalingMultiplierCondition: { type: "boolean", name: "gate" } },
+      { gate: true }
+    );
+    expect(gated).toBeCloseTo(normalUnder(BASE, {}) * 2, 6);
+  });
+
+  it("absent gate → the constant applies unconditionally (control, unchanged from today)", () => {
+    expect(normalUnder({ ...BASE, scalingMultiplier: 2 }, {})).toBeCloseTo(
+      normalUnder(BASE, {}) * 2,
+      6
+    );
+  });
+
+  // --- scalingMultiplierFromTable (Neuvillette [1.1,1.25,1.6] form) -----------
+
+  function tableMult(): FeatureMultiplierEntry {
+    return { ...BASE, scalingMultiplierFromTable: { table: [1.1, 1.25, 1.6], levelSetting: "legacy" } };
+  }
+
+  it("table level 0 / absent → factor 1 (byte-identical to the plain term, base-inert)", () => {
+    expect(normalUnder(tableMult(), {})).toBe(normalUnder(BASE, {}));
+    expect(normalUnder(tableMult(), { legacy: 0 })).toBe(normalUnder(BASE, {}));
+  });
+
+  it("table levels 1/2/3 → table[level-1] factor (1-indexed, her ValueTable)", () => {
+    const plain = normalUnder(BASE, {});
+    expect(normalUnder(tableMult(), { legacy: 1 })).toBeCloseTo(plain * 1.1, 6);
+    expect(normalUnder(tableMult(), { legacy: 2 })).toBeCloseTo(plain * 1.25, 6);
+    expect(normalUnder(tableMult(), { legacy: 3 })).toBeCloseTo(plain * 1.6, 6);
+  });
+
+  it("table level beyond length clamps to the last entry (her ValueTable clamp)", () => {
+    expect(normalUnder(tableMult(), { legacy: 5 })).toBeCloseTo(normalUnder(BASE, {}) * 1.6, 6);
+  });
+
+  // --- fail-loud: the table form is a full override --------------------------
+
+  it("throws when scalingMultiplierFromTable co-occurs with scalingMultiplier", () => {
+    expect(() =>
+      normalUnder(
+        { ...BASE, scalingMultiplier: 2, scalingMultiplierFromTable: { table: [1.1], levelSetting: "legacy" } },
+        {}
+      )
+    ).toThrow(/the table form replaces both/);
+  });
+
+  it("throws when scalingMultiplierFromTable co-occurs with scalingMultiplierCondition", () => {
+    expect(() =>
+      normalUnder(
+        {
+          ...BASE,
+          scalingMultiplierCondition: { type: "boolean", name: "gate" },
+          scalingMultiplierFromTable: { table: [1.1], levelSetting: "legacy" },
+        },
+        {}
+      )
+    ).toThrow(/the table form replaces both/);
+  });
+});

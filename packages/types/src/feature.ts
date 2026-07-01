@@ -78,11 +78,58 @@ export interface FeatureMultiplierEntry {
    * (20% of the aimed shot, `scalingMultiplier: 0.20`). Absent = ×1 (no effect).
    *
    * Mirrors her `getTreeBonusMultiplier` → `CConst(value)` for a numeric
-   * `getScalingMultiplier` (Multiplier.js:223-264). The string-stat form
-   * (`(1 + stat)`) and the `scalingMultiplierCondition` gate are not yet modelled
-   * (no v5.8 constellation in scope needs them); add them if a source does.
+   * `getScalingMultiplier` (Multiplier.js:223-264). The optional
+   * {@link scalingMultiplierCondition} gate is now modelled (Freminet's frost ×2);
+   * the string-stat form (`(1 + stat)`) is still not (no v5.8 source in scope needs
+   * it) — add it if a source does.
    */
   readonly scalingMultiplier?: number;
+  /**
+   * Optional gate on the numeric {@link scalingMultiplier}: her `getScalingMultiplier`
+   * returns `scalingMultiplier` only when this condition is absent OR active, and `1`
+   * otherwise (Multiplier.js:157-162: `if (!scalingMultiplierCondition ||
+   * scalingMultiplierCondition.isActive(settings)) return scalingMultiplier; return 1`).
+   * So an INACTIVE gate reverts the factor to 1 (no bonus); an ABSENT gate applies the
+   * constant unconditionally (exactly as today). Evaluated at COMPILE time against the
+   * build's settings, like {@link scalingOffset} (the multiplier bakes into the base
+   * term; a settings change recompiles the feature).
+   *
+   * The sole v5.8 user is Freminet's frost DMG — `scalingMultiplier: 2` gated by the
+   * `freminet_stalking_mode` burst-stance toggle (a `ConditionBoolean`, raw
+   * Freminet.js:268-274). Absent ⇒ the constant always applies; and even when set, the
+   * gate is OFF in every base build (all 58k goldens) → the factor stays
+   * `scalingMultiplier ?? 1` unchanged → base-inert. Mutually exclusive with
+   * {@link scalingMultiplierFromTable} (the table form is a full override).
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier.js:157-162
+   *         (getScalingMultiplier); raw/.../db/Char/Freminet.js:268-274 (the gated ×2).
+   */
+  readonly scalingMultiplierCondition?: Condition;
+  /**
+   * TABLE-driven scaling multiplier: her `FeatureMultiplierNeuvilleteCharged` OVERRIDES
+   * `getScalingMultiplier` with a `ValueTable` lookup keyed by a settings level —
+   * `level = settings[levelSetting]; return level > 0 ? table.getValue(level) : 1`
+   * (NeuvilleteCharged.js). The lookup is her `ValueTable.getValue` (1-indexed, clamped
+   * to `table.length`, ValueTable.js); a level ≤ 0 (or an absent/non-numeric key) yields
+   * `1`, NOT 0 (the subclass guards the table's 0-at-≤0 with an explicit `1`). This form
+   * REPLACES the constant {@link scalingMultiplier} + {@link scalingMultiplierCondition}
+   * (the subclass override ignores both) — set exactly one of the constant/conditional
+   * form OR the table form (compileFeature throws if both are present).
+   *
+   * The sole v5.8 user is Neuvillette's two equitable-judgment charged attacks
+   * (`neuvillette_ancient_seas_legacy` Sourcewater-droplet stacks → `[1.1, 1.25, 1.6]`,
+   * raw Neuvillette.js:194-213). Absent ⇒ the constant path; and even when set, the level
+   * is 0 in every base build (all 58k goldens) → factor 1 → base-inert.
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/NeuvilleteCharged.js
+   *         (getScalingMultiplier); raw/.../classes/ValueTable.js (getValue indexing).
+   */
+  readonly scalingMultiplierFromTable?: {
+    /** The value table (her `new ValueTable([...])`), 1-indexed by the resolved level. */
+    readonly table: readonly number[];
+    /** The settings key holding the integer level (e.g. `neuvillette_ancient_seas_legacy`). */
+    readonly levelSetting: string;
+  };
   /**
    * Settings-driven additive offset to the scaling fraction.
    *
