@@ -809,6 +809,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
   "tartaglia-raging-tide": {
     tartaglia_raging_tide: true,
   },
+  // Raiden Musou Isshin (baal_musou_isshin): the ground polearm normals/charged/plunge are NOT-gated
+  // OFF; the ELECTRO burst-infused moveset (char_skill_burst, damageType 'burst', tags 'raiden_attacks')
+  // is gated ON, with attack_infusion:'electro' published. Resolve stacks unset → 0 (per-stack
+  // multipliers inert). C0.
+  "raiden-musou-isshin": {
+    baal_musou_isshin: true,
+  },
 };
 
 interface ManifestItem {

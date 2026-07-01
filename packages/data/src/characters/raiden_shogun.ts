@@ -1,23 +1,22 @@
 /**
  * Raiden Shogun (Baal) — electro polearm (5-star).
  *
- * FIXED SOLO C0 BUILD MODELLING
- * The oracle fixture is computed with `baal_musou_isshin` (burst stance) OFF: the
- * fixture asserts the *normal* attack/charged/plunge features (gated on
- * `NOT baal_musou_isshin`), NOT the burst-infused versions (gated ON it). With the
- * stance OFF:
- *   - Normal/charged/plunge hits are PHYSICAL (no electro infusion) — default element.
- *   - The burst-version normal/charged/plunge features and the per-stack Resolve
- *     buff (char-level `multipliers` with `stacksLeveling: 'baal_resolve_stacks'`,
- *     `target.tags: ['raiden_attacks']`) are OFF. Those char-level targeted/stacked
- *     multipliers are also not engine-supported, but they are inactive here anyway.
+ * BURST-STANCE SWAP: the `baal_musou_isshin` (Musou Isshin) toggle swaps her ground
+ * polearm normals/charged/plunge for ELECTRO burst-infused versions. Her engine gates
+ * the ground set with `ConditionNot([baal_musou_isshin])` and the burst set with
+ * `ConditionBoolean(it)`, and the toggle publishes `attack_infusion: 'electro'`. Both
+ * stances are modelled; the golden/fixture build has the stance OFF (ground set produced).
+ *   - Ground set (stance OFF): normal/charged/plunge are PHYSICAL (default element).
+ *   - Burst set (stance ON): category 'attack' (same keys) + damageType 'burst' (they carry
+ *     dmg_burst) + tags ['raiden_attacks'] + electro infusion, char_skill_burst leveled.
  *
- * Burst Musou no Hitotachi (`baal_musou_no_hitotachi_dmg`): two raw multipliers —
- *   1. base burst % (s3.p1), electro, ATK
- *   2. per-Resolve-stack burst % (s3.p2) gated on `baal_musou_isshin`
- * Only multiplier #1 is active in the fixed solo build (stance OFF), so the modelled
- * burst is the base multiplier alone. Oracle confirms: 14398.81 normal matches the
- * base 721.44% × ATK_total path without the stack term.
+ * RESOLVE STACKS (`baal_resolve_stacks`, 0..60): scale the burst-stance attacks via a
+ * char-level per-stack ATK% multiplier (s3.p3) targeting the `raiden_attacks` tag, and lift
+ * the burst via a 2nd per-stack term (s3.p2) on `baal_musou_no_hitotachi_dmg`. Both use
+ * `stacksFactor` → at 0 stacks (the dump default) they vanish; at N stacks they contribute.
+ *
+ * Burst Musou no Hitotachi (`baal_musou_no_hitotachi_dmg`): base burst % (s3.p1) + the
+ * per-Resolve-stack term above. At 0 stacks the base multiplier alone matches the oracle.
  *
  * Multihit `normal_hit_4`: a 2-sub-hit attack. The combined row is modelled as a
  * Multihit (both items summed → matches fixture `attack.normal_hit_4`); the two
@@ -79,32 +78,60 @@ const talents: TalentResolver = {
     }
     if (talent === "burst") {
       if (name === "baal_musou_no_hitotachi_dmg") return RaidenShogunTalents.s3.p1;
+      // Musou Isshin (burst-stance) resolve scalings — per-Resolve-stack % (char_skill_burst).
+      if (name === "baal_resolve_burst") return RaidenShogunTalents.s3.p2; // per-stack on the burst
+      if (name === "baal_resolve_atk") return RaidenShogunTalents.s3.p3; // per-stack ATK% on raiden_attacks
+      // Musou Isshin (burst-stance) normals/charged — char_skill_burst leveling, tables in the burst group.
+      if (name === "normal_hit_1") return RaidenShogunTalents.s3.p5;
+      if (name === "normal_hit_2") return RaidenShogunTalents.s3.p6;
+      if (name === "normal_hit_3") return RaidenShogunTalents.s3.p7;
+      if (name === "normal_hit_4_1") return RaidenShogunTalents.s3.p8;
+      if (name === "normal_hit_4_2") return RaidenShogunTalents.s3.p9;
+      if (name === "normal_hit_5") return RaidenShogunTalents.s3.p10;
+      if (name === "charged_hit_1") return RaidenShogunTalents.s3.p11;
+      if (name === "charged_hit_2") return RaidenShogunTalents.s3.p12;
     }
     throw new Error(`raiden_shogun talents: unknown path '${path}'`);
   },
 };
 
 // ---------------------------------------------------------------------------
+// Musou Isshin (Secret Art: Musou Shinsetsu) BURST STANCE toggle
+// ---------------------------------------------------------------------------
+// When ON, Raiden's polearm normals/charged/plunge are replaced by ELECTRO burst-infused
+// versions (char_skill_burst-leveled, damageType 'burst' → they carry dmg_burst; tagged
+// 'raiden_attacks'). Her engine gates the base set with ConditionNot([baal_musou_isshin])
+// and the burst set with ConditionBoolean(it); the toggle publishes attack_infusion:'electro'.
+// Resolve stacks (baal_resolve_stacks, 0..60) then scale the burst-stance attacks (a char-level
+// per-stack ATK% multiplier over raiden_attacks) and the burst (a 2nd per-stack term); at 0
+// stacks (the dump default) both vanish. raw RaidenShogun.js:213-559, 615-628, 675-687.
+const STANCE: Condition = { type: "boolean", name: "baal_musou_isshin" };
+const NOT_STANCE: Condition = { type: "not", items: [{ type: "boolean", name: "baal_musou_isshin" }] };
+
+// ---------------------------------------------------------------------------
 // Features
 // ---------------------------------------------------------------------------
 
 const features: readonly Feature[] = [
-  // --- Normal attacks (physical polearm — stance OFF → no electro infusion) ---
+  // --- Normal attacks (physical polearm — RANGED/ground stance, gated OFF in burst stance) ---
   // raw: FeatureDamageNormal normal_hit_1, condition NOT baal_musou_isshin
   {
     name: "normal_hit_1",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
+    condition: NOT_STANCE,
   },
   {
     name: "normal_hit_2",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }],
+    condition: NOT_STANCE,
   },
   {
     name: "normal_hit_3",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
+    condition: NOT_STANCE,
   },
   // raw: FeatureDamageMultihit normal_hit_4 — combined 2-sub-hit (s1.p4 + s1.p5)
   {
@@ -115,6 +142,7 @@ const features: readonly Feature[] = [
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4_1") }] },
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4_2") }] },
     ],
+    condition: NOT_STANCE,
   },
   // raw: FeatureDamageNormal normal_hit_4_1 (isChild) — emitted as independent sub-hit row
   {
@@ -122,6 +150,7 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "normal",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4_1") }],
+    condition: NOT_STANCE,
   },
   // raw: FeatureDamageNormal normal_hit_4_2 (isChild) — emitted as independent sub-hit row
   {
@@ -129,27 +158,31 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "normal",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4_2") }],
+    condition: NOT_STANCE,
   },
   {
     name: "normal_hit_5",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5") }],
+    condition: NOT_STANCE,
   },
-  // --- Charged attack (physical) ---
+  // --- Charged attack (physical) — ground stance ---
   // raw: FeatureDamageCharged charged_hit
   {
     name: "charged_hit",
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }],
+    condition: NOT_STANCE,
   },
-  // --- Plunge attacks (physical) ---
+  // --- Plunge attacks (physical) — ground stance ---
   // raw: FeatureDamagePlungeCollision plunge
   {
     name: "plunge",
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge") }],
+    condition: NOT_STANCE,
   },
   // raw: FeatureDamagePlungeShockWave plunge_low
   {
@@ -158,6 +191,7 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }],
+    condition: NOT_STANCE,
   },
   // raw: FeatureDamagePlungeShockWave plunge_high
   {
@@ -166,6 +200,129 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "plunge",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
+    condition: NOT_STANCE,
+  },
+  // ========================================================================
+  // MUSOU ISSHIN (burst stance) moveset — parallel ELECTRO burst-infused normals/charged/plunge,
+  // gated ON. category 'attack' (same keys), damageType 'burst' (FeatureDamageBurst → they carry
+  // dmg_burst), tags ['raiden_attacks'] (the resolve multiplier targets them), element via the
+  // stance's attack_infusion:'electro'. char_skill_burst leveling. raw RaidenShogun.js:362-559.
+  // ========================================================================
+  {
+    name: "normal_hit_1",
+    category: "attack",
+    damageType: "burst",
+    tags: ["raiden_attacks"],
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.normal_hit_1") }],
+    condition: STANCE,
+  },
+  {
+    name: "normal_hit_2",
+    category: "attack",
+    damageType: "burst",
+    tags: ["raiden_attacks"],
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.normal_hit_2") }],
+    condition: STANCE,
+  },
+  {
+    name: "normal_hit_3",
+    category: "attack",
+    damageType: "burst",
+    tags: ["raiden_attacks"],
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.normal_hit_3") }],
+    condition: STANCE,
+  },
+  // normal_hit_4: 2-hit multihit (burst.normal_hit_4_1 + burst.normal_hit_4_2), damageType 'burst'.
+  {
+    name: "normal_hit_4",
+    category: "attack",
+    damageType: "burst",
+    tags: ["raiden_attacks"],
+    items: [
+      { multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.normal_hit_4_1") }] },
+      { multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.normal_hit_4_2") }] },
+    ],
+    condition: STANCE,
+  },
+  // normal_hit_4_1 / normal_hit_4_2: the two sub-hits, emitted standalone (raw isChild dropped).
+  {
+    name: "normal_hit_4_1",
+    category: "attack",
+    damageType: "burst",
+    tags: ["raiden_attacks"],
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.normal_hit_4_1") }],
+    condition: STANCE,
+  },
+  {
+    name: "normal_hit_4_2",
+    category: "attack",
+    damageType: "burst",
+    tags: ["raiden_attacks"],
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.normal_hit_4_2") }],
+    condition: STANCE,
+  },
+  {
+    name: "normal_hit_5",
+    category: "attack",
+    damageType: "burst",
+    tags: ["raiden_attacks"],
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.normal_hit_5") }],
+    condition: STANCE,
+  },
+  // charged_hit_total: 2-hit multihit (burst.charged_hit_1 + burst.charged_hit_2), damageType 'burst'.
+  {
+    name: "charged_hit_total",
+    category: "attack",
+    damageType: "burst",
+    tags: ["raiden_attacks"],
+    items: [
+      { multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.charged_hit_1") }] },
+      { multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.charged_hit_2") }] },
+    ],
+    condition: STANCE,
+  },
+  {
+    name: "charged_hit_1",
+    category: "attack",
+    damageType: "burst",
+    tags: ["raiden_attacks"],
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.charged_hit_1") }],
+    condition: STANCE,
+  },
+  {
+    name: "charged_hit_2",
+    category: "attack",
+    damageType: "burst",
+    tags: ["raiden_attacks"],
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.charged_hit_2") }],
+    condition: STANCE,
+  },
+  // Burst-stance plunges: FeatureDamageBurst (damageType 'burst', tags raiden_attacks) that REUSE
+  // the ground plunge tables (attack.plunge*) at char_skill_burst leveling. NOT plunge_shockwave-
+  // tagged (they are FeatureDamageBurst, not PlungeShockWave). raw RaidenShogun.js:522-559.
+  {
+    name: "plunge",
+    category: "attack",
+    damageType: "burst",
+    tags: ["raiden_attacks"],
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("attack.plunge") }],
+    condition: STANCE,
+  },
+  {
+    name: "plunge_low",
+    category: "attack",
+    damageType: "burst",
+    tags: ["raiden_attacks"],
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("attack.plunge_low") }],
+    condition: STANCE,
+  },
+  {
+    name: "plunge_high",
+    category: "attack",
+    damageType: "burst",
+    tags: ["raiden_attacks"],
+    multipliers: [{ leveling: "char_skill_burst", values: talents.get("attack.plunge_high") }],
+    condition: STANCE,
   },
   // --- Skill: Transcendence: Baleful Omen (electro) ---
   // raw: FeatureDamageSkill skill_dmg, element='electro'
@@ -183,14 +340,24 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.baal_coordinated_atk_dmg") }],
   },
   // --- Burst: Secret Art: Musou Shinsetsu (electro) ---
-  // raw: FeatureDamageBurst baal_musou_no_hitotachi_dmg, element='electro'.
-  // Base multiplier only (s3.p1); the per-Resolve-stack multiplier is gated on
-  // baal_musou_isshin (OFF in fixed solo build) → excluded.
+  // raw: FeatureDamageBurst baal_musou_no_hitotachi_dmg, element='electro'. TWO multipliers:
+  //   1. base burst % (s3.p1), always active.
+  //   2. per-Resolve-stack burst % (s3.p2, baal_resolve_burst) × min(baal_resolve_stacks, 60),
+  //      gated ON the burst stance. At 0 resolve stacks (dump default) the stacksFactor is 0 → the
+  //      term vanishes; it lifts the burst only when stacks are set. raw RaidenShogun.js:581-596.
   {
     name: "baal_musou_no_hitotachi_dmg",
     category: "burst",
     element: "electro",
-    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.baal_musou_no_hitotachi_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.baal_musou_no_hitotachi_dmg") },
+      {
+        leveling: "char_skill_burst",
+        values: talents.get("burst.baal_resolve_burst"),
+        stacksFactor: { setting: "baal_resolve_stacks", maxStacks: 60 },
+        condition: STANCE,
+      },
+    ],
   },
   // --- burst.baal_energy_recharge: A4 "Wishes Unnumbered" ER readout (FeatureStatic, format:'decimal') ---
   // Raw RaidenShogun.js:597-616 — TWO multipliers, summed:
@@ -331,6 +498,27 @@ export const raidenShogun: DbObjectChar = {
   ],
   talents,
   features,
-  multipliers: [],
-  conditions: [...toggleConditions, ...constellationConditions],
+  // Resolve-stacks char-level multiplier (Musou Isshin): a per-Resolve-stack ATK% bonus
+  // (s3.p3, baal_resolve_atk) added to the base term of every raiden_attacks-tagged feature
+  // (the burst-stance normals/charged/plunge), scaled by min(baal_resolve_stacks, 60). Gated on
+  // the burst stance; at 0 stacks (dump default) the stacksFactor is 0 → contributes nothing.
+  // raw RaidenShogun.js:675-687 (char.multipliers, target.tags:['raiden_attacks']).
+  multipliers: [
+    {
+      leveling: "char_skill_burst",
+      values: talents.get("burst.baal_resolve_atk"),
+      stacksFactor: { setting: "baal_resolve_stacks", maxStacks: 60 },
+      target: { damageTypes: [], tags: ["raiden_attacks"] },
+      condition: STANCE,
+      source: "talent_burst",
+    },
+  ],
+  // baal_musou_isshin burst-stance toggle: publishes attack_infusion:'electro' so the
+  // burst-stance normals/charged/plunge (no explicit element) resolve electro. The moveset
+  // swap is via the per-feature STANCE / NOT_STANCE gates above. raw RaidenShogun.js:637-646.
+  conditions: [
+    { type: "boolean", name: "baal_musou_isshin", settings: { attack_infusion: "electro" } },
+    ...toggleConditions,
+    ...constellationConditions,
+  ],
 };
