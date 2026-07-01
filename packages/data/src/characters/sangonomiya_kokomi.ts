@@ -16,9 +16,14 @@
  *   → fold into baseStats. The -100 crit_rate causes crit_rate_total to be
  *     negative (clamped to 0), making average = normal for all damage features.
  *
- * The "Flawless Strategy" healing +25% (ConditionStatic) IS applied to her heal
- * outputs (baseStats.healing); it does not affect damage. Other A1/A4 text is display-only.
- * "Ceremonial Garment" burst toggle (ConditionBoolean) — off in fixed build.
+ * The "Flawless Strategy" healing +25% (ConditionStatic) is applied to her heal
+ * outputs (baseStats.healing) AND feeds the A4 Normal/Charged damage bonus below.
+ *
+ * "Ceremonial Garment" (Nereid's Ascension burst stance, ConditionBoolean toggle — OFF in the
+ * fixed build): four char-level `multipliers` add HP-scaling bonus DMG while on —
+ *   - Normal/Charged/Skill: 0..% × HP_total (per-burst-level s3.p4/p5/p9), gated garment;
+ *   - A4 "Song of Pearls": Normal/Charged += 0.15 × HP_total × healing (bonusStatFactor).
+ * Gated OFF at the fixed build → inert (the 58k goldens are byte-identical).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Kokomi.js
@@ -55,6 +60,10 @@ const talents: TalentResolver = {
       if (name === "burst_dmg") return KokomiTalents.s3.p1;
       if (name === "kokomi_burst_heal_percent") return KokomiTalents.s3.p2;
       if (name === "kokomi_burst_heal_flat")    return KokomiTalents.s3.p3;
+      // Ceremonial Garment per-burst-level HP→DMG bonus %: normal s3.p4, charged s3.p5, skill s3.p9.
+      if (name === "kokomi_normal_atk_bonus")  return KokomiTalents.s3.p4;
+      if (name === "kokomi_charged_atk_bonus") return KokomiTalents.s3.p5;
+      if (name === "kokomi_skill_atk_bonus")   return KokomiTalents.s3.p9;
     }
     throw new Error(`sangonomiya_kokomi talents: unknown path '${path}'`);
   },
@@ -212,7 +221,53 @@ export const sangonomiyaKokomi: DbObjectChar = {
   statTable: KokomiStatTable,
   talents,
   features,
-  multipliers: [],
+  // Ceremonial Garment (Nereid's Ascension burst stance) — char-level ("targeted") multipliers
+  // that add HP-scaling bonus DMG to Normal/Charged/Skill hits while the garment toggle is on.
+  // Raw Kokomi.js:330-373 (four FeatureMultiplier on the char `multipliers`, ConditionBoolean
+  // kokomi_ceremonial_garment gate, FeatureMultiplierTarget damageTypes). OFF in the fixed build
+  // (no toggle) → activeCharMultipliers filters them out → the 58k goldens are byte-identical.
+  multipliers: [
+    // Normal/Charged/Skill: scaling 'hp*', leveling char_skill_burst, per-burst-level values.
+    {
+      scaling: "hp",
+      leveling: "char_skill_burst",
+      source: "talent_burst",
+      values: talents.get("burst.kokomi_normal_atk_bonus"),
+      condition: { type: "boolean", name: "kokomi_ceremonial_garment" },
+      target: { damageTypes: ["normal"] },
+    },
+    {
+      scaling: "hp",
+      leveling: "char_skill_burst",
+      source: "talent_burst",
+      values: talents.get("burst.kokomi_charged_atk_bonus"),
+      condition: { type: "boolean", name: "kokomi_ceremonial_garment" },
+      target: { damageTypes: ["charged"] },
+    },
+    {
+      scaling: "hp",
+      leveling: "char_skill_burst",
+      source: "talent_burst",
+      values: talents.get("burst.kokomi_skill_atk_bonus"),
+      condition: { type: "boolean", name: "kokomi_ceremonial_garment" },
+      target: { damageTypes: ["skill"] },
+    },
+    // A4 "Song of Pearls and Pavilions": Normal/Charged bonus DMG = 0.15 × HP_total × healing —
+    // her FeatureMultiplierKokomi (raw Kokomi.js:361-373 + Multiplier/Kokomi.js:19-21: getLevel()=1,
+    // getTreeBonusMultiplier → makeStatItem('healing')). `bonusStatFactor: "healing"` reads the
+    // folded Healing-Bonus fraction (the always-on passive 25% + any build healing, already emitted
+    // via HEAL_BONUS_KEYS). leveling '' → level 1 (constant 15%). ConditionAnd(garment, ascension4);
+    // ascension4 auto-active at A6 → gate on garment only (emilie/itto precedent).
+    {
+      scaling: "hp",
+      source: "ascension4",
+      leveling: "",
+      values: { getValue: () => 15 },
+      bonusStatFactor: "healing",
+      condition: { type: "boolean", name: "kokomi_ceremonial_garment" },
+      target: { damageTypes: ["normal", "charged"] },
+    },
+  ],
   conditions: constellationConditions,
   // "Flawless Strategy" (ConditionStatic, always active):
   //   crit_rate: -100 → crit_rate_total becomes negative, clamped to 0 by engine.
