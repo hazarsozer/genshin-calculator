@@ -625,15 +625,17 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     yunjin_myriad: true,
     yunjin_flower: true,
   },
-  // Citlali SELF buffs (PARTIAL) — A4 citlali_itzpapalotls_star_garments (mastery* EM terms on
-  // frostfall/ice-storm) + C2 citlali_heart_devourers_travail (mastery+125). frigid_rain set (its
-  // res-shred is pyro/hydro = inert for cryo). char_constellation:6 threads the C2 gate ON, matching
-  // the oracle dump at constellation 6. citlali_points (C6 dmg_all) is DEFERRED Tier-B — NOT set here.
+  // Citlali SELF buffs — A4 citlali_itzpapalotls_star_garments (mastery* EM terms on frostfall/
+  // ice-storm) + C2 citlali_heart_devourers_travail (mastery+125) + C6 citlali_points:30
+  // (ConditionNumberCitlali dmg_all += 30×2.5 = +75% via bonusPerValue, lifting every cryo hit).
+  // frigid_rain set (its res-shred is pyro/hydro = inert for cryo). char_constellation:6 threads the
+  // C2 + C6 gates ON, matching the oracle dump at constellation 6.
   "citlali-self-buffs": {
     char_constellation: 6,
     citlali_itzpapalotls_star_garments: true,
     citlali_heart_devourers_travail: true,
     citlali_mamaloacos_frigid_rain: true,
+    citlali_points: 30,
   },
   // Clorinde SELF buffs — A4 clorinde_lawful_remuneration:2 (crit_rate+20) + C6
   // clorinde_and_so_shall_i_never_despair (crit_rate+10/crit_dmg+70) + A1 clorinde_dark_shattering_flame:3

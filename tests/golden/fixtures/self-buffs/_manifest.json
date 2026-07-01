@@ -541,7 +541,8 @@
           "char_constellation": 6,
           "citlali_heart_devourers_travail": true,
           "citlali_itzpapalotls_star_garments": true,
-          "citlali_mamaloacos_frigid_rain": true
+          "citlali_mamaloacos_frigid_rain": true,
+          "citlali_points": 30
         }
       },
       "repKey": "Citlali",

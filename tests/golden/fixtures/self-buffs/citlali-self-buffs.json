@@ -2,94 +2,94 @@
   "element": "cryo",
   "features": {
     "attack.charged_hit": {
-      "average": 2280.6648998322003,
+      "average": 3755.2327229995717,
       "category": "attack",
-      "crit": 3315.787415068187,
+      "crit": 5459.615485155377,
       "damageType": "charged",
       "format": "",
       "isReacted": false,
-      "normal": 1657.8937075340934
+      "normal": 2729.8077425776887
     },
     "attack.normal_hit_1": {
-      "average": 929.1323203833563,
+      "average": 1574.3630984273536,
       "category": "attack",
-      "crit": 1350.8364403235676,
+      "crit": 2288.9173016593786,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 675.4182201617838
+      "normal": 1144.4586508296893
     },
     "attack.normal_hit_2": {
-      "average": 830.8059974328773,
+      "average": 1407.7546067612643,
       "category": "attack",
-      "crit": 1207.8828726016652,
+      "crit": 2046.6904230194882,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 603.9414363008326
+      "normal": 1023.3452115097441
     },
     "attack.normal_hit_3": {
-      "average": 1150.9739143732913,
+      "average": 1950.2613549102991,
       "category": "attack",
-      "crit": 1673.365000106556,
+      "crit": 2835.424027958331,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 836.682500053278
+      "normal": 1417.7120139791655
     },
     "attack.plunge": {
-      "average": 1236.910476279344,
+      "average": 2164.5933334888523,
       "category": "attack",
-      "crit": 1798.3054814912973,
+      "crit": 3147.0345926097702,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 899.1527407456487
+      "normal": 1573.5172963048851
     },
     "attack.plunge_high": {
-      "average": 3089.281250077829,
+      "average": 5406.242187636202,
       "category": "attack",
-      "crit": 4491.409453167732,
+      "crit": 7859.966543043532,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 2245.704726583866
+      "normal": 3929.983271521766
     },
     "attack.plunge_low": {
-      "average": 2473.2968379500953,
+      "average": 4328.269466412667,
       "category": "attack",
-      "crit": 3595.848969134505,
+      "crit": 6292.735695985383,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 1797.9244845672524
+      "normal": 3146.3678479926916
     },
     "burst.citlali_ice_storm_dmg": {
-      "average": 24225.474540586212,
+      "average": 35304.19765365918,
       "category": "burst",
-      "crit": 35220.66026080401,
+      "crit": 51327.66952641561,
       "damageType": "burst",
       "format": "",
       "isReacted": false,
-      "normal": 17610.330130402006
+      "normal": 25663.834763207804
     },
     "burst.citlali_spiritvessel_skull_dmg": {
-      "average": 5157.287748554554,
+      "average": 7515.803487222796,
       "category": "burst",
-      "crit": 7498.019465201004,
+      "crit": 10926.991781603903,
       "damageType": "burst",
       "format": "",
       "isReacted": false,
-      "normal": 3749.009732600502
+      "normal": 5463.495890801952
     },
     "other.citlali_obsidian_spiritvessel_skull_dmg": {
-      "average": 3289.3203168,
+      "average": 5756.3105544,
       "category": "other",
-      "crit": 4782.24,
+      "crit": 8368.92,
       "damageType": "none",
       "format": "",
       "isReacted": false,
-      "normal": 2391.12
+      "normal": 4184.46
     },
     "reaction.electrocharged": {
       "average": 7963.695489682816,
@@ -119,22 +119,22 @@
       "normal": 5972.771617262111
     },
     "skill.citlali_frostfall_storm_dmg": {
-      "average": 742.88691624924,
+      "average": 1164.9817550272173,
       "category": "skill",
-      "crit": 1080.0600684034196,
+      "crit": 1693.7305618144533,
       "damageType": "skill",
       "format": "",
       "isReacted": false,
-      "normal": 540.0300342017098
+      "normal": 846.8652809072266
     },
     "skill.citlali_obsidian_tzitzimitl_dmg": {
-      "average": 2253.3933228875994,
+      "average": 3533.730438164644,
       "category": "skill",
-      "crit": 3276.13812172894,
+      "crit": 5137.580236347655,
       "damageType": "skill",
       "format": "",
       "isReacted": false,
-      "normal": 1638.06906086447
+      "normal": 2568.7901181738275
     },
     "skill.shield_absorption": {
       "average": 7426.9439999999995,

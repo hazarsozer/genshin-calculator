@@ -237,10 +237,6 @@ const features: readonly Feature[] = [
 //     A4 mastery* terms, the C4 skull mastery* term, and her EM-scaled transformative reactions.
 //     ConditionBoolean in constellation[1] → THE CONSTELLATION IS A GATE. raw Citlali.js:342-352.
 //     (Its sibling A1 res-shred enemy_res_pyro/hydro is damage-inert for her CRYO hits → SKIP.)
-// DEFERRED — Tier-B (needs new engine surface, NOT ported here): C6 "Teoiztac's Secret Pact"
-// (citlali_points → ConditionNumberCitlali emits dmg_all += points × 2.5 via a getStats override the
-// generic ConditionNumber can't express — it emits only the raw clamped value). Its dmg_all self-bonus
-// drives the c6 normals/plunge/burst ×1.9-2.0 explosion. Documented for an engine-extension pass.
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Dawnfrost Darkstar (elemental skill).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
@@ -252,6 +248,19 @@ const constellationConditions: readonly Condition[] = [
     name: "citlali_heart_devourers_travail",
     stats: { mastery: 125 },
     condition: { type: "constellation", constellation: 2 },
+  },
+  // SELF C6 "Teoiztac's Secret Pact" (citlali_points, raw cons[5] ConditionNumberCitlali,
+  // Citlali.js:401-413) — a 0..40-point slider (C6MaxPoints=40) whose getStats override adds
+  // dmg_all += points×2.5 (selfBonus C6PointDmgBonusSelf) and dmg_pyro/dmg_hydro += points×1.5
+  // (otherBonus C6PointDmgBonus). Only dmg_all lifts her own cryo hits (drives the C6 normals/
+  // plunge/burst explosion); dmg_pyro/dmg_hydro are the teammate share — damage-inert for her
+  // cryo, emitted for faithfulness to her getStats. Ported via bonusPerValue; gated C6.
+  {
+    type: "number",
+    name: "citlali_points",
+    max: 40,
+    bonusPerValue: { dmg_all: 2.5, dmg_pyro: 1.5, dmg_hydro: 1.5 },
+    condition: { type: "constellation", constellation: 6 },
   },
 ];
 
