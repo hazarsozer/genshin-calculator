@@ -11,7 +11,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Razor)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
 import { Razor as RazorStatTable } from "../generated/charTables.js";
 import { Razor as RazorTalents } from "../generated/charTalentTables.js";
 
@@ -39,10 +39,26 @@ const talents: TalentResolver = {
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return RazorTalents.s3.p1;
+      if (name === "razor_companion_dmg") return RazorTalents.s3.p2;
     }
     throw new Error(`razor talents: unknown path '${path}'`);
   },
 };
+
+// Base normal% fractions (÷100) per talent level, the TABLE factor for the wolf-form
+// burst normals below. Derived from the char_skill_attack talent tables (15 levels).
+// Razor has NO char_skill_attack_bonus at any constellation, so the (bonus-blind)
+// scalingMultiplierFromTable read of char_skill_attack is exact; the bonus-bearing factor
+// (razor_companion_dmg @ char_skill_burst, +3 at C3) is the `values`/`leveling` path,
+// which DOES apply the talent _bonus — see the razor_normal_hit features.
+const frac = (t: TalentTable): readonly number[] =>
+  Array.from({ length: 15 }, (_unused, i) => t.getValue(i + 1) / 100);
+const NORMAL_HIT_FRACTIONS: readonly (readonly number[])[] = [
+  frac(talents.get("attack.normal_hit_1")),
+  frac(talents.get("attack.normal_hit_2")),
+  frac(talents.get("attack.normal_hit_3")),
+  frac(talents.get("attack.normal_hit_4")),
+];
 
 // ---------------------------------------------------------------------------
 // Features
@@ -70,17 +86,52 @@ const features: readonly Feature[] = [
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }],
   },
+  // --- Wolf-form burst normals (razor_wolf_within stance) ---
+  // raw: 4 FeatureDamageBurst({category:'attack', element:'electro'}) gated by
+  // ConditionBoolean(razor_wolf_within), each a FeatureMultiplierRazorBurst whose
+  // getTreeBonusMultiplier multiplies the base normal by razor_companion_dmg (the burst
+  // "Sigil of Whispers" companion %, s3.p2) at the BURST talent level:
+  //   term = normal_hit_N(char_skill_attack)/100 × ATK × razor_companion_dmg(char_skill_burst)/100
+  // (Razor.js:182-233, RazorBurst.js). damageType is 'burst' (FeatureDamageBurst forces it) so
+  // the hits pick up dmg_burst keys even though category is 'attack'. Feature-gated on
+  // razor_wolf_within (a C0 ConditionBoolean, OFF in every base build → base-inert).
+  // Ported via scalingMultiplierFromTable: the base normal% is the table (÷100) keyed by
+  // char_skill_attack; the razor_companion_dmg burst% is the leveled talent value.
+  ...([1, 2, 3, 4] as const).map(
+    (n): Feature => ({
+      name: `razor_normal_hit_${n}`,
+      category: "attack",
+      damageType: "burst",
+      element: "electro",
+      condition: { type: "boolean", name: "razor_wolf_within" },
+      multipliers: [
+        {
+          leveling: "char_skill_burst",
+          values: talents.get("burst.razor_companion_dmg"),
+          scalingMultiplierFromTable: {
+            table: NORMAL_HIT_FRACTIONS[n - 1]!,
+            levelSetting: "char_skill_attack",
+          },
+        },
+      ],
+    })
+  ),
   // --- Charged attacks ---
+  // raw: gated by ConditionNot([razor_wolf_within]) — the wolf-form (burst stance)
+  // REPLACES the charged combo with burst-electro normals, so charged is suppressed
+  // while the wolf is out (Razor.js:242-256). Inert at wolf_within OFF (all goldens).
   {
     name: "charged_spin",
     category: "attack",
     damageType: "charged",
+    condition: { type: "not", items: [{ type: "boolean", name: "razor_wolf_within" }] },
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_spin") }],
   },
   {
     name: "charged_final",
     category: "attack",
     damageType: "charged",
+    condition: { type: "not", items: [{ type: "boolean", name: "razor_wolf_within" }] },
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_final") }],
   },
   // --- Plunge attacks ---

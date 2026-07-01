@@ -914,6 +914,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 6,
     neuvillette_ancient_seas_legacy: 3,
   },
+  // Razor wolf-form burst normals (razor_wolf_within): 4 burst-stance normals gated by the C0
+  // ConditionBoolean, each normal_hit_N × ATK × razor_companion_dmg(char_skill_burst) via
+  // scalingMultiplierFromTable (raw Razor.js:182-233, RazorBurst.js). The gate also suppresses
+  // charged_spin/final (raw ConditionNot). No cons gate → C0.
+  "razor-wolf-within": {
+    razor_wolf_within: true,
+  },
 };
 
 interface ManifestItem {
