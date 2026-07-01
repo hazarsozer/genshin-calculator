@@ -576,6 +576,29 @@ export interface Feature {
    */
   readonly cannotReact?: boolean;
   /**
+   * TOP-LEVEL whole-hit multiplier from a settings-indexed table — her
+   * `FeatureDamageNormalMualani.getReactionMultipliers` pushes a `CMultiplierCustom`
+   * factor onto the hit's items AFTER the base term / bonus / res / def
+   * (Normal/Mualani.js:11-31), so it scales the WHOLE hit (normal/crit/avg together),
+   * NOT a base-term `scalingMultiplier`. `compileFeature` mirrors the amplifying-factor
+   * push — a top-level `cConst` item in the CDamage product. The factor is
+   * `table[settings[levelSetting]]` (1-indexed, clamped — her `ValueTable.getValue`),
+   * defaulting to 1 (no push) when the level is 0/absent.
+   *
+   * The sole v5.8 user is Mualani's byte-ratio: `FeatureDamageNormalMualani` multiplies
+   * the shark bite / shark missile by `0.86` at `mualani_byte_targets ≥ 2` and `0.72` at
+   * `≥ 3` (her `bytesCnt > 1` branch), i.e. the table `[1, 0.86, 0.72]` indexed by
+   * `mualani_byte_targets` (index 1 → 1, exact). Absent ⇒ no factor; and even when set,
+   * `settings[levelSetting]` reads 0/absent (→ factor 1 → no push) for every base build →
+   * the 58k damage goldens are byte-identical.
+   *
+   * Source: raw/.../Feature2/Damage/Normal/Mualani.js:11-31 (getReactionMultipliers).
+   */
+  readonly wholeHitMultiplierFromTable?: {
+    readonly table: readonly number[];
+    readonly levelSetting: string;
+  };
+  /**
    * Marks a standalone reaction feature (a separate damage instance keyed by its
    * reaction nature, NOT a `settings.reaction` toggle on a normal hit). When set,
    * `compileFeature` routes the feature to the matching `@genshin/core` reaction

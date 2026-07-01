@@ -1047,6 +1047,21 @@ export function compileFeature(
     }
   }
 
+  // Whole-hit multiplier from a settings-indexed table — her `FeatureDamageNormalMualani
+  // .getReactionMultipliers` pushes a `CMultiplierCustom` factor onto the hit's items AFTER
+  // the base term (Normal/Mualani.js:11-31), scaling the WHOLE hit (normal/crit/avg together).
+  // Mirrors the amplifying push above (a top-level cConst item in the CDamage product).
+  // `factor = table[settings[levelSetting]]` (1-indexed, clamped via valueTableGet; level
+  // 0/absent → 1, no push). The sole v5.8 user is Mualani's byte-ratio ([1, 0.86, 0.72] by
+  // `mualani_byte_targets`). Absent / factor 1 → nothing pushed → byte-identical.
+  if (feature.wholeHitMultiplierFromTable !== undefined) {
+    const { table, levelSetting } = feature.wholeHitMultiplierFromTable;
+    const rawLevel = ctx.settings[levelSetting];
+    const level = typeof rawLevel === "number" ? rawLevel : 0;
+    const factor = level > 0 ? valueTableGet(table, level) : 1;
+    if (factor !== 1) items.push(cConst(factor));
+  }
+
   // Crit: the aggregated totals (buildStats folds crit_rate/_dmg in), PLUS the
   // generic per-TYPE crit keys (`crit_*_<damageType>`, folded here exactly as
   // `dmg_<damageType>` is in dmgBonusKeys — so a weapon/set/cons-sourced type-crit
