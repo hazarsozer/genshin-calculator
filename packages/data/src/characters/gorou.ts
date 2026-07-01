@@ -230,12 +230,14 @@ const GOROU_DEF_BONUS = [
 // C4 "Lapping Hound: Warm as Water": FeatureHeal gated by ConditionConstellation(4)
 //   (heal feature, not a damage triple → not in golden suite) → SKIP.
 // C6 "Inviolable Essence": Condition(crit_dmg_geo) gated by gorou_generals_war_banner
-//   (+ ConditionElementsCount tiers). The banner-only tier (crit_dmg_geo +10) is ported
-//   below; the geo-count≥2/≥3 tiers are inert solo (1 geo) → deferred (see note).
+//   (+ ConditionElementsCount tiers). All three tiers ported below: the banner-only tier
+//   (crit_dmg_geo +10), and the geo-count≥2/≥3 tiers (+10/+20, cumulative) via the
+//   `elements-count` core Condition, oracle-locked through the `party` config.
 //
 // Always-on: C3 (+3 skill talent), C5 (+3 burst talent).
 // SELF buffs golden-blind SKIPPED (the port modelled only the party.* mirrors): A1 heedless
-//   (+25% DEF), standing_firm (banner-gated flat DEF by skill level), C6 crit_dmg_geo. Ported below.
+//   (+25% DEF), standing_firm (banner-gated flat DEF by skill level), crunch (dmg_geo +15,
+//   ≥3 geo), C6 crit_dmg_geo (all 3 tiers). Ported below.
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Gorou.js — char.conditions + constellation.
 
 const constellationConditions: readonly Condition[] = [
@@ -279,12 +281,50 @@ const constellationConditions: readonly Condition[] = [
       { type: "boolean", name: "gorou_generals_war_banner" },
     ] },
   },
-  // ── Deferred (NOT ported — inert under the single-char self-buffs sweep) ──
-  //   - gorou_crunch (dmg_geo +15, Gorou.js:351-361): gated banner AND ConditionElementsCount(geo,3).
-  //   - C6 crit_dmg_geo tiers 2/3 (+10 / +20, Gorou.js:413-431): gated banner AND ElementsCount(geo,2)/(3).
-  // All require ≥2/≥3 geo party members; solo (1 geo) leaves them OFF in her engine, so omitting them
-  // is faithful here. They need an `elements-count` core Condition variant (the union has none) + a
-  // multi-teammate rep — out of scope for this DATA port (mirrors the partyData deferral below).
+  // SELF "Crunch" (General's Glory, ≥3 Geo tier) — +15% Geo DMG (SkillGeoBonus=15) while banner
+  // active AND the party has ≥3 Geo (Gorou + 2 more). NOT constellation-gated (fires at C0).
+  // Gate: and[ boolean(gorou_generals_war_banner), elements-count(geo,3) ]. Base-inert: solo has
+  // 1 geo (char_element only) → the count gate is false.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Gorou.js:351-361 (char.conditions, ConditionStatic).
+  {
+    type: "static",
+    stats: { dmg_geo: 15 },
+    condition: { type: "and", items: [
+      { type: "boolean", name: "gorou_generals_war_banner" },
+      { type: "elements-count", element: "geo", count: 3 },
+    ] },
+  },
+  // SELF "Inviolable Essence" C6 tier-2 (≥2 Geo) — +10% Geo CRIT DMG (C6CritDmgGeo2=10),
+  // CUMULATIVE with tier-1 above (both fire together once the count gate is met).
+  // Gate: and[ constellation 6, boolean(gorou_generals_war_banner), elements-count(geo,2) ].
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Gorou.js:413-421 (constellation[5], second Condition tier).
+  {
+    type: "static",
+    stats: { crit_dmg_geo: 10 },
+    condition: { type: "and", items: [
+      { type: "constellation", constellation: 6 },
+      { type: "boolean", name: "gorou_generals_war_banner" },
+      { type: "elements-count", element: "geo", count: 2 },
+    ] },
+  },
+  // SELF "Inviolable Essence" C6 tier-3 (≥3 Geo) — +20% Geo CRIT DMG (C6CritDmgGeo3=20),
+  // CUMULATIVE with tier-1 + tier-2 (at 3 geo, all three fire: 10+10+20 = +40 total).
+  // Gate: and[ constellation 6, boolean(gorou_generals_war_banner), elements-count(geo,3) ].
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Gorou.js:422-430 (constellation[5], third Condition tier).
+  {
+    type: "static",
+    stats: { crit_dmg_geo: 20 },
+    condition: { type: "and", items: [
+      { type: "constellation", constellation: 6 },
+      { type: "boolean", name: "gorou_generals_war_banner" },
+      { type: "elements-count", element: "geo", count: 3 },
+    ] },
+  },
+  // NOTE: gorou_impregnable (Gorou.js:342-350, ElementsCount(geo,2)-gated ConditionStatic) carries
+  // NO stats (display-only tooltip text) — correctly nothing to model, matching the C1/C2 pattern above.
+  // All SELF-side geo-count tiers are now ported (P3.5 Tier-B tail item ε) via the `elements-count`
+  // core Condition (base-inert; see packages/core/src/conditions/Condition.ts). The partyData-side
+  // mirrors (Gorou buffing OTHER teammates) remain deferred — see the partyData block below.
 ];
 
 // ---------------------------------------------------------------------------
@@ -306,7 +346,9 @@ export const gorou: DbObjectChar = {
   // partyData — teammate kit buffs (P3.5.2 Bucket A, A-straggler). PARTIAL port:
   // the clean A-level DEF core. The geo-element-count tiers (gorou_crunch dmg_geo,
   // and ALL of C6 — fierce_as_fire / mountainous_fealty / the three crit_dmg_geo
-  // tiers) are DEFERRED — see the "Deferred conditions" block below.
+  // tiers) are still DEFERRED here — see the "Deferred conditions" block below.
+  // (The SELF-side mirrors of these SAME tiers ARE now ported above, in
+  // `constellationConditions`, oracle-locked via the `party` config's Gorou reps.)
   // Source: raw/genshin_calc_pub/src/js/db/Char/Gorou.js:434-543
   partyData: {
     // Descriptive metadata mirroring her partyData.loadStats (the teammate's input
@@ -370,10 +412,14 @@ export const gorou: DbObjectChar = {
     //     mountainous_fealty (Gorou.js:504-512), and the three crit_dmg_geo tiers
     //     (Gorou.js:513-541, C6CritDmgGeo1/2/3 = 10/10/20), the latter two gated by
     //     ConditionElementsCount(geo, 2) / (geo, 3).
-    // DEFERRAL REASON: these need (a) a new `elements-count` core Condition variant — our
-    // union has none (`resonance` only fires at count>=2 hardcoded, not parameterized by
-    // element+count); and (b) a MULTI-teammate oracle rep — the geo>=2/>=3 tiers cannot be
-    // exercised by the single-teammate `partyBuffSourceItem` harness. Both are out of scope
-    // for this A-straggler DATA port; tracked for a future focused engine session.
+    // DEFERRAL REASON (refreshed): the `elements-count` core Condition NOW EXISTS
+    // (packages/core/src/conditions/Condition.ts, ports ConditionElementsCount — built
+    // for the SELF-side port above) — reason (a) is resolved. What remains is (b) a
+    // MULTI-geo `party-buffs` oracle rep: the `partyBuffSourceItem` harness (the
+    // party-buffs config) bakes ONE buff-source teammate's settings and reads them back
+    // as `party.*` on the RECIPIENT, but these tiers need >=2/>=3 GEO TEAMMATES around
+    // Gorou-as-source simultaneously (a party-composition axis, not a single-source-
+    // settings axis) — a different harness shape than any existing party-buffs rep.
+    // Still out of scope for this SELF-side slice; tracked for a future focused session.
   },
 };
