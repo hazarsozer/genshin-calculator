@@ -249,17 +249,29 @@ const features: readonly Feature[] = [
     ],
   },
   // --- Fanfare static readouts (burst.furina_fanfare_dmg_bonus / heal_bonus) ---
-  // fanfareDmgPost/HealingPost = PostEffectStats from:'furina_fanfare_stacks' (SELF fanfare count = 0 at solo),
-  // percent=getMulti('burst.furina_fanfare_dmg_ratio'→dmg_all) / ('...heal_ratio'→healing_recv), maxBase cap.
-  // Readout = ratio × furina_fanfare_stacks = 0 (the stat is 0 at C0 solo). Modelled as scaling on the 0-stat ×
-  // the raw ratio table (s3.p5/s3.p6, inert here); the genuine 0 comes from the 0-stat, never baked. The teammate
-  // version (party_furina_fanfare_stacks → dmg_all) is in partyData below. raw/.../Char/Furina.js:175-193,392-401.
+  // fanfareDmgPost/HealingPost = PostEffectStats from:'furina_fanfare_stacks', percent=
+  // getMulti('burst.furina_fanfare_dmg_ratio'→dmg_all) / ('...heal_ratio'→healing_recv), maxBase
+  // cap 400, format:'percent' (her FeaturePostEffectValue ×100's the raw fraction for display,
+  // PostEffectValue.js:76-86). `furina_fanfare_stacks` is now a real self ConditionNumber (see
+  // `conditions` below) — 0 unless a `furina_fanfare_stacks` setting is supplied; these two
+  // "static" readouts scale directly on that condition stat. `kind:"static"` outputs have no
+  // `format` field (this port always emits the raw fraction) — mirroring Ifa's own A1 static
+  // readouts (ifa_reaction_bonus/_2), the ×100 is baked into the VALUE TABLE here (matching her
+  // display convention) rather than left as the raw per-level ratio. In our currently-ported
+  // (no-C2) scope the condition itself never clamps above 400 (300 base + the ported C1 bump),
+  // matching raw's maxBase=400 exactly, so no extra cap is needed here either. Both outputs are
+  // non-damage — out of this mission's dmg_all scope regardless. The teammate version
+  // (party_furina_fanfare_stacks → dmg_all) is in partyData below. raw/.../Char/Furina.js:175-193,392-401.
   {
     name: "furina_fanfare_dmg_bonus",
     category: "burst",
     output: { kind: "static" },
     multipliers: [
-      { scaling: "furina_fanfare_stacks", leveling: "char_skill_burst", values: talents.get("burst.furina_fanfare_dmg_ratio") },
+      {
+        scaling: "furina_fanfare_stacks",
+        leveling: "char_skill_burst",
+        values: { getValue: (level: number) => talents.get("burst.furina_fanfare_dmg_ratio").getValue(level) * 100 },
+      },
     ],
   },
   {
@@ -267,7 +279,11 @@ const features: readonly Feature[] = [
     category: "burst",
     output: { kind: "static" },
     multipliers: [
-      { scaling: "furina_fanfare_stacks", leveling: "char_skill_burst", values: talents.get("burst.furina_fanfare_heal_ratio") },
+      {
+        scaling: "furina_fanfare_stacks",
+        leveling: "char_skill_burst",
+        values: { getValue: (level: number) => talents.get("burst.furina_fanfare_heal_ratio").getValue(level) * 100 },
+      },
     ],
   },
 ];
@@ -300,6 +316,35 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
 ];
 
+// Fanfare slider — Let the People Rejoice's stacking dmg_all/healing_recv self-buff.
+// Raw: ConditionNumberFurina (Condition/Number/Furina.js), Furina.js:444-452 —
+//   `max: BurstFanfareLimit(300), allowMinZero: 1, c1bonus: C1FanfareLimit(100),
+//    c2bonus: C2FanfareLimit(400)`. getMaxValue = 300, +100 at C1 (→400), +400 at C2 (→800).
+// Ported: the C1 bump (300→400) via the EXISTING `maxBonusFromConstellation` primitive
+// (Ifa's Field Medic's Vision precedent, single-entry shape).
+// DEFERRED: the C2 bump (400→800). Verified against raw that BOTH self post-effects
+// sharing the fanfare stat — fanfareDmgPost (dmg_all, below) and fanfareHealingPost
+// (healing_recv, non-damage, unported) — cap their INPUT at `maxBase:400`
+// (BurstFanfareLimit+C1FanfareLimit) via her PostEffectStats.getTree, REGARDLESS of
+// constellation (Furina.js:175-193). The C2 800-max ONLY feeds fanfareHpPost (a max-HP%
+// bonus, `exceed:400`, gated ConditionConstellation(2), Furina.js:195-203,403-409) — a
+// DIFFERENT, unported output, out of this mission's dmg_all scope. Since every currently-
+// ported consumer of this stat already saturates at 400 without the C2 bump, porting the
+// 800 ceiling now would add a field with NO oracle-observable effect (unprovable/dead in
+// this scope) — deferred until fanfareHpPost is ported.
+// Also deferred: her getMinValue ALSO floors the value to `c1bonus`(100) at C1 when the
+// raw slider input is > 0 (Condition/Number/Furina.js:4-12) — a quirky "any fanfare at C1
+// snaps to >= 100" edge case with no existing min-bump primitive; affects only inputs
+// strictly between 0 and 100 at C1.
+const fanfareConditions: readonly Condition[] = [
+  {
+    type: "number",
+    name: "furina_fanfare_stacks",
+    max: 300,
+    maxBonusFromConstellation: { constellation: 1, bonus: 100 },
+  },
+];
+
 // A4 "Unheard Confession": dmg_skill_furina = min(0.0007 · hp_total, 28%) (her
 // raw percent + 28% statCap; Furina.js:503-509). Plain post-effect: lands in the
 // bag as a RAW PERCENT; buildStats' collectFeatureBonusKeys emit /100 produces
@@ -317,6 +362,43 @@ const a4PostEffects: readonly CharPostEffect[] = [
   },
 ];
 
+// "Let the People Rejoice" fanfare → dmg_all%, the SELF version of the partyData postEffect
+// below (which buffs teammates). Raw fanfareDmgPost (Furina.js:175-183):
+//   from:'furina_fanfare_stacks', levelSetting:'char_skill_burst' (own actual burst level, no
+//   clamp), maxBase:400 (BurstFanfareLimit+C1FanfareLimit), percent=getMulti(s3.p5→dmg_all,multi:1).
+// No extra cap needed here: our own `furina_fanfare_stacks` condition (above) already clamps
+// at 400 max (300 base + the ported C1 bump), which coincides exactly with raw's maxBase=400 —
+// so the two clamps are redundant in the currently-ported (no-C2) scope and omitting a second
+// cap is byte-identical to including one.
+// The sibling fanfareHealingPost (Furina.js:185-193) is the SAME shape, targeting
+// `healing_recv` (heal ratio table s3.p6). `healing_recv` is a genuine global heal-bonus
+// stat (her FeatureHeal.getStatsHealBonus — HEAL_BONUS_KEYS), read by EVERY heal feature's
+// `CMultiplierBonus`, not just a display readout — diff-parity caught this: once
+// `furina_fanfare_stacks` became settable (above), Furina's OTHER heals (Salon Solitaire /
+// the A1 drain heal) started reading a real nonzero `healing_recv` in the oracle but 0 in
+// our port (a genuine under-heal bug this port would otherwise ship). Porting both
+// siblings together closes it.
+const fanfarePostEffects: readonly CharPostEffect[] = [
+  {
+    fromStat: "furina_fanfare_stacks",
+    toStat: "dmg_all",
+    ratioFromTalent: {
+      table: FurinaTalents.s3.p5,
+      levelSetting: "char_skill_burst",
+      multi: 1,
+    },
+  },
+  {
+    fromStat: "furina_fanfare_stacks",
+    toStat: "healing_recv",
+    ratioFromTalent: {
+      table: FurinaTalents.s3.p6,
+      levelSetting: "char_skill_burst",
+      multi: 1,
+    },
+  },
+];
+
 export const furina: DbObjectChar = {
   name: "furina",
   gameId: 10000089,
@@ -328,8 +410,8 @@ export const furina: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  postEffects: a4PostEffects,
-  conditions: constellationConditions,
+  postEffects: [...a4PostEffects, ...fanfarePostEffects],
+  conditions: [...constellationConditions, ...fanfareConditions],
   // partyData — teammate kit buffs (P3.5.2 Bucket B).
   // Source: raw/genshin_calc_pub/src/js/db/Char/Furina.js:589-632
   // Scope: dmg_all output only from "Let the People Rejoice" fanfare stacks.

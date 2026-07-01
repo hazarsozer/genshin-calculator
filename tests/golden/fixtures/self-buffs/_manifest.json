@@ -867,7 +867,10 @@
       "kind": "party",
       "origin": "fontaine",
       "party": {
+        "constellation": 1,
         "settings": {
+          "char_constellation": 1,
+          "furina_fanfare_stacks": 350,
           "furina_hp_offers": 4
         }
       },

@@ -136,9 +136,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     lynette_watchful_eye: true,
   },
   // Furina skill HP-offerings scaling (furina_hp_offers:4 → ×1.4 on the three summon hits via the
-  // scalingOffset field). No cons gate → dumped at C0. (The fanfare→dmg_all clamp is a deferred S3 item.)
+  // scalingOffset field) + "Let the People Rejoice" fanfare→dmg_all/healing_recv at C1 with
+  // furina_fanfare_stacks:350 (above the C0 max 300, within the C1-bumped max 400 — proves the
+  // maxBonusFromConstellation clamp raise). char_constellation:1 threads the C1 gate (+3 burst talent).
   "furina-self-buffs": {
+    char_constellation: 1,
     furina_hp_offers: 4,
+    furina_fanfare_stacks: 350,
   },
   // Xinyan A4 dmg_phys+15 (ungated) + C4 enemy_res_physical−15 (gated at C4 → char_constellation:4
   // threads the cons gate ON, matching the oracle dump at constellation 4).

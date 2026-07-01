@@ -2,130 +2,130 @@
   "element": "hydro",
   "features": {
     "attack.charged_hit": {
-      "average": 2095.541228301924,
+      "average": 3623.5400406054114,
       "category": "attack",
-      "crit": 3243.8718704364155,
+      "crit": 5609.195109296303,
       "damageType": "charged",
       "format": "",
       "isReacted": false,
-      "normal": 1621.9359352182078
+      "normal": 2804.5975546481513
     },
     "attack.normal_hit_1": {
-      "average": 1275.1024378457446,
+      "average": 2271.276217412733,
       "category": "attack",
-      "crit": 1973.8427830429482,
+      "crit": 3515.907457295252,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 986.9213915214741
+      "normal": 1757.953728647626
     },
     "attack.normal_hit_2": {
-      "average": 1152.3809387977967,
+      "average": 2052.678547233575,
       "category": "attack",
-      "crit": 1783.871422287611,
+      "crit": 3177.5209709498067,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 891.9357111438055
+      "normal": 1588.7604854749034
     },
     "attack.normal_hit_3": {
-      "average": 1452.5556857765728,
+      "average": 2587.3648152895203,
       "category": "attack",
-      "crit": 2248.5382132764285,
+      "crit": 4005.2086923986385,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 1124.2691066382142
+      "normal": 2002.6043461993193
     },
     "attack.normal_hit_4": {
-      "average": 1931.5888021895885,
+      "average": 3440.6425539002043,
       "category": "attack",
-      "crit": 2990.0755451851214,
+      "crit": 5326.072064860998,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 1495.0377725925607
+      "normal": 2663.036032430499
     },
     "attack.plunge": {
-      "average": 1564.44415129822,
+      "average": 2880.6832209000877,
       "category": "attack",
-      "crit": 2421.7401722882664,
+      "crit": 4459.261951857721,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 1210.8700861441332
+      "normal": 2229.6309759288606
     },
     "attack.plunge_high": {
-      "average": 3907.322377879211,
+      "average": 7194.733032344893,
       "category": "attack",
-      "crit": 6048.486653063795,
+      "crit": 11137.357635208813,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 3024.2433265318973
+      "normal": 5568.6788176044065
     },
     "attack.plunge_low": {
-      "average": 3128.226021486639,
+      "average": 5760.146953025878,
       "category": "attack",
-      "crit": 4842.455141620185,
+      "crit": 8916.63615019486,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 2421.2275708100924
+      "normal": 4458.31807509743
     },
     "attack.spiritbreath_thorn_dmg": {
-      "average": 240.39233094077696,
+      "average": 435.15463610112863,
       "category": "attack",
-      "crit": 372.1243513015123,
+      "crit": 673.6139877726449,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 186.06217565075616
+      "normal": 336.80699388632246
     },
     "attack.surging_blade_dmg": {
-      "average": 240.39233094077696,
+      "average": 435.15463610112863,
       "category": "attack",
-      "crit": 372.1243513015123,
+      "crit": 673.6139877726449,
       "damageType": "normal",
       "format": "",
       "isReacted": false,
-      "normal": 186.06217565075616
+      "normal": 336.80699388632246
     },
     "burst.burst_dmg": {
-      "average": 5585.896728497502,
+      "average": 8566.176995226353,
       "category": "burst",
-      "crit": 8646.89896052245,
+      "crit": 13260.335905923148,
       "damageType": "burst",
       "format": "",
       "isReacted": false,
-      "normal": 4323.449480261225
+      "normal": 6630.167952961574
     },
     "burst.furina_fanfare_dmg_bonus": {
-      "average": 0,
+      "average": 87.5,
       "category": "burst",
-      "crit": 0,
+      "crit": 87.5,
       "damageType": "",
       "format": "percent",
       "isReacted": false,
-      "normal": 0
+      "normal": 87.5
     },
     "burst.furina_fanfare_heal_bonus": {
-      "average": 0,
+      "average": 35,
       "category": "burst",
-      "crit": 0,
+      "crit": 35,
       "damageType": "",
       "format": "percent",
       "isReacted": false,
-      "normal": 0
+      "normal": 35
     },
     "other.furina_heal_dot": {
-      "average": 570.667767,
+      "average": 770.4014854500001,
       "category": "other",
-      "crit": 570.667767,
+      "crit": 770.4014854500001,
       "damageType": "",
       "format": "",
       "isReacted": false,
-      "normal": 570.667767
+      "normal": 770.4014854500001
     },
     "reaction.electrocharged": {
       "average": 4779.069571508837,
@@ -155,49 +155,49 @@
       "normal": 7168.604357263255
     },
     "skill.furina_gentilhomme_usher_dmg": {
-      "average": 3786.5410954730087,
+      "average": 5966.675298139835,
       "category": "skill",
-      "crit": 5861.518723642429,
+      "crit": 9236.339470804698,
       "damageType": "skill",
       "format": "",
       "isReacted": false,
-      "normal": 2930.7593618212145
+      "normal": 4618.169735402349
     },
     "skill.furina_mademoiselle_crabaletta_dmg": {
-      "average": 5265.579295181256,
+      "average": 8297.282696473647,
       "category": "skill",
-      "crit": 8151.051540528262,
+      "crit": 12844.090861414315,
       "damageType": "skill",
       "format": "",
       "isReacted": false,
-      "normal": 4075.525770264131
+      "normal": 6422.045430707158
     },
     "skill.furina_ousia_bubble_dmg": {
-      "average": 3099.6903832487246,
+      "average": 5154.409387296175,
       "category": "skill",
-      "crit": 4798.28232701041,
+      "crit": 7978.96189983928,
       "damageType": "skill",
       "format": "",
       "isReacted": false,
-      "normal": 2399.141163505205
+      "normal": 3989.48094991964
     },
     "skill.furina_singers_of_the_streams_healing": {
-      "average": 3482.2575534400003,
+      "average": 4701.047697144,
       "category": "skill",
-      "crit": 3482.2575534400003,
+      "crit": 4701.047697144,
       "damageType": "",
       "format": "",
       "isReacted": false,
-      "normal": 3482.2575534400003
+      "normal": 4701.047697144
     },
     "skill.furina_surintendante_chevalmarin_dmg": {
-      "average": 2053.372620900799,
+      "average": 3235.6198932194534,
       "category": "skill",
-      "crit": 3178.59538839133,
+      "crit": 5008.699525107513,
       "damageType": "skill",
       "format": "",
       "isReacted": false,
-      "normal": 1589.297694195665
+      "normal": 2504.3497625537566
     },
     "stats.atk": {
       "average": 2047.2940257779997,
