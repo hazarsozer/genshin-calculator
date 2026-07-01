@@ -37,11 +37,11 @@
     }
   },
   "config": {
-    "description": "Party-composition effects on representative active chars exercising each effect's scaling: 6 elemental resonances + none, the 3 two-element gates (Chevreuse/Nilou/Skirk), GildedDreams 4pc (same 1-3 / different 1-3), BlizzardStrayer 4pc (cryo / cryo+frozen), ViridescentVenerer 4pc (per swirl element), all v5.8 set_other team buffs, bond-of-life, Nahida party-pyro-2, CalcOrigin counts (same/different), Gorou General's Glory geo-count tiers (crunch + C6 crit_dmg_geo 2/3), and the four inert party-element weapons. Fillers are buff-clean (probe-verified) so only the active char's own party-reading conditions move.",
+    "description": "Party-composition effects on representative active chars exercising each effect's scaling: 6 elemental resonances + none, the 3 two-element gates (Chevreuse/Nilou/Skirk), GildedDreams 4pc (same 1-3 / different 1-3), BlizzardStrayer 4pc (cryo / cryo+frozen), ViridescentVenerer 4pc (per swirl element), all v5.8 set_other team buffs, bond-of-life, Nahida party-pyro-2, CalcOrigin counts (same/different), Gorou General's Glory geo-count tiers (crunch + C6 crit_dmg_geo 2/3), YunJin Breaking Conventions distinct-element NA DEF-buff tiers (2/3/4), and the four inert party-element weapons. Fillers are buff-clean (probe-verified) so only the active char's own party-reading conditions move.",
     "id": "party"
   },
-  "featureTotal": 1409,
-  "itemCount": 48,
+  "featureTotal": 1499,
+  "itemCount": 51,
   "items": [
     {
       "derived": {
@@ -1856,6 +1856,138 @@
       "weapon": {
         "name": "weapon_name.waveriding_whirl",
         "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 2,
+        "party_elements_different": 1,
+        "party_elements_different_total": 1,
+        "party_elements_same_inc": 1,
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "charSettings": {
+          "yunjin_flag": true
+        },
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          }
+        ]
+      },
+      "repKey": "YunJin",
+      "repSlug": "yun_jin",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "yunjin-elements-2",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 3,
+        "party_elements_different": 2,
+        "party_elements_different_total": 2,
+        "party_elements_same_inc": 1,
+        "party_size": 3
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "charSettings": {
+          "yunjin_flag": true
+        },
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          },
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "YunJin",
+      "repSlug": "yun_jin",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "electro"
+      },
+      "slug": "yunjin-elements-3",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 4,
+        "party_elements_different": 3,
+        "party_elements_different_total": 3,
+        "party_elements_same_inc": 1,
+        "party_size": 4
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "charSettings": {
+          "yunjin_flag": true
+        },
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          },
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "YunJin",
+      "repSlug": "yun_jin",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "electro",
+        "resonance_element_3": "hydro"
+      },
+      "slug": "yunjin-elements-4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
       }
     }
   ]
