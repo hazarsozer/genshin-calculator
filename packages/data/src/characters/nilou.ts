@@ -245,7 +245,8 @@ const features: readonly Feature[] = [
 //    nilou_the_starry_skies_2 (enemy_res_dendro −35, gated ONLY by ascension4 → activatable solo,
 //      lifts her bloom/rupture reaction) is PORTED below.
 //    nilou_the_starry_skies_1 (enemy_res_hydro −35) is gated by NilouParty (needs a Dendro
-//      teammate) + stance_bonus → DEFERRED (party-axis, can't activate in a solo/char-axis build).
+//      teammate) + stance_bonus → PORTED below via the `party-elements`{hydro,dendro} gate
+//      (party-axis; locked by the `nilou-c2*` party-config reps).
 // C3 "Orchestrated Pearls of Slaughter": +3 Elemental Burst talent levels.
 //    Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
 // C4 "Fricative Pulse": ConditionBoolean dmg_burst +50 (no party gate) → PORTED below.
@@ -254,11 +255,16 @@ const features: readonly Feature[] = [
 // C6 "Frostbreaker's Melody": ConditionStatic with ONLY text_percent display keys → SKIP.
 //    (text_percent_rate/max, text_percent_dmg/max are display-only, not real stat keys.)
 //
-// DEFERRED (Tier-B — NilouParty-gated, needs a Dendro teammate → party-axis, not solo-verifiable):
-//    A1 "Court of Dancing Petals" nilou_stance_attacked mastery +100 (gated NilouParty + stance_bonus);
-//    C2 nilou_the_starry_skies_1 enemy_res_hydro −35 (gated NilouParty + stance_bonus). Both fire only
-//    in a Hydro+Dendro party. (The bloom HP→dmg_reaction_rupture postEffect is already modelled with the
-//    same party gate.) mastery is damage-inert for her HP-scaling direct hits anyway (reactions only).
+// C2 nilou_the_starry_skies_1 (enemy_res_hydro −35, NilouParty + stance_bonus) is now PORTED
+// (see constellationConditions). It fires only in a Hydro+Dendro party and lifts her hydro
+// skill/burst hits — a compared damage output; locked by the `nilou-c2*` party-config reps.
+//
+// STILL OUT OF SCOPE (faithful but output-inert for this harness):
+//    A1 "Court of Dancing Petals" nilou_stance_attacked mastery +100 (gated NilouParty + stance_bonus).
+//    EM is damage-inert for her HP-scaling direct hits; the party-burndown harness does not compile
+//    transformative reactions (reaction.* is loader-generated, not a compiled DbObjectChar feature), so
+//    +100 EM changes no COMPARED output → un-lockable here (a rep would be a gamed gate). Left unported.
+//    (The bloom HP→dmg_reaction_rupture postEffect is already modelled with the same party gate.)
 //
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Nilou.js:459-546
 
@@ -287,6 +293,27 @@ const constellationConditions: readonly Condition[] = [
     name: "nilou_fricative_pulse",
     stats: { dmg_burst: 50 },
     condition: { type: "constellation", constellation: 4 },
+  },
+  // SELF C2 "The Starry Skies..." (nilou_the_starry_skies_1) — enemy_res_hydro −35, lifting her
+  // hydro skill/burst hits. PARTY-COMPOSITION gated: raw constellation[1] ConditionBoolean
+  // subConditions = [NilouParty(), Boolean('nilou_stance_bonus'), AscensionChar(4)] → fires only
+  // in a Hydro+Dendro-EXCLUSIVE party with the stance toggle ON (asc4 is always true at L90).
+  // NilouParty == the `party-elements` {hydro,dendro} exclusivity gate (same one bloomPostEffect
+  // uses). Distinct from nilou_the_starry_skies_2 (enemy_res_dendro, NO party gate — ported above).
+  // Inert solo (party-elements false with only char_element) → root goldens byte-identical.
+  // raw Nilou.js:487-498 (ConditionBooleanNilouParty → classes/Condition/Boolean/NilouParty.js).
+  {
+    type: "boolean",
+    name: "nilou_the_starry_skies_1",
+    stats: { enemy_res_hydro: -35 },
+    condition: {
+      type: "and",
+      items: [
+        { type: "constellation", constellation: 2 },
+        { type: "party-elements", elements: ["hydro", "dendro"] },
+        { type: "boolean", name: "nilou_stance_bonus" },
+      ],
+    },
   },
 ];
 

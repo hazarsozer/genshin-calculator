@@ -40,8 +40,8 @@
     "description": "Party-composition effects on representative active chars exercising each effect's scaling: 6 elemental resonances + none, the 3 two-element gates (Chevreuse/Nilou/Skirk), GildedDreams 4pc (same 1-3 / different 1-3), BlizzardStrayer 4pc (cryo / cryo+frozen), ViridescentVenerer 4pc (per swirl element), all v5.8 set_other team buffs, bond-of-life, Nahida party-pyro-2, CalcOrigin counts (same/different), Gorou General's Glory geo-count tiers (crunch + C6 crit_dmg_geo 2/3), YunJin Breaking Conventions distinct-element NA DEF-buff tiers (2/3/4), and the four inert party-element weapons. Fillers are buff-clean (probe-verified) so only the active char's own party-reading conditions move.",
     "id": "party"
   },
-  "featureTotal": 1681,
-  "itemCount": 58,
+  "featureTotal": 1741,
+  "itemCount": 60,
   "items": [
     {
       "derived": {
@@ -1051,6 +1051,82 @@
       "weapon": {
         "name": "weapon_name.the_bell",
         "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "charSettings": {
+          "char_constellation": 2,
+          "nilou_stance_bonus": true,
+          "nilou_the_starry_skies_1": true
+        },
+        "constellation": 2,
+        "members": [
+          {
+            "element": "dendro",
+            "origin": "sumeru"
+          }
+        ]
+      },
+      "repKey": "Nilou",
+      "repSlug": "nilou",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "nilou-c2-hydro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "charSettings": {
+          "char_constellation": 2,
+          "nilou_stance_bonus": true,
+          "nilou_the_starry_skies_1": true
+        },
+        "constellation": 2,
+        "members": [
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Nilou",
+      "repSlug": "nilou",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "nilou-c2-nogate",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
       }
     },
     {
