@@ -10,36 +10,43 @@
  * FeatureDamageNormalMualani — `category:'skill'` but `damageType:'normal'`
  * (extends FeatureDamageNormal, which forces damageType='normal'). So it groups
  * under the `skill.` key yet picks up the NORMAL DMG-bonus (dmg_normal), NOT
- * dmg_skill. HP-scaled off s2.p1 (mualani_shark_base_dmg). Confirmed against the
- * fixture: damageType:"normal", category:"skill", normal=2157.32.
- *   - FeatureDamageNormalMualani.getReactionMultipliers adds an extra
- *     bite-ratio multiplier ONLY when settings.mualani_byte_targets > 1. The
- *     ConditionDropdown defaults to 1 in the fixed solo build → no extra factor.
+ * dmg_skill. HP-scaled off s2.p1 (mualani_shark_base_dmg). Tagged `shark_byte`
+ * (the char-level Wave-Momentum / Sharks-Add / C1 multipliers target it).
  *   raw/genshin_calc_pub/src/js/classes/Feature2/Damage/Normal/Mualani.js
  *
+ * WAVE MOMENTUM (`mualani_wave_momentum`, ConditionStacks 0-3) — a char-level
+ * HP-scaled multiplier (s2.p2) over the `shark_byte` tag, multiplied by the stack
+ * count (her `stacksLeveling` → our `stacksFactor`, 0 at 0 stacks). At >=3 stacks a
+ * SECOND flat HP term (s2.p3, `mualani_shark_add_dmg`) also fires (her
+ * ConditionBooleanValue `mualani_wave_momentum >= 3`). Both OFF (0 stacks) in the
+ * fixed build → inert.
+ *
+ * A4 "Natlan's Greatest Guide" (`mualani_natlans_greatest_guide`, 0-3): the burst's
+ * SECOND HP-scaled multiplier (ValueTable[15,30,45] indexed by the setting as level),
+ * gated on the boolean toggle. OFF (0) in the fixed build → the burst is a plain HP hit.
+ * The ascension-4 gate is dropped (always true at ascension 6).
+ *
  * Burst (Boomsharka-laka): burst_dmg, hydro, HP-scaled off s3.p1.
- *   damageBonuses:['dmg_burst_mualani'] — only ever set by C4
- *   (mualani_sharky_eats_puffies, 75%), inactive at C0 → reads 0.
- *   The second burst multiplier (A1/A4 "Natlan's Greatest Guide", 15/30/45% HP)
- *   is gated by ConditionBoolean(mualani_natlans_greatest_guide), a stacks toggle
- *   default 0 in the fixed build → OFF, omitted.
+ *   damageBonuses:['dmg_burst_mualani'] — set by C4 (mualani_sharky_eats_puffies, 75%),
+ *   inactive at C0 → reads 0.
  *
- * Features OFF at baseline (not in fixture → omitted, mis-key guard would fail):
- *   - mualani_shark_missile_dmg: ConditionBooleanValue mualani_byte_targets >= 2;
- *     dropdown default 1 → OFF. Same talent as the bite (s2.p1).
+ * Constellations: C1 "The Leisurely Meztli" (`mualani_the_leisurely_meztli`, +66% HP
+ *   shark_byte multiplier, gated C1) + C4 "Sharky Eats Puffies" (dmg_burst_mualani +75,
+ *   gated C4). C3/C5 talent-level bumps. C2/C6 no real stats.
  *
- * Char-level multipliers (global `multipliers[]`, all target tags:['shark_byte'])
- * contribute nothing at baseline, so omitted entirely:
- *   - mualani_wave_monentum_dmg: stacksLeveling mualani_wave_momentum, stacks
- *     default 0 → adds 0.
- *   - mualani_shark_add_dmg: ConditionBooleanValue mualani_wave_momentum >= 3,
- *     default 0 → OFF.
- *   - C1 mualani_the_leisurely_meztli (66% HP): constellation-gated → OFF at C0.
+ * DEFERRED (needs a new core surface — S2 group B-α):
+ *   `mualani_byte_targets` (ConditionDropdown, 1-3) and the shark-missile feature it
+ *   gates (>=2). Her `FeatureDamageNormalMualani.getReactionMultipliers` pushes a
+ *   settings-keyed whole-hit `CMultiplierCustom` (byte_targets 2 → 0.86, 3 → 0.72) that
+ *   scales BOTH the shark bite AND the missile — a conditional/settings-indexed whole-hit
+ *   multiplier the port has no primitive for (the un-modelled `scalingMultiplierCondition`
+ *   / custom-reaction-multiplier). Since the ratio scales the bite too, the whole
+ *   byte_targets>=2 surface (missile feature + the ratio) is deferred together; at
+ *   byte_targets=1 (default) the missile is OFF and the ratio is 1.0 → the ported scope
+ *   is exact. Source: raw/.../Feature2/Damage/Normal/Mualani.js:11-31 + Mualani.js:212-229.
  *
  * Reaction features (electrocharged / rupture / shatter) are emitted generically
  * by the engine from element=hydro — not declared here (cf. neuvillette.ts).
- *
- * Constellations skipped (C0 build).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Mualani.js
@@ -48,7 +55,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Mualani)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { Condition, DbObjectChar, Feature, FeatureMultiplierEntry, TalentResolver, TalentTable } from "@genshin/types";
 import { Mualani as MualaniStatTable } from "../generated/charTables.js";
 import { Mualani as MualaniTalents } from "../generated/charTalentTables.js";
 
@@ -70,12 +77,22 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "mualani_shark_base_dmg") return MualaniTalents.s2.p1;
+      if (name === "mualani_wave_monentum_dmg") return MualaniTalents.s2.p2;
+      if (name === "mualani_shark_add_dmg") return MualaniTalents.s2.p3;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return MualaniTalents.s3.p1;
     }
     throw new Error(`mualani talents: unknown path '${path}'`);
   },
+};
+
+// A4 "Natlan's Greatest Guide" ValueTable([15,30,45]) — indexed by the setting value as level.
+// Replicates her ValueTable.getValue: level <= 0 → 0; level > length → last; else values[level-1].
+const A4_GUIDE_VALUES = [15, 30, 45] as const;
+const a4GuideTable: TalentTable = {
+  getValue: (level: number): number =>
+    level > 0 ? A4_GUIDE_VALUES[Math.min(level, A4_GUIDE_VALUES.length) - 1]! : 0,
 };
 
 // ---------------------------------------------------------------------------
@@ -142,12 +159,14 @@ const features: readonly Feature[] = [
   // --- Skill: Surfshark Wavebreaker (the shark bite) ---
   // raw: FeatureDamageNormalMualani mualani_shark_bite_dmg —
   //   category:'skill', damageType:'normal' (forced by FeatureDamageNormal),
-  //   HP-scaled off s2.p1. byte-ratio extra multiplier OFF at mualani_byte_targets=1.
+  //   HP-scaled off s2.p1, tags:['shark_byte'] (the char-level multipliers target it).
+  //   The byte-ratio extra multiplier (byte_targets>=2) is DEFERRED — see header.
   {
     name: "mualani_shark_bite_dmg",
     category: "skill",
     damageType: "normal",
     element: "hydro",
+    tags: ["shark_byte"],
     multipliers: [
       { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.mualani_shark_base_dmg") },
     ],
@@ -155,7 +174,8 @@ const features: readonly Feature[] = [
   // --- Burst: Boomsharka-laka ---
   // raw: FeatureDamageBurst burst_dmg (HP-scaled, hydro)
   //   damageBonuses:['dmg_burst_mualani'] — C4-only, reads 0 at C0.
-  //   A1/A4 second multiplier gated by mualani_natlans_greatest_guide (default 0) → omitted.
+  //   Second multiplier = A4 "Natlan's Greatest Guide" HP term (s2.p1-scale ValueTable[15,30,45]
+  //   indexed by mualani_natlans_greatest_guide), gated on the boolean toggle. OFF (0) → inert.
   {
     name: "burst_dmg",
     category: "burst",
@@ -163,30 +183,82 @@ const features: readonly Feature[] = [
     damageBonuses: ["dmg_burst_mualani"],
     multipliers: [
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") },
+      {
+        scaling: "hp",
+        source: "ascension1",
+        leveling: "mualani_natlans_greatest_guide",
+        values: a4GuideTable,
+        condition: { type: "boolean", name: "mualani_natlans_greatest_guide" },
+      },
     ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Char-level (targeted) multipliers — Wave-Momentum / Sharks-Add / C1, all HP-scaled
+// over the `shark_byte` tag (the shark bite). raw Mualani.js:250-284.
+// ---------------------------------------------------------------------------
+const SHARK_BYTE_TARGET = { damageTypes: [] as string[], tags: ["shark_byte"] };
+
+const multipliers: readonly FeatureMultiplierEntry[] = [
+  // Wave Momentum (`mualani_wave_momentum`, 0-3) — HP-scaled term (s2.p2) × stack count
+  // (her stacksLeveling → stacksFactor; 0 at 0 stacks → inert). No condition (the stacks factor gates it).
+  {
+    scaling: "hp",
+    leveling: "char_skill_elemental",
+    values: talents.get("skill.mualani_wave_monentum_dmg"),
+    stacksFactor: { setting: "mualani_wave_momentum", maxStacks: 3 },
+    target: SHARK_BYTE_TARGET,
+  },
+  // Sharks Add (s2.p3) — flat HP term, active when mualani_wave_momentum >= 3 (her ConditionBooleanValue).
+  {
+    scaling: "hp",
+    leveling: "char_skill_elemental",
+    values: talents.get("skill.mualani_shark_add_dmg"),
+    target: SHARK_BYTE_TARGET,
+    condition: { type: "boolean-value", setting: "mualani_wave_momentum", cond: "ge", value: 3 },
+  },
+  // C1 "The Leisurely Meztli" — +66% HP flat term, gated C1 + the boolean toggle.
+  {
+    scaling: "hp",
+    source: "constellation1",
+    leveling: "",
+    values: { getValue: (): number => 66 },
+    target: SHARK_BYTE_TARGET,
+    condition: {
+      type: "and",
+      items: [
+        { type: "constellation", constellation: 1 },
+        { type: "boolean", name: "mualani_the_leisurely_meztli" },
+      ],
+    },
   },
 ];
 
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C Wave-1)
 // ---------------------------------------------------------------------------
-// C1 "The Leisurely Meztli": ConditionBoolean toggle (hp bonus to shark bites) → SKIP.
+// C1 "The Leisurely Meztli": +66% HP shark_byte multiplier (above) — no bag stat here.
 // C2 "Mualani, Going All Out!": ConditionStatic with no real stats → SKIP.
 // C3 "Surfing Atop Jaws": +3 Elemental Skill talent levels.
-//    Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
-// C4 "Sharky Eats Puffies": ConditionBoolean toggle (dmg_burst_mualani) → SKIP.
+// C4 "Sharky Eats Puffies": dmg_burst_mualani +75 (boolean, gated C4) → below.
 // C5 "Same Day Returns": +3 Elemental Burst talent levels.
-//    Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
 // C6 "Spirit of the Spring's People": ConditionStatic with no real stats → SKIP.
 //
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Mualani.js:332-393
 
 const constellationConditions: readonly Condition[] = [
   // C3: +3 Elemental Skill (Surfshark Wavebreaker).
-  // Raw cons[2]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C4 "Sharky Eats Puffies" — dmg_burst_mualani +75, gated C4 + the boolean toggle. Lifts the burst
+  // via the restored damageBonuses key. raw Mualani.js cons[3] (mualani_sharky_eats_puffies).
+  {
+    type: "boolean",
+    name: "mualani_sharky_eats_puffies",
+    stats: { dmg_burst_mualani: 75 },
+    condition: { type: "constellation", constellation: 4 },
+  },
   // C5: +3 Elemental Burst (Boomsharka-laka).
-  // Raw cons[4]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
@@ -204,6 +276,6 @@ export const mualani: DbObjectChar = {
   statTable: MualaniStatTable,
   talents,
   features,
-  multipliers: [],
+  multipliers,
   conditions: constellationConditions,
 };

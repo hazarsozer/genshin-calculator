@@ -791,6 +791,18 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     varesa_the_hero_twice_returned: 2,
     varesa_the_courage_to_press_on_1: true,
   },
+  // Mualani Wave Momentum stacks (mualani_wave_momentum:3 → s2.p2 HP term ×3 + s2.p3 flat HP at >=3, both
+  // over the shark_byte tag) + A4 mualani_natlans_greatest_guide:3 (+45% HP on the burst 2nd mult) + C1
+  // mualani_the_leisurely_meztli (+66% HP shark_byte mult) + C4 mualani_sharky_eats_puffies (dmg_burst_
+  // mualani+75). char_constellation:6 threads the C1/C4 gates ON, matching the oracle dump at constellation
+  // 6. (byte_targets>=2 + the shark-missile feature stay Tier-B — see mualani.ts header.)
+  "mualani-self-buffs": {
+    char_constellation: 6,
+    mualani_wave_momentum: 3,
+    mualani_natlans_greatest_guide: 3,
+    mualani_the_leisurely_meztli: true,
+    mualani_sharky_eats_puffies: true,
+  },
   // Ifa A4 mastery+80 (ifa_mutual_aid_agreement, ascension boolean) + C4 mastery+100
   // (ifa_decayed_vessels_permutation, ≥C4). Plain EM lifts her swirl/EC reaction outputs.
   // char_constellation:4 threads the C4 gate ON, matching the oracle dump at constellation 4.
