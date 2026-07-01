@@ -26,8 +26,9 @@
  *
  * Non-damage outputs modelled (P3.5.3): the two skill heals
  * (sigewinne_bolstering_bubblebalm_heal — s2.p2 % + s2.p3 flat; sigewinne_bounce_end_heal —
- * s2.p4 % only) and other.sigewinne_hp_buff (A1 HYDRO-DMG% she grants, driven by her OWN
- * hp_total above 30000: min(0.08×max(hp_total−30000,0), 2800) at the A1 tier).
+ * s2.p4 % only) and other.sigewinne_hp_buff (A1/C1 DMG she grants, driven by her OWN
+ * hp_total above 30000: min(buff%×max(hp_total−30000,0), cap) — buff% + cap BOTH level-indexed
+ * by sigewinne_buff_level: A1 tier min(0.08×…, 2800), C1 tier (buff_level 2) min(0.1×…, 3500)).
  *
  * Conditions/post-effects OFF at the canonical solo-C0 build (omitted):
  *   - A1 "Requires Appropriate Rest" — a ConditionBoolean toggle granting
@@ -85,6 +86,29 @@ const talents: TalentResolver = {
     throw new Error(`sigewinne talents: unknown path '${path}'`);
   },
 };
+
+// ---------------------------------------------------------------------------
+// A1/C1 "Requires Appropriate Rest" buff tables — shared by the SELF hp-buff readout
+// (other.sigewinne_hp_buff) and the teammate skill-DMG multiplier (partyData). Both are
+// (buff% × max(HP − 30000, 0)) capped, indexed by `sigewinne_buff_level` (1 = A1 tier,
+// 2 = C1 tier, set by C1). raw Sigewinne.js:124-131,278-289,526-538.
+// ---------------------------------------------------------------------------
+
+// values — her `new ValueTable([A1DmgBonus / 10, C1DmgBonus / 10])` = [8, 10], 1-indexed by
+// `sigewinne_buff_level`. Replicates ValueTable.getValue exactly (raw/.../classes/ValueTable.js):
+// level <= 0 → 0; level > length → last; else values[level-1]. baseDamageTerm reads
+// `leveling: "sigewinne_buff_level"` from settings (not a char-skill slot → the
+// `settings[leveling]` path, defaulting to 1) and calls getValue on it.
+const SIGEWINNE_BUFF_VALUES = [8, 10] as const; // [A1DmgBonus/10, C1DmgBonus/10]
+const sigewinneBuffValues = {
+  getValue: (level: number): number =>
+    level > 0 ? SIGEWINNE_BUFF_VALUES[Math.min(level, SIGEWINNE_BUFF_VALUES.length) - 1]! : 0,
+};
+// caps — her `new ValueTable([A1DmgBonusMax, C1DmgBonusMax])` = [2800, 3500], 1-indexed by the
+// SAME `sigewinne_buff_level` (her capValue.getValue(getLevel), Multiplier.js:233-237 /
+// PostEffect statCap). Fed to the capValueFromTable field (level-indexed cap, buff_level 1→2800,
+// 2→3500).
+const SIGEWINNE_BUFF_CAPS = [2800, 3500] as const; // [A1DmgBonusMax, C1DmgBonusMax]
 
 // ---------------------------------------------------------------------------
 // Features
@@ -197,18 +221,26 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.sigewinne_bounce_end_heal") },
     ],
   },
-  // --- A1 "Targeted Treatment" static readout: other.sigewinne_hp_buff = HP-above-30000 → Hydro DMG% (capped) ---
+  // --- A1/C1 "Requires Appropriate Rest" static readout: other.sigewinne_hp_buff = HP-above-30000 → DMG (capped) ---
   // FeaturePostEffectValue(PostEffectStatsHP, exceed=A1MinHP=30000, percent=StatTable('',[A1DmgBonus/1000=0.08,
-  // C1DmgBonus/1000]), statCap=ValueTable([A1DmgBonusMax=2800, C1DmgBonusMax]), levelSetting sigewinne_buff_level).
-  // '' name not isPercent + fmt="" → displayed = min(0.08×max(hp_total−30000,0), 2800) at buff_level 0 (A1 tier; C1
-  // off at C0). values = 0.08×100 = 8; exceedStatValue = 30000; capValue = 2800 (A1 cap; the level-indexed C1 tier /
-  // capValueFromTable is the deferred E5 extension, inert at C0). raw/.../Char/Sigewinne.js:124-131,278-290.
+  // C1DmgBonus/1000=0.1]), statCap=ValueTable([A1DmgBonusMax=2800, C1DmgBonusMax=3500]), levelSetting
+  // sigewinne_buff_level). '' name not isPercent + fmt="" → displayed = min(0.08×max(hp_total−30000,0), 2800) at the
+  // A1 tier (buff_level 1) and min(0.1×…, 3500) at the C1 tier (buff_level 2, set by C1). Both the value AND the cap
+  // are level-indexed by sigewinne_buff_level: values = SIGEWINNE_BUFF_VALUES[8,10]×… via `leveling`; cap =
+  // capValueFromTable(SIGEWINNE_BUFF_CAPS[2800,3500]). exceedStatValue = 30000. At C0 (buff_level absent → level 1)
+  // the value is 8% / cap 2800 (byte-identical to the prior A1-only port). raw/.../Char/Sigewinne.js:124-131,278-289.
   {
     name: "sigewinne_hp_buff",
     category: "other",
     output: { kind: "static" },
     multipliers: [
-      { scaling: "hp", leveling: "", values: { getValue: () => 8 }, exceedStatValue: 30000, capValue: 2800 },
+      {
+        scaling: "hp",
+        leveling: "sigewinne_buff_level",
+        values: sigewinneBuffValues,
+        exceedStatValue: 30000,
+        capValueFromTable: { table: SIGEWINNE_BUFF_CAPS, levelSetting: "sigewinne_buff_level" },
+      },
     ],
   },
 ];
@@ -268,32 +300,18 @@ const constellationConditions: readonly Condition[] = [
 // gate it checks; constellation/passive booleans (C1 buff-level, C2 res-shred, A4/C6)
 // are deferred to the P3.5.2 variant-rep pass.
 //
-// PARTIAL PORT (capValue): her cap is a buff_level-indexed ValueTable([A1DmgBonusMax,
-// C1DmgBonusMax]) = [2800, 3500] (the C1 tier raises both the buff% AND its cap). Our
-// FeatureMultiplierEntry.capValue is a single NUMBER, so this ports the buff_level=1
-// tier only: `capValue: A1DmgBonusMax` (2800), and the rep bakes `sigewinne_buff_level: 1`
-// → `values.getValue(1)` (= A1DmgBonus/10 = 8%) + that cap are EXACT. The buff_level=2
-// (C1) case — a 10% ratio capped at 3500 — needs a level-indexed cap table
-// (a `capValueFromTable` field, a FUTURE engine extension); deferred, NOT faked here.
+// The cap is a buff_level-indexed ValueTable([A1DmgBonusMax, C1DmgBonusMax]) = [2800, 3500]
+// (the C1 tier raises both the buff% AND its cap). Ported via the level-indexed
+// `capValueFromTable` field (SIGEWINNE_BUFF_CAPS), so buff_level 1 → 2800 and 2 → 3500 are BOTH
+// EXACT (the prior port deferred the C1 cap tier to a constant 2800; now un-deferred).
 // ---------------------------------------------------------------------------
 
-// values — her `new ValueTable([A1DmgBonus / 10, C1DmgBonus / 10])` = [8, 10], 1-indexed
-// by `sigewinne_buff_level` (1 = A1 tier, 2 = C1 tier). Replicates ValueTable.getValue
-// exactly (raw/.../classes/ValueTable.js): level <= 0 → 0; level > length → last; else
-// values[level-1]. baseDamageTerm reads `leveling: "sigewinne_buff_level"` from settings
-// (not a char-skill slot → the `settings[leveling]` path) and calls getValue on it.
-const SIGEWINNE_BUFF_VALUES = [8, 10] as const; // [A1DmgBonus/10, C1DmgBonus/10]
-const sigewinneBuffValues = {
-  getValue: (level: number): number =>
-    level > 0 ? SIGEWINNE_BUFF_VALUES[Math.min(level, SIGEWINNE_BUFF_VALUES.length) - 1]! : 0,
-};
-
 // "Requires Appropriate Rest": (buff% × max(HP_total − 30000, 0)) added to each SKILL hit
-// of the recipient, capped at A1DmgBonusMax (buff_level=1 tier). raw Sigewinne.js:526-538.
+// of the recipient, capped by SIGEWINNE_BUFF_CAPS[buff_level]. raw Sigewinne.js:526-538.
 //   scaling: 'sigewinne_hp_total'  (the lifted teammate max HP, read VERBATIM via cStat)
 //   exceedStatValue: A1MinHP (30000) → the scaling factor is max(HP − 30000, 0)
-//   leveling: 'sigewinne_buff_level' → values.getValue (8% at the baked level 1)
-//   capValue: A1DmgBonusMax (2800) — PARTIAL: buff_level=1 cap only (see note above)
+//   leveling: 'sigewinne_buff_level' → values.getValue (8% at buff_level 1, 10% at 2)
+//   capValueFromTable: [2800, 3500] by sigewinne_buff_level (1 → 2800, 2 → 3500)
 //   target: { damageTypes: ['skill'] }  (load-bearing — non-skill hits stay unbuffed)
 //   condition: ConditionBoolean('party.sigewinne_requires_appropriate_rest') master gate
 const sigewinnePartyMultipliers: readonly CharMultiplier[] = [
@@ -302,7 +320,7 @@ const sigewinnePartyMultipliers: readonly CharMultiplier[] = [
     scaling: "sigewinne_hp_total",
     leveling: "sigewinne_buff_level",
     values: sigewinneBuffValues,
-    capValue: 2800, // A1DmgBonusMax (buff_level=1 cap; C1 cap-table deferred)
+    capValueFromTable: { table: SIGEWINNE_BUFF_CAPS, levelSetting: "sigewinne_buff_level" },
     exceedStatValue: 30000, // A1MinHP
     target: { damageTypes: ["skill"] },
     condition: { type: "boolean", name: "party.sigewinne_requires_appropriate_rest" },
@@ -319,8 +337,8 @@ const sigewinnePartyMultipliers: readonly CharMultiplier[] = [
 // FAITHFUL asymmetry: her crit_dmg StatTable keys off C6CritDmgMax/10, NOT C6CritDmg/10 as crit_rate
 // does off C6CritRate/10 (Sigewinne.js:372,380). Both bonuses cap for any realistic HP (her cap is
 // reached at HP≥500 / HP≥10), so the net crit gain is ~+20% rate / +110% DMG. The SELF mirror of the
-// crit battery; was golden-blind SKIPPED. (The A1/C1 HP→skill-dmg level-cap table part stays Tier-B
-// deferred — needs a capValueFromTable engine extension.)
+// crit battery; was golden-blind SKIPPED. (The A1/C1 HP→DMG level-indexed cap is now ported via the
+// capValueFromTable field — see the sigewinne_hp_buff readout + the partyData multiplier above.)
 // ---------------------------------------------------------------------------
 const sigewinneSelfPostEffects: readonly CharPostEffect[] = [
   {
