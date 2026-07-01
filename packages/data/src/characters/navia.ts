@@ -198,6 +198,9 @@ const features: readonly Feature[] = [
 //
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Navia.js:356-429
 
+// Navia A4 counts nearby members of these four elements (her CalcElementsNavia set).
+const NAVIA_A4_ELEMENTS = ["pyro", "hydro", "electro", "cryo"] as const;
+
 // SELF buffs (were golden-blind SKIPPED — the port modelled only the party.* C4 res-shred mirror;
 // a diff-parity sweep surfaced her own hits diverging when the toggles are on):
 //   - A1 "Undisclosed Distribution Channels" (navia_undisclosed_distribution_channels): dmg_normal /
@@ -207,12 +210,8 @@ const features: readonly Feature[] = [
 //     −20 (the SELF mirror of party.navia_the_oathsworn_never_capitulate below), gated C4. raw
 //     constellation[3] ConditionBoolean. THE CONSTELLATION IS A GATE.
 //
+// SELF A4 "Mutual Assistance Network" — PORTED below (Tier-B (ε), party-axis locked).
 // DEFERRED (Tier-B — needs new engine surface / party-axis input, not pure self-data):
-//   - A4 "Mutual Assistance Network": atk_percent [0,20,40] by nearby Pyro/Hydro/Electro/Cryo count.
-//     navia_chars_count is NOT a manual toggle — it is PUBLISHED by ConditionCalcElementsNavia from the
-//     party's resonance_element_1/2/3 (a PARTY-axis input). In any solo/char-axis context the publisher
-//     forces it to 0 (verified: her engine emits BASE damage at navia_chars_count=2). Modeling it in the
-//     port would require replicating the publisher (new surface) and belongs to the party axis.
 //   - The Ceremonial Crystalshot cannon bulletMultiplier (navia_bullets → FeatureMultiplierNaviaSkill,
 //     a non-linear bullet-count table scaling the shardshot) — a custom feature multiplier.
 //   - ConditionStaticNavia's shrapnel-split bonus keys (crit_rate_navia [C2], dmg_skill_navia +
@@ -240,6 +239,21 @@ const constellationConditions: readonly Condition[] = [
     stats: { enemy_res_geo: -20 },
     condition: { type: "constellation", constellation: 4 },
   },
+  // SELF A4 "Mutual Assistance Network" — +20% ATK per nearby Pyro/Hydro/Electro/Cryo party
+  // member, capped at 2 members (+40%). Her ConditionCalcElementsNavia counts resonance_element_1/2/3
+  // in {pyro,hydro,electro,cryo} → navia_chars_count, feeding a ConditionStaticLevel with
+  // atk_percent table [0,20,40] (fromZero → level = count+1, StatTable clamps to last): count 0/1/2/3
+  // → +0/+20/+40/+40. Modeled as two cumulative `elements-count` set tiers (≥1 → +20, ≥2 → +20 more →
+  // +40; count 3 fires only these two → cap holds). NOT constellation-gated; UNGATED like her A4
+  // (ConditionAscensionChar({ascension:4}) — the port has no ascension type and every oracle rep
+  // builds at ascension 6, so A4 is always satisfied; cf. YunJin A4). Base-inert: solo has no party →
+  // no resonance_element_* → count 0 → both tiers off → root goldens byte-unchanged. The set excludes
+  // geo (Navia's own element), so including char_element in the count is equivalent to her
+  // teammates-only scan. Oracle-locked via the `party` config's navia-a4-1/2/3 reps.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Navia.js:126,333-354 (A4AtkBonus=20, the A4
+  //         ConditionStaticLevel + ConditionCalcElementsNavia) + Condition/CalcElementsNavia.js:8-17.
+  { type: "elements-count", element: NAVIA_A4_ELEMENTS, count: 1, stats: { atk_percent: 20 } },
+  { type: "elements-count", element: NAVIA_A4_ELEMENTS, count: 2, stats: { atk_percent: 20 } },
 ];
 
 // ---------------------------------------------------------------------------
