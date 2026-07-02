@@ -227,13 +227,38 @@ const postEffects: readonly CharPostEffect[] = [
     ratioFromTalent: { table: MizukiTalents.s2.p2, levelSetting: "char_skill_elemental", multi: 1 },
     conditions: [{ type: "boolean", name: "mizuki_dreamdrifter" }],
   },
+  // C1 "In Mist-Like Waters" — SELF flat additive swirl bonus, 11.00 × EM
+  // (C1SwirlBonus=1100, values.getValue()/100 = 11.00; her FeatureMultiplier
+  // scaling:'mastery*' target:{tags:['swirl'], options:['reaction_flat']}).
+  // Writes the raw bag `reaction_flat_swirl` key (buildStats' REACTION_FLAT_KEYS
+  // pass-through), read by cTransformativeDamage's reactionFlatKeys on all 4
+  // swirl_<element> features via reactionFlatOverrides below. Gated C1 AND
+  // dreamdrifter AND the C1 toggle itself (her ConditionAnd of all three).
+  // The party-scope C1 variant (Mizuki.js:507-514) is teammate-buff scope,
+  // deferred (see partyData comment below).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Mizuki.js:328-343.
+  {
+    fromStat: "mastery",
+    toStat: "reaction_flat_swirl",
+    ratio: 11,
+    conditions: [
+      { type: "constellation", constellation: 1 },
+      { type: "boolean", name: "mizuki_dreamdrifter" },
+      { type: "boolean", name: "mizuki_in_mist_like_waters" },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
 // Constellations (P2.C Wave-1)
 // ---------------------------------------------------------------------------
-// C1: ConditionBoolean toggle ("mizuki_in_mist_like_waters", Swirl DMG bonus gated
-//   by dreamdrifter toggle) → SKIP.
+// C1 "In Mist-Like Waters" — the ConditionBoolean toggle itself carries only a
+//   display-only `text_percent_dmg` stat (SKIPPED, matches house convention for
+//   non-real stats). The REAL effect is a separate FeatureMultiplier in her
+//   `multipliers:` list (Mizuki.js:328-343, target tags:['swirl']
+//   options:['reaction_flat']) — a genuine gap, now ported below as a
+//   `reaction_flat_swirl` post-effect + `reactionFlatOverrides` on all 4
+//   swirl_<element> reaction features (11.00 × EM, self-scope only).
 // C2: ConditionStatic with text_percent_dmg only (display-only, no real stat) → SKIP.
 //   Raw: (C2ElemBonus/100 = 0.04 is a fractional dmg multiplier but text_percent_dmg only)
 // C3 "Boundless Blossoming" — +3 Elemental Skill talent levels.
@@ -293,4 +318,12 @@ export const yumemizukiMizuki: DbObjectChar = {
   multipliers: [],
   postEffects,
   conditions: constellationConditions,
+  // C1's flat swirl bonus applies to all 4 swirl_<element> outputs uniformly
+  // (her FeatureMultiplier target has no per-element split — Mizuki.js:328-343).
+  reactionFlatOverrides: {
+    swirl_pyro: ["reaction_flat_swirl"],
+    swirl_hydro: ["reaction_flat_swirl"],
+    swirl_electro: ["reaction_flat_swirl"],
+    swirl_cryo: ["reaction_flat_swirl"],
+  },
 };

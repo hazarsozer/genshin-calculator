@@ -185,6 +185,21 @@ const REACTION_DERIVED_KEYS = [
 ] as const;
 
 /**
+ * Flat-damage stat keys the transformative-reaction factories read via
+ * `cTransformativeDamage`'s `reactionFlatKeys` (added BEFORE the resistance
+ * multiplier, not multiplied by the reaction/level factor). Post-effect-sourced
+ * and already fraction-of-EM valued (the postEffect `ratio` — 11 = 1100/100 —
+ * bakes the /100 in), so this is a pass-through like the rate-scaling
+ * REACTION_DERIVED_KEYS above (NOT re-divided, unlike REACTION_BONUS_PERCENT_KEYS
+ * which is condition-sourced raw percent). Only producer in scope: Mizuki's C1
+ * "In Mist-Like Waters" (`reaction_flat_swirl`).
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Mizuki.js:328-343;
+ *         raw/genshin_calc_pub/src/js/classes/Feature2/Reaction.js:38-49,86-129.
+ */
+const REACTION_FLAT_KEYS = ["reaction_flat_swirl"] as const;
+
+/**
  * Per-reaction DMG bonus keys CONDITIONS contribute (e.g. CrimsonWitch 4pc's
  * `dmg_reaction_overloaded`/`_burgeon`/…). The reaction factories read each via
  * `cStat(key)` inside `(1 + emBonus + Σ dmg_reaction_*)` (core's
@@ -1093,6 +1108,13 @@ export function buildStats(input: BuildInput): BuildResult {
   // condition-sourced (raw percent) and lives in REACTION_BONUS_PERCENT_KEYS — it
   // is /100'd below. (Raw: db/Char/Ineffa.js lunarPost, PostEffect/Stats.js getTree.)
   for (const key of REACTION_DERIVED_KEYS) {
+    if (raw.isSet(key)) out[key] = raw.get(key);
+  }
+
+  // Reaction-FLAT keys the transformative-reaction factories add before the
+  // resistance multiplier (cTransformativeDamage's `reactionFlatKeys`). Already
+  // fraction-of-EM valued from the postEffect ratio → pass-through, no /100.
+  for (const key of REACTION_FLAT_KEYS) {
     if (raw.isSet(key)) out[key] = raw.get(key);
   }
 
