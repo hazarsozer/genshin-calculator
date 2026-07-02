@@ -144,6 +144,13 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     furina_hp_offers: 4,
     furina_fanfare_stacks: 350,
   },
+  // Furina C2 fanfareHpPost: fanfare:600 at C2 (> C1-only max 400, within the C2-bumped max 800)
+  // proves the maxBonusFromConstellation C2 array-entry AND the hp_percent bonus it feeds:
+  // (600−400)×0.35 = +70% max HP, lifting every HP-scaling damage feature.
+  "furina-c2-fanfare-hp": {
+    char_constellation: 2,
+    furina_fanfare_stacks: 600,
+  },
   // Xinyan A4 dmg_phys+15 (ungated) + C4 enemy_res_physical−15 (gated at C4 → char_constellation:4
   // threads the cons gate ON, matching the oracle dump at constellation 4).
   "xinyan-self-buffs": {

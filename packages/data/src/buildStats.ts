@@ -303,12 +303,15 @@ const RAW_BAG_SCALING_KEYS = [
   "layla_max_hp",         // Layla C4 HP-scaled normal/charged-DMG multiplier (P3.5.2 Bucket C)
   "sigewinne_hp_total",   // Sigewinne A1 max-HP-ABOVE-30000-scaled skill-DMG multiplier (P3.5.2 engine-ext; exceedStatValue)
   "xianyun_atk_total",    // Xianyun A4 ATK-scaled plunge-SHOCKWAVE-DMG multiplier (P3.5.2 Xianyun sub-pass; tags target)
-  "furina_fanfare_stacks", // Furina "Let the People Rejoice" fanfare self-buff readouts (Tier-B S3):
-                          // the two `kind:"static"` display features (furina_fanfare_dmg_bonus /
-                          // heal_bonus) scale on this raw stack count via compileFeature's cStat
-                          // read of the FINAL emitted bag. The real dmg_all bonus (a CharPostEffect)
-                          // reads the pre-emit snapshot directly and needs no allow-listing; only the
-                          // feature-scaling readouts need this entry to see a nonzero value.
+  "furina_fanfare_dmg_healing_stacks", // Furina "Let the People Rejoice" fanfare self-buff readouts
+                          // (Tier-B S3): the two `kind:"static"` display features
+                          // (furina_fanfare_dmg_bonus / heal_bonus) scale on this DERIVED,
+                          // unconditionally-400-capped stack count (mirrors fanfareDmgPost/
+                          // HealingPost's own maxBase:400, distinct from the raw slider's C2-bumped
+                          // 800 clamp) via compileFeature's cStat read of the FINAL emitted bag. The
+                          // real dmg_all/healing_recv bonuses (CharPostEffects) read the pre-emit
+                          // snapshot directly and need no allow-listing; only the feature-scaling
+                          // readouts need this entry to see a nonzero value.
 ] as const;
 
 /**
