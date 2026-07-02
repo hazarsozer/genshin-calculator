@@ -65,40 +65,67 @@
       "normal": 8042.7952526555655
     },
     "burst.burst_dmg": {
-      "average": 5647.197436501583,
+      "average": 6666.830306981034,
       "category": "burst",
-      "crit": 8210.283848247482,
+      "crit": 9692.696209736609,
       "damageType": "burst",
       "format": "",
       "isReacted": false,
-      "normal": 4105.141924123741
+      "normal": 4846.348104868304
     },
     "burst.heal": {
-      "average": 6017.902235662501,
+      "average": 7192.766805990452,
       "category": "burst",
-      "crit": 6017.902235662501,
+      "crit": 7192.766805990452,
       "damageType": "",
       "format": "",
       "isReacted": false,
-      "normal": 6017.902235662501
+      "normal": 7192.766805990452
     },
     "burst.heal_dot": {
-      "average": 2808.354343309167,
+      "average": 3356.6245094622104,
       "category": "burst",
-      "crit": 2808.354343309167,
+      "crit": 3356.6245094622104,
       "damageType": "",
       "format": "",
       "isReacted": false,
-      "normal": 2808.354343309167
+      "normal": 3356.6245094622104
     },
     "burst.xianyun_starwicker_dmg": {
-      "average": 2049.7235139894638,
+      "average": 2419.8124817931166,
       "category": "burst",
-      "crit": 2980.028952326864,
+      "crit": 3518.0897353858804,
       "damageType": "burst",
       "format": "",
       "isReacted": false,
-      "normal": 1490.014476163432
+      "normal": 1759.0448676929402
+    },
+    "other.xianyun_mystery_1_heal": {
+      "average": 1430.690054634,
+      "category": "other",
+      "crit": 1430.690054634,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1430.690054634
+    },
+    "other.xianyun_mystery_2_heal": {
+      "average": 2289.1040874144,
+      "category": "other",
+      "crit": 2289.1040874144,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2289.1040874144
+    },
+    "other.xianyun_mystery_3_heal": {
+      "average": 4292.070163902,
+      "category": "other",
+      "crit": 4292.070163902,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 4292.070163902
     },
     "reaction.burgeon": {
       "average": 5579.362803284671,
@@ -209,40 +236,40 @@
       "normal": 1115.8725606569342
     },
     "skill.skill_dmg": {
-      "average": 1043.7367619767151,
+      "average": 1232.1892328891777,
       "category": "skill",
-      "crit": 1517.4562559633555,
+      "crit": 1791.4414132900727,
       "damageType": "skill",
       "format": "",
       "isReacted": false,
-      "normal": 758.7281279816777
+      "normal": 895.7207066450363
     },
     "skill.xianyun_driftcloud_wave_1_dmg": {
-      "average": 11410.815742041446,
+      "average": 13444.968173453457,
       "category": "skill",
-      "crit": 15678.073894701227,
+      "crit": 19562.504694786636,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 7839.036947350613
+      "normal": 8324.47008288793
     },
     "skill.xianyun_driftcloud_wave_2_dmg": {
-      "average": 12490.41985955391,
+      "average": 14859.13342603634,
       "category": "skill",
-      "crit": 17161.413343345757,
+      "crit": 21620.123131361255,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 8580.706671672879
+      "normal": 9200.052396323938
     },
     "skill.xianyun_driftcloud_wave_3_dmg": {
-      "average": 18887.07425581525,
+      "average": 23238.06254758993,
       "category": "skill",
-      "crit": 25950.199576564606,
+      "crit": 33811.512368065865,
       "damageType": "plunge",
       "format": "",
       "isReacted": false,
-      "normal": 12975.099788282303
+      "normal": 14387.877603432284
     },
     "stats.atk": {
       "average": 2861.380109268,

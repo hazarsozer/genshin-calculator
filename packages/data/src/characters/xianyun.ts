@@ -22,11 +22,14 @@
  *     min(400%×ATK, 18000) via `xianyun_a4_level`). Ported as a self `CharMultiplier`
  *     (the same primitive as the already-ported teammate mirror) — raw Xianyun.js:319-328
  *     (self multiplier) + :374-383 (C2 level-2 publisher).
- *
- * SOLO-C0 OFF passive (deliberately not folded):
- *   - C6 `xianyun_cloudkeepers_spirit` (crit_dmg_xianyun on the driftcloud waves) —
- *     a constellation stacks bonus → absent at C0; the raw critDamageBonuses key
- *     reads 0 and is dropped here.
+ *   - C6 `xianyun_cloudkeepers_spirit` — a `ConditionStacksLevels` stacks-table
+ *     (crit_dmg_xianyun = [15,35,70] indexed directly by stack 1-3, non-cumulative,
+ *     same shape as A1 galefeather), gated `and[constellation:6, stacks>=1]` (her
+ *     `DbObjectConstellation.getConditions` only includes entry i when
+ *     `char_constellation >= i+1` — array index 5 = C6). Ported as `static-level` +
+ *     `boolean-value` (Galefeather precedent), wrapped in an explicit constellation
+ *     gate. Folds into the 3 driftcloud-wave features via `critDamageBonuses`
+ *     (base-inert opt-in) — raw Xianyun.js:427-441 + :216,227,238 (the bonus keys).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Xianyun.js
@@ -143,7 +146,8 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
   },
   // raw: FeatureDamagePlungeShockWave name='xianyun_driftcloud_wave_1_dmg', category='skill',
-  // element='anemo', critDamageBonuses=['crit_dmg_xianyun'] (C6 stacks → 0 at C0, dropped).
+  // element='anemo', critDamageBonuses=['crit_dmg_xianyun'] (C6 cloudkeepersSpirit stacks — see
+  // cloudkeepersSpirit condition below; base-inert opt-in, reads 0 stacks/C<6).
   // damageType resolves to 'plunge' (PlungeShockWave) → dmg_plunge bonus, matching fixture.
   {
     name: "xianyun_driftcloud_wave_1_dmg",
@@ -151,6 +155,7 @@ const features: readonly Feature[] = [
     element: "anemo",
     damageType: "plunge",
     tags: ["plunge_shockwave"],
+    critDamageBonuses: ["crit_dmg_xianyun"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.xianyun_driftcloud_wave_1_dmg") }],
   },
   // raw: FeatureDamagePlungeShockWave (no name → xianyun_driftcloud_wave_2_dmg), category='skill'
@@ -160,6 +165,7 @@ const features: readonly Feature[] = [
     element: "anemo",
     damageType: "plunge",
     tags: ["plunge_shockwave"],
+    critDamageBonuses: ["crit_dmg_xianyun"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.xianyun_driftcloud_wave_2_dmg") }],
   },
   // raw: FeatureDamagePlungeShockWave (no name → xianyun_driftcloud_wave_3_dmg), category='skill'
@@ -169,6 +175,7 @@ const features: readonly Feature[] = [
     element: "anemo",
     damageType: "plunge",
     tags: ["plunge_shockwave"],
+    critDamageBonuses: ["crit_dmg_xianyun"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.xianyun_driftcloud_wave_3_dmg") }],
   },
   // --- Burst: Stars Gather at Dusk (anemo) ---
@@ -218,7 +225,7 @@ const features: readonly Feature[] = [
 // C4 "Mystery Millet Gourmet": ConditionStatic with text_percent (display-only) — SKIP.
 // C5 "Astride Rose-Tinted Clouds": +3 skill talent (char_skill_elemental_bonus).
 // C6 "They Call Her Cloud Retainer": ConditionStacksLevels (crit_dmg_xianyun) —
-//   stacks toggle, OFF at canonial C6 build (toggles off) → reads 0. SKIP.
+//   ported below as `cloudkeepersSpirit` (stacks-table, base-inert at 0 stacks).
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Xianyun.js:364-445
 
 const constellationConditions: readonly Condition[] = [
@@ -261,6 +268,26 @@ const galefeatherPursuit: Condition = {
   condition: { type: "boolean-value", setting: "xianyun_galefeather_pursuit", cond: "ge", value: 1 },
 };
 
+// C6 "They Call Her Cloud Retainer" (raw Xianyun.js:427-441, ConditionStacksLevels,
+// serializeId 4) — crit_dmg_xianyun = [15, 35, 70] indexed DIRECTLY by stack count (1-3,
+// maxStacks:3, non-cumulative table lookup, same `static-level` + `boolean-value` shape as
+// A1 galefeatherPursuit above). Unlike A1 (ascension-gated, always true), this entry lives at
+// constellation-array index 5 → her `DbObjectConstellation.getConditions(level)` only splices
+// it in when `char_constellation >= 5+1 = 6` — so the port needs an EXPLICIT constellation
+// gate (Gorou/Chiori `and[]` precedent), combined with the stacks>=1 activity gate.
+const cloudkeepersSpirit: Condition = {
+  type: "static-level",
+  levelSetting: "xianyun_cloudkeepers_spirit",
+  levelStats: { crit_dmg_xianyun: [15, 35, 70] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "constellation", constellation: 6 },
+      { type: "boolean-value", setting: "xianyun_cloudkeepers_spirit", cond: "ge", value: 1 },
+    ],
+  },
+};
+
 // ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
@@ -296,7 +323,7 @@ export const xianyun: DbObjectChar = {
       target: { damageTypes: [], tags: ["plunge_shockwave"] },
     } satisfies CharMultiplier,
   ],
-  conditions: [...constellationConditions, galefeatherPursuit],
+  conditions: [...constellationConditions, galefeatherPursuit, cloudkeepersSpirit],
   partyData: {
     loadStats: { stats: ["atk_total"] },
     conditions: [
