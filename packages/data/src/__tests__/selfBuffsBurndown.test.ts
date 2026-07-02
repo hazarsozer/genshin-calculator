@@ -88,6 +88,10 @@ const TOLERANCE = 0.1;
 // entry, then re-dump (`node tools/oracle/dump-oracle.mjs --config=self-buffs`).
 const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>>>> = {
   "zhongli-jade-shield": { zhongli_jade_shield: true },
+  // Xilonen Nightsoul Blessing: swaps normal_hit_1..3/charged_hit for the 4 DEF-scaled roller
+  // hits, geo-infuses the plunge, and (char_constellation:6) activates the C6 self DEF-scaled
+  // dmg bonus + A1's dmg_normal/dmg_plunge (damage-mode, solo default).
+  "xilonen-nightsoul": { char_constellation: 6, "common.nightsoul_blessing_state": true },
   // Noelle C0 Sweeping Time: DEF→ATK conversion (ratioFromTalent off burst level) + geo infusion on
   // normals/charged/plunge; at C6 the conversion ratio gains a flat +0.5. char_constellation:6 threads
   // the C6 percentBonus gate ON, matching the oracle dump at constellation 6.
