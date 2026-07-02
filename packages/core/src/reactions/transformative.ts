@@ -101,6 +101,16 @@ export interface TransformativeDamageParams {
   readonly critRateKeys?: readonly string[];
   /** Reaction-specific crit-DMG stat keys (see `critRateKeys`). */
   readonly critDmgKeys?: readonly string[];
+  /**
+   * Optional flat-damage stat keys added BEFORE the resistance multiplier
+   * (not multiplied by reactionMultiplier × levelMultiplier × reactionFactor).
+   * E.g. Mizuki's C1 "In Mist-Like Waters" swirl flat bonus (11 × EM).
+   * Faithful to her `getReactionBonusMultipliers`/`reaction_flat` option
+   * (raw/.../Feature2/Reaction.js:38-49) composed as
+   * `CReactionBaseBonus([base, CFlatDamage(...)])` before the resistance
+   * multiplier (raw/.../Feature2/Reaction.js:86-129).
+   */
+  readonly reactionFlatKeys?: readonly string[];
 }
 
 /**
@@ -139,7 +149,11 @@ export function cTransformativeDamage(params: TransformativeDamageParams): Damag
   // Full product: reactionMultiplier × levelMultiplier × reactionFactor × resMult
   // reactionMultiplier and levelMultiplier are scalars baked as constants.
   const base: Block = cMulti([cConst(params.reactionMultiplier), cConst(levelMult)]);
-  const full: Block = cMulti([base, reactionFactor, resMult]);
+  const flatTerms: Block[] = params.reactionFlatKeys?.map((key) => cStat(key)) ?? [];
+  const full: Block =
+    flatTerms.length > 0
+      ? cMulti([cSum([cMulti([base, reactionFactor]), ...flatTerms]), resMult])
+      : cMulti([base, reactionFactor, resMult]);
 
   // Reaction-specific crit (crit_rate_burning / crit_dmg_bloom — Nahida C2).
   // Independent of the char's own crit (no crit_*_total here). Omitted/0 keys →

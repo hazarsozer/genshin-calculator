@@ -767,6 +767,13 @@ export interface FeatureReaction {
    * Source: raw/genshin_calc_pub/src/js/db/Features/Reactions.js:99-112
    */
   readonly penalty?: number;
+  /**
+   * `transformative` only: flat-damage stat keys added BEFORE the resistance
+   * multiplier (not multiplied by reactionMultiplier × levelMultiplier ×
+   * reactionFactor). E.g. Mizuki's C1 "In Mist-Like Waters" swirl bonus.
+   * Faithful to her `reaction_flat` option (raw/.../Feature2/Reaction.js:38-49,86-129).
+   */
+  readonly reactionFlatKeys?: readonly string[];
 }
 
 /**

@@ -816,6 +816,7 @@ function compileReaction(
       // for every other char → crit === normal === avg, unchanged.
       ...(critRate.length > 0 ? { critRateKeys: critRate } : {}),
       ...(critDmg.length > 0 ? { critDmgKeys: critDmg } : {}),
+      ...(reaction.reactionFlatKeys ? { reactionFlatKeys: reaction.reactionFlatKeys } : {}),
     });
   }
 

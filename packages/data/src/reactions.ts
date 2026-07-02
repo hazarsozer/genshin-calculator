@@ -155,6 +155,13 @@ export interface TransformativeReactionOptions {
    * on the character). Source: Reactions.js `lunarchargedCond` + Char/Ineffa.js:355.
    */
   readonly lunarChargedActive?: boolean;
+  /**
+   * Per-reaction-name flat-damage stat key overrides (def name → keys), spread
+   * into the matching feature's `reaction.reactionFlatKeys`. E.g. Mizuki's C1
+   * "In Mist-Like Waters" adds `reaction_flat_swirl` to all 4 `swirl_<element>`
+   * defs. Source: raw/genshin_calc_pub/src/js/db/Char/Mizuki.js:328-343.
+   */
+  readonly reactionFlatOverrides?: Readonly<Partial<Record<string, readonly string[]>>>;
 }
 
 /**
@@ -192,6 +199,7 @@ export function transformativeReactionFeatures(
 
   const features: Feature[] = filtered.map((name) => {
     const def = REACTION_DEFS[name]!;
+    const flatKeys = options.reactionFlatOverrides?.[def.name];
     return {
       name: def.name,
       category: "reaction",
@@ -203,6 +211,7 @@ export function transformativeReactionFeatures(
         reactionBonusKeys: def.reactionBonusKeys,
         ...(def.critRateKeys ? { critRateKeys: def.critRateKeys } : {}),
         ...(def.critDmgKeys ? { critDmgKeys: def.critDmgKeys } : {}),
+        ...(flatKeys ? { reactionFlatKeys: flatKeys } : {}),
       },
     } satisfies Feature;
   });
