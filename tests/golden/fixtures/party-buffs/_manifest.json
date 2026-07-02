@@ -40,8 +40,8 @@
     "description": "Teammate partyData KIT BUFFS applied to a recipient active char (the inverse of the buff-clean FILLER set — the teammate INTENTIONALLY leaks its kit via setPartyChars + baked setBuffsSettings). Reps span the mechanism buckets: A=static (Zhongli universal res-shred), B=postEffect (Bennett base-ATK->flat-ATK, Kazuha EM->elemental-dmg%), C=multiplier (Shenhe Icy Quill ATK-scaled cryo bonus). Each fixture = the recipient's damage with the teammate buff ON. RED until P3.5.2 models partyData (engine: Task 2; data: Tasks 3-5). Source: CalcObject/Buffs.js:149-209, DbObject/Char.js:56-97.",
     "id": "party-buffs"
   },
-  "featureTotal": 2696,
-  "itemCount": 96,
+  "featureTotal": 2727,
+  "itemCount": 97,
   "items": [
     {
       "derived": {
@@ -1325,6 +1325,40 @@
       "weapon": {
         "name": "weapon_name.alley_hunter",
         "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "kind": "party",
+      "origin": "nodkrai",
+      "party": {
+        "members": [
+          {
+            "character": "ifa",
+            "settings": {
+              "party_ifa_field_medics_vision": 200
+            }
+          }
+        ]
+      },
+      "repKey": "Ineffa",
+      "repSlug": "ineffa",
+      "resonanceElements": {
+        "resonance_element_1": "anemo"
+      },
+      "slug": "ifa-lunar-on-ineffa",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
       }
     },
     {

@@ -261,8 +261,8 @@ const constellationConditions: readonly Condition[] = [
   //   - the name-keyed value emit (ifa_field_medics_vision: clamped) feeds the ifa_reaction_bonus
   //     readouts above (they scale on this stat × 1.5/0.2 → 225% / 30% at value 150).
   // lunarcharged (reactionDmgPost2, Ifa.js:131-141, dmg_reaction_lunarcharged × 0.2) is OUT of
-  // scope: Ifa is anemo → she produces no self lunarcharged reaction output to lift (party-buffs
-  // only). Deferred to the party-buffs channel.
+  // scope HERE: Ifa is anemo → she produces no self lunarcharged reaction output to lift.
+  // Ported instead on `partyData` below (party-buffs channel, teammate-side, `partyReactionBonus`).
   // C2 "Guiding Spirit of Ballistic Prayer" raises the slider cap 150 → 200 (C2Stacks=50) via
   // her ConditionNumberIfa.getMaxValue (raw Number/Ifa.js:4-12, params.c2bonus=50; Ifa.js:297).
   // Ported via the base-inert maxBonusFromConstellation: at char_constellation ≥ 2 the clamp max
@@ -276,6 +276,47 @@ const constellationConditions: readonly Condition[] = [
     condition: { type: "boolean", name: "common.nightsoul_blessing_state" },
   },
 ];
+
+// ---------------------------------------------------------------------------
+// partyData — TEAMMATE-side reaction-DMG% (P3.5.2 deferred sub-gap).
+// Source: raw/genshin_calc_pub/src/js/db/Char/Ifa.js:377-399
+// ---------------------------------------------------------------------------
+// Her `partyData.conditions` holds ONE `ConditionNumber({name:'party_ifa_field_medics_vision',
+// max: A1Stacks+C2Stacks=200, rotation:'party'})` feeding ONE `PostEffectStats({
+// from:'party_ifa_field_medics_vision', percent:[dmg_reaction_swirl:1.5, dmg_reaction_
+// electrocharged:1.5, dmg_reaction_lunarcharged:0.2], condition: ConditionBoolean(same name)})`
+// (Ifa.js:389-399). This is a SINGLE indivisible raw construct — one slider drives all three
+// reaction-DMG% keys together (unlike the self side, which splits swirl/EC (reactionDmgPost)
+// from lunarcharged (reactionDmgPost2) into two separate PostEffectStats). Porting only
+// lunarcharged and dropping swirl/EC would misrepresent this raw block as three independent
+// buffs when it is one; ported whole (minimal-faithful-to-raw call, per mission authority).
+//
+// Differences from the self-side port (constellationConditions, `ifa_field_medics_vision`
+// above) that make this its own Condition rather than a shared one:
+//   - party max is FLAT 200 (A1Stacks+C2Stacks already summed in raw) — no separate C2 gate
+//     at the party level (her partyData ConditionNumber has no `c2bonus` param) → no
+//     `maxBonusFromConstellation` here.
+//   - no `and[nightsoul_blessing_state, ascension1]` wrapper — the party postEffect's
+//     `condition` is bare `ConditionBoolean(name)`, i.e. active whenever the slider is > 0,
+//     which is exactly `ConditionNumber`'s own `bonusPerValue` gate (`value > 0`) — so no
+//     wrapping `condition` field is needed on the ported Condition either.
+//
+// Ported via `bonusPerValue` (Citlali/self-Ifa precedent): the clamped slider value × each
+// raw ratio is added to `dmg_reaction_swirl` / `dmg_reaction_electrocharged` (1.5) /
+// `dmg_reaction_lunarcharged` (0.2) — raw-percent units, single-folded at buildStats emit
+// (all three are `REACTION_BONUS_PERCENT_KEYS` members; Ineffa-C1 established the single-fold
+// convention for `dmg_reaction_lunarcharged`). Base-inert: no party member sets
+// `party_ifa_field_medics_vision` → clamped stays 0 → no compared output moves.
+const partyReactionBonus: Condition = {
+  type: "number",
+  name: "party_ifa_field_medics_vision",
+  max: 200,
+  bonusPerValue: {
+    dmg_reaction_swirl: 1.5,
+    dmg_reaction_electrocharged: 1.5,
+    dmg_reaction_lunarcharged: 0.2,
+  },
+};
 
 // ---------------------------------------------------------------------------
 // DbObjectChar
@@ -293,4 +334,7 @@ export const ifa: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  partyData: {
+    conditions: [partyReactionBonus],
+  },
 };
