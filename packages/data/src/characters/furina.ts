@@ -341,7 +341,7 @@ const fanfareConditions: readonly Condition[] = [
     type: "number",
     name: "furina_fanfare_stacks",
     max: 300,
-    maxBonusFromConstellation: { constellation: 1, bonus: 100 },
+    maxBonusFromConstellation: [{ constellation: 1, bonus: 100 }],
   },
 ];
 

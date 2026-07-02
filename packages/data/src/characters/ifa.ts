@@ -271,7 +271,7 @@ const constellationConditions: readonly Condition[] = [
     type: "number",
     name: "ifa_field_medics_vision",
     max: 150,
-    maxBonusFromConstellation: { constellation: 2, bonus: 50 },
+    maxBonusFromConstellation: [{ constellation: 2, bonus: 50 }],
     bonusPerValue: { dmg_reaction_swirl: 1.5, dmg_reaction_electrocharged: 1.5 },
     condition: { type: "boolean", name: "common.nightsoul_blessing_state" },
   },

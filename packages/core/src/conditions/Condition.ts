@@ -254,8 +254,10 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
       if (max !== undefined && condition.maxBonusFromConstellation !== undefined) {
         const consInCtx = ctx["char_constellation"];
         const consLevel = typeof consInCtx === "number" ? consInCtx : 0;
-        if (consLevel >= condition.maxBonusFromConstellation.constellation) {
-          max += condition.maxBonusFromConstellation.bonus;
+        for (const entry of condition.maxBonusFromConstellation) {
+          if (consLevel >= entry.constellation) {
+            max += entry.bonus;
+          }
         }
       }
       const clamped = max !== undefined
