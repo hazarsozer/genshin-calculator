@@ -44,14 +44,22 @@ function InfoTooltip({ text }: { text: string }) {
 
   return (
     <span className="relative flex-none" style={{ lineHeight: 0 }}>
-      <button
-        type="button"
+      <span
+        role="button"
+        tabIndex={0}
         aria-label="Condition description"
         aria-expanded={open}
         aria-describedby={tooltipId}
         onClick={(e) => {
           e.stopPropagation();
           setOpen((v) => !v);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            e.stopPropagation();
+            setOpen((v) => !v);
+          }
         }}
         onBlur={() => setOpen(false)}
         className="rounded-full text-[10px] leading-none transition-opacity"
@@ -69,7 +77,7 @@ function InfoTooltip({ text }: { text: string }) {
         }}
       >
         ⓘ
-      </button>
+      </span>
       {open && (
         <span
           id={tooltipId}
