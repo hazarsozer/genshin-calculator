@@ -39,6 +39,9 @@
  *     a one-line map).
  */
 
+import type { DbObjectChar } from "@genshin/types";
+import { featureKey } from "@genshin/data";
+
 export interface TreeNode {
   label: string;
   factor: number;
@@ -73,7 +76,34 @@ const AMP_FACTORS: Record<"vaporize" | "melt", Record<string, number>> = {
   melt: { pyro: 2, cryo: 1.5 },
 };
 
-const RESISTANCE_TOLERANCE = 1e-6;
+const RESIDUAL_TOLERANCE = 1e-6;
+
+/**
+ * Resolve a `FeatureResult` key's (e.g. `"attack.normal_hit_1"`) element from
+ * the character's OWN data — never a category/name heuristic. Finds the
+ * `char.features` entry whose `featureKey(...)` matches `key`, mirroring
+ * `compileFeature.ts`'s `resolveElement`:
+ *   - the feature's `element` field, when present, wins outright — a feature
+ *     with an explicit element (Mona's hydro normals, Ganyu's cryo Frostflake
+ *     charged shot) is never re-infused; self-infusion characters (Diluc,
+ *     Xilonen, …) deliberately declare NO `element` on their infusable attacks
+ *     so the toggle can flip them.
+ *   - absent → the feature is physical-by-default; an active `attack_infusion`
+ *     (the `infusion` param) overrides it, else `"physical"` is itself the
+ *     data-true answer (verified pattern: Bennett's normals, Xilonen's rollers).
+ * Returns `null` when the character or the feature key can't be found — never
+ * guesses.
+ */
+export function elementFromFeature(
+  char: DbObjectChar | undefined,
+  key: string,
+  infusion: string | undefined
+): string | null {
+  const feature = char?.features.find((f) => featureKey(f) === key);
+  if (!feature) return null;
+  if (feature.element !== undefined) return feature.element;
+  return infusion ?? "physical";
+}
 
 /** Fallback RES fraction from `enemy.resistance` when the bag key is absent. */
 function fallbackResistance(
@@ -130,7 +160,7 @@ export function explainFeature(
   // Crit average: 1 + min(rate, 1) × cdmg — reproduces the engine's own
   // avg = noncrit·(1-chance) + crit·chance formula exactly when the feature
   // carries no crit modifier beyond the bag's crit_rate_total/crit_dmg_total.
-  const rate = Math.min(stats.crit_rate_total, 1);
+  const rate = Math.max(0, Math.min(stats.crit_rate_total, 1));
   const cdmg = stats.crit_dmg_total;
   const critAvg = 1 + rate * cdmg;
 
@@ -152,7 +182,7 @@ export function explainFeature(
 
   const product = nodes.reduce((p, n) => p * n.factor, 1);
   const ratio = avg / product;
-  const residual = Math.abs(ratio - 1) > RESISTANCE_TOLERANCE ? ratio : null;
+  const residual = Math.abs(ratio - 1) > RESIDUAL_TOLERANCE ? ratio : null;
 
   return { nodes, product, residual };
 }

@@ -5,7 +5,7 @@ import { Pin, PinOff } from "lucide-react";
 import { useResults } from "@/lib/useResults";
 import { useBuildStore } from "@/lib/store";
 import { findCharacter } from "@/lib/catalog";
-import { explainFeature, type TreeNode } from "@/lib/damageTree";
+import { explainFeature, elementFromFeature, type TreeNode } from "@/lib/damageTree";
 import type { FeatureResult } from "@/lib/types";
 import { StatsSheet } from "./StatsSheet";
 
@@ -53,22 +53,6 @@ function damageTypeFor(category: string, name: string): string | null {
   if (/plunge/.test(name)) return "plunge";
   if (/charged|aimed/.test(name)) return "charged";
   if (/normal_hit/.test(name)) return "normal";
-  return null;
-}
-
-/** Best-effort element: the active character's element for skill/burst rows,
- *  physical for un-infused normal/charged/plunge attacks, the active infusion
- *  otherwise. Returns null (→ "breakdown unavailable") when we can't be
- *  reasonably sure — never guesses into a wrong element. */
-function elementFor(
-  category: string,
-  characterKey: string,
-  infusion: string | undefined
-): string | null {
-  if (category === "skill" || category === "burst") {
-    return findCharacter(characterKey)?.element ?? null;
-  }
-  if (category === "attack") return infusion ?? "physical";
   return null;
 }
 
@@ -158,7 +142,7 @@ export function Breakdown() {
     const explained = explainFeature({
       avg: feat.triple[2],
       noncrit: feat.triple[0],
-      element: elementFor(category, characterKey, infusion),
+      element: elementFromFeature(findCharacter(characterKey), feat.key, infusion),
       damageType: damageTypeFor(category, nameOf(feat.key)),
       stats: result.stats,
       enemy,
