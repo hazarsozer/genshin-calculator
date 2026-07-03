@@ -199,4 +199,30 @@ describe("elementFromFeature", () => {
   it("returns null when the character itself is not found (undefined char)", () => {
     expect(elementFromFeature(undefined, "attack.normal_hit_1", undefined)).toBeNull();
   });
+
+  it("reads Ineffa's coordinated-attack skill feature (electro) from her element", () => {
+    const ineffa = findChar("ineffa");
+    expect(
+      elementFromFeature(ineffa, "skill.ineffa_birgitta_coordinated_dmg", undefined)
+    ).toBe("electro");
+  });
+
+  it("returns null for a stance-duplicated key whose matches disagree on element (Cyno)", () => {
+    // Cyno's "attack.normal_hit_1" collides between his ground stance (no
+    // element field -> physical) and his Pactsworn Pathclearer stance
+    // (element: "electro") — resolveElement never evaluates conditions, so
+    // an ambiguous key must resolve to null rather than guessing either.
+    const cyno = findChar("cyno");
+    expect(elementFromFeature(cyno, "attack.normal_hit_1", undefined)).toBeNull();
+  });
+
+  it("returns null for a heal-output row (Bennett burst.heal_dot)", () => {
+    const bennett = findChar("bennett");
+    expect(elementFromFeature(bennett, "burst.heal_dot", undefined)).toBeNull();
+  });
+
+  it("returns null for a static-output row (Bennett burst.atk_bonus)", () => {
+    const bennett = findChar("bennett");
+    expect(elementFromFeature(bennett, "burst.atk_bonus", undefined)).toBeNull();
+  });
 });

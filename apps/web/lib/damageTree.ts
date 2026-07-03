@@ -39,7 +39,7 @@
  *     a one-line map).
  */
 
-import type { DbObjectChar } from "@genshin/types";
+import type { DbObjectChar, Feature } from "@genshin/types";
 import { featureKey } from "@genshin/data";
 
 export interface TreeNode {
@@ -79,18 +79,44 @@ const AMP_FACTORS: Record<"vaporize" | "melt", Record<string, number>> = {
 const RESIDUAL_TOLERANCE = 1e-6;
 
 /**
+ * Resolve a single feature's element, mirroring `compileFeature.ts`'s
+ * `resolveElement` (packages/data/src/compileFeature.ts:215-226) EXACTLY —
+ * never evaluates `feature.condition`, since that resolver doesn't either:
+ *   - `feature.element` present → wins outright (never re-infused).
+ *   - absent, category "attack" or "plunge" (the only infusable categories,
+ *     per `resolveElement`'s `allowInfusion` check) → the active infusion, or
+ *     `"physical"` when none is active.
+ *   - absent, any other category (skill/burst/reaction/…) → the CHARACTER's
+ *     own element — infusion never applies outside attack/plunge.
+ */
+function resolveOne(
+  feature: Feature,
+  charElement: string,
+  infusion: string | undefined
+): string {
+  if (feature.element !== undefined) return feature.element;
+  const allowInfusion = feature.category === "attack" || feature.category === "plunge";
+  if (allowInfusion) return infusion ?? "physical";
+  return charElement;
+}
+
+/**
  * Resolve a `FeatureResult` key's (e.g. `"attack.normal_hit_1"`) element from
- * the character's OWN data — never a category/name heuristic. Finds the
- * `char.features` entry whose `featureKey(...)` matches `key`, mirroring
- * `compileFeature.ts`'s `resolveElement`:
- *   - the feature's `element` field, when present, wins outright — a feature
- *     with an explicit element (Mona's hydro normals, Ganyu's cryo Frostflake
- *     charged shot) is never re-infused; self-infusion characters (Diluc,
- *     Xilonen, …) deliberately declare NO `element` on their infusable attacks
- *     so the toggle can flip them.
- *   - absent → the feature is physical-by-default; an active `attack_infusion`
- *     (the `infusion` param) overrides it, else `"physical"` is itself the
- *     data-true answer (verified pattern: Bennett's normals, Xilonen's rollers).
+ * the character's OWN data — never a category/name heuristic. A TRUE mirror of
+ * `compileFeature.ts`'s `resolveElement` (packages/data/src/compileFeature.ts:215-226):
+ *   - collects ALL `char.features` entries whose `featureKey(...)` matches
+ *     `key` (duplicates exist: Cyno/Sethos/Skirk stance-swap variants share a
+ *     key, gated by mutually-exclusive `condition`s the compiler evaluates —
+ *     `resolveElement` itself never inspects `condition`, so this function
+ *     doesn't either).
+ *   - any match has `output !== undefined` (heal/shield/static/crystallize,
+ *     e.g. Bennett's `burst.heal_dot` / `burst.atk_bonus`) → `null`; these are
+ *     non-damage rows with no calc-tree expansion.
+ *   - matches disagree on their resolved element (e.g. Cyno's ground-stance
+ *     physical vs. Pactsworn-Pathclearer-stance electro `normal_hit_1`) →
+ *     `null` — honest ambiguity rather than guessing via the un-evaluated
+ *     condition. Same-element duplicates (Tartaglia, Raiden) resolve normally.
+ *   - single/agreeing match → `resolveOne` above.
  * Returns `null` when the character or the feature key can't be found — never
  * guesses.
  */
@@ -99,10 +125,14 @@ export function elementFromFeature(
   key: string,
   infusion: string | undefined
 ): string | null {
-  const feature = char?.features.find((f) => featureKey(f) === key);
-  if (!feature) return null;
-  if (feature.element !== undefined) return feature.element;
-  return infusion ?? "physical";
+  const matches = char?.features.filter((f) => featureKey(f) === key) ?? [];
+  if (matches.length === 0) return null;
+  if (matches.some((f) => f.output !== undefined)) return null;
+
+  const resolved = matches.map((f) => resolveOne(f, char!.element, infusion));
+  const [first, ...rest] = resolved;
+  if (rest.some((element) => element !== first)) return null;
+  return first;
 }
 
 /** Fallback RES fraction from `enemy.resistance` when the bag key is absent. */
