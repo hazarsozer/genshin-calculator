@@ -122,6 +122,10 @@ const NESTED_GATE_LABELS: ReadonlyMap<string, string> = new Map([
  * audited vs raw 2026-07-03 — surface as number controls, not booleans.
  * name → max stacks (= consuming table length in packages/data, cross-checked
  * vs raw maxStacks).
+ *
+ * yanfei: raw caps seals at 3 below C6 (C6-conditional maxStacks) but the port
+ * has no cap gate — 4 is the port-faithful ceiling. Engine backlog: port the
+ * conditional cap in packages/data (capValueFromTable/maxLevelSetting precedent).
  */
 const NESTED_GATE_STACKS: ReadonlyMap<string, number> = new Map([
   ["albedo_opening_of_hanerozoic", 4],
