@@ -72,6 +72,89 @@ function harvestCharConditions(char: DbObjectChar): readonly Condition[] {
 }
 
 /**
+ * Nested-gate extraction (2026-07-03 harvester extension).
+ *
+ * The Tier-B self-buff sweep ported ~100 chars' stances/toggles as `static`
+ * conditions gated on NESTED booleans and as `Feature.condition` production
+ * gates — none of which conditionToControl surfaces. This walker extracts
+ * those user-facing gates as boolean controls. Gate names that are PUBLISHED
+ * by another condition (settings:{} / settings-copy.to) or carry derived
+ * prefixes are engine-internal, never user choices.
+ *
+ * Drift guard: lib/__tests__/nestedGates.test.ts locks the exact extracted
+ * set per character against an audited literal.
+ */
+const DERIVED_GATE_PREFIX =
+  /^(char_|party_|resonance_|weapon_|enemy_|attack_infusion)/;
+
+/** Labels for gates whose CSV lookup (after the common.-prefix strip) has no entry. */
+const NESTED_GATE_LABELS: ReadonlyMap<string, string> = new Map([
+  ["common.nightsoul_blessing_state", "Nightsoul's Blessing"],
+]);
+
+function walkGateNames(node: unknown, out: Set<string>): void {
+  if (!node || typeof node !== "object") return;
+  if (Array.isArray(node)) {
+    for (const n of node) walkGateNames(n, out);
+    return;
+  }
+  const o = node as Record<string, unknown>;
+  if (o.type === "boolean" && typeof o.name === "string") out.add(o.name);
+  if (o.condition) walkGateNames(o.condition, out);
+  if (o.items) walkGateNames(o.items, out);
+}
+
+function walkPublishedKeys(node: unknown, out: Set<string>): void {
+  if (!node || typeof node !== "object") return;
+  if (Array.isArray(node)) {
+    for (const n of node) walkPublishedKeys(n, out);
+    return;
+  }
+  const o = node as Record<string, unknown>;
+  if (o.settings && typeof o.settings === "object")
+    for (const k of Object.keys(o.settings as object)) out.add(k);
+  if (o.type === "settings-copy" && typeof o.to === "string") out.add(o.to);
+  if (o.items) walkPublishedKeys(o.items, out);
+}
+
+export function extractNestedGateControls(char: DbObjectChar): ConditionControl[] {
+  const conditionSources: readonly Condition[] = [
+    ...(char.conditions ?? []),
+    ...(char.constellation?.entries ?? []).flatMap((e) => e.conditions ?? []),
+    ...(char.postEffects ?? []).flatMap((p) => p.conditions ?? []),
+  ];
+
+  const gates = new Set<string>();
+  const published = new Set<string>();
+  for (const c of conditionSources) {
+    walkGateNames(c, gates);
+    walkPublishedKeys(c, published);
+  }
+  for (const m of char.multipliers ?? []) if (m.condition) walkGateNames(m.condition, gates);
+  for (const f of char.features ?? []) if (f.condition) walkGateNames(f.condition, gates);
+
+  const surfaced = new Set<string>();
+  for (const c of harvestCharConditions(char)) {
+    const ctrl = conditionToControl(c);
+    if (ctrl) surfaced.add(ctrl.name);
+  }
+
+  const controls: ConditionControl[] = [];
+  for (const name of gates) {
+    if (surfaced.has(name) || published.has(name) || DERIVED_GATE_PREFIX.test(name)) continue;
+    const { label, description } = resolveLabel({ type: "boolean", name } as Condition);
+    controls.push({
+      name,
+      kind: "boolean",
+      label: NESTED_GATE_LABELS.get(name) ?? label,
+      ...(description ? { description } : {}),
+    });
+  }
+  // Deterministic order for stable UI + snapshot.
+  return controls.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
  * Conditions that share a combined pool cap (same + different ≤ cap).
  *
  * Audit (2026-06-28) — only USER-SURFACED stacks conditions were checked:
