@@ -7,7 +7,7 @@ import { DEFAULT_FORM } from "../defaults";
 import { encodeBuild } from "../url";
 import { computeBuild } from "../calc";
 import { findCharacter, findWeapon } from "../catalog";
-import { collectGroupedConditions } from "../conditions";
+import { collectGroupedConditions, extractNestedGateControls } from "../conditions";
 
 /**
  * Generator for the e2e sweep-verification fixture (e2e/fixtures/sweep-selfbuffs.json).
@@ -28,45 +28,15 @@ const CASES: { char: string; weapon: string }[] = [
 ];
 
 /**
- * Boolean gate names nested inside static/and/or conditions and Feature.condition
- * that the UI does NOT surface as controls (see the 2026-07-03 verification-pass
- * finding: conditionToControl only handles top-level boolean/stacks/number/dropdown).
- * They still flow through the URL → settings → engine path, so activating them here
- * lets the e2e verify rendering faithfulness for buffed builds.
+ * Boolean gates for the "click-test" cases: nested toggles the UI surfaces via
+ * extractNestedGateControls but that are NOT part of collectGroupedConditions'
+ * top-level self conditions (see the 2026-07-03 verification-pass finding).
+ * Keyed by character slug → the exact gate name(s) an e2e test clicks.
  */
-function nestedBooleanGates(char: ReturnType<typeof findCharacter> & object): string[] {
-  const published = new Set<string>();
-  const gates = new Set<string>();
-  const walkPublish = (c: unknown): void => {
-    if (!c || typeof c !== "object") return;
-    const o = c as Record<string, unknown>;
-    if (o.settings && typeof o.settings === "object")
-      for (const k of Object.keys(o.settings as object)) published.add(k);
-    if (o.type === "settings-copy" && typeof o.to === "string") published.add(o.to);
-    if (Array.isArray(o.items)) o.items.forEach(walkPublish);
-  };
-  const walkGates = (c: unknown): void => {
-    if (!c || typeof c !== "object") return;
-    if (Array.isArray(c)) {
-      c.forEach(walkGates);
-      return;
-    }
-    const o = c as Record<string, unknown>;
-    if (o.type === "boolean" && typeof o.name === "string") gates.add(o.name);
-    for (const k of ["condition", "items"]) if (o[k]) walkGates(o[k]);
-  };
-  const conditionSources = [
-    ...(char.conditions ?? []),
-    ...(char.constellation?.entries ?? []).flatMap((e) => e.conditions ?? []),
-    ...(char.postEffects ?? []).flatMap((p) => p.conditions ?? []),
-  ];
-  conditionSources.forEach(walkPublish);
-  conditionSources.forEach(walkGates);
-  for (const m of char.multipliers ?? []) if (m.condition) walkGates(m.condition);
-  for (const f of char.features ?? []) if (f.condition) walkGates(f.condition);
-  const derived = /^(char_|party_|resonance_|weapon_|enemy_|attack_infusion)/;
-  return [...gates].filter((n) => !published.has(n) && !derived.test(n));
-}
+const CLICK_CASES: Record<string, string[]> = {
+  gorou: ["gorou_generals_war_banner"],
+  xilonen: ["common.nightsoul_blessing_state"],
+};
 
 function activateSelf(form: BuildForm): { form: BuildForm; labels: string[] } {
   const char = findCharacter(form.characterKey)!;
@@ -86,8 +56,8 @@ function activateSelf(form: BuildForm): { form: BuildForm; labels: string[] } {
       stacks[c.name] = c.max ?? 1;
     }
   }
-  for (const gate of nestedBooleanGates(char)) {
-    if (!(gate in toggles)) toggles[gate] = true;
+  for (const ctrl of extractNestedGateControls(char)) {
+    if (!(ctrl.name in toggles)) toggles[ctrl.name] = true;
   }
   return { form: { ...form, conditions: { toggles, stacks } }, labels: self.map((c) => c.label) };
 }
@@ -99,6 +69,25 @@ function featureAvgs(form: BuildForm): Map<string, number> {
   return new Map(result.features.map((f) => [f.key, Math.round(f.triple[2])]));
 }
 
+/** The feature a set of buffs moves the MOST vs. a baseline (max features are
+ * often transformative reactions — level-scaled, buff-inert at EM 0). */
+function bestMovedFeature(
+  offAvgs: Map<string, number>,
+  onAvgs: Map<string, number>
+): { key: string; diff: number; value: number } {
+  let bestKey = "";
+  let bestDiff = -1;
+  for (const [key, on] of onAvgs) {
+    const off = offAvgs.get(key);
+    const diff = off === undefined ? on : Math.abs(on - off);
+    if (diff > bestDiff) {
+      bestDiff = diff;
+      bestKey = key;
+    }
+  }
+  return { key: bestKey, diff: bestDiff, value: onAvgs.get(bestKey)! };
+}
+
 describe("sweep e2e fixture generation", () => {
   it("computes engine expectations for sweep-fixed characters and writes the fixture", () => {
     const entries = CASES.map(({ char, weapon }) => {
@@ -108,30 +97,51 @@ describe("sweep e2e fixture generation", () => {
       const onAvgs = featureAvgs(onForm);
       expect(labels.length, `${char} should expose self conditions`).toBeGreaterThan(0);
 
-      // Pick the feature the self buffs move the MOST (max features are often
-      // transformative reactions — level-scaled, buff-inert at EM 0).
-      let bestKey = "";
-      let bestDiff = -1;
-      for (const [key, on] of onAvgs) {
-        const off = offAvgs.get(key);
-        const diff = off === undefined ? on : Math.abs(on - off);
-        if (diff > bestDiff) {
-          bestDiff = diff;
-          bestKey = key;
-        }
-      }
+      const best = bestMovedFeature(offAvgs, onAvgs);
       expect(
-        bestDiff,
+        best.diff,
         `${char}: activating all self buffs should move at least one feature`
       ).toBeGreaterThan(0);
+
+      const clickNames = CLICK_CASES[char] ?? [];
+      let clickToggles: { label: string }[] | undefined;
+      let clickExpected: number | undefined;
+      let clickFeatureKey: string | undefined;
+      if (clickNames.length > 0) {
+        const char_ = findCharacter(char)!;
+        const gateControls = extractNestedGateControls(char_);
+        clickToggles = clickNames.map((name) => {
+          const ctrl = gateControls.find((c) => c.name === name);
+          expect(ctrl, `${char}: click-case gate ${name} must be surfaced`).toBeDefined();
+          return { label: ctrl!.label };
+        });
+
+        const clickForm: BuildForm = {
+          ...base,
+          conditions: {
+            toggles: Object.fromEntries(clickNames.map((n) => [n, true])),
+            stacks: {},
+          },
+        };
+        const clickAvgs = featureAvgs(clickForm);
+        const clickBest = bestMovedFeature(offAvgs, clickAvgs);
+        expect(
+          clickBest.diff,
+          `${char}: clicking ${clickNames.join(", ")} alone should move at least one feature`
+        ).toBeGreaterThan(0);
+        clickExpected = clickBest.value;
+        clickFeatureKey = clickBest.key;
+      }
 
       return {
         char,
         hash: encodeBuild(onForm),
-        featureKey: bestKey,
-        expectedOn: onAvgs.get(bestKey)!,
-        expectedOff: offAvgs.get(bestKey) ?? null,
+        hashOff: encodeBuild(base),
+        featureKey: best.key,
+        expectedOn: onAvgs.get(best.key)!,
+        expectedOff: offAvgs.get(best.key) ?? null,
         firstLabel: labels[0],
+        ...(clickToggles ? { clickToggles, clickExpected, clickFeatureKey } : {}),
       };
     });
 

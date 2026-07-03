@@ -21,6 +21,10 @@ interface FixtureEntry {
   expectedOn: number;
   expectedOff: number | null;
   firstLabel: string;
+  hashOff?: string;
+  clickToggles?: { label: string }[];
+  clickExpected?: number;
+  clickFeatureKey?: string;
 }
 
 const entries: FixtureEntry[] = JSON.parse(
@@ -48,6 +52,26 @@ for (const entry of entries) {
     await page.getByRole("button", { name: "Build", exact: true }).click();
     await expect(
       page.getByText(entry.firstLabel, { exact: false }).first()
+    ).toBeVisible({ timeout: 5_000 });
+  });
+}
+
+for (const entry of entries.filter((e) => e.clickToggles?.length)) {
+  test(`${entry.char}: clicking the surfaced toggles moves the number to the engine value`, async ({
+    page,
+  }) => {
+    await page.goto(`/#${entry.hashOff}`);
+    await expect(page.getByTestId("result-avg").first()).toBeVisible({ timeout: 10_000 });
+
+    await page.getByRole("button", { name: "Build", exact: true }).click();
+    for (const t of entry.clickToggles!) {
+      const toggle = page.getByRole("button", { name: t.label, exact: false });
+      await toggle.scrollIntoViewIfNeeded();
+      await toggle.click();
+    }
+
+    await expect(
+      page.getByText(fmt(entry.clickExpected!), { exact: true }).first()
     ).toBeVisible({ timeout: 5_000 });
   });
 }
