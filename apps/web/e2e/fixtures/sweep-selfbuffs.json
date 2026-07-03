@@ -1,0 +1,42 @@
+[
+  {
+    "char": "xilonen",
+    "hash": "eyJjaGFyYWN0ZXJLZXkiOiJ4aWxvbmVuIiwid2VhcG9uS2V5IjoiY29vbF9zdGVlbCIsImNoYXJMZXZlbCI6OTAsImFzY2Vuc2lvbiI6Niwid2VhcG9uTGV2ZWwiOjkwLCJ3ZWFwb25Bc2NlbnNpb24iOjYsInRhbGVudHMiOnsiYXR0YWNrIjoxMCwiZWxlbWVudGFsIjoxMCwiYnVyc3QiOjEwfSwiY29uc3RlbGxhdGlvbiI6MCwid2VhcG9uUmVmaW5lIjoxLCJjb25kaXRpb25zIjp7InRvZ2dsZXMiOnsiY29tbW9uLm5pZ2h0c291bF9ibGVzc2luZ19zdGF0ZSI6dHJ1ZX0sInN0YWNrcyI6eyJ4aWxvbmVuX2RlZl90b3RhbCI6MTAwMDB9fSwiZW5lbXkiOnsibGV2ZWwiOjkwLCJyZXNpc3RhbmNlIjoxMH0sImFydGlmYWN0TW9kZSI6Im1hbnVhbCIsImdvb2RKc29uIjoiIiwibWFudWFsU3RhdHMiOnt9LCJtYW51YWxTZXRzIjpbXSwicGFydHkiOnsibWVtYmVycyI6W119fQ",
+    "featureKey": "attack.xilonen_roller_4_dmg",
+    "expectedOn": 1619,
+    "expectedOff": null,
+    "firstLabel": "Xilonen Def Total"
+  },
+  {
+    "char": "furina",
+    "hash": "eyJjaGFyYWN0ZXJLZXkiOiJmdXJpbmEiLCJ3ZWFwb25LZXkiOiJjb29sX3N0ZWVsIiwiY2hhckxldmVsIjo5MCwiYXNjZW5zaW9uIjo2LCJ3ZWFwb25MZXZlbCI6OTAsIndlYXBvbkFzY2Vuc2lvbiI6NiwidGFsZW50cyI6eyJhdHRhY2siOjEwLCJlbGVtZW50YWwiOjEwLCJidXJzdCI6MTB9LCJjb25zdGVsbGF0aW9uIjowLCJ3ZWFwb25SZWZpbmUiOjEsImNvbmRpdGlvbnMiOnsidG9nZ2xlcyI6e30sInN0YWNrcyI6eyJmdXJpbmFfZmFuZmFyZV9zdGFja3MiOjMwMCwiZnVyaW5hX2NoYXJfc2tpbGxfYnVyc3QiOjE1LCJwYXJ0eV9mdXJpbmFfZmFuZmFyZV9zdGFja3MiOjQwMH19LCJlbmVteSI6eyJsZXZlbCI6OTAsInJlc2lzdGFuY2UiOjEwfSwiYXJ0aWZhY3RNb2RlIjoibWFudWFsIiwiZ29vZEpzb24iOiIiLCJtYW51YWxTdGF0cyI6e30sIm1hbnVhbFNldHMiOltdLCJwYXJ0eSI6eyJtZW1iZXJzIjpbXX19",
+    "featureKey": "burst.burst_dmg",
+    "expectedOn": 2774,
+    "expectedOff": 1585,
+    "firstLabel": "Furina Fanfare Stacks"
+  },
+  {
+    "char": "gorou",
+    "hash": "eyJjaGFyYWN0ZXJLZXkiOiJnb3JvdSIsIndlYXBvbktleSI6Im1lc3NlbmdlciIsImNoYXJMZXZlbCI6OTAsImFzY2Vuc2lvbiI6Niwid2VhcG9uTGV2ZWwiOjkwLCJ3ZWFwb25Bc2NlbnNpb24iOjYsInRhbGVudHMiOnsiYXR0YWNrIjoxMCwiZWxlbWVudGFsIjoxMCwiYnVyc3QiOjEwfSwiY29uc3RlbGxhdGlvbiI6MCwid2VhcG9uUmVmaW5lIjoxLCJjb25kaXRpb25zIjp7InRvZ2dsZXMiOnsiZ29yb3VfaGVlZGxlc3Nfb2ZfdGhlX3dpbmRfYW5kX3dlYXRoZXIiOnRydWUsInBhcnR5Lmdvcm91X2hlZWRsZXNzX29mX3RoZV93aW5kX2FuZF93ZWF0aGVyIjp0cnVlLCJnb3JvdV9nZW5lcmFsc193YXJfYmFubmVyIjp0cnVlfSwic3RhY2tzIjp7Imdvcm91X2NoYXJfc2tpbGxfZWxlbWVudGFsIjoxfX0sImVuZW15Ijp7ImxldmVsIjo5MCwicmVzaXN0YW5jZSI6MTB9LCJhcnRpZmFjdE1vZGUiOiJtYW51YWwiLCJnb29kSnNvbiI6IiIsIm1hbnVhbFN0YXRzIjp7fSwibWFudWFsU2V0cyI6W10sInBhcnR5Ijp7Im1lbWJlcnMiOltdfX0",
+    "featureKey": "burst.burst_dmg",
+    "expectedOn": 1320,
+    "expectedOff": 724,
+    "firstLabel": "Heedless of the Wind and Weather"
+  },
+  {
+    "char": "yun_jin",
+    "hash": "eyJjaGFyYWN0ZXJLZXkiOiJ5dW5famluIiwid2VhcG9uS2V5IjoiYmxhY2tfdGFzc2VsIiwiY2hhckxldmVsIjo5MCwiYXNjZW5zaW9uIjo2LCJ3ZWFwb25MZXZlbCI6OTAsIndlYXBvbkFzY2Vuc2lvbiI6NiwidGFsZW50cyI6eyJhdHRhY2siOjEwLCJlbGVtZW50YWwiOjEwLCJidXJzdCI6MTB9LCJjb25zdGVsbGF0aW9uIjowLCJ3ZWFwb25SZWZpbmUiOjEsImNvbmRpdGlvbnMiOnsidG9nZ2xlcyI6eyJ5dW5qaW5fbXlyaWFkIjp0cnVlLCJ5dW5qaW5fZmxvd2VyIjp0cnVlLCJ5dW5qaW5fZmxhZyI6dHJ1ZSwicGFydHkueXVuamluX2ZsYWciOnRydWV9LCJzdGFja3MiOnsieXVuamluX2RlZl90b3RhbCI6MTAwMDAsInl1bmppbl9jaGFyX3NraWxsX2J1cnN0IjoxMH19LCJlbmVteSI6eyJsZXZlbCI6OTAsInJlc2lzdGFuY2UiOjEwfSwiYXJ0aWZhY3RNb2RlIjoibWFudWFsIiwiZ29vZEpzb24iOiIiLCJtYW51YWxTdGF0cyI6e30sIm1hbnVhbFNldHMiOltdLCJwYXJ0eSI6eyJtZW1iZXJzIjpbXX19",
+    "featureKey": "attack.normal_hit_3",
+    "expectedOn": 660,
+    "expectedOff": 251,
+    "firstLabel": "Yunjin Myriad"
+  },
+  {
+    "char": "navia",
+    "hash": "eyJjaGFyYWN0ZXJLZXkiOiJuYXZpYSIsIndlYXBvbktleSI6ImJsb29kdGFpbnRlZF9ncmVhdHN3b3JkIiwiY2hhckxldmVsIjo5MCwiYXNjZW5zaW9uIjo2LCJ3ZWFwb25MZXZlbCI6OTAsIndlYXBvbkFzY2Vuc2lvbiI6NiwidGFsZW50cyI6eyJhdHRhY2siOjEwLCJlbGVtZW50YWwiOjEwLCJidXJzdCI6MTB9LCJjb25zdGVsbGF0aW9uIjowLCJ3ZWFwb25SZWZpbmUiOjEsImNvbmRpdGlvbnMiOnsidG9nZ2xlcyI6eyJuYXZpYV91bmRpc2Nsb3NlZF9kaXN0cmlidXRpb25fY2hhbm5lbHMiOnRydWUsIm5hdmlhX3RoZV9vYXRoc3dvcm5fbmV2ZXJfY2FwaXR1bGF0ZSI6dHJ1ZX0sInN0YWNrcyI6e319LCJlbmVteSI6eyJsZXZlbCI6OTAsInJlc2lzdGFuY2UiOjEwfSwiYXJ0aWZhY3RNb2RlIjoibWFudWFsIiwiZ29vZEpzb24iOiIiLCJtYW51YWxTdGF0cyI6e30sIm1hbnVhbFNldHMiOltdLCJwYXJ0eSI6eyJtZW1iZXJzIjpbXX19",
+    "featureKey": "attack.plunge_high",
+    "expectedOn": 1710,
+    "expectedOff": 1222,
+    "firstLabel": "Undisclosed Distribution Channels"
+  }
+]
