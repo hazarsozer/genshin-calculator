@@ -106,3 +106,50 @@ describe("collectGroupedConditions + nested gates", () => {
     }
   });
 });
+
+// AUDITED 2026-07-03 vs raw/genshin_calc_pub/src/js/db/Char/*.js —
+// every entry confirmed to be a user-facing choice in her engine (a
+// ConditionBoolean / ConditionBooleanLevels / ConditionStacks carrying a real
+// talent_name.* title + serializeId the player toggles), not an internal
+// derived flag. Full per-key audit ledger: .superpowers/sdd/task-3-report.md.
+// A failure here means a data change altered the surfaced control set:
+// re-audit the delta vs raw, then update this literal CONSCIOUSLY.
+const EXPECTED_NESTED_GATES: Record<string, string[]> = {
+  albedo: ["albedo_opening_of_hanerozoic"],
+  baizhu: ["baizhu_ancient_art_of_perception", "baizhu_five_fortunes_forever"],
+  chiori: ["chiori_sole_principle_pursuit"],
+  diona: ["diona_cats_tail"],
+  eula: ["eula_icewhirl_brand"],
+  faruzan: ["faruzan_wind_bale", "faruzan_wind_benefit"],
+  gorou: ["gorou_generals_war_banner"],
+  ifa: ["common.nightsoul_blessing_state"],
+  kamisato_ayato: ["ayato_bloomwater_blades"],
+  layla: ["layla_starry_illumination"],
+  lynette: ["lynette_sophisticated_synergy"],
+  mavuika: [
+    "mavuika_crucible_of_death_and_life",
+    "mavuika_humanitys_name_unfettered",
+    "mavuika_stance",
+    "mavuika_the_ashen_price",
+  ],
+  mona: ["mona_omen"],
+  mualani: ["mualani_the_leisurely_meztli"],
+  nahida: ["nahida_the_root_of_all_fullness"],
+  razor: ["razor_wolf_within"],
+  shenhe: ["shenhe_spirit_field"],
+  skirk: ["skirk_return_to_oblivion", "skirk_seven_phase_flash"],
+  traveler_pyro: ["common.nightsoul_blessing_state"],
+  varesa: ["varesa_fiery_passion", "varesa_the_courage_to_press_on_1"],
+  wanderer: ["wanderer_windfavored"],
+  xilonen: ["common.nightsoul_blessing_state"],
+  yanfei: ["yanfei_brilliance", "yanfei_scarlet_seal"],
+};
+
+it("drift guard: extracted nested-gate set matches the audited registry", () => {
+  const actual: Record<string, string[]> = {};
+  for (const c of ALL_CHARACTERS) {
+    const names = extractNestedGateControls(c).map((x) => x.name);
+    if (names.length) actual[c.name] = names;
+  }
+  expect(actual).toEqual(EXPECTED_NESTED_GATES);
+});
