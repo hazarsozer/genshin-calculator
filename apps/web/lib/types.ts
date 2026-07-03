@@ -49,6 +49,8 @@ export interface BuildForm {
     toggles: Record<string, boolean>;
     stacks: Record<string, number>;
     infusion?: string;
+    /** Amplifying-reaction override (settings.reaction) — None/Vaporize/Melt. */
+    reaction?: "vaporize" | "melt";
   };
   enemy: { level: number; resistance: number | Record<string, number> };
   artifactMode: ArtifactMode;

@@ -18,4 +18,14 @@ describe("url codec", () => {
   it("decodes a legacy hash without pinnedFeature as undefined", () => {
     expect(decodeBuild(encodeBuild(DEFAULT_FORM)).pinnedFeature).toBeUndefined();
   });
+  it("round-trips a reaction override", () => {
+    const form = {
+      ...DEFAULT_FORM,
+      conditions: { toggles: {}, stacks: {}, reaction: "vaporize" as const },
+    };
+    expect(decodeBuild(encodeBuild(form)).conditions.reaction).toBe("vaporize");
+  });
+  it("decodes a legacy hash without reaction as undefined", () => {
+    expect(decodeBuild(encodeBuild(DEFAULT_FORM)).conditions.reaction).toBeUndefined();
+  });
 });

@@ -104,6 +104,62 @@ describe("computeBuild anchor", () => {
   });
 });
 
+// Hu Tao (pyro) + Staff of Homa — used to verify the reaction override
+// (settings.reaction) flows through computeBuild into the engine's
+// AMPLIFYING_VARIANT policy (packages/data/src/compileFeature.ts:97).
+const huTaoForm: BuildForm = {
+  characterKey: "hu_tao",
+  weaponKey: "staff_of_homa",
+  charLevel: 90,
+  ascension: 6,
+  weaponLevel: 90,
+  weaponAscension: 6,
+  talents: { attack: 10, elemental: 10, burst: 10 },
+  constellation: 0,
+  weaponRefine: 1,
+  conditions: { toggles: {}, stacks: {} },
+  enemy: { level: 90, resistance: 10 },
+  artifactMode: "manual",
+  goodJson: "",
+  manualStats: {},
+  manualSets: [],
+};
+
+// Amplifying-reaction multiplier is `baseMultiplier × (1 + 2.78·EM/(EM+1400) + …)`
+// (packages/core/src/reactions/amplifying.ts) — SAMPLE_BLOCK's mastery_base:55
+// contributes a non-zero EM bonus, so isolating the exact ×1.5/×2.0 base-multiplier
+// ratio needs EM at 0. Everything else matches SAMPLE_BLOCK.
+const NO_MASTERY_BLOCK: Record<string, number> = { ...SAMPLE_BLOCK, mastery_base: 0 };
+
+describe("computeBuild — reaction override", () => {
+  function avgOf(form: BuildForm, key: string, block: Record<string, number> = SAMPLE_BLOCK): number {
+    const { features, error } = computeBuild(form, block, []);
+    expect(error).toBeUndefined();
+    const f = features.find((x) => x.key === key);
+    expect(f).toBeDefined();
+    return f!.triple[2];
+  }
+
+  it("amplifies a pyro burst feature ×1.5 under reaction:vaporize (reverse vaporize, EM=0)", () => {
+    const baseline = avgOf(huTaoForm, "burst.burst_dmg", NO_MASTERY_BLOCK);
+    const vaporized = avgOf(
+      { ...huTaoForm, conditions: { toggles: {}, stacks: {}, reaction: "vaporize" } },
+      "burst.burst_dmg",
+      NO_MASTERY_BLOCK
+    );
+    expect(Math.abs(vaporized / baseline - 1.5)).toBeLessThanOrEqual(1.5e-6);
+  });
+
+  it("leaves an un-infused physical normal hit unchanged under reaction:vaporize", () => {
+    const baseline = avgOf(huTaoForm, "attack.normal_hit_1");
+    const vaporized = avgOf(
+      { ...huTaoForm, conditions: { toggles: {}, stacks: {}, reaction: "vaporize" } },
+      "attack.normal_hit_1"
+    );
+    expect(vaporized).toBe(baseline);
+  });
+});
+
 describe("computeBuild — party", () => {
   function normalHit(form: BuildForm) {
     const { features, error } = computeBuild(form, SAMPLE_BLOCK, []);

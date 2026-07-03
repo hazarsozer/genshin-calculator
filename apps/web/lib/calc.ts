@@ -47,13 +47,20 @@ export function computeBuild(
     return { features: [], error: "Select a character and weapon." };
   }
 
-  const settings = buildSettings({
-    constellation: form.constellation,
-    weaponRefine: form.weaponRefine,
-    toggles: form.conditions.toggles,
-    stacks: form.conditions.stacks,
-    ...(form.conditions.infusion ? { infusion: form.conditions.infusion } : {}),
-  });
+  const settings = {
+    ...buildSettings({
+      constellation: form.constellation,
+      weaponRefine: form.weaponRefine,
+      toggles: form.conditions.toggles,
+      stacks: form.conditions.stacks,
+      ...(form.conditions.infusion ? { infusion: form.conditions.infusion } : {}),
+    }),
+    // BuildSettingsInput has no `reaction` field — the engine reads
+    // `settings.reaction` directly off the EvalContext bag (packages/data/src/
+    // compileFeature.ts:1054, AMPLIFYING_VARIANT), so it is spread in here rather
+    // than routed through buildSettings.
+    ...(form.conditions.reaction ? { reaction: form.conditions.reaction } : {}),
+  };
 
   const party = buildPartyInput(form.party?.members ?? [], findCharacter);
   const partySlugResolver = (slug: string): DbObjectChar => {

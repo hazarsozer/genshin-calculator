@@ -104,12 +104,20 @@ const TABS: { k: "damage" | "stats"; l: string }[] = [
   { k: "stats", l: "Stats" },
 ];
 
+const REACTION_OPTIONS: { value: "" | "vaporize" | "melt"; label: string }[] = [
+  { value: "", label: "None" },
+  { value: "vaporize", label: "Vaporize" },
+  { value: "melt", label: "Melt" },
+];
+
 export function Breakdown() {
   const result = useResults();
   const pinnedFeature = useBuildStore((s) => s.form.pinnedFeature);
   const setForm = useBuildStore((s) => s.setForm);
   const characterKey = useBuildStore((s) => s.form.characterKey);
-  const infusion = useBuildStore((s) => s.form.conditions.infusion);
+  const conditions = useBuildStore((s) => s.form.conditions);
+  const infusion = conditions.infusion;
+  const reaction = conditions.reaction;
   const charLevel = useBuildStore((s) => s.form.charLevel);
   const enemy = useBuildStore((s) => s.form.enemy);
   const [mode, setMode] = useState<Mode>(2);
@@ -147,8 +155,18 @@ export function Breakdown() {
       stats: result.stats,
       enemy,
       charLevel,
+      reaction,
     });
     return explained;
+  }
+
+  function handleReaction(value: string) {
+    setForm({
+      conditions: {
+        ...conditions,
+        reaction: value === "vaporize" || value === "melt" ? value : undefined,
+      },
+    });
   }
 
   return (
@@ -179,25 +197,40 @@ export function Breakdown() {
         <StatsSheet stats={result.stats} />
       ) : (
         <>
-          <div className="mb-4 inline-flex rounded-lg border border-[var(--ck-border)] bg-[var(--ck-bg)] p-[3px] text-xs">
-            {MODES.map((m) => (
-              <button
-                key={m.k}
-                onClick={() => setMode(m.k)}
-                className="rounded-md px-3 py-1 font-semibold"
-                style={
-                  mode === m.k
-                    ? {
-                        background:
-                          "color-mix(in srgb, var(--ck-accent) 16%, transparent)",
-                        color: "var(--ck-accent2)",
-                      }
-                    : { color: "var(--ck-muted)", fontWeight: 500 }
-                }
-              >
-                {m.l}
-              </button>
-            ))}
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <div className="inline-flex rounded-lg border border-[var(--ck-border)] bg-[var(--ck-bg)] p-[3px] text-xs">
+              {MODES.map((m) => (
+                <button
+                  key={m.k}
+                  onClick={() => setMode(m.k)}
+                  className="rounded-md px-3 py-1 font-semibold"
+                  style={
+                    mode === m.k
+                      ? {
+                          background:
+                            "color-mix(in srgb, var(--ck-accent) 16%, transparent)",
+                          color: "var(--ck-accent2)",
+                        }
+                      : { color: "var(--ck-muted)", fontWeight: 500 }
+                  }
+                >
+                  {m.l}
+                </button>
+              ))}
+            </div>
+
+            <select
+              data-testid="reaction-select"
+              value={reaction ?? ""}
+              onChange={(e) => handleReaction(e.target.value)}
+              className="rounded-lg border border-[var(--ck-border)] bg-[var(--ck-bg)] px-2 py-1 text-xs font-semibold text-[var(--ck-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--ck-accent)]"
+            >
+              {REACTION_OPTIONS.map((o) => (
+                <option key={o.value || "none"} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="flex flex-col gap-5">
