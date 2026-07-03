@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Pin, PinOff } from "lucide-react";
 import { useResults } from "@/lib/useResults";
 import { useBuildStore } from "@/lib/store";
+import { findCharacter } from "@/lib/catalog";
+import { explainFeature, type TreeNode } from "@/lib/damageTree";
 import type { FeatureResult } from "@/lib/types";
 import { StatsSheet } from "./StatsSheet";
 
@@ -36,6 +38,39 @@ const CATEGORY_ORDER = [
 const catOf = (key: string) => key.split(".")[0];
 const nameOf = (key: string) => key.split(".").slice(1).join(".");
 const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// Categories with an inline calc-tree accordion. Reaction/heal/shield rows show
+// the % chip but never expand (their outputs aren't a [dmgBonus×def×res×crit]
+// damage instance the tree formula models).
+const EXPANDABLE_CATEGORIES = new Set(["attack", "skill", "burst"]);
+
+/** Best-effort damageType from category + feature name; null when unclear
+ *  (explainFeature treats damageType as optional, so null just omits the
+ *  `dmg_<damageType>` bonus term rather than guessing wrong). */
+function damageTypeFor(category: string, name: string): string | null {
+  if (category === "skill" || category === "burst") return category;
+  if (category !== "attack") return null;
+  if (/plunge/.test(name)) return "plunge";
+  if (/charged|aimed/.test(name)) return "charged";
+  if (/normal_hit/.test(name)) return "normal";
+  return null;
+}
+
+/** Best-effort element: the active character's element for skill/burst rows,
+ *  physical for un-infused normal/charged/plunge attacks, the active infusion
+ *  otherwise. Returns null (→ "breakdown unavailable") when we can't be
+ *  reasonably sure — never guesses into a wrong element. */
+function elementFor(
+  category: string,
+  characterKey: string,
+  infusion: string | undefined
+): string | null {
+  if (category === "skill" || category === "burst") {
+    return findCharacter(characterKey)?.element ?? null;
+  }
+  if (category === "attack") return infusion ?? "physical";
+  return null;
+}
 
 interface Node {
   feat: FeatureResult;
@@ -89,8 +124,13 @@ export function Breakdown() {
   const result = useResults();
   const pinnedFeature = useBuildStore((s) => s.form.pinnedFeature);
   const setForm = useBuildStore((s) => s.setForm);
+  const characterKey = useBuildStore((s) => s.form.characterKey);
+  const infusion = useBuildStore((s) => s.form.conditions.infusion);
+  const charLevel = useBuildStore((s) => s.form.charLevel);
+  const enemy = useBuildStore((s) => s.form.enemy);
   const [mode, setMode] = useState<Mode>(2);
   const [tab, setTab] = useState<"damage" | "stats">("damage");
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   if (result.error)
     return <p className="text-sm text-red-400">{result.error}</p>;
@@ -103,6 +143,29 @@ export function Breakdown() {
 
   const sections = groupFeatures(result.features);
   const max = Math.max(1, ...result.features.map((f) => f.triple[mode]));
+  // % chips are always against the AVERAGE (mode-independent), summed across
+  // every top-level node in every category (matches on-screen totals, not
+  // nested multi-hit parts).
+  const totalAvg = sections
+    .flatMap(([, nodes]) => nodes)
+    .reduce((sum, n) => sum + n.feat.triple[2], 0);
+
+  function calcTreeFor(
+    feat: FeatureResult,
+    category: string
+  ): { nodes: TreeNode[]; residual: number | null } | null {
+    if (!result.stats || !EXPANDABLE_CATEGORIES.has(category)) return null;
+    const explained = explainFeature({
+      avg: feat.triple[2],
+      noncrit: feat.triple[0],
+      element: elementFor(category, characterKey, infusion),
+      damageType: damageTypeFor(category, nameOf(feat.key)),
+      stats: result.stats,
+      enemy,
+      charLevel,
+    });
+    return explained;
+  }
 
   return (
     <div>
@@ -164,9 +227,19 @@ export function Breakdown() {
                 <div className="flex flex-col gap-2.5">
                   {nodes.map((node) => {
                     const pinned = pinnedFeature === node.feat.key;
+                    const pct = Math.round((node.feat.triple[2] / totalAvg) * 100);
+                    const tree = calcTreeFor(node.feat, category);
+                    const isOpen = expanded === node.feat.key;
                     return (
                     <div key={node.feat.key}>
-                      <div className="flex items-baseline justify-between">
+                      <div
+                        className="flex items-baseline justify-between"
+                        style={tree ? { cursor: "pointer" } : undefined}
+                        onClick={() => {
+                          if (!tree) return;
+                          setExpanded(isOpen ? null : node.feat.key);
+                        }}
+                      >
                         <span className="flex items-center gap-1.5 text-[13px] font-medium">
                           <button
                             type="button"
@@ -184,11 +257,19 @@ export function Breakdown() {
                           </button>
                           {node.feat.label}
                         </span>
-                        <span
-                          className="text-[15px] font-bold tabular-nums"
-                          data-testid="result-avg"
-                        >
-                          {fmt(node.feat.triple[mode])}
+                        <span className="flex items-center gap-2">
+                          <span
+                            className="text-[10.5px] font-semibold tabular-nums text-[var(--ck-faint)]"
+                            data-testid={`pct-${node.feat.key}`}
+                          >
+                            {Number.isFinite(pct) ? pct : 0}%
+                          </span>
+                          <span
+                            className="text-[15px] font-bold tabular-nums"
+                            data-testid="result-avg"
+                          >
+                            {fmt(node.feat.triple[mode])}
+                          </span>
                         </span>
                       </div>
                       <div className="mt-1 h-2 overflow-hidden rounded bg-[#1a1311]">
@@ -202,6 +283,25 @@ export function Breakdown() {
                           }}
                         />
                       </div>
+
+                      {isOpen && tree && (
+                        <div className="mt-1.5 ml-3 flex flex-col gap-0.5 border-l border-[var(--ck-border)] pl-3 text-[11.5px] text-[var(--ck-muted)]">
+                          {tree.nodes.map((n, i) => (
+                            <div key={n.label} className="flex items-baseline justify-between">
+                              <span>
+                                {i === 0 ? "=" : "×"} {n.label}
+                              </span>
+                              <span className="tabular-nums">{n.factor.toFixed(4)}</span>
+                            </div>
+                          ))}
+                          {tree.residual !== null && (
+                            <div className="flex items-baseline justify-between">
+                              <span>× special terms</span>
+                              <span className="tabular-nums">{tree.residual.toFixed(3)}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
 
                       {node.children.length > 0 && (
                         <div className="mt-1.5 ml-3 flex flex-col gap-1 border-l border-[var(--ck-border)] pl-3">
