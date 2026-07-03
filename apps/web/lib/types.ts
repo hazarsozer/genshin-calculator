@@ -59,6 +59,8 @@ export interface BuildForm {
   artifactSlots?: Partial<Record<string, ArtifactSlotData>>;
   /** Party roster (up to 3 teammates). Optional: absent → no party passed → engine call byte-identical. */
   party?: { members: PartyMemberForm[] };
+  /** Feature key pinned as the Stage headline (see selectHeadline). Optional: absent → highest-average feature wins. */
+  pinnedFeature?: string;
 }
 
 export interface FeatureResult {

@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Pin, PinOff } from "lucide-react";
 import { useResults } from "@/lib/useResults";
+import { useBuildStore } from "@/lib/store";
 import type { FeatureResult } from "@/lib/types";
 import { StatsSheet } from "./StatsSheet";
 
@@ -85,6 +87,8 @@ const TABS: { k: "damage" | "stats"; l: string }[] = [
 
 export function Breakdown() {
   const result = useResults();
+  const pinnedFeature = useBuildStore((s) => s.form.pinnedFeature);
+  const setForm = useBuildStore((s) => s.setForm);
   const [mode, setMode] = useState<Mode>(2);
   const [tab, setTab] = useState<"damage" | "stats">("damage");
 
@@ -158,10 +162,26 @@ export function Breakdown() {
                 </div>
 
                 <div className="flex flex-col gap-2.5">
-                  {nodes.map((node) => (
+                  {nodes.map((node) => {
+                    const pinned = pinnedFeature === node.feat.key;
+                    return (
                     <div key={node.feat.key}>
                       <div className="flex items-baseline justify-between">
-                        <span className="text-[13px] font-medium">
+                        <span className="flex items-center gap-1.5 text-[13px] font-medium">
+                          <button
+                            type="button"
+                            aria-pressed={pinned}
+                            aria-label={pinned ? "Unpin from headline" : "Pin as headline"}
+                            data-testid={`pin-${node.feat.key}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setForm({ pinnedFeature: pinned ? undefined : node.feat.key });
+                            }}
+                            className="text-[var(--ck-faint)] transition-colors hover:text-[var(--ck-accent2)]"
+                            style={pinned ? { color: "var(--ck-accent2)" } : undefined}
+                          >
+                            {pinned ? <PinOff size={13} /> : <Pin size={13} />}
+                          </button>
                           {node.feat.label}
                         </span>
                         <span
@@ -199,7 +219,8 @@ export function Breakdown() {
                         </div>
                       )}
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ))}

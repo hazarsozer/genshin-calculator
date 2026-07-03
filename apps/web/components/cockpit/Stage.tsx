@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useResults } from "@/lib/useResults";
 import { useBuildStore, useSkinStore } from "@/lib/store";
+import { selectHeadline } from "@/lib/headline";
 import { ALL_CHARACTERS } from "@genshin/data";
 import { humanizeSlug } from "@/lib/utils";
 import { stageEntranceVariants, stageEntranceTransition, useCountUp, fmt } from "@/lib/motion";
@@ -31,10 +32,8 @@ export function Stage() {
   const element = char?.element ?? "physical";
   const stats = result.stats ?? {};
 
-  // Headline = highest-average feature (a selector lands in a later task).
-  const headline = result.features.length
-    ? [...result.features].sort((a, b) => b.triple[2] - a.triple[2])[0]
-    : null;
+  // Headline = pinned feature if present and still valid, else highest-average feature.
+  const headline = selectHeadline(result.features, form.pinnedFeature);
 
   // Count-up hooks — called unconditionally (rules of hooks); inactive when headline is null.
   const triple = headline?.triple ?? [0, 0, 0];
@@ -93,6 +92,7 @@ export function Stage() {
             <div
               className="font-[family-name:var(--font-display)] text-7xl leading-none tabular-nums text-white"
               style={{ textShadow: "0 0 34px var(--ck-glow)" }}
+              data-testid="headline-avg"
             >
               {avgDisplay}
             </div>
