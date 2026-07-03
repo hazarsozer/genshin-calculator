@@ -130,8 +130,16 @@ export function extractNestedGateControls(char: DbObjectChar): ConditionControl[
     walkGateNames(c, gates);
     walkPublishedKeys(c, published);
   }
-  for (const m of char.multipliers ?? []) if (m.condition) walkGateNames(m.condition, gates);
-  for (const f of char.features ?? []) if (f.condition) walkGateNames(f.condition, gates);
+  for (const m of char.multipliers ?? [])
+    if (m.condition) {
+      walkGateNames(m.condition, gates);
+      walkPublishedKeys(m.condition, published);
+    }
+  for (const f of char.features ?? [])
+    if (f.condition) {
+      walkGateNames(f.condition, gates);
+      walkPublishedKeys(f.condition, published);
+    }
 
   const surfaced = new Set<string>();
   for (const c of harvestCharConditions(char)) {

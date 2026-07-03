@@ -53,4 +53,30 @@ describe("extractNestedGateControls", () => {
   it("returns [] for a char with no hidden gates (bennett)", () => {
     expect(extractNestedGateControls(byName("bennett"))).toEqual([]);
   });
+
+  it("excludes a gate published inside a FEATURE's condition tree (not just conditionSources)", () => {
+    // Synthetic char: a feature.condition whose nested boolean gate ("test_gate")
+    // is also published via a sibling settings:{} in the SAME tree. Before the
+    // fix, walkPublishedKeys only ran over conditionSources, so this would have
+    // leaked through as a false-positive user-facing toggle.
+    const synthetic = {
+      name: "synthetic-test-char",
+      conditions: [],
+      postEffects: [],
+      multipliers: [],
+      features: [
+        {
+          condition: {
+            items: [
+              { type: "boolean", name: "test_gate" },
+              { settings: { test_gate: { min: 0, max: 1 } } },
+            ],
+          },
+        },
+      ],
+    } as unknown as DbObjectChar;
+
+    const names = extractNestedGateControls(synthetic).map((c) => c.name);
+    expect(names).not.toContain("test_gate");
+  });
 });
