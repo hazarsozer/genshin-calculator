@@ -150,6 +150,21 @@ describe("computeBuild — reaction override", () => {
     expect(Math.abs(vaporized / baseline - 1.5)).toBeLessThanOrEqual(1.5e-6);
   });
 
+  it("amplifies a pyro burst feature by the exact EM-bonus ratio under reaction:vaporize (SAMPLE_BLOCK, real mastery)", () => {
+    const built = computeBuild(huTaoForm, SAMPLE_BLOCK, []);
+    expect(built.error).toBeUndefined();
+    const mastery = built.stats!.mastery;
+
+    const baseline = avgOf(huTaoForm, "burst.burst_dmg");
+    const vaporized = avgOf(
+      { ...huTaoForm, conditions: { toggles: {}, stacks: {}, reaction: "vaporize" } },
+      "burst.burst_dmg"
+    );
+    const expectedRatio = 1.5 * (1 + (2.78 * mastery) / (mastery + 1400));
+    const actualRatio = vaporized / baseline;
+    expect(Math.abs(actualRatio / expectedRatio - 1)).toBeLessThanOrEqual(1e-6);
+  });
+
   it("leaves an un-infused physical normal hit unchanged under reaction:vaporize", () => {
     const baseline = avgOf(huTaoForm, "attack.normal_hit_1");
     const vaporized = avgOf(
