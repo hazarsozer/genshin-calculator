@@ -47,7 +47,9 @@ const GLOBAL_EMIT_ONLY: ReadonlySet<string> = new Set([
  *   - char.postEffects[].conditions (gating conditions on each post-effect)
  *   - char.multipliers[].condition  (singular gate on each char-level multiplier)
  *   - char.constellation?.entries[].conditions (constellation-injected settings)
- *   - char.partyData?.conditions (conditions this character contributes as a teammate)
+ *   - char.partyData?.conditions (conditions this character contributes as a teammate,
+ *     EXCLUDING number/stacks scaling-stat inputs like xilonen_def_total — see
+ *     ACTIVE_CHAR_EXCLUDED_PARTY_INPUT below)
  *
  * Note: Feature.condition (singular, on char.features[]) is a production-gate that
  * determines whether the feature is emitted at all — it is NOT a buff condition and
@@ -56,6 +58,19 @@ const GLOBAL_EMIT_ONLY: ReadonlySet<string> = new Set([
  * The caller feeds the result through conditionToControl + dedup, so harmless
  * gate-only types (constellation, static, …) are naturally filtered out.
  */
+/**
+ * partyData scaling-stat inputs (e.g. xilonen_def_total) exist for the
+ * TEAMMATE lane, where the buffer's sheet isn't computed. For the ACTIVE
+ * character the engine reads the computed sheet — a manual field here is a
+ * footgun. Audited 2026-07-03 (Task 4, Finding 3): every partyData number/
+ * stacks condition matching this suffix shape is read ONLY inside its own
+ * char's `partyData.multipliers`/`partyData.postEffects` (never the char's
+ * own top-level `multipliers`/`postEffects`) — full ledger in
+ * .superpowers/sdd/task-4-report.md. Teammate lane: collectPartyConditions
+ * (unchanged) still surfaces these via `char.partyData.conditions` directly.
+ */
+const ACTIVE_CHAR_EXCLUDED_PARTY_INPUT = /_(total|base|max_hp|mastery_total)$/;
+
 function harvestCharConditions(char: DbObjectChar): readonly Condition[] {
   const out: Condition[] = [];
   const pushAll = (cs?: readonly Condition[]) => {
@@ -66,7 +81,17 @@ function harvestCharConditions(char: DbObjectChar): readonly Condition[] {
   for (const p of char.postEffects ?? []) pushAll(p.conditions);
   for (const m of char.multipliers) if (m.condition) out.push(m.condition);
   for (const e of char.constellation?.entries ?? []) pushAll(e.conditions);
-  pushAll(char.partyData?.conditions);
+
+  for (const c of char.partyData?.conditions ?? []) {
+    const name = (c as { name?: string }).name;
+    if (
+      name !== undefined &&
+      (c.type === "number" || c.type === "stacks") &&
+      ACTIVE_CHAR_EXCLUDED_PARTY_INPUT.test(name)
+    )
+      continue;
+    out.push(c);
+  }
 
   return out;
 }

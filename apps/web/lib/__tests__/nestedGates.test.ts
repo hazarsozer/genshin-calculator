@@ -1,7 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { ALL_CHARACTERS, ALL_WEAPONS } from "@genshin/data";
 import type { DbObjectChar } from "@genshin/types";
-import { extractNestedGateControls, collectGroupedConditions } from "../conditions";
+import {
+  extractNestedGateControls,
+  collectGroupedConditions,
+  collectPartyConditions,
+} from "../conditions";
 
 const byName = (name: string): DbObjectChar => {
   const c = ALL_CHARACTERS.find((x) => x.name === name);
@@ -144,6 +148,60 @@ const EXPECTED_NESTED_GATES: Record<string, string[]> = {
   xilonen: ["common.nightsoul_blessing_state"],
   yanfei: ["yanfei_brilliance", "yanfei_scarlet_seal"],
 };
+
+// AUDITED 2026-07-03 (Task 4, Finding 3) — partyData scaling-stat number/stacks
+// inputs (e.g. xilonen_def_total) are lifted teammate stats: each of these 16
+// keys is read ONLY inside its own char's `partyData.multipliers`/
+// `partyData.postEffects` (verified via grep against packages/data/src/characters/*.ts —
+// every "scaling"/"fromStat" reference lives in a *PartyMultipliers/*PartyPost
+// const assigned solely to `partyData`, never to the char's own top-level
+// `multipliers`/`postEffects`). Full ledger: .superpowers/sdd/task-4-report.md.
+// For the ACTIVE character the engine reads the computed sheet directly — these
+// self-serve manual inputs are a footgun and are excluded from the self group.
+// The teammate lane (collectPartyConditions) is UNCHANGED and still surfaces them.
+describe("active-char scaling-stat inputs (Finding 3)", () => {
+  it("xilonen_def_total does not render as a self control", () => {
+    const g = collectGroupedConditions(byName("xilonen"), weaponByName("cool_steel"), []);
+    expect(g.self.map((c) => c.name)).not.toContain("xilonen_def_total");
+  });
+
+  it("teammate lane still surfaces xilonen_def_total", () => {
+    const names = collectPartyConditions(byName("xilonen")).map((c) => c.name);
+    expect(names).toContain("xilonen_def_total");
+  });
+
+  it("excludes every audited scaling-stat input from the self group", () => {
+    const cases: Array<[string, string]> = [
+      ["bennett", "bennet_atk_base"],
+      ["candace", "candace_hp_total"],
+      ["chevreuse", "chevreuse_hp_total"],
+      ["citlali", "citlali_mastery_total"],
+      ["escoffier", "escoffier_atk_total"],
+      ["faruzan", "faruzan_atk_base"],
+      ["iansan", "iansan_atk_total"],
+      ["ineffa", "ineffa_atk_total"],
+      ["kujou_sara", "sara_atk_base"],
+      ["layla", "layla_max_hp"],
+      ["rosaria", "rosaria_crit_rate_total"],
+      ["shenhe", "shenhe_atk_total"],
+      ["sigewinne", "sigewinne_hp_total"],
+      ["xianyun", "xianyun_atk_total"],
+      ["xilonen", "xilonen_def_total"],
+      ["yun_jin", "yunjin_def_total"],
+    ];
+    for (const [charName, key] of cases) {
+      const names = extractSelfNames(charName);
+      expect(names).not.toContain(key);
+      // Teammate lane still surfaces it.
+      expect(collectPartyConditions(byName(charName)).map((c) => c.name)).toContain(key);
+    }
+  });
+});
+
+function extractSelfNames(charName: string): string[] {
+  const g = collectGroupedConditions(byName(charName), weaponByName("cool_steel"), []);
+  return g.self.map((c) => c.name);
+}
 
 it("drift guard: extracted nested-gate set matches the audited registry", () => {
   const actual: Record<string, string[]> = {};
