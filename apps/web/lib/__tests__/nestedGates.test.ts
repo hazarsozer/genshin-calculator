@@ -6,6 +6,9 @@ import {
   collectGroupedConditions,
   collectPartyConditions,
 } from "../conditions";
+import { DEFAULT_FORM } from "../defaults";
+import { computeBuild } from "../calc";
+import type { BuildForm } from "../types";
 
 const byName = (name: string): DbObjectChar => {
   const c = ALL_CHARACTERS.find((x) => x.name === name);
@@ -202,6 +205,54 @@ function extractSelfNames(charName: string): string[] {
   const g = collectGroupedConditions(byName(charName), weaponByName("cool_steel"), []);
   return g.self.map((c) => c.name);
 }
+
+// AUDITED 2026-07-03 (final-review fix) — these three nested gates are stack
+// COUNTS in the engine (consumed as table indices: albedo_opening_of_hanerozoic
+// leveling into a 4-entry ValueTable, skirk_return_to_oblivion levelSetting into
+// 3-entry scalingMultiplierFromTable(s), yanfei_scarlet_seal levelSetting into a
+// 4-entry levelStats table). Surfacing them as a boolean coerces to 1 stack, so
+// higher stacks were unreachable from the UI. See NESTED_GATE_STACKS in
+// ../conditions.
+describe("nested gates that are stack counts, not booleans", () => {
+  it.each([
+    ["albedo", "albedo_opening_of_hanerozoic", 4],
+    ["skirk", "skirk_return_to_oblivion", 3],
+    ["yanfei", "yanfei_scarlet_seal", 4],
+  ] as const)("%s's %s surfaces as a number control with max %d", (charName, gateName, max) => {
+    const ctrl = extractNestedGateControls(byName(charName)).find((c) => c.name === gateName);
+    expect(ctrl).toBeDefined();
+    expect(ctrl!.kind).toBe("number");
+    expect(ctrl!.max).toBe(max);
+  });
+
+  it("albedo: higher stacks on albedo_opening_of_hanerozoic reach the engine (feature averages differ)", () => {
+    const base: BuildForm = {
+      ...DEFAULT_FORM,
+      characterKey: "albedo",
+      weaponKey: "cool_steel",
+      constellation: 2,
+    };
+    const lowForm: BuildForm = {
+      ...base,
+      conditions: { toggles: {}, stacks: { albedo_opening_of_hanerozoic: 1 } },
+    };
+    const highForm: BuildForm = {
+      ...base,
+      conditions: { toggles: {}, stacks: { albedo_opening_of_hanerozoic: 4 } },
+    };
+    const lowResult = computeBuild(lowForm, {}, []);
+    const highResult = computeBuild(highForm, {}, []);
+    expect(lowResult.error).toBeUndefined();
+    expect(highResult.error).toBeUndefined();
+
+    const lowAvgs = new Map(lowResult.features.map((f) => [f.key, f.triple[2]]));
+    const highAvgs = new Map(highResult.features.map((f) => [f.key, f.triple[2]]));
+    const anyDifferent = [...highAvgs.entries()].some(
+      ([key, avg]) => Math.abs(avg - (lowAvgs.get(key) ?? avg)) > 1e-6
+    );
+    expect(anyDifferent).toBe(true);
+  });
+});
 
 it("drift guard: extracted nested-gate set matches the audited registry", () => {
   const actual: Record<string, string[]> = {};

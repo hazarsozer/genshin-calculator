@@ -57,7 +57,11 @@ function activateSelf(form: BuildForm): { form: BuildForm; labels: string[] } {
     }
   }
   for (const ctrl of extractNestedGateControls(char)) {
-    if (!(ctrl.name in toggles)) toggles[ctrl.name] = true;
+    if (ctrl.kind === "boolean") {
+      if (!(ctrl.name in toggles)) toggles[ctrl.name] = true;
+    } else if (!(ctrl.name in stacks)) {
+      stacks[ctrl.name] = ctrl.max ?? 1;
+    }
   }
   return { form: { ...form, conditions: { toggles, stacks } }, labels: self.map((c) => c.label) };
 }

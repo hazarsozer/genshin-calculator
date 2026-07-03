@@ -117,6 +117,18 @@ const NESTED_GATE_LABELS: ReadonlyMap<string, string> = new Map([
   ["common.nightsoul_blessing_state", "Nightsoul's Blessing"],
 ]);
 
+/**
+ * Nested gates that are stack COUNTS in the engine (consumed as table indices),
+ * audited vs raw 2026-07-03 — surface as number controls, not booleans.
+ * name → max stacks (= consuming table length in packages/data, cross-checked
+ * vs raw maxStacks).
+ */
+const NESTED_GATE_STACKS: ReadonlyMap<string, number> = new Map([
+  ["albedo_opening_of_hanerozoic", 4],
+  ["skirk_return_to_oblivion", 3],
+  ["yanfei_scarlet_seal", 4],
+]);
+
 function walkGateNames(node: unknown, out: Set<string>): void {
   if (!node || typeof node !== "object") return;
   if (Array.isArray(node)) {
@@ -176,6 +188,17 @@ export function extractNestedGateControls(char: DbObjectChar): ConditionControl[
   for (const name of gates) {
     if (surfaced.has(name) || published.has(name) || DERIVED_GATE_PREFIX.test(name)) continue;
     const { label, description } = resolveLabel({ type: "boolean", name } as Condition);
+    const stacksMax = NESTED_GATE_STACKS.get(name);
+    if (stacksMax !== undefined) {
+      controls.push({
+        name,
+        kind: "number",
+        label: NESTED_GATE_LABELS.get(name) ?? label,
+        max: stacksMax,
+        ...(description ? { description } : {}),
+      });
+      continue;
+    }
     controls.push({
       name,
       kind: "boolean",
