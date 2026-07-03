@@ -1,12 +1,18 @@
 import { describe, it, expect } from "vitest";
-import { ALL_CHARACTERS } from "@genshin/data";
+import { ALL_CHARACTERS, ALL_WEAPONS } from "@genshin/data";
 import type { DbObjectChar } from "@genshin/types";
-import { extractNestedGateControls } from "../conditions";
+import { extractNestedGateControls, collectGroupedConditions } from "../conditions";
 
 const byName = (name: string): DbObjectChar => {
   const c = ALL_CHARACTERS.find((x) => x.name === name);
   if (!c) throw new Error(`char not found: ${name}`);
   return c;
+};
+
+const weaponByName = (name: string) => {
+  const w = ALL_WEAPONS.find((x) => x.name === name);
+  if (!w) throw new Error(`weapon not found: ${name}`);
+  return w;
 };
 
 describe("extractNestedGateControls", () => {
@@ -78,5 +84,25 @@ describe("extractNestedGateControls", () => {
 
     const names = extractNestedGateControls(synthetic).map((c) => c.name);
     expect(names).not.toContain("test_gate");
+  });
+});
+
+describe("collectGroupedConditions + nested gates", () => {
+  it("gorou's Build drawer self group contains the war-banner toggle", () => {
+    const g = collectGroupedConditions(byName("gorou"), weaponByName("messenger"), []);
+    expect(g.self.map((c) => c.name)).toContain("gorou_generals_war_banner");
+  });
+
+  it("xilonen's self group contains the nightsoul toggle exactly once", () => {
+    const g = collectGroupedConditions(byName("xilonen"), weaponByName("cool_steel"), []);
+    const hits = g.self.filter((c) => c.name === "common.nightsoul_blessing_state");
+    expect(hits).toHaveLength(1);
+  });
+
+  it("does not add nested gates to weapon/set/global/enemy groups", () => {
+    const g = collectGroupedConditions(byName("gorou"), weaponByName("messenger"), []);
+    for (const group of [g.weapon, g.set, g.global, g.enemy]) {
+      expect(group.map((c) => c.name)).not.toContain("gorou_generals_war_banner");
+    }
   });
 });

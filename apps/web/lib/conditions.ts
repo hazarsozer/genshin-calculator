@@ -386,6 +386,14 @@ export function collectConditions(
   // 1. Character conditions (all buff channels — see harvestCharConditions)
   for (const c of harvestCharConditions(char)) push(c);
 
+  // Nested-gate toggles (sweep-ported stances etc.) — see extractNestedGateControls.
+  for (const ctrl of extractNestedGateControls(char)) {
+    if (!seen.has(ctrl.name)) {
+      seen.add(ctrl.name);
+      controls.push(ctrl);
+    }
+  }
+
   // 2. Weapon conditions
   for (const c of weapon.conditions ?? []) push(c);
 
@@ -439,7 +447,7 @@ function makeGroupCollector() {
     seen.add(ctrl.name);
     out.push(ctrl);
   }
-  return { push, controls: out };
+  return { push, controls: out, seen };
 }
 
 export function collectGroupedConditions(
@@ -454,6 +462,13 @@ export function collectGroupedConditions(
   const enemyG = makeGroupCollector();
 
   for (const c of harvestCharConditions(char)) selfG.push(c);
+  // Nested-gate toggles (sweep-ported stances etc.) — see extractNestedGateControls.
+  for (const ctrl of extractNestedGateControls(char)) {
+    if (!selfG.seen.has(ctrl.name)) {
+      selfG.seen.add(ctrl.name);
+      selfG.controls.push(ctrl);
+    }
+  }
   for (const c of weapon.conditions ?? []) weaponG.push(c);
 
   for (const { setKey, pieces } of sets) {
