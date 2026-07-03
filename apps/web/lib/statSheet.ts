@@ -122,6 +122,58 @@ const GROUPS: readonly RegistryGroup[] = [
 // `out["mastery"]` emit). Neither should re-surface as an "Other" row.
 const SUPPRESSED_ALIASES = new Set(["mastery_total"]);
 
+// Bag keys the engine emits as 0-1 FRACTIONS (her `processPercent` /100 baked in at
+// build time), which buildStatSheet must re-scale ×100 into percent POINTS so every
+// `format: "percent"` row shares one display unit. Classified straight from
+// `packages/data/src/buildStats.ts`'s own emit sites (read-only, never transcribed by
+// hand) — NOT by format-flag alone, since `recharge_total` is also tagged "percent" for
+// display but the engine emits it as a raw already-scaled number (FLAT_TOTAL_STATS,
+// buildStats.ts:980-982, no `/100`), so it must be excluded from this set.
+//   - crit_rate_total / crit_dmg_total — FRACTION_TOTAL_STATS loop, buildStats.ts:992-994
+//   - dmg_<element> (incl. dmg_phys)   — DMG_BONUS_ELEMENT_KEYS loop, buildStats.ts:999-1004
+//   - dmg_<type> / dmg_all             — DMG_BONUS_TYPE_KEYS loop, buildStats.ts:1006-1008
+//   - dmg_reaction_*                   — REACTION_BONUS_PERCENT_KEYS loop, buildStats.ts:1146-1148
+//   - healing / healing_recv           — HEAL_BONUS_KEYS loop, buildStats.ts:1098-1100
+//   - shield                          — buildStats.ts:1058 (`raw.get("shield") / 100`)
+const FRACTION_SCALE_KEYS = new Set([
+  "crit_rate_total",
+  "crit_dmg_total",
+  "dmg_pyro",
+  "dmg_hydro",
+  "dmg_electro",
+  "dmg_cryo",
+  "dmg_anemo",
+  "dmg_geo",
+  "dmg_dendro",
+  "dmg_phys",
+  "dmg_normal",
+  "dmg_charged",
+  "dmg_plunge",
+  "dmg_skill",
+  "dmg_burst",
+  "dmg_all",
+  "dmg_reaction_overloaded",
+  "dmg_reaction_superconduct",
+  "dmg_reaction_electrocharged",
+  "dmg_reaction_shatter",
+  "dmg_reaction_swirl",
+  "dmg_reaction_bloom",
+  "dmg_reaction_hyperbloom",
+  "dmg_reaction_burgeon",
+  "dmg_reaction_rupture",
+  "dmg_reaction_aggravate",
+  "dmg_reaction_quicken",
+  "dmg_reaction_spread",
+  "dmg_reaction_vaporize",
+  "dmg_reaction_melt",
+  "dmg_reaction_lunarcharged",
+  "dmg_reaction_lunarbloom",
+  "dmg_reaction_lunarcrystallize",
+  "healing",
+  "healing_recv",
+  "shield",
+]);
+
 // Bag keys that are engine-internal inputs, not player-facing stats: enemy_*
 // (resistance/def-ignore/def-reduce), any `*_base` decomposition input, and the
 // (currently unused in this engine) char_/party_/resonance_ prefixes.
@@ -142,14 +194,15 @@ export function buildStatSheet(stats: Readonly<Record<string, number>>): StatShe
     const rows: StatRow[] = [];
     for (const reg of group.rows) {
       if (!(reg.key in stats)) continue;
-      const total = stats[reg.key];
+      const scale = FRACTION_SCALE_KEYS.has(reg.key) ? 100 : 1;
+      const total = stats[reg.key] * scale;
       if (!reg.core && total === 0) continue;
 
       consumed.add(reg.key);
       let base: number | null = null;
       let bonus = total;
       if (reg.baseKey && reg.baseKey in stats) {
-        base = stats[reg.baseKey];
+        base = stats[reg.baseKey] * scale;
         bonus = total - base;
         consumed.add(reg.baseKey);
       }

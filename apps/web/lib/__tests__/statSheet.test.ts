@@ -7,6 +7,13 @@ import { buildStatSheet } from "../statSheet";
 // actual bag uses `atk_total`/`hp_total`/`def_total`/`crit_rate_total`/`crit_dmg_total`/
 // `healing`/`healing_recv`/`dmg_phys`, and only `atk` decomposes via a separate
 // `atk_base` key (hp/def have no `_base` counterpart in the emitted bag).
+//
+// Unit note (review fix): the engine emits `crit_rate_total`/`crit_dmg_total`, all
+// `dmg_*` bonuses, and `shield` as 0-1 FRACTIONS (buildStats.ts's own `/100` at emit —
+// see FRACTION_SCALE_KEYS in statSheet.ts for the exact citations), while
+// `recharge_total` is a raw already-scaled number (FLAT_TOTAL_STATS, no `/100`). This
+// fixture mirrors that: crit/dmg values are realistic fractions (0.66, 1.762, 0.616,
+// 0.15), recharge_total stays a raw percent-point number (130).
 const STATS: Record<string, number> = {
   hp_total: 25123,
   atk_total: 3293,
@@ -14,15 +21,15 @@ const STATS: Record<string, number> = {
   def_total: 900,
   mastery: 187,
   recharge_total: 130,
-  crit_rate_total: 66,
-  crit_dmg_total: 176.2,
+  crit_rate_total: 0.66,
+  crit_dmg_total: 1.762,
   healing: 0,
   healing_recv: 0,
   shield: 0,
-  dmg_pyro: 61.6,
+  dmg_pyro: 0.616,
   dmg_hydro: 0,
   dmg_normal: 0,
-  dmg_all: 15,
+  dmg_all: 0.15,
   some_char_specific_key: 42,
 };
 
@@ -40,6 +47,16 @@ describe("buildStatSheet", () => {
     expect(pyro).toMatchObject({ base: null, bonus: 61.6, total: 61.6, format: "percent" });
   });
 
+  it("normalizes fraction-scale bag values (crit/dmg/reaction/shield/healing) to percent points, but leaves recharge_total (already a raw percent-point number) untouched", () => {
+    const rows = buildStatSheet(STATS).flatMap((g) => g.rows);
+    const critRate = rows.find((r) => r.key === "crit_rate_total")!;
+    const critDmg = rows.find((r) => r.key === "crit_dmg_total")!;
+    const recharge = rows.find((r) => r.key === "recharge_total")!;
+    expect(critRate).toMatchObject({ total: 66, format: "percent" });
+    expect(critDmg).toMatchObject({ total: 176.2, format: "percent" });
+    expect(recharge).toMatchObject({ total: 130, format: "percent" });
+  });
+
   it("hides zero-value optional rows but always shows the core set", () => {
     const rows = buildStatSheet(STATS).flatMap((g) => g.rows).map((r) => r.key);
     expect(rows).not.toContain("dmg_hydro"); // zero, optional → hidden
@@ -54,11 +71,6 @@ describe("buildStatSheet", () => {
   it("excludes internal keys (enemy_*, *_base) from Other", () => {
     const other = buildStatSheet({ ...STATS, enemy_res_pyro: 10 }).find((g) => g.title === "Other");
     expect(other?.rows.map((r) => r.key) ?? []).not.toContain("enemy_res_pyro");
-    expect(other?.rows.map((r) => r.key) ?? []).not.toContain("atk_base");
-  });
-
-  it("hides a core row's decomposed base pair from Other even though atk_base isn't in the registry directly", () => {
-    const other = buildStatSheet(STATS).find((g) => g.title === "Other");
     expect(other?.rows.map((r) => r.key) ?? []).not.toContain("atk_base");
   });
 });
