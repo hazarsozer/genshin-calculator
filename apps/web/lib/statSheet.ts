@@ -175,9 +175,25 @@ const FRACTION_SCALE_KEYS = new Set([
 ]);
 
 // Bag keys that are engine-internal inputs, not player-facing stats: enemy_*
-// (resistance/def-ignore/def-reduce), any `*_base` decomposition input, and the
-// (currently unused in this engine) char_/party_/resonance_ prefixes.
-const INTERNAL_KEY_PATTERN = /^(enemy_|.*_base$|char_|party_|resonance_)/;
+// (resistance/def-ignore/def-reduce), the `atk_base` decomposition input consumed
+// via GROUPS' `baseKey` above, and the (currently unused in this engine)
+// char_/party_/resonance_ prefixes.
+//
+// NOT a blanket `.*_base$` (final review HIGH fix, task-7 report): buildStats.ts
+// emits exactly one OTHER top-level `_base` key, `healing_base` (buildStats.ts:
+// 1093-1100, HEAL_BONUS_KEYS) — a character's ascension healing-bonus secondary
+// (e.g. Jean/Qiqi), summed by the engine into `(1 + healing + healing_base +
+// healing_recv)` (compileFeature.ts:936-943), NOT folded into `healing` pre-emit
+// the way `dmg_phys_base` is folded into `dmg_phys` before it ever reaches the bag
+// (buildStats.ts:996-1004). A blanket pattern silently ate it — see the fold into
+// the Healing Bonus row below instead of suppressing it here.
+const INTERNAL_KEY_PATTERN = /^(enemy_|atk_base$|char_|party_|resonance_)/;
+
+// Bag keys folded into another registry row's value rather than shown as their own
+// row (currently only `healing_base` → the Healing Bonus row's `healing`). Kept
+// separate from SUPPRESSED_ALIASES because these carry real, distinct value that
+// must be added in, not merely hidden.
+const FOLDED_INTO: Readonly<Record<string, string>> = { healing_base: "healing" };
 
 function humanizeSlug(slug: string): string {
   return slug
@@ -193,9 +209,20 @@ export function buildStatSheet(stats: Readonly<Record<string, number>>): StatShe
   for (const group of GROUPS) {
     const rows: StatRow[] = [];
     for (const reg of group.rows) {
-      if (!(reg.key in stats)) continue;
       const scale = FRACTION_SCALE_KEYS.has(reg.key) ? 100 : 1;
-      const total = stats[reg.key] * scale;
+      // Fold in any independently-emitted bag keys this row absorbs (e.g.
+      // `healing_base` into `healing` — see FOLDED_INTO), using the SAME scale as
+      // the row's own key: both are engine FRACTION_SCALE_KEYS members.
+      let folded = 0;
+      for (const [srcKey, targetKey] of Object.entries(FOLDED_INTO)) {
+        if (targetKey === reg.key && srcKey in stats) {
+          folded += stats[srcKey] * scale;
+          consumed.add(srcKey);
+        }
+      }
+
+      if (!(reg.key in stats) && folded === 0) continue;
+      const total = (reg.key in stats ? stats[reg.key] * scale : 0) + folded;
       if (!reg.core && total === 0) continue;
 
       consumed.add(reg.key);
