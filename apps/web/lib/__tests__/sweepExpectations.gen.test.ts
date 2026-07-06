@@ -155,3 +155,78 @@ describe("sweep e2e fixture generation", () => {
     writeFileSync(out, JSON.stringify(entries, null, 2));
   });
 });
+
+/**
+ * Generator for the e2e results-depth fixture (e2e/fixtures/results-depth.json),
+ * covering Arc A's Stats tab, pin-as-headline, and reaction-override surfaces
+ * (Tasks 1, 2, 6). Same rationale as the fixture above: Playwright can't import
+ * @genshin/data, so the engine expectations are computed here.
+ */
+describe("results-depth e2e fixture generation", () => {
+  it("computes engine expectations for stats/pin/reaction cases and writes the fixture", () => {
+    // --- Stats case: default Bennett build → Stats tab's ATK total row. ---
+    const statsForm: BuildForm = { ...DEFAULT_FORM };
+    const statsResult = computeBuild(statsForm, {}, []);
+    expect(statsResult.error).toBeUndefined();
+    expect(statsResult.stats).toBeDefined();
+    const expectedTotal = statsResult.stats!.atk_total;
+    expect(expectedTotal).toBeGreaterThan(0);
+
+    // --- Pin case: default Bennett build, pin a NON-highest feature and expect
+    // the Stage headline to switch to it. ---
+    const pinForm: BuildForm = { ...DEFAULT_FORM };
+    const pinResult = computeBuild(pinForm, {}, []);
+    expect(pinResult.error).toBeUndefined();
+    expect(pinResult.features.length).toBeGreaterThan(1);
+    const sortedByAvg = [...pinResult.features].sort((a, b) => b.triple[2] - a.triple[2]);
+    const highestAvg = sortedByAvg[0].triple[2];
+    const pinTarget = sortedByAvg.find((f) => f.triple[2] < highestAvg);
+    expect(pinTarget, "need a strictly non-highest feature to pin").toBeDefined();
+
+    // --- Vaporize case: Hu Tao's pyro burst, amplifying-reaction override. ---
+    const huTaoBase: BuildForm = {
+      ...DEFAULT_FORM,
+      characterKey: "hu_tao",
+      weaponKey: "staff_of_homa",
+      conditions: { toggles: {}, stacks: {} },
+    };
+    const vaporizeForm: BuildForm = {
+      ...huTaoBase,
+      conditions: { toggles: {}, stacks: {}, reaction: "vaporize" },
+    };
+    const baseResult = computeBuild(huTaoBase, {}, []);
+    const vapResult = computeBuild(vaporizeForm, {}, []);
+    expect(baseResult.error).toBeUndefined();
+    expect(vapResult.error).toBeUndefined();
+    const baseFeature = baseResult.features.find((f) => f.key === "burst.burst_dmg");
+    const vapFeature = vapResult.features.find((f) => f.key === "burst.burst_dmg");
+    expect(baseFeature, "hu_tao burst.burst_dmg must exist").toBeDefined();
+    expect(vapFeature, "hu_tao burst.burst_dmg must exist under vaporize").toBeDefined();
+    expect(vapFeature!.triple[2]).toBeGreaterThan(baseFeature!.triple[2]);
+
+    const fixture = {
+      stats: {
+        hash: encodeBuild(statsForm),
+        statKey: "atk_total",
+        expectedTotal,
+      },
+      pin: {
+        hash: encodeBuild(pinForm),
+        pinKey: pinTarget!.key,
+        pinnedHeadline: pinTarget!.triple[2],
+      },
+      vaporize: {
+        hash: encodeBuild(vaporizeForm),
+        featureLabel: vapFeature!.label,
+        featureKey: vapFeature!.key,
+        expectedAmped: vapFeature!.triple[2],
+        expectedBase: baseFeature!.triple[2],
+      },
+    };
+
+    const here = dirname(fileURLToPath(import.meta.url));
+    const out = join(here, "..", "..", "e2e", "fixtures", "results-depth.json");
+    mkdirSync(dirname(out), { recursive: true });
+    writeFileSync(out, JSON.stringify(fixture, null, 2));
+  });
+});
