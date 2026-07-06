@@ -13,6 +13,9 @@ import { Catalog, FallbackImage } from "@/components/catalog/Catalog";
 import { CatalogModal } from "@/components/catalog/CatalogModal";
 import { elementIconSources, enemyIconSources } from "@/lib/enkaArt";
 import type { EquippedSet } from "@genshin/data";
+import type { Element } from "@genshin/types";
+import { useResults } from "@/lib/useResults";
+import { effectiveResRows } from "@/lib/effectiveRes";
 
 /** Engine element order — must match buildStats.ts ELEMENTS exactly so Record keys resolve. */
 const RESISTANCE_ELEMENTS = [
@@ -98,6 +101,7 @@ export function EnemyDrawer() {
   const form = useBuildStore((s) => s.form);
   const setForm = useBuildStore((s) => s.setForm);
   const [catalogOpen, setCatalogOpen] = useState(false);
+  const result = useResults();
 
   const char = ALL_CHARACTERS.find((c) => c.name === form.characterKey);
   const weapon = ALL_WEAPONS.find((w) => w.name === form.weaponKey);
@@ -328,6 +332,54 @@ export function EnemyDrawer() {
           </div>
         </>
       )}
+
+      {/* ── Effective Resistance readout ── */}
+      {(() => {
+        const rows = effectiveResRows(
+          form.enemy.resistance,
+          result.stats ?? {},
+          char?.element ?? null
+        );
+        if (rows.length === 0) return null;
+        return (
+          <>
+            <SectionHead label="Effective Resistance" />
+            <div className="flex flex-col gap-1">
+              {rows.map((row) => {
+                // effectiveResRows sources `element` from the same 8-element
+                // set EnemyDrawer's RESISTANCE_ELEMENTS uses; safe to narrow.
+                const accent = elementAccent(row.element as Element);
+                const negative = row.effective < 0;
+                return (
+                  <div
+                    key={row.element}
+                    data-testid={`effective-res-${row.element}`}
+                    className="flex items-center justify-between gap-2 rounded-md border border-[var(--ck-border)] px-2 py-1 text-[11px]"
+                  >
+                    <span
+                      className="font-medium capitalize"
+                      style={{ color: accent.accent }}
+                    >
+                      {row.element}
+                    </span>
+                    <span
+                      className="tabular-nums text-[var(--ck-muted)]"
+                      style={negative ? { color: "var(--ck-accent)" } : undefined}
+                    >
+                      {row.base}% − {row.shred}% → {row.effective}%
+                    </span>
+                  </div>
+                );
+              })}
+              {rows.every((row) => row.shred === 0) && (
+                <span className="text-[10px] text-[var(--ck-faint)]">
+                  no active shreds
+                </span>
+              )}
+            </div>
+          </>
+        );
+      })()}
 
       {/* ── Enemy preset catalog modal ── */}
       <CatalogModal
