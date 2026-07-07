@@ -13,6 +13,7 @@ export type DrawerId =
   | "artifacts"
   | "buffs"
   | "food"
+  | "builds"
   | "enemy"
   | null;
 
@@ -73,6 +74,15 @@ const ITEMS: RailItem[] = [
         <path d="M7 3v6" />
         <path d="M9 3v6" />
         <path d="M17 3c-1.5 0-2.5 1.5-2.5 4s1 4 2.5 5v9" />
+      </svg>
+    ),
+  },
+  {
+    id: "builds",
+    label: "Builds",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 3.5h12a1 1 0 0 1 1 1V21l-7-4-7 4V4.5a1 1 0 0 1 1-1z" />
       </svg>
     ),
   },

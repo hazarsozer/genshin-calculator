@@ -11,6 +11,7 @@ import { WeaponDrawer } from "@/components/drawers/WeaponDrawer";
 import { ArtifactsDrawer } from "@/components/drawers/ArtifactsDrawer";
 import { BuffsTeamDrawer } from "@/components/drawers/BuffsTeamDrawer";
 import { FoodDrawer } from "@/components/drawers/FoodDrawer";
+import { BuildsDrawer } from "@/components/drawers/BuildsDrawer";
 import { EnemyDrawer } from "@/components/drawers/EnemyDrawer";
 import { useResults } from "@/lib/useResults";
 import { useCountUp, fmt } from "@/lib/motion";
@@ -22,10 +23,11 @@ const DRAWER_TITLES: Record<Exclude<DrawerId, null>, string> = {
   artifacts: "Artifacts",
   buffs: "Buffs & Team",
   food: "Food",
+  builds: "Builds",
   enemy: "Enemy",
 };
 
-function DrawerBody({ id }: { id: Exclude<DrawerId, null> }) {
+function DrawerBody({ id, onClose }: { id: Exclude<DrawerId, null>; onClose: () => void }) {
   switch (id) {
     case "character":
       return <CharacterDrawer />;
@@ -37,6 +39,8 @@ function DrawerBody({ id }: { id: Exclude<DrawerId, null> }) {
       return <BuffsTeamDrawer />;
     case "food":
       return <FoodDrawer />;
+    case "builds":
+      return <BuildsDrawer onClose={onClose} />;
     case "enemy":
       return <EnemyDrawer />;
   }
@@ -115,7 +119,7 @@ export function Cockpit() {
               title={DRAWER_TITLES[activeDrawer]}
               onClose={() => setActiveDrawer(null)}
             >
-              <DrawerBody id={activeDrawer} />
+              <DrawerBody id={activeDrawer} onClose={() => setActiveDrawer(null)} />
             </Drawer>
           )}
         </AnimatePresence>
