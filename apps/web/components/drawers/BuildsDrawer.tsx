@@ -33,7 +33,6 @@ interface BuildsDrawerProps {
 
 export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
   const form = useBuildStore((s) => s.form);
-  const setForm = useBuildStore((s) => s.setForm);
   const replaceForm = useBuildStore((s) => s.replaceForm);
 
   // Hydrated post-mount (localStorage isn't SSR-safe) — skin-store pattern.
