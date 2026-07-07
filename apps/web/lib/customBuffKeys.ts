@@ -45,3 +45,9 @@ export const CUSTOM_BUFF_GROUPS: CustomBuffGroup[] = [
   { title: "Base Stats", keys: CUSTOM_BUFF_KEYS.slice(0, 13) },
   { title: "Damage Bonus", keys: CUSTOM_BUFF_KEYS.slice(13) },
 ];
+
+/** Number of custom-buff keys with a non-zero value set (0 for undefined/empty). */
+export function countActiveCustomBuffs(customBuffs?: Record<string, number>): number {
+  if (!customBuffs) return 0;
+  return Object.values(customBuffs).filter((v) => v !== 0).length;
+}

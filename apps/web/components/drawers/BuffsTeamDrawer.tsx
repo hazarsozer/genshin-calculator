@@ -18,6 +18,7 @@ import {
   type OffFieldWeapon,
 } from "@/lib/teamBuffs";
 import { resonatingElements, partitionResonanceSubs } from "@/lib/resonanceSubs";
+import { CUSTOM_BUFF_GROUPS, countActiveCustomBuffs } from "@/lib/customBuffKeys";
 import { humanizeSlug } from "@/lib/utils";
 import { avatarIconSources } from "@/lib/enkaArt";
 import { LevelLine } from "@/components/controls/LevelLine";
@@ -357,6 +358,153 @@ function TeammateOffFieldBuffs({
   );
 }
 
+// ── Custom Buffs (the `custom_buffs.<key>` manual-buff escape hatch) ──
+const CUSTOM_BUFF_FLAT_KEYS = new Set(["atk", "def", "hp", "mastery"]);
+
+const CUSTOM_BUFF_LABELS: Record<string, string> = {
+  atk: "ATK",
+  atk_percent: "ATK %",
+  def: "DEF",
+  def_percent: "DEF %",
+  hp: "HP",
+  hp_percent: "HP %",
+  mastery: "Elemental Mastery",
+  recharge: "Energy Recharge",
+  crit_rate: "CRIT Rate",
+  crit_dmg: "CRIT DMG",
+  healing: "Healing Bonus",
+  healing_recv: "Incoming Healing",
+  shield: "Shield Strength",
+  dmg_all: "All DMG",
+  dmg_anemo: "Anemo DMG",
+  dmg_cryo: "Cryo DMG",
+  dmg_dendro: "Dendro DMG",
+  dmg_electro: "Electro DMG",
+  dmg_geo: "Geo DMG",
+  dmg_hydro: "Hydro DMG",
+  dmg_pyro: "Pyro DMG",
+  dmg_phys: "Physical DMG",
+  dmg_normal: "Normal Attack DMG",
+  dmg_charged: "Charged Attack DMG",
+  dmg_plunge: "Plunge DMG",
+  dmg_skill: "Elemental Skill DMG",
+  dmg_burst: "Elemental Burst DMG",
+  enemy_def_reduce: "Enemy DEF Reduction",
+  enemy_def_ignore: "Enemy DEF Ignore",
+};
+
+function customBuffLabel(key: string): string {
+  return CUSTOM_BUFF_LABELS[key] ?? humanizeSlug(key);
+}
+
+function CustomBuffRow({
+  buffKey,
+  value,
+  onChange,
+}: {
+  buffKey: string;
+  value: number | undefined;
+  onChange: (next: number | undefined) => void;
+}) {
+  const [text, setText] = useState(value === undefined ? "" : String(value));
+
+  function commit(raw: string) {
+    setText(raw);
+    const parsed = parseFloat(raw);
+    onChange(!raw || Number.isNaN(parsed) || parsed === 0 ? undefined : parsed);
+  }
+
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <span className="text-[11px] text-[var(--ck-muted)]">{customBuffLabel(buffKey)}</span>
+      <div className="flex items-center gap-1">
+        <input
+          type="text"
+          inputMode="decimal"
+          data-testid={`custom-buff-${buffKey}`}
+          value={text}
+          onChange={(e) => commit(e.target.value)}
+          className="w-16 rounded-md border border-[var(--ck-border)] bg-[var(--ck-surface2)] py-1 text-center text-sm font-semibold text-[var(--ck-text)] focus:outline-none focus:ring-1 focus:ring-[var(--ck-accent)]"
+        />
+        {!CUSTOM_BUFF_FLAT_KEYS.has(buffKey) && (
+          <span className="text-[11px] text-[var(--ck-faint)]">%</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CustomBuffsSection({
+  customBuffs,
+  setForm,
+}: {
+  customBuffs: Record<string, number> | undefined;
+  setForm: (patch: Partial<{ customBuffs: Record<string, number> }>) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const active = countActiveCustomBuffs(customBuffs);
+
+  function setBuff(key: string, next: number | undefined) {
+    const nextBuffs = { ...customBuffs };
+    if (next === undefined) {
+      delete nextBuffs[key];
+    } else {
+      nextBuffs[key] = next;
+    }
+    setForm({ customBuffs: nextBuffs });
+  }
+
+  return (
+    <div className="rounded-xl border border-[var(--ck-border)] overflow-hidden">
+      <button
+        type="button"
+        data-testid="custom-buffs-section"
+        onClick={() => setIsOpen((v) => !v)}
+        className="flex w-full items-center gap-2 px-4 py-3 text-left transition-colors hover:bg-[var(--ck-surface2)]"
+        style={{ background: isOpen ? "var(--ck-surface2)" : "var(--ck-surface)" }}
+      >
+        <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--ck-muted)]">
+          Custom Buffs
+        </span>
+        {active > 0 && (
+          <span
+            className="ml-1 rounded-full px-1.5 py-0.5 text-[9px] font-bold"
+            style={{
+              background: "color-mix(in srgb, var(--ck-accent) 20%, transparent)",
+              color: "var(--ck-accent2)",
+            }}
+          >
+            {active}
+          </span>
+        )}
+        <span
+          className="ml-auto text-[var(--ck-faint)] transition-transform"
+          style={{ transform: isOpen ? "rotate(180deg)" : "none" }}
+        >
+          ▾
+        </span>
+      </button>
+      {isOpen && (
+        <div className="flex flex-col gap-3 border-t border-[var(--ck-border)] p-3">
+          {CUSTOM_BUFF_GROUPS.map((group) => (
+            <div key={group.title} className="flex flex-col gap-1.5">
+              <FieldLabel>{group.title}</FieldLabel>
+              {group.keys.map((key) => (
+                <CustomBuffRow
+                  key={key}
+                  buffKey={key}
+                  value={customBuffs?.[key]}
+                  onChange={(next) => setBuff(key, next)}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function BuffsTeamDrawer() {
   const form = useBuildStore((s) => s.form);
   const setForm = useBuildStore((s) => s.setForm);
@@ -494,6 +642,9 @@ export function BuffsTeamDrawer() {
           onToggle={() => setOpenSection((prev) => (prev === sec.id ? null : sec.id))}
         />
       ))}
+
+      {/* ── Custom Buffs (manual escape hatch) ── */}
+      <CustomBuffsSection customBuffs={form.customBuffs} setForm={setForm} />
 
       {/* ── Teammate picker ── */}
       <CatalogModal open={pickerOpen} onClose={() => setPickerOpen(false)} title="Add Teammate">
