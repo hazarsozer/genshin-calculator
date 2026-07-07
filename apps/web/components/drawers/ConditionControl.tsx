@@ -153,6 +153,37 @@ export function ConditionControlWidget({ ctrl, binding }: ConditionControlProps)
     );
   }
 
+  if (ctrl.kind === "select") {
+    const selected = form.conditions.selects?.[ctrl.name] ?? "";
+    function handleSelect(v: string) {
+      const nextSelects = { ...(form.conditions.selects ?? {}) };
+      if (v) nextSelects[ctrl.name] = v;
+      else delete nextSelects[ctrl.name];
+      setForm({ conditions: { ...form.conditions, selects: nextSelects } });
+    }
+    return (
+      <label
+        className="flex items-center justify-between gap-2 rounded-xl border p-3"
+        style={{ background: "var(--ck-surface)", borderColor: "var(--ck-border)" }}
+      >
+        <span className="flex-1 text-[11px] font-semibold text-[var(--ck-muted)]">{ctrl.label}</span>
+        <select
+          data-testid={`set-element-select-${ctrl.name}`}
+          value={selected}
+          onChange={(e) => handleSelect(e.target.value)}
+          className="rounded-md border border-[var(--ck-border)] bg-[var(--ck-bg)] px-2 py-1 text-[11px] text-[var(--ck-text)]"
+        >
+          <option value="">—</option>
+          {ctrl.options?.map((el) => (
+            <option key={el} value={el}>
+              {el.charAt(0).toUpperCase() + el.slice(1)}
+            </option>
+          ))}
+        </select>
+      </label>
+    );
+  }
+
   // kind === "number"
   const rawValue = binding ? Number(binding.value) : (form.conditions.stacks[ctrl.name] ?? 0);
   const baseMax = ctrl.max ?? 10;

@@ -253,8 +253,8 @@ const EXCLUSIVE_GROUPS: ReadonlyMap<string, readonly string[]> = new Map([
 export interface ConditionControl {
   /** The condition's settings key, e.g. "hutao_paramita_papilio". */
   name: string;
-  /** boolean → checkbox; number → slider/number-input */
-  kind: "boolean" | "number";
+  /** boolean → checkbox; number → slider/number-input; select → element dropdown */
+  kind: "boolean" | "number" | "select";
   /** Humanized label for display, e.g. "Paramita Papilio" (from CSV title, or slug-humanized). */
   label: string;
   /** Plain-text in-game description from the raw CSV strings, if found. */
@@ -271,6 +271,8 @@ export interface ConditionControl {
    * activating this control clears all siblings.
    */
   exclusiveGroup?: readonly string[];
+  /** For kind:"select" (dropdown-element self-worn pick), the selectable element tokens. */
+  options?: readonly string[];
 }
 
 /**
@@ -532,6 +534,13 @@ export function collectGroupedConditions(
     }
   }
 
+  for (const ctrl of collectSelfWornElementSelects(sets)) {
+    if (!setG.seen.has(ctrl.name)) {
+      setG.seen.add(ctrl.name);
+      setG.controls.push(ctrl);
+    }
+  }
+
   for (const c of CHARACTER_CONDITIONS) {
     const name = (c as { name?: string }).name;
     if (name !== undefined && GLOBAL_EMIT_ONLY.has(name)) continue;
@@ -563,6 +572,69 @@ export function collectPartyConditions(char: DbObjectChar): ConditionControl[] {
     if (seen.has(ctrl.name)) continue;
     seen.add(ctrl.name);
     out.push(ctrl);
+  }
+  return out;
+}
+
+/** One self-worn dropdown-element selector spec, extracted from CHARACTER_CONDITIONS. */
+interface SelfWornSelectSpec {
+  name: string;      // e.g. "set.viridescent_venerer_4" / "set_bonus.archaic_petra_4"
+  setName: string;   // pieces-count registry key, e.g. "ViridescentVenerer"
+  count: number;     // pieces required (4)
+  elements: string[]; // ordered-distinct element options
+}
+
+/**
+ * Walk CHARACTER_CONDITIONS for self-worn `dropdown-element` gates (name NOT starting with
+ * `set_other.`) co-located in an `and` block with a `pieces-count` gate. Group by gate name;
+ * the distinct element tokens become the select options, gated on that set's 4pc.
+ *
+ * Source of truth: packages/data/src/characterConditions.ts:384-445 (VV4 swirl / Archaic Petra).
+ */
+function collectSelfWornSelectSpecs(): SelfWornSelectSpec[] {
+  const byName = new Map<string, SelfWornSelectSpec>();
+
+  const visitAnd = (items: readonly Condition[]): void => {
+    let de: { name: string; element: string } | undefined;
+    let pc: { setName: string; count: number } | undefined;
+    for (const it of items) {
+      if (it.type === "dropdown-element" && !it.name.startsWith("set_other.")) {
+        de = { name: it.name, element: it.element };
+      }
+      if (it.type === "pieces-count") pc = { setName: it.setName, count: it.count };
+    }
+    if (de && pc) {
+      const spec = byName.get(de.name) ?? { name: de.name, setName: pc.setName, count: pc.count, elements: [] };
+      if (!spec.elements.includes(de.element)) spec.elements.push(de.element);
+      byName.set(de.name, spec);
+    }
+  };
+
+  const walk = (node: unknown): void => {
+    if (!node || typeof node !== "object") return;
+    const o = node as { type?: string; items?: readonly Condition[]; condition?: Condition };
+    if (o.type === "and" && o.items) visitAnd(o.items);
+    if (o.items) for (const it of o.items) walk(it);
+    if (o.condition) walk(o.condition);
+  };
+
+  for (const c of CHARACTER_CONDITIONS) walk(c);
+  return [...byName.values()];
+}
+
+/**
+ * Element `<select>` controls for VV / Archaic Petra self-worn sets the ACTIVE character
+ * wears at >= the required piece count. Engine reads the picked element off settings[name].
+ */
+export function collectSelfWornElementSelects(
+  equipped: readonly EquippedSet[]
+): ConditionControl[] {
+  const equippedPieces = new Map(equipped.map((s) => [s.setKey, s.pieces]));
+  const out: ConditionControl[] = [];
+  for (const spec of collectSelfWornSelectSpecs()) {
+    if ((equippedPieces.get(spec.setName) ?? 0) < spec.count) continue;
+    const { label } = resolveLabel({ type: "boolean", name: spec.name } as Condition);
+    out.push({ name: spec.name, kind: "select", label, options: spec.elements });
   }
   return out;
 }
