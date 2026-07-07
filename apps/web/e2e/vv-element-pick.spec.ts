@@ -9,13 +9,13 @@ test("VV4 self-worn element pick surfaces and shreds RES", async ({ page }) => {
   await page.goto("/");
 
   // (1) Select an Anemo VV-wearer (Kaedehara Kazuha) via the Character drawer.
-  await page.getByRole("button", { name: "Build", exact: true }).click();
+  await page.getByRole("tab", { name: "Build", exact: true }).click();
   await page.getByPlaceholder("Search…").first().fill("kazuha");
   await page.getByRole("button", { name: /Kaedehara Kazuha/i }).click();
 
   // (2) Open the Equip (Artifacts) drawer, switch to Manual, and equip
   //     Viridescent Venerer on all 5 slots (>= 4pc) via the SetPicker.
-  await page.getByRole("button", { name: "Equip" }).click();
+  await page.getByRole("tab", { name: "Equip" }).click();
   await page.getByRole("button", { name: "Manual" }).click();
   await page.getByRole("button", { name: "Browse artifact set" }).click();
   await page.getByRole("button", { name: "Viridescent Venerer" }).click();

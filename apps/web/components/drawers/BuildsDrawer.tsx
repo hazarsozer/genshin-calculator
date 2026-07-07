@@ -27,6 +27,18 @@ function rowSubtitle(build: SavedBuild): string {
   return `${name} · Lv ${decoded.charLevel}`;
 }
 
+// Module-scope memoization cache keyed by build hash — hooks can't be called
+// inside `filtered.map`, and rowSubtitle's decode is otherwise redone on
+// every render.
+const subtitleCache = new Map<string, string>();
+function memoRowSubtitle(build: SavedBuild): string {
+  const cached = subtitleCache.get(build.hash);
+  if (cached !== undefined) return cached;
+  const v = rowSubtitle(build);
+  subtitleCache.set(build.hash, v);
+  return v;
+}
+
 interface BuildsDrawerProps {
   /** Closes the drawer — called after a successful Load. */
   onClose?: () => void;
@@ -67,6 +79,16 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
       if (armTimer.current) clearTimeout(armTimer.current);
     };
   }, []);
+
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (menuOpenId === null) return;
+    function onDocClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpenId(null);
+    }
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [menuOpenId]);
 
   function disarm() {
     if (armTimer.current) clearTimeout(armTimer.current);
@@ -245,9 +267,12 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
                 </span>
               </div>
 
-              <div className="text-[10px] text-[var(--ck-muted)]">{rowSubtitle(b)}</div>
+              <div className="text-[10px] text-[var(--ck-muted)]">{memoRowSubtitle(b)}</div>
 
-              <div className="relative flex items-center gap-1.5">
+              <div
+                className="relative flex items-center gap-1.5"
+                ref={menuOpen ? menuRef : undefined}
+              >
                 <button
                   type="button"
                   data-testid={`build-load-${b.id}`}

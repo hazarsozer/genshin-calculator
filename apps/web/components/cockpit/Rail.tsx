@@ -107,6 +107,7 @@ interface RailProps {
 export function MobileTabBar({ active, onOpen }: RailProps) {
   return (
     <nav
+      role="tablist"
       className="fixed bottom-0 inset-x-0 z-30 flex lg:hidden border-t border-[var(--ck-border)]"
       style={{ background: "var(--ck-bg)" }}
     >
@@ -116,6 +117,8 @@ export function MobileTabBar({ active, onOpen }: RailProps) {
           <button
             key={item.id}
             type="button"
+            role="tab"
+            aria-selected={isOn}
             onClick={() => onOpen(isOn ? null : item.id)}
             aria-label={item.label}
             className="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors"
@@ -137,13 +140,15 @@ export function MobileTabBar({ active, onOpen }: RailProps) {
 
 export function Rail({ active, onOpen }: RailProps) {
   return (
-    <nav className="relative z-30 hidden flex-col items-center gap-1 border-r border-[var(--ck-border)] bg-[var(--ck-bg)] py-3 lg:flex" style={{ width: 64, flexShrink: 0 }}>
+    <nav role="tablist" className="relative z-30 hidden flex-col items-center gap-1 border-r border-[var(--ck-border)] bg-[var(--ck-bg)] py-3 lg:flex" style={{ width: 64, flexShrink: 0 }}>
       {ITEMS.map((item) => {
         const isOn = active === item.id;
         return (
           <button
             key={item.id}
             type="button"
+            role="tab"
+            aria-selected={isOn}
             onClick={() => onOpen(isOn ? null : item.id)}
             aria-label={item.label}
             className="flex h-11 w-11 flex-col items-center justify-center gap-1 rounded-xl border transition-colors"

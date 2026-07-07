@@ -49,7 +49,7 @@ function InfoTooltip({ text }: { text: string }) {
         tabIndex={0}
         aria-label="Condition description"
         aria-expanded={open}
-        aria-describedby={tooltipId}
+        {...(open ? { "aria-describedby": tooltipId } : {})}
         onClick={(e) => {
           e.stopPropagation();
           setOpen((v) => !v);

@@ -36,7 +36,7 @@ test("GOOD import produces a damage number", async ({ page }) => {
   await page.goto("/");
 
   // Open the Artifacts drawer via the "Equip" rail button
-  await page.getByRole("button", { name: "Equip" }).click();
+  await page.getByRole("tab", { name: "Equip" }).click();
 
   // Switch to GOOD Import tab
   await page.getByRole("button", { name: "GOOD Import" }).click();

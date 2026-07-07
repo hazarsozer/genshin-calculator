@@ -55,7 +55,7 @@ async function gotoBuild(page: Page, hash: string): Promise<void> {
 
 /** Opens (or closes, since the rail button toggles) the Builds drawer. */
 async function toggleBuilds(page: Page): Promise<void> {
-  await page.getByRole("button", { name: "Builds", exact: true }).click();
+  await page.getByRole("tab", { name: "Builds", exact: true }).click();
 }
 
 function rowByTitle(page: Page, title: string): Locator {
@@ -243,4 +243,22 @@ test("pressing Escape while renaming cancels the edit and keeps the original tit
 
   await expect(alphaRow).toContainText("Alpha");
   await expect(alphaRow).not.toContainText("Changed");
+});
+
+test("clicking outside an open row menu closes it", async ({ page }) => {
+  await gotoBuild(page, fixture.hashA);
+  await clearSavedBuilds(page);
+  await expect(page.getByTestId("headline-avg")).toHaveText(fmt(fixture.expectedHeadlineA), {
+    timeout: 10_000,
+  });
+  await saveCurrentAs(page, "Alpha");
+
+  const alphaRow = page.locator('[data-testid^="build-row-"]').first();
+  await alphaRow.locator('[data-testid^="build-menu-"]').click();
+  await expect(alphaRow.locator('[data-testid^="build-rename-"]')).toBeVisible();
+
+  // Click somewhere well outside the row (the search input) — the menu
+  // should close via the document-level mousedown listener.
+  await page.getByTestId("builds-search").click();
+  await expect(alphaRow.locator('[data-testid^="build-rename-"]')).toBeHidden();
 });

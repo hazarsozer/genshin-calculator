@@ -17,5 +17,9 @@ export function humanizeSlug(slug: string): string {
 }
 
 export function humanizePascal(key: string): string {
-  return key.replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+  return key
+    // Split a leading/standalone single capital from a following capitalized word: "ALeisurely" → "A Leisurely".
+    .replace(/\b([A-Z])([A-Z][a-z])/g, '$1 $2')
+    // Split lowercase/digit → uppercase boundaries (existing behavior).
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
 }

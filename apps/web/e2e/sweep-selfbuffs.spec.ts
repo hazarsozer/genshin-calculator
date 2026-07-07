@@ -49,7 +49,7 @@ for (const entry of entries) {
     ).toBeVisible({ timeout: 5_000 });
 
     // The self controls render in the Build drawer.
-    await page.getByRole("button", { name: "Build", exact: true }).click();
+    await page.getByRole("tab", { name: "Build", exact: true }).click();
     await expect(
       page.getByText(entry.firstLabel, { exact: false }).first()
     ).toBeVisible({ timeout: 5_000 });
@@ -63,7 +63,7 @@ for (const entry of entries.filter((e) => e.clickToggles?.length)) {
     await page.goto(`/#${entry.hashOff}`);
     await expect(page.getByTestId("result-avg").first()).toBeVisible({ timeout: 10_000 });
 
-    await page.getByRole("button", { name: "Build", exact: true }).click();
+    await page.getByRole("tab", { name: "Build", exact: true }).click();
     for (const t of entry.clickToggles!) {
       const toggle = page.getByRole("button", { name: t.label, exact: false });
       await toggle.scrollIntoViewIfNeeded();

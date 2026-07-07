@@ -13,4 +13,13 @@ describe("humanizePascal", () => {
   it("passes single-word keys through unchanged", () => {
     expect(humanizePascal("Potion")).toBe("Potion");
   });
+
+  it("humanizePascal splits a leading single capital followed by a capitalized word", () => {
+    expect(humanizePascal("ALeisurelySip")).toBe("A Leisurely Sip");
+  });
+  it("humanizePascal leaves other dish names byte-identical", () => {
+    expect(humanizePascal("AdeptusTemptation")).toBe("Adeptus Temptation");
+    expect(humanizePascal("SweetMadame")).toBe("Sweet Madame");
+    expect(humanizePascal("MoraMeat")).toBe("Mora Meat");
+  });
 });
