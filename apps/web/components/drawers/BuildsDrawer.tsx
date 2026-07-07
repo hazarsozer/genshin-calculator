@@ -9,6 +9,7 @@ import {
   overwriteBuild,
   deleteBuild,
   loadBuild,
+  StorageQuotaError,
   type SavedBuild,
 } from "@/lib/savedBuilds";
 import { decodeBuild } from "@/lib/url";
@@ -46,6 +47,7 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
 
   const [saveName, setSaveName] = useState("");
   const [query, setQuery] = useState("");
+  const [storageError, setStorageError] = useState<string | null>(null);
 
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
@@ -92,7 +94,16 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
 
   function handleSave() {
     const title = saveName.trim() || savePlaceholder;
-    saveBuild(title, form);
+    try {
+      saveBuild(title, form);
+      setStorageError(null);
+    } catch (e) {
+      if (e instanceof StorageQuotaError) {
+        setStorageError(e.message);
+        return;
+      }
+      throw e;
+    }
     setSaveName("");
     refresh();
   }
@@ -107,7 +118,16 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
   }
 
   function handleOverwrite(id: string) {
-    overwriteBuild(id, form);
+    try {
+      overwriteBuild(id, form);
+      setStorageError(null);
+    } catch (e) {
+      if (e instanceof StorageQuotaError) {
+        setStorageError(e.message);
+        return;
+      }
+      throw e;
+    }
     setMenuOpenId(null);
     refresh();
   }
@@ -173,6 +193,12 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
         placeholder="Search builds…"
         className="rounded-lg border border-[var(--ck-border)] bg-[var(--ck-bg)] px-2.5 py-1.5 text-[12px] text-[var(--ck-text)] outline-none focus:border-[var(--ck-accent)]"
       />
+
+      {storageError && (
+        <div role="alert" className="text-[10px] text-[var(--ck-accent)]">
+          {storageError}
+        </div>
+      )}
 
       {/* ── List ── */}
       <div className="flex flex-col gap-1.5">

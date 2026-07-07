@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { useBuildStore } from "../store.js";
+import { useBuildStore, useSkinStore } from "../store.js";
 import { DEFAULT_FORM } from "../defaults.js";
 
 describe("useBuildStore", () => {
@@ -43,5 +43,28 @@ describe("useBuildStore", () => {
     expect(form.pinnedFeature).toBeUndefined();
     expect(form.food).toBeUndefined();
     expect(form.customBuffs).toBeUndefined();
+  });
+});
+
+describe("useSkinStore", () => {
+  it("setSkin does not throw when localStorage.setItem fails", () => {
+    // Test env is Node (not jsdom) — window/localStorage don't exist globally,
+    // so stub them the way a browser tab with a full storage quota would look.
+    const origWindow = (globalThis as { window?: unknown }).window;
+    const origLocalStorage = (globalThis as { localStorage?: unknown }).localStorage;
+    (globalThis as { window?: unknown }).window = {};
+    (globalThis as { localStorage?: Pick<Storage, "getItem" | "setItem"> }).localStorage = {
+      getItem: () => null,
+      setItem: () => {
+        throw new DOMException("quota", "QuotaExceededError");
+      },
+    };
+    try {
+      expect(() => useSkinStore.getState().setSkin("vision")).not.toThrow();
+      expect(useSkinStore.getState().skin).toBe("vision");
+    } finally {
+      (globalThis as { window?: unknown }).window = origWindow;
+      (globalThis as { localStorage?: unknown }).localStorage = origLocalStorage;
+    }
   });
 });

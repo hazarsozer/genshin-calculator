@@ -16,19 +16,42 @@ function defaultStorage(): BuildStorage {
   return window.localStorage;
 }
 
+/** Thrown by writeList when the underlying storage rejects (e.g. quota exceeded). */
+export class StorageQuotaError extends Error {
+  constructor(cause?: unknown) {
+    super("Storage full — could not save build.");
+    this.name = "StorageQuotaError";
+    this.cause = cause;
+  }
+}
+
+function isSavedBuild(v: unknown): v is SavedBuild {
+  return (
+    typeof v === "object" && v !== null &&
+    typeof (v as SavedBuild).id === "string" &&
+    typeof (v as SavedBuild).title === "string" &&
+    typeof (v as SavedBuild).hash === "string" &&
+    typeof (v as SavedBuild).savedAt === "string"
+  );
+}
+
 function readList(storage: BuildStorage): SavedBuild[] {
   const raw = storage.getItem(STORAGE_KEY);
   if (raw === null) return [];
   try {
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as SavedBuild[]) : [];
+    return Array.isArray(parsed) ? parsed.filter(isSavedBuild) : [];
   } catch {
     return [];
   }
 }
 
 function writeList(list: SavedBuild[], storage: BuildStorage): void {
-  storage.setItem(STORAGE_KEY, JSON.stringify(list));
+  try {
+    storage.setItem(STORAGE_KEY, JSON.stringify(list));
+  } catch (err) {
+    throw new StorageQuotaError(err);
+  }
 }
 
 /**
