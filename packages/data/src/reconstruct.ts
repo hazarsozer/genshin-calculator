@@ -128,6 +128,13 @@ export interface ReconstructInput {
    * contains `{ character: slug }` entries; safe to omit for `setOther`-only party inputs.
    */
   readonly partySlugResolver?: (slug: string) => DbObjectChar;
+  /**
+   * Optional cooking-buff (food) flat-stat bag, forwarded verbatim to `buildStats`'s existing
+   * `food` input (RAW percent-point convention, like `statBlock`; see buildStats.ts:461-471).
+   * Absent → inert (all existing callers that omit `food` produce a byte-identical
+   * `buildStats` call).
+   */
+  readonly food?: Readonly<Record<string, number>>;
 }
 
 /** The compiled port build: the named feature closures + the eval context to run them against. */
@@ -207,6 +214,7 @@ export function reconstructPort(input: ReconstructInput): ReconstructResult {
     setBonuses,
     setRegistry: input.setRegistry,
     talentLevels: input.talents,
+    ...(input.food !== undefined ? { food: input.food } : {}),
     ...(input.party !== undefined ? { party: input.party } : {}),
     ...(input.partySlugResolver !== undefined ? { partySlugResolver: input.partySlugResolver } : {}),
   });
