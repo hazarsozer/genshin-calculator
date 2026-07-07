@@ -8,6 +8,7 @@ import { encodeBuild } from "../url";
 import { computeBuild } from "../calc";
 import { findCharacter, findWeapon } from "../catalog";
 import { collectGroupedConditions, extractNestedGateControls } from "../conditions";
+import { selectHeadline } from "../headline";
 
 /**
  * Generator for the e2e sweep-verification fixture (e2e/fixtures/sweep-selfbuffs.json).
@@ -297,6 +298,56 @@ describe("food-custom e2e fixture generation", () => {
 
     const here = dirname(fileURLToPath(import.meta.url));
     const out = join(here, "..", "..", "e2e", "fixtures", "food-custom.json");
+    mkdirSync(dirname(out), { recursive: true });
+    writeFileSync(out, JSON.stringify(fixture, null, 2));
+  });
+});
+
+/**
+ * Generator for the e2e Arc C fixture (e2e/fixtures/saved-builds.json), covering
+ * the Builds drawer's save/load/rename/search/delete persistence (Task 3). Same
+ * rationale as the fixtures above: Playwright can't import @genshin/data, so the
+ * engine expectations are computed here.
+ */
+describe("saved-builds e2e fixture generation", () => {
+  it("computes engine expectations for the saved-builds cases and writes the fixture", () => {
+    // --- Build A: default Bennett form (no pin). ---
+    const formA: BuildForm = { ...DEFAULT_FORM };
+    const resultA = computeBuild(formA, {}, []);
+    expect(resultA.error).toBeUndefined();
+    const headlineA = selectHeadline(resultA.features, formA.pinnedFeature);
+    expect(headlineA, "build A must have a headline feature").not.toBeNull();
+
+    // --- Build B: Hu Tao + Staff of Homa (no pin) — a distinct character from A. ---
+    const formB: BuildForm = {
+      ...DEFAULT_FORM,
+      characterKey: "hu_tao",
+      weaponKey: "staff_of_homa",
+      conditions: { toggles: {}, stacks: {} },
+    };
+    const resultB = computeBuild(formB, {}, []);
+    expect(resultB.error).toBeUndefined();
+    expect(resultB.features.length).toBeGreaterThan(1);
+    const headlineB = selectHeadline(resultB.features, formB.pinnedFeature);
+    expect(headlineB, "build B must have a headline feature").not.toBeNull();
+
+    // A non-headline feature of B to pin, then load-over to prove the stale
+    // pin gets cleared by the full-replace load (fed9b0a).
+    const sortedB = [...resultB.features].sort((a, b) => b.triple[2] - a.triple[2]);
+    const pinTarget = sortedB.find((f) => f.key !== headlineB!.key);
+    expect(pinTarget, "build B needs a second, non-headline feature to pin").toBeDefined();
+
+    const fixture = {
+      hashA: encodeBuild(formA),
+      hashB: encodeBuild(formB),
+      expectedHeadlineA: headlineA!.triple[2],
+      expectedHeadlineB: headlineB!.triple[2],
+      pinKey: pinTarget!.key,
+      pinnedHeadline: pinTarget!.triple[2],
+    };
+
+    const here = dirname(fileURLToPath(import.meta.url));
+    const out = join(here, "..", "..", "e2e", "fixtures", "saved-builds.json");
     mkdirSync(dirname(out), { recursive: true });
     writeFileSync(out, JSON.stringify(fixture, null, 2));
   });
