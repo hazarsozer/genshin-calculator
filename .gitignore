@@ -39,3 +39,12 @@ apps/web/playwright-report/
 
 # pnpm lock is committed; node_modules already covered above
 .superpowers/
+
+# Local tooling — never publish (MCP registration, browser-session artifacts, editor state)
+.mcp.json
+.playwright-mcp/
+scratchpad/
+wiki/.obsidian/
+*.png
+!apps/web/**/*.png
+probe.stderr
