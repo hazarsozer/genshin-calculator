@@ -47,7 +47,12 @@ describe("reconstructPort — food passthrough (base-inert)", () => {
     // `ReconstructResult` — `compiled` holds fresh closures per call, which are never
     // reference-equal regardless of `food`, so comparing them would be a vacuous check.
     const omitted = reconstructPort(baseInput());
-    const explicitUndefined = reconstructPort({ ...baseInput(), food: undefined });
+    // `food: undefined` is deliberately runtime-tested but banned by exactOptionalPropertyTypes,
+    // so widen through the assertion — the runtime object genuinely carries the key.
+    const explicitUndefined = reconstructPort({
+      ...baseInput(),
+      food: undefined,
+    } as unknown as Parameters<typeof reconstructPort>[0]);
     expect(omitted.context).toEqual(explicitUndefined.context);
   });
 
