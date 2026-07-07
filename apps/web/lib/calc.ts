@@ -15,6 +15,7 @@
 
 import {
   buildSettings,
+  getFoodStats,
   reconstructPort,
   type BuildLevels,
   type EquippedSet,
@@ -29,6 +30,23 @@ import {
 } from "./catalog";
 import { buildPartyInput } from "./party";
 import type { BuildForm, ComputeResult, FeatureResult } from "./types";
+
+/**
+ * Sum `getFoodStats(type, key, tier)` across every equipped slot (Attack/Defence/
+ * Potion), merging overlapping keys additively. `undefined`/empty → `{}`.
+ */
+export function foodBagFromForm(food: BuildForm["food"]): Record<string, number> {
+  const bag: Record<string, number> = {};
+  if (!food) return bag;
+  for (const [type, slot] of Object.entries(food)) {
+    if (!slot) continue;
+    const stats = getFoodStats(type, slot.key, slot.tier);
+    for (const [stat, value] of Object.entries(stats)) {
+      bag[stat] = (bag[stat] ?? 0) + value;
+    }
+  }
+  return bag;
+}
 
 const humanize = (key: string): string =>
   key
@@ -60,7 +78,15 @@ export function computeBuild(
     // compileFeature.ts:1054, AMPLIFYING_VARIANT), so it is spread in here rather
     // than routed through buildSettings.
     ...(form.conditions.reaction ? { reaction: form.conditions.reaction } : {}),
+    // The universal `custom_buffs.<key>` manual-buff escape-hatch (her always-present
+    // ConditionCustomBuffs, packages/data/src/buildStats.ts:896-899) — read directly
+    // off the settings bag, unscaled (raw percent points / flats; engine folds /100).
+    ...Object.fromEntries(
+      Object.entries(form.customBuffs ?? {}).map(([k, v]) => [`custom_buffs.${k}`, v])
+    ),
   };
+
+  const foodBag = foodBagFromForm(form.food);
 
   const party = buildPartyInput(form.party?.members ?? [], findCharacter);
   const partySlugResolver = (slug: string): DbObjectChar => {
@@ -98,6 +124,7 @@ export function computeBuild(
       talents: form.talents,
       enemy: form.enemy,
       ...(party ? { party, partySlugResolver } : {}),
+      ...(Object.keys(foodBag).length > 0 ? { food: foodBag } : {}),
     });
 
     const features: FeatureResult[] = Object.entries(compiled).map(([key, fn]) => {

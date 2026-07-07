@@ -89,3 +89,7 @@ export { CONDITION_STRINGS } from "./generated/conditionStrings.js";
 
 // Artifact-set effect strings — generated from artifact_set_bonuses.csv
 export { SET_EFFECTS } from "./generated/setEffectStrings.js";
+
+// Food (cooking-buff) flat-stat tables — generated from raw/.../db/Food/*.js
+export { foodTables, getFoodStats } from "./generated/foodTables.js";
+export type { FoodItem } from "./generated/foodTables.js";

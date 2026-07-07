@@ -63,6 +63,10 @@ export interface BuildForm {
   party?: { members: PartyMemberForm[] };
   /** Feature key pinned as the Stage headline (see selectHeadline). Optional: absent → highest-average feature wins. */
   pinnedFeature?: string;
+  /** Equipped food dishes per type (Attack/Defence/Potion). Optional: absent/empty → no food bag → engine call byte-identical. */
+  food?: Partial<Record<"Attack" | "Defence" | "Potion", { key: string; tier: number }>>;
+  /** Manual `custom_buffs.<key>` escape-hatch (raw percent points / flats, unscaled). Optional: absent → inert. */
+  customBuffs?: Record<string, number>;
 }
 
 export interface FeatureResult {
