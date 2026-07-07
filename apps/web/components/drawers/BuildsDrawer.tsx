@@ -34,6 +34,7 @@ interface BuildsDrawerProps {
 export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
   const form = useBuildStore((s) => s.form);
   const setForm = useBuildStore((s) => s.setForm);
+  const replaceForm = useBuildStore((s) => s.replaceForm);
 
   // Hydrated post-mount (localStorage isn't SSR-safe) — skin-store pattern.
   const [list, setList] = useState<SavedBuild[]>([]);
@@ -50,6 +51,10 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameText, setRenameText] = useState("");
+  // Esc unmounts the rename input, which fires onBlur → commitRename right
+  // after cancelRename already ran. This ref guards against that double-fire
+  // re-persisting the edit Esc was meant to cancel.
+  const renameCancelledRef = useRef(false);
 
   // Two-step inline confirm: `armed` is the `${kind}:${id}` key of the button
   // currently showing "Confirm?"; auto-disarms after 3s or on blur.
@@ -95,7 +100,10 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
 
   function handleLoad(id: string) {
     const loaded = loadBuild(id);
-    if (loaded) setForm(loaded);
+    // Wholesale replace, not setForm's merge — a merge would let optional
+    // fields absent from `loaded` (pinnedFeature, food, customBuffs,
+    // artifactSlots) survive from whatever build was previously loaded.
+    if (loaded) replaceForm(loaded);
     onClose?.();
   }
 
@@ -112,12 +120,14 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
   }
 
   function startRename(build: SavedBuild) {
+    renameCancelledRef.current = false;
     setRenamingId(build.id);
     setRenameText(build.title);
     setMenuOpenId(null);
   }
 
   function commitRename() {
+    if (renameCancelledRef.current) return;
     const trimmed = renameText.trim();
     if (renamingId && trimmed) renameBuild(renamingId, trimmed);
     setRenamingId(null);
@@ -125,6 +135,7 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
   }
 
   function cancelRename() {
+    renameCancelledRef.current = true;
     setRenamingId(null);
   }
 

@@ -6,6 +6,9 @@ import { type Skin, DEFAULT_SKIN } from "./theme";
 interface BuildState {
   form: BuildForm;
   setForm: (patch: Partial<BuildForm>) => void;
+  /** Replaces `form` wholesale — unlike `setForm`, does NOT merge over the
+   * previous form, so optional fields absent from `form` are actually cleared. */
+  replaceForm: (form: BuildForm) => void;
   reset: () => void;
 }
 
@@ -13,6 +16,7 @@ export const useBuildStore = create<BuildState>()((set) => ({
   form: DEFAULT_FORM,
   setForm: (patch) =>
     set((state) => ({ form: { ...state.form, ...patch } })),
+  replaceForm: (form) => set({ form }),
   reset: () => set({ form: DEFAULT_FORM }),
 }));
 
