@@ -230,3 +230,74 @@ describe("results-depth e2e fixture generation", () => {
     writeFileSync(out, JSON.stringify(fixture, null, 2));
   });
 });
+
+/**
+ * Generator for the e2e Arc B fixture (e2e/fixtures/food-custom.json), covering
+ * the Food drawer's damage-delta ranking (Task 4) and the Custom Buffs section
+ * (Task 5). Same rationale as the fixtures above: Playwright can't import
+ * @genshin/data, so the engine expectations are computed here.
+ */
+describe("food-custom e2e fixture generation", () => {
+  it("computes engine expectations for the food and custom-buffs cases and writes the fixture", () => {
+    // --- Food case: Hu Tao + Staff of Homa, pinned to burst.burst_dmg (default
+    // Bennett form's headline is reaction.burgeon — flat transformative, food-
+    // insensitive; the pinned burst feature is stable and food-sensitive). ---
+    const dishKey = "AdeptusTemptation";
+    const tier = 3;
+    const foodBase: BuildForm = {
+      ...DEFAULT_FORM,
+      characterKey: "hu_tao",
+      weaponKey: "staff_of_homa",
+      conditions: { toggles: {}, stacks: {} },
+      pinnedFeature: "burst.burst_dmg",
+    };
+    const foodForm: BuildForm = {
+      ...foodBase,
+      food: { Attack: { key: dishKey, tier } },
+    };
+    const baseResult = computeBuild(foodBase, {}, []);
+    const foodResult = computeBuild(foodForm, {}, []);
+    expect(baseResult.error).toBeUndefined();
+    expect(foodResult.error).toBeUndefined();
+    const baseFeature = baseResult.features.find((f) => f.key === "burst.burst_dmg");
+    const foodFeature = foodResult.features.find((f) => f.key === "burst.burst_dmg");
+    expect(baseFeature, "hu_tao burst.burst_dmg must exist").toBeDefined();
+    expect(foodFeature, "hu_tao burst.burst_dmg must exist with food equipped").toBeDefined();
+    expect(foodFeature!.triple[2]).not.toEqual(baseFeature!.triple[2]);
+
+    // --- Custom-buffs case: default Bennett form + custom_buffs.atk: 500. ---
+    const customBase: BuildForm = { ...DEFAULT_FORM };
+    const customForm: BuildForm = { ...DEFAULT_FORM, customBuffs: { atk: 500 } };
+    const customBaseResult = computeBuild(customBase, {}, []);
+    const customResult = computeBuild(customForm, {}, []);
+    expect(customBaseResult.error).toBeUndefined();
+    expect(customResult.error).toBeUndefined();
+    expect(customBaseResult.stats).toBeDefined();
+    expect(customResult.stats).toBeDefined();
+    const expectedAtkTotalBase = customBaseResult.stats!.atk_total;
+    const expectedAtkTotalCustom = customResult.stats!.atk_total;
+    expect(expectedAtkTotalCustom).toBeGreaterThan(expectedAtkTotalBase);
+
+    const fixture = {
+      food: {
+        hashBase: encodeBuild(foodBase),
+        hashFood: encodeBuild(foodForm),
+        dishKey,
+        tier,
+        expectedHeadlineBase: baseFeature!.triple[2],
+        expectedHeadlineFood: foodFeature!.triple[2],
+      },
+      custom: {
+        hashBase: encodeBuild(customBase),
+        hashCustom: encodeBuild(customForm),
+        expectedAtkTotalBase,
+        expectedAtkTotalCustom,
+      },
+    };
+
+    const here = dirname(fileURLToPath(import.meta.url));
+    const out = join(here, "..", "..", "e2e", "fixtures", "food-custom.json");
+    mkdirSync(dirname(out), { recursive: true });
+    writeFileSync(out, JSON.stringify(fixture, null, 2));
+  });
+});
