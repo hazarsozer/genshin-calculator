@@ -245,7 +245,19 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
       // getValue semantics: clamp(ctx[name], min=0, max) → the dynamic stat value.
       const raw = ctx[condition.name];
       const rawNum = typeof raw === "number" ? raw : 0;
-      const min = condition.min ?? 0;
+      let min = condition.min ?? 0;
+      // Constellation-gated FLOOR (her ConditionNumberFurina.getMinValue, Number/Furina.js:4-12):
+      // at each met threshold, and only when the raw input is > 0, raise the lower clamp by `bonus`.
+      // Absent → `min` unchanged (base-inert); gated on rawNum > 0 to mirror `settings[name] > 0`.
+      if (condition.minBonusFromConstellation !== undefined && rawNum > 0) {
+        const consForMin = ctx["char_constellation"];
+        const consMinLevel = typeof consForMin === "number" ? consForMin : 0;
+        for (const entry of condition.minBonusFromConstellation) {
+          if (consMinLevel >= entry.constellation) {
+            min += entry.bonus;
+          }
+        }
+      }
       // Effective upper clamp. Her getMaxValue is normally `params.max`, but a subclass may
       // raise it — ConditionNumberIfa.getMaxValue adds `c2bonus` at char_constellation >= 2
       // (Ifa's cap 150 → 200). `maxBonusFromConstellation` ports that: absent → `max` is used

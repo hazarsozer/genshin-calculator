@@ -199,6 +199,21 @@ export interface ConditionNumber extends ConditionBase {
     readonly constellation: number;
     readonly bonus: number;
   }[];
+  /**
+   * Constellation-gated FLOOR(s) on the clamped value. For EACH entry whose `constellation`
+   * threshold is met (`ctx.char_constellation >= entry.constellation`) AND the raw input is
+   * > 0, `entry.bonus` is added to the effective lower clamp (`min`); multiple satisfied
+   * entries are SUMMED. Ports her ConditionNumberFurina.getMinValue override
+   * (raw/genshin_calc_pub/src/js/classes/Condition/Number/Furina.js:4-12):
+   *   `if (settings.char_constellation >= 1 && settings[name] > 0) value += c1bonus;`
+   * — Furina's fanfare snaps to >= 100 at C1 for any input in (0, 100). Gated on input > 0
+   * (mirrors her `settings[name] > 0`), so an inactive slider is unaffected. Absent → the
+   * clamp uses `min` unchanged (base-inert).
+   */
+  readonly minBonusFromConstellation?: readonly {
+    readonly constellation: number;
+    readonly bonus: number;
+  }[];
 }
 
 /**

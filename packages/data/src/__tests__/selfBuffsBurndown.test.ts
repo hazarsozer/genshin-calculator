@@ -155,6 +155,12 @@ const SETTINGS_BY_SLUG: Readonly<Record<string, Readonly<Record<string, unknown>
     char_constellation: 2,
     furina_fanfare_stacks: 600,
   },
+  // Furina C1 fanfare floor: fanfare:50 at C1 floors to 100 (minBonusFromConstellation), so dmg_all
+  // = 100×0.25 = +25% (not +12.5%), lifting every Furina damage feature. Removing the floor → RED.
+  "furina-c1-fanfare-floor": {
+    char_constellation: 1,
+    furina_fanfare_stacks: 50,
+  },
   // Xinyan A4 dmg_phys+15 (ungated) + C4 enemy_res_physical−15 (gated at C4 → char_constellation:4
   // threads the cons gate ON, matching the oracle dump at constellation 4).
   "xinyan-self-buffs": {
