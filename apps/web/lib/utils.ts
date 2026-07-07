@@ -15,3 +15,7 @@ export function humanizeSlug(slug: string): string {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
 }
+
+export function humanizePascal(key: string): string {
+  return key.replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+}

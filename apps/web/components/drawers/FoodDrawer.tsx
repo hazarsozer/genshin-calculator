@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useBuildStore } from "@/lib/store";
 import { rankFood, type FoodType, type FoodRankRow } from "@/lib/foodRanking";
-import { humanizeSlug } from "@/lib/utils";
+import { humanizeSlug, humanizePascal } from "@/lib/utils";
 import { fmt } from "@/lib/motion";
 
 const CATEGORIES: readonly FoodType[] = ["Attack", "Defence", "Potion"];
@@ -90,7 +90,7 @@ function FoodRow({
     >
       <div className="flex items-center justify-between gap-2">
         <span className="text-[12px] font-semibold text-[var(--ck-text)]">
-          {humanizeSlug(row.key)}
+          {humanizePascal(row.key)}
           {row.equipped && (
             <span className="ml-1.5 text-[9px] font-bold uppercase tracking-wide text-[var(--ck-accent2)]">
               Equipped
@@ -178,7 +178,7 @@ export function FoodDrawer() {
                   data-testid={`food-equipped-${cat}`}
                   className="max-w-full truncate text-[9px] font-medium text-[var(--ck-faint)]"
                 >
-                  {humanizeSlug(equippedSlot.key)} T{equippedSlot.tier}
+                  {humanizePascal(equippedSlot.key)} T{equippedSlot.tier}
                 </span>
               )}
             </button>
