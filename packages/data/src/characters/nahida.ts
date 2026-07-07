@@ -180,16 +180,25 @@ const features: readonly Feature[] = [
   // --- A1 "Compassion Illuminated" static readout: other.nahida_mastery_bonus = EM → granted EM (capped) ---
   // masteryBuffPost = PostEffectStatsNahida (base = max(mastery_total, party_max_mastery) → mastery_total at solo),
   // percent=StatTable('mastery',[A1MasteryRatio/100=0.25]), statCap=ValueTable([A1MasteryCap=250]). 'mastery' name
-  // not isPercent + fmt="" → displayed = min(0.25×mastery_total, 250). values = 0.25×100 = 25 → (25/100)×170.2 =
-  // 42.55; capValue = 250 (inert here). The asc1+compassion+illusory_heart toggles gate APPLICATION not the readout;
-  // party_max_mastery branch inert at solo. raw/genshin_calc_pub/src/js/db/Char/Nahida.js:154-170,320-325;
+  // not isPercent + fmt="" → displayed = min(0.25×max(mastery_total, party_max_mastery), 250). values = 0.25×100 =
+  // 25 → (25/100)×170.2 = 42.55 at solo; capValue = 250 (binds at party_max_mastery ≥ 1000). The asc1+compassion+
+  // illusory_heart toggles gate APPLICATION not the readout. raw/genshin_calc_pub/src/js/db/Char/Nahida.js:154-170,320-325;
   // PostEffect/Stats/Nahida.js (getBaseValueTree = CMax([mastery_total, party_max_mastery])).
   {
     name: "nahida_mastery_bonus",
     category: "other",
     output: { kind: "static" },
     multipliers: [
-      { scaling: "mastery", leveling: "", values: { getValue: () => 25 }, capValue: 250 },
+      // Base = max(mastery_total, party_max_mastery) — her PostEffectStatsNahida CMax base
+      // (PostEffect/Stats/Nahida.js:6-11); scalingMaxStat reads the ConditionNumber-injected
+      // `party_max_mastery` verbatim (absent at solo → plain mastery_total, unchanged).
+      {
+        scaling: "mastery",
+        scalingMaxStat: "party_max_mastery",
+        leveling: "",
+        values: { getValue: () => 25 },
+        capValue: 250,
+      },
     ],
   },
 ];

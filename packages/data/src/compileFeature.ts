@@ -530,6 +530,14 @@ function baseDamageTerm(
   // The sole v5.8 user is Sigewinne's teammate skill-DMG buff (max HP above 30000). Absent ⇒
   // the plain `cStat(scalingKey)`, byte-identical to before (no other multiplier sets it).
   let scalingStatBlock: Block = cStat(scalingKey);
+  // Max-of-two base — her PostEffectStatsNahida.getBaseValueTree wraps the base in
+  // `CMax([stat_total, makeStatItem(key)])` (PostEffect/Stats/Nahida.js:6-11). The key is
+  // read VERBATIM off the bag (0 when absent → plain scaling stat → base-inert; no golden
+  // build sets `party_max_mastery`, the sole v5.8 key). Applied BEFORE exceedStatValue
+  // (the max forms the base tree; exceed subtracts from it) — no v5.8 entry sets both.
+  if (entry.scalingMaxStat !== undefined) {
+    scalingStatBlock = cMax([scalingStatBlock, cStat(entry.scalingMaxStat)]);
+  }
   if (entry.exceedStatValue !== undefined) {
     scalingStatBlock = cMax([cSubtract([scalingStatBlock, cConst(entry.exceedStatValue)]), cConst(0)]);
   }

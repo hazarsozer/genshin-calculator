@@ -343,8 +343,10 @@ const features: readonly Feature[] = [
     category: "skill",
     output: { kind: "static" },
     multipliers: [
-      // scaling hp_total × (HutaoTalents.s2.p2@L10 / 100) = hp_total × 0.06256 (UNCAPPED — see above).
-      { scaling: "hp", leveling: "", values: { getValue: () => HutaoTalents.s2.p2.getValue(10) } },
+      // scaling hp_total × (HutaoTalents.s2.p2 @ EFFECTIVE skill level / 100) — her
+      // PostEffect.getLevel reads levelSetting 'char_skill_elemental' (+ the C3 _bonus),
+      // so at C≥3 the ratio is p2@13 (=7.152), not p2@10 (Hutao.js:145-150). UNCAPPED — see above.
+      { scaling: "hp", leveling: "char_skill_elemental", values: HutaoTalents.s2.p2 },
     ],
   },
   // --- skill.hutao_max_hp_bonus: Max-HP SATURATION BREAKPOINT (FeaturePostEffectValue → static) ---
@@ -362,12 +364,17 @@ const features: readonly Feature[] = [
     category: "skill",
     output: { kind: "static" },
     multipliers: [
-      // scaling atk_base × (HUTAO_SKILL_MAX_BONUS×100 / HutaoTalents.s2.p2@L10 / 100)
-      // = atk_base × (400 / 6.256) = atk_base × 63.9386 (the HP saturation breakpoint).
+      // scaling atk_base × (HUTAO_SKILL_MAX_BONUS×100 / HutaoTalents.s2.p2@level / 100)
+      // = atk_base × (400 / ratio@level) — at L10 that's ×63.9386. Her PostEffectStats carries
+      // levelSetting 'char_skill_elemental' (Hutao.js:315-325), so the breakpoint tightens to
+      // 400/7.152 at C≥3 (skill 13) — leveled here exactly like hutao_atk_bonus above.
       {
         scaling: "atk_base",
-        leveling: "",
-        values: { getValue: () => (HUTAO_SKILL_MAX_BONUS * 100) / HutaoTalents.s2.p2.getValue(10) },
+        leveling: "char_skill_elemental",
+        values: {
+          getValue: (level: number) =>
+            (HUTAO_SKILL_MAX_BONUS * 100) / HutaoTalents.s2.p2.getValue(level),
+        },
       },
     ],
   },

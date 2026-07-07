@@ -26,10 +26,8 @@
  *     electrocharged, hyperbloom, burgeon, burning, shatter, rupture): emitted
  *     generically from element='anemo' by the loader's transformative-reaction
  *     catalog, not declared per-character.
- *   - other.kazuha_elemental_bonus (A4 EM-scaled cryo dmg% display): a
- *     FeaturePostEffectValue stat-readout (format 'percent', empty damageType) —
- *     the golden harness filters non-damage-triple entries, and the engine has no
- *     post-effect-value output channel. Its value (9.0131) is a display only.
+ *   (other.kazuha_elemental_bonus and the C6 other.kazuha_crimson_momiji stat-readouts
+ *   ARE modelled below as output:{kind:"static"} features — see each feature's note.)
  *   - A4 "Poetics of Fuubutsu" elemental-dmg buffs: gated on the
  *     poetics_of_fuubutsu dropdown (OFF in solo) → contribute nothing here.
  *   - C0 build: all constellations skipped.
@@ -305,6 +303,23 @@ const features: readonly Feature[] = [
     output: { kind: "static" },
     multipliers: [
       { scaling: "mastery", leveling: "", values: { getValue: () => 4 } },
+    ],
+  },
+  // --- C6 "Crimson Momiji" static readout: other.kazuha_crimson_momiji = EM-scaled NA/CA/plunge DMG% ---
+  // FeaturePostEffectValue(damageBonusPost = PostEffectStatsMastery, percent=StatTable('dmg_normal/
+  // charged/plunge', [C6DmgBonus=0.2])), format:'percent', ConditionConstellation(6)
+  // (Kazuha.js:495-501, 135-148). Same shape as kazuha_elemental_bonus above: displayed% = 0.2×EM
+  // → values 20 (÷100 in the term). The readout displays the potential bonus regardless of the
+  // kaedehara_kazuha_crimson_momiji toggle (FeaturePostEffectValue ignores the post's own
+  // conditions — the Hu Tao atk-bonus precedent); the ACTUAL dmg_normal/charged/plunge buff
+  // stays toggle-gated and is not modelled here.
+  {
+    name: "kazuha_crimson_momiji",
+    category: "other",
+    output: { kind: "static" },
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      { scaling: "mastery", leveling: "", values: { getValue: () => 20 } },
     ],
   },
 ];

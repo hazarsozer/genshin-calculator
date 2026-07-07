@@ -244,6 +244,17 @@ export interface FeatureMultiplierEntry {
    */
   readonly exceedStatValue?: number;
   /**
+   * Optional RAW bag key the scaling stat is floored BY (max-of-two base): the scaling
+   * factor becomes `max(scalingStat, ctx[scalingMaxStat])` (her PostEffectStatsNahida
+   * .getBaseValueTree — `CMax([makeStatTotalItem('mastery'), makeStatItem('party_max_mastery')])`,
+   * PostEffect/Stats/Nahida.js:6-11). The key is read VERBATIM (her makeStatItem, no `_total`);
+   * absent from the bag it reads 0, leaving the plain scaling stat — so a build that never
+   * sets the key is byte-identical (base-inert). Sole v5.8 user: Nahida's A1
+   * `other.nahida_mastery_bonus` readout (max of own EM and `party_max_mastery`).
+   * Source: raw/.../db/Char/Nahida.js:321-326; PostEffect/Stats/Nahida.js.
+   */
+  readonly scalingMaxStat?: string;
+  /**
    * Optional ADDITIVE bonus term on the talent% fraction, keyed off a SEPARATE stacks
    * level (her FeatureMultiplier.bonusLeveling/bonusValues): `talentPercent += bonusValues
    * .getValue(settings[bonusLeveling] || 1) / 100`. Mirrors her getValue (Multiplier.js:184-186)

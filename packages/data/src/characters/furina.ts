@@ -288,6 +288,42 @@ const features: readonly Feature[] = [
       },
     ],
   },
+  // --- C2 static readout: burst.furina_max_hp = fanfare-above-400 max-HP% (the fanfareHpPost view) ---
+  // FeaturePostEffectValue(fanfareHpPost), format:'percent', ConditionConstellation(2)
+  // (Furina.js:403-409; fanfareHpPost :195-203). Unlike the two readouts above, this one reads the
+  // RAW C1/C2-clamped slider stat `furina_fanfare_stacks` (fanfareHpPost's own `exceed:400`, no
+  // maxBase) — displayed% = min(0.35 × max(fanfare_raw − 400, 0), 140), exactly the hp_percent
+  // CharPostEffect in fanfarePostEffects below. Same ×100-baked display convention (values 35 →
+  // 0.35); exceedStatValue = the Sigewinne floor-at-zero wrap; the raw slider key is allow-listed
+  // in RAW_BAG_SCALING_KEYS so the feature's cStat read sees it on the FINAL emitted bag.
+  // Oracle: self-buffs/furina-c2-fanfare-hp (stacks 600 → 70); 0 at fanfare ≤ 400 (cons fixtures).
+  {
+    name: "furina_max_hp",
+    category: "burst",
+    output: { kind: "static" },
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        scaling: "furina_fanfare_stacks",
+        exceedStatValue: 400,
+        leveling: "",
+        values: { getValue: () => 35 },
+        capValue: 140,
+      },
+    ],
+  },
+  // --- C6 heal: burst.furina_c6_healing = 4% Max HP per Center-of-Attention hit (partyHeal) ---
+  // FeatureHeal(scaling 'hp*', ValueTable([C6Heal=4]), ConditionConstellation(6))
+  // (Furina.js:410-421; C6Heal :172). Oracle: constellations/furina.json → 1141.34.
+  {
+    name: "furina_c6_healing",
+    category: "burst",
+    output: { kind: "heal" },
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 4 } },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------

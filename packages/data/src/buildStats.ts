@@ -327,6 +327,16 @@ const RAW_BAG_SCALING_KEYS = [
                           // real dmg_all/healing_recv bonuses (CharPostEffects) read the pre-emit
                           // snapshot directly and need no allow-listing; only the feature-scaling
                           // readouts need this entry to see a nonzero value.
+  "furina_fanfare_stacks", // Furina C2 readout (burst.furina_max_hp): scales on the RAW C1/C2-clamped
+                          // slider stat (fanfareHpPost's exceed:400 view — distinct from the 400-capped
+                          // furina_fanfare_dmg_healing_stacks above) via the feature's FINAL-bag cStat
+                          // read. The real hp_percent buff (CharPostEffect offset:400) reads the pre-emit
+                          // snapshot and needs no allow-listing. Slider absent → key never emitted → byte-unchanged.
+  "party_max_mastery",    // Nahida A1 readout (other.nahida_mastery_bonus): its scalingMaxStat reads
+                          // the ConditionNumber-injected highest-team-EM input off the FINAL emitted
+                          // bag (max(mastery_total, party_max_mastery)); the real EM buff
+                          // (masteryBuffPost.fromStatMax) reads the pre-emit snapshot and needs no
+                          // allow-listing. Unset on every golden build → never emitted → byte-unchanged.
 ] as const;
 
 /**
