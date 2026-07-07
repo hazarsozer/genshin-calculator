@@ -320,7 +320,9 @@ function partyInputFromManifest(party: ManifestParty): PartyInput {
     members,
     ...(party.enemyStatus !== undefined ? { enemyStatus: party.enemyStatus } : {}),
     ...(party.bondOfLife !== undefined ? { bondOfLife: party.bondOfLife } : {}),
-    ...(plainSetOther.length ? { setOther: plainSetOther } : {}),
+    ...(plainSetOther.length
+      ? { setOther: Object.fromEntries(plainSetOther.map((t) => [t, true])) }
+      : {}),
   };
 }
 
@@ -428,7 +430,7 @@ function assertStatRoundTrip(
     const oracle = fixture.features[fixtureKey];
     if (!oracle) continue;
     it(`${slug}: ${statKey} round-trip matches oracle ${fixtureKey}`, () => {
-      const ours = (stats as Record<string, number>)[statKey];
+      const ours = (stats as Record<string, number>)[statKey] ?? Number.NaN;
       expect(
         Math.abs(ours - oracle.normal),
         `${slug}/${statKey}: ours=${ours?.toFixed(4)}, oracle=${oracle.normal.toFixed(4)}`
@@ -551,7 +553,7 @@ describe("fold: buildPartyContext reproduces her derived keys (round-trip)", () 
         const party = partyInputFromManifest(item.party);
         const ctx = buildPartyContext(party, {
           element: item.element as Element,
-          origin: item.origin,
+          ...(item.origin !== undefined ? { origin: item.origin } : {}),
         });
         for (const key of derivedKeys) {
           expect(

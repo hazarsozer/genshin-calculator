@@ -37,11 +37,11 @@
     }
   },
   "config": {
-    "description": "Party-composition effects on representative active chars exercising each effect's scaling: 6 elemental resonances + none, the 3 two-element gates (Chevreuse/Nilou/Skirk), GildedDreams 4pc (same 1-3 / different 1-3), BlizzardStrayer 4pc (cryo / cryo+frozen), ViridescentVenerer 4pc (per swirl element), all v5.8 set_other team buffs, bond-of-life, Nahida party-pyro-2, CalcOrigin counts (same/different), and the four inert party-element weapons. Fillers are buff-clean (probe-verified) so only the active char's own party-reading conditions move.",
+    "description": "Party-composition effects on representative active chars exercising each effect's scaling: 6 elemental resonances + none, the 3 two-element gates (Chevreuse/Nilou/Skirk), GildedDreams 4pc (same 1-3 / different 1-3), BlizzardStrayer 4pc (cryo / cryo+frozen), ViridescentVenerer 4pc (per swirl element), all v5.8 set_other team buffs, bond-of-life, Nahida party-pyro-2, CalcOrigin counts (same/different), Gorou General's Glory geo-count tiers (crunch + C6 crit_dmg_geo 2/3), YunJin Breaking Conventions distinct-element NA DEF-buff tiers (2/3/4), and the four inert party-element weapons. Fillers are buff-clean (probe-verified) so only the active char's own party-reading conditions move.",
     "id": "party"
   },
-  "featureTotal": 1335,
-  "itemCount": 45,
+  "featureTotal": 1789,
+  "itemCount": 62,
   "items": [
     {
       "derived": {
@@ -222,6 +222,163 @@
       "weapon": {
         "name": "weapon_name.the_alley_flash",
         "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "members": [
+          {
+            "element": "cryo",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Escoffier",
+      "repSlug": "escoffier",
+      "resonanceElements": {
+        "resonance_element_1": "cryo"
+      },
+      "slug": "escoffier-elements-2",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 3
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "members": [
+          {
+            "element": "cryo",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "cryo",
+            "origin": "liyue"
+          }
+        ]
+      },
+      "repKey": "Escoffier",
+      "repSlug": "escoffier",
+      "resonanceElements": {
+        "resonance_element_1": "cryo",
+        "resonance_element_2": "cryo"
+      },
+      "slug": "escoffier-elements-3",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "members": [
+          {
+            "element": "cryo",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "cryo",
+            "origin": "liyue"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Escoffier",
+      "repSlug": "escoffier",
+      "resonanceElements": {
+        "resonance_element_1": "cryo",
+        "resonance_element_2": "cryo",
+        "resonance_element_3": "hydro"
+      },
+      "slug": "escoffier-elements-4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "charSettings": {
+          "char_constellation": 1
+        },
+        "constellation": 1,
+        "members": [
+          {
+            "element": "cryo",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "cryo",
+            "origin": "liyue"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Escoffier",
+      "repSlug": "escoffier",
+      "resonanceElements": {
+        "resonance_element_1": "cryo",
+        "resonance_element_2": "cryo",
+        "resonance_element_3": "hydro"
+      },
+      "slug": "escoffier-elements-4-c1",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
       }
     },
     {
@@ -631,6 +788,125 @@
     },
     {
       "derived": {
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "charSettings": {
+          "char_constellation": 6,
+          "gorou_generals_war_banner": true
+        },
+        "constellation": 6,
+        "members": [
+          {
+            "element": "geo",
+            "origin": "liyue"
+          }
+        ]
+      },
+      "repKey": "Gorou",
+      "repSlug": "gorou",
+      "resonanceElements": {
+        "resonance_element_1": "geo"
+      },
+      "slug": "gorou-geo-2",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 3
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "charSettings": {
+          "char_constellation": 6,
+          "gorou_generals_war_banner": true
+        },
+        "constellation": 6,
+        "members": [
+          {
+            "element": "geo",
+            "origin": "liyue"
+          },
+          {
+            "element": "geo",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Gorou",
+      "repSlug": "gorou",
+      "resonanceElements": {
+        "resonance_element_1": "geo",
+        "resonance_element_2": "geo"
+      },
+      "slug": "gorou-geo-3",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 3
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "charSettings": {
+          "gorou_generals_war_banner": true
+        },
+        "members": [
+          {
+            "element": "geo",
+            "origin": "liyue"
+          },
+          {
+            "element": "geo",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Gorou",
+      "repSlug": "gorou",
+      "resonanceElements": {
+        "resonance_element_1": "geo",
+        "resonance_element_2": "geo"
+      },
+      "slug": "gorou-geo-3-c0",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
         "party_size": 3
       },
       "element": "dendro",
@@ -664,6 +940,193 @@
       "weapon": {
         "name": "weapon_name.solar_pearl",
         "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          }
+        ]
+      },
+      "repKey": "Navia",
+      "repSlug": "navia",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "navia-a4-1",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 3
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Navia",
+      "repSlug": "navia",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "hydro"
+      },
+      "slug": "navia-a4-2",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Navia",
+      "repSlug": "navia",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "hydro",
+        "resonance_element_3": "electro"
+      },
+      "slug": "navia-a4-3",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "charSettings": {
+          "char_constellation": 2,
+          "nilou_stance_bonus": true,
+          "nilou_the_starry_skies_1": true
+        },
+        "constellation": 2,
+        "members": [
+          {
+            "element": "dendro",
+            "origin": "sumeru"
+          }
+        ]
+      },
+      "repKey": "Nilou",
+      "repSlug": "nilou",
+      "resonanceElements": {
+        "resonance_element_1": "dendro"
+      },
+      "slug": "nilou-c2-hydro",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 2
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "charSettings": {
+          "char_constellation": 2,
+          "nilou_stance_bonus": true,
+          "nilou_the_starry_skies_1": true
+        },
+        "constellation": 2,
+        "members": [
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Nilou",
+      "repSlug": "nilou",
+      "resonanceElements": {
+        "resonance_element_1": "electro"
+      },
+      "slug": "nilou-c2-nogate",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
       }
     },
     {
@@ -1737,6 +2200,227 @@
       "weapon": {
         "name": "weapon_name.waveriding_whirl",
         "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 3
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "charSettings": {
+          "char_constellation": 2,
+          "char_skill_elemental": 10
+        },
+        "constellation": 2,
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Xilonen",
+      "repSlug": "xilonen",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "hydro"
+      },
+      "slug": "xilonen-samplers-active-2",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 4
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "charSettings": {
+          "char_constellation": 2,
+          "char_skill_elemental": 10
+        },
+        "constellation": 2,
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "cryo",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "Xilonen",
+      "repSlug": "xilonen",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "hydro",
+        "resonance_element_3": "cryo"
+      },
+      "slug": "xilonen-samplers-suppressed",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 2,
+        "party_elements_different": 1,
+        "party_elements_different_total": 1,
+        "party_elements_same_inc": 1,
+        "party_size": 2
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "charSettings": {
+          "yunjin_flag": true
+        },
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          }
+        ]
+      },
+      "repKey": "YunJin",
+      "repSlug": "yun_jin",
+      "resonanceElements": {
+        "resonance_element_1": "pyro"
+      },
+      "slug": "yunjin-elements-2",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 3,
+        "party_elements_different": 2,
+        "party_elements_different_total": 2,
+        "party_elements_same_inc": 1,
+        "party_size": 3
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "charSettings": {
+          "yunjin_flag": true
+        },
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          },
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "YunJin",
+      "repSlug": "yun_jin",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "electro"
+      },
+      "slug": "yunjin-elements-3",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 4,
+        "party_elements_different": 3,
+        "party_elements_different_total": 3,
+        "party_elements_same_inc": 1,
+        "party_size": 4
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "charSettings": {
+          "yunjin_flag": true
+        },
+        "members": [
+          {
+            "element": "pyro",
+            "origin": "liyue"
+          },
+          {
+            "element": "electro",
+            "origin": "mondstadt"
+          },
+          {
+            "element": "hydro",
+            "origin": "mondstadt"
+          }
+        ]
+      },
+      "repKey": "YunJin",
+      "repSlug": "yun_jin",
+      "resonanceElements": {
+        "resonance_element_1": "pyro",
+        "resonance_element_2": "electro",
+        "resonance_element_3": "hydro"
+      },
+      "slug": "yunjin-elements-4",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
       }
     }
   ]

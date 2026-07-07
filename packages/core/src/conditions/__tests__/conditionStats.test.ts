@@ -97,6 +97,19 @@ describe("conditionStats — non-refine variants emit cond.stats when active", (
     expect(conditionStats(capped, { party_max_mastery: 600 })).toEqual({ party_max_mastery: 600 });
   });
 
+  it("number with noStat: active gate but emits no clamped value", () => {
+    const c: ConditionNumber = { type: "number", name: "common.bond_of_life", noStat: true, max: 200 };
+    // Active (setting > 0) but noStat → no bond_of_life / common.bond_of_life key emitted.
+    expect(conditionStats(c, { "common.bond_of_life": 50 })).toEqual({});
+    // Inactive → {}.
+    expect(conditionStats(c, {})).toEqual({});
+  });
+
+  it("number without noStat still emits the clamped value (regression guard)", () => {
+    const c: ConditionNumber = { type: "number", name: "common.bond_of_life", stat: "bond_of_life", max: 200 };
+    expect(conditionStats(c, { "common.bond_of_life": 50 })).toEqual({ bond_of_life: 50 });
+  });
+
   it("and/or: cond-less containers contribute nothing (no stats field)", () => {
     const a: ConditionAnd = { type: "and", items: [] };
     const o: ConditionOr = { type: "or", items: [] };

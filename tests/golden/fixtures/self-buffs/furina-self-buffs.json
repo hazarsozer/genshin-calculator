@@ -1,0 +1,282 @@
+{
+  "element": "hydro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3623.5400406054114,
+      "category": "attack",
+      "crit": 5609.195109296303,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2804.5975546481513
+    },
+    "attack.normal_hit_1": {
+      "average": 2271.276217412733,
+      "category": "attack",
+      "crit": 3515.907457295252,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1757.953728647626
+    },
+    "attack.normal_hit_2": {
+      "average": 2052.678547233575,
+      "category": "attack",
+      "crit": 3177.5209709498067,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1588.7604854749034
+    },
+    "attack.normal_hit_3": {
+      "average": 2587.3648152895203,
+      "category": "attack",
+      "crit": 4005.2086923986385,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2002.6043461993193
+    },
+    "attack.normal_hit_4": {
+      "average": 3440.6425539002043,
+      "category": "attack",
+      "crit": 5326.072064860998,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2663.036032430499
+    },
+    "attack.plunge": {
+      "average": 2880.6832209000877,
+      "category": "attack",
+      "crit": 4459.261951857721,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2229.6309759288606
+    },
+    "attack.plunge_high": {
+      "average": 7194.733032344893,
+      "category": "attack",
+      "crit": 11137.357635208813,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 5568.6788176044065
+    },
+    "attack.plunge_low": {
+      "average": 5760.146953025878,
+      "category": "attack",
+      "crit": 8916.63615019486,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4458.31807509743
+    },
+    "attack.spiritbreath_thorn_dmg": {
+      "average": 435.15463610112863,
+      "category": "attack",
+      "crit": 673.6139877726449,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 336.80699388632246
+    },
+    "attack.surging_blade_dmg": {
+      "average": 435.15463610112863,
+      "category": "attack",
+      "crit": 673.6139877726449,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 336.80699388632246
+    },
+    "burst.burst_dmg": {
+      "average": 8566.176995226353,
+      "category": "burst",
+      "crit": 13260.335905923148,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 6630.167952961574
+    },
+    "burst.furina_fanfare_dmg_bonus": {
+      "average": 87.5,
+      "category": "burst",
+      "crit": 87.5,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 87.5
+    },
+    "burst.furina_fanfare_heal_bonus": {
+      "average": 35,
+      "category": "burst",
+      "crit": 35,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 35
+    },
+    "other.furina_heal_dot": {
+      "average": 770.4014854500001,
+      "category": "other",
+      "crit": 770.4014854500001,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 770.4014854500001
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.rupture": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "skill.furina_gentilhomme_usher_dmg": {
+      "average": 5966.675298139835,
+      "category": "skill",
+      "crit": 9236.339470804698,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4618.169735402349
+    },
+    "skill.furina_mademoiselle_crabaletta_dmg": {
+      "average": 8297.282696473647,
+      "category": "skill",
+      "crit": 12844.090861414315,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6422.045430707158
+    },
+    "skill.furina_ousia_bubble_dmg": {
+      "average": 5154.409387296175,
+      "category": "skill",
+      "crit": 7978.96189983928,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3989.48094991964
+    },
+    "skill.furina_singers_of_the_streams_healing": {
+      "average": 4701.047697144,
+      "category": "skill",
+      "crit": 4701.047697144,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 4701.047697144
+    },
+    "skill.furina_surintendante_chevalmarin_dmg": {
+      "average": 3235.6198932194534,
+      "category": "skill",
+      "crit": 5008.699525107513,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2504.3497625537566
+    },
+    "stats.atk": {
+      "average": 2047.2940257779997,
+      "category": "stats",
+      "crit": 2047.2940257779997,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2047.2940257779997
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 29.2,
+      "category": "stats",
+      "crit": 29.2,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 29.2
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1571.5412679,
+      "category": "stats",
+      "crit": 1571.5412679,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1571.5412679
+    },
+    "stats.hp": {
+      "average": 28533.38835,
+      "category": "stats",
+      "crit": 28533.38835,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 28533.38835
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Furina",
+  "repSlug": "furina",
+  "schema": 1,
+  "slug": "furina-self-buffs",
+  "weapon": "weapon_name.the_alley_flash",
+  "weaponType": "sword"
+}

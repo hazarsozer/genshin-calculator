@@ -581,7 +581,6 @@ describe("compileFeature — coefficientFromStat (M1)", () => {
         {
           leveling: "char_skill_elemental",
           values: constTable(100),
-          // @ts-expect-error — deliberately malformed to test the runtime guard
           coefficientFromStat: { stat: "mastery", cap: 4 },
         },
       ],
@@ -673,5 +672,161 @@ describe("compileFeature — Clam foam suppression flags (no-crit / no-dmg-bonus
     const result = compile(compileFeature(noSuppress, FOAM_CTX))(bagWith(ah));
     // crit_rate 0.5, crit_dmg +100% → crit = normal × 2, avg between. Proves the bag CAN crit.
     expect(result.crit).toBeGreaterThan(result.normal * 1.9);
+  });
+});
+
+// ===========================================================================
+// scalingMultiplierCondition + scalingMultiplierFromTable (S2-α) — the two new
+// base-inert scaling-multiplier forms. Her getScalingMultiplier (Multiplier.js:157-162)
+// gates the constant on a condition (INACTIVE → 1); FeatureMultiplierNeuvilleteCharged
+// overrides it with a ValueTable lookup keyed by a settings level (level>0 → getValue,
+// else 1). Both read ctx.settings at compile time and REPLACE nothing when absent.
+// ===========================================================================
+
+describe("compileFeature — scalingMultiplierCondition + scalingMultiplierFromTable (S2-α)", () => {
+  const { context } = buildHuTao();
+
+  /** Compile a single-multiplier pyro-skill feature under `settings`, return its normal. */
+  function normalUnder(
+    multiplier: FeatureMultiplierEntry,
+    settings: Record<string, unknown>
+  ): number {
+    const feature: Feature = {
+      name: "sm_probe",
+      category: "skill",
+      element: "pyro",
+      multipliers: [multiplier],
+    };
+    const ctx: CompileContext = {
+      charElement: "pyro",
+      talentLevels: { attack: 10, elemental: 10, burst: 10 },
+      settings,
+    };
+    return compile(compileFeature(feature, ctx))(context).normal;
+  }
+
+  // A plain 100%-of-ATK skill term (talentPercent 1.0 × atk_total); every case below
+  // varies ONLY the scaling factor, so the whole triple scales linearly with it.
+  const BASE: FeatureMultiplierEntry = { scaling: "atk", leveling: "", values: constTable(100) };
+
+  // --- scalingMultiplierCondition (Freminet frost ×2 form) --------------------
+
+  it("conditional gate INACTIVE → factor reverts to 1 (byte-identical to the plain term)", () => {
+    const gated = normalUnder(
+      { ...BASE, scalingMultiplier: 2, scalingMultiplierCondition: { type: "boolean", name: "gate" } },
+      {} // gate off → her getScalingMultiplier returns 1
+    );
+    expect(gated).toBe(normalUnder(BASE, {}));
+  });
+
+  it("conditional gate ACTIVE → the constant applies (== plain × 2)", () => {
+    const gated = normalUnder(
+      { ...BASE, scalingMultiplier: 2, scalingMultiplierCondition: { type: "boolean", name: "gate" } },
+      { gate: true }
+    );
+    expect(gated).toBeCloseTo(normalUnder(BASE, {}) * 2, 6);
+  });
+
+  it("absent gate → the constant applies unconditionally (control, unchanged from today)", () => {
+    expect(normalUnder({ ...BASE, scalingMultiplier: 2 }, {})).toBeCloseTo(
+      normalUnder(BASE, {}) * 2,
+      6
+    );
+  });
+
+  // --- scalingMultiplierFromTable (Neuvillette [1.1,1.25,1.6] form) -----------
+
+  function tableMult(): FeatureMultiplierEntry {
+    return { ...BASE, scalingMultiplierFromTable: { table: [1.1, 1.25, 1.6], levelSetting: "legacy" } };
+  }
+
+  it("table level 0 / absent → factor 1 (byte-identical to the plain term, base-inert)", () => {
+    expect(normalUnder(tableMult(), {})).toBe(normalUnder(BASE, {}));
+    expect(normalUnder(tableMult(), { legacy: 0 })).toBe(normalUnder(BASE, {}));
+  });
+
+  it("table levels 1/2/3 → table[level-1] factor (1-indexed, her ValueTable)", () => {
+    const plain = normalUnder(BASE, {});
+    expect(normalUnder(tableMult(), { legacy: 1 })).toBeCloseTo(plain * 1.1, 6);
+    expect(normalUnder(tableMult(), { legacy: 2 })).toBeCloseTo(plain * 1.25, 6);
+    expect(normalUnder(tableMult(), { legacy: 3 })).toBeCloseTo(plain * 1.6, 6);
+  });
+
+  it("table level beyond length clamps to the last entry (her ValueTable clamp)", () => {
+    expect(normalUnder(tableMult(), { legacy: 5 })).toBeCloseTo(normalUnder(BASE, {}) * 1.6, 6);
+  });
+
+  // --- gated table (Wriothesley/Wanderer/Yoimiya toggle form) -----------------
+  // Her FeatureMultiplier{Wriothesley,Wanderer,Yoimiya} multiply the table factor into the
+  // term ONLY while a toggle is on; an INACTIVE gate leaves the term un-boosted (factor 1).
+
+  function gatedTableMult(): FeatureMultiplierEntry {
+    return {
+      ...BASE,
+      scalingMultiplierFromTable: {
+        table: [1.1, 1.25, 1.6],
+        levelSetting: "legacy",
+        condition: { type: "boolean", name: "gate" },
+      },
+    };
+  }
+
+  it("gated table with an INACTIVE gate → factor 1 even when the level is set", () => {
+    // gate off → factor 1 despite legacy 3 (her `result` stays 1 when the toggle is off).
+    expect(normalUnder(gatedTableMult(), { legacy: 3 })).toBe(normalUnder(BASE, {}));
+  });
+
+  it("gated table with an ACTIVE gate → the table lookup applies (== plain × 1.6)", () => {
+    expect(normalUnder(gatedTableMult(), { legacy: 3, gate: true })).toBeCloseTo(
+      normalUnder(BASE, {}) * 1.6,
+      6
+    );
+  });
+
+  // --- `_bonus`-aware level read for a char-skill levelSetting ----------------
+  // A char-skill leveling key reads the build's talent level (ctx.talentLevels[slot]=10 here)
+  // PLUS the constellation `_bonus` — her getLevel('char_skill_elemental') = base + `_bonus`.
+  // A non-char-skill key has no `<key>_bonus` → the read is unchanged (proven above/Neuvillette).
+
+  // A 15-entry ramp: level L → L/10, so the resolved level is directly observable in the factor.
+  const RAMP: readonly number[] = Array.from({ length: 15 }, (_u, i) => (i + 1) / 10);
+
+  function charSkillTableMult(): FeatureMultiplierEntry {
+    return { ...BASE, scalingMultiplierFromTable: { table: RAMP, levelSetting: "char_skill_elemental" } };
+  }
+
+  it("char-skill levelSetting reads talentLevels[slot] (no `_bonus` → level 10 → ×1.0)", () => {
+    expect(normalUnder(charSkillTableMult(), {})).toBeCloseTo(normalUnder(BASE, {}) * 1.0, 6);
+  });
+
+  it("char-skill levelSetting adds the constellation `_bonus` (level 10+3=13 → ×1.3)", () => {
+    expect(normalUnder(charSkillTableMult(), { char_skill_elemental_bonus: 3 })).toBeCloseTo(
+      normalUnder(BASE, {}) * 1.3,
+      6
+    );
+  });
+
+  // --- fail-loud: the table form is a full override --------------------------
+
+  it("throws when scalingMultiplierFromTable co-occurs with scalingMultiplier", () => {
+    expect(() =>
+      normalUnder(
+        { ...BASE, scalingMultiplier: 2, scalingMultiplierFromTable: { table: [1.1], levelSetting: "legacy" } },
+        {}
+      )
+    ).toThrow(/the table form replaces both/);
+  });
+
+  it("throws when scalingMultiplierFromTable co-occurs with scalingMultiplierCondition", () => {
+    expect(() =>
+      normalUnder(
+        {
+          ...BASE,
+          scalingMultiplierCondition: { type: "boolean", name: "gate" },
+          scalingMultiplierFromTable: { table: [1.1], levelSetting: "legacy" },
+        },
+        {}
+      )
+    ).toThrow(/the table form replaces both/);
   });
 });

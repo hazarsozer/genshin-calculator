@@ -33,4 +33,9 @@ packages/*/dist/
 coverage/
 packages/*/coverage/
 
+# Playwright artifacts
+apps/web/test-results/
+apps/web/playwright-report/
+
 # pnpm lock is committed; node_modules already covered above
+.superpowers/

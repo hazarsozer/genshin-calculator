@@ -1,0 +1,238 @@
+{
+  "_source": "port-snapshot disaster_and_remorse weapons-r5 — regression lock; validation = 2-witness (Amber + GCSim source) + load-bearing r1≠r5 (no single-rep GCSim gate)",
+  "element": "cryo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 3772.6831371887274,
+      "category": "attack",
+      "crit": 6230.359916402115,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2613.406005202229
+    },
+    "attack.ms_charged": {
+      "average": 5545.844211667429,
+      "category": "attack",
+      "crit": 9158.629077111109,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3841.706827647277
+    },
+    "attack.ms_normal_1": {
+      "average": 4359.82208808028,
+      "category": "attack",
+      "crit": 7199.984677340561,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3020.1278008978857
+    },
+    "attack.ms_normal_2": {
+      "average": 4557.740197568439,
+      "category": "attack",
+      "crit": 7526.8345640776615,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3157.2292634553946
+    },
+    "attack.ms_normal_3": {
+      "average": 2052.6538527196394,
+      "category": "attack",
+      "crit": 3389.8347200614794,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1421.9105369385397
+    },
+    "attack.ms_normal_4": {
+      "average": 6074.488727420404,
+      "category": "attack",
+      "crit": 10031.653786900932,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 4207.908467659786
+    },
+    "attack.ms_normal_5": {
+      "average": 2976.27169699771,
+      "category": "attack",
+      "crit": 4915.134191501282,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2061.717362206913
+    },
+    "attack.ms_normal_6": {
+      "average": 4464.408907162266,
+      "category": "attack",
+      "crit": 7372.7035359611555,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3092.576986560887
+    },
+    "attack.ms_plunge_high": {
+      "average": 4572.285104972787,
+      "category": "attack",
+      "crit": 7550.854606255748,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3167.3047845032497
+    },
+    "attack.ms_plunge_hit": {
+      "average": 1830.687104560117,
+      "category": "attack",
+      "crit": 3023.2699489904253,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1268.1501463886011
+    },
+    "attack.ms_plunge_low": {
+      "average": 3660.599218535687,
+      "category": "attack",
+      "crit": 6045.260047514228,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2535.7634427492562
+    },
+    "attack.normal_hit_1": {
+      "average": 2968.3904338696043,
+      "category": "attack",
+      "crit": 4902.118758161561,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2056.2578683563593
+    },
+    "attack.normal_hit_2": {
+      "average": 3103.1431892657956,
+      "category": "attack",
+      "crit": 5124.65485125916,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2149.603544991258
+    },
+    "attack.normal_hit_3": {
+      "average": 1397.551559298478,
+      "category": "attack",
+      "crit": 2307.9725753610073,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 968.1093017453888
+    },
+    "attack.normal_hit_4": {
+      "average": 4135.822112286232,
+      "category": "attack",
+      "crit": 6830.062152783614,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2864.9589567045355
+    },
+    "attack.normal_hit_5": {
+      "average": 2026.3977511473768,
+      "category": "attack",
+      "crit": 3346.4743431498086,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1403.7224593749195
+    },
+    "attack.normal_hit_6": {
+      "average": 3039.596626721065,
+      "category": "attack",
+      "crit": 5019.711514724713,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2105.5836890623796
+    },
+    "attack.plunge_high": {
+      "average": 4755.176509171699,
+      "category": "attack",
+      "crit": 7852.888790505979,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3293.99697588338
+    },
+    "attack.plunge_hit": {
+      "average": 1903.9145887425218,
+      "category": "attack",
+      "crit": 3144.2007469500427,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1318.8761522441453
+    },
+    "attack.plunge_low": {
+      "average": 3807.0231872771146,
+      "category": "attack",
+      "crit": 6287.070449414798,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2637.1939804592266
+    },
+    "burst.burst_dmg": {
+      "average": 7558.252846788922,
+      "category": "burst",
+      "crit": 12482.001234208126,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 5235.7387727383075
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.etch_dmg": {
+      "average": 3316.669985757683,
+      "category": "skill",
+      "crit": 5477.28154837747,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2297.5174280106835
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Lohen",
+  "repSlug": "lohen",
+  "schema": 1,
+  "slug": "disaster_and_remorse",
+  "weapon": "weapon_name.disaster_and_remorse",
+  "weaponType": "polearm"
+}

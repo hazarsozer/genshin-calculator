@@ -1,0 +1,3216 @@
+{
+  "base": {
+    "char": {
+      "ascension": 6,
+      "constellation": 0,
+      "level": 90
+    },
+    "enemy": {
+      "level": 90,
+      "res": 10
+    },
+    "skills": {
+      "attack": 10,
+      "burst": 10,
+      "elemental": 10
+    },
+    "statBlock": {
+      "atk_base": 871,
+      "atk_percent": 18,
+      "crit_dmg_base": 50,
+      "crit_rate_base": 5,
+      "def_base": 876,
+      "dmg_burst": 64,
+      "dmg_charged": 16,
+      "dmg_electro": 2,
+      "dmg_normal": 8,
+      "dmg_phys": 4,
+      "dmg_skill": 32,
+      "hp_base": 13226,
+      "mastery_base": 55,
+      "recharge_base": 100
+    },
+    "weapon": {
+      "ascension": 6,
+      "level": 90,
+      "refine": 1
+    }
+  },
+  "config": {
+    "description": "Skip-class SELF-condition sweep — SELF conditions (res-shred/dmg/etc.) the port SKIPPED because no golden toggles them (the 58k DAMAGE goldens are blind to them; surfaced by tools/oracle/diff-parity.mjs). The port systematically modelled the `party.*` teammate mirror but skipped the SELF version. Each rep bakes the char's SELF toggle via mergeCharSettings (a char-axis setting, infusionItems' diluc_dawn channel) so her engine applies the self condition to EVERY one of the char's own damage features; dump-oracle branches on cfg.partyItems and writes one <slug>.json per rep via engine.computeParty. zhongli-jade-shield: Zhongli's own Jade Shield (raw Zhongli.js:316-331, a C0 ConditionBoolean, NO ascension/cons gate) grants −20 enemy RES to all 7 elements + physical, buffing every Zhongli damage feature. The port modelled party.zhongli_jade_shield (the teammate mirror, Zhongli.js:447-463) but SKIPPED the SELF version → every Zhongli damage triple undershot by the res-shred at zhongli_jade_shield:true. GREEN once the SELF condition is ported into zhongli.ts (conditions[]). selfBuffsBurndown threads the SAME toggle into buildStats + compileCharacter and asserts the buffed triples. To add the next char: one item in selfBuffsItems + one SETTINGS_BY_SLUG row + re-dump (`node tools/oracle/dump-oracle.mjs self-buffs`).",
+    "id": "self-buffs"
+  },
+  "featureTotal": 3122,
+  "itemCount": 105,
+  "items": [
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "albedo_calcite_might": true,
+          "albedo_descent_of_divinity": true,
+          "albedo_dust_of_purification": true,
+          "albedo_opening_of_hanerozoic": 4,
+          "char_constellation": 6
+        }
+      },
+      "repKey": "Albedo",
+      "repSlug": "albedo",
+      "resonanceElements": {},
+      "slug": "albedo-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "alhaitham_debate": 4,
+          "alhaitham_elucidation": 3,
+          "alhaitham_mirror": true,
+          "alhaitham_structuration": true,
+          "char_constellation": 6
+        }
+      },
+      "repKey": "Alhaitham",
+      "repSlug": "alhaitham",
+      "resonanceElements": {},
+      "slug": "alhaitham-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "foreign",
+      "party": {
+        "settings": {
+          "aloy_coils": 4,
+          "aloy_combat_override": true,
+          "aloy_strong_strike": 10
+        }
+      },
+      "repKey": "Aloy",
+      "repSlug": "aloy",
+      "resonanceElements": {},
+      "slug": "aloy-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "amber_precise_shot": true,
+          "amber_wildfire": true,
+          "char_constellation": 6
+        }
+      },
+      "repKey": "Amber",
+      "repSlug": "amber",
+      "resonanceElements": {},
+      "slug": "amber-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "fontain",
+      "party": {
+        "settings": {
+          "arlecchino_cinders_alone_shall_nourish": true
+        }
+      },
+      "repKey": "Arlecchino",
+      "repSlug": "arlecchino",
+      "resonanceElements": {},
+      "slug": "arlecchino-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 22,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "settings": {
+          "ayato_bloomwater_blades": true
+        }
+      },
+      "repKey": "Ayato",
+      "repSlug": "kamisato_ayato",
+      "resonanceElements": {},
+      "slug": "ayato-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "baizhu_all_things_are_of_the_earth": true,
+          "baizhu_ancient_art_of_perception": true,
+          "baizhu_five_fortunes_forever": true,
+          "char_constellation": 6
+        }
+      },
+      "repKey": "Baizhu",
+      "repSlug": "baizhu",
+      "resonanceElements": {},
+      "slug": "baizhu-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "barbara_vitality_burst": true,
+          "char_constellation": 6
+        }
+      },
+      "repKey": "Barbara",
+      "repSlug": "barbara",
+      "resonanceElements": {},
+      "slug": "barbara-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "beidou_bane_of_the_evil": true,
+          "beidou_lightning_storm": true,
+          "char_constellation": 6
+        }
+      },
+      "repKey": "Beidou",
+      "repSlug": "beidou",
+      "resonanceElements": {},
+      "slug": "beidou-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 36,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "bennet_fantastic_voyage": true,
+          "char_constellation": 6
+        }
+      },
+      "repKey": "Bennet",
+      "repSlug": "bennett",
+      "resonanceElements": {},
+      "slug": "bennett-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "candace_moon_piercing_brilliance": true,
+          "candace_prayer_of_the_crimson_crown": true,
+          "char_constellation": 6
+        }
+      },
+      "repKey": "Candace",
+      "repSlug": "candace",
+      "resonanceElements": {},
+      "slug": "candace-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_origin_same_inc": 1,
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "charlotte_a_responsibility_to_oversee": true,
+          "charlotte_pursue_truth": 3
+        }
+      },
+      "repKey": "Charlotte",
+      "repSlug": "charlotte",
+      "resonanceElements": {},
+      "slug": "charlotte-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 52,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "chasca_showdown_the_glory_of_battle": true
+        }
+      },
+      "repKey": "Chasca",
+      "repSlug": "chasca",
+      "resonanceElements": {},
+      "slug": "chasca-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "chevreuse_force_coordination": true,
+          "chevreuse_in_pursuit": 3,
+          "chevreuse_tactics": true
+        }
+      },
+      "repKey": "Chevreuse",
+      "repSlug": "chevreuse",
+      "resonanceElements": {},
+      "slug": "chevreuse-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "attack_infusion": "geo",
+          "char_constellation": 6,
+          "chiori_sole_principle_pursuit": true,
+          "chiori_tailor_made": true,
+          "chiori_the_finishing_touch": true
+        }
+      },
+      "repKey": "Chiori",
+      "repSlug": "chiori",
+      "resonanceElements": {},
+      "slug": "chiori-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "chongyun_frost_field": true,
+          "chongyun_rally_of_four_blades": true,
+          "chongyun_rimechaser_blade": true
+        }
+      },
+      "repKey": "Chongyun",
+      "repSlug": "chongyun",
+      "resonanceElements": {},
+      "slug": "chongyun-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "citlali_heart_devourers_travail": true,
+          "citlali_itzpapalotls_star_garments": true,
+          "citlali_mamaloacos_frigid_rain": true,
+          "citlali_points": 30
+        }
+      },
+      "repKey": "Citlali",
+      "repSlug": "citlali",
+      "resonanceElements": {},
+      "slug": "citlali-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "clorinde_and_so_shall_i_never_despair": true,
+          "clorinde_dark_shattering_flame": 3,
+          "clorinde_lawful_remuneration": 2
+        }
+      },
+      "repKey": "Clorinde",
+      "repSlug": "clorinde",
+      "resonanceElements": {},
+      "slug": "clorinde-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "settings": {
+          "cyno_wolfs_swiftness": true
+        }
+      },
+      "repKey": "Cyno",
+      "repSlug": "cyno",
+      "resonanceElements": {},
+      "slug": "cyno-wolfs-swiftness",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "dehya_the_burning_claws_cleaving": 4,
+          "dehya_the_sand_blades_glittering": true
+        }
+      },
+      "repKey": "Dehya",
+      "repSlug": "dehya",
+      "resonanceElements": {},
+      "slug": "dehya-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "diluc_conviction": true,
+          "diluc_dawn": true,
+          "diluc_flaming_sword_nemesis_of_the_dark": true,
+          "diluc_flowing_flame": true,
+          "diluc_searing_ember": 3
+        }
+      },
+      "repKey": "Diluc",
+      "repSlug": "diluc",
+      "resonanceElements": {},
+      "slug": "diluc-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "diona_cats_tail": true
+        }
+      },
+      "repKey": "Diona",
+      "repSlug": "diona",
+      "resonanceElements": {},
+      "slug": "diona-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "dori_sprinkling_weight": true
+        }
+      },
+      "repKey": "Dori",
+      "repSlug": "dori",
+      "resonanceElements": {},
+      "slug": "dori-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "emilie_lakelight_top_note": true,
+          "emilie_marcotte_sillage": true
+        }
+      },
+      "repKey": "Emilie",
+      "repSlug": "emilie",
+      "resonanceElements": {},
+      "slug": "emilie-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 4,
+        "settings": {
+          "char_constellation": 4,
+          "eula_icewhirl_brand": true,
+          "eula_obstinacy": true,
+          "eula_tidal_illusion": true
+        }
+      },
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "resonanceElements": {},
+      "slug": "eula-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "char_skill_burst": 10,
+          "faruzan_lost_wisdom_of_the_seven_caverns": true,
+          "faruzan_wind_bale": true,
+          "faruzan_wind_benefit": true
+        }
+      },
+      "repKey": "Faruzan",
+      "repSlug": "faruzan",
+      "resonanceElements": {},
+      "slug": "faruzan-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "settings": {
+          "freminet_stalking_mode": true
+        }
+      },
+      "repKey": "Freminet",
+      "repSlug": "freminet",
+      "resonanceElements": {},
+      "slug": "freminet-stalking-mode",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "constellation": 2,
+        "settings": {
+          "char_constellation": 2,
+          "furina_fanfare_stacks": 600
+        }
+      },
+      "repKey": "Furina",
+      "repSlug": "furina",
+      "resonanceElements": {},
+      "slug": "furina-c2-fanfare-hp",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "constellation": 1,
+        "settings": {
+          "char_constellation": 1,
+          "furina_fanfare_stacks": 350,
+          "furina_hp_offers": 4
+        }
+      },
+      "repKey": "Furina",
+      "repSlug": "furina",
+      "resonanceElements": {},
+      "slug": "furina-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 2,
+        "settings": {
+          "char_constellation": 2,
+          "gaming_plum_blossoms_underfoot": true
+        }
+      },
+      "repKey": "Gaming",
+      "repSlug": "gaming",
+      "resonanceElements": {},
+      "slug": "gaming-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "ganyu_dew_drinker": true,
+          "ganyu_harmony": true,
+          "ganyu_undivided_heart": true,
+          "ganyu_westward_sojourn": 5
+        }
+      },
+      "repKey": "Ganyu",
+      "repSlug": "ganyu",
+      "resonanceElements": {},
+      "slug": "ganyu-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "gorou_generals_war_banner": true,
+          "gorou_heedless_of_the_wind_and_weather": true
+        }
+      },
+      "repKey": "Gorou",
+      "repSlug": "gorou",
+      "resonanceElements": {},
+      "slug": "gorou-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "hu_tao_butterflys_embrace": true,
+          "hu_tao_sanguine_rouge": true
+        }
+      },
+      "repKey": "Hutao",
+      "repSlug": "hu_tao",
+      "resonanceElements": {},
+      "slug": "hu-tao-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "iansan_enhanced_resistance_training": true,
+          "iansan_teachings_of_the_collective_of_plenty": true
+        }
+      },
+      "repKey": "Iansan",
+      "repSlug": "iansan",
+      "resonanceElements": {},
+      "slug": "iansan-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 36,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "constellation": 2,
+        "settings": {
+          "char_constellation": 2,
+          "common.nightsoul_blessing_state": true,
+          "ifa_field_medics_vision": 200,
+          "ifa_mutual_aid_agreement": true
+        }
+      },
+      "repKey": "Ifa",
+      "repSlug": "ifa",
+      "resonanceElements": {},
+      "slug": "ifa-c2-vision",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 36,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "constellation": 4,
+        "settings": {
+          "char_constellation": 4,
+          "common.nightsoul_blessing_state": true,
+          "ifa_decayed_vessels_permutation": true,
+          "ifa_field_medics_vision": 150,
+          "ifa_mutual_aid_agreement": true
+        }
+      },
+      "repKey": "Ifa",
+      "repSlug": "ifa",
+      "resonanceElements": {},
+      "slug": "ifa-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "party",
+      "origin": "nodkrai",
+      "party": {
+        "constellation": 1,
+        "settings": {
+          "char_constellation": 1,
+          "ineffa_panoramic_permutation_protocol": true,
+          "ineffa_rectifying_processor": true
+        }
+      },
+      "repKey": "Ineffa",
+      "repSlug": "ineffa",
+      "resonanceElements": {},
+      "slug": "ineffa-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "constellation": 4,
+        "settings": {
+          "char_constellation": 4,
+          "itto_jailhouse_bread_and_butter": true
+        }
+      },
+      "repKey": "Itto",
+      "repSlug": "arataki_itto",
+      "resonanceElements": {},
+      "slug": "itto-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "jean": true,
+          "jean_lands_of_dandelion": true
+        }
+      },
+      "repKey": "Jean",
+      "repSlug": "jean",
+      "resonanceElements": {},
+      "slug": "jean-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "settings": {
+          "kachina_mountain_echoes": true
+        }
+      },
+      "repKey": "Kachina",
+      "repSlug": "kachina",
+      "resonanceElements": {},
+      "slug": "kachina-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "kaeya_excellent_blood": true
+        }
+      },
+      "repKey": "Kaeya",
+      "repSlug": "kaeya",
+      "resonanceElements": {},
+      "slug": "kaeya-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "settings": {
+          "ayaka_ai_suigetsu": true,
+          "ayaka_amatsumi_kunitsumi_ihahigoto": true,
+          "ayaka_eikyo_ryuuhan": true,
+          "ayaka_kanten_senmyou_norito": true,
+          "ayaka_senho": true,
+          "char_constellation": 6
+        }
+      },
+      "repKey": "Ayaka",
+      "repSlug": "kamisato_ayaka",
+      "resonanceElements": {},
+      "slug": "kamisato-ayaka-senho",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "kaveh_a_craftsmans_curious_conceptions": 4,
+          "kaveh_painted_dome": true
+        }
+      },
+      "repKey": "Kaveh",
+      "repSlug": "kaveh",
+      "resonanceElements": {},
+      "slug": "kaveh-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 51,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "kaedehara_kazuha_crimson_momiji": true,
+          "kaedehara_kazuha_poetics_of_fuubutsu": "cryo"
+        }
+      },
+      "repKey": "Kazuha",
+      "repSlug": "kaedehara_kazuha",
+      "resonanceElements": {},
+      "slug": "kazuha-windsong",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 34,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "keqing_attunement": true,
+          "keqing_dignity": true,
+          "keqing_penance": true,
+          "keqing_tenacious_star": 4
+        }
+      },
+      "repKey": "Keqing",
+      "repSlug": "keqing",
+      "resonanceElements": {},
+      "slug": "keqing-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "constellation": 4,
+        "settings": {
+          "char_constellation": 4,
+          "kinich_hummingbirds_feather": true,
+          "kinich_parrots_beak": true,
+          "kinich_tiger_beetles_palm_1": true,
+          "kinich_tiger_beetles_palm_2": true
+        }
+      },
+      "repKey": "Kinich",
+      "repSlug": "kinich",
+      "resonanceElements": {},
+      "slug": "kinich-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "kirara_countless_sights_to_see": true
+        }
+      },
+      "repKey": "Kirara",
+      "repSlug": "kirara",
+      "resonanceElements": {},
+      "slug": "kirara-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "klee_blazing_delight": true,
+          "klee_explosive_frags": true,
+          "klee_pounding_surprise": true
+        }
+      },
+      "repKey": "Klee",
+      "repSlug": "klee",
+      "resonanceElements": {},
+      "slug": "klee-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "inadzuma",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "kuki_shinobu_to_ward_weakness": true
+        }
+      },
+      "repKey": "KukiShinobu",
+      "repSlug": "kuki_shinobu",
+      "resonanceElements": {},
+      "slug": "kuki-shinobu-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 40,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 4,
+        "settings": {
+          "char_constellation": 4,
+          "lanyan_with_drakefalcons_blood_pearls_adorned": true
+        }
+      },
+      "repKey": "LanYan",
+      "repSlug": "lan_yan",
+      "resonanceElements": {},
+      "slug": "lanyan-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "layla_starry_illumination": true
+        }
+      },
+      "repKey": "Layla",
+      "repSlug": "layla",
+      "resonanceElements": {},
+      "slug": "layla-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "lisa_electromagnetic_field": true,
+          "lisa_static_electricity_field": true
+        }
+      },
+      "repKey": "Lisa",
+      "repSlug": "lisa",
+      "resonanceElements": {},
+      "slug": "lisa-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 1,
+        "party_elements_same_inc": 1,
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 40,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "lynette_props_positively_prepped": true,
+          "lynette_sophisticated_synergy": true,
+          "lynette_watchful_eye": true
+        }
+      },
+      "repKey": "Lynette",
+      "repSlug": "lynette",
+      "resonanceElements": {},
+      "slug": "lynette-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 1,
+        "party_elements_same_inc": 1,
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "common.enemy_status": "pyro",
+          "lyney_locquacious_cajoling": 3,
+          "lyney_perilous_performance": true,
+          "lyney_surplus_stacks": 5,
+          "lyney_well_versed_well_rehearsed": true
+        }
+      },
+      "repKey": "Lyney",
+      "repSlug": "lyney",
+      "resonanceElements": {},
+      "slug": "lyney-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "mavuika_crucible_of_death_and_life": true,
+          "mavuika_gift_of_flaming_flowers": true,
+          "mavuika_humanitys_name_unfettered": true,
+          "mavuika_kiongozi": 40,
+          "mavuika_points": 200,
+          "mavuika_stance": true,
+          "mavuika_the_ashen_price": true,
+          "mavuika_the_night_lords_explication": true
+        }
+      },
+      "repKey": "Mavuika",
+      "repSlug": "mavuika",
+      "resonanceElements": {},
+      "slug": "mavuika-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "mika_companions_counsel": true,
+          "mika_suppressive_barrage": 5
+        }
+      },
+      "repKey": "Mika",
+      "repSlug": "mika",
+      "resonanceElements": {},
+      "slug": "mika-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 34,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "settings": {
+          "mizuki_thoughts_by_day_bring_dreams_by_night": true
+        }
+      },
+      "repKey": "Mizuki",
+      "repSlug": "yumemizuki_mizuki",
+      "resonanceElements": {},
+      "slug": "mizuki-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "mona_omen": true,
+          "mona_prophecy_of_oblivion": true,
+          "mona_prophecy_of_submersion": true,
+          "mona_rhetorics_of_calamitas": 3
+        }
+      },
+      "repKey": "Mona",
+      "repSlug": "mona",
+      "resonanceElements": {},
+      "slug": "mona-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 21,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "mualani_byte_targets": 3,
+          "mualani_natlans_greatest_guide": 3,
+          "mualani_sharky_eats_puffies": true,
+          "mualani_the_leisurely_meztli": true,
+          "mualani_wave_momentum": 3
+        }
+      },
+      "repKey": "Mualani",
+      "repSlug": "mualani",
+      "resonanceElements": {},
+      "slug": "mualani-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "nahida_compassion_illuminated": true,
+          "nahida_illusory_heart": true,
+          "nahida_the_root_of_all_fullness": true,
+          "party_max_mastery": 1000
+        }
+      },
+      "repKey": "Nahida",
+      "repSlug": "nahida",
+      "resonanceElements": {},
+      "slug": "nahida-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "constellation": 4,
+        "settings": {
+          "char_constellation": 4,
+          "navia_the_oathsworn_never_capitulate": true,
+          "navia_undisclosed_distribution_channels": true
+        }
+      },
+      "repKey": "Navia",
+      "repSlug": "navia",
+      "resonanceElements": {},
+      "slug": "navia-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "neuvillette_ancient_seas_legacy": 3
+        }
+      },
+      "repKey": "Neuvillette",
+      "repSlug": "neuvillette",
+      "resonanceElements": {},
+      "slug": "neuvillette-ancient-seas-legacy",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "constellation": 4,
+        "settings": {
+          "char_constellation": 4,
+          "nilou_fricative_pulse": true,
+          "nilou_the_starry_skies_2": true
+        }
+      },
+      "repKey": "Nilou",
+      "repSlug": "nilou",
+      "resonanceElements": {},
+      "slug": "nilou-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 20,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "ningguang_exquisite_be_the_jade_outshining_all_beneath": true,
+          "ningguang_strategic_reserve": true
+        }
+      },
+      "repKey": "Ningguang",
+      "repSlug": "ningguang",
+      "resonanceElements": {},
+      "slug": "ningguang-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "noelle_sweeping_time": true
+        }
+      },
+      "repKey": "Noelle",
+      "repSlug": "noelle",
+      "resonanceElements": {},
+      "slug": "noelle-sweeping-time",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "ororon_king_bee_of_the_hidden_honeyed_wine": 4,
+          "ororon_ode_to_deep_springs": 3,
+          "ororon_trails_amidst_the_forest_fog": true
+        }
+      },
+      "repKey": "Ororon",
+      "repSlug": "ororon",
+      "resonanceElements": {},
+      "slug": "ororon-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 2,
+        "settings": {
+          "char_constellation": 2,
+          "common.enemy_status": "cryo"
+        }
+      },
+      "repKey": "Qiqi",
+      "repSlug": "qiqi",
+      "resonanceElements": {},
+      "slug": "qiqi-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 32,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "settings": {
+          "baal_musou_isshin": true
+        }
+      },
+      "repKey": "RaidenShogun",
+      "repSlug": "raiden_shogun",
+      "resonanceElements": {},
+      "slug": "raiden-musou-isshin",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "settings": {
+          "razor_wolf_within": true
+        }
+      },
+      "repKey": "Razor",
+      "repSlug": "razor",
+      "resonanceElements": {},
+      "slug": "razor-wolf-within",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "rosaria_divine_retribution": true,
+          "rosaria_regina_probationum": true,
+          "rosaria_unholy_revelation": true
+        }
+      },
+      "repKey": "Rosaria",
+      "repSlug": "rosaria",
+      "resonanceElements": {},
+      "slug": "rosaria-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "sara_tengu_juurai": true
+        }
+      },
+      "repKey": "Sara",
+      "repSlug": "kujou_sara",
+      "resonanceElements": {},
+      "slug": "sara-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 48,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "sayu_egress_prep": 20
+        }
+      },
+      "repKey": "Sayu",
+      "repSlug": "sayu",
+      "resonanceElements": {},
+      "slug": "sayu-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 22,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "settings": {
+          "sethos_twilight_meditation": true
+        }
+      },
+      "repKey": "Sethos",
+      "repSlug": "sethos",
+      "resonanceElements": {},
+      "slug": "sethos-twilight-meditation",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "shenhe_icy_quill": true,
+          "shenhe_spirit_field": true,
+          "shenhe_spirit_seal_hold": true,
+          "shenhe_spirit_seal_press": true,
+          "shenhe_talisman_spirit": true
+        }
+      },
+      "repKey": "Shenhe",
+      "repSlug": "shenhe",
+      "resonanceElements": {},
+      "slug": "shenhe-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "sigewinne_requires_appropriate_rest": true,
+          "sigewinne_would_the_most_radiant_of_spirits_pray_for_me": true
+        }
+      },
+      "repKey": "Sigewinne",
+      "repSlug": "sigewinne",
+      "resonanceElements": {},
+      "slug": "sigewinne-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "foreign",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "skirk_havoc_extinction": true,
+          "skirk_into_the_abyss": true,
+          "skirk_reason_beyond_reason": 3,
+          "skirk_return_to_oblivion": 3,
+          "skirk_serpents_subtlety": 22,
+          "skirk_seven_phase_flash": true
+        }
+      },
+      "repKey": "Skirk",
+      "repSlug": "skirk",
+      "resonanceElements": {},
+      "slug": "skirk-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "sucrose_chaotic_entropy": "pyro"
+        }
+      },
+      "repKey": "Sucrose",
+      "repSlug": "sucrose",
+      "resonanceElements": {},
+      "slug": "sucrose-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "snezhnaya",
+      "party": {
+        "settings": {
+          "tartaglia_raging_tide": true
+        }
+      },
+      "repKey": "Tartaglia",
+      "repSlug": "tartaglia",
+      "resonanceElements": {},
+      "slug": "tartaglia-raging-tide",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "thoma_burning_heart": true
+        }
+      },
+      "repKey": "Thoma",
+      "repSlug": "thoma",
+      "resonanceElements": {},
+      "slug": "thoma-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "sumeru",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "tighnari_keen_sight": true,
+          "tighnari_origins_known_from_the_stem": true,
+          "tighnari_withering_glimpsed_in_the_leaves_1": true,
+          "tighnari_withering_glimpsed_in_the_leaves_2": true
+        }
+      },
+      "repKey": "Tighnari",
+      "repSlug": "tighnari",
+      "resonanceElements": {},
+      "slug": "tighnari-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 58,
+      "kind": "party",
+      "origin": "foreign",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "traveler_intertwined_winds": true,
+          "traveler_intertwined_winds_element": "pyro",
+          "traveler_special_training": true,
+          "traveler_swordfighting_techniques": true
+        }
+      },
+      "repKey": "TravelerAnemo",
+      "repSlug": "traveler_anemo",
+      "resonanceElements": {},
+      "slug": "traveler-anemo-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "foreign",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "traveler_special_training": true,
+          "traveler_swordfighting_techniques": true,
+          "traveler_verdant_overgrowth": 10,
+          "traveler_withering_aggregation_1": true
+        }
+      },
+      "repKey": "TravelerDendro",
+      "repSlug": "traveler_dendro",
+      "resonanceElements": {},
+      "slug": "traveler-dendro-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "foreign",
+      "party": {
+        "constellation": 2,
+        "settings": {
+          "char_constellation": 2,
+          "traveler_abundance_amulet": true,
+          "traveler_special_training": true,
+          "traveler_swordfighting_techniques": true,
+          "traveler_violet_vehemence": true
+        }
+      },
+      "repKey": "TravelerElectro",
+      "repSlug": "traveler_electro",
+      "resonanceElements": {},
+      "slug": "traveler-electro-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "foreign",
+      "party": {
+        "constellation": 1,
+        "settings": {
+          "char_constellation": 1,
+          "traveler_invincible_stonewall": true,
+          "traveler_special_training": true,
+          "traveler_swordfighting_techniques": true
+        }
+      },
+      "repKey": "TravelerGeo",
+      "repSlug": "traveler_geo",
+      "resonanceElements": {},
+      "slug": "traveler-geo-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 28,
+      "kind": "party",
+      "origin": "foreign",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "common.nightsoul_blessing_state": true,
+          "traveler_pyro_starfires_flowing_light": true,
+          "traveler_pyro_the_sacred_flame_imperishable": true,
+          "traveler_ravaging_flame": true,
+          "traveler_special_training": true,
+          "traveler_swordfighting_techniques": true
+        }
+      },
+      "repKey": "TravelerPyro",
+      "repSlug": "traveler_pyro",
+      "resonanceElements": {},
+      "slug": "travelerpyro-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "varesa_fiery_passion": true,
+          "varesa_tag_team_triple_jump": true,
+          "varesa_the_courage_to_press_on_1": true,
+          "varesa_the_hero_twice_returned": 2
+        }
+      },
+      "repKey": "Varesa",
+      "repSlug": "varesa",
+      "resonanceElements": {},
+      "slug": "varesa-fiery-passion",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "varesa_a_hero_of_justices_triumph": true,
+          "varesa_the_courage_to_press_on_2": true
+        }
+      },
+      "repKey": "Varesa",
+      "repSlug": "varesa",
+      "resonanceElements": {},
+      "slug": "varesa-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 42,
+      "kind": "party",
+      "origin": "mondstadt",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "venti_breeze": true,
+          "venti_breeze_2": true,
+          "venti_hurricane": true,
+          "venti_storm": true,
+          "venti_storm_element": "pyro"
+        }
+      },
+      "repKey": "Venti",
+      "repSlug": "venti",
+      "resonanceElements": {},
+      "slug": "venti-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "wanderer_windfavored": true
+        }
+      },
+      "repKey": "Wanderer",
+      "repSlug": "wanderer",
+      "resonanceElements": {},
+      "slug": "wanderer-windfavored",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "cryo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "party",
+      "origin": "fontaine",
+      "party": {
+        "settings": {
+          "wriothesley_chilling_penalty": true
+        }
+      },
+      "repKey": "Wriothesley",
+      "repSlug": "wriothesley",
+      "resonanceElements": {},
+      "slug": "wriothesley-chilling-penalty",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "xiangling_condensed_pyronado": true,
+          "xiangling_crispy": true
+        }
+      },
+      "repKey": "Xiangling",
+      "repSlug": "xiangling",
+      "resonanceElements": {},
+      "slug": "xiangling-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 38,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "xianyun_aloof_from_the_world": true,
+          "xianyun_cloudkeepers_spirit": 2,
+          "xianyun_consider_the_adeptus_in_her_realm": true,
+          "xianyun_galefeather_pursuit": 3
+        }
+      },
+      "repKey": "Xianyun",
+      "repSlug": "xianyun",
+      "resonanceElements": {},
+      "slug": "xianyun-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "anemo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 33,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "settings": {
+          "xiao_yaksha_mask": true
+        }
+      },
+      "repKey": "Xiao",
+      "repSlug": "xiao",
+      "resonanceElements": {},
+      "slug": "xiao-yaksha-mask",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 23,
+      "kind": "party",
+      "origin": "natlan",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "common.nightsoul_blessing_state": true
+        }
+      },
+      "repKey": "Xilonen",
+      "repSlug": "xilonen",
+      "resonanceElements": {},
+      "slug": "xilonen-nightsoul",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 4,
+        "settings": {
+          "char_constellation": 4,
+          "xingqiu_evilsoother": true,
+          "xingqiu_rainbow_upon_the_azure_sky": true
+        }
+      },
+      "repKey": "Xingqiu",
+      "repSlug": "xingqiu",
+      "resonanceElements": {},
+      "slug": "xingqiu-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_alley_flash",
+        "type": "sword"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "xinyan_rockin_in_a_flaming_world": true
+        }
+      },
+      "repKey": "Xinyan",
+      "repSlug": "xinyan",
+      "resonanceElements": {},
+      "slug": "xinyan-rockin",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 4,
+        "settings": {
+          "char_constellation": 4,
+          "xinyan_now_thats_rock": true,
+          "xinyan_wildfire_rhythm": true
+        }
+      },
+      "repKey": "Xinyan",
+      "repSlug": "xinyan",
+      "resonanceElements": {},
+      "slug": "xinyan-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "type": "claymore"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "electro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 27,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "constellation": 4,
+        "settings": {
+          "char_constellation": 4,
+          "miko_sakura_channeling": true
+        }
+      },
+      "repKey": "YaeMiko",
+      "repSlug": "yae_miko",
+      "resonanceElements": {},
+      "slug": "yae-miko-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 2,
+        "settings": {
+          "char_constellation": 2,
+          "yanfei_brilliance": true,
+          "yanfei_interpretation": true,
+          "yanfei_scarlet_seal": 3
+        }
+      },
+      "repKey": "YanFei",
+      "repSlug": "yanfei",
+      "resonanceElements": {},
+      "slug": "yanfei-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.solar_pearl",
+        "type": "catalyst"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 31,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "yaoyao_adeptus_tutelage": true
+        }
+      },
+      "repKey": "Yaoyao",
+      "repSlug": "yaoyao",
+      "resonanceElements": {},
+      "slug": "yaoyao-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "dendro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 29,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 4,
+        "settings": {
+          "char_constellation": 4,
+          "yaoyao_winsome": true
+        }
+      },
+      "repKey": "Yaoyao",
+      "repSlug": "yaoyao",
+      "resonanceElements": {},
+      "slug": "yaoyao-winsome",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 1,
+        "party_elements_same_inc": 1,
+        "party_size": 1
+      },
+      "element": "hydro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 4,
+        "settings": {
+          "char_constellation": 4,
+          "yelan_bait_and_switch": 4
+        }
+      },
+      "repKey": "Yelan",
+      "repSlug": "yelan",
+      "resonanceElements": {},
+      "slug": "yelan-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "pyro",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 35,
+      "kind": "party",
+      "origin": "inazuma",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "yoimiya_teika_enshou": true
+        }
+      },
+      "repKey": "Yoimiya",
+      "repSlug": "yoimiya",
+      "resonanceElements": {},
+      "slug": "yoimiya-teika-enshou",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.alley_hunter",
+        "type": "bow"
+      }
+    },
+    {
+      "derived": {
+        "party_elements_count_level": 1,
+        "party_elements_same_inc": 1,
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "constellation": 6,
+        "settings": {
+          "char_constellation": 6,
+          "yunjin_flag": true,
+          "yunjin_flower": true,
+          "yunjin_myriad": true
+        }
+      },
+      "repKey": "YunJin",
+      "repSlug": "yun_jin",
+      "resonanceElements": {},
+      "slug": "yunjin-self-buffs",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    },
+    {
+      "derived": {
+        "party_size": 1
+      },
+      "element": "geo",
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 30,
+      "kind": "party",
+      "origin": "liyue",
+      "party": {
+        "settings": {
+          "zhongli_jade_shield": true
+        }
+      },
+      "repKey": "Zhongli",
+      "repSlug": "zhongli",
+      "resonanceElements": {},
+      "slug": "zhongli-jade-shield",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "type": "polearm"
+      }
+    }
+  ]
+}

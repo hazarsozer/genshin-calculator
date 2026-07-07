@@ -42,6 +42,7 @@ import type {
   Element,
   EvalContext,
   Feature,
+  FeatureMultiplierEntry,
   StatTableEntry,
 } from "@genshin/types";
 import { getArtifactSet } from "./artifacts/sets/index.js";
@@ -173,7 +174,30 @@ const REACTION_DERIVED_KEYS = [
   // fraction-valued). Read by the lunardirect `(1 + Σ scaling)` term on BOTH her direct LC and LB hits
   // (the HP-scaled analog of lunarcharged_multi / lunarbloom_multi). Base-inert: sole reader = Columbina.
   "columbina_lunar_multi",
+  // Zibai's Lunar-Crystallize utility-passive base-DMG bonus = min(DEF×0.00007, 0.14) (post-effect
+  // `lunarMultiFromDef`, fraction-valued). Read by the lunardirect `(1 + Σ scaling)` term on her
+  // Lunar-Crystallize hits (Stride-2 + Burst-2) — the DEF-scaled analog. Base-inert: sole reader = Zibai.
+  "zibai_lunar_multi",
+  // Linnea's Lunar-Crystallize a0 base-DMG bonus = min(DEF×0.00007, 0.14) (post-effect `lunarMultiFromDef`,
+  // fraction-valued; IDENTICAL coefficient to Zibai). Read by the lunardirect `(1 + Σ scaling)` term on her
+  // Hammer/Crush hits. Base-inert: sole reader = Linnea.
+  "linnea_lunar_multi",
 ] as const;
+
+/**
+ * Flat-damage stat keys the transformative-reaction factories read via
+ * `cTransformativeDamage`'s `reactionFlatKeys` (added BEFORE the resistance
+ * multiplier, not multiplied by the reaction/level factor). Post-effect-sourced
+ * and already fraction-of-EM valued (the postEffect `ratio` — 11 = 1100/100 —
+ * bakes the /100 in), so this is a pass-through like the rate-scaling
+ * REACTION_DERIVED_KEYS above (NOT re-divided, unlike REACTION_BONUS_PERCENT_KEYS
+ * which is condition-sourced raw percent). Only producer in scope: Mizuki's C1
+ * "In Mist-Like Waters" (`reaction_flat_swirl`).
+ *
+ * Source: raw/genshin_calc_pub/src/js/db/Char/Mizuki.js:328-343;
+ *         raw/genshin_calc_pub/src/js/classes/Feature2/Reaction.js:38-49,86-129.
+ */
+const REACTION_FLAT_KEYS = ["reaction_flat_swirl"] as const;
 
 /**
  * Per-reaction DMG bonus keys CONDITIONS contribute (e.g. CrimsonWitch 4pc's
@@ -225,6 +249,12 @@ const REACTION_BONUS_PERCENT_KEYS = [
   // Lauma's Ascendant-Gleam (moonsign≥2) team Lunar-Bloom DMG bonus — C2 +0.4 (raw 40 → /100), A1
   // ascendant. Condition-sourced raw percent, /100'd like every sibling. Off at moonsign 1 → base-inert.
   "dmg_reaction_lunarbloom",
+  // Lightbearing Moonshard passive (v6.3): toggle → lunarcrystallize_dmg_ +64% (R1). Condition-sourced
+  // raw percent (64 → /100 = 0.64), emitted into the Lunar-Crystallize reaction factor
+  // (1 + emBonus + Σ reactionBonus) via `reactionBonusKeys` on the `lunardirect` Feature.reaction.
+  // Golden Frostbound Oath (v6.5) also writes this key (lunarcrystallize_dmg_ +40% via its toggle).
+  // Absent on every build with no such passive active → key never emitted → base-inert.
+  "dmg_reaction_lunarcrystallize",
 ] as const;
 
 /**
@@ -288,6 +318,15 @@ const RAW_BAG_SCALING_KEYS = [
   "layla_max_hp",         // Layla C4 HP-scaled normal/charged-DMG multiplier (P3.5.2 Bucket C)
   "sigewinne_hp_total",   // Sigewinne A1 max-HP-ABOVE-30000-scaled skill-DMG multiplier (P3.5.2 engine-ext; exceedStatValue)
   "xianyun_atk_total",    // Xianyun A4 ATK-scaled plunge-SHOCKWAVE-DMG multiplier (P3.5.2 Xianyun sub-pass; tags target)
+  "furina_fanfare_dmg_healing_stacks", // Furina "Let the People Rejoice" fanfare self-buff readouts
+                          // (Tier-B S3): the two `kind:"static"` display features
+                          // (furina_fanfare_dmg_bonus / heal_bonus) scale on this DERIVED,
+                          // unconditionally-400-capped stack count (mirrors fanfareDmgPost/
+                          // HealingPost's own maxBase:400, distinct from the raw slider's C2-bumped
+                          // 800 clamp) via compileFeature's cStat read of the FINAL emitted bag. The
+                          // real dmg_all/healing_recv bonuses (CharPostEffects) read the pre-emit
+                          // snapshot directly and need no allow-listing; only the feature-scaling
+                          // readouts need this entry to see a nonzero value.
 ] as const;
 
 /**
@@ -626,6 +665,29 @@ function collectFeatureBonusKeys(features: readonly Feature[]): readonly string[
     for (const k of f.critDamageBonuses ?? []) keys.add(k);
     for (const k of f.damageBonuses ?? []) keys.add(k);
   }
+  return [...keys];
+}
+
+/**
+ * The set of `bonusStatFactor` keys referenced by any multiplier (per-feature OR char-level).
+ * A multiplier's `bonusStatFactor` appends `cStat(key)` as an EXTRA base-term factor (her
+ * FeatureMultiplier{Kokomi,TravelerHydro}.getTreeBonusMultiplier — a bare `× stat`), so buildStats
+ * must emit each present key as a FRACTION (all v5.8 users are percent stats — Kokomi's `healing`,
+ * already emitted via HEAL_BONUS_KEYS, and Traveler(Hydro)'s `traveler_clear_waters_percent`, a
+ * ConditionNumber). De-duped; a re-emit of an already-emitted key (`healing`) is idempotent (same
+ * value). Absent for every char with no `bonusStatFactor` multiplier → empty → no emit (base-inert).
+ * Source: raw/.../Feature2/Multiplier/{Kokomi,TravelerHydro}.js:19-21 (makeStatItem override).
+ */
+function collectBonusStatFactorKeys(char: DbObjectChar): readonly string[] {
+  const keys = new Set<string>();
+  const addFrom = (mults: readonly FeatureMultiplierEntry[] | undefined): void => {
+    for (const m of mults ?? []) if (m.bonusStatFactor !== undefined) keys.add(m.bonusStatFactor);
+  };
+  for (const f of char.features) {
+    addFrom(f.multipliers);
+    for (const item of f.items ?? []) addFrom(item.multipliers);
+  }
+  addFrom(char.multipliers);
   return [...keys];
 }
 
@@ -1018,6 +1080,16 @@ export function buildStats(input: BuildInput): BuildResult {
     out[key] = raw.get(key) / 100;
   }
 
+  // Multiplier `bonusStatFactor` keys — the bare `× stat` factor her FeatureMultiplier{Kokomi,
+  // TravelerHydro} appends (makeStatItem, read verbatim). Emitted as FRACTIONS (all v5.8 users are
+  // percent stats); a re-emit of an already-emitted key (Kokomi's `healing`, HEAL_BONUS_KEYS) is
+  // idempotent. The sole NOT-otherwise-emitted key is Traveler(Hydro)'s `traveler_clear_waters_percent`
+  // (a ConditionNumber slider): absent (slider 0/unset) for every golden → not in raw → not emitted →
+  // the A4 factor reads 0 → its whole term is ×0 → base-inert (58k damage goldens byte-identical).
+  for (const key of collectBonusStatFactorKeys(input.char)) {
+    if (raw.isSet(key)) out[key] = raw.get(key) / 100;
+  }
+
   // Heal-bonus stats (her FeatureHeal.getStatsHealBonus → healing/healing_base/healing_recv),
   // read DIRECTLY (makeStatItem, not a base+flat total) and summed in the heal's
   // CMultiplierBonus. `healing_base` is the ascension healing-bonus secondary from charTables;
@@ -1036,6 +1108,13 @@ export function buildStats(input: BuildInput): BuildResult {
   // condition-sourced (raw percent) and lives in REACTION_BONUS_PERCENT_KEYS — it
   // is /100'd below. (Raw: db/Char/Ineffa.js lunarPost, PostEffect/Stats.js getTree.)
   for (const key of REACTION_DERIVED_KEYS) {
+    if (raw.isSet(key)) out[key] = raw.get(key);
+  }
+
+  // Reaction-FLAT keys the transformative-reaction factories add before the
+  // resistance multiplier (cTransformativeDamage's `reactionFlatKeys`). Already
+  // fraction-of-EM valued from the postEffect ratio → pass-through, no /100.
+  for (const key of REACTION_FLAT_KEYS) {
     if (raw.isSet(key)) out[key] = raw.get(key);
   }
 

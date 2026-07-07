@@ -317,6 +317,16 @@ function catalyzeEmCurve(): Block {
   return cDivide([cMulti([cConst(5), em]), cSum([em, cConst(1200)])]);
 }
 
+/**
+ * Her `ValueTable.getValue(level)` for the `level > 0` branch: 1-indexed and clamped
+ * to `table.length` (`return values[min(level, length) - 1]`, ValueTable.js). The
+ * `scalingMultiplierFromTable` caller invokes this only for `level > 0`, matching her
+ * `FeatureMultiplierNeuvilleteCharged` guard.
+ */
+function valueTableGet(table: readonly number[], level: number): number {
+  return table[Math.min(level, table.length) - 1]!;
+}
+
 /** Build the base-damage term for one multiplier: talent% × scalingStatTotal. */
 function baseDamageTerm(
   entry: FeatureMultiplierEntry,
@@ -377,10 +387,64 @@ function baseDamageTerm(
   // `scalingMultiplier` is the flat extra factor on the base term (her
   // getTreeBonusMultiplier CConst — "bonus hit = X% of a base hit", e.g. Amber C1's
   // second arrow at 0.20). Absent = ×1.
+  //
+  // Three ways her `getScalingMultiplier(data)` resolves this factor:
+  //   1. the plain constant `scalingMultiplier` (default 1) — the base class;
+  //   2. that constant GATED by `scalingMultiplierCondition` (Multiplier.js:157-162:
+  //      active/absent gate → the constant; inactive gate → 1) — Freminet's frost ×2;
+  //   3. a `ValueTable` lookup keyed by a settings level, via `scalingMultiplierFromTable`
+  //      (her FeatureMultiplierNeuvilleteCharged subclass OVERRIDE: `level > 0 ?
+  //      table.getValue(level) : 1`) — Neuvillette's equitable judgment. The table form
+  //      is a full override → it REPLACES the constant + condition (fail loud if combined).
+  // Read at COMPILE time against the build settings (like `scalingOffset` below); the
+  // factor bakes into the base term, so a settings change recompiles the feature.
+  let scalingFactor: number;
+  if (entry.scalingMultiplierFromTable !== undefined) {
+    if (entry.scalingMultiplier !== undefined || entry.scalingMultiplierCondition !== undefined) {
+      throw new Error(
+        `baseDamageTerm: entry '${entry.source ?? "(unnamed)"}' sets scalingMultiplierFromTable ` +
+        `with scalingMultiplier/scalingMultiplierCondition — the table form replaces both`
+      );
+    }
+    const { table, levelSetting, condition } = entry.scalingMultiplierFromTable;
+    // Optional gate (her FeatureMultiplier{Wriothesley,Wanderer,Yoimiya}: the table factor
+    // multiplies in ONLY while a toggle is on — `if (settings.<gate>) result *= table.getValue
+    // (level)/100`, else `result` stays 1). An INACTIVE gate ⇒ factor 1; absent ⇒ always
+    // applied (Neuvillette's NeuvilleteCharged override has no gate).
+    if (condition !== undefined && !evaluate(condition, ctx.settings)) {
+      scalingFactor = 1;
+    } else {
+      // Resolve the table level the SAME way the talent% path resolves its level (above):
+      // a char-skill leveling key reads the build's talent level (ctx.talentLevels[slot])
+      // and adds the constellation `_bonus` (her getLevel('char_skill_elemental') = base +
+      // `_bonus`, e.g. Wanderer C5 / Yoimiya C3 → +3); any OTHER key reads the raw setting
+      // with NO `_bonus` (Neuvillette's droplet stacks: `<key>_bonus` never exists →
+      // skillLevelBonus returns 0 → the read is byte-identical to before).
+      const slot = LEVELING_TO_SLOT[levelSetting];
+      let baseLevel: number;
+      if (slot !== undefined) {
+        baseLevel = ctx.talentLevels[slot];
+      } else {
+        const rawLevel = ctx.settings[levelSetting];
+        baseLevel = typeof rawLevel === "number" ? rawLevel : 0;
+      }
+      const level = baseLevel + skillLevelBonus(ctx.settings, levelSetting);
+      // her NeuvilleteCharged.getScalingMultiplier: level>0 → table.getValue(level), else 1.
+      scalingFactor = level > 0 ? valueTableGet(table, level) : 1;
+    }
+  } else {
+    scalingFactor = entry.scalingMultiplier ?? 1;
+    // Conditional gate: an INACTIVE gate reverts the constant to 1 (her `return 1`).
+    if (
+      entry.scalingMultiplierCondition !== undefined &&
+      !evaluate(entry.scalingMultiplierCondition, ctx.settings)
+    ) {
+      scalingFactor = 1;
+    }
+  }
   // `scalingOffset` adds a settings-driven additive offset to the scaling factor —
   // faithful to FurinaSkill.getScalingMultiplier: `result += perStack × min(maxStacks, stacks)`.
   // Absent or 0 stacks → offset 0 → no change.
-  let scalingFactor = entry.scalingMultiplier ?? 1;
   if (entry.scalingOffset !== undefined) {
     const raw = ctx.settings[entry.scalingOffset.setting];
     const stacks = typeof raw === "number" ? raw : 0;
@@ -429,13 +493,20 @@ function baseDamageTerm(
   // the build-coupled constant fold (sayu C6 30.2, kirara C1 scalingMultiplier 3).
   // Absent → the children are exactly [talentPercent, scalingStat] as before.
   if (entry.coefficientFromStat !== undefined) {
-    // Fail loud: mutually exclusive with scalingMultiplier / scalingOffset (either would
-    // double-count the coefficient — the convention is coefficientFromStat XOR scalar).
-    if (entry.scalingMultiplier !== undefined || entry.scalingOffset !== undefined) {
+    // Fail loud: mutually exclusive with the whole scaling-multiplier family
+    // (scalingMultiplier / scalingOffset / scalingMultiplierCondition /
+    // scalingMultiplierFromTable) — any of them would double-count the coefficient
+    // (the convention is coefficientFromStat XOR the scalar/conditional/table factor).
+    const scalarConflict =
+      entry.scalingMultiplier !== undefined ? "scalingMultiplier"
+      : entry.scalingOffset !== undefined ? "scalingOffset"
+      : entry.scalingMultiplierCondition !== undefined ? "scalingMultiplierCondition"
+      : entry.scalingMultiplierFromTable !== undefined ? "scalingMultiplierFromTable"
+      : undefined;
+    if (scalarConflict !== undefined) {
       throw new Error(
         `baseDamageTerm: entry '${entry.source ?? "(unnamed)"}' sets coefficientFromStat ` +
-        `alongside ${entry.scalingMultiplier !== undefined ? "scalingMultiplier" : "scalingOffset"} ` +
-        `— these are mutually exclusive`
+        `alongside ${scalarConflict} — these are mutually exclusive`
       );
     }
     // Fail loud: exactly one of ratio | divisor required (both or neither silently mis-computes).
@@ -485,6 +556,17 @@ function baseDamageTerm(
     const stacks = typeof rawStacks === "number" ? rawStacks : 0;
     factors.push(cConst(Math.min(stacks, entry.stacksFactor.maxStacks)));
   }
+  // Runtime stat factor — her FeatureMultiplier{Kokomi,TravelerHydro}.getTreeBonusMultiplier
+  // OVERRIDE pushes `makeStatItem(key)` into the multiplier's CMulti (Kokomi.js:19-21,
+  // TravelerHydro.js:19-21), so the term becomes `talent% × scalingStat × cStat(key)`. A BARE
+  // `× stat` (no `+1`, unlike the base class's string-scalingSource `1 + stat`). Read VERBATIM
+  // (her makeStatItem, no `_total`); the key is a percent stat the bag carries as a fraction. The
+  // two v5.8 users are Kokomi's A4 (`healing`) + Traveler(Hydro)'s A4 (`traveler_clear_waters_percent`).
+  // Absent ⇒ no factor; and when set, `cStat` reads 0 for every build that leaves the stat unset
+  // (all 58k goldens) → ×0 → the term vanishes (base-inert).
+  if (entry.bonusStatFactor !== undefined) {
+    factors.push(cStat(entry.bonusStatFactor));
+  }
   let term: Block = cMulti(factors);
   // Flat additive term from FeatureMultiplierList (her CConst(getValueFlat)):
   // `(levelMult × stat) + flat` — the flat component is talent-level-indexed and added
@@ -499,6 +581,33 @@ function baseDamageTerm(
   // applied to THIS term before it enters the base-damage sum and before the
   // dmg-bonus/res/def factors. The sole v5.8 user is Ocean-Hued Clam's foam
   // (`min(0.9 × accumulated_healing, 30000)`). Absent → no cap (every other multiplier).
+  //
+  // capValueFromTable is the LEVEL-INDEXED form — her `capValue.getValue(this.getLevel(data))`
+  // (Multiplier.js:233-237), a ValueTable indexed by the SAME level as the talent% (her
+  // `getLevel(leveling) || 1`). The cap = `table[level]` (1-indexed, clamped via valueTableGet),
+  // the level resolved from its own levelSetting exactly as the talent% path above (char-skill
+  // slot → talent level + `_bonus`; else `settings[levelSetting]` default 1) and floored at 1 to
+  // mirror her `|| 1`. Mutually exclusive with the numeric capValue (fail loud if both). The v5.8
+  // user is Sigewinne's A1/C1 buff (`[2800, 3500]` by sigewinne_buff_level). Absent → the numeric
+  // path; no entry sets it ⇒ base-inert.
+  if (entry.capValueFromTable !== undefined) {
+    if (entry.capValue !== undefined) {
+      throw new Error(
+        `baseDamageTerm: entry '${entry.source ?? "(unnamed)"}' sets both capValue and ` +
+        `capValueFromTable — set exactly one`
+      );
+    }
+    const { table, levelSetting } = entry.capValueFromTable;
+    const capSlot = LEVELING_TO_SLOT[levelSetting];
+    const capBaseLevel =
+      capSlot !== undefined
+        ? ctx.talentLevels[capSlot]
+        : typeof ctx.settings[levelSetting] === "number"
+          ? (ctx.settings[levelSetting] as number)
+          : 1;
+    const capLevel = capBaseLevel + skillLevelBonus(ctx.settings, levelSetting);
+    return cMin([term, cConst(valueTableGet(table, Math.max(1, capLevel)))]);
+  }
   return entry.capValue !== undefined ? cMin([term, cConst(entry.capValue)]) : term;
 }
 
@@ -707,6 +816,7 @@ function compileReaction(
       // for every other char → crit === normal === avg, unchanged.
       ...(critRate.length > 0 ? { critRateKeys: critRate } : {}),
       ...(critDmg.length > 0 ? { critDmgKeys: critDmg } : {}),
+      ...(reaction.reactionFlatKeys ? { reactionFlatKeys: reaction.reactionFlatKeys } : {}),
     });
   }
 
@@ -947,6 +1057,21 @@ export function compileFeature(
     if (variant !== undefined) {
       items.push(cAmplifyingFactor({ variant, reactionBonusKeys: [`dmg_reaction_${reaction}`] }));
     }
+  }
+
+  // Whole-hit multiplier from a settings-indexed table — her `FeatureDamageNormalMualani
+  // .getReactionMultipliers` pushes a `CMultiplierCustom` factor onto the hit's items AFTER
+  // the base term (Normal/Mualani.js:11-31), scaling the WHOLE hit (normal/crit/avg together).
+  // Mirrors the amplifying push above (a top-level cConst item in the CDamage product).
+  // `factor = table[settings[levelSetting]]` (1-indexed, clamped via valueTableGet; level
+  // 0/absent → 1, no push). The sole v5.8 user is Mualani's byte-ratio ([1, 0.86, 0.72] by
+  // `mualani_byte_targets`). Absent / factor 1 → nothing pushed → byte-identical.
+  if (feature.wholeHitMultiplierFromTable !== undefined) {
+    const { table, levelSetting } = feature.wholeHitMultiplierFromTable;
+    const rawLevel = ctx.settings[levelSetting];
+    const level = typeof rawLevel === "number" ? rawLevel : 0;
+    const factor = level > 0 ? valueTableGet(table, level) : 1;
+    if (factor !== 1) items.push(cConst(factor));
   }
 
   // Crit: the aggregated totals (buildStats folds crit_rate/_dmg in), PLUS the

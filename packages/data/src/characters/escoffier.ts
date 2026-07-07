@@ -116,16 +116,22 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
   // --- Skill: Low Temperature Cooking ---
+  // crit_dmg_cryo (C1 "Pre-Dinner Dance") folds into the crit term of Escoffier's cryo hits —
+  // her getDefaultStatsCritDamage auto-includes crit_dmg_<element>; the port requires each feature
+  // to declare it (collectFeatureBonusKeys). Base-inert: crit_dmg_cryo=0 until the C1 condition
+  // fires (constellation 1 + 4 hydro/cryo slots) → root goldens byte-identical.
   {
     name: "skill_dmg",
     category: "skill",
     element: "cryo",
+    critDamageBonuses: ["crit_dmg_cryo"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
   },
   {
     name: "escoffier_frozen_parfait_attack_dmg",
     category: "skill",
     element: "cryo",
+    critDamageBonuses: ["crit_dmg_cryo"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.escoffier_frozen_parfait_attack_dmg") }],
   },
   // surging_blade_dmg: cryo skill DoT (cannotReact in raw but still asserted as skill hit).
@@ -133,6 +139,7 @@ const features: readonly Feature[] = [
     name: "surging_blade_dmg",
     category: "skill",
     element: "cryo",
+    critDamageBonuses: ["crit_dmg_cryo"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.surging_blade_dmg") }],
   },
   // --- Burst: Scoring Cuts ---
@@ -140,6 +147,7 @@ const features: readonly Feature[] = [
     name: "burst_dmg",
     category: "burst",
     element: "cryo",
+    critDamageBonuses: ["crit_dmg_cryo"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
   // --- FeatureHeal: burst.heal (ATK-scaled FeatureMultiplierList, auto-active) ---
@@ -194,6 +202,7 @@ const features: readonly Feature[] = [
     // category intentionally OMITTED — raw has category:'other', loader derives "other." prefix.
     element: "cryo",
     damageType: "skill",
+    critDamageBonuses: ["crit_dmg_cryo"], // C1 cryo crit DMG (base-inert; see cryo-feature note above).
     condition: { type: "constellation", constellation: 6 },
     multipliers: [
       {
@@ -206,21 +215,54 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Constellation conditions (P2.C)
+// SELF conditions: A4 res-shred + C1 crit-DMG (party-element-count, Tier-B ε) + C3/C5.
 // ---------------------------------------------------------------------------
-// C1: ConditionStatic with crit_dmg_cryo:60, gated by ConditionAnd([ConditionBoolean,
-//   ConditionBooleanValue(escoffier_chars_count>=4)]) — party toggle condition. SKIP.
-// C2: ConditionBoolean toggle escoffier_fresh_fragrant_stew_is_an_art — SKIP (toggle OFF).
-//   (The multiplier in raw multipliers[] is also commented out in source.)
-// C3: +3 levels to Low Temperature Cooking (elemental skill). Raw cons[2] settings
-//   char_skill_elemental_bonus:3. Raw Escoffier.js:379-386.
-// C4: ConditionStatic with crit_dmg_escofier_heal:100, gated by ConditionAscensionChar(1)
-//   — affects escoffier_rehab_diet_heal (damageType="" in fixture, not tested). SKIP.
-// C5: +3 levels to Scoring Cuts (burst). Raw cons[4] settings char_skill_burst_bonus:3.
-//   Raw Escoffier.js:399-406.
+// Her ConditionCalcElementsEscoffier (raw Condition/CalcElementsEscoffier.js:5-31) scans
+// char_element + resonance_element_1/2/3, counting members whose element ∈ {hydro,cryo} into
+// `escoffier_chars_count`, and sets `escoffier_chars_only=1` iff every non-empty slot is
+// hydro/cryo. Escoffier is cryo, so char_element always contributes → count ≥ 1 (solo = 1).
+//
+// A4 "Inspiration Immersed Seasoning" (raw Escoffier.js:336-347): a ConditionStaticLevel gated
+//   ONLY by ConditionAscensionChar({ascension:4}) (auto-active at canonical A6, no toggle),
+//   levelSetting `escoffier_chars_count`, shredding enemy_res_cryo/enemy_res_hydro by
+//   A4ResShred = [-5,-10,-15,-55] indexed by count (getLevel ||= 1 → min tier -5). The count
+//   is derived from PARTY COMPOSITION, so solo (char-axis) only exercises count=1 (-5); the
+//   -10/-15/-55 tiers need the party-axis. Modeled as four CUMULATIVE `elements-count` set
+//   tiers over {hydro,cryo} (deltas -5/-5/-5/-40 → totals -5/-10/-15/-55), REPLACING the old
+//   baked baseStats -5/-5: the count=1 tier reproduces the solo shred exactly (char_element=cryo
+//   ∈ set), higher tiers are inert until a hydro/cryo teammate joins → root goldens byte-identical.
+//   Ungated by ascension like Navia/YunJin A4 (the port has no ascension type; every oracle rep
+//   builds at A6). max count = 4 slots, so no clamp needed. Source Escoffier.js:336-347 (StatTable
+//   'enemy_res_cryo'/'enemy_res_hydro' = A4ResShred) + Condition/Static/Level.js.
+// C1 "Pre-Dinner Dance for Your Taste Buds" (raw Escoffier.js:355-372): crit_dmg_cryo +60 gated by
+//   ConditionAnd([ConditionBoolean('escoffier_chars_only'), ConditionBooleanValue(escoffier_chars_count
+//   ge 4)]). There are exactly 4 slots, so count ≥ 4 ⟺ all 4 slots hydro/cryo ⟺ (chars_only=1 AND
+//   count=4): `elements-count({hydro,cryo}, 4)` captures the full gate. Base-inert: solo count=1 < 4.
+// C2: ConditionBoolean toggle escoffier_fresh_fragrant_stew_is_an_art — SKIP (toggle OFF; the raw
+//   self multiplier is also commented out in source). Teammate side is ported in partyData below.
+// C3: +3 levels to Low Temperature Cooking (elemental skill). Raw cons[2] char_skill_elemental_bonus:3.
+// C4: ConditionStatic crit_dmg_escofier_heal:100, gated by ConditionAscensionChar(1) — affects the
+//   escoffier_rehab_diet_heal only (a heal, not a compared damage output). SKIP (pre-existing gap).
+// C5: +3 levels to Scoring Cuts (burst). Raw cons[4] char_skill_burst_bonus:3.
 // C6: ConditionStatic display-only (text_percent_dmg:500). Actual damage is the
 //   escoffier_special_grade_frozen_parfait_dmg feature above. No flat stat needed.
-const constellationConditions: readonly Condition[] = [
+const ESCOFFIER_ELEMENTS = ["hydro", "cryo"] as const;
+
+const charConditions: readonly Condition[] = [
+  // A4 res-shred, four cumulative party-element-count tiers over {hydro,cryo}.
+  { type: "elements-count", element: ESCOFFIER_ELEMENTS, count: 1, stats: { enemy_res_cryo: -5, enemy_res_hydro: -5 } },
+  { type: "elements-count", element: ESCOFFIER_ELEMENTS, count: 2, stats: { enemy_res_cryo: -5, enemy_res_hydro: -5 } },
+  { type: "elements-count", element: ESCOFFIER_ELEMENTS, count: 3, stats: { enemy_res_cryo: -5, enemy_res_hydro: -5 } },
+  { type: "elements-count", element: ESCOFFIER_ELEMENTS, count: 4, stats: { enemy_res_cryo: -40, enemy_res_hydro: -40 } },
+  // C1: crit_dmg_cryo +60 when all four slots are hydro/cryo (count ≥ 4 ⟺ chars_only && count=4).
+  {
+    type: "static",
+    stats: { crit_dmg_cryo: 60 },
+    condition: { type: "and", items: [
+      { type: "constellation", constellation: 1 },
+      { type: "elements-count", element: ESCOFFIER_ELEMENTS, count: 4 },
+    ] },
+  },
   // C3: +3 levels to elemental skill (Low Temperature Cooking).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to burst (Scoring Cuts).
@@ -267,19 +309,12 @@ export const escoffier: DbObjectChar = {
   weapon: "polearm",
   origin: "fontaine",
   statTable: EscoffierStatTable,
-  // A4 "Inspiration Immersed Seasoning": a ConditionStaticLevel gated ONLY by
-  // ConditionAscensionChar({ascension:4}) (auto-active at the canonical A6, no
-  // toggle), levelSetting `escoffier_chars_count`. Unset → getLevel() ||= 1, so
-  // it indexes A4ResShred[0] = -5: enemy_res_cryo -= 5 and enemy_res_hydro -= 5
-  // (RAW percents; buildStats folds them into the base enemy resistance → 0.05).
-  // The oracle was generated with this shred active, so her cryo/hydro features
-  // land at res 0.05, not 0.10. raw: db/Char/Escoffier.js:336-347 (StatTable
-  // 'enemy_res_cryo'/'enemy_res_hydro' = A4ResShred), Condition/Static/Level.js.
-  baseStats: { enemy_res_cryo: -5, enemy_res_hydro: -5 },
+  // A4 res-shred is now the count=1 `elements-count` tier in charConditions (was baked
+  // baseStats -5/-5); see the charConditions comment block for the full A4/C1 rationale.
   talents,
   features,
   multipliers: [],
-  conditions: constellationConditions,
+  conditions: charConditions,
   partyData: {
     loadStats: {
       stats: ["atk_total"],

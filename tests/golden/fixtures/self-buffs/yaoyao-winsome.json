@@ -1,0 +1,273 @@
+{
+  "element": "dendro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2611.215574713183,
+      "category": "attack",
+      "crit": 5767.276069365688,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2260.54218641846
+    },
+    "attack.normal_hit_1": {
+      "average": 1103.2963858519433,
+      "category": "attack",
+      "crit": 2436.8018118306763,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 955.1291162987507
+    },
+    "attack.normal_hit_2": {
+      "average": 1026.312701030425,
+      "category": "attack",
+      "crit": 2266.771360303708,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 888.4839611111711
+    },
+    "attack.normal_hit_3": {
+      "average": 1391.4735917207986,
+      "category": "attack",
+      "crit": 3073.286029847289,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1204.6055430400775
+    },
+    "attack.normal_hit_3_1": {
+      "average": 678.7698745077593,
+      "category": "attack",
+      "crit": 1499.1689279752163,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 587.6144241224862
+    },
+    "attack.normal_hit_3_2": {
+      "average": 712.7037172130396,
+      "category": "attack",
+      "crit": 1574.1171018720725,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 616.9911189175914
+    },
+    "attack.normal_hit_4": {
+      "average": 1685.86456045345,
+      "category": "attack",
+      "crit": 3723.4943104086105,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1459.4612549028766
+    },
+    "attack.plunge": {
+      "average": 1284.2396721192438,
+      "category": "attack",
+      "crit": 2836.443225932004,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1111.7726105844927
+    },
+    "attack.plunge_high": {
+      "average": 3207.4896411404366,
+      "category": "attack",
+      "crit": 7084.240163556569,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2776.7395830941996
+    },
+    "attack.plunge_low": {
+      "average": 2567.9356829805292,
+      "category": "attack",
+      "crit": 5671.6856913472475,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2223.0745709397825
+    },
+    "burst.burst_dmg": {
+      "average": 3304.3848511373594,
+      "category": "burst",
+      "crit": 7298.248317943745,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2860.622243714428
+    },
+    "burst.yaoyao_white_radish_dmg": {
+      "average": 2081.3932512052365,
+      "category": "burst",
+      "crit": 4597.080993565124,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1801.8723909430266
+    },
+    "burst.yaoyao_white_radish_heal": {
+      "average": 1575.8600402173142,
+      "category": "burst",
+      "crit": 1575.8600402173142,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1575.8600402173142
+    },
+    "other.mastery_bonus": {
+      "average": 94.914514520892,
+      "category": "other",
+      "crit": 94.914514520892,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 94.914514520892
+    },
+    "reaction.burning": {
+      "average": 688.7451410900446,
+      "category": "reaction",
+      "crit": 688.7451410900446,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 688.7451410900446
+    },
+    "reaction.electrocharged": {
+      "average": 5509.961128720357,
+      "category": "reaction",
+      "crit": 5509.961128720357,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5509.961128720357
+    },
+    "reaction.rupture": {
+      "average": 5509.961128720357,
+      "category": "reaction",
+      "crit": 5509.961128720357,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5509.961128720357
+    },
+    "reaction.shatter": {
+      "average": 8264.941693080535,
+      "category": "reaction",
+      "crit": 8264.941693080535,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8264.941693080535
+    },
+    "skill.yaoyao_in_others_shoes_heal": {
+      "average": 253.105372055712,
+      "category": "skill",
+      "crit": 253.105372055712,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 253.105372055712
+    },
+    "skill.yaoyao_radish_dmg": {
+      "average": 820.0412881198502,
+      "category": "skill",
+      "crit": 1811.1888358298052,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 709.913782818744
+    },
+    "skill.yaoyao_radish_heal": {
+      "average": 1606.5252116556844,
+      "category": "skill",
+      "crit": 1606.5252116556844,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1606.5252116556844
+    },
+    "stats.atk": {
+      "average": 1879.7437063799998,
+      "category": "stats",
+      "crit": 1879.7437063799998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1879.7437063799998
+    },
+    "stats.crit_dmg": {
+      "average": 155.128,
+      "category": "stats",
+      "crit": 155.128,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 155.128
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1626.7736774999998,
+      "category": "stats",
+      "crit": 1626.7736774999998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1626.7736774999998
+    },
+    "stats.hp": {
+      "average": 31638.171506963998,
+      "category": "stats",
+      "crit": 31638.171506963998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 31638.171506963998
+    },
+    "stats.mastery": {
+      "average": 149.914514520892,
+      "category": "stats",
+      "crit": 149.914514520892,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 149.914514520892
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Yaoyao",
+  "repSlug": "yaoyao",
+  "schema": 1,
+  "slug": "yaoyao-winsome",
+  "weapon": "weapon_name.blackcliff_pole",
+  "weaponType": "polearm"
+}

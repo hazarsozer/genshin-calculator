@@ -318,7 +318,9 @@ function partyInputFromManifest(party: ManifestParty): PartyInput {
     members,
     ...(party.enemyStatus !== undefined ? { enemyStatus: party.enemyStatus } : {}),
     ...(party.bondOfLife !== undefined ? { bondOfLife: party.bondOfLife } : {}),
-    ...(plainSetOther.length ? { setOther: plainSetOther } : {}),
+    ...(plainSetOther.length
+      ? { setOther: Object.fromEntries(plainSetOther.map((t) => [t, true])) }
+      : {}),
   };
 }
 
@@ -509,7 +511,7 @@ describe("party: buildPartyContext reproduces her derived keys (round-trip)", ()
       const party = partyInputFromManifest(item.party);
       const ctx = buildPartyContext(party, {
         element: item.element as Element,
-        origin: item.origin,
+        ...(item.origin !== undefined ? { origin: item.origin } : {}),
       });
       for (const key of derivedKeys) {
         expect(

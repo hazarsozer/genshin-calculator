@@ -14,7 +14,7 @@
 import { describe, it, expect } from "vitest";
 import { nahida } from "../characters/nahida.js";
 import { sacrificersStaff } from "../weapons/sacrificers-staff.js";
-import { LEVELS, TALENTS, reconstructSettings, reconstructPort } from "./_reconstruct.js";
+import { LEVELS, TALENTS, reconstructSettings, reconstructPort } from "../reconstruct.js";
 
 const ENEMY = { level: 90, resistance: 10 } as const;
 const STAT_BLOCK = { atk_base: 2000 } as const;

@@ -206,7 +206,9 @@ const features: readonly Feature[] = [
 // C3 "A-Another Round?": +3 Elemental Burst talent levels.
 // C4 "Wine Industry Slayer": text_percent:60 (display-only) → SKIP.
 // C5 "Like Father, Like Daughter": +3 Elemental Skill talent levels.
-// C6 "Cat's Tail Closing Time": ConditionStatic mastery + ConditionBoolean healing → SKIP.
+// C6 "Cat's Tail Closing Time": +200 EM gated by NOT(diona_cats_tail) (the cats_tail toggle
+//   swaps the EM for a healing_recv buff). The healing_recv side is non-damage → SKIP; the EM
+//   side IS modelled with its NOT-gate (below).
 //
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Diona.js:395-470
 
@@ -221,10 +223,29 @@ const constellationConditions: readonly Condition[] = [
   // C5: +3 Elemental Skill talent levels.
   // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
-  // C6 "Cat's Tail Closing Time": +200 EM (ConditionStatic, always-on — the
-  // accompanying diona_cats_tail boolean carries the separate healing buff, skipped).
-  // Lifts reaction EM (emBonus). Raw cons[5] ConditionStatic{ mastery: C6Mastery=200 }.
-  { type: "constellation", constellation: 6, stats: { mastery: 200 } },
+  // C6 "Cat's Tail Closing Time": +200 EM, gated by NOT(diona_cats_tail). The diona_cats_tail
+  // boolean toggles a healing_recv buff INSTEAD of the EM, so the EM applies only when cats_tail
+  // is OFF (the default). Lifts reaction EM (emBonus). The prior model was always-on (correct at
+  // default, since cats_tail is off), but a diff-parity check at diona_cats_tail:true (a non-damage
+  // healing toggle the skip-class sweep doesn't set) surfaced the missing NOT-gate: our EM stayed on
+  // → reactions ~2× her base. Raw Diona.js constellation[5] ConditionStatic{ mastery:C6Mastery=200,
+  // subConditions:[ConditionNot([ConditionBoolean(diona_cats_tail)])] }. The cats_tail healing_recv
+  // buff is non-damage → skipped. Base-inert: cats_tail off → NOT passes → EM on (goldens unchanged).
+  // Modelled as a `static` gated by AND(constellation>=6, NOT(diona_cats_tail)) because the
+  // `constellation` condition type does not honor a `.condition` gate (evaluateConstellation checks
+  // only the level), whereas `static` does (checkGate) — so the NOT(cats_tail) gate must wrap an
+  // explicit constellation item inside an `and`.
+  {
+    type: "static",
+    stats: { mastery: 200 },
+    condition: {
+      type: "and",
+      items: [
+        { type: "constellation", constellation: 6 },
+        { type: "not", items: [{ type: "boolean", name: "diona_cats_tail" }] },
+      ],
+    },
+  },
 ];
 
 // ---------------------------------------------------------------------------

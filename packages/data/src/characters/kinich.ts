@@ -136,6 +136,11 @@ const features: readonly Feature[] = [
     name: "kinich_scalespiker_cannon_dmg",
     category: "skill",
     element: "dendro",
+    // raw: damageBonuses/critDamageBonuses ['dmg_skill_kinich'/'crit_dmg_skill_kinich'] — the
+    // feature-scoped custom keys minted by C2 (dmg) + C1 (crit_dmg). 0 with toggles off (base-inert,
+    // golden-unchanged); nonzero once C1/C2 are on. Raw Kinich.js:213-216.
+    damageBonuses: ["dmg_skill_kinich"],
+    critDamageBonuses: ["crit_dmg_skill_kinich"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.kinich_scalespiker_cannon_dmg") }],
   },
   // --- Burst: Hail to the Almighty Dragonlord (dendro) ---
@@ -143,12 +148,18 @@ const features: readonly Feature[] = [
     name: "burst_dmg",
     category: "burst",
     element: "dendro",
+    // raw: damageBonuses ['dmg_burst_kinich'] — feature-scoped key minted by C4. 0 with C4 off
+    // (base-inert). Raw Kinich.js:246.
+    damageBonuses: ["dmg_burst_kinich"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
   {
     name: "kinich_laser_dmg",
     category: "burst",
     element: "dendro",
+    // raw: damageBonuses ['dmg_burst_kinich'] — feature-scoped key minted by C4 (base-inert at C0).
+    // Raw Kinich.js:257.
+    damageBonuses: ["dmg_burst_kinich"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.kinich_laser_dmg") }],
   },
   // --- C6 "Auspicious Beast's Shape": cons-added skill bounce hit (700% fixed, dendro).
@@ -185,6 +196,41 @@ const features: readonly Feature[] = [
 // C6 "Auspicious Beast's Shape": ConditionStatic display-only; actual damage is the feature above.
 // Raw: db/Char/Kinich.js constellation array (Kinich.js:290-369).
 const constellationConditions: readonly Condition[] = [
+  // SELF "Parrot's Beak" (C1) — +100% Scalespiker-Cannon CRIT DMG (crit_dmg_skill_kinich, a
+  // feature-scoped key on the cannon hits; move_speed:30 is display-only, dropped). ConditionBoolean
+  // gated at C1. The port minted the feature key but SKIPPED this toggle → golden-blind SKIP.
+  // C1CritDmg = 100. Source: raw/genshin_calc_pub/src/js/db/Char/Kinich.js:292-303 (constellation[0]).
+  {
+    type: "boolean",
+    name: "kinich_parrots_beak",
+    stats: { crit_dmg_skill_kinich: 100 },
+    condition: { type: "constellation", constellation: 1 },
+  },
+  // SELF "Tiger Beetle's Palm" (C2) — two ConditionBooleans: enemy Dendro RES -30%
+  // (kinich_tiger_beetles_palm_1, lifts every Kinich dendro hit + reactions) and +100% Scalespiker-
+  // Cannon DMG (kinich_tiger_beetles_palm_2 → dmg_skill_kinich, feature-scoped). Gated at C2.
+  // C2DendroRes = -30, C2SkillDmg = 100. Source: raw/.../Kinich.js:306-326 (constellation[1]).
+  {
+    type: "boolean",
+    name: "kinich_tiger_beetles_palm_1",
+    stats: { enemy_res_dendro: -30 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  {
+    type: "boolean",
+    name: "kinich_tiger_beetles_palm_2",
+    stats: { dmg_skill_kinich: 100 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  // SELF "Hummingbird's Feather" (C4) — +70% Burst DMG (dmg_burst_kinich, feature-scoped on
+  // burst_dmg/laser). ConditionBoolean gated at C4. C4BurstDmg = 70.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Kinich.js:337-348 (constellation[3]).
+  {
+    type: "boolean",
+    name: "kinich_hummingbirds_feather",
+    stats: { dmg_burst_kinich: 70 },
+    condition: { type: "constellation", constellation: 4 },
+  },
   // C3: +3 levels to Riding High (elemental skill).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Hail to the Almighty Dragonlord (burst).

@@ -6,13 +6,14 @@
  * (neuvillette_equitable_judgment_dmg) which is HP-scaled.
  *
  * Charged Equitable Judgment scaling: raw uses FeatureMultiplierNeuvilleteCharged,
- * whose getScalingMultiplier() returns reactionBonus.getValue(level) ONLY when
- * settings.neuvillette_ancient_seas_legacy > 0 (the Sourcewater-droplet stacks).
- * In the fixed solo C0 build that condition is OFF (level 0) → the override
- * returns 1, so the multiplier behaves as a plain HP-scaled charged attack.
- * Modelled here as scaling:'hp'. (Source: NeuvilleteCharged.js getScalingMultiplier.)
- * Its critDamageBonuses:['crit_dmg_neuvillette'] is C2-gated (Constellation.js c2)
- * → off at C0, omitted.
+ * whose getScalingMultiplier() returns reactionBonus.getValue(level) [1.1,1.25,1.6]
+ * when settings.neuvillette_ancient_seas_legacy > 0 (the Sourcewater-droplet stacks),
+ * else 1. Modelled (S2-α) via scalingMultiplierFromTable on both equitable-judgment
+ * features; at level 0 (the default) the factor is 1 → a plain HP-scaled charged attack.
+ * (Source: NeuvilleteCharged.js getScalingMultiplier.) Its critDamageBonuses:
+ * ['crit_dmg_neuvillette'] is the C2-published crit-dmg (crit_dmg_neuvillette [0,14,28,42]
+ * keyed by the SAME legacy stacks) — modelled as the C2 static-level condition below (0 at
+ * legacy 0 / below C2 → base-inert).
  *
  * Plunge: plunge / plunge_low / plunge_high (hydro, char_skill_attack).
  *
@@ -26,12 +27,13 @@
  *   burst_dmg                  — hydro, HP-scaled (s3.p1)
  *   neuvillette_waterfall_dmg  — hydro, HP-scaled (s3.p2)
  *
- * Conditions/post-effects OFF at baseline (omitted):
+ * Conditions/post-effects OFF at baseline (inert until toggled):
  *   - A1 "Heir to the Ancient Seas' Authority" (neuvillette_ancient_seas_legacy)
- *     — Sourcewater-droplet stack ConditionStacks, level 0 in the fixed build.
+ *     — Sourcewater-droplet stack ConditionStacks; drives the equitable-judgment
+ *     scalingMultiplierFromTable + the C2 crit-dmg (both modelled, inert at level 0).
  *   - A4 "Discipline of the Supreme Arbitration" — ConditionNumber + boolean
  *     PostEffectStatsNeuvillette (dmg_hydro from current HP), toggle off at baseline.
- *   - All constellations (C0 build): C2 crit_dmg_neuvillette, C6 current-HP feature, etc.
+ *   - C2 crit_dmg_neuvillette (static-level, gated C2; 0 at legacy 0); C6 current-HP feature.
  *
  * Reaction features (electrocharged / rupture / shatter) are emitted generically
  * by the engine — not declared on the character (cf. yelan.ts, same set).
@@ -110,20 +112,33 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }],
   },
   // raw: FeatureDamageCharged neuvillette_equitable_judgment_dmg (hydro, HP-scaled).
-  // FeatureMultiplierNeuvilleteCharged scaling-multiplier = 1 at droplet level 0.
+  // FeatureMultiplierNeuvilleteCharged: the scaling multiplier is a ValueTable [1.1,1.25,1.6]
+  // keyed by the Sourcewater-droplet stacks `neuvillette_ancient_seas_legacy` (=1 at level 0),
+  // ported via scalingMultiplierFromTable (S2-α). raw carries critDamageBonuses:
+  // ['crit_dmg_neuvillette'] — the C2 crit-dmg published by the C2 static-level below (0 at
+  // legacy 0 / below C2, so base-inert). Both are co-driven by the SAME legacy stacks.
   {
     name: "neuvillette_equitable_judgment_dmg",
     category: "attack",
     damageType: "charged",
     element: "hydro",
-    multipliers: [{ scaling: "hp", leveling: "char_skill_attack", values: talents.get("attack.neuvillette_equitable_judgment_dmg") }],
+    critDamageBonuses: ["crit_dmg_neuvillette"],
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_attack",
+        values: talents.get("attack.neuvillette_equitable_judgment_dmg"),
+        scalingMultiplierFromTable: { table: [1.1, 1.25, 1.6], levelSetting: "neuvillette_ancient_seas_legacy" },
+      },
+    ],
   },
   // C6 "Wrathful Recompense": cons-added charged hit at 10% HP per interval.
   // Raw: Neuvillette.js features FeatureDamageCharged neuvillette_equitable_judgment_current_dmg,
   // FeatureMultiplierNeuvilleteCharged scaling:'hp*', values: ValueTable([10]),
   // source:'constellation6', condition:ConditionConstellation({constellation:6}).
-  // At 0 droplet stacks the NeuvilleteCharged scalingMultiplier = 1 → plain HP%.
-  // critDamageBonuses:['crit_dmg_neuvillette'] wired (0 at 0 stacks, safe at C0).
+  // Same NeuvilleteCharged table as the A1 hit: scalingMultiplierFromTable [1.1,1.25,1.6] keyed
+  // by neuvillette_ancient_seas_legacy (=1 at level 0 → plain HP%). critDamageBonuses:
+  // ['crit_dmg_neuvillette'] (0 at legacy 0, safe at C0).
   {
     name: "neuvillette_equitable_judgment_current_dmg",
     category: "attack",
@@ -137,6 +152,7 @@ const features: readonly Feature[] = [
         leveling: "char_skill_attack",
         values: { getValue: (_level: number) => 10 },
         source: "constellation6",
+        scalingMultiplierFromTable: { table: [1.1, 1.25, 1.6], levelSetting: "neuvillette_ancient_seas_legacy" },
       },
     ],
   },
@@ -200,20 +216,41 @@ const features: readonly Feature[] = [
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
 // C1 "Venerable Institution": ConditionStatic display-only → SKIP.
-// C2 "Juridical Exhortation": ConditionStaticLevel stacks-dependent
-//    (crit_dmg_neuvillette: [0,14,28,42] keyed by neuvillette_ancient_seas_legacy level);
-//    0 stacks in the fixed build → 0 crit_dmg → SKIP (no plain constellation condition).
+// C2 "Juridical Exhortation": ConditionStaticLevel — crit_dmg_neuvillette [0,14,28,42] keyed by
+//    neuvillette_ancient_seas_legacy (fromZero, C2CritDmg=14), gated C2. Picked up by the two
+//    equitable-judgment features' critDamageBonuses. Modelled (S2-α): the SAME legacy stacks that
+//    drive the scalingMultiplierFromTable also drive this crit-dmg, so gate-on parity at C2+ needs it.
+//    Base-inert: 0 at legacy 0 (the default) / below C2 → no golden moves.
 // C3: +3 levels to As Water Seeks Equilibrium (attack). Raw cons[2] settings char_skill_attack_bonus:3.
 // C4 "Crown of Commiseration": ConditionStatic display-only → SKIP.
 // C5: +3 levels to O Tides, I Have Returned (burst). Raw cons[4] settings char_skill_burst_bonus:3.
 // C6 "Wrathful Recompense": cons-added feature above; ConditionStatic display wrapper → no condition here.
-// Raw: Neuvillette.js constellation array (Neuvillette.js:337-398).
+// Raw: Neuvillette.js constellation array (Neuvillette.js:337-398), C2 at :346-360.
 const constellationConditions: readonly Condition[] = [
+  // C2: crit_dmg_neuvillette scaling by the Sourcewater-droplet stacks (fromZero → 0/14/28/42 at
+  // legacy 0/1/2/3), gated at C2. Faithful to her ConditionStaticLevel (levelSetting the legacy key).
+  {
+    type: "static-level",
+    levelSetting: "neuvillette_ancient_seas_legacy",
+    fromZero: true,
+    levelStats: { crit_dmg_neuvillette: [0, 14, 28, 42] },
+    condition: { type: "constellation", constellation: 2 },
+  },
   // C3: +3 levels to normal attack talent.
   { type: "constellation", constellation: 3, settings: { char_skill_attack_bonus: 3 } },
   // C5: +3 levels to elemental burst.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
+
+// A4 "High Arbitrator's Discipline" HP-input slider — owned by Neuvillette (her per-char
+// ConditionNumber, raw/.../db/Char/Neuvillette.js:309-324). Emits the bag stat his A4
+// post-effect reads (fromStat:"neuvillette_the_high_arbitrators_discipline"). Moved here
+// from the global registry (single owner → no double-count).
+const disciplineInput: Condition = {
+  type: "number",
+  name: "neuvillette_the_high_arbitrators_discipline",
+  max: 1_000_000,
+};
 
 // ---------------------------------------------------------------------------
 // Post-effects
@@ -271,6 +308,6 @@ export const neuvillette: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: constellationConditions,
+  conditions: [...constellationConditions, disciplineInput],
   postEffects: a4PostEffects,
 };

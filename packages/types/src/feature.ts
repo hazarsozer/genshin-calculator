@@ -78,11 +78,82 @@ export interface FeatureMultiplierEntry {
    * (20% of the aimed shot, `scalingMultiplier: 0.20`). Absent = ×1 (no effect).
    *
    * Mirrors her `getTreeBonusMultiplier` → `CConst(value)` for a numeric
-   * `getScalingMultiplier` (Multiplier.js:223-264). The string-stat form
-   * (`(1 + stat)`) and the `scalingMultiplierCondition` gate are not yet modelled
-   * (no v5.8 constellation in scope needs them); add them if a source does.
+   * `getScalingMultiplier` (Multiplier.js:223-264). The optional
+   * {@link scalingMultiplierCondition} gate is now modelled (Freminet's frost ×2);
+   * the string-stat form (`(1 + stat)`) is still not (no v5.8 source in scope needs
+   * it) — add it if a source does.
    */
   readonly scalingMultiplier?: number;
+  /**
+   * Optional gate on the numeric {@link scalingMultiplier}: her `getScalingMultiplier`
+   * returns `scalingMultiplier` only when this condition is absent OR active, and `1`
+   * otherwise (Multiplier.js:157-162: `if (!scalingMultiplierCondition ||
+   * scalingMultiplierCondition.isActive(settings)) return scalingMultiplier; return 1`).
+   * So an INACTIVE gate reverts the factor to 1 (no bonus); an ABSENT gate applies the
+   * constant unconditionally (exactly as today). Evaluated at COMPILE time against the
+   * build's settings, like {@link scalingOffset} (the multiplier bakes into the base
+   * term; a settings change recompiles the feature).
+   *
+   * The sole v5.8 user is Freminet's frost DMG — `scalingMultiplier: 2` gated by the
+   * `freminet_stalking_mode` burst-stance toggle (a `ConditionBoolean`, raw
+   * Freminet.js:268-274). Absent ⇒ the constant always applies; and even when set, the
+   * gate is OFF in every base build (all 58k goldens) → the factor stays
+   * `scalingMultiplier ?? 1` unchanged → base-inert. Mutually exclusive with
+   * {@link scalingMultiplierFromTable} (the table form is a full override).
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier.js:157-162
+   *         (getScalingMultiplier); raw/.../db/Char/Freminet.js:268-274 (the gated ×2).
+   */
+  readonly scalingMultiplierCondition?: Condition;
+  /**
+   * TABLE-driven scaling multiplier: her `FeatureMultiplierNeuvilleteCharged` OVERRIDES
+   * `getScalingMultiplier` with a `ValueTable` lookup keyed by a settings level —
+   * `level = settings[levelSetting]; return level > 0 ? table.getValue(level) : 1`
+   * (NeuvilleteCharged.js). The lookup is her `ValueTable.getValue` (1-indexed, clamped
+   * to `table.length`, ValueTable.js); a level ≤ 0 (or an absent/non-numeric key) yields
+   * `1`, NOT 0 (the subclass guards the table's 0-at-≤0 with an explicit `1`). This form
+   * REPLACES the constant {@link scalingMultiplier} + {@link scalingMultiplierCondition}
+   * (the subclass override ignores both) — set exactly one of the constant/conditional
+   * form OR the table form (compileFeature throws if both are present).
+   *
+   * Two OPTIONAL extensions cover the char-skill-leveled gated variant (her
+   * FeatureMultiplier{Wriothesley,Wanderer,Yoimiya}, which multiply a talent-leveled
+   * ValueTable factor into the term only while a toggle is on):
+   *   - {@link condition} — a boolean/other gate. When present and INACTIVE the table
+   *     factor reverts to `1` (her `if (settings.<gate>) result *= table.getValue(level)/100`
+   *     — an off gate leaves `result` at 1). Absent ⇒ the table always applies
+   *     (Neuvillette). Evaluated at COMPILE time against the build settings.
+   *   - the `_bonus`-aware level read — when `levelSetting` is a char-skill slot
+   *     (`char_skill_attack`/`elemental`/`burst`) the level is the build's talent level
+   *     PLUS the constellation `_bonus` (her `getLevel('char_skill_elemental')` = base +
+   *     `_bonus`, e.g. Wanderer C5 / Yoimiya C3 give `char_skill_elemental_bonus:3`),
+   *     matching the talent% path. For any OTHER key (Neuvillette's droplet stacks) no
+   *     `<key>_bonus` exists → the read is UNCHANGED → Neuvillette stays byte-identical.
+   *
+   * v5.8 users: Neuvillette's two equitable-judgment charged attacks (droplet stacks
+   * `neuvillette_ancient_seas_legacy` → `[1.1, 1.25, 1.6]`, no gate/bonus — raw
+   * Neuvillette.js:194-213); Wriothesley normals (`enhanced_repelling_fist` keyed by
+   * `char_skill_elemental`, gated `wriothesley_chilling_penalty`); Wanderer normals/charged
+   * (`fushoudan`/`toufukai`, gated `wanderer_windfavored`); Yoimiya Niwabi normals
+   * (`yoimiya_bonus_dmg`, gated `yoimiya_teika_enshou`). Absent ⇒ the constant path; and
+   * even when set, every base build leaves the gate OFF / the level 0 → factor 1 → all 58k
+   * goldens are base-inert.
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/NeuvilleteCharged.js
+   *         (getScalingMultiplier); raw/.../Multiplier/{Wriothesley,Wanderer,Yoimiya}.js
+   *         (the toggle-gated, char-skill-leveled factor); raw/.../classes/ValueTable.js.
+   */
+  readonly scalingMultiplierFromTable?: {
+    /** The value table (her `new ValueTable([...])`), 1-indexed by the resolved level. */
+    readonly table: readonly number[];
+    /** The settings key holding the integer level (e.g. `neuvillette_ancient_seas_legacy`). */
+    readonly levelSetting: string;
+    /**
+     * Optional gate: an INACTIVE gate reverts the table factor to `1` (her toggle-gated
+     * `result *= table.getValue(level)/100`). Absent ⇒ the table always applies.
+     */
+    readonly condition?: Condition;
+  };
   /**
    * Settings-driven additive offset to the scaling fraction.
    *
@@ -141,6 +212,28 @@ export interface FeatureMultiplierEntry {
    * Source: raw/genshin_calc_pub/src/js/db/Artifacts/Set/OceanHuedClam.js:59-65
    */
   readonly capValue?: number;
+  /**
+   * LEVEL-INDEXED cap on THIS multiplier's base term — her `FeatureMultiplier.capValue`
+   * is a `ValueTable` resolved at `capValue.getValue(this.getLevel(data))`
+   * (Multiplier.js:233-237), so the cap TIER rises with the multiplier's level. The
+   * numeric {@link capValue} ports only a single constant tier; this table form indexes
+   * the cap by `levelSetting` (1-indexed, clamped — her `ValueTable.getValue`), the level
+   * resolved exactly as the talent% path resolves the entry's leveling (char-skill slot →
+   * talent level, else `settings[levelSetting]` defaulting to 1, matching her
+   * `getLevel || 1`). Mutually exclusive with {@link capValue} (set exactly one).
+   *
+   * The v5.8 user is Sigewinne's A1/C1 HP-above-30000 → skill-DMG buff, whose cap is her
+   * `new ValueTable([A1DmgBonusMax, C1DmgBonusMax])` = `[2800, 3500]` indexed by
+   * `sigewinne_buff_level` (1 = A1 tier, 2 = C1 tier). Absent ⇒ no table cap; and no
+   * existing entry sets it ⇒ the 58k damage goldens are byte-identical.
+   *
+   * Source: raw/.../Feature2/Multiplier.js:233-237 (CValueCap, capValue.getValue(getLevel));
+   *         raw/.../db/Char/Sigewinne.js:286,532 (statCap/capValue ValueTable([2800,3500])).
+   */
+  readonly capValueFromTable?: {
+    readonly table: readonly number[];
+    readonly levelSetting: string;
+  };
   /**
    * Optional floor-at-zero threshold subtracted from the SCALING STAT before the
    * talent% multiply: the scaling factor becomes `max(scalingStat − exceedStatValue, 0)`
@@ -251,6 +344,32 @@ export interface FeatureMultiplierEntry {
    * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier.js:196-211,228-230
    */
   readonly stacksFactor?: { readonly setting: string; readonly maxStacks: number };
+  /**
+   * RUNTIME stat factor: append `cStat(bonusStatFactor)` — the LIVE bag value read verbatim — as an
+   * EXTRA factor in this term's product: `talent% × scalingStat × stat` (a multiplicative factor on
+   * the base term). Ports her `FeatureMultiplier{Kokomi,TravelerHydro}.getTreeBonusMultiplier`
+   * OVERRIDE, which returns `makeStatItem(key)` and `getTree` pushes it into the multiplier's `CMulti`
+   * items (raw/.../Multiplier/{Kokomi,TravelerHydro}.js:19-21).
+   *
+   * THE KEY DISTINCTION: this is a BARE `× stat` (no `+1`) — the subclass override REPLACES the base
+   * class's `getTreeBonusMultiplier`, which for a string `scalingSource` would return `1 + stat`
+   * (`CSumPlusOne`, still deferred — see {@link scalingMultiplier}). So this field is NOT the
+   * `(1 + stat)` amplifying form; it is the raw stat as a multiplier. The read is VERBATIM (her
+   * `makeStatItem` → `stats.get(key)`, no `_total`) — the key is a percent stat the bag carries as a
+   * FRACTION (buildStats' emit `/100`), so a slider `50` reads `0.5`. `cStat` defaults an absent key
+   * to 0, so the whole term is `×0` (vanishes) whenever the source stat is unset.
+   *
+   * The two v5.8 users: Kokomi's A4 Song-of-Pearls (`healing` — her Normal/Charged bonus scales the
+   * Healing Bonus, on the two `kokomi_ceremonial_garment`-gated char multipliers) and Traveler(Hydro)'s
+   * A4 Clear-Waters (`traveler_clear_waters_percent` — a ConditionNumber slider 0..100, on the torrent-
+   * surge skill's second multiplier, capped by {@link capValue}). Absent ⇒ no factor; and even when set,
+   * every base build leaves the source stat 0/unset (all 58k goldens) → the term is ×0 (Traveler's whole
+   * A4 vanishes; Kokomi's multipliers are further garment-gated OFF) → base-inert.
+   *
+   * Source: raw/genshin_calc_pub/src/js/classes/Feature2/Multiplier/{Kokomi,TravelerHydro}.js:19-21
+   *         (getTreeBonusMultiplier → makeStatItem), classes/Feature2/Multiplier.js:217-240 (getTree CMulti).
+   */
+  readonly bonusStatFactor?: string;
   /**
    * CHAR-LEVEL multipliers only: which features this multiplier applies to.
    * When set (only on `char.multipliers` entries), the multiplier is summed into
@@ -483,6 +602,29 @@ export interface Feature {
    */
   readonly cannotReact?: boolean;
   /**
+   * TOP-LEVEL whole-hit multiplier from a settings-indexed table — her
+   * `FeatureDamageNormalMualani.getReactionMultipliers` pushes a `CMultiplierCustom`
+   * factor onto the hit's items AFTER the base term / bonus / res / def
+   * (Normal/Mualani.js:11-31), so it scales the WHOLE hit (normal/crit/avg together),
+   * NOT a base-term `scalingMultiplier`. `compileFeature` mirrors the amplifying-factor
+   * push — a top-level `cConst` item in the CDamage product. The factor is
+   * `table[settings[levelSetting]]` (1-indexed, clamped — her `ValueTable.getValue`),
+   * defaulting to 1 (no push) when the level is 0/absent.
+   *
+   * The sole v5.8 user is Mualani's byte-ratio: `FeatureDamageNormalMualani` multiplies
+   * the shark bite / shark missile by `0.86` at `mualani_byte_targets ≥ 2` and `0.72` at
+   * `≥ 3` (her `bytesCnt > 1` branch), i.e. the table `[1, 0.86, 0.72]` indexed by
+   * `mualani_byte_targets` (index 1 → 1, exact). Absent ⇒ no factor; and even when set,
+   * `settings[levelSetting]` reads 0/absent (→ factor 1 → no push) for every base build →
+   * the 58k damage goldens are byte-identical.
+   *
+   * Source: raw/.../Feature2/Damage/Normal/Mualani.js:11-31 (getReactionMultipliers).
+   */
+  readonly wholeHitMultiplierFromTable?: {
+    readonly table: readonly number[];
+    readonly levelSetting: string;
+  };
+  /**
    * Marks a standalone reaction feature (a separate damage instance keyed by its
    * reaction nature, NOT a `settings.reaction` toggle on a normal hit). When set,
    * `compileFeature` routes the feature to the matching `@genshin/core` reaction
@@ -625,6 +767,13 @@ export interface FeatureReaction {
    * Source: raw/genshin_calc_pub/src/js/db/Features/Reactions.js:99-112
    */
   readonly penalty?: number;
+  /**
+   * `transformative` only: flat-damage stat keys added BEFORE the resistance
+   * multiplier (not multiplied by reactionMultiplier × levelMultiplier ×
+   * reactionFactor). E.g. Mizuki's C1 "In Mist-Like Waters" swirl bonus.
+   * Faithful to her `reaction_flat` option (raw/.../Feature2/Reaction.js:38-49,86-129).
+   */
+  readonly reactionFlatKeys?: readonly string[];
 }
 
 /**

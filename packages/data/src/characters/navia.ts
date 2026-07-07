@@ -198,11 +198,62 @@ const features: readonly Feature[] = [
 //
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Navia.js:356-429
 
+// Navia A4 counts nearby members of these four elements (her CalcElementsNavia set).
+const NAVIA_A4_ELEMENTS = ["pyro", "hydro", "electro", "cryo"] as const;
+
+// SELF buffs (were golden-blind SKIPPED — the port modelled only the party.* C4 res-shred mirror;
+// a diff-parity sweep surfaced her own hits diverging when the toggles are on):
+//   - A1 "Undisclosed Distribution Channels" (navia_undisclosed_distribution_channels): dmg_normal /
+//     dmg_charged / dmg_plunge +40 + geo infusion on her own normals/charged/plunge. raw conditions
+//     ConditionBoolean (stats + settings.attack_infusion:'geo'). The Keqing infusion pattern.
+//   - C4 "The Oathsworn Never Capitulate" (navia_the_oathsworn_never_capitulate): SELF enemy_res_geo
+//     −20 (the SELF mirror of party.navia_the_oathsworn_never_capitulate below), gated C4. raw
+//     constellation[3] ConditionBoolean. THE CONSTELLATION IS A GATE.
+//
+// SELF A4 "Mutual Assistance Network" — PORTED below (Tier-B (ε), party-axis locked).
+// DEFERRED (Tier-B — needs new engine surface / party-axis input, not pure self-data):
+//   - The Ceremonial Crystalshot cannon bulletMultiplier (navia_bullets → FeatureMultiplierNaviaSkill,
+//     a non-linear bullet-count table scaling the shardshot) — a custom feature multiplier.
+//   - ConditionStaticNavia's shrapnel-split bonus keys (crit_rate_navia [C2], dmg_skill_navia +
+//     crit_dmg_navia [C6]): shrapnel1=min(3,n) / shrapnel2=min(3,n−3) with cons gates baked into the
+//     custom condition — a non-linear split-stack rule the static stats/stacks primitives can't express.
+//   All stay at 0 in any build that doesn't toggle navia_bullets / navia_shrapnel_charge / set resonance
+//   elements (the port's shardshot already reduces to bulletMultiplier=1, shrapnel=0), so out of scope.
 const constellationConditions: readonly Condition[] = [
   // C3: +3 Elemental Skill (Ceremonial Crystalshot) levels.
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 Elemental Burst (As the Sunlit Sky's Singing Salute) levels.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF A1 "Undisclosed Distribution Channels" — dmg_normal/charged/plunge +40 + geo infusion.
+  // raw conditions ConditionBoolean. Base-inert when untoggled.
+  {
+    type: "boolean",
+    name: "navia_undisclosed_distribution_channels",
+    stats: { dmg_normal: 40, dmg_charged: 40, dmg_plunge: 40 },
+    settings: { attack_infusion: "geo" },
+  },
+  // SELF C4 "The Oathsworn Never Capitulate" — enemy_res_geo −20, gated C4. raw constellation[3].
+  {
+    type: "boolean",
+    name: "navia_the_oathsworn_never_capitulate",
+    stats: { enemy_res_geo: -20 },
+    condition: { type: "constellation", constellation: 4 },
+  },
+  // SELF A4 "Mutual Assistance Network" — +20% ATK per nearby Pyro/Hydro/Electro/Cryo party
+  // member, capped at 2 members (+40%). Her ConditionCalcElementsNavia counts resonance_element_1/2/3
+  // in {pyro,hydro,electro,cryo} → navia_chars_count, feeding a ConditionStaticLevel with
+  // atk_percent table [0,20,40] (fromZero → level = count+1, StatTable clamps to last): count 0/1/2/3
+  // → +0/+20/+40/+40. Modeled as two cumulative `elements-count` set tiers (≥1 → +20, ≥2 → +20 more →
+  // +40; count 3 fires only these two → cap holds). NOT constellation-gated; UNGATED like her A4
+  // (ConditionAscensionChar({ascension:4}) — the port has no ascension type and every oracle rep
+  // builds at ascension 6, so A4 is always satisfied; cf. YunJin A4). Base-inert: solo has no party →
+  // no resonance_element_* → count 0 → both tiers off → root goldens byte-unchanged. The set excludes
+  // geo (Navia's own element), so including char_element in the count is equivalent to her
+  // teammates-only scan. Oracle-locked via the `party` config's navia-a4-1/2/3 reps.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Navia.js:126,333-354 (A4AtkBonus=20, the A4
+  //         ConditionStaticLevel + ConditionCalcElementsNavia) + Condition/CalcElementsNavia.js:8-17.
+  { type: "elements-count", element: NAVIA_A4_ELEMENTS, count: 1, stats: { atk_percent: 20 } },
+  { type: "elements-count", element: NAVIA_A4_ELEMENTS, count: 2, stats: { atk_percent: 20 } },
 ];
 
 // ---------------------------------------------------------------------------

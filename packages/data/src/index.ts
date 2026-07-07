@@ -54,3 +54,42 @@ export { assembleArtifactStats, detectSets } from "./assembleBuild.js";
 // Phase 3 ② — party composition input model
 export { buildPartyContext } from "./partyContext.js";
 export type { PartyInput, PartyMember, ActiveCharFacts } from "./partyContext.js";
+
+export { ALL_CHARACTERS, ALL_WEAPONS } from "./roster.js";
+export {
+  CHARACTER_CONDITIONS,
+  ENEMY_CONDITIONS,
+} from "./characterConditions.js";
+export {
+  reconstructPort,
+  reconstructSettings,
+  LEVELS,
+  TALENTS,
+  TOLERANCE,
+} from "./reconstruct.js";
+export type {
+  ReconstructInput,
+  ReconstructResult,
+  ReconstructToggles,
+  ReconstructEnemy,
+} from "./reconstruct.js";
+
+// Art/icon id tables — generated from Enka characters, ambr weapons, and raw artifact set files
+export { CHAR_ICON, WEAPON_ICON, SET_ICON } from "./generated/artIds.js";
+
+// Enemy icon id table — generated from ambr monsters, normalized-name matched to ENEMY_CATALOG
+export { ENEMY_ICON } from "./generated/enemyIcons.js";
+
+// Enemy preset catalog — generated from raw/genshin_calc_pub/src/js/db/Enemies/
+export { ENEMY_CATALOG } from "./generated/enemyCatalog.js";
+export type { EnemyPreset } from "./generated/enemyCatalog.js";
+
+// Condition/passive strings — generated from raw CSV string tables
+export { CONDITION_STRINGS } from "./generated/conditionStrings.js";
+
+// Artifact-set effect strings — generated from artifact_set_bonuses.csv
+export { SET_EFFECTS } from "./generated/setEffectStrings.js";
+
+// Food (cooking-buff) flat-stat tables — generated from raw/.../db/Food/*.js
+export { foodTables, getFoodStats } from "./generated/foodTables.js";
+export type { FoodItem } from "./generated/foodTables.js";

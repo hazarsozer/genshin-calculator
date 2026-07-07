@@ -1,0 +1,221 @@
+{
+  "_source": "gen-set-fixture (self-snapshot from our engine; external validation = the GO gate in tools/oracle/go-gate-reps.mjs)",
+  "features": {
+    "attack.charged_final": {
+      "average": 3474.7776044739967,
+      "category": "attack",
+      "crit": 6317.777462679994,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3158.888731339997
+    },
+    "attack.charged_spin": {
+      "average": 1921.0367440704147,
+      "category": "attack",
+      "crit": 3492.7940801280265,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1746.3970400640133
+    },
+    "attack.normal_hit_1": {
+      "average": 2415.721762180813,
+      "category": "attack",
+      "crit": 4392.221385783297,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2196.1106928916483
+    },
+    "attack.normal_hit_2": {
+      "average": 2313.5694662476135,
+      "category": "attack",
+      "crit": 4206.489938632024,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2103.244969316012
+    },
+    "attack.normal_hit_3": {
+      "average": 2922.3399328857395,
+      "category": "attack",
+      "crit": 5313.345332519527,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2656.6726662597634
+    },
+    "attack.normal_hit_4": {
+      "average": 3550.396516235543,
+      "category": "attack",
+      "crit": 6455.266393155533,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3227.6331965777663
+    },
+    "attack.plunge": {
+      "average": 1986.198733215912,
+      "category": "attack",
+      "crit": 3611.270424028931,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1805.6352120144654
+    },
+    "attack.plunge_high": {
+      "average": 4960.687635138531,
+      "category": "attack",
+      "crit": 9019.432063888238,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4509.716031944119
+    },
+    "attack.plunge_low": {
+      "average": 3971.5555200205413,
+      "category": "attack",
+      "crit": 7221.010036400984,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3610.505018200492
+    },
+    "burst.burst_dmg": {
+      "average": 12174.76271791868,
+      "category": "burst",
+      "crit": 22135.9322143976,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 11067.9661071988
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.freminet_frost_dmg": {
+      "average": 220.35887784883454,
+      "category": "skill",
+      "crit": 400.6525051796991,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 200.32625258984956
+    },
+    "skill.freminet_pressure_0_dmg": {
+      "average": 6170.0485797673655,
+      "category": "skill",
+      "crit": 11218.270145031573,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5609.135072515786
+    },
+    "skill.freminet_pressure_1_cryo_dmg": {
+      "average": 3085.0242898836827,
+      "category": "skill",
+      "crit": 5609.135072515786,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2804.567536257893
+    },
+    "skill.freminet_pressure_1_phys_dmg": {
+      "average": 1543.847653292441,
+      "category": "skill",
+      "crit": 2806.9957332589834,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1403.4978666294917
+    },
+    "skill.freminet_pressure_2_cryo_dmg": {
+      "average": 2159.517002918579,
+      "category": "skill",
+      "crit": 3926.394550761052,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1963.197275380526
+    },
+    "skill.freminet_pressure_2_phys_dmg": {
+      "average": 2701.733393261771,
+      "category": "skill",
+      "crit": 4912.24253320322,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2456.12126660161
+    },
+    "skill.freminet_pressure_3_cryo_dmg": {
+      "average": 1234.0097159534732,
+      "category": "skill",
+      "crit": 2243.654029006315,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1121.8270145031574
+    },
+    "skill.freminet_pressure_3_phys_dmg": {
+      "average": 3859.619133231102,
+      "category": "skill",
+      "crit": 7017.489333147458,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3508.744666573729
+    },
+    "skill.freminet_pressure_4_dmg": {
+      "average": 7719.238266462204,
+      "category": "skill",
+      "crit": 14034.978666294915,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 7017.489333147458
+    },
+    "skill.freminet_upward_thrust_dmg": {
+      "average": 2555.670560973075,
+      "category": "skill",
+      "crit": 4646.673747223774,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2323.336873611887
+    },
+    "skill.spiritbreath_thorn_dmg": {
+      "average": 443.17986606469526,
+      "category": "skill",
+      "crit": 805.7815746630822,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 402.8907873315411
+    }
+  }
+}

@@ -124,10 +124,14 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
   },
   // --- Burst: Cloud-Parting Star (cryo) ---
+  // damageBonuses: ['dmg_burst_chongyun'] — raw Chongyun.js:235. The C6 "Rally of Four Blades"
+  // toggle (chongyun_rally_of_four_blades, below) feeds it; base-inert until C6+toggle (absent key
+  // reads 0). Was missing in the port → the C6 self burst buff couldn't reach it.
   {
     name: "burst_dmg",
     category: "burst",
     element: "cryo",
+    damageBonuses: ["dmg_burst_chongyun"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
 ];
@@ -142,13 +146,50 @@ const features: readonly Feature[] = [
 // C3: +3 levels to Cloud-Parting Star (burst). Raw cons[2] settings char_skill_burst_bonus:3.
 // C4 "Frozen Skies": ConditionStatic display-only → SKIP.
 // C5: +3 levels to Chonghua's Layered Frost (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
-// C6 "Rally of Four Blades": ConditionBoolean toggle (dmg_burst_chongyun:15) → SKIP.
+// C6 "Rally of Four Blades": SELF dmg_burst_chongyun +15 toggle (modelled below).
 // Raw: db/Char/Chongyun.js constellation array (Chongyun.js:309-379).
+//
+// SELF buffs (were golden-blind SKIPPED — the port modelled only the party.* teammate mirrors, and
+// the self toggles are OFF in the fixed canonical build, so the 58k DAMAGE goldens never exercised
+// them; a diff-parity sweep surfaced her own normals/charged/plunge + burst + reactions diverging):
+//   - Chonghua Frost Field "Layered Frost": SELF cryo infusion (attack_infusion:"cryo") on her own
+//     physical normals/charged/plunge, gated by the chongyun_frost_field toggle. The SELF mirror of
+//     party.chongyun_layered_frost (partyData). raw Chongyun.js:270-282 (ConditionStatic settings
+//     {attack_infusion_cryo:1}, subConditions:[ConditionBoolean(chongyun_frost_field)]) — collapsed
+//     to attack_infusion:"cryo" gated by the toggle (the Diluc-dawn/Dori-sprinkling infusion pattern).
+//   - A4 "Rimechaser Blade": SELF enemy_res_cryo −10 (A4ResCryo), gated by the chongyun_rimechaser_
+//     blade toggle (her A4 ConditionBoolean, asc-4 auto-true at the rep — like the party mirror
+//     enemy_res_cryo −10, no ascension gate needed). raw Chongyun.js:295-307.
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Cloud-Parting Star (burst). Raw Chongyun.js:340-346.
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 levels to Chonghua's Layered Frost (skill). Raw Chongyun.js:356-362.
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "Layered Frost" cryo infusion — her own physical normals/charged/plunge become cryo while
+  // her Frost Field is active. Gated by the chongyun_frost_field toggle (the SELF mirror of the
+  // party.chongyun_layered_frost infusion). Base-inert when untoggled. raw Chongyun.js:270-282.
+  {
+    type: "boolean",
+    name: "chongyun_frost_field",
+    settings: { attack_infusion: "cryo" },
+  },
+  // SELF A4 "Rimechaser Blade" — enemy Cryo RES −10, lifting her own cryo hits + cryo reactions.
+  // Gated by the chongyun_rimechaser_blade toggle (asc-4 auto-true at rep asc 6). The SELF mirror of
+  // the party.chongyun_rimechaser_blade res-shred. raw Chongyun.js:295-307 (A4ResCryo = −10).
+  {
+    type: "boolean",
+    name: "chongyun_rimechaser_blade",
+    stats: { enemy_res_cryo: -10 },
+  },
+  // SELF C6 "Rally of Four Blades" — +15% Burst DMG (dmg_burst_chongyun → burst_dmg, which declares
+  // it in damageBonuses). ConditionBoolean toggle gated at C6 (constellation[5] → THE CONSTELLATION
+  // IS A GATE; base-inert below C6 / when untoggled). raw Chongyun.js:366-378 (C6BurstDamage = 15).
+  {
+    type: "boolean",
+    name: "chongyun_rally_of_four_blades",
+    stats: { dmg_burst_chongyun: 15 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

@@ -1,0 +1,157 @@
+{
+  "_source": "port-snapshot angelos_heptades weapons-r5 — regression lock; validation = 2-witness (Amber + GCSim source) + load-bearing r1≠r5 (no single-rep GCSim gate)",
+  "element": "pyro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 6373.054890700515,
+      "category": "attack",
+      "crit": 11587.37252854639,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 5793.686264273195
+    },
+    "attack.normal_hit_1": {
+      "average": 1904.301183958498,
+      "category": "attack",
+      "crit": 3462.365789015451,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1731.1828945077255
+    },
+    "attack.normal_hit_2": {
+      "average": 1604.1093906905003,
+      "category": "attack",
+      "crit": 2916.5625285281826,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1458.2812642640913
+    },
+    "attack.normal_hit_3": {
+      "average": 2500.221935808309,
+      "category": "attack",
+      "crit": 4545.858065106016,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2272.929032553008
+    },
+    "attack.plunge_high": {
+      "average": 8030.896597965338,
+      "category": "attack",
+      "crit": 14601.630178118796,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 7300.815089059398
+    },
+    "attack.plunge_hit": {
+      "average": 3215.4728986521422,
+      "category": "attack",
+      "crit": 5846.314361185713,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2923.1571805928565
+    },
+    "attack.plunge_low": {
+      "average": 6429.583308787907,
+      "category": "attack",
+      "crit": 11690.151470523468,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 5845.075735261734
+    },
+    "burst.arcane_projection": {
+      "average": 7239.261928846127,
+      "category": "burst",
+      "crit": 13162.294416083867,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 6581.1472080419335
+    },
+    "burst.burst_dmg": {
+      "average": 22933.981790584527,
+      "category": "burst",
+      "crit": 41698.148710153684,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 20849.074355076842
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.shield_absorption": {
+      "average": 17621.92015629176,
+      "category": "skill",
+      "crit": 17621.92015629176,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 17621.92015629176
+    },
+    "skill.skill_dmg": {
+      "average": 8574.938364006204,
+      "category": "skill",
+      "crit": 15590.797025465825,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 7795.398512732912
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Nicole",
+  "repSlug": "nicole",
+  "schema": 1,
+  "slug": "angelos_heptades",
+  "weapon": "weapon_name.angelos_heptades",
+  "weaponType": "catalyst"
+}

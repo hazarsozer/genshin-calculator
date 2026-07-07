@@ -218,9 +218,10 @@ const features: readonly Feature[] = [
 // Constellation conditions (P2.C Wave-1)
 // ---------------------------------------------------------------------------
 // C1 "Ascetics of Frost": ConditionStatic with no real stats (description only) → SKIP.
-// C2 "Frozen to the Bone": ConditionStatic with dmg_normal/dmg_charged +15, BUT gated by
-//    subCondition ConditionEnemyStatus({status:['cryo']}) → SKIP (enemy-status conditional;
-//    ALL TOGGLES OFF config means no active enemy status in the fixture).
+// C2 "Frozen to the Bone": ConditionStatic with dmg_normal/dmg_charged +15, gated by
+//    constellation 2 AND subCondition ConditionEnemyStatus({status:['cryo']}). The port SKIPPED
+//    the SELF version (golden-blind: no golden sets common.enemy_status='cryo'). Now ported as a
+//    constellation-2 condition with the enemy-status sub-gate. raw Qiqi.js:388-401 (C2NormalDmg=15).
 // C3 "Canticle of Cultivar": +3 Elemental Burst talent levels.
 //    Raw cons[2]: Condition{ settings:{ char_skill_burst_bonus:3 } }
 // C4 "Divine Suppression": ConditionStatic with no real stats → SKIP.
@@ -231,6 +232,22 @@ const features: readonly Feature[] = [
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Qiqi.js:378-438
 
 const constellationConditions: readonly Condition[] = [
+  // C2 "Frozen to the Bone": +15% Normal/Charged DMG vs cryo-afflicted enemies, gated C2.
+  // Raw cons[1]: ConditionStatic{ stats:{ dmg_normal:15, dmg_charged:15 },
+  //   subConditions:[ ConditionEnemyStatus({status:['cryo']}) ] } → modelled as a C2-gated
+  //   condition with the enemy-status sub-gate (active only when common.enemy_status='cryo').
+  {
+    type: "static",
+    name: "qiqi_frozen_to_the_bone",
+    stats: { dmg_normal: 15, dmg_charged: 15 },
+    condition: {
+      type: "and",
+      items: [
+        { type: "constellation", constellation: 2 },
+        { type: "enemy-status", statuses: ["cryo"] },
+      ],
+    },
+  },
   // C3: +3 Elemental Burst (Preserver of Fortune).
   // Raw cons[2]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },

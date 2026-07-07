@@ -40,6 +40,8 @@ import type {
   ConditionBooleanEnemyType,
   ConditionResonance,
   ConditionPartyElements,
+  ConditionElementsCount,
+  ConditionSettingsCopy,
   ConditionStaticLevel,
   ConditionBooleanCharElement,
   ConditionDropdownElement,
@@ -104,6 +106,10 @@ export function evaluate(condition: Condition, ctx: EvalContext): boolean {
       return evaluateResonance(condition, ctx);
     case "party-elements":
       return evaluatePartyElements(condition, ctx);
+    case "elements-count":
+      return evaluateElementsCount(condition, ctx);
+    case "settings-copy":
+      return checkGate(condition, ctx);
     case "and":
       return condition.items.every((item) => evaluate(item, ctx));
     case "or":
@@ -209,11 +215,13 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
     case "party-elements":
     case "char-element":
     case "dropdown-element":
+    case "settings-copy":
       // Pure gates / logical containers / settings-publishers carry no stats of their own.
       return {};
     case "boolean":
     case "static":
     case "constellation":
+    case "elements-count":
       // Plain stat-bearing variants — `cond.stats` as-is.
       return toNumberBag(condition.stats);
     case "static-level":
@@ -238,13 +246,39 @@ export function conditionStats(condition: Condition, ctx: EvalContext): Record<s
       const raw = ctx[condition.name];
       const rawNum = typeof raw === "number" ? raw : 0;
       const min = condition.min ?? 0;
-      const max = condition.max;
+      // Effective upper clamp. Her getMaxValue is normally `params.max`, but a subclass may
+      // raise it — ConditionNumberIfa.getMaxValue adds `c2bonus` at char_constellation >= 2
+      // (Ifa's cap 150 → 200). `maxBonusFromConstellation` ports that: absent → `max` is used
+      // unchanged (base-inert). Applies only when a base `max` exists (matches her super call).
+      let max = condition.max;
+      if (max !== undefined && condition.maxBonusFromConstellation !== undefined) {
+        const consInCtx = ctx["char_constellation"];
+        const consLevel = typeof consInCtx === "number" ? consInCtx : 0;
+        for (const entry of condition.maxBonusFromConstellation) {
+          if (consLevel >= entry.constellation) {
+            max += entry.bonus;
+          }
+        }
+      }
       const clamped = max !== undefined
         ? Math.min(max, Math.max(min, rawNum))
         : Math.max(min, rawNum);
+      // Per-value damage-bonus distribution (her ConditionNumberCitlali.getStats override,
+      // Condition/Number/Citlali.js:4-19): when value > 0, add `clamped × ratio` under each
+      // key, layered ON TOP of the base emit. Absent `bonusPerValue` → nothing added, so the
+      // returns below are byte-identical to the prior behavior (base-inert).
+      const bonus: Record<string, number> = {};
+      if (condition.bonusPerValue !== undefined && clamped > 0) {
+        for (const [key, ratio] of Object.entries(condition.bonusPerValue)) {
+          bonus[key] = clamped * ratio;
+        }
+      }
       // Key the clamped value by `stat || name` (her `params.stat || params.name`).
-      // Absent `stat` → keyed by `name` (prior behavior, base-inert).
-      return { ...base, [condition.stat ?? condition.name]: clamped };
+      // `noStat` (her params.noStat) suppresses THAT emit — the slider still gates + writes
+      // its setting, but contributes no base bag stat. The per-value bonus still applies,
+      // mirroring her subclass getStats running after (a possibly-noStat) super.getStats.
+      if (condition.noStat) return { ...base, ...bonus };
+      return { ...base, [condition.stat ?? condition.name]: clamped, ...bonus };
     }
     case "custom-buffs":
       // The universal manual-buff escape-hatch: strip the `custom_buffs.` prefix from each
@@ -300,6 +334,15 @@ export function conditionSettings(
   // Source: raw/genshin_calc_pub/src/js/classes/Condition/Lithic.js:4-32
   if (condition.type === "lithic") {
     return { weapon_lithic_stacks: ctx["char_origin"] === "liyue" ? 1 : 0 };
+  }
+  // Settings-copy publishes a DYNAMIC settings value: ctx[from] verbatim, under the `to` key.
+  // A generic port of the getData-settings dynamic-alias idiom used by her per-char Static
+  // subclasses (e.g. ConditionStaticYunJin.getData: yunjin_traditionalist_stacks =
+  // party_elements_count_level). `from` absent (no party) → publishes `{ [to]: undefined }`,
+  // which a downstream `ctx.settings[key] || 1`-style consumer treats the same as absent.
+  // Source: raw/genshin_calc_pub/src/js/classes/Condition/Static/YunJin.js (getData)
+  if (condition.type === "settings-copy") {
+    return { [condition.to]: ctx[condition.from] };
   }
   // Every other variant extends ConditionBase, which may carry `.settings`.
   return condition.settings ? { ...condition.settings } : {};
@@ -664,6 +707,28 @@ function evaluatePartyElements(condition: ConditionPartyElements, ctx: EvalConte
   }
 
   const active = hasA && hasB && !hasOther;
+  return condition.invert ? !active : active;
+}
+
+/**
+ * Ports ConditionElementsCount.isActive — counts `element` across the four resonance slots
+ * (char_element + resonance_element_1/2/3) and is active iff count >= `count`, after the
+ * optional gate. `invert` flips.
+ *
+ * `element` may be a SET (array): a slot counts if its element is in the set — the
+ * CalcElementsNavia "count a family of elements" idiom (Navia A4). Source:
+ *   raw/genshin_calc_pub/src/js/classes/Condition/ElementsCount.js
+ *   raw/genshin_calc_pub/src/js/classes/Condition/CalcElementsNavia.js
+ */
+function evaluateElementsCount(condition: ConditionElementsCount, ctx: EvalContext): boolean {
+  if (!checkGate(condition, ctx)) return false;
+  const targets = Array.isArray(condition.element) ? condition.element : [condition.element];
+  let n = 0;
+  for (const slot of RESONANCE_SLOTS) {
+    const el = ctx[slot];
+    if (typeof el === "string" && targets.includes(el)) n += 1;
+  }
+  const active = n >= condition.count;
   return condition.invert ? !active : active;
 }
 

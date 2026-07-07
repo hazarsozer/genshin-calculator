@@ -1,0 +1,273 @@
+{
+  "element": "electro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 5920.656697614217,
+      "category": "attack",
+      "crit": 7967.390890928223,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2950.885515158601
+    },
+    "attack.normal_hit_1": {
+      "average": 2331.2817539903426,
+      "category": "attack",
+      "crit": 3137.1913555492056,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1161.9227242774834
+    },
+    "attack.normal_hit_2": {
+      "average": 2226.437122769683,
+      "category": "attack",
+      "crit": 2996.1025874592024,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1109.6676249848897
+    },
+    "attack.normal_hit_3": {
+      "average": 2948.4075635098993,
+      "category": "attack",
+      "crit": 3967.6537188380826,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1469.501377347438
+    },
+    "attack.normal_hit_3_1": {
+      "average": 1474.2037817549497,
+      "category": "attack",
+      "crit": 1983.8268594190413,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 734.750688673719
+    },
+    "attack.normal_hit_4": {
+      "average": 2992.9118286194825,
+      "category": "attack",
+      "crit": 4027.542831575261,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1491.6825302130596
+    },
+    "attack.normal_hit_4_1": {
+      "average": 997.6372762064943,
+      "category": "attack",
+      "crit": 1342.5142771917538,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 497.2275100710199
+    },
+    "attack.normal_hit_5": {
+      "average": 3881.624915970271,
+      "category": "attack",
+      "crit": 5223.4785053427695,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1934.6216686454702
+    },
+    "attack.plunge": {
+      "average": 2560.1078504287843,
+      "category": "attack",
+      "crit": 3445.121210206199,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1275.9708185948884
+    },
+    "attack.plunge_high": {
+      "average": 6394.070817717412,
+      "category": "attack",
+      "crit": 8604.461327669962,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3186.8375287666527
+    },
+    "attack.plunge_low": {
+      "average": 5119.131922272703,
+      "category": "attack",
+      "crit": 6888.7839863119525,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2551.401476411834
+    },
+    "burst.burst_dmg": {
+      "average": 11628.009252037777,
+      "category": "burst",
+      "crit": 15647.73972313696,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 5795.459156717392
+    },
+    "other.clorinde_glimbright_shade_dmg": {
+      "average": 6213.611944133885,
+      "category": "other",
+      "crit": 8361.618943960073,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 3096.895905170397
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.hyperbloom": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "reaction.overloaded": {
+      "average": 6571.2206608246515,
+      "category": "reaction",
+      "crit": 6571.2206608246515,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 6571.2206608246515
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "reaction.superconduct": {
+      "average": 3584.3021786316276,
+      "category": "reaction",
+      "crit": 3584.3021786316276,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3584.3021786316276
+    },
+    "skill.clorinde_impale_the_night_2_heal": {
+      "average": 0,
+      "category": "skill",
+      "crit": 0,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 0
+    },
+    "skill.clorinde_impale_the_night_3_heal": {
+      "average": 0,
+      "category": "skill",
+      "crit": 0,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 0
+    },
+    "skill.surging_blade_dmg": {
+      "average": 2396.0778447391767,
+      "category": "skill",
+      "crit": 3224.387051832026,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1194.217426604454
+    },
+    "stats.atk": {
+      "average": 2157.363918614,
+      "category": "stats",
+      "crit": 2157.363918614,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2157.363918614
+    },
+    "stats.crit_dmg": {
+      "average": 170,
+      "category": "stats",
+      "crit": 170,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 170
+    },
+    "stats.crit_rate": {
+      "average": 59.199999999999996,
+      "category": "stats",
+      "crit": 59.199999999999996,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 59.199999999999996
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1659.9254574000001,
+      "category": "stats",
+      "crit": 1659.9254574000001,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1659.9254574000001
+    },
+    "stats.hp": {
+      "average": 26182.1735114,
+      "category": "stats",
+      "crit": 26182.1735114,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26182.1735114
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Clorinde",
+  "repSlug": "clorinde",
+  "schema": 1,
+  "slug": "clorinde-self-buffs",
+  "weapon": "weapon_name.the_alley_flash",
+  "weaponType": "sword"
+}

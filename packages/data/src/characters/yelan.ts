@@ -257,7 +257,12 @@ const a1Conditions: readonly Condition[] = [
 //   The actual C2 damage comes from the yelan_taking_all_comers_dmg feature above.
 // C3: +3 levels to Depth-Clarion Dice (burst). Raw cons[2] settings char_skill_burst_bonus:3.
 //   Yelan.js:347-355.
-// C4 "Bait-and-Switch": ConditionStacks (hp_percent per stack, toggle) → SKIP (toggle/stacks OFF).
+// C4 "Bait-and-Switch": ConditionStacks (hp_percent +10/stack, max 4 = +40% HP). SELF mirror of
+//   party.yelan_bait_and_switch — modelled below (was golden-blind SKIPPED: the port modelled only
+//   the party.* teammate version, and no golden toggles the self stacks; a diff-parity sweep
+//   surfaced every HP-scaled hit diverging from cons 4 when yelan_bait_and_switch is on). Since Yelan
+//   is an HP scaler, +40% HP lifts ALL her HP-scaled features (barb/skill/burst/exquisite/taking-
+//   all-comers/c6-barb). raw Yelan.js:356-369 (constellation[3] ConditionStacks, hp_percent:[10]).
 // C5: +3 levels to Lingering Lifeline (elemental skill).
 //   Raw cons[4] settings char_skill_elemental_bonus:3. Yelan.js:371-379.
 // C6 "Winner Takes All": ConditionStatic (display-only text_percent:156) → SKIP.
@@ -267,6 +272,16 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 levels to Lingering Lifeline (elemental skill).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF C4 "Bait-and-Switch" — +10% Max HP per stack (max 4 = +40%), lifting every HP-scaled hit.
+  // ConditionStacks gated at C4 (constellation[3] → THE CONSTELLATION IS A GATE; base-inert below C4
+  // / 0 stacks). The SELF mirror of party.yelan_bait_and_switch. raw Yelan.js:356-369.
+  {
+    type: "stacks",
+    name: "yelan_bait_and_switch",
+    maxStacks: 4,
+    stats: { hp_percent: 10 },
+    condition: { type: "constellation", constellation: 4 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

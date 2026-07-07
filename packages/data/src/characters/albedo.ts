@@ -13,9 +13,11 @@
  *   burst_dmg — geo, ATK-scaled (char_skill_burst, s3.p1)
  *   albedo_fatal_blossom — geo, ATK-scaled (char_skill_burst, s3.p2)
  *
- * A1 "Calcite Might": ConditionBoolean dmg_skill_albedo:25 — toggle, off in
- * fixed build; damageBonuses key reads 0.
- * A4 "Homuncular Nature": ConditionBoolean mastery:125 — toggle, off.
+ * A1 "Calcite Might": ConditionBoolean dmg_skill_albedo:25 — toggle (off in the default
+ * golden build; albedo_blossom's damageBonuses key reads 0 until toggled). Now modelled as
+ * a SELF condition (was golden-blind SKIPPED — no party.* mirror; see constellationConditions).
+ * A4 "Homuncular Nature": ConditionBoolean mastery:125 — toggle, damage-inert for his own kit;
+ * modelled as a SELF condition for self/party parity.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Albedo.js
@@ -202,11 +204,16 @@ const features: readonly Feature[] = [
  * constellation-granted-multiplier shape P2.C will rely on.
  *
  * Per-stack base = C2DefBonus (30%); the value table mirrors her 4-stack
- * progression (30/60/90/120). `leveling:""` reads the base (first) entry — the
- * full stack-scaled value will be wired with the stacks layer in a later task.
+ * progression (30/60/90/120). `leveling:"albedo_opening_of_hanerozoic"` reads the
+ * live stack count (1-4) from the settings bag (the SAME key as the gate), so at N
+ * stacks the bonus is C2DefBonus×N — faithful to her ValueTable([30,60,90,120])
+ * indexed by the ConditionStacks level. (Was `leveling:""`, which pinned the bonus
+ * at stack 1 = 30% regardless of the actual stack count → undershot at >1 stack; a
+ * diff-parity sweep with albedo_opening_of_hanerozoic:4 surfaced it.)
  *
  * Source: raw/genshin_calc_pub/src/js/db/Char/Albedo.js:325-345
  *   (FeatureMultiplier{ scaling:'def*', source:'constellation2',
+ *    leveling:'albedo_opening_of_hanerozoic',
  *    values:ValueTable([C2,C2*2,C2*3,C2*4]),
  *    condition:ConditionAnd([ConditionConstellation(2), ConditionBoolean(...)]),
  *    target:{damageTypes:['burst']} })
@@ -217,11 +224,10 @@ const C2_BURST_DEF_VALUES = [
   TalentValues.C2DefBonus * 3,
   TalentValues.C2DefBonus * 4,
 ] as const;
-// TODO(P2.C/stacks): leveling:"" reads stack level 1 = 30% (base entry); full
-// 60/90/120% stack-scaling (raw key albedo_opening_of_hanerozoic) is deferred
-// to the stacks/P2.C wiring.
 const c2BurstDefMultiplier: CharMultiplier = {
-  leveling: "",
+  // raw leveling: 'albedo_opening_of_hanerozoic' → baseDamageTerm reads settings[leveling]
+  // as the stack level (1-4) since it is not a talent slot (compileFeature.ts:366-368).
+  leveling: "albedo_opening_of_hanerozoic",
   scaling: "def*",
   source: "constellation2",
   values: { getValue: (level: number) => C2_BURST_DEF_VALUES[Math.min(Math.max(level, 1), 4) - 1]! }, // stack level is 1-indexed [1-4]
@@ -253,6 +259,41 @@ const constellationConditions: readonly Condition[] = [
   // C5 "Tide of Hadean Form": +3 levels to Rite of Progeniture: Tectonic Tide (Elemental Burst).
   // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF "Calcite Might" (A1) — Transient Blossoms (albedo_blossom) deal +25% DMG (A1SkillBonus=25)
+  // when Albedo is above 50% HP. The dmg_skill_albedo stat is consumed by albedo_blossom's
+  // damageBonuses:['dmg_skill_albedo']; with no condition emitting it the feature read 0 → undershot
+  // when albedo_calcite_might:true. ConditionBoolean ascension passive (rep at A6 → modelled ungated,
+  // the toggle is the gate). Self-only (no party.* mirror) → golden-blind SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Albedo.js:297-310 (conditions[0], ConditionBoolean, info.ascension 1).
+  { type: "boolean", name: "albedo_calcite_might", stats: { dmg_skill_albedo: 25 } },
+  // SELF "Homuncular Nature" (A4) — +125 Elemental Mastery (A4Mastery=125). DAMAGE-INERT for Albedo's
+  // OWN kit (his hits are DEF/ATK-scaled geo, no EM scaling and no self-reaction output), modelled for
+  // self/party parity + faithfulness (SELF mirror of party.albedo_homuncular_nature). ConditionBoolean
+  // ascension passive (rep at A6 → modelled ungated, the toggle is the gate).
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Albedo.js:311-323 (conditions[1], ConditionBoolean, info.ascension 4).
+  { type: "boolean", name: "albedo_homuncular_nature", stats: { mastery: 125 } },
+  // SELF "Descent of Divinity" (C4) — +30% Plunging Attack DMG (C4PlungeDmg=30), lifting Albedo's own
+  // plunge/plunge_low/plunge_high. ConditionBoolean gated at C4 (lives in constellation[3] → THE
+  // CONSTELLATION IS A GATE). SELF mirror of party.albedo_descent_of_divinity; the port modelled only
+  // the party.* version → golden-blind SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Albedo.js:380-392 (constellation[3], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "albedo_descent_of_divinity",
+    stats: { dmg_plunge: 30 },
+    condition: { type: "constellation", constellation: 4 },
+  },
+  // SELF "Dust of Purification" (C6) — +17% DMG (C6ShieldDmg=17, dmg_all) while shielded by Solar
+  // Isotoma, lifting EVERY Albedo damage feature. ConditionBoolean gated at C6 (lives in
+  // constellation[5] → THE CONSTELLATION IS A GATE). SELF mirror of party.albedo_dust_of_purification;
+  // the port modelled only the party.* version → golden-blind SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Albedo.js:402-413 (constellation[5], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "albedo_dust_of_purification",
+    stats: { dmg_all: 17 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

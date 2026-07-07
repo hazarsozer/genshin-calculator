@@ -1,0 +1,237 @@
+{
+  "element": "geo",
+  "features": {
+    "attack.aimed": {
+      "average": 1213.2704205427513,
+      "category": "attack",
+      "crit": 2205.9462191686384,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1102.9731095843192
+    },
+    "attack.charged_aimed": {
+      "average": 3677.1367876204145,
+      "category": "attack",
+      "crit": 6956.74527387646,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3312.735844703076
+    },
+    "attack.normal_hit_1": {
+      "average": 974.7398698896404,
+      "category": "attack",
+      "crit": 1772.2543088902553,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 886.1271544451276
+    },
+    "attack.normal_hit_2": {
+      "average": 959.1973207114457,
+      "category": "attack",
+      "crit": 1743.9951285662648,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 871.9975642831324
+    },
+    "attack.normal_hit_3": {
+      "average": 1276.7093967802812,
+      "category": "attack",
+      "crit": 2321.2898123277837,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1160.6449061638918
+    },
+    "attack.normal_hit_4": {
+      "average": 1523.169819463083,
+      "category": "attack",
+      "crit": 2769.39967175106,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1384.69983587553
+    },
+    "attack.plunge": {
+      "average": 1362.415453677183,
+      "category": "attack",
+      "crit": 2477.119006685787,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1238.5595033428935
+    },
+    "attack.plunge_high": {
+      "average": 3402.739807428605,
+      "category": "attack",
+      "crit": 6186.799649870191,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3093.3998249350957
+    },
+    "attack.plunge_low": {
+      "average": 2724.2536126706045,
+      "category": "attack",
+      "crit": 4953.188386673826,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2476.594193336913
+    },
+    "burst.burst_dmg": {
+      "average": 4936.517940943262,
+      "category": "burst",
+      "crit": 9339.358266649415,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4447.313460309245
+    },
+    "burst.gorou_crystal_collapse_dmg": {
+      "average": 3210.093434328701,
+      "category": "burst",
+      "crit": 6073.149740621867,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2891.9760669627935
+    },
+    "reaction.crystalize": {
+      "average": 2161.7331008659794,
+      "category": "reaction",
+      "crit": 2161.7331008659794,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2161.7331008659794
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.gorou_def_bonus": {
+      "average": 438.09,
+      "category": "skill",
+      "crit": 438.09,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 438.09
+    },
+    "skill.gorou_lapping_hound_heal": {
+      "average": 1171.7924163750001,
+      "category": "skill",
+      "crit": 1171.7924163750001,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1171.7924163750001
+    },
+    "skill.skill_dmg": {
+      "average": 7030.647574297929,
+      "category": "skill",
+      "crit": 13301.22514056365,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6333.916733601738
+    },
+    "stats.atk": {
+      "average": 2355.87404328318,
+      "category": "stats",
+      "crit": 2355.87404328318,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2355.87404328318
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 2343.5848327500003,
+      "category": "stats",
+      "crit": 2343.5848327500003,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2343.5848327500003
+    },
+    "stats.hp": {
+      "average": 22795.9252589,
+      "category": "stats",
+      "crit": 22795.9252589,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 22795.9252589
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Gorou",
+  "repSlug": "gorou",
+  "schema": 1,
+  "slug": "gorou-self-buffs",
+  "weapon": "weapon_name.alley_hunter",
+  "weaponType": "bow"
+}

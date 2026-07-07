@@ -1,0 +1,19 @@
+{
+  "stats": {
+    "hash": "eyJjaGFyYWN0ZXJLZXkiOiJiZW5uZXR0Iiwid2VhcG9uS2V5IjoiZGFya19pcm9uX3N3b3JkIiwiY2hhckxldmVsIjo5MCwiYXNjZW5zaW9uIjo2LCJ3ZWFwb25MZXZlbCI6OTAsIndlYXBvbkFzY2Vuc2lvbiI6NiwidGFsZW50cyI6eyJhdHRhY2siOjEwLCJlbGVtZW50YWwiOjEwLCJidXJzdCI6MTB9LCJjb25zdGVsbGF0aW9uIjowLCJ3ZWFwb25SZWZpbmUiOjEsImNvbmRpdGlvbnMiOnsidG9nZ2xlcyI6e30sInN0YWNrcyI6e319LCJlbmVteSI6eyJsZXZlbCI6OTAsInJlc2lzdGFuY2UiOjEwfSwiYXJ0aWZhY3RNb2RlIjoibWFudWFsIiwiZ29vZEpzb24iOiIiLCJtYW51YWxTdGF0cyI6e30sIm1hbnVhbFNldHMiOltdLCJwYXJ0eSI6eyJtZW1iZXJzIjpbXX19",
+    "statKey": "atk_total",
+    "expectedTotal": 592.4510826000001
+  },
+  "pin": {
+    "hash": "eyJjaGFyYWN0ZXJLZXkiOiJiZW5uZXR0Iiwid2VhcG9uS2V5IjoiZGFya19pcm9uX3N3b3JkIiwiY2hhckxldmVsIjo5MCwiYXNjZW5zaW9uIjo2LCJ3ZWFwb25MZXZlbCI6OTAsIndlYXBvbkFzY2Vuc2lvbiI6NiwidGFsZW50cyI6eyJhdHRhY2siOjEwLCJlbGVtZW50YWwiOjEwLCJidXJzdCI6MTB9LCJjb25zdGVsbGF0aW9uIjowLCJ3ZWFwb25SZWZpbmUiOjEsImNvbmRpdGlvbnMiOnsidG9nZ2xlcyI6e30sInN0YWNrcyI6e319LCJlbmVteSI6eyJsZXZlbCI6OTAsInJlc2lzdGFuY2UiOjEwfSwiYXJ0aWZhY3RNb2RlIjoibWFudWFsIiwiZ29vZEpzb24iOiIiLCJtYW51YWxTdGF0cyI6e30sIm1hbnVhbFNldHMiOltdLCJwYXJ0eSI6eyJtZW1iZXJzIjpbXX19",
+    "pinKey": "reaction.overloaded",
+    "pinnedHeadline": 7343.678320118641
+  },
+  "vaporize": {
+    "hash": "eyJjaGFyYWN0ZXJLZXkiOiJodV90YW8iLCJ3ZWFwb25LZXkiOiJzdGFmZl9vZl9ob21hIiwiY2hhckxldmVsIjo5MCwiYXNjZW5zaW9uIjo2LCJ3ZWFwb25MZXZlbCI6OTAsIndlYXBvbkFzY2Vuc2lvbiI6NiwidGFsZW50cyI6eyJhdHRhY2siOjEwLCJlbGVtZW50YWwiOjEwLCJidXJzdCI6MTB9LCJjb25zdGVsbGF0aW9uIjowLCJ3ZWFwb25SZWZpbmUiOjEsImNvbmRpdGlvbnMiOnsidG9nZ2xlcyI6e30sInN0YWNrcyI6e30sInJlYWN0aW9uIjoidmFwb3JpemUifSwiZW5lbXkiOnsibGV2ZWwiOjkwLCJyZXNpc3RhbmNlIjoxMH0sImFydGlmYWN0TW9kZSI6Im1hbnVhbCIsImdvb2RKc29uIjoiIiwibWFudWFsU3RhdHMiOnt9LCJtYW51YWxTZXRzIjpbXSwicGFydHkiOnsibWVtYmVycyI6W119fQ",
+    "featureLabel": "Burst Burst Dmg",
+    "featureKey": "burst.burst_dmg",
+    "expectedAmped": 3102.6630885668037,
+    "expectedBase": 2068.442059044536
+  }
+}

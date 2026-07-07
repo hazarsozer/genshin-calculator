@@ -183,11 +183,21 @@ const features: readonly Feature[] = [
 // C1 "Yakan Offering": ConditionStatic display-only → SKIP.
 // C2 "Fox's Mooncall": cons-added miko_sesshou_sakura_4_dmg feature above (no stat entry needed).
 // C3 "The Seven Glamours": +3 levels to Sesshou Sakura (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
-// C4 "Sakura Channeling": ConditionBoolean toggle (dmg_electro:20) → SKIP (toggle OFF).
+// C4 "Sakura Channeling": SELF ConditionBoolean toggle (dmg_electro:20), gated C4. Now ported
+//   (the port had only the party.miko_sakura_channeling mirror → golden-blind SKIP of the SELF).
 // C5 "Mischievous Teasing": +3 levels to Tenko Kenshin (burst). Raw cons[4] settings char_skill_burst_bonus:3.
 // C6 "Daisesshou": ConditionStatic display-only (enemy_def_ignore_skill:60) → SKIP.
 // Raw: YaeMiko.js constellation array (YaeMiko.js:277-339).
 const constellationConditions: readonly Condition[] = [
+  // C4 "Sakura Channeling": SELF toggle granting +20% Electro DMG, gated C4. Raw cons[3]:
+  // ConditionBoolean{ name:'miko_sakura_channeling', stats:{ dmg_electro:20 } }. Modelled as a
+  // boolean toggle with a constellation-4 sub-gate (the party.* mirror lives in partyData below).
+  {
+    type: "boolean",
+    name: "miko_sakura_channeling",
+    stats: { dmg_electro: 20 },
+    condition: { type: "constellation", constellation: 4 },
+  },
   // C3: +3 levels to Sesshou Sakura (elemental skill).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Tenko Kenshin (elemental burst).

@@ -49,29 +49,37 @@ const talents: TalentResolver = {
 
 const features: readonly Feature[] = [
   // --- Normal attacks ---
+  // All normal + charged hits declare critRateBonuses:['crit_rate_kaeya'] (raw Kaeya.js:126-218)
+  // → the C1 "Excellent Blood" +15% Crit Rate (the self condition below) reaches their crit term.
+  // Base-inert until the C1 toggle fires (absent key reads 0).
   {
     name: "normal_hit_1",
     category: "attack",
+    critRateBonuses: ["crit_rate_kaeya"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
   },
   {
     name: "normal_hit_2",
     category: "attack",
+    critRateBonuses: ["crit_rate_kaeya"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }],
   },
   {
     name: "normal_hit_3",
     category: "attack",
+    critRateBonuses: ["crit_rate_kaeya"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
   },
   {
     name: "normal_hit_4",
     category: "attack",
+    critRateBonuses: ["crit_rate_kaeya"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4") }],
   },
   {
     name: "normal_hit_5",
     category: "attack",
+    critRateBonuses: ["crit_rate_kaeya"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5") }],
   },
   // --- Charged attacks (2-hit multihit combo, plus individual child hits) ---
@@ -79,6 +87,7 @@ const features: readonly Feature[] = [
     name: "charged_hit_total",
     category: "attack",
     damageType: "charged",
+    critRateBonuses: ["crit_rate_kaeya"],
     items: [
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit_1") }] },
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit_2") }] },
@@ -88,12 +97,14 @@ const features: readonly Feature[] = [
     name: "charged_hit_1",
     category: "attack",
     damageType: "charged",
+    critRateBonuses: ["crit_rate_kaeya"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit_1") }],
   },
   {
     name: "charged_hit_2",
     category: "attack",
     damageType: "charged",
+    critRateBonuses: ["crit_rate_kaeya"],
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit_2") }],
   },
   // --- Plunge attacks ---
@@ -147,7 +158,10 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C Wave-1)
 // ---------------------------------------------------------------------------
-// C1 "Excellent Blood": ConditionBoolean toggle (crit_rate_kaeya=15) → SKIP.
+// C1 "Excellent Blood": ConditionBoolean toggle (crit_rate_kaeya=15) on enemies affected by
+//   Cryo/frozen — modelled below (SELF condition; was golden-blind SKIPPED — no golden toggles it,
+//   so the 58k DAMAGE goldens are blind; a diff-parity sweep surfaced the 8 normal/charged avg rows
+//   diverging from cons 1). No party.* mirror exists (self-only). raw Kaeya.js:315-324.
 // C2 "Never-Ending Performance": ConditionStatic, no real stats → SKIP.
 // C4 "Frozen Kiss": FeatureShield gated by ConditionConstellation(4) —
 //   shield features are not damage triples (no element/damageType multiplier),
@@ -164,6 +178,16 @@ const constellationConditions: readonly Condition[] = [
   // C5 "Praise of Ice" — +3 Elemental Burst (Glacial Waltz).
   // Raw cons[4]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF "Excellent Blood" (C1) — +15% Crit Rate (crit_rate_kaeya) to every normal + charged hit
+  // (each declares critRateBonuses:['crit_rate_kaeya']). ConditionBoolean gated at C1 (constellation[0]
+  // → THE CONSTELLATION IS A GATE; base-inert below C1 / when untoggled). Self-only → golden-blind SKIP.
+  // raw Kaeya.js:315-324 (constellation[0], ConditionBoolean stats:{crit_rate_kaeya:15}).
+  {
+    type: "boolean",
+    name: "kaeya_excellent_blood",
+    stats: { crit_rate_kaeya: 15 },
+    condition: { type: "constellation", constellation: 1 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

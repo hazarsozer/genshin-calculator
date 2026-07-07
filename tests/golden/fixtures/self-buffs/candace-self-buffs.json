@@ -1,0 +1,264 @@
+{
+  "element": "hydro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2782.3731146740274,
+      "category": "attack",
+      "crit": 6145.304139459481,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2408.714111920088
+    },
+    "attack.normal_hit_1": {
+      "average": 1706.9962992184765,
+      "category": "attack",
+      "crit": 3770.1670449249905,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1477.755105251086
+    },
+    "attack.normal_hit_2": {
+      "average": 1716.6539869085384,
+      "category": "attack",
+      "crit": 3791.4975515440847,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1486.1158130601443
+    },
+    "attack.normal_hit_3": {
+      "average": 2214.024902946737,
+      "category": "attack",
+      "crit": 4890.018642427463,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1916.6922652266562
+    },
+    "attack.normal_hit_3_1": {
+      "average": 996.3112063260315,
+      "category": "attack",
+      "crit": 2200.508389092358,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 862.5115193519952
+    },
+    "attack.normal_hit_3_2": {
+      "average": 1217.7136966207054,
+      "category": "attack",
+      "crit": 2689.5102533351046,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1054.180745874661
+    },
+    "attack.normal_hit_4": {
+      "average": 2665.5218024571404,
+      "category": "attack",
+      "crit": 5887.21982687014,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2307.55535530014
+    },
+    "attack.plunge": {
+      "average": 1234.845838576196,
+      "category": "attack",
+      "crit": 2727.3492557038503,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1069.0121255620122
+    },
+    "attack.plunge_high": {
+      "average": 3084.1246549427274,
+      "category": "attack",
+      "crit": 6811.769388035162,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2669.9419068213456
+    },
+    "attack.plunge_low": {
+      "average": 2469.1689259428163,
+      "category": "attack",
+      "crit": 5453.543933987738,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2137.5717028267136
+    },
+    "burst.burst_dmg": {
+      "average": 4155.939031250101,
+      "category": "burst",
+      "crit": 9179.038281166897,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3597.8168923704566
+    },
+    "burst.candace_dmg_bonus": {
+      "average": 37.35265869848,
+      "category": "burst",
+      "crit": 37.35265869848,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 37.35265869848
+    },
+    "burst.candace_the_overflow_dmg": {
+      "average": 4437.861584864598,
+      "category": "burst",
+      "crit": 9801.708126054731,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3841.878635843472
+    },
+    "burst.candace_wave_dmg": {
+      "average": 4155.939031250101,
+      "category": "burst",
+      "crit": 9179.038281166897,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3597.8168923704566
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.candace_hold_dmg": {
+      "average": 9634.705741267508,
+      "category": "skill",
+      "crit": 21279.747407716688,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 8340.812222773153
+    },
+    "skill.candace_press_dmg": {
+      "average": 6072.293534412293,
+      "category": "skill",
+      "crit": 13411.605509065139,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5256.814426117533
+    },
+    "skill.shield": {
+      "average": 12027.934836224802,
+      "category": "skill",
+      "crit": 12027.934836224802,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 12027.934836224802
+    },
+    "stats.atk": {
+      "average": 1879.7437063799998,
+      "category": "stats",
+      "crit": 1879.7437063799998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1879.7437063799998
+    },
+    "stats.crit_dmg": {
+      "average": 155.128,
+      "category": "stats",
+      "crit": 155.128,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 155.128
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1558.521525,
+      "category": "stats",
+      "crit": 1558.521525,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1558.521525
+    },
+    "stats.hp": {
+      "average": 34705.31739696,
+      "category": "stats",
+      "crit": 34705.31739696,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 34705.31739696
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Candace",
+  "repSlug": "candace",
+  "schema": 1,
+  "slug": "candace-self-buffs",
+  "weapon": "weapon_name.blackcliff_pole",
+  "weaponType": "polearm"
+}

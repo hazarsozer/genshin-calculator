@@ -1,0 +1,131 @@
+{
+  "_source": "gen-live-goldens (port-snapshot of a gate-validated live char; independent oracle = the GCSim/GO gate + tools/oracle/_fixtures/<slug>(-go)-gate.json, NOT these fixtures)",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2539.0322962092405,
+      "category": "attack",
+      "crit": 5607.84806244218,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2198.0527666278026
+    },
+    "attack.normal_hit_1": {
+      "average": 1010.9950657869501,
+      "category": "attack",
+      "crit": 2232.9399784620664,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 875.2234088230483
+    },
+    "attack.normal_hit_2": {
+      "average": 1035.7389942630982,
+      "category": "attack",
+      "crit": 2287.5907962438423,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 896.6443495985711
+    },
+    "attack.normal_hit_3": {
+      "average": 670.9128974801283,
+      "category": "attack",
+      "crit": 1481.8155711601673,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 580.8126004045685
+    },
+    "attack.normal_hit_4": {
+      "average": 1628.1064392584801,
+      "category": "attack",
+      "crit": 3595.9265088815914,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1409.4597648559122
+    },
+    "attack.plunge_high": {
+      "average": 3164.723802573306,
+      "category": "attack",
+      "crit": 6989.785151973826,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2739.7169859732476
+    },
+    "attack.plunge_hit": {
+      "average": 1267.116752751115,
+      "category": "attack",
+      "crit": 2798.6245930830733,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1096.9492149364528
+    },
+    "attack.plunge_low": {
+      "average": 2533.6970929440936,
+      "category": "attack",
+      "crit": 5596.064435531306,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2193.4340548788477
+    },
+    "burst.burst_dmg": {
+      "average": 12639.623478544767,
+      "category": "burst",
+      "crit": 27916.5759884114,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 10942.184310781806
+    },
+    "reaction.crystalize": {
+      "average": 2651.2052822901355,
+      "category": "reaction",
+      "crit": 2651.2052822901355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2651.2052822901355
+    },
+    "reaction.electrocharged": {
+      "average": 5529.522957740585,
+      "category": "reaction",
+      "crit": 5529.522957740585,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5529.522957740585
+    },
+    "reaction.shatter": {
+      "average": 8294.284436610877,
+      "category": "reaction",
+      "crit": 8294.284436610877,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8294.284436610877
+    },
+    "skill.skill_hold": {
+      "average": 7418.481657620203,
+      "category": "skill",
+      "crit": 16384.871532378464,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6422.216115980395
+    },
+    "skill.skill_press": {
+      "average": 5934.785326096163,
+      "category": "skill",
+      "crit": 13107.897225902772,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5137.772892784317
+    }
+  }
+}

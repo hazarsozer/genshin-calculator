@@ -26,7 +26,7 @@ import {
   TALENTS,
   reconstructSettings,
   reconstructPort,
-} from "./_reconstruct.js";
+} from "../reconstruct.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FIXTURES = resolve(__dirname, "../../../../tests/golden/fixtures/gates");
@@ -172,7 +172,7 @@ describe("v6.x set gate — port reproduces frozen ourRatio, teammate path (GCSi
       passiveOn: false,
       artifactSets: {},
       setRegistry: {},
-      party: { setOther: ["night_of_the_skys_unveiling_4"] },
+      party: { setOther: { night_of_the_skys_unveiling_4: true } },
       partySlugResolver: noMemberResolver,
       levels: LEVELS,
       talents: TALENTS,
@@ -209,7 +209,7 @@ describe("v6.x set gate — port reproduces frozen ourRatio, teammate path (GCSi
       passiveOn: false,
       artifactSets: {},
       setRegistry: {},
-      party: { setOther: ["silken_moons_serenade_4"] },
+      party: { setOther: { silken_moons_serenade_4: true } },
       partySlugResolver: noMemberResolver,
       levels: LEVELS,
       talents: TALENTS,

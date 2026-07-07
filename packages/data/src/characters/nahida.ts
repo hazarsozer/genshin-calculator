@@ -313,12 +313,30 @@ const conditions: readonly Condition[] = [
   // Sub-gated by illusory_heart in raw; we gate the post-effect on both booleans instead.
   { type: "boolean", name: "nahida_compassion_illuminated" },
   // C2 "The Root of All Fullness": makes Bloom/Rupture + Burning reactions crit
-  // (ConditionStatic, auto-active — the accompanying enemy_def_reduce is a toggle, skipped).
-  // crit_rate_bloom/burning:20, crit_dmg_bloom/burning:100. Raw Nahida.js:453-457.
+  // (ConditionStatic, auto-active). crit_rate_bloom/burning:20, crit_dmg_bloom/burning:100.
+  // Raw Nahida.js:453-457.
   {
     type: "constellation",
     constellation: 2,
     stats: { crit_rate_bloom: 20, crit_dmg_bloom: 100, crit_rate_burning: 20, crit_dmg_burning: 100 },
+  },
+  // C2 (cont.): the accompanying SELF toggle nahida_the_root_of_all_fullness — when an enemy is
+  // afflicted by her Tri-Karma DMG, their DEF is reduced by 30%. Raw Nahida.js:460-466
+  // (ConditionBoolean enemy_def_reduce:C2DefReduce, in the same C2 cons slot). Previously SKIPPED
+  // ("the accompanying enemy_def_reduce is a toggle, skipped") → golden-blind SKIP: with the toggle
+  // ON the oracle shreds enemy DEF on EVERY Nahida hit (all direct damage ~0.85× without it). Gated
+  // and[C2, toggle] (evaluateConstellation is level-only). Gated OFF by default → base-inert.
+  {
+    type: "static",
+    name: "nahida_the_root_of_all_fullness",
+    stats: { enemy_def_reduce: 30 },
+    condition: {
+      type: "and",
+      items: [
+        { type: "constellation", constellation: 2 },
+        { type: "boolean", name: "nahida_the_root_of_all_fullness" },
+      ],
+    },
   },
   // C3: +3 levels to All Schemes to Know (skill). Raw Nahida.js:472-478 (cons[2]).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },

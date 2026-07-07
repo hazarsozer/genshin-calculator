@@ -182,7 +182,8 @@ const features: readonly Feature[] = [
 // Constellation conditions (P2.C Wave-1)
 // ---------------------------------------------------------------------------
 // C1 "Bringer of Blessing": text_percent_heal (display-only) → SKIP.
-// C2 "Plum Blossoms Underfoot": ConditionBoolean toggle (atk_percent) → SKIP.
+// C2 "Plum Blossoms Underfoot": SELF ConditionBoolean toggle (atk_percent:20), gated C2. Now
+//   ported (was a golden-blind SKIP — no golden toggles it).
 // C4 "Soar Across Mountains": ConditionStatic no real stats → SKIP.
 //
 // Always-on at C6 build: C3 (+3 skill talent), C5 (+3 burst talent),
@@ -191,6 +192,15 @@ const features: readonly Feature[] = [
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Gaming.js:314-377
 
 const constellationConditions: readonly Condition[] = [
+  // C2 "Plum Blossoms Underfoot" — SELF toggle granting +20% ATK, gated C2. Raw cons[1]:
+  // ConditionBoolean{ name:'gaming_plum_blossoms_underfoot', stats:{ atk_percent:20 } }.
+  // Modelled as a boolean toggle with a constellation-2 sub-gate.
+  {
+    type: "boolean",
+    name: "gaming_plum_blossoms_underfoot",
+    stats: { atk_percent: 20 },
+    condition: { type: "constellation", constellation: 2 },
+  },
   // C3 "Unleashing the Fearless" — +3 Elemental Skill (Bestial Ascent).
   // Raw cons[2]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },

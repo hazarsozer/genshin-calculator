@@ -306,8 +306,28 @@ const features: readonly Feature[] = [
 // C4: ConditionStatic text_percent_atk → display-only; actual damage is kirara_coordinated_dmg
 //   above. Raw Kirara.js:522-530.
 // C5: +3 levels to Surprise Dispatch (burst). Raw Kirara.js:531-539 char_skill_burst_bonus:3.
-// C6 "Countless Sights to See": ConditionBoolean toggle (dmg_<element>:12 for all) → SKIP.
+// C6 "Countless Sights to See": ConditionBoolean toggle (dmg_<element>:12 for all). Ported below
+//   as the SELF mirror of party.kirara_countless_sights_to_see (was golden-blind SKIPPED).
 const constellationConditions: readonly Condition[] = [
+  // SELF "Countless Sights to See" (C6) — +12% DMG for ALL 7 elements, buffing every Kirara damage
+  // feature (her own hits are dendro → dmg_dendro lifts them; the other six cover infusion).
+  // ConditionBoolean gated at C6 (lives in constellation[5] → THE CONSTELLATION IS A GATE). SELF
+  // mirror of party.kirara_countless_sights_to_see; the port modelled only the party.* version.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Kirara.js:544-562 (constellation[5], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "kirara_countless_sights_to_see",
+    stats: {
+      dmg_anemo: 12,
+      dmg_geo: 12,
+      dmg_pyro: 12,
+      dmg_electro: 12,
+      dmg_hydro: 12,
+      dmg_cryo: 12,
+      dmg_dendro: 12,
+    },
+    condition: { type: "constellation", constellation: 6 },
+  },
   // C3: +3 levels to Meow-teor Kick (elemental skill). Raw cons[2] settings.
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Surprise Dispatch (elemental burst). Raw cons[4] settings.

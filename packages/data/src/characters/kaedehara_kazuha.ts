@@ -40,7 +40,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTables.js (Kazuha)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
 import { Kazuha as KazuhaStatTable } from "../generated/charTables.js";
 import { Kazuha as KazuhaTalents } from "../generated/charTalentTables.js";
 
@@ -338,6 +338,82 @@ const constellationConditions: readonly Condition[] = [
   // No stats contributed; the crimson_momiji ConditionBoolean toggle (off in the
   // constellations fixture) carries the actual DMG bonus and attack_infusion_anemo.
   { type: "constellation", constellation: 6, settings: { allowed_infusion_anemo: 1 } },
+  // C6 "Crimson Momiji" (toggle part): the ConditionBoolean kaedehara_kazuha_crimson_momiji
+  // grants an ANEMO infusion on his normals/charged/plunge (raw attack_infusion_anemo:1 → our
+  // simplified attack_infusion:"anemo") AND gates the EM→dmg_normal/charged/plunge conversion
+  // (selfPostEffects below). Gated on constellation 6 (the toggle lives in raw cons[5] → the
+  // constellation IS the gate; base-inert: no golden sets it). Source: raw Kazuha.js:660-684.
+  {
+    type: "boolean",
+    name: "kaedehara_kazuha_crimson_momiji",
+    settings: { attack_infusion: "anemo" },
+    condition: { type: "constellation", constellation: 6 },
+  },
+];
+
+// SELF Mastery→DMG stat CONVERSIONS (PostEffectStatsMastery) — the port modelled only the
+// party.* mirror of A4 and SKIPPED the C6 self entirely → golden-blind SKIP. Data-only (existing
+// CharPostEffect fixed-ratio + dropdown-element / boolean / constellation conditions; dmg_<key>
+// folds /100 at emit, exactly like the already-ported party A4 entries).
+//   A4 "Poetics of Fuubutsu": EM × 0.04 → dmg_<el> per swirl element, gated by the SELF dropdown
+//     kaedehara_kazuha_poetics_of_fuubutsu (no party prefix). Mirrors the partyData A4 entries.
+//     raw Kazuha.js:504-532 (A4ElementalBonus 0.04).
+//   C6 "Crimson Momiji": EM × 0.2 → dmg_normal/charged/plunge, gated by the crimson_momiji
+//     boolean AND constellation 6. raw Kazuha.js:138-148 (C6DmgBonus 0.2).
+const selfPostEffects: readonly CharPostEffect[] = [
+  // A4 — one entry per swirl element (the famous EM→elemental-DMG buff).
+  {
+    fromStat: "mastery",
+    toStat: "dmg_cryo",
+    ratio: 0.04,
+    conditions: [{ type: "dropdown-element", name: "kaedehara_kazuha_poetics_of_fuubutsu", element: "cryo" }],
+  },
+  {
+    fromStat: "mastery",
+    toStat: "dmg_electro",
+    ratio: 0.04,
+    conditions: [{ type: "dropdown-element", name: "kaedehara_kazuha_poetics_of_fuubutsu", element: "electro" }],
+  },
+  {
+    fromStat: "mastery",
+    toStat: "dmg_hydro",
+    ratio: 0.04,
+    conditions: [{ type: "dropdown-element", name: "kaedehara_kazuha_poetics_of_fuubutsu", element: "hydro" }],
+  },
+  {
+    fromStat: "mastery",
+    toStat: "dmg_pyro",
+    ratio: 0.04,
+    conditions: [{ type: "dropdown-element", name: "kaedehara_kazuha_poetics_of_fuubutsu", element: "pyro" }],
+  },
+  // C6 — EM → normal/charged/plunge DMG, gated crimson_momiji + constellation 6.
+  {
+    fromStat: "mastery",
+    toStat: "dmg_normal",
+    ratio: 0.2,
+    conditions: [
+      { type: "boolean", name: "kaedehara_kazuha_crimson_momiji" },
+      { type: "constellation", constellation: 6 },
+    ],
+  },
+  {
+    fromStat: "mastery",
+    toStat: "dmg_charged",
+    ratio: 0.2,
+    conditions: [
+      { type: "boolean", name: "kaedehara_kazuha_crimson_momiji" },
+      { type: "constellation", constellation: 6 },
+    ],
+  },
+  {
+    fromStat: "mastery",
+    toStat: "dmg_plunge",
+    ratio: 0.2,
+    conditions: [
+      { type: "boolean", name: "kaedehara_kazuha_crimson_momiji" },
+      { type: "constellation", constellation: 6 },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -356,6 +432,7 @@ export const kaedeharaKazuha: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  postEffects: selfPostEffects,
   // partyData — teammate kit buffs (P3.5.2 Bucket B batch 1).
   // Source: raw/genshin_calc_pub/src/js/db/Char/Kazuha.js:685-813
   partyData: {

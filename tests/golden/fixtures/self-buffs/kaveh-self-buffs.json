@@ -1,0 +1,246 @@
+{
+  "element": "dendro",
+  "features": {
+    "attack.charged_final": {
+      "average": 2078.7620954387485,
+      "category": "attack",
+      "crit": 3779.5674462522693,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1889.7837231261346
+    },
+    "attack.charged_spin": {
+      "average": 1149.0831618793795,
+      "category": "attack",
+      "crit": 2089.2421125079627,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1044.6210562539814
+    },
+    "attack.kaveh_pairidaezas_light_dmg": {
+      "average": 582.6993721497869,
+      "category": "attack",
+      "crit": 1059.4534039087034,
+      "damageType": "none",
+      "format": "",
+      "isReacted": false,
+      "normal": 529.7267019543517
+    },
+    "attack.normal_hit_1": {
+      "average": 1533.5742310909147,
+      "category": "attack",
+      "crit": 2788.316783801663,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1394.1583919008315
+    },
+    "attack.normal_hit_2": {
+      "average": 1401.8049711286544,
+      "category": "attack",
+      "crit": 2548.7363111430077,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1274.3681555715038
+    },
+    "attack.normal_hit_3": {
+      "average": 1696.0964404415854,
+      "category": "attack",
+      "crit": 3083.8117098937914,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1541.9058549468957
+    },
+    "attack.normal_hit_4": {
+      "average": 2067.0666213090626,
+      "category": "attack",
+      "crit": 3758.302947834659,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1879.1514739173294
+    },
+    "attack.plunge": {
+      "average": 1390.1811558214333,
+      "category": "attack",
+      "crit": 2527.602101493515,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1263.8010507467575
+    },
+    "attack.plunge_high": {
+      "average": 3472.15281220322,
+      "category": "attack",
+      "crit": 6313.005113096763,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3156.5025565483816
+    },
+    "attack.plunge_low": {
+      "average": 2779.79658409709,
+      "category": "attack",
+      "crit": 5054.175607449254,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2527.087803724627
+    },
+    "burst.burst_dmg": {
+      "average": 5257.494658749533,
+      "category": "burst",
+      "crit": 9559.081197726424,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.540598863212
+    },
+    "other.kaveh_bloom_heal": {
+      "average": 753,
+      "category": "other",
+      "crit": 753,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 753
+    },
+    "reaction.burning": {
+      "average": 906.3402705519768,
+      "category": "reaction",
+      "crit": 906.3402705519768,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 906.3402705519768
+    },
+    "reaction.electrocharged": {
+      "average": 7250.722164415814,
+      "category": "reaction",
+      "crit": 7250.722164415814,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7250.722164415814
+    },
+    "reaction.rupture": {
+      "average": 10101.949545655814,
+      "category": "reaction",
+      "crit": 10101.949545655814,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 10101.949545655814
+    },
+    "reaction.shatter": {
+      "average": 10876.083246623723,
+      "category": "reaction",
+      "crit": 10876.083246623723,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 10876.083246623723
+    },
+    "skill.skill_dmg": {
+      "average": 5395.343604070405,
+      "category": "skill",
+      "crit": 9809.715643764372,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4904.857821882186
+    },
+    "stats.atk": {
+      "average": 1904.806551436,
+      "category": "stats",
+      "crit": 1904.806551436,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1904.806551436
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1626.7736774999998,
+      "category": "stats",
+      "crit": 1626.7736774999998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1626.7736774999998
+    },
+    "stats.hp": {
+      "average": 35602.805001877554,
+      "category": "stats",
+      "crit": 35602.805001877554,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 35602.805001877554
+    },
+    "stats.mastery": {
+      "average": 251,
+      "category": "stats",
+      "crit": 251,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 251
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.bell_shield": {
+      "average": 7120.561000375511,
+      "category": "weapon",
+      "crit": 7120.561000375511,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 7120.561000375511
+    }
+  },
+  "kind": "party",
+  "repChar": "Kaveh",
+  "repSlug": "kaveh",
+  "schema": 1,
+  "slug": "kaveh-self-buffs",
+  "weapon": "weapon_name.the_bell",
+  "weaponType": "claymore"
+}

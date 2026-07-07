@@ -1,0 +1,282 @@
+{
+  "element": "geo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2782.9052665655113,
+      "category": "attack",
+      "crit": 6146.4794797487875,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2409.1747984340363
+    },
+    "attack.normal_hit_1": {
+      "average": 1884.0881811002023,
+      "category": "attack",
+      "crit": 4161.302032915247,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1631.0644197874194
+    },
+    "attack.normal_hit_2": {
+      "average": 1877.8438530285798,
+      "category": "attack",
+      "crit": 4147.510462351146,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1625.6586742149611
+    },
+    "attack.normal_hit_3": {
+      "average": 3029.264207058437,
+      "category": "attack",
+      "crit": 6690.601549078585,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2622.4489468339757
+    },
+    "attack.normal_hit_3_1": {
+      "average": 1459.4738722298885,
+      "category": "attack",
+      "crit": 3223.4752345564034,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1263.4737208602755
+    },
+    "attack.normal_hit_3_2": {
+      "average": 1569.7903348285483,
+      "category": "attack",
+      "crit": 3467.1263145221815,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1358.9752259737002
+    },
+    "attack.normal_hit_4": {
+      "average": 3085.463159703037,
+      "category": "attack",
+      "crit": 6814.72568415549,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2671.1006569860974
+    },
+    "attack.normal_hit_4_1": {
+      "average": 1484.4511845163777,
+      "category": "attack",
+      "crit": 3278.6415168128065,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1285.0967031501077
+    },
+    "attack.normal_hit_4_2": {
+      "average": 1601.0119751866596,
+      "category": "attack",
+      "crit": 3536.084167342684,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1386.00395383599
+    },
+    "attack.normal_hit_5": {
+      "average": 2533.498300548917,
+      "category": "attack",
+      "crit": 5595.625371581713,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2193.261959323051
+    },
+    "attack.plunge": {
+      "average": 1267.116752751115,
+      "category": "attack",
+      "crit": 2798.6245930830733,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1096.9492149364528
+    },
+    "attack.plunge_high": {
+      "average": 3164.723802573305,
+      "category": "attack",
+      "crit": 6989.785151973825,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2739.716985973247
+    },
+    "attack.plunge_low": {
+      "average": 2533.697092944093,
+      "category": "attack",
+      "crit": 5596.064435531305,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2193.4340548788473
+    },
+    "burst.burst_dmg": {
+      "average": 8197.934124476258,
+      "category": "burst",
+      "crit": 18106.413638223457,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 7096.991956282125
+    },
+    "burst.yunjin_dmg_bonus": {
+      "average": 1368.963018217872,
+      "category": "burst",
+      "crit": 1368.963018217872,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1368.963018217872
+    },
+    "reaction.crystalize": {
+      "average": 2161.7331008659794,
+      "category": "reaction",
+      "crit": 2161.7331008659794,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2161.7331008659794
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.press_dmg": {
+      "average": 4201.695243869513,
+      "category": "skill",
+      "crit": 9280.097999338092,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3637.4282710396715
+    },
+    "skill.shield": {
+      "average": 9267.991300524,
+      "category": "skill",
+      "crit": 9267.991300524,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 9267.991300524
+    },
+    "skill.yunjin_charge_1_dmg": {
+      "average": 7352.966676771649,
+      "category": "skill",
+      "crit": 16240.17149884166,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6365.499474319425
+    },
+    "skill.yunjin_charge_2_dmg": {
+      "average": 10504.238109673784,
+      "category": "skill",
+      "crit": 23200.24499834523,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 9093.570677599178
+    },
+    "stats.atk": {
+      "average": 1854.6808613239998,
+      "category": "stats",
+      "crit": 1854.6808613239998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1854.6808613239998
+    },
+    "stats.crit_dmg": {
+      "average": 155.128,
+      "category": "stats",
+      "crit": 155.128,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 155.128
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1932.47179308,
+      "category": "stats",
+      "crit": 1932.47179308,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1932.47179308
+    },
+    "stats.hp": {
+      "average": 23883.4168648,
+      "category": "stats",
+      "crit": 23883.4168648,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23883.4168648
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 226.67000000000002,
+      "category": "stats",
+      "crit": 226.67000000000002,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 226.67000000000002
+    }
+  },
+  "kind": "party",
+  "repChar": "YunJin",
+  "repSlug": "yun_jin",
+  "schema": 1,
+  "slug": "yunjin-self-buffs",
+  "weapon": "weapon_name.blackcliff_pole",
+  "weaponType": "polearm"
+}

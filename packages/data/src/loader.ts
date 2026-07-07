@@ -91,6 +91,9 @@ export function compileCharacter(
           ...(char.lunarChargedActive !== undefined
             ? { lunarChargedActive: char.lunarChargedActive }
             : {}),
+          ...(char.reactionFlatOverrides !== undefined
+            ? { reactionFlatOverrides: char.reactionFlatOverrides }
+            : {}),
         })
       : [];
 

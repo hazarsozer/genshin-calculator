@@ -286,22 +286,60 @@ const a4PostEffects: readonly CharPostEffect[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Constellation conditions (P2.C)
+// Constellation + SELF conditions (P2.C)
 // ---------------------------------------------------------------------------
 // C1 "Intuition": ConditionStatic no stats → display-only, SKIP.
-// C2 "Debate": ConditionStacks mastery toggle → SKIP (toggle off).
-// C4 "Elucidation": ConditionStacks dmg_dendro + mastery toggle → SKIP.
-// C6 "Structuration": ConditionBoolean crit_rate/crit_dmg toggle → SKIP.
 //
-// Source: raw/genshin_calc_pub/src/js/db/Char/Alhaitham.js:498-568
+// SELF buffs (were golden-blind SKIPPED — the port modelled only party.alhaitham_elucidation
+// (the teammate mastery mirror) + the C3/C5 talent-level cons; a diff-parity sweep surfaced his
+// own hits + reactions diverging when the toggles are on, cons0/1 clean, divergence at C2/C4/C6):
+//   - A1 "Mirror of Dendro" (alhaitham_mirror): SELF dendro infusion (attack_infusion:"dendro") on
+//     his own physical normals/charged/plunge. raw Alhaitham.js conditions[0] settings
+//     attack_infusion:'dendro'. The Keqing/Diluc-dawn infusion pattern; base-inert untoggled.
+//   - C2 "Debate" (alhaitham_debate): SELF mastery +50 per stack (max 4 = +200 EM), lifting the
+//     skill/burst mastery* terms AND EM-scaled reactions. raw constellation[1] ConditionStacks.
+//   - C4 "Elucidation" (alhaitham_elucidation): SELF dmg_dendro +10 per stack (max 3 = +30%),
+//     lifting his dendro hits. NOTE the self version grants dmg_dendro (the teammate party.* mirror
+//     grants mastery instead — modelled in partyData below). text_value_* are display keys → skip.
+//     raw constellation[3] ConditionStacks. THE CONSTELLATION IS A GATE.
+//   - C6 "Structuration" (alhaitham_structuration): SELF crit_rate +10, crit_dmg +70. raw
+//     constellation[5] ConditionBoolean. THE CONSTELLATION IS A GATE.
+//
+// Source: raw/genshin_calc_pub/src/js/db/Char/Alhaitham.js (conditions + constellation arrays)
 
 const constellationConditions: readonly Condition[] = [
+  // SELF A1 "Mirror of Dendro" dendro infusion — his own physical normals/charged/plunge become
+  // dendro while the toggle is on. Base-inert when untoggled. raw conditions[0].
+  { type: "boolean", name: "alhaitham_mirror", settings: { attack_infusion: "dendro" } },
   // C3 "Compact Ingenuity": +3 levels to Universality: An Elaboration on Form (Elemental Skill).
   // Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus: 3 } }.
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5 "Sagacity": +3 levels to Particular Field: Fetters of Phenomena (Elemental Burst).
   // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus: 3 } }.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF C2 "Debate" — mastery +50 per stack (max 4), gated at C2. raw constellation[1].
+  {
+    type: "stacks",
+    name: "alhaitham_debate",
+    maxStacks: 4,
+    stats: { mastery: 50 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  // SELF C4 "Elucidation" — dmg_dendro +10 per stack (max 3), gated at C4. raw constellation[3].
+  {
+    type: "stacks",
+    name: "alhaitham_elucidation",
+    maxStacks: 3,
+    stats: { dmg_dendro: 10 },
+    condition: { type: "constellation", constellation: 4 },
+  },
+  // SELF C6 "Structuration" — crit_rate +10, crit_dmg +70, gated at C6. raw constellation[5].
+  {
+    type: "boolean",
+    name: "alhaitham_structuration",
+    stats: { crit_rate: 10, crit_dmg: 70 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

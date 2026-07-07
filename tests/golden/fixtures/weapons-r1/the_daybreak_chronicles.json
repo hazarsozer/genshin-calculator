@@ -1,0 +1,247 @@
+{
+  "_source": "port-snapshot the_daybreak_chronicles weapons-r1 — regression lock; validation = 2-witness (Amber + GCSim source) + load-bearing r1≠r5 (no single-rep GCSim gate)",
+  "element": "anemo",
+  "features": {
+    "attack.aimed_shot": {
+      "average": 1117.708047573814,
+      "category": "attack",
+      "crit": 2384.709768217269,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 976.9300786134299
+    },
+    "attack.fully_charged_aimed": {
+      "average": 2781.5073626819617,
+      "category": "attack",
+      "crit": 5934.5441705946705,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2431.1699395805495
+    },
+    "attack.normal_hit_1": {
+      "average": 1522.197093125014,
+      "category": "attack",
+      "crit": 3247.7159710952387,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1330.4727733505445
+    },
+    "attack.normal_hit_2": {
+      "average": 702.4510173028511,
+      "category": "attack",
+      "crit": 1498.729302604972,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 613.9756522692821
+    },
+    "attack.normal_hit_3": {
+      "average": 1870.0614418242262,
+      "category": "attack",
+      "crit": 3989.9093481208843,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1634.5227855690418
+    },
+    "attack.plunge_high": {
+      "average": 3134.7254512817904,
+      "category": "attack",
+      "crit": 6688.160133209824,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2739.8993755120086
+    },
+    "attack.plunge_hit": {
+      "average": 1255.1057793304694,
+      "category": "attack",
+      "crit": 2677.857619986095,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1097.0222414798443
+    },
+    "attack.plunge_low": {
+      "average": 2509.6797341781717,
+      "category": "attack",
+      "crit": 5354.580554539993,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2193.5796430268583
+    },
+    "burst.burst_cast": {
+      "average": 8975.079596960884,
+      "category": "burst",
+      "crit": 19148.971891057867,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 7844.647119838997
+    },
+    "burst.lowest_heal": {
+      "average": 1868.8044412799086,
+      "category": "burst",
+      "crit": 1868.8044412799086,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1868.8044412799086
+    },
+    "burst.robot_heal": {
+      "average": 4858.852100147761,
+      "category": "burst",
+      "crit": 4858.852100147761,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 4858.852100147761
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.hyperbloom": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "reaction.swirl_cryo": {
+      "average": 1115.8725606569342,
+      "category": "reaction",
+      "crit": 1115.8725606569342,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1115.8725606569342
+    },
+    "reaction.swirl_electro": {
+      "average": 1115.8725606569342,
+      "category": "reaction",
+      "crit": 1115.8725606569342,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1115.8725606569342
+    },
+    "reaction.swirl_hydro": {
+      "average": 1115.8725606569342,
+      "category": "reaction",
+      "crit": 1115.8725606569342,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1115.8725606569342
+    },
+    "reaction.swirl_pyro": {
+      "average": 1115.8725606569342,
+      "category": "reaction",
+      "crit": 1115.8725606569342,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 1115.8725606569342
+    },
+    "skill.filled_flask": {
+      "average": 7871.139856132271,
+      "category": "skill",
+      "crit": 16793.63778642141,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6879.751197211256
+    },
+    "skill.smoke_bomb": {
+      "average": 5903.354892099204,
+      "category": "skill",
+      "crit": 12595.228339816056,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5159.813397908442
+    },
+    "skill.unfilled_flask": {
+      "average": 7084.0258705190445,
+      "category": "skill",
+      "crit": 15114.274007779266,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6191.776077490131
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Jahoda",
+  "repSlug": "jahoda",
+  "schema": 1,
+  "slug": "the_daybreak_chronicles",
+  "weapon": "weapon_name.the_daybreak_chronicles",
+  "weaponType": "bow"
+}

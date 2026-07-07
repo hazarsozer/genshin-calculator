@@ -15,7 +15,7 @@ import { join, dirname } from "node:path";
 import { describe, it, expect } from "vitest";
 import { buildStats } from "../buildStats.js";
 import { compileCharacter } from "../loader.js";
-import type { PartyInput } from "../partyContext.js";
+import type { PartyInput, PartyMember } from "../partyContext.js";
 import {
   blackcliffPoleStatTable,
   theBellStatTable,
@@ -23,7 +23,7 @@ import {
   alleyHunterStatTable,
   solarPearlStatTable,
 } from "../generated/weaponStatTables.js";
-import type { DbObjectChar, StatTableEntry } from "@genshin/types";
+import type { DbObjectChar, Element, StatTableEntry } from "@genshin/types";
 import { type FixtureEntry, isDamageTripleEntry } from "./_fixtureEntry.js";
 
 const STAT_BLOCK = {
@@ -187,12 +187,10 @@ for (const item of manifest.items) {
 
     // Reconstruct the PartyInput from the manifest members.
     // Manifest members are {character, settings} objects; PartyMember now carries settings.
-    const members = item.party.members.map((m) =>
+    const members = item.party.members.map((m): PartyMember =>
       m.character !== undefined
         ? { character: m.character, ...(m.settings !== undefined ? { settings: m.settings } : {}) }
-        : ({ element: m.element, ...(m.origin !== undefined ? { origin: m.origin } : {}) } as {
-            element: string;
-          })
+        : { element: m.element as Element, ...(m.origin !== undefined ? { origin: m.origin } : {}) }
     );
     const party: PartyInput = { members };
 

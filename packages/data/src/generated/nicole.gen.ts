@@ -57,5 +57,5 @@ export const NicoleStatTable: readonly StatTableEntry[] = [
   entry("hp_base", 810.322, s5hp, new StatTable([694.7778, 1188.4358, 1846.6464, 2340.3042, 2833.9622, 3327.62])),
   entry("atk_base", 26.6266, s5atk, new StatTable([22.8282, 39.0483, 60.675, 76.8951, 93.1152, 109.3352])),
   entry("def_base", 43.7956, s5hp, new StatTable([37.5516, 64.233, 99.8082, 126.4896, 153.171, 179.8524])),
-  entry("atk_percent", 0, undefined, new StatTable([0, 0.072, 0.144, 0.144, 0.216, 0.288])),
+  entry("atk_percent", 0, undefined, new StatTable([0, 7.2, 14.4, 14.4, 21.6, 28.8])),
 ];

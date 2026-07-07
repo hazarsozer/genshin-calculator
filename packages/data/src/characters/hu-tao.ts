@@ -125,6 +125,44 @@ const c5BurstTalentBonus: Condition = {
   settings: { char_skill_burst_bonus: 3 },
 };
 
+/**
+ * A4 "Sanguine Rouge" — SELF toggle granting +33% Pyro DMG (active in-game while HP ≤ 50%).
+ * Raw Hutao.js conditions[]: ConditionBoolean{ name:'hu_tao_sanguine_rouge', stats:{ dmg_pyro:33 },
+ * info:{ascension:4} }. The port modelled paramita + C3/C5 but SKIPPED this A4 toggle → golden-blind
+ * SKIP. No ascension axis exists in builds (always ascension 6), so the ascension-4 gate always
+ * passes → a plain boolean toggle is faithful. TalentValues.A4PyroDmg=33.
+ */
+const a4SanguineRouge: Condition = {
+  type: "boolean",
+  name: "hu_tao_sanguine_rouge",
+  stats: { dmg_pyro: 33 },
+};
+
+/**
+ * C6 "Butterfly's Embrace" — SELF toggle (the death-evasion state): +100% CRIT Rate and +200% RES
+ * to all elements + physical, gated C6. Raw Hutao.js constellation[5]: ConditionBoolean{
+ * name:'hu_tao_butterflys_embrace', stats:{ res_*:200 (all 8), crit_rate:100 } }. The port SKIPPED
+ * it → golden-blind SKIP. The res_* are SELF defensive resistances (damage-inert); crit_rate:100 is
+ * the damage-relevant term. Modelled as a boolean toggle with a constellation-6 sub-gate.
+ * TalentValues.C6CritRate=100, C6Resistance=200.
+ */
+const c6ButterflysEmbrace: Condition = {
+  type: "boolean",
+  name: "hu_tao_butterflys_embrace",
+  stats: {
+    res_phys: 200,
+    res_anemo: 200,
+    res_geo: 200,
+    res_pyro: 200,
+    res_electro: 200,
+    res_hydro: 200,
+    res_cryo: 200,
+    res_dendro: 200,
+    crit_rate: 100,
+  },
+  condition: { type: "constellation", constellation: 6 },
+};
+
 // ---------------------------------------------------------------------------
 // Post-effects
 // ---------------------------------------------------------------------------
@@ -351,7 +389,7 @@ export const huTao: DbObjectChar = {
   features,
   multipliers: [c2SkillHpMultiplier],
   postEffects: [hpToAtk],
-  conditions: [paramita, c3SkillTalentBonus, c5BurstTalentBonus],
+  conditions: [paramita, c3SkillTalentBonus, c5BurstTalentBonus, a4SanguineRouge, c6ButterflysEmbrace],
   // A1 "Flutter By" — +12% CRIT Rate to nearby party.
   // C4 "Garden of Eternal Rest" — +12% CRIT Rate to nearby party (on enemy killed by Hutao/ally).
   // Source: raw/genshin_calc_pub/src/js/db/Char/Hutao.js (partyData conditions)

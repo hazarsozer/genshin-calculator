@@ -1,0 +1,166 @@
+{
+  "_source": "port-snapshot golden_frostbound_oath weapons-r5 — regression lock; validation = 2-witness (Amber + GCSim source) + load-bearing r1≠r5 (no single-rep GCSim gate)",
+  "element": "geo",
+  "features": {
+    "attack.aimed_shot": {
+      "average": 1332.3130527376256,
+      "category": "attack",
+      "crit": 2477.9905814229087,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 859.8019815849384
+    },
+    "attack.fully_charged_aimed": {
+      "average": 5602.168933172188,
+      "category": "attack",
+      "crit": 10419.564548599024,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3615.33345336338
+    },
+    "attack.normal_hit_1": {
+      "average": 1672.6432787345807,
+      "category": "attack",
+      "crit": 3110.9762696296757,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1079.4324971789767
+    },
+    "attack.normal_hit_2": {
+      "average": 1450.2288534548197,
+      "category": "attack",
+      "crit": 2697.3040850906464,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 935.8983906897616
+    },
+    "attack.normal_hit_3": {
+      "average": 2314.358391531995,
+      "category": "attack",
+      "crit": 4304.512580184673,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1493.5603363249581
+    },
+    "attack.passive_fully_aimed": {
+      "average": 1120.433786634438,
+      "category": "attack",
+      "crit": 2083.9129097198056,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 723.0666906726763
+    },
+    "attack.plunge_high": {
+      "average": 3736.6069292936345,
+      "category": "attack",
+      "crit": 6949.775623862063,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2411.401761477277
+    },
+    "attack.plunge_hit": {
+      "average": 1496.0917710114118,
+      "category": "attack",
+      "crit": 2782.6052667523345,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 965.4958094911445
+    },
+    "attack.plunge_low": {
+      "average": 2991.5496048317164,
+      "category": "attack",
+      "crit": 5564.031463476383,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1930.5825105884364
+    },
+    "burst.continuous_heal": {
+      "average": 1694.5609851461122,
+      "category": "burst",
+      "crit": 1694.5609851461122,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1694.5609851461122
+    },
+    "burst.initial_heal": {
+      "average": 8472.80502573056,
+      "category": "burst",
+      "crit": 8472.80502573056,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 8472.80502573056
+    },
+    "reaction.crystalize": {
+      "average": 2753.4312267076525,
+      "category": "reaction",
+      "crit": 2753.4312267076525,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2753.4312267076525
+    },
+    "reaction.electrocharged": {
+      "average": 5915.971702690097,
+      "category": "reaction",
+      "crit": 5915.971702690097,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5915.971702690097
+    },
+    "reaction.shatter": {
+      "average": 8873.957554035145,
+      "category": "reaction",
+      "crit": 8873.957554035145,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 8873.957554035145
+    },
+    "skill.skill_crush": {
+      "average": 98138.75237206061,
+      "category": "skill",
+      "crit": 182529.85178735806,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 63333.38368665548
+    },
+    "skill.skill_hammer": {
+      "average": 24534.688093015153,
+      "category": "skill",
+      "crit": 45632.462946839514,
+      "damageType": "lunardirect",
+      "format": "",
+      "isReacted": false,
+      "normal": 15833.34592166387
+    },
+    "skill.skill_pummeler": {
+      "average": 6011.729715210944,
+      "category": "skill",
+      "crit": 11181.313266985333,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3879.6415836881733
+    }
+  },
+  "kind": "weapon",
+  "repChar": "Linnea",
+  "repSlug": "linnea",
+  "schema": 1,
+  "slug": "golden_frostbound_oath",
+  "weapon": "weapon_name.golden_frostbound_oath",
+  "weaponType": "bow"
+}

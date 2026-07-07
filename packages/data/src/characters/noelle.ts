@@ -21,7 +21,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js:4665 (Noelle)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Noelle as NoelleStatTable } from "../generated/charTables.js";
 import { Noelle as NoelleTalents } from "../generated/charTalentTables.js";
 
@@ -53,6 +53,9 @@ const talents: TalentResolver = {
     if (talent === "burst") {
       if (name === "burst_dmg") return NoelleTalents.s3.p1;
       if (name === "noelle_skill_dmg") return NoelleTalents.s3.p2;
+      // Sweeping Time DEF→ATK conversion table (raw Noelle.js:120 noelle_atk_bonus = s3.p3,
+      // consumed by the C0 PostEffectStatsDef getMulti(from:'burst.noelle_atk_bonus', multi:0.01)).
+      if (name === "noelle_atk_bonus") return NoelleTalents.s3.p3;
     }
     throw new Error(`noelle talents: unknown path '${path}'`);
   },
@@ -220,7 +223,36 @@ const features: readonly Feature[] = [
 //   actual damage modeled as noelle_to_be_cleaned feature above. Noelle.js:391-398.
 // C5 "Favonius Sweeper Master": +3 levels to Sweeping Time (burst). Noelle.js:399-406.
 // C6 "Must Be Spotless": ConditionStatic gated by noelle_sweeping_time boolean → SKIP. Noelle.js:407-427.
+// Sweeping Time (burst) SELF buffs — the port modelled NO self version of the
+// burst toggle (only the party.* mirror was tracked elsewhere) → golden-blind SKIP.
+// raw/genshin_calc_pub/src/js/db/Char/Noelle.js:318-342:
+//   1. PostEffectStatsDef (DEF→ATK): percent = getMulti(from:'burst.noelle_atk_bonus',
+//      multi:0.01) → ratioFromTalent off s3.p3 at the burst talent level; gated by the
+//      noelle_sweeping_time boolean; at C6 an extra flat +C6BuffBonus/100 = +0.5 to the
+//      ratio (percentBonus, gated ConditionConstellation(6)).
+//   2. ConditionBoolean noelle_sweeping_time → attack_infusion:'geo' (normals/charged/
+//      plunge infuse geo while the burst is active). Both ride the SAME toggle.
+const selfPostEffects: readonly CharPostEffect[] = [
+  {
+    fromStat: "def",
+    toStat: "atk",
+    ratioFromTalent: {
+      table: talents.get("burst.noelle_atk_bonus"),
+      levelSetting: "char_skill_burst",
+      multi: 0.01,
+    },
+    conditions: [{ type: "boolean", name: "noelle_sweeping_time" }],
+    // C6 "Must Be Spotless": +C6BuffBonus/100 = +0.5 to the DEF→ATK ratio (raw :329-330).
+    percentBonus: { value: 50 / 100, condition: { type: "constellation", constellation: 6 } },
+  },
+];
+
 const constellationConditions: readonly Condition[] = [
+  // Sweeping Time (burst) toggle — grants geo infusion to normals/charged/plunge while
+  // active (raw Noelle.js:334-342 ConditionBoolean settings attack_infusion:'geo'). Base-
+  // inert: no golden toggles noelle_sweeping_time. Rides the same toggle as the DEF→ATK
+  // conversion above.
+  { type: "boolean", name: "noelle_sweeping_time", settings: { attack_infusion: "geo" } },
   // C2 "Combat Maid": +15% Charged Attack DMG. ConditionStatic (auto-active, NOT
   // display-only) → dmg_charged:15, picked up generically by the charged hits. NB the
   // raw constant is named `C1ChargedBonus` but lives in cons index 1 = C2; C1 "I Got
@@ -248,4 +280,5 @@ export const noelle: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  postEffects: selfPostEffects,
 };

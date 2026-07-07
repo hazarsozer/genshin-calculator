@@ -193,20 +193,71 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Constellation conditions (P2.C)
+// Constellation + SELF conditions (P2.C)
 // ---------------------------------------------------------------------------
-// C1 "Prophecy of Submersion": ConditionBoolean toggle (reaction bonuses) → SKIP.
-// C2 "Lunar Chain": ConditionStatic (display-only text_percent_chance) → no stat entry;
-//   actual hit modeled as mona_charged_hit feature above. Mona.js:356-365.
+// SELF buffs (were golden-blind SKIPPED — the port modelled only the party.* mirrors of omen/
+// submersion/oblivion and omitted ALL self versions + the C6 stacks; a diff-parity sweep surfaced
+// them: omen alone lifts every Mona hit +60% dmg_all from cons 0). Modelled below:
+//   - Burst "Omen" (mona_omen) — ConditionBooleanLevels: +dmg_all per BURST talent level (s4.p10,
+//     level 10 → +60%). NOT cons-gated (a base-skill burst debuff). raw Mona.js:302-311 (conditions[]).
+//   - C1 "Prophecy of Submersion" (mona_prophecy_of_submersion) — reaction DMG bonuses (+15%
+//     electrocharged/vaporize/swirl_hydro; duration_frozen + lunarcharged are non-damage → omitted,
+//     matching the party port). ConditionBoolean gated C1. raw Mona.js:340-354 (constellation[0]).
+//   - C4 "Prophecy of Oblivion" (mona_prophecy_of_oblivion) — +15% Crit Rate (every hit's crit/avg).
+//     ConditionBoolean gated C4. NOTE: her SELF version carries NO omen sub-gate (unlike the party
+//     mirror, which subConditions on party.mona_omen) — modelled as a plain C4 toggle, faithful to
+//     raw. raw Mona.js:368-380 (constellation[3]).
+//   - C6 "Rhetoric of Calamitas" (mona_rhetorics_of_calamitas) — +60% Charged DMG per stack, max 3
+//     (= +180% dmg_charged on charged_hit + mona_charged_hit). ConditionStacks gated C6.
+//     raw Mona.js:381-403 (constellation[5]).
+// C2 "Lunar Chain": ConditionStatic (display-only text_percent_chance) → no stat entry; actual hit
+//   modeled as mona_charged_hit feature above. Mona.js:356-365.
 // C3 "Restless Revolution": +3 levels to Stellaris Phantasm (burst). Mona.js:295-301.
-// C4 "Prophecy of Oblivion": ConditionBoolean toggle (+15% crit_rate) → SKIP.
 // C5 "Mockery of Fortuna": +3 levels to Mirror Reflection of Doom (skill). Mona.js:381-389.
-// C6 "Rhetoric of Calamitas": ConditionStacks toggle (charged DMG stacks) → SKIP.
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Stellaris Phantasm (elemental burst). Mona.js:295-301.
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 levels to Mirror Reflection of Doom (elemental skill). Mona.js:381-389.
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "Omen" (burst debuff) — +dmg_all per burst talent level (s4.p10 = mona_dmg_bonus alias,
+  // level 10 → +60%). ConditionBooleanLevels(mona_omen), levelSetting char_skill_burst. Ungated
+  // (base burst kit). SELF mirror of party.mona_omen. raw Mona.js:302-311.
+  {
+    type: "static-level",
+    levelSetting: "char_skill_burst",
+    levelStats: { dmg_all: [42, 44, 46, 48, 50, 52, 54, 56, 58, 60] },
+    condition: { type: "boolean", name: "mona_omen" },
+  },
+  // SELF "Prophecy of Submersion" (C1) — +15% reaction DMG (electrocharged/vaporize/swirl_hydro).
+  // ConditionBoolean gated at C1 (constellation[0] → THE CONSTELLATION IS A GATE). raw Mona.js:340-354.
+  {
+    type: "boolean",
+    name: "mona_prophecy_of_submersion",
+    stats: {
+      dmg_reaction_electrocharged: 15,
+      dmg_reaction_vaporize: 15,
+      dmg_reaction_swirl_hydro: 15,
+    },
+    condition: { type: "constellation", constellation: 1 },
+  },
+  // SELF "Prophecy of Oblivion" (C4) — +15% Crit Rate on every Mona hit. ConditionBoolean gated at
+  // C4 (constellation[3] → THE CONSTELLATION IS A GATE). raw Mona.js:368-380.
+  {
+    type: "boolean",
+    name: "mona_prophecy_of_oblivion",
+    stats: { crit_rate: 15 },
+    condition: { type: "constellation", constellation: 4 },
+  },
+  // SELF "Rhetoric of Calamitas" (C6) — +60% Charged DMG per stack, max 3 (+180% dmg_charged on
+  // charged_hit + mona_charged_hit). ConditionStacks gated at C6 (constellation[5] → THE
+  // CONSTELLATION IS A GATE). raw Mona.js:381-403.
+  {
+    type: "stacks",
+    name: "mona_rhetorics_of_calamitas",
+    maxStacks: 3,
+    stats: { dmg_charged: 60 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

@@ -40,8 +40,8 @@
     "description": "EVERY non-beta weapon (202) at refine R5, passive ON, same reps as weapons-r1. Diff vs weapons-r1 = the refine scaling of each passive + refine-keyed stats.",
     "id": "weapons-r5"
   },
-  "featureTotal": 6091,
-  "itemCount": 216,
+  "featureTotal": 6264,
+  "itemCount": 223,
   "items": [
     {
       "artifactSets": {},
@@ -4683,6 +4683,161 @@
         "name": "weapon_name.nocturnes_curtain_call",
         "passiveToggles": {
           "weapon_sacred_wine": true
+        },
+        "refine": 5,
+        "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "weapon",
+      "repKey": "Lohen",
+      "repSlug": "lohen",
+      "setToggles": {},
+      "slug": "disaster_and_remorse",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.disaster_and_remorse",
+        "passiveToggles": {
+          "weapon_disaster_and_remorse_1": true,
+          "weapon_disaster_and_remorse_2": true
+        },
+        "refine": 5,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 26,
+      "kind": "weapon",
+      "repKey": "Jahoda",
+      "repSlug": "jahoda",
+      "setToggles": {},
+      "slug": "the_daybreak_chronicles",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_daybreak_chronicles",
+        "passiveToggles": {
+          "weapon_the_daybreak_chronicles": 6
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 20,
+      "kind": "weapon",
+      "repKey": "Zibai",
+      "repSlug": "zibai",
+      "setToggles": {},
+      "slug": "lightbearing_moonshard",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.lightbearing_moonshard",
+        "passiveToggles": {
+          "weapon_lightbearing_moonshard_1": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 17,
+      "kind": "weapon",
+      "repKey": "Linnea",
+      "repSlug": "linnea",
+      "setToggles": {},
+      "slug": "golden_frostbound_oath",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.golden_frostbound_oath",
+        "passiveToggles": {
+          "weapon_golden_frostbound_oath_1": true
+        },
+        "refine": 5,
+        "type": "bow"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 44,
+      "kind": "weapon",
+      "repKey": "Varka",
+      "repSlug": "varka",
+      "setToggles": {},
+      "slug": "gest_of_the_mighty_wolf",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.gest_of_the_mighty_wolf",
+        "passiveToggles": {
+          "weapon_gest_of_the_mighty_wolf": 4
+        },
+        "refine": 5,
+        "type": "claymore"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "weapon",
+      "repKey": "Durin",
+      "repSlug": "durin",
+      "setToggles": {},
+      "slug": "athame_artis",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.athame_artis",
+        "passiveToggles": {
+          "weapon_athame_artis_1": true
+        },
+        "refine": 5,
+        "type": "sword"
+      }
+    },
+    {
+      "artifactSets": {},
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 16,
+      "kind": "weapon",
+      "repKey": "Nicole",
+      "repSlug": "nicole",
+      "setToggles": {},
+      "slug": "angelos_heptades",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.angelos_heptades",
+        "passiveToggles": {
+          "weapon_angelos_heptades_shield": true
         },
         "refine": 5,
         "type": "catalyst"

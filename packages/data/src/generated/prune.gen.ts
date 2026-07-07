@@ -51,5 +51,5 @@ export const PruneStatTable: readonly StatTableEntry[] = [
   entry("hp_base", 811.494, s4hp, new StatTable([606.2275, 1036.9681, 1611.2891, 2042.0297, 2472.7703, 2903.511])),
   entry("atk_base", 18.5203, s4atk, new StatTable([13.836, 23.6668, 36.7745, 46.6053, 56.4361, 66.2669])),
   entry("def_base", 48.6412, s4hp, new StatTable([36.3375, 62.1563, 96.5812, 122.4, 148.2188, 174.0375])),
-  entry("atk_percent", 0, undefined, new StatTable([0, 0.06, 0.12, 0.12, 0.18, 0.24])),
+  entry("atk_percent", 0, undefined, new StatTable([0, 6, 12, 12, 18, 24])),
 ];

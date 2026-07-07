@@ -236,18 +236,103 @@ const features: readonly Feature[] = [
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
 // C1: cons-added features second_aimed/second_charged_aimed (above, gated in features array).
-// C2: two ConditionBoolean toggles (enemy_res_anemo/phys -12) → SKIP (toggle OFF).
+// C2 "Breeze of Reminiscence": two SELF ConditionBoolean toggles (enemy_res_anemo/phys -12 each).
+//   Ported below as the SELF mirror of party.venti_breeze / party.venti_breeze_2 (golden-blind SKIP).
 // C3: +3 levels to Winds Grand Ode (burst). Raw Venti.js:383-386 cons[2] settings
 //     char_skill_burst_bonus:3.
-// C4: ConditionBoolean toggle (dmg_anemo:25) → SKIP (toggle OFF).
+// C4 "Hurricane of Freedom": SELF ConditionBoolean toggle (dmg_anemo:25). Ported below (golden-blind SKIP).
 // C5: +3 levels to Skyward Sonnet (skill). Raw Venti.js:398-401 cons[4] settings
 //     char_skill_elemental_bonus:3.
-// C6: ConditionBoolean + ConditionDropdownElement (enemy_res_anemo/element -20) → SKIP.
+// C6 "Storm of Defiance": SELF ConditionBoolean (enemy_res_anemo -20) + ConditionDropdownElement
+//   (enemy_res_<element> -20). Ported below as the SELF mirror of party.venti_storm /
+//   party.venti_storm_element (golden-blind SKIP).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Wind's Grand Ode (burst). Raw Venti.js cons[2].
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 levels to Skyward Sonnet (skill). Raw Venti.js cons[4].
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "Breeze of Reminiscence" (C2) — TWO independent stacks, each -12% Anemo RES + -12% Physical
+  // RES, lifting every Venti hit (anemo skill/burst + physical bow normals/aimed + reaction.shatter).
+  // Two ConditionBoolean toggles gated at C2 (live in constellation[1] → THE CONSTELLATION IS A GATE).
+  // SELF mirror of party.venti_breeze / party.venti_breeze_2; the port modelled only the party.* versions
+  // → golden-blind SKIP. Note: unlike the party.venti_breeze_2 (which subConditions on party.venti_breeze),
+  // her SELF venti_breeze_2 carries NO breeze sub-gate (Venti.js:364-376) — modelled as an independent
+  // C2 toggle, faithful to raw. Raw key `enemy_res_phys` → engine bag key `enemy_res_physical`.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Venti.js:350-377 (constellation[1], two ConditionBoolean).
+  {
+    type: "boolean",
+    name: "venti_breeze",
+    stats: { enemy_res_anemo: -12, enemy_res_physical: -12 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  {
+    type: "boolean",
+    name: "venti_breeze_2",
+    stats: { enemy_res_anemo: -12, enemy_res_physical: -12 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  // SELF "Hurricane of Freedom" (C4) — +25% Anemo DMG, lifting every Venti anemo hit. ConditionBoolean
+  // gated at C4 (lives in constellation[3] → THE CONSTELLATION IS A GATE). No party.* mirror exists for
+  // this self-only buff → golden-blind SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Venti.js:386-399 (constellation[3], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "venti_hurricane",
+    stats: { dmg_anemo: 25 },
+    condition: { type: "constellation", constellation: 4 },
+  },
+  // SELF "Storm of Defiance" part 1 (C6) — -20% Anemo RES, lifting every Venti anemo hit. ConditionBoolean
+  // gated at C6 (lives in constellation[5] → THE CONSTELLATION IS A GATE). SELF mirror of party.venti_storm.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Venti.js:409-422 (constellation[5], ConditionBoolean).
+  {
+    type: "boolean",
+    name: "venti_storm",
+    stats: { enemy_res_anemo: -20 },
+    condition: { type: "constellation", constellation: 6 },
+  },
+  // SELF "Storm of Defiance" part 2 (C6) — the absorbed element selected in the `venti_storm_element`
+  // single-select dropdown ALSO gets -20% RES (lifts Venti's matching-element absorb burst variants +
+  // swirl/burning/overloaded reactions). ConditionDropdownElement gated on (venti_storm toggle) AND
+  // constellation 6 (raw subConditions:[venti_storm], inside constellation[5]). SELF mirror of
+  // party.venti_storm_element; modelled with the dropdown-element consumer pattern (cf. the existing
+  // party.venti_storm_element below). Raw dropdown options: cryo/electro/hydro/pyro.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Venti.js:418-457 (constellation[5], ConditionDropdownElement).
+  {
+    type: "static",
+    stats: { enemy_res_cryo: -20 },
+    condition: { type: "and", items: [
+      { type: "dropdown-element", name: "venti_storm_element", element: "cryo" },
+      { type: "boolean", name: "venti_storm" },
+      { type: "constellation", constellation: 6 },
+    ] },
+  },
+  {
+    type: "static",
+    stats: { enemy_res_electro: -20 },
+    condition: { type: "and", items: [
+      { type: "dropdown-element", name: "venti_storm_element", element: "electro" },
+      { type: "boolean", name: "venti_storm" },
+      { type: "constellation", constellation: 6 },
+    ] },
+  },
+  {
+    type: "static",
+    stats: { enemy_res_hydro: -20 },
+    condition: { type: "and", items: [
+      { type: "dropdown-element", name: "venti_storm_element", element: "hydro" },
+      { type: "boolean", name: "venti_storm" },
+      { type: "constellation", constellation: 6 },
+    ] },
+  },
+  {
+    type: "static",
+    stats: { enemy_res_pyro: -20 },
+    condition: { type: "and", items: [
+      { type: "dropdown-element", name: "venti_storm_element", element: "pyro" },
+      { type: "boolean", name: "venti_storm" },
+      { type: "constellation", constellation: 6 },
+    ] },
+  },
 ];
 
 // ---------------------------------------------------------------------------

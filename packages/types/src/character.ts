@@ -462,6 +462,16 @@ export interface DbObjectChar {
    * Source: raw/genshin_calc_pub/src/js/db/Char/Ineffa.js:355
    */
   readonly lunarChargedActive?: boolean;
+  /**
+   * Per-reaction-name overrides of `FeatureReaction.reactionFlatKeys`, keyed by
+   * `transformativeReactionFeatures` def name (e.g. `swirl_pyro`). Lets a
+   * character add a flat-damage stat term to a specific transformative
+   * reaction output without touching the shared reaction generator.
+   * E.g. Mizuki's C1 "In Mist-Like Waters" swirl bonus.
+   *
+   * Source: raw/genshin_calc_pub/src/js/db/Char/Mizuki.js:328-343
+   */
+  readonly reactionFlatOverrides?: Readonly<Partial<Record<string, readonly string[]>>>;
 }
 
 /**

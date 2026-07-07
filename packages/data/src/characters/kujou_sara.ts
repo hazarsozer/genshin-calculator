@@ -257,6 +257,29 @@ export const kujouSara: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  // SELF Tengu Juurai ATK battery — the wielder buffs her OWN ATK (atk_base × skill atk_bonus)
+  // while sara_tengu_juurai is toggled on. Raw atkBuffPost (Sara.js:107-118): PostEffectStats{
+  //   levelSetting:'char_skill_elemental', from:'atk_base',
+  //   percent: getMulti({ from:'skill.sara_atk_bonus', multi:0.01 }),
+  //   conditions:[ ConditionBoolean('sara_tengu_juurai') ] }.
+  // The port had ONLY the partyData mirror (party.sara_tengu_juurai battery) → golden-blind SKIP of
+  // the SELF version, so Sara's own NA/skill/burst under her own buff under-reported (diff-parity:
+  // every damage feature ~0.69× when sara_tengu_juurai ON). Reuses the SAME ratioFromTalent surface
+  // as the party battery. Note: NO maxLevelSetting here (raw atkBuffPost sets none → the C5 skill +3
+  // bonus pushes the effective level past 10, faithful to her getLevel). Gated OFF by default →
+  // base-inert (58k goldens byte-unchanged).
+  postEffects: [
+    {
+      fromStat: "atk_base",
+      toStat: "atk",
+      ratioFromTalent: {
+        table: SaraTalents.s2.p2,
+        levelSetting: "char_skill_elemental",
+        multi: 0.01,
+      },
+      conditions: [{ type: "boolean", name: "sara_tengu_juurai" }],
+    } satisfies CharPostEffect,
+  ],
   // partyData — teammate kit buffs (P3.5.2 Bucket B).
   // Source: raw/genshin_calc_pub/src/js/db/Char/Sara.js:357-422
   // Scope: oracle-gated core only — the base Tengu Juurai ATK battery.

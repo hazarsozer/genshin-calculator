@@ -159,6 +159,46 @@ export interface ConditionNumber extends ConditionBase {
    * existing number condition sets `stat`).
    */
   readonly stat?: string;
+  /**
+   * When true, the condition still gates and its control still writes its `name`
+   * setting, but it contributes NO bag stat — her `params.noStat`
+   * (raw/.../classes/Condition/Number/BondOfLife.js:8). Lets a per-owner input
+   * slider coexist with a single global emit (e.g. ConditionBoLStat) without
+   * double-counting. Absent → emits as before (base-inert).
+   */
+  readonly noStat?: boolean;
+  /**
+   * Per-value damage-bonus distribution: for each `[stat, ratio]` entry, the clamped slider
+   * value × ratio is added under `stat`, ON TOP of the base `stat||name` emit, and ONLY when
+   * the value is > 0. Ports the `ConditionNumberCitlali.getStats` override
+   * (raw/genshin_calc_pub/src/js/classes/Condition/Number/Citlali.js:4-19):
+   *   `if (value > 0) { stats.add('dmg_all', value*selfBonus);
+   *                     stats.add('dmg_pyro'|'dmg_hydro', value*otherBonus) }`.
+   * The single `.stat` form writes the value to ONE key at an implicit ratio 1; this writes it
+   * to MANY keys, each at its own ratio (e.g. Citlali C6 `citlali_points` →
+   * `{ dmg_all: 2.5, dmg_pyro: 1.5, dmg_hydro: 1.5 }`). Keys are assumed disjoint from `name`
+   * and `stats` (true for the sole user). Absent → no per-value bonus (base-inert).
+   */
+  readonly bonusPerValue?: Readonly<Record<string, number>>;
+  /**
+   * Constellation-gated increase(s) to the clamp `max`. For EACH entry whose
+   * `constellation` threshold is met (`ctx.char_constellation >= entry.constellation`),
+   * `entry.bonus` is added to the effective upper clamp (requires `max` set); multiple
+   * satisfied entries are SUMMED (mirrors her getMaxValue chaining multiple `if` bumps —
+   * see `ConditionNumberFurina.getMaxValue`, Number/Furina.js:14-26, which adds `c1bonus`
+   * at C1 AND `c2bonus` at C2, both applying together at C2+).
+   * Ports her ConditionNumberIfa.getMaxValue override
+   * (raw/genshin_calc_pub/src/js/classes/Condition/Number/Ifa.js:4-12):
+   *   `let value = super.getMaxValue(settings);
+   *    if (settings.char_constellation >= 2) value += this.params.c2bonus;`
+   * — Ifa's "Field Medic's Vision" slider cap rises 150 → 200 at C2 (1-entry array).
+   * Furina's fanfare slider rises 300 → 400 @C1 → 800 @C2 (2-entry array, both bumps
+   * additive at C2+). Absent → the clamp uses `max` unchanged (base-inert).
+   */
+  readonly maxBonusFromConstellation?: readonly {
+    readonly constellation: number;
+    readonly bonus: number;
+  }[];
 }
 
 /**
@@ -419,6 +459,47 @@ export interface ConditionPartyElements extends ConditionBase {
 }
 
 /**
+ * Element-count gate. Counts `element` across the resonance slots
+ * (char_element + resonance_element_1/2/3) and is active iff that count >= `count`.
+ * Ports ConditionElementsCount.isActive (getType()='static'). May carry stats when used
+ * stat-bearing (like ConditionStatic); Gorou uses it purely as a gate inside `and`.
+ * Inert with no party: only char_element present → count 1 < 2 → inactive.
+ *
+ * `element` may be a SET (array) — a slot counts if its element is IN the set. This ports
+ * the CalcElementsNavia count-a-family idiom (Navia A4: count nearby Pyro/Hydro/Electro/Cryo
+ * members). The single-string form is unchanged. Note: like ConditionElementsCount (and unlike
+ * CalcElementsNavia, which scans only resonance_element_1/2/3), the count includes char_element;
+ * this is equivalent whenever the SET excludes the char's own element (Navia is geo ∉ the set).
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/ElementsCount.js
+ *         raw/genshin_calc_pub/src/js/classes/Condition/CalcElementsNavia.js
+ */
+export interface ConditionElementsCount extends ConditionBase {
+  readonly type: "elements-count";
+  readonly element: string | readonly string[];
+  readonly count: number;
+}
+
+/**
+ * Settings-copy: a base-inert DYNAMIC settings-publisher. When active (its optional
+ * `.condition` gate passes; no gate → always active — `invert` is NOT applied), publishes
+ * `ctx[from]` under the `to` key. A generic port of the getData-settings dynamic-alias idiom
+ * several of her per-char `ConditionStatic` subclasses use, e.g. `ConditionStaticYunJin.getData`:
+ * `settings.yunjin_traditionalist_stacks = settings.party_elements_count_level`.
+ * A pure settings-publisher — contributes NO stats of its own (narrowed to `never`, like `lithic`).
+ * Inert with no party: `from` (typically a `party_*` key) is absent from `ctx` → publishes
+ * `{ [to]: undefined }`, and a consumer's `ctx.settings[key] || 1`-style default is unchanged.
+ * Source: raw/genshin_calc_pub/src/js/classes/Condition/Static/YunJin.js (getData)
+ */
+export interface ConditionSettingsCopy extends ConditionBase {
+  readonly type: "settings-copy";
+  /** The source ctx key to read (e.g. "party_elements_count_level"). */
+  readonly from: string;
+  /** The published settings key (e.g. "yunjin_traditionalist_stacks"). */
+  readonly to: string;
+  readonly stats?: never;
+}
+
+/**
  * Logical AND of all items — all must evaluate to true.
  * Vacuous truth: empty items list → true.
  */
@@ -563,6 +644,8 @@ export type Condition =
   | ConditionBooleanEnemyType
   | ConditionResonance
   | ConditionPartyElements
+  | ConditionElementsCount
+  | ConditionSettingsCopy
   | ConditionAnd
   | ConditionOr
   | ConditionStaticLevel

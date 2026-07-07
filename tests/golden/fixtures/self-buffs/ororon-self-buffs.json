@@ -1,0 +1,246 @@
+{
+  "element": "electro",
+  "features": {
+    "attack.aimed": {
+      "average": 1726.6626107835314,
+      "category": "attack",
+      "crit": 3139.3865650609664,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1569.6932825304832
+    },
+    "attack.charged_aimed": {
+      "average": 5556.388332279185,
+      "category": "attack",
+      "crit": 10102.52424050761,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 5051.262120253805
+    },
+    "attack.normal_hit_1": {
+      "average": 1860.741912392663,
+      "category": "attack",
+      "crit": 3383.1671134412054,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1691.5835567206027
+    },
+    "attack.normal_hit_2": {
+      "average": 1630.4164054906805,
+      "category": "attack",
+      "crit": 2964.39346452851,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1482.196732264255
+    },
+    "attack.normal_hit_3": {
+      "average": 2565.432422671316,
+      "category": "attack",
+      "crit": 4664.42258667512,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 2332.21129333756
+    },
+    "attack.plunge": {
+      "average": 1938.9179727679546,
+      "category": "attack",
+      "crit": 3525.3054050326446,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1762.6527025163223
+    },
+    "attack.plunge_high": {
+      "average": 4842.6002152788005,
+      "category": "attack",
+      "crit": 8804.727664143275,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4402.363832071637
+    },
+    "attack.plunge_low": {
+      "average": 3877.0143701237184,
+      "category": "attack",
+      "crit": 7049.117036588579,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3524.5585182942896
+    },
+    "burst.ororon_activation_dmg": {
+      "average": 12176.932573189813,
+      "category": "burst",
+      "crit": 22139.87740579966,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 11069.93870289983
+    },
+    "burst.ororon_soundwave_collision_dmg": {
+      "average": 2318.298475949066,
+      "category": "burst",
+      "crit": 4215.088138089211,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 2107.5440690446053
+    },
+    "other.ororon_hypersense_c6_dmg": {
+      "average": 9771.80839320784,
+      "category": "other",
+      "crit": 17766.924351286983,
+      "damageType": "none",
+      "format": "",
+      "isReacted": false,
+      "normal": 8883.462175643492
+    },
+    "other.ororon_hypersense_dmg": {
+      "average": 4885.90419660392,
+      "category": "other",
+      "crit": 8883.462175643492,
+      "damageType": "none",
+      "format": "",
+      "isReacted": false,
+      "normal": 4441.731087821746
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.hyperbloom": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.superconduct": {
+      "average": 2789.6814016423355,
+      "category": "reaction",
+      "crit": 2789.6814016423355,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 2789.6814016423355
+    },
+    "skill.ororon_spirit_orb_dmg": {
+      "average": 11568.075223422613,
+      "category": "skill",
+      "crit": 21032.864042586567,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 10516.432021293283
+    },
+    "stats.atk": {
+      "average": 3352.7559539717276,
+      "category": "stats",
+      "crit": 3352.7559539717276,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3352.7559539717276
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1462.9685115000002,
+      "category": "stats",
+      "crit": 1462.9685115000002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1462.9685115000002
+    },
+    "stats.hp": {
+      "average": 22469.677182699998,
+      "category": "stats",
+      "crit": 22469.677182699998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 22469.677182699998
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Ororon",
+  "repSlug": "ororon",
+  "schema": 1,
+  "slug": "ororon-self-buffs",
+  "weapon": "weapon_name.alley_hunter",
+  "weaponType": "bow"
+}

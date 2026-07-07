@@ -61,7 +61,7 @@ import {
   TOLERANCE,
   reconstructSettings,
   reconstructPort,
-} from "./_reconstruct.js";
+} from "../reconstruct.js";
 
 // ---------------------------------------------------------------------------
 // Constants — LEVELS / TALENTS / TOLERANCE now come from _reconstruct.ts (shared

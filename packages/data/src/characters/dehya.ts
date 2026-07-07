@@ -224,12 +224,17 @@ const features: readonly Feature[] = [
 // C1 "The Flame Incandescent": hp_percent +20%, skill_base_hp_percent +3.6%,
 //   burst_base_hp_percent +6%. ConditionStatic (always-on at C1). Also adds
 //   two HP-scaling char multipliers targeting skill and burst.
-// C2 "The Sand Blades Glittering": dmg_skill_dehya toggle → SKIP.
+// C2 "The Sand Blades Glittering": dmg_skill_dehya +50 toggle (modelled below) — was golden-blind
+//   SKIPPED (the self toggle is OFF in the fixed build, so the goldens never exercised it; a diff-
+//   parity sweep surfaced dehya_field_dmg diverging from cons 2). Lifts dehya_field_dmg (declares
+//   dmg_skill_dehya in damageBonuses).
 // C3 "A Rage Swift as Fire": +3 Elemental Burst talent levels.
 // C4 "An Oath Abiding": heal on burst (text_percent_heal, display-only) → SKIP.
 // C5 "The Alpha Lumine": +3 Elemental Skill talent levels.
-// C6 "The Burning Claws Cleaving": crit_rate_burst +10% (static) + ConditionStacks toggle.
-//   The static part is always-on at C6 (ConditionStatic with no subCondition in raw).
+// C6 "The Burning Claws Cleaving": crit_rate_burst +10% (static, already modelled) + ConditionStacks
+//   crit_dmg_burst +15/stack (max 4 = +60%) on her burst hits (modelled below) — was golden-blind
+//   SKIPPED (a diff-parity sweep surfaced her burst hits diverging from cons 6 when the stacks toggle
+//   is on). The engine folds crit_dmg_<type> generically, so every burst hit picks it up.
 //
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Dehya.js:381-480
 
@@ -271,9 +276,28 @@ const constellationConditions: readonly Condition[] = [
   // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
   // C6: crit_rate_burst +10%. ConditionStatic (no subCondition → always-on at C6).
-  // The ConditionStacks part (crit_dmg_burst per stack) is a toggle → SKIP.
   // Raw cons[5]: ConditionStatic{ stats:{ crit_rate_burst:10 } }
   { type: "constellation", constellation: 6, stats: { crit_rate_burst: 10 } },
+  // SELF C2 "The Sand Blades Glittering" — dmg_skill_dehya +50 (→ dehya_field_dmg, which declares it
+  // in damageBonuses). ConditionBoolean toggle gated at C2 (constellation[1] → THE CONSTELLATION IS
+  // A GATE; base-inert below C2 / when untoggled). raw Dehya.js:413-425 (C2SkillDmg = 50).
+  {
+    type: "boolean",
+    name: "dehya_the_sand_blades_glittering",
+    stats: { dmg_skill_dehya: 50 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  // SELF C6 "The Burning Claws Cleaving" — crit_dmg_burst +15 per stack (max 4 = +60%) on her burst
+  // hits (folded generically by the engine onto burst-type hits). ConditionStacks gated at C6
+  // (constellation[5] → THE CONSTELLATION IS A GATE; base-inert below C6 / 0 stacks). raw
+  // Dehya.js:464-473 (C6CritDmg = 15, maxStacks 4).
+  {
+    type: "stacks",
+    name: "dehya_the_burning_claws_cleaving",
+    maxStacks: 4,
+    stats: { crit_dmg_burst: 15 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

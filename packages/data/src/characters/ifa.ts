@@ -237,7 +237,86 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Compound Sedation Field (burst). Raw cons[4] settings char_skill_burst_bonus:3.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF A4 "Mutual Aid Agreement" (raw conditions, Ifa.js:301-307) — +80 EM (A4Mastery), a
+  // ConditionBoolean gated only by ConditionAscensionChar({ascension:4}) (auto-true at A6 → the toggle
+  // is the gate). Plain mastery stat (proven mirror) — lifts her swirl/EC reaction outputs. Was
+  // golden-blind SKIPPED.
+  { type: "boolean", name: "ifa_mutual_aid_agreement", stats: { mastery: 80 } },
+  // SELF C4 "Decayed Vessels Permutation" (raw cons[3], Ifa.js:344-351) — +100 EM (C4Mastery), a
+  // ConditionBoolean gated on constellation 4. Same plain-mastery lift of her reaction outputs.
+  {
+    type: "boolean",
+    name: "ifa_decayed_vessels_permutation",
+    stats: { mastery: 100 },
+    condition: { type: "constellation", constellation: 4 },
+  },
+  // A1 "Field Medic's Vision" reaction-DMG% self-buff (raw Ifa.js:110-129,291-300).
+  // ifa_field_medics_vision = ConditionNumberIfa slider, max 150 (A1Stacks). reactionDmgPost
+  // (Ifa.js:118-129) emits dmg_reaction_swirl/_electrocharged += value × 1.5 (A1ReactionDmg),
+  // gated and[common.nightsoul_blessing_state, ifa_field_medics_vision(>0), ascension 1].
+  // Ported via bonusPerValue (clamped value × 1.5 per key, ÷100 at emit — Citlali C6 pattern):
+  //   - the `>0` half of the gate is implicit in bonusPerValue (fires only when clamped > 0);
+  //   - ascension 1 auto-true at level 90 → dropped, exactly as the A4 boolean above drops its
+  //     ascension-4 gate (level-90 convention);
+  //   - the name-keyed value emit (ifa_field_medics_vision: clamped) feeds the ifa_reaction_bonus
+  //     readouts above (they scale on this stat × 1.5/0.2 → 225% / 30% at value 150).
+  // lunarcharged (reactionDmgPost2, Ifa.js:131-141, dmg_reaction_lunarcharged × 0.2) is OUT of
+  // scope HERE: Ifa is anemo → she produces no self lunarcharged reaction output to lift.
+  // Ported instead on `partyData` below (party-buffs channel, teammate-side, `partyReactionBonus`).
+  // C2 "Guiding Spirit of Ballistic Prayer" raises the slider cap 150 → 200 (C2Stacks=50) via
+  // her ConditionNumberIfa.getMaxValue (raw Number/Ifa.js:4-12, params.c2bonus=50; Ifa.js:297).
+  // Ported via the base-inert maxBonusFromConstellation: at char_constellation ≥ 2 the clamp max
+  // becomes 200, so vision:200 lifts swirl/EC by +300% (vs +225% capped at 150 below C2).
+  {
+    type: "number",
+    name: "ifa_field_medics_vision",
+    max: 150,
+    maxBonusFromConstellation: [{ constellation: 2, bonus: 50 }],
+    bonusPerValue: { dmg_reaction_swirl: 1.5, dmg_reaction_electrocharged: 1.5 },
+    condition: { type: "boolean", name: "common.nightsoul_blessing_state" },
+  },
 ];
+
+// ---------------------------------------------------------------------------
+// partyData — TEAMMATE-side reaction-DMG% (P3.5.2 deferred sub-gap).
+// Source: raw/genshin_calc_pub/src/js/db/Char/Ifa.js:377-399
+// ---------------------------------------------------------------------------
+// Her `partyData.conditions` holds ONE `ConditionNumber({name:'party_ifa_field_medics_vision',
+// max: A1Stacks+C2Stacks=200, rotation:'party'})` feeding ONE `PostEffectStats({
+// from:'party_ifa_field_medics_vision', percent:[dmg_reaction_swirl:1.5, dmg_reaction_
+// electrocharged:1.5, dmg_reaction_lunarcharged:0.2], condition: ConditionBoolean(same name)})`
+// (Ifa.js:389-399). This is a SINGLE indivisible raw construct — one slider drives all three
+// reaction-DMG% keys together (unlike the self side, which splits swirl/EC (reactionDmgPost)
+// from lunarcharged (reactionDmgPost2) into two separate PostEffectStats). Porting only
+// lunarcharged and dropping swirl/EC would misrepresent this raw block as three independent
+// buffs when it is one; ported whole (minimal-faithful-to-raw call, per mission authority).
+//
+// Differences from the self-side port (constellationConditions, `ifa_field_medics_vision`
+// above) that make this its own Condition rather than a shared one:
+//   - party max is FLAT 200 (A1Stacks+C2Stacks already summed in raw) — no separate C2 gate
+//     at the party level (her partyData ConditionNumber has no `c2bonus` param) → no
+//     `maxBonusFromConstellation` here.
+//   - no `and[nightsoul_blessing_state, ascension1]` wrapper — the party postEffect's
+//     `condition` is bare `ConditionBoolean(name)`, i.e. active whenever the slider is > 0,
+//     which is exactly `ConditionNumber`'s own `bonusPerValue` gate (`value > 0`) — so no
+//     wrapping `condition` field is needed on the ported Condition either.
+//
+// Ported via `bonusPerValue` (Citlali/self-Ifa precedent): the clamped slider value × each
+// raw ratio is added to `dmg_reaction_swirl` / `dmg_reaction_electrocharged` (1.5) /
+// `dmg_reaction_lunarcharged` (0.2) — raw-percent units, single-folded at buildStats emit
+// (all three are `REACTION_BONUS_PERCENT_KEYS` members; Ineffa-C1 established the single-fold
+// convention for `dmg_reaction_lunarcharged`). Base-inert: no party member sets
+// `party_ifa_field_medics_vision` → clamped stays 0 → no compared output moves.
+const partyReactionBonus: Condition = {
+  type: "number",
+  name: "party_ifa_field_medics_vision",
+  max: 200,
+  bonusPerValue: {
+    dmg_reaction_swirl: 1.5,
+    dmg_reaction_electrocharged: 1.5,
+    dmg_reaction_lunarcharged: 0.2,
+  },
+};
 
 // ---------------------------------------------------------------------------
 // DbObjectChar
@@ -255,4 +334,7 @@ export const ifa: DbObjectChar = {
   features,
   multipliers: [],
   conditions: constellationConditions,
+  partyData: {
+    conditions: [partyReactionBonus],
+  },
 };

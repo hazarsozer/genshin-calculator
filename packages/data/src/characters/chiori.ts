@@ -25,7 +25,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Chiori)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Chiori as ChioriStatTable } from "../generated/charTables.js";
 import { Chiori as ChioriTalents } from "../generated/charTalentTables.js";
 
@@ -237,6 +237,44 @@ const constellationConditions: readonly Condition[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// SELF passive/kit conditions (P3.5 skip-class self-buff port)
+// ---------------------------------------------------------------------------
+// The port SKIPPED every SELF condition (A1 tailor-made geo infusion + A4 finishing-touch geo DMG)
+// → golden-blind SKIP (no golden toggles them). All gated OFF by default → base-inert.
+// Source: raw/genshin_calc_pub/src/js/db/Char/Chiori.js:369-393.
+const selfConditions: readonly Condition[] = [
+  // A1 "Tailor-Made": a SELF toggle that converts Chiori's Normal Attack DMG to Geo
+  // (settings attack_infusion:'geo'). A1 always active on our A6 builds; the boolean enables the
+  // infusion overlay (resolveElement flips her physical normals/charged/plunge to geo). The A1
+  // text_percent_dmg readout (display-only) is NOT modelled. Raw Chiori.js:369-380.
+  { type: "boolean", name: "chiori_tailor_made", settings: { attack_infusion: "geo" } },
+  // A4 "The Finishing Touch": +20% Geo DMG, a SELF boolean toggle (A4 always-on at A6).
+  // Raw Chiori.js:382-393.
+  { type: "boolean", name: "chiori_the_finishing_touch", stats: { dmg_geo: 20 } },
+];
+
+// C6 "Hand of Heaven's Workmanship" — while chiori_sole_principle_pursuit is active, her Normal
+// Attacks deal extra DMG = 235% of her DEF, as a flat geo damage-instance added to each normal hit.
+// Raw Chiori.js:396-409: FeatureMultiplier scaling:'def*' (= def_total), source:'constellation6',
+// ValueTable([235]), gated and[C6, chiori_sole_principle_pursuit], target damageTypes:['normal'].
+// The port had no SELF multiplier → golden-blind SKIP. Reuses the proven CharMultiplier surface
+// (Emilie-C6 mirror), scaled off Chiori's own DEF total. Gated OFF by default → base-inert.
+const c6Multiplier: CharMultiplier = {
+  leveling: "",
+  scaling: "def*",
+  source: "constellation6",
+  values: { getValue: () => 235 },
+  target: { damageTypes: ["normal"] },
+  condition: {
+    type: "and",
+    items: [
+      { type: "constellation", constellation: 6 },
+      { type: "boolean", name: "chiori_sole_principle_pursuit" },
+    ],
+  },
+};
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -250,6 +288,6 @@ export const chiori: DbObjectChar = {
   statTable: ChioriStatTable,
   talents,
   features,
-  multipliers: [],
-  conditions: constellationConditions,
+  multipliers: [c6Multiplier],
+  conditions: [...constellationConditions, ...selfConditions],
 };

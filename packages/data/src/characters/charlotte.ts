@@ -58,6 +58,24 @@ const talents: TalentResolver = {
 };
 
 // ---------------------------------------------------------------------------
+// C4 "A Responsibility to Oversee" — scalingMultiplier ×1.1 on her burst damage
+// (burst_dmg, charlotte_kamera_dmg, charlotte_coordinate_dmg), gated AND(toggle, C4).
+// raw: scalingMultiplier:1.1 (C4BurstBonus), scalingSource:'constellation4',
+// scalingMultiplierCondition: ConditionAnd([Boolean(charlotte_a_responsibility_to_oversee),
+// Constellation(4)]) (Charlotte.js:308-318, 333-343, 360-370). The port has no conditional
+// scalingMultiplier field, so the ×1.1 is folded as a SECOND base-term multiplier of +0.1×
+// the same talent% (talent%×atk + talent%×atk×0.1 = talent%×atk×1.1), gated by this condition.
+// SELF buff (no party.* mirror) → was golden-blind SKIPPED (no golden sets the toggle).
+// ---------------------------------------------------------------------------
+const c4OverseeGate: Condition = {
+  type: "and",
+  items: [
+    { type: "boolean", name: "charlotte_a_responsibility_to_oversee" },
+    { type: "constellation", constellation: 4 },
+  ],
+};
+
+// ---------------------------------------------------------------------------
 // Features
 // ---------------------------------------------------------------------------
 
@@ -158,7 +176,17 @@ const features: readonly Feature[] = [
     name: "burst_dmg",
     category: "burst",
     element: "cryo",
-    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") },
+      // C4 ×1.1 (folded as +0.1× base term, gated AND(toggle, C4)). Charlotte.js:308-318.
+      {
+        leveling: "char_skill_burst",
+        values: talents.get("burst.burst_dmg"),
+        scalingMultiplier: 0.1,
+        source: "constellation4",
+        condition: c4OverseeGate,
+      },
+    ],
   },
   // charlotte_kamera_dmg: periodic kamera hits during burst.
   // raw/genshin_calc_pub/src/js/db/Char/Charlotte.js:329-344
@@ -166,7 +194,17 @@ const features: readonly Feature[] = [
     name: "charlotte_kamera_dmg",
     category: "burst",
     element: "cryo",
-    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.charlotte_kamera_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.charlotte_kamera_dmg") },
+      // C4 ×1.1 (folded as +0.1× base term, gated AND(toggle, C4)). Charlotte.js:333-343.
+      {
+        leveling: "char_skill_burst",
+        values: talents.get("burst.charlotte_kamera_dmg"),
+        scalingMultiplier: 0.1,
+        source: "constellation4",
+        condition: c4OverseeGate,
+      },
+    ],
   },
   // C6 "A Summation of Interest": cons-added burst coordinate hit at 180% ATK.
   // Raw: Charlotte.js features FeatureDamageBurst charlotte_coordinate_dmg,
@@ -183,6 +221,14 @@ const features: readonly Feature[] = [
         leveling: "char_skill_burst",
         values: { getValue: (_level: number) => 180 },
         source: "constellation6",
+      },
+      // C4 ×1.1 (folded as +0.1× base term, gated AND(toggle, C4)). Charlotte.js:360-370.
+      {
+        leveling: "char_skill_burst",
+        values: { getValue: (_level: number) => 180 },
+        scalingMultiplier: 0.1,
+        source: "constellation4",
+        condition: c4OverseeGate,
       },
     ],
   },
@@ -238,9 +284,13 @@ const a4DiffOrigin: Condition = {
 // ---------------------------------------------------------------------------
 // C1 "A Need to Verify Facts": ConditionStatic display-only (charlotte_verification_heal is
 //    a FeatureHeal with damageType:"" — outside coverage gate; no flat-stat condition).
-// C2 "A Duty to Pursue Truth": ConditionStacks (atk_percent buff with a toggle name) → SKIP.
+// C2 "A Duty to Pursue Truth": ConditionStacks charlotte_pursue_truth (atk_percent +10/stack, max 3
+//    = +30% ATK on every hit), gated C2. SELF buff (no party.* mirror) — was golden-blind SKIPPED;
+//    modelled below. raw Charlotte.js:443-446 (constellation[1]).
 // C3: +3 levels to Comprehensive Confirmation (burst). Raw cons[2] settings char_skill_burst_bonus:3.
-// C4 "A Responsibility to Oversee": ConditionBoolean toggle → SKIP (toggle OFF).
+// C4 "A Responsibility to Oversee": ConditionBoolean charlotte_a_responsibility_to_oversee — the
+//    scalingMultiplier ×1.1 gate on her 3 burst damage features (folded into the feature multipliers
+//    above via c4OverseeGate). Its own stat is text_percent_dmg (display) → no stat condition here.
 // C5: +3 levels to Freezing Point Composition (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
 // C6 "A Summation of Interest": cons-added feature above; ConditionStatic display wrapper → no condition here.
 // Raw: Charlotte.js constellation array (Charlotte.js:424-493).
@@ -249,6 +299,15 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 levels to elemental skill.
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "A Duty to Pursue Truth" (C2) — +10% ATK per stack, max 3 (+30% atk_percent on every hit).
+  // ConditionStacks gated at C2 (constellation[1] → THE CONSTELLATION IS A GATE). raw Charlotte.js:443-446.
+  {
+    type: "stacks",
+    name: "charlotte_pursue_truth",
+    maxStacks: 3,
+    stats: { atk_percent: 10 },
+    condition: { type: "constellation", constellation: 2 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

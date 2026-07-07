@@ -4,8 +4,8 @@
  * Three layers:
  *
  * 1. AUTO-DISCOVERY fixture harness — driven by two manifests:
- *      tests/golden/fixtures/set-4pc/_manifest.json   (15 entries)
- *      tests/golden/fixtures/set-2pc/_manifest.json    (5 entries)
+ *      tests/golden/fixtures/set-4pc/_manifest.json   (17 entries)
+ *      tests/golden/fixtures/set-2pc/_manifest.json    (7 entries)
  *    For each entry the harness:
  *      (a) looks up the set by oracleKey in a glob-built SET_REGISTRY
  *          (goodId → DbObjectArtifactSet; each goodId is Aspirine's oracle art.set
@@ -242,12 +242,15 @@ describe("artifact-sets: auto-discovery", () => {
     expect(Object.keys(SET_REGISTRY).length).toBeGreaterThan(0);
   });
 
-  it("all 7 currently-ported sets are present in SET_REGISTRY", () => {
+  it("all 10 currently-ported sets are present in SET_REGISTRY", () => {
     // Hard gate: a regression that drops a port (e.g. via goodId rename) fails here.
-    // DATA-DRIVEN: the expected keys are the 7 oracle goodIds that have ported files.
+    // DATA-DRIVEN: the expected keys are the 10 oracle goodIds that have ported files.
     const expectedKeys = [
+      "ADayCarvedFromRisingWinds",
+      "CelestialGift",
       "CrimsonWitch",
       "DeepwoodMemories",
+      "DisenchantmentInDeepShadow",
       "EmblemofSeveredFate",
       "GoldenTroupe",
       "HeartofDepth",

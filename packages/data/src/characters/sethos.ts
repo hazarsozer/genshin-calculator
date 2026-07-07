@@ -5,9 +5,13 @@
  * fully-charged aimed shot (electro), Shadow Piercing Shot (ATK + mastery scaling),
  * plunge/low/high, electro skill.
  *
- * Twilight Meditation (ConditionBoolean toggle) transforms normals to electro
- * charged hits — this is a user toggle (OFF at C0 canonical build), so only the
- * non-meditation versions of normals are modelled.
+ * STANCE SWAP: Twilight Meditation (`sethos_twilight_meditation`, ConditionBoolean toggle)
+ * transforms the three ground normals into ELECTRO CHARGED hits (same talent tables, explicit
+ * electro element), and gates the ground normals + aimed shots + Shadow Piercing Shot OFF. Her
+ * engine gates the ground set with ConditionNot([toggle]) and the meditation set with
+ * ConditionBoolean(it). While meditation is up, a char-level Dusk Bolt mastery multiplier
+ * (s3.p1, target charged) adds a per-mastery% term to those charged hits. Both stances are
+ * modelled; the golden/fixture build has the toggle OFF (the ground normals produced).
  *
  * Shadow Piercing Shot (sethos_shadowpiercing_shot_dmg): uses two multipliers —
  *   1. ATK-based: s1.p7 at char_skill_attack
@@ -52,21 +56,38 @@ const talents: TalentResolver = {
     if (talent === "skill") {
       if (name === "skill_dmg") return SethosTalents.s2.p1;
     }
+    if (talent === "burst") {
+      // Twilight Shadowpiercer: per-mastery% bonus added to CHARGED hits while meditation is up.
+      if (name === "sethos_dusk_bolt_dmg_increase") return SethosTalents.s3.p1;
+    }
     throw new Error(`sethos talents: unknown path '${path}'`);
   },
 };
+
+// ---------------------------------------------------------------------------
+// Twilight Meditation STANCE toggle
+// ---------------------------------------------------------------------------
+// When ON, Sethos's ground bow moveset (normals + aimed + Shadow Piercing Shot) is replaced
+// by a "meditation" moveset: the same three normal-attack tables become ELECTRO CHARGED hits.
+// Her engine gates the ground set with ConditionNot([sethos_twilight_meditation]) and the
+// meditation set with ConditionBoolean(it). The meditation hits carry an EXPLICIT electro
+// element (no infusion setting), and — via a char-level mastery multiplier gated on the
+// stance (targeting charged) — an extra Dusk Bolt mastery term. raw Sethos.js:134-315, 385-395.
+const STANCE: Condition = { type: "boolean", name: "sethos_twilight_meditation" };
+const NOT_STANCE: Condition = { type: "not", items: [{ type: "boolean", name: "sethos_twilight_meditation" }] };
 
 // ---------------------------------------------------------------------------
 // Features
 // ---------------------------------------------------------------------------
 
 const features: readonly Feature[] = [
-  // --- Normal attacks (physical, non-meditation mode) ---
-  // raw: FeatureDamageNormal normal_hit_1 (Sethos.js:135-145, cond:ConditionNot[twilight])
+  // --- Ground normal attacks (physical, gated OFF in meditation) ---
+  // raw: FeatureDamageNormal normal_hit_1 (Sethos.js:134-145, cond:ConditionNot[twilight])
   {
     name: "normal_hit_1",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
+    condition: NOT_STANCE,
   },
   // raw: FeatureDamageMultihit normal_hit_2 (2 sub-hits). Sethos.js:146-172
   {
@@ -76,26 +97,30 @@ const features: readonly Feature[] = [
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2_1") }] },
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2_2") }] },
     ],
+    condition: NOT_STANCE,
   },
   // raw: FeatureDamageNormal normal_hit_2_1 (isChild:true → emit as standalone). Sethos.js:173-184
   {
     name: "normal_hit_2_1",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2_1") }],
+    condition: NOT_STANCE,
   },
   // raw: FeatureDamageNormal normal_hit_2_2 (isChild:true → emit as standalone). Sethos.js:185-196
   {
     name: "normal_hit_2_2",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2_2") }],
+    condition: NOT_STANCE,
   },
   // raw: FeatureDamageNormal normal_hit_3 (Sethos.js:197-207, cond:ConditionNot[twilight])
   {
     name: "normal_hit_3",
     category: "attack",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
+    condition: NOT_STANCE,
   },
-  // --- Bow aimed shots ---
+  // --- Bow aimed shots (gated OFF in meditation) ---
   // raw: FeatureDamageChargedAimed aimed (physical). Sethos.js:276-286
   {
     name: "aimed",
@@ -103,6 +128,7 @@ const features: readonly Feature[] = [
     category: "attack",
     damageType: "charged",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.aimed") }],
+    condition: NOT_STANCE,
   },
   // raw: FeatureDamageChargedAimed charged_aimed (electro). Sethos.js:287-297
   {
@@ -112,8 +138,9 @@ const features: readonly Feature[] = [
     damageType: "charged",
     element: "electro",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_aimed") }],
+    condition: NOT_STANCE,
   },
-  // --- Shadow Piercing Shot (electro) ---
+  // --- Shadow Piercing Shot (electro) — gated OFF in meditation ---
   // raw: FeatureDamageCharged sethos_shadowpiercing_shot_dmg. Sethos.js:299-322
   // Two active multipliers: ATK% (p7) + mastery% (p8).
   // A4 mastery bonus (ConditionBoolean sethos_sand_king_boon) is OFF at canonical C0 build.
@@ -128,6 +155,57 @@ const features: readonly Feature[] = [
       { leveling: "char_skill_attack", values: talents.get("attack.sethos_shadowpiercing_shot_dmg") },
       { scaling: "mastery", leveling: "char_skill_attack", values: talents.get("attack.sethos_shadowpiercing_shot_mastery") },
     ],
+    condition: NOT_STANCE,
+  },
+  // ========================================================================
+  // TWILIGHT MEDITATION moveset — the same three normal tables as ELECTRO CHARGED hits,
+  // gated ON. Explicit electro element (no infusion). char_skill_attack leveling. Each hit,
+  // being damageType 'charged', also picks up the char-level Dusk Bolt mastery multiplier
+  // (below, gated on the stance). raw Sethos.js:208-315.
+  // ========================================================================
+  {
+    name: "normal_hit_1",
+    category: "attack",
+    damageType: "charged",
+    element: "electro",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
+    condition: STANCE,
+  },
+  // normal_hit_2: 2-hit multihit as electro charged. raw Sethos.js:216-243.
+  {
+    name: "normal_hit_2",
+    category: "attack",
+    damageType: "charged",
+    element: "electro",
+    items: [
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2_1") }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2_2") }] },
+    ],
+    condition: STANCE,
+  },
+  {
+    name: "normal_hit_2_1",
+    category: "attack",
+    damageType: "charged",
+    element: "electro",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2_1") }],
+    condition: STANCE,
+  },
+  {
+    name: "normal_hit_2_2",
+    category: "attack",
+    damageType: "charged",
+    element: "electro",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2_2") }],
+    condition: STANCE,
+  },
+  {
+    name: "normal_hit_3",
+    category: "attack",
+    damageType: "charged",
+    element: "electro",
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
+    condition: STANCE,
   },
   // --- Plunge attacks ---
   // raw: FeatureDamagePlungeCollision plunge. Sethos.js:323-330
@@ -183,9 +261,28 @@ const constellationConditions: readonly Condition[] = [
   // C1: crit_rate_sethos +15 (always-on ConditionStatic).
   // sethos_shadowpiercing_shot_dmg already has critRateBonuses:['crit_rate_sethos'] → picks this up.
   { type: "constellation", constellation: 1, stats: { crit_rate_sethos: 15 } },
+  // C2 "Papyrus Scripture of Silent Secrets": +15% dmg_electro PER STACK (max 2), a self
+  // ConditionStacks gated at C≥2. Base-inert unless sethos_papyrus_scripture_of_silent_secrets
+  // is set (0 stacks → no bonus). raw Sethos.js:409-424 (cons[1]).
+  {
+    type: "stacks",
+    name: "sethos_papyrus_scripture_of_silent_secrets",
+    maxStacks: 2,
+    stats: { dmg_electro: 15 },
+    condition: { type: "constellation", constellation: 2 },
+  },
   // C3: +3 Normal Attack (Cooling Treatment bow normals).
   // Raw cons[2]: new Condition({ settings: { char_skill_attack_bonus: 3 } }).
   { type: "constellation", constellation: 3, settings: { char_skill_attack_bonus: 3 } },
+  // C4 "Beneficent Plumage" (SELF): +80 Elemental Mastery to Sethos herself, a self
+  // ConditionBoolean gated at C≥4 (lifts her mastery-scaled Shadow Piercing / meditation Dusk
+  // Bolt terms + EM reactions). The party mirror lives in partyData. raw Sethos.js:427-441 (cons[3]).
+  {
+    type: "boolean",
+    name: "sethos_beneficent_plumage",
+    stats: { mastery: 80 },
+    condition: { type: "constellation", constellation: 4 },
+  },
   // C5: +3 Elemental Burst (The Thundering Sands burst).
   // Raw cons[4]: new Condition({ settings: { char_skill_burst_bonus: 3 } }).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
@@ -205,7 +302,20 @@ export const sethos: DbObjectChar = {
   statTable: SethosStatTable,
   talents,
   features,
-  multipliers: [],
+  // Twilight Shadowpiercer (Dusk Bolt): while meditation is up, a per-mastery% bonus (s3.p1,
+  // char_skill_burst-leveled) is added to the base term of every CHARGED-type hit — i.e. the
+  // meditation electro charged normals. Gated on the stance + targeted at damageType 'charged';
+  // inert otherwise. raw Sethos.js:385-395 (char.multipliers, mastery* → target charged).
+  multipliers: [
+    {
+      scaling: "mastery*",
+      leveling: "char_skill_burst",
+      values: talents.get("burst.sethos_dusk_bolt_dmg_increase"),
+      source: "talent_burst",
+      target: { damageTypes: ["charged"] },
+      condition: STANCE,
+    },
+  ],
   conditions: constellationConditions,
   // C4 "Beneficent Plumage" — +80 Elemental Mastery to party.
   // Source: raw/genshin_calc_pub/src/js/db/Char/Sethos.js:116,120,469-474

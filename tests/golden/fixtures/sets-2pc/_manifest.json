@@ -40,9 +40,31 @@
     "description": "EVERY non-beta artifact set (55) at 2pc, equipped with zero artifact main/substats (only the set bonus moves), on a bonus-binding rep (SET_REP). Isolates the 2-piece bonus.",
     "id": "sets-2pc"
   },
-  "featureTotal": 1637,
-  "itemCount": 58,
+  "featureTotal": 1707,
+  "itemCount": 61,
   "items": [
+    {
+      "artifactSets": {
+        "ADayCarvedFromRisingWinds": 2
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 21,
+      "kind": "set",
+      "repKey": "Eula",
+      "repSlug": "eula",
+      "setToggles": {},
+      "slug": "ADayCarvedFromRisingWinds",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
+      }
+    },
     {
       "artifactSets": {
         "Adventurer": 2
@@ -199,6 +221,28 @@
     },
     {
       "artifactSets": {
+        "CelestialGift": 2
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 25,
+      "kind": "set",
+      "repKey": "Xiao",
+      "repSlug": "xiao",
+      "setToggles": {},
+      "slug": "CelestialGift",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.blackcliff_pole",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "polearm"
+      }
+    },
+    {
+      "artifactSets": {
         "CrimsonWitch": 2
       },
       "enemy": {
@@ -283,6 +327,28 @@
         "passiveToggles": {},
         "refine": 1,
         "type": "catalyst"
+      }
+    },
+    {
+      "artifactSets": {
+        "DisenchantmentInDeepShadow": 2
+      },
+      "enemy": {
+        "level": 90,
+        "res": 10
+      },
+      "featureCount": 24,
+      "kind": "set",
+      "repKey": "Freminet",
+      "repSlug": "freminet",
+      "setToggles": {},
+      "slug": "DisenchantmentInDeepShadow",
+      "statBlock": "sampleStats",
+      "weapon": {
+        "name": "weapon_name.the_bell",
+        "passiveToggles": {},
+        "refine": 1,
+        "type": "claymore"
       }
     },
     {

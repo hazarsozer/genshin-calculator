@@ -197,21 +197,44 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Constellation conditions (P2.C)
+// Constellation conditions (P2.C) + SELF passive toggles
 // ---------------------------------------------------------------------------
-// C1: ConditionStatic — display-only, SKIP.
-// C2: ConditionBoolean toggle stats:{enemy_res_electro:-15} — toggle OFF, SKIP.
-// C3: +3 levels to Bellowing Thunder (burst). Raw cons[2] settings char_skill_burst_bonus:3.
+// SELF buffs (golden-blind SKIPPED — the port modelled only the party.* C2 mirror + skipped the
+// two shared passive toggles entirely; all OFF in the fixed solo build, so the 58k DAMAGE goldens
+// never exercised them — a diff-parity sweep surfaced every Electro hit diverging):
+//   "Swordfighting Techniques" (traveler_swordfighting_techniques): +3 base ATK. Ungated. raw
+//     TravelerElectro.js:363-371.
+//   "Special Training" (traveler_special_training): +7 base ATK, +15 EM, +50 base HP. Ungated. raw
+//     TravelerElectro.js:372-382.
+//   C2 "Violet Vehemence" (traveler_violet_vehemence): enemy Electro RES −15 (lifts her electro
+//     hits + electro reactions). ConditionBoolean gated at C2 (constellation[1] → THE CONSTELLATION
+//     IS A GATE). The SELF mirror of party.traveler_violet_vehemence. raw TravelerElectro.js:399-407.
+//   NOT modelled (damage-inert): "Abundance Amulet" (traveler_abundance_amulet) is a pure toggle
+//     whose ONLY effect is energy-recharge post-effects (rechargePreA4Post/rechargePostA4Post,
+//     TravelerElectro.js:133-150) — recharge never reaches a damage number, so it is faithfully
+//     omitted (the diff-parity sweep sets it but it causes no damage divergence).
 // C4: ConditionStatic (text_percent1/text_percent2) — display-only, SKIP.
-// C5: +3 levels to Lightning Blade (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
 // C6: cons-ADDED feature traveler_falling_thunder_bonus_dmg handled above in features array.
 //     Raw cons[5] has ConditionStatic({stats:{text_percent_dmg:100}}) — display only, SKIP.
-// Raw: db/Char/TravelerElectro.js constellation array (TravelerElectro.js:388-451).
+// Raw: db/Char/TravelerElectro.js constellation array (TravelerElectro.js:363-451).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to burst talent.
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 levels to elemental skill talent.
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF shared passives — +base ATK (every hit) + EM (reactions) + base HP (damage-inert here).
+  // Ungated ConditionBooleans. raw TravelerElectro.js:363-382.
+  { type: "boolean", name: "traveler_swordfighting_techniques", stats: { atk_base: 3 } },
+  { type: "boolean", name: "traveler_special_training", stats: { atk_base: 7, mastery: 15, hp_base: 50 } },
+  // SELF C2 "Violet Vehemence" — enemy Electro RES −15% (lifts her electro hits + reactions).
+  // ConditionBoolean gated at C2 (THE CONSTELLATION IS A GATE; base-inert below C2 / when untoggled).
+  // raw TravelerElectro.js:399-407.
+  {
+    type: "boolean",
+    name: "traveler_violet_vehemence",
+    stats: { enemy_res_electro: -15 },
+    condition: { type: "constellation", constellation: 2 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

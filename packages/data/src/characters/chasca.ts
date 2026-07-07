@@ -26,9 +26,10 @@
  * talent% by wrapping the table (1.5 × talent% × atk = talent% × atk × 1.5).
  * Verified: burning/shining shell ratio = 1.5000 in the fixture.
  *
- * C0 build: the C2 `other`-category element shells and C6 `crit_dmg_chasca` are
- * OFF (constellation-gated) → omitted. The skill shell's `critDamageBonuses:
- * ['crit_dmg_chasca']` reads 0 at C0, so it is left off (no behavioural change).
+ * C0 build: the C2 `other`-category element shells are OFF (constellation-gated) →
+ * inert. C6 `crit_dmg_chasca` (+120% Crit DMG on the shadowhunt shells) is now modelled
+ * as a SELF condition gated at C6 (the skill shell + 4 shining shells declare
+ * critDamageBonuses:['crit_dmg_chasca'], base-inert until the C6 toggle fires).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Chasca.js
@@ -186,23 +187,30 @@ const features: readonly Feature[] = [
     element: "anemo",
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.chasca_multi_aim_press_dmg") }],
   },
-  // Base shadowhunt shell (anemo, charged-type). raw carries critDamageBonuses
-  // ['crit_dmg_chasca'] (C6) — 0 at C0, so omitted (no behavioural change).
+  // Base shadowhunt shell (anemo, charged-type). raw declares critDamageBonuses
+  // ['crit_dmg_chasca'] (C6 "Showdown") — base-inert (reads 0 until the C6 self toggle
+  // fires; her getDefaultStatsCritDamage does NOT auto-include this custom key, so the
+  // feature must declare it for the C6 crit_dmg_chasca:120 to reach the crit term).
+  // raw/genshin_calc_pub/src/js/db/Char/Chasca.js:246-256.
   {
     name: "chasca_shadowhunt_shell_dmg",
     category: "skill",
     damageType: "charged",
     element: "anemo",
+    critDamageBonuses: ["crit_dmg_chasca"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.chasca_shadowhunt_shell_dmg") }],
   },
   // Shining shadowhunt shells: per-element charged shots (s2.p4).
   // raw: damageBonuses ['dmg_charged_elem_chasca'] (A1=0 solo) + critDamageBonuses
-  // ['crit_dmg_chasca'] (C6=0). Both read 0 here → omitted.
+  // ['crit_dmg_chasca'] (C6 "Showdown", base-inert until toggled). dmg_charged_elem_chasca
+  // reads 0 here → omitted; crit_dmg_chasca declared so the C6 self toggle reaches each shell.
+  // raw/genshin_calc_pub/src/js/db/Char/Chasca.js:257-271.
   ...ABSORB_ELEMENTS.map((elem): Feature => ({
     name: `chasca_shining_shadowhunt_shell_${elem}_dmg`,
     category: "skill",
     damageType: "charged",
     element: elem,
+    critDamageBonuses: ["crit_dmg_chasca"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.chasca_shining_shadowhunt_shell_dmg") }],
   })),
   // A4 burning shadowhunt shot (anemo base shell × 1.5).
@@ -275,13 +283,28 @@ const features: readonly Feature[] = [
 // C3: +3 levels to Spirit Reins, Shadow Hunt (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
 // C4 "Sparks — The Sudden Shot": ConditionStatic display-only → SKIP.
 // C5: +3 levels to Soul Reaper's Fatal Round (burst). Raw cons[4] settings char_skill_burst_bonus:3.
-// C6 "Showdown — The Glory of Battle": ConditionBoolean toggle (crit_dmg_chasca:120) → SKIP (toggle OFF).
-// Raw: Chasca.js constellation array (Chasca.js:376-443).
+// C6 "Showdown — The Glory of Battle": ConditionBoolean toggle (crit_dmg_chasca:120).
+// SELF buff — modelled below (was golden-blind SKIPPED: no golden toggles it, so the
+// 58k DAMAGE goldens never exercised the crit_dmg_chasca term; a diff-parity sweep at C6
+// + chasca_showdown_the_glory_of_battle:true surfaced the +120% Crit DMG on her shadowhunt
+// shells, crit+avg only). Raw: Chasca.js constellation array (Chasca.js:376-443).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to elemental skill.
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to elemental burst.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF "Showdown — The Glory of Battle" (C6) — +120% Crit DMG (C6CritDmg=120) on Chasca's
+  // shadowhunt shells (the base anemo shell + the 4 per-element shining shells, each declaring
+  // critDamageBonuses:['crit_dmg_chasca']). ConditionBoolean gated at C6 (lives in
+  // constellation[5] → THE CONSTELLATION IS A GATE). Chasca has no party.* mirror (partyData is
+  // empty) → the port SKIPPED it entirely as golden-blind. Base-inert: crit_dmg_chasca reads 0
+  // until this toggle fires. Source: raw/genshin_calc_pub/src/js/db/Char/Chasca.js:430-441 (constellation[5]).
+  {
+    type: "boolean",
+    name: "chasca_showdown_the_glory_of_battle",
+    stats: { crit_dmg_chasca: 120 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

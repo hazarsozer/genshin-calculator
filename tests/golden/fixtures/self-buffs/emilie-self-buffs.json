@@ -1,0 +1,255 @@
+{
+  "element": "dendro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 7407.034194550035,
+      "category": "attack",
+      "crit": 18216.34626969692,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 6205.999519533714
+    },
+    "attack.normal_hit_1": {
+      "average": 5682.863221887417,
+      "category": "attack",
+      "crit": 13976.03973927859,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 4761.399164399509
+    },
+    "attack.normal_hit_2": {
+      "average": 5578.88486779897,
+      "category": "attack",
+      "crit": 13720.322585438265,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 4674.280676950159
+    },
+    "attack.normal_hit_3": {
+      "average": 5987.528094214147,
+      "category": "attack",
+      "crit": 14725.311399803693,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 5016.663282481975
+    },
+    "attack.normal_hit_4": {
+      "average": 6435.81581274423,
+      "category": "attack",
+      "crit": 15827.799128995619,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 5392.26211093852
+    },
+    "attack.plunge": {
+      "average": 1679.300024969833,
+      "category": "attack",
+      "crit": 4129.954033163404,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1407.0051351705474
+    },
+    "attack.plunge_high": {
+      "average": 4194.183960669208,
+      "category": "attack",
+      "crit": 10314.885194208358,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3514.1060458315246
+    },
+    "attack.plunge_low": {
+      "average": 3357.889146528187,
+      "category": "attack",
+      "crit": 8258.159719773024,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2813.414638389872
+    },
+    "burst.emilie_lumidouce_case_3_dmg": {
+      "average": 10058.180375545711,
+      "category": "burst",
+      "crit": 24736.391347946435,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 8427.268045278963
+    },
+    "other.emilie_dmg_bonus": {
+      "average": 30.363565907699996,
+      "category": "other",
+      "crit": 30.363565907699996,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 30.363565907699996
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.rupture": {
+      "average": 4546.1474693430655,
+      "category": "reaction",
+      "crit": 4546.1474693430655,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4546.1474693430655
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.emilie_cleardew_cologne_dmg": {
+      "average": 9567.298247940938,
+      "category": "skill",
+      "crit": 23529.14988271417,
+      "damageType": "none",
+      "format": "",
+      "isReacted": false,
+      "normal": 8015.981399632801
+    },
+    "skill.emilie_lumidouce_case_1_dmg": {
+      "average": 1699.630533746708,
+      "category": "skill",
+      "crit": 4179.953476664173,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1424.0390956447673
+    },
+    "skill.emilie_lumidouce_case_2_dmg": {
+      "average": 3605.276889765743,
+      "category": "skill",
+      "crit": 8866.567980802789,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3020.688990761627
+    },
+    "skill.skill_dmg": {
+      "average": 2020.6718567877526,
+      "category": "skill",
+      "crit": 4969.500244478516,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1693.0242581554455
+    },
+    "skill.spiritbreath_thorn_dmg": {
+      "average": 1653.276973735434,
+      "category": "skill",
+      "crit": 4065.9547454824224,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1385.2016657635463
+    },
+    "stats.atk": {
+      "average": 2024.23772718,
+      "category": "stats",
+      "crit": 2024.23772718,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2024.23772718
+    },
+    "stats.crit_dmg": {
+      "average": 193.52800000000002,
+      "category": "stats",
+      "crit": 193.52800000000002,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 193.52800000000002
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1606.1266515000002,
+      "category": "stats",
+      "crit": 1606.1266515000002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1606.1266515000002
+    },
+    "stats.hp": {
+      "average": 26794.4696854,
+      "category": "stats",
+      "crit": 26794.4696854,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 26794.4696854
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Emilie",
+  "repSlug": "emilie",
+  "schema": 1,
+  "slug": "emilie-self-buffs",
+  "weapon": "weapon_name.blackcliff_pole",
+  "weaponType": "polearm"
+}

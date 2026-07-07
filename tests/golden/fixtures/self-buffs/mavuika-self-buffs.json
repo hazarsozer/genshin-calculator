@@ -1,0 +1,264 @@
+{
+  "element": "pyro",
+  "features": {
+    "burst.burst_dmg": {
+      "average": 77507.40195866632,
+      "category": "burst",
+      "crit": 162313.4629914446,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 68084.50628835762
+    },
+    "reaction.burgeon": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "reaction.burning": {
+      "average": 464.9469002737226,
+      "category": "reaction",
+      "crit": 464.9469002737226,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 464.9469002737226
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.overloaded": {
+      "average": 5114.415903010949,
+      "category": "reaction",
+      "crit": 5114.415903010949,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5114.415903010949
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.mavuika_c6_flamestrider_dmg": {
+      "average": 7554.14967648368,
+      "category": "skill",
+      "crit": 15819.652871343196,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6635.7604326104
+    },
+    "skill.mavuika_c6_ring_dmg": {
+      "average": 18885.3741912092,
+      "category": "skill",
+      "crit": 39549.13217835799,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 16589.401081526
+    },
+    "skill.mavuika_flamestrider_charged_final": {
+      "average": 22971.42205248261,
+      "category": "skill",
+      "crit": 48105.99980070146,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 20178.6911915694
+    },
+    "skill.mavuika_flamestrider_charged_spin": {
+      "average": 19777.88452359067,
+      "category": "skill",
+      "crit": 41418.19808875629,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 17373.405238572268
+    },
+    "skill.mavuika_flamestrider_normal_hit_1": {
+      "average": 10518.01897384991,
+      "category": "skill",
+      "crit": 22026.49089393727,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 9239.29987161798
+    },
+    "skill.mavuika_flamestrider_normal_hit_2": {
+      "average": 10664.731227690663,
+      "category": "skill",
+      "crit": 22333.730891439343,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 9368.175709496367
+    },
+    "skill.mavuika_flamestrider_normal_hit_3": {
+      "average": 11517.248023900578,
+      "category": "skill",
+      "crit": 24119.043648084134,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 10117.048510102404
+    },
+    "skill.mavuika_flamestrider_normal_hit_4": {
+      "average": 11495.0918274184,
+      "category": "skill",
+      "crit": 24072.644866975992,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 10097.585934134224
+    },
+    "skill.mavuika_flamestrider_normal_hit_5": {
+      "average": 13167.971555297125,
+      "category": "skill",
+      "crit": 27575.93481010923,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 11567.08674920689
+    },
+    "skill.mavuika_flamestrider_plunge_dmg": {
+      "average": 11927.670288632502,
+      "category": "skill",
+      "crit": 24978.536514493928,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 10477.574041314565
+    },
+    "skill.mavuika_flamestrider_sprint_dmg": {
+      "average": 6027.962403932554,
+      "category": "skill",
+      "crit": 12623.561464314134,
+      "damageType": "none",
+      "format": "",
+      "isReacted": false,
+      "normal": 5295.118063890156
+    },
+    "skill.mavuika_rings_of_searing_radiance_dmg": {
+      "average": 10273.643560017805,
+      "category": "skill",
+      "crit": 21514.727905026746,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 9024.634188350145
+    },
+    "skill.skill_dmg": {
+      "average": 5971.5553192603475,
+      "category": "skill",
+      "crit": 12505.435594796794,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5245.56862197852
+    },
+    "stats.atk": {
+      "average": 3646.0222157199996,
+      "category": "stats",
+      "crit": 3646.0222157199996,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3646.0222157199996
+    },
+    "stats.crit_dmg": {
+      "average": 138.4,
+      "category": "stats",
+      "crit": 138.4,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 138.4
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1667.6110011,
+      "category": "stats",
+      "crit": 1667.6110011,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1667.6110011
+    },
+    "stats.hp": {
+      "average": 36436.25466211182,
+      "category": "stats",
+      "crit": 36436.25466211182,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 36436.25466211182
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    },
+    "weapon.bell_shield": {
+      "average": 7287.250932422365,
+      "category": "weapon",
+      "crit": 7287.250932422365,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 7287.250932422365
+    }
+  },
+  "kind": "party",
+  "repChar": "Mavuika",
+  "repSlug": "mavuika",
+  "schema": 1,
+  "slug": "mavuika-self-buffs",
+  "weapon": "weapon_name.the_bell",
+  "weaponType": "claymore"
+}

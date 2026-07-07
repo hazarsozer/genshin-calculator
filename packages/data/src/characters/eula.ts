@@ -235,11 +235,48 @@ const features: readonly Feature[] = [
 //
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Eula.js:431-541
 
+// SELF buffs (were golden-blind SKIPPED — the port modelled only the party.* mirrors; a diff-parity
+// sweep surfaced her own hits diverging when the toggles are on, every cons level):
+//   - "Icewhirl Brand" (eula_icewhirl_brand): SELF enemy_res_physical / enemy_res_cryo shred,
+//     level-scaled on her OWN skill level (char_skill_elemental). The SELF mirror of
+//     party.eula_icewhirl_brand below — same s2.p4/p5 tables [16..25] negated. raw conditions
+//     ConditionBooleanLevels(levelSetting:'char_skill_elemental'). NOT cons-gated → lifts every
+//     physical (normals/charged/plunge/lightfall/roiling-rime) + cryo (skill/burst) hit.
+//   - C1 "Tidal Illusion" (eula_tidal_illusion): SELF dmg_phys +30, gated C1. raw constellation[0].
+//   - C4 "The Obstinacy of One's Inferiors" (eula_obstinacy): SELF dmg_burst_eula +25 (lifts the
+//     lightfall + roiling-rime physical bursts), gated C4. raw constellation[3].
+// NOT ported (damage-inert): "Grimheart" ConditionStacks def_percent +30/stack — Eula scales on
+// ATK, not DEF, so def_percent does not lift any of her damage (Tier-B: inert, no effect).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 Elemental Burst talent levels.
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 Elemental Skill talent levels.
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "Icewhirl Brand" phys+cryo RES shred per her own skill talent level. raw s2.p4=s2.p5=[16..25]
+  // negated; gated by the eula_icewhirl_brand boolean. Base-inert when untoggled.
+  {
+    type: "static-level",
+    levelSetting: "char_skill_elemental",
+    levelStats: {
+      enemy_res_physical: [-16, -17, -18, -19, -20, -21, -22, -23, -24, -25],
+      enemy_res_cryo: [-16, -17, -18, -19, -20, -21, -22, -23, -24, -25],
+    },
+    condition: { type: "boolean", name: "eula_icewhirl_brand" },
+  },
+  // SELF C1 "Tidal Illusion" — dmg_phys +30, gated C1. raw constellation[0].
+  {
+    type: "boolean",
+    name: "eula_tidal_illusion",
+    stats: { dmg_phys: 30 },
+    condition: { type: "constellation", constellation: 1 },
+  },
+  // SELF C4 "The Obstinacy of One's Inferiors" — dmg_burst_eula +25, gated C4. raw constellation[3].
+  {
+    type: "boolean",
+    name: "eula_obstinacy",
+    stats: { dmg_burst_eula: 25 },
+    condition: { type: "constellation", constellation: 4 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

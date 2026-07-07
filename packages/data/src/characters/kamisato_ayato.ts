@@ -18,7 +18,8 @@
  * SKIPPED (off / gated in the fixed solo-C0 build, so absent from the fixture):
  *   - ayato_shunsuiken_1..3 (hydro skill-state normals): condStance OFF.
  *   - Namisen HP→Shunsuiken multiplier (`scaling:'hp*'`, gated on ayato_namisen ≥ 1): OFF.
- *   - Bloomwater Blades normal-attack `dmg_normal` bonus (ConditionBooleanLevels): OFF.
+ *   - Bloomwater Blades normal-attack `dmg_normal` bonus (ConditionBooleanLevels): OFF here,
+ *     but the SELF condition IS modelled (constellationConditions) — base-inert until toggled.
  *   - All constellations (C1 dmg_normal_ayato, C2 HP, C4 atk-speed, C6 attack): C0 build.
  *   - A1 (Namisen stack gain) / A4 (energy regen): no unconditional damage stat.
  *   Ayato's ascension-secondary Hydro DMG bonus is NOT in charTables.Ayato (matching
@@ -165,6 +166,21 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 Elemental Burst (Suiyuu) levels.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF Burst "Bloomwater Blades" — +Normal Attack DMG (dmg_normal) per his OWN burst talent level,
+  // lifting his physical normals (the only normals modelled in the stance-OFF solo build). The SELF
+  // mirror of party.ayato_bloomwater_blades (partyData) — same static-level machinery, reading his
+  // own char_skill_burst instead of the teammate-lifted ayato_char_skill_burst. Was golden-blind
+  // SKIPPED (no golden toggles it; the burst toggle is OFF in the fixed build → a diff-parity sweep
+  // surfaced his physical normals diverging at every cons when ayato_bloomwater_blades is on). raw
+  // Ayato.js:369-378 (ConditionBooleanLevels, getAlias burst.ayato_normal_attack_bonus → dmg_normal,
+  // levelSetting char_skill_burst). Base-inert when untoggled. (C1 dmg_normal_ayato is declared ONLY
+  // on the stance-gated Shunsuiken hits → moot in the modelled physical build.)
+  {
+    type: "static-level",
+    levelSetting: "char_skill_burst",
+    levelStats: { dmg_normal: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20] },
+    condition: { type: "boolean", name: "ayato_bloomwater_blades" },
+  },
 ];
 
 // ---------------------------------------------------------------------------

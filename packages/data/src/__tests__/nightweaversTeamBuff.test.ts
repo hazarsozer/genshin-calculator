@@ -49,7 +49,7 @@ function buildWith(opts: {
     enemy: ENEMY,
     talentLevels: TALENTS,
     settings: opts.settings ?? {},
-    party: opts.weaponOther !== undefined ? { weaponOther: opts.weaponOther } : undefined,
+    ...(opts.weaponOther !== undefined ? { party: { weaponOther: opts.weaponOther } } : {}),
   });
 }
 

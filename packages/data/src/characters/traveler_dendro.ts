@@ -39,7 +39,7 @@
  *   raw/genshin_calc_pub/src/js/classes/PostEffect/Stats/Mastery.js (A4 EM→DMG%)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Traveler as TravelerStatTable } from "../generated/charTables.js";
 import { TravelerDendro as TravelerDendroTalents } from "../generated/charTalentTables.js";
 
@@ -208,18 +208,21 @@ const features: readonly Feature[] = [
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
-// Folded, faithful to the fixed C0/A6 build (see file header):
-//   dmg_skill_traveler_dendro — A4 0.15 × 110.128 EM = 16.5192%
-//   dmg_burst_traveler_dendro — A4 0.10 × 110.128 EM = 11.0128%
-// EM (110.128) is NOT folded here: the canonical build's EM comes entirely from
-// the default sword (Alley Flash, EM secondary ≈55.128 at Lv90) plus the uniform
-// stat block's mastery_base 55 — both already aggregated by buildStats. The dendro
-// Traveler's own stat table carries no EM, so no baseStats EM term is needed; the
-// EM-scaled reactions and the A4-bonus derivation above both read this true total.
-const BASE_STATS: Record<string, number> = {
-  dmg_skill_traveler_dendro: 16.5192,
-  dmg_burst_traveler_dendro: 11.0128,
-};
+// A4 "Verdant Luxury" — DYNAMIC EM→DMG% (her PostEffectStatsMastery, raw TravelerDendro.js:110-124):
+//   dmg_skill_traveler_dendro = 0.15 × EM_total ; dmg_burst_traveler_dendro = 0.10 × EM_total.
+// Modelled as postEffects (the proven alhaitham mirror: fromStat "mastery" → named dmg key read by
+// each skill/burst feature's damageBonuses), NOT a baked baseStats constant. The previous baked
+// 16.5192/11.0128 (= 0.15/0.10 × the canonical 110.128 EM) only held while EM was fixed; the SELF
+// A1 "Verdant Overgrowth" + "Special Training" EM buffs (+75 EM) made it diverge — a diff-parity
+// sweep surfaced it. The postEffect re-derives the bonus from live EM, matching her engine at the
+// base build (0.15 × 110.128 = 16.5192, unchanged golden output) AND at any buffed EM. Auto-active
+// at A6 (her ConditionAscensionChar(4)), so ungated (like alhaitham). global:true → applies to her
+// own features. The output:{kind:"static"} readouts below (scaling:"mastery", 15/10) already derive
+// the same value dynamically; this aligns the DAMAGE hits with them.
+const a4PostEffects: readonly CharPostEffect[] = [
+  { fromStat: "mastery", toStat: "dmg_skill_traveler_dendro", ratio: 0.15 },
+  { fromStat: "mastery", toStat: "dmg_burst_traveler_dendro", ratio: 0.1 },
+];
 
 // ---------------------------------------------------------------------------
 // Constellations (P2.C Wave-1)
@@ -242,6 +245,28 @@ const constellationConditions: readonly Condition[] = [
   // C5 "Quad Beasts Unleashed" — +3 Elemental Burst talent levels.
   // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF buffs (golden-blind SKIPPED — the port modelled only the party.* mirrors + skipped the two
+  // shared passive toggles; all OFF in the fixed solo build, so the 58k DAMAGE goldens never
+  // exercised them — a diff-parity sweep surfaced every Dendro hit + reaction diverging):
+  //   A1 "Verdant Overgrowth" (traveler_verdant_overgrowth): +6 EM per stack, max 10 (= +60 EM →
+  //     lifts EM-scaled reactions + the A4 dynamic EM→DMG below). The raw ConditionStacks carries a
+  //     vacuous ascension-1 subcondition (auto-true at A6) → dropped, like the party mirror. raw
+  //     TravelerDendro.js:298-312.
+  //   "Swordfighting Techniques" (+3 base ATK) + "Special Training" (+7 base ATK / +15 EM / +50 base
+  //     HP). Ungated ConditionBooleans. raw TravelerDendro.js:321-340.
+  //   C6 "Withering Aggregation" (traveler_withering_aggregation_1): +12% Dendro DMG, gated C6 (THE
+  //     CONSTELLATION IS A GATE). The SELF mirror of party.traveler_withering_aggregation_1. (The
+  //     paired party.traveler_withering_aggregation_2 element-shred dropdown stays party-prefixed in
+  //     raw and is unset in the sweep → inert → omitted.) raw TravelerDendro.js:391-399.
+  { type: "stacks", name: "traveler_verdant_overgrowth", maxStacks: 10, stats: { mastery: 6 } },
+  { type: "boolean", name: "traveler_swordfighting_techniques", stats: { atk_base: 3 } },
+  { type: "boolean", name: "traveler_special_training", stats: { atk_base: 7, mastery: 15, hp_base: 50 } },
+  {
+    type: "boolean",
+    name: "traveler_withering_aggregation_1",
+    stats: { dmg_dendro: 12 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 export const travelerDendro: DbObjectChar = {
@@ -255,7 +280,7 @@ export const travelerDendro: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  baseStats: BASE_STATS,
+  postEffects: a4PostEffects,
   conditions: constellationConditions,
   // partyData — teammate kit buffs (P3.5.2 Bucket A, A-straggler)
   // A1 "Verdant Overgrowth": +6 EM per stack (max 10 → +60). Her ConditionStacks carries

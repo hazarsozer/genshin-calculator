@@ -218,6 +218,13 @@ const features: readonly Feature[] = [
 //     with text_percent_dmg → display-only, SKIP.
 // Raw: raw/genshin_calc_pub/src/js/db/Char/Kachina.js constellation array (Kachina.js:346-403).
 const constellationConditions: readonly Condition[] = [
+  // SELF "Mountain Echoes" (A1) — +20% Geo DMG while Kachina's Nightsoul points are full,
+  // lifting every Kachina geo feature (skill/burst/shield-burst + reaction.crystallize).
+  // ConditionBoolean ascension passive (rep at A6 → modelled ungated, the toggle is the gate).
+  // Her engine gates it ONLY on ascension (no enemy-status subcondition), so a plain toggle is
+  // faithful. Was golden-blind SKIPPED (no party.* mirror — a self-only passive). A1GeoDmg = 20.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Kachina.js:309-322 (char.conditions[0], info.ascension 1).
+  { type: "boolean", name: "kachina_mountain_echoes", stats: { dmg_geo: 20 } },
   // C3: +3 levels to Go! Go! Turbo Twirly (elemental skill). Raw cons[2].
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Time to Get Serious! (elemental burst). Raw cons[4].

@@ -179,21 +179,42 @@ const features: readonly Feature[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Constellations (P2.C Wave-1)
+// Constellations (P2.C Wave-1) + SELF passive toggles
 // ---------------------------------------------------------------------------
-// C1 "Invincible Stonewall": ConditionBoolean (crit_rate: 10) — toggle, SKIP.
+// SELF buffs (golden-blind SKIPPED — the port modelled only the party.* mirror of C1 and
+// skipped the two shared passive toggles entirely; both are OFF in the fixed solo build, so the
+// 58k DAMAGE goldens never exercised them — a diff-parity sweep surfaced every Geo hit diverging):
+//   "Swordfighting Techniques" (traveler_swordfighting_techniques): +3 base ATK. Ungated
+//     ConditionBoolean. raw TravelerGeo.js:284-292.
+//   "Special Training" (traveler_special_training): +7 base ATK, +15 EM, +50 base HP. Ungated
+//     ConditionBoolean. raw TravelerGeo.js:293-303.
+//   C1 "Invincible Stonewall" (traveler_invincible_stonewall): +10% CRIT Rate. ConditionBoolean
+//     gated at C1 (constellation[0] → THE CONSTELLATION IS A GATE). The SELF mirror of
+//     party.traveler_invincible_stonewall. raw TravelerGeo.js:307-317.
 // C2 "Rockcore Meltdown": ConditionStatic, no real stats — SKIP.
 // C3 "Awakening Belladona": +3 burst talent (char_skill_burst_bonus).
 // C4 "Reaction Force": ConditionStatic, no real stats — SKIP.
 // C5 "Liverock Tattoo": +3 skill talent (char_skill_elemental_bonus).
 // C6 "Everlasting Boulder": ConditionStatic, no real stats — SKIP.
-// Sources: raw/genshin_calc_pub/src/js/db/Char/TravelerGeo.js:305-370
+// Sources: raw/genshin_calc_pub/src/js/db/Char/TravelerGeo.js:284-370
 
 const constellationConditions: readonly Condition[] = [
   // C3 — +3 Elemental Burst (Wake of Earth).
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5 — +3 Elemental Skill (Starfell Sword).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF shared passives — +base ATK (every hit) + EM (reactions) + base HP (damage-inert here).
+  // Ungated ConditionBooleans. raw TravelerGeo.js:284-303.
+  { type: "boolean", name: "traveler_swordfighting_techniques", stats: { atk_base: 3 } },
+  { type: "boolean", name: "traveler_special_training", stats: { atk_base: 7, mastery: 15, hp_base: 50 } },
+  // SELF C1 "Invincible Stonewall" — +10% CRIT Rate (lifts every hit's avg). ConditionBoolean gated
+  // at C1 (THE CONSTELLATION IS A GATE; base-inert below C1 / when untoggled). raw TravelerGeo.js:307-317.
+  {
+    type: "boolean",
+    name: "traveler_invincible_stonewall",
+    stats: { crit_rate: 10 },
+    condition: { type: "constellation", constellation: 1 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

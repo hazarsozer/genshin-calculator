@@ -51,9 +51,11 @@ function buildWith(opts: {
     enemy: ENEMY,
     talentLevels: TALENTS,
     settings: opts.settings ?? {},
-    setBonuses: opts.setBonuses,
-    setRegistry: opts.setRegistry,
-    party: opts.setOther !== undefined ? { setOther: opts.setOther } : undefined,
+    ...(opts.setBonuses !== undefined ? { setBonuses: opts.setBonuses } : {}),
+    ...(opts.setRegistry !== undefined ? { setRegistry: opts.setRegistry } : {}),
+    ...(opts.setOther !== undefined
+      ? { party: { setOther: Object.fromEntries(opts.setOther.map((g) => [g, true])) } }
+      : {}),
   });
 }
 

@@ -276,28 +276,56 @@ const features: readonly Feature[] = [
 // C4: cons-added explosion_dmg feature (above, gated in features array).
 //     ConditionStatic with text_percent_dmg:135 (display-only) → SKIP here.
 // C5: +3 levels to Fantastic Voyage (burst). Raw Bennet.js cons[4] settings
-//     char_skill_burst_bonus:3.
-// C6: ConditionStatic gated by bennet_fantastic_voyage (toggle) → SKIP.
+//     char_skill_burst_bonus:3 (now also lifts the SELF ATK battery via fantasticVoyageAtk's
+//     ratioFromTalent — see below).
+// C6 "Fire Ventures with Me": SELF ConditionStatic (settings:{attack_infusion_pyro:1},
+//     stats:{dmg_pyro:15}) gated by bennet_fantastic_voyage — pyro infusion on his physical
+//     normals/charged/plunge + +15% Pyro DMG, active while in the Fantastic Voyage field.
+//     Ported below (golden-blind SKIP — no golden sets bennet_fantastic_voyage). raw Bennet.js:551-571.
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Passion Overload (elemental skill). Raw Bennet.js cons[2].
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
   // C5: +3 levels to Fantastic Voyage (burst). Raw Bennet.js cons[4].
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF C6 "Fire Ventures with Me" — while standing in the Fantastic Voyage field, Bennett's
+  // physical normals/charged/plunge are pyro-infused AND gain +15% Pyro DMG (dmg_pyro). raw
+  // Bennet.js constellation[5]: ConditionStatic{ settings:{attack_infusion_pyro:1}, stats:{dmg_pyro:
+  // C6PyroBonus=15}, subConditions:[ConditionBoolean(bennet_fantastic_voyage)] }. Modelled as a
+  // boolean keyed on the bennet_fantastic_voyage toggle (the raw subCondition) gated at C6 (THE
+  // CONSTELLATION IS A GATE; base-inert below C6 / when untoggled). attack_infusion_pyro:1 →
+  // canonical attack_infusion:"pyro" (the Diluc-dawn pattern). Both stats + settings on one condition
+  // (ConditionBase carries both). Self-only → golden-blind SKIP.
+  {
+    type: "boolean",
+    name: "bennet_fantastic_voyage",
+    stats: { dmg_pyro: 15 },
+    settings: { attack_infusion: "pyro" },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------
 // Post-effects
 // ---------------------------------------------------------------------------
 
-// "Fantastic Voyage" burst: +ATK = base ATK × (burst atk_ratio @L10 × 0.01).
-// Raw Bennet.js:156-175 — PostEffectStats{ from:'atk_base', percent:burst.atk_ratio × 0.01,
-// conditions:[ConditionBoolean({name:'bennet_fantastic_voyage'})] }.
-// BUILD-COUPLED at burst level 10 (the oracle's fixed talent level), like itto/sayu carries.
-// BennettTalents.s3.p4 = atk_ratio table; getValue(10) = 100.8; ratio = 1.008.
+// "Fantastic Voyage" burst: +ATK = base ATK × (burst atk_ratio × 0.01), scaled by Bennett's OWN
+// burst talent level and clamped at L10 (raw PostEffectStats.maxLevelSetting:10 → effective level =
+// min(burst,10), + the C5 _bonus offset AFTER the clamp). Raw Bennet.js:156-175 — PostEffectStats{
+// from:'atk_base', levelSetting:'char_skill_burst', percent:burst.atk_ratio × 0.01 }.
+// ratioFromTalent (not a baked L10 ratio) so the C5 "True Explorer" +3 burst lifts the self buff —
+// the diff-parity sweep found the baked-L10 form under-buffs his OWN damage at cons 5/6. At the
+// golden config (char_skill_burst=10, no C5) this is min(10,10)=10 → getValue(10)×0.01 = 1.008,
+// byte-identical to the prior baked ratio; and the postEffect is gated by bennet_fantastic_voyage
+// (OFF in every golden) so it is doubly golden-inert. Mirrors the party battery's ratioFromTalent.
 const fantasticVoyageAtk: CharPostEffect = {
   fromStat: "atk_base",
   toStat: "atk",
-  ratio: BennettTalents.s3.p4.getValue(10) * 0.01,  // 100.8 × 0.01 = 1.008
+  ratioFromTalent: {
+    table: BennettTalents.s3.p4,
+    levelSetting: "char_skill_burst",
+    multi: 0.01,
+    maxLevelSetting: 10,
+  },
   conditions: [{ type: "boolean", name: "bennet_fantastic_voyage" }],
 };
 

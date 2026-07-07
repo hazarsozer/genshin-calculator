@@ -1,0 +1,192 @@
+{
+  "element": "geo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 5542.183738688718,
+      "category": "attack",
+      "crit": 8057.607715228864,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 4028.803857614432
+    },
+    "attack.ningguang_star_jade": {
+      "average": 1579.114852016087,
+      "category": "attack",
+      "crit": 2295.8257276846953,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 1147.9128638423476
+    },
+    "attack.normal_hit": {
+      "average": 844.5181296860228,
+      "category": "attack",
+      "crit": 1227.8185131081138,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 613.9092565540569
+    },
+    "attack.plunge": {
+      "average": 1777.7627937378238,
+      "category": "attack",
+      "crit": 2584.6337613588203,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1292.3168806794101
+    },
+    "attack.plunge_high": {
+      "average": 4440.1024739481,
+      "category": "attack",
+      "crit": 6455.326210270275,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 3227.6631051351374
+    },
+    "attack.plunge_low": {
+      "average": 3554.7722981562665,
+      "category": "attack",
+      "crit": 5168.172338920454,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2584.086169460227
+    },
+    "burst.ningguang_gem_dmg": {
+      "average": 4300.554044992288,
+      "category": "burst",
+      "crit": 6252.441111035283,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3126.2205555176415
+    },
+    "reaction.crystalize": {
+      "average": 2161.7331008659794,
+      "category": "reaction",
+      "crit": 2161.7331008659794,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2161.7331008659794
+    },
+    "reaction.electrocharged": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.ningguang_jade_screen_hp": {
+      "average": 21471.5241750423,
+      "category": "skill",
+      "crit": 21471.5241750423,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 21471.5241750423
+    },
+    "skill.skill_dmg": {
+      "average": 9571.205469774924,
+      "category": "skill",
+      "crit": 13915.276481891955,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 6957.6382409459775
+    },
+    "stats.atk": {
+      "average": 1879.7437063799998,
+      "category": "stats",
+      "crit": 1879.7437063799998,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1879.7437063799998
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 37.564,
+      "category": "stats",
+      "crit": 37.564,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 37.564
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1449.3180810000001,
+      "category": "stats",
+      "crit": 1449.3180810000001,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1449.3180810000001
+    },
+    "stats.hp": {
+      "average": 23013.4235531,
+      "category": "stats",
+      "crit": 23013.4235531,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23013.4235531
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Ningguang",
+  "repSlug": "ningguang",
+  "schema": 1,
+  "slug": "ningguang-self-buffs",
+  "weapon": "weapon_name.solar_pearl",
+  "weaponType": "catalyst"
+}

@@ -110,11 +110,14 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
   // --- Skill: Gale Blade (anemo) ---
-  // raw/genshin_calc_pub/src/js/db/Char/Jean.js — FeatureDamageSkill skill_dmg
+  // raw/genshin_calc_pub/src/js/db/Char/Jean.js:237-247 — FeatureDamageSkill skill_dmg, which
+  // declares damageBonuses:['dmg_skill_jean'] → the C1 "Spiraling Tempest" +40% skill DMG (the
+  // `jean` self toggle below) reaches it. Base-inert until C1+toggle (absent key reads 0).
   {
     name: "skill_dmg",
     category: "skill",
     element: "anemo",
+    damageBonuses: ["dmg_skill_jean"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_dmg") }],
   },
   // --- Burst: Dandelion Breeze (anemo) ---
@@ -167,9 +170,13 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C Wave-1)
 // ---------------------------------------------------------------------------
-// C1 "Spiraling Tempest": ConditionBoolean toggle (dmg_skill_jean=40) → SKIP.
-// C2 "People's Aegis": ConditionBoolean toggle (atk_speed_normal, move_speed) → SKIP.
-// C4 "Land's of Dandelion": ConditionBoolean toggle (enemy_res_anemo=-40) → SKIP.
+// C1 "Spiraling Tempest": SELF ConditionBoolean (dmg_skill_jean:40) → +40% Gale Blade DMG.
+//   Ported below (golden-blind SKIP — no party.* mirror; the port also lacked the skill_dmg
+//   damageBonuses). raw Jean.js:316-326 (constellation[0], ConditionBoolean name:'jean').
+// C2 "People's Aegis": ConditionBoolean toggle (atk_speed_normal, move_speed) → damage-inert (no
+//   atk-speed scaling in this engine) → SKIP.
+// C4 "Land's of Dandelion": SELF ConditionBoolean (enemy_res_anemo:-40). Ported below as the SELF
+//   mirror of party.jean_lands_of_dandelion (golden-blind SKIP). raw Jean.js:351-362 (constellation[3]).
 // C6 "Lion's Fang, Fair Protector of Mondstadt": ConditionStatic with
 //   dmg_reduction=35 — dmg_reduction is a damage-mitigation display stat, NOT a
 //   damage-bonus key (doesn't appear in any feature's damageBonuses) → SKIP.
@@ -184,6 +191,27 @@ const constellationConditions: readonly Condition[] = [
   // C5 "Outbursting Gust" — +3 Elemental Skill (Gale Blade).
   // Raw cons[4]: new Condition({ settings: { char_skill_elemental_bonus: 3 } }).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "Spiraling Tempest" (C1) — +40% Gale Blade (skill) DMG via dmg_skill_jean (skill_dmg declares
+  // damageBonuses:['dmg_skill_jean']). ConditionBoolean gated at C1 (constellation[0] → THE CONSTELLATION
+  // IS A GATE; base-inert below C1 / when untoggled). Self-only (no party.* mirror) → golden-blind SKIP.
+  // raw Jean.js:316-326 (the toggle name is literally 'jean').
+  {
+    type: "boolean",
+    name: "jean",
+    stats: { dmg_skill_jean: 40 },
+    condition: { type: "constellation", constellation: 1 },
+  },
+  // SELF "Land's of Dandelion" (C4) — −40% enemy Anemo RES (enemy_res_anemo), lifting every Jean anemo
+  // hit (skill_dmg + burst_dmg + field_dmg). ConditionBoolean gated at C4 (constellation[3] → THE
+  // CONSTELLATION IS A GATE; base-inert below C4 / when untoggled). SELF mirror of
+  // party.jean_lands_of_dandelion; the port modelled only the party.* version → golden-blind SKIP.
+  // raw Jean.js:351-362.
+  {
+    type: "boolean",
+    name: "jean_lands_of_dandelion",
+    stats: { enemy_res_anemo: -40 },
+    condition: { type: "constellation", constellation: 4 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

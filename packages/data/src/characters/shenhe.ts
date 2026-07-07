@@ -143,12 +143,14 @@ const features: readonly Feature[] = [
     name: "press_dmg",
     category: "skill",
     element: "cryo",
+    critDamageBonuses: ["crit_dmg_cryo"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.press_dmg") }],
   },
   {
     name: "hold_dmg",
     category: "skill",
     element: "cryo",
+    critDamageBonuses: ["crit_dmg_cryo"],
     multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.hold_dmg") }],
   },
   // --- Burst: Divine Maiden's Deliverance (cryo) ---
@@ -157,12 +159,14 @@ const features: readonly Feature[] = [
     name: "burst_dmg",
     category: "burst",
     element: "cryo",
+    critDamageBonuses: ["crit_dmg_cryo"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
   {
     name: "dot_dmg",
     category: "burst",
     element: "cryo",
+    critDamageBonuses: ["crit_dmg_cryo"],
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.dot_dmg") }],
   },
   // --- Skill static readout: skill.shenhe_dmg_bonus = Icy Quill flat-DMG-bonus value (talent% × ATK) ---
@@ -200,6 +204,61 @@ const constellationConditions: readonly Condition[] = [
   // char-level Condition gated by subConditions:[ConditionConstellation(5)] (Shenhe.js:311-318),
   // NOT the cons array (whose C5 slot is empty). Modelled as the equivalent constellation condition.
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // C2 "Centered Spirit" — +15% Cryo CRIT DMG, gated on C2 AND the Spirit Field toggle. Raw
+  // cons[1]: ConditionStatic{ stats:{crit_dmg_cryo:15}, subConditions:[shenhe_spirit_field] } (the
+  // cons level is the array slot). evaluateConstellation ignores `.condition` (level-only), so the
+  // C2 gate is folded via and[constellation:2, spirit_field]. Consumed by the cryo skill/burst
+  // features (critDamageBonuses:['crit_dmg_cryo']). Raw Shenhe.js:403-418.
+  {
+    type: "static",
+    stats: { crit_dmg_cryo: 15 },
+    condition: {
+      type: "and",
+      items: [
+        { type: "constellation", constellation: 2 },
+        { type: "boolean", name: "shenhe_spirit_field" },
+      ],
+    },
+  },
+];
+
+// ---------------------------------------------------------------------------
+// SELF passive/kit conditions (P3.5 skip-class self-buff port)
+// ---------------------------------------------------------------------------
+// The port modelled the party.* mirror of the Icy Quill multiplier but SKIPPED every SELF
+// condition below (the quill on Shenhe's OWN hits + her passive/A4 DMG bonuses + the talisman
+// res-shred) → golden-blind SKIP (no golden toggles them). All gated OFF by default → base-inert.
+// Source: raw/genshin_calc_pub/src/js/db/Char/Shenhe.js:310-392.
+const selfConditions: readonly Condition[] = [
+  // A4 "Spirit Communion Seal" (Rapid Hunt / press): +15% Skill DMG + +15% Burst DMG, a SELF
+  // boolean toggle (A4 always active on our A6 builds). Raw Shenhe.js:363-376.
+  { type: "boolean", name: "shenhe_spirit_seal_press", stats: { dmg_skill: 15, dmg_burst: 15 } },
+  // A4 "Spirit Communion Seal" (Deep Pierce / hold): +15% Normal/Charged/Plunge DMG, a SELF
+  // boolean toggle. Raw Shenhe.js:377-392.
+  {
+    type: "boolean",
+    name: "shenhe_spirit_seal_hold",
+    stats: { dmg_normal: 15, dmg_charged: 15, dmg_plunge: 15 },
+  },
+  // A1 "Deific Embrace": +15% Cryo DMG while standing in the Spirit Field. Raw ConditionStatic
+  // gated [A1, shenhe_spirit_field]; A1 always-on at A6, so the live gate is the spirit_field
+  // boolean. Raw Shenhe.js:349-362.
+  {
+    type: "static",
+    name: "shenhe_deific_embrace",
+    stats: { dmg_cryo: 15 },
+    condition: { type: "boolean", name: "shenhe_spirit_field" },
+  },
+  // "Divine Maiden's Deliverance" talisman field — enemy Cryo & Physical RES −(burst talent value).
+  // Raw ConditionBooleanLevels scaling enemy_res_phys/cryo off burst.shenhe_res_decrease × −1
+  // (Shenhe.js:330-348). The res_decrease table (s3.p2) CAPS at 15 for every burst level ≥10, so
+  // at our L10 builds (incl. C5 +3 → L13) the shred is a constant −15 on both keys — faithful, not
+  // a baked approximation (the value is level-invariant across the realistic range).
+  {
+    type: "boolean",
+    name: "shenhe_talisman_spirit",
+    stats: { enemy_res_physical: -15, enemy_res_cryo: -15 },
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -216,8 +275,27 @@ export const shenhe: DbObjectChar = {
   statTable: ShenheStatTable,
   talents,
   features,
-  multipliers: [],
-  conditions: constellationConditions,
+  // SELF Icy Quill — the wielder buffs her OWN cryo hits with a flat DMG instance
+  // (shenhe_dmg_bonus% × her own ATK), gated by the shenhe_icy_quill toggle. Raw Shenhe.js:297-308
+  // (FeatureMultiplier in the char `multipliers` array, default scaling 'atk*' = atk_total, leveling
+  // char_skill_elemental, target cryo normal/charged/plunge/skill/burst). The port had ONLY the
+  // party.shenhe_icy_quill mirror → golden-blind SKIP of the SELF quill (Shenhe's own cryo skill/
+  // burst hits under-reported when icy_quill is ON). Reuses the SAME CharMultiplier surface as the
+  // party version, scaled off Shenhe's own atk_total. Gated OFF by default → base-inert.
+  multipliers: [
+    {
+      source: "talent_elemental",
+      scaling: "atk*",
+      leveling: "char_skill_elemental",
+      values: talents.get("skill.shenhe_dmg_bonus"),
+      condition: { type: "boolean", name: "shenhe_icy_quill" },
+      target: {
+        damageElements: ["cryo"],
+        damageTypes: ["normal", "charged", "plunge", "skill", "burst"],
+      },
+    } satisfies CharMultiplier,
+  ],
+  conditions: [...constellationConditions, ...selfConditions],
   // partyData — teammate kit buff (P3.5.2 Bucket C).
   // Source: raw/genshin_calc_pub/src/js/db/Char/Shenhe.js:451-622
   // Scope: oracle-gated core only — the Icy Quill cryo-DMG-instance multiplier

@@ -221,7 +221,10 @@ const features: readonly Feature[] = [
 // C4 "Long-term Planning": ConditionStatic no real stats → SKIP.
 // C5 "Raging Wildfire": +3 Elemental Burst talent levels.
 //   Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
-// C6 "Burning Heart": ConditionBoolean (dmg_normal/charged/plunge toggle) → SKIP.
+// C6 "Burning Heart": SELF dmg_normal/charged/plunge +15 toggle (modelled below) — was
+//   golden-blind SKIPPED. The port had only the party.thoma_burning_heart mirror (partyData);
+//   the SELF version (his own C6 toggle) was dropped, so his own normals/charged/plunge undershot
+//   the oracle at cons 6 when the toggle is on (no golden sets it). A diff-parity sweep surfaced it.
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Thoma.js:325-410
 
 const constellationConditions: readonly Condition[] = [
@@ -231,6 +234,16 @@ const constellationConditions: readonly Condition[] = [
   // C5 "Raging Wildfire" — +3 Elemental Burst talent levels (Crimson Ooyoroi).
   // Raw cons[4]: Condition{ settings:{ char_skill_burst_bonus:3 } }
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
+  // SELF "Burning Heart" (C6) — +15% DMG to Normal / Charged / Plunge attacks, lifting his own
+  // physical attacks. ConditionBoolean toggle gated at C6 (constellation[5] → THE CONSTELLATION
+  // IS A GATE). The SELF mirror of party.thoma_burning_heart (partyData) — same stats, scaling
+  // his own hits. raw Thoma.js:368-382 (constellation[5] ConditionBoolean thoma_burning_heart).
+  {
+    type: "boolean",
+    name: "thoma_burning_heart",
+    stats: { dmg_normal: 15, dmg_charged: 15, dmg_plunge: 15 },
+    condition: { type: "constellation", constellation: 6 },
+  },
 ];
 
 // ---------------------------------------------------------------------------

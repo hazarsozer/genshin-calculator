@@ -1,0 +1,327 @@
+{
+  "element": "dendro",
+  "features": {
+    "attack.charged_hit_1": {
+      "average": 531.4325498276197,
+      "category": "attack",
+      "crit": 966.2409996865813,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 483.12049984329065
+    },
+    "attack.charged_hit_2": {
+      "average": 1062.8650996552394,
+      "category": "attack",
+      "crit": 1932.4819993731626,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 966.2409996865813
+    },
+    "attack.charged_hit_3": {
+      "average": 1062.8650996552394,
+      "category": "attack",
+      "crit": 1932.4819993731626,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 966.2409996865813
+    },
+    "attack.charged_hit_total": {
+      "average": 2657.1627491380987,
+      "category": "attack",
+      "crit": 4831.204998432906,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2415.602499216453
+    },
+    "attack.normal_hit_1": {
+      "average": 1061.7758195121137,
+      "category": "attack",
+      "crit": 1930.5014900220249,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 965.2507450110124
+    },
+    "attack.normal_hit_2": {
+      "average": 1027.4634950036432,
+      "category": "attack",
+      "crit": 1868.1154454611694,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 934.0577227305847
+    },
+    "attack.normal_hit_3": {
+      "average": 1408.7115450977597,
+      "category": "attack",
+      "crit": 2561.2937183595627,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1280.6468591797814
+    },
+    "attack.normal_hit_3_1": {
+      "average": 563.4846180391039,
+      "category": "attack",
+      "crit": 1024.5174873438252,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 512.2587436719126
+    },
+    "attack.normal_hit_3_2": {
+      "average": 845.2269270586556,
+      "category": "attack",
+      "crit": 1536.7762310157375,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 768.3881155078687
+    },
+    "attack.normal_hit_4": {
+      "average": 1624.1166934009352,
+      "category": "attack",
+      "crit": 2952.9394425471546,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1476.4697212735773
+    },
+    "attack.plunge": {
+      "average": 1315.877644899842,
+      "category": "attack",
+      "crit": 2392.504808908803,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 1196.2524044544016
+    },
+    "attack.plunge_high": {
+      "average": 3286.507967830961,
+      "category": "attack",
+      "crit": 5975.46903241993,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2987.734516209965
+    },
+    "attack.plunge_low": {
+      "average": 2631.198235138255,
+      "category": "attack",
+      "crit": 4783.9967911604635,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2391.9983955802318
+    },
+    "burst.burst_dmg": {
+      "average": 22498.650797156835,
+      "category": "burst",
+      "crit": 40906.63781301243,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 20453.318906506214
+    },
+    "burst.kirara_cat_grass_explosion_dmg": {
+      "average": 1406.1656748223022,
+      "category": "burst",
+      "crit": 2556.664863313277,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 1278.3324316566384
+    },
+    "burst.kirara_cat_grass_explosion_extra_dmg": {
+      "average": 4218.497024466907,
+      "category": "burst",
+      "crit": 7669.99458993983,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3834.997294969915
+    },
+    "burst.kirara_coordinated_dmg": {
+      "average": 3713.3839699539235,
+      "category": "burst",
+      "crit": 6751.607218098043,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 3375.8036090490214
+    },
+    "reaction.burning": {
+      "average": 597.3836964386046,
+      "category": "reaction",
+      "crit": 597.3836964386046,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 597.3836964386046
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.rupture": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "skill.kirara_flipclaw_strike_dmg": {
+      "average": 4797.638933734587,
+      "category": "skill",
+      "crit": 8722.97987951743,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 4361.489939758715
+    },
+    "skill.kirara_flying_kick_dmg": {
+      "average": 3464.961452141645,
+      "category": "skill",
+      "crit": 6299.92991298481,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 3149.964956492405
+    },
+    "skill.kirara_party_shield": {
+      "average": 3736.330489989141,
+      "category": "skill",
+      "crit": 3736.330489989141,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 3736.330489989141
+    },
+    "skill.kirara_urgent_neko_parcel_dmg": {
+      "average": 1119.44908453807,
+      "category": "skill",
+      "crit": 2035.3619718874004,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1017.6809859437002
+    },
+    "skill.shield": {
+      "average": 9340.82622497285,
+      "category": "skill",
+      "crit": 9340.82622497285,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 9340.82622497285
+    },
+    "skill.shield_max_absorption": {
+      "average": 14949.473119956561,
+      "category": "skill",
+      "crit": 14949.473119956561,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 14949.473119956561
+    },
+    "stats.atk": {
+      "average": 2022.5789942180002,
+      "category": "stats",
+      "crit": 2022.5789942180002,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 2022.5789942180002
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1422.01722,
+      "category": "stats",
+      "crit": 1422.01722,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1422.01722
+    },
+    "stats.hp": {
+      "average": 31503.321529284003,
+      "category": "stats",
+      "crit": 31503.321529284003,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 31503.321529284003
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Kirara",
+  "repSlug": "kirara",
+  "schema": 1,
+  "slug": "kirara-self-buffs",
+  "weapon": "weapon_name.the_alley_flash",
+  "weaponType": "sword"
+}

@@ -114,8 +114,8 @@ const features: readonly Feature[] = [
   { name: "charged_hit", category: "attack", damageType: "charged", element: "dendro", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }] },
   // plunge: catalyst plunge (dendro). Port-only if GCSim doesn't implement Lauma plunge actions.
   { name: "plunge_hit", category: "attack", damageType: "plunge", element: "dendro", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_hit") }] },
-  { name: "plunge_low", category: "attack", damageType: "plunge", element: "dendro", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }] },
-  { name: "plunge_high", category: "attack", damageType: "plunge", element: "dendro", multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }] },
+  { name: "plunge_low", category: "attack", damageType: "plunge", element: "dendro", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_low") }] },
+  { name: "plunge_high", category: "attack", damageType: "plunge", element: "dendro", tags: ["plunge_shockwave"], multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }] },
   // --- skill Tap / Hold-regular (dendro skill; A4 dmg_skill_lauma) ---
   { name: "skill_press", category: "skill", element: "dendro", damageBonuses: ["dmg_skill_lauma"], multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_press") }] },
   { name: "skill_hold_1", category: "skill", element: "dendro", damageBonuses: ["dmg_skill_lauma"], multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.skill_hold_1") }] },

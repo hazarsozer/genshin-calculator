@@ -1,0 +1,273 @@
+{
+  "element": "cryo",
+  "features": {
+    "attack.charged_hit": {
+      "average": 2674.373838497256,
+      "category": "attack",
+      "crit": 5600.586112945765,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 2349.2391413363107
+    },
+    "attack.charged_hit_total": {
+      "average": 8023.121515491768,
+      "category": "attack",
+      "crit": 16801.758338837295,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 7047.717424008932
+    },
+    "attack.normal_hit_1": {
+      "average": 15308.5491500862,
+      "category": "attack",
+      "crit": 32058.662310089167,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 13447.425465641427
+    },
+    "attack.normal_hit_2": {
+      "average": 13807.399943870998,
+      "category": "attack",
+      "crit": 28915.004801641306,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 12128.77718189652
+    },
+    "attack.normal_hit_3": {
+      "average": 17454.762311950974,
+      "category": "attack",
+      "crit": 36553.19163008707,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 15332.71460993585
+    },
+    "attack.normal_hit_3_1": {
+      "average": 8727.381155975487,
+      "category": "attack",
+      "crit": 18276.595815043536,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 7666.357304967925
+    },
+    "attack.normal_hit_4": {
+      "average": 18564.8891597298,
+      "category": "attack",
+      "crit": 38877.982920586655,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 16307.878741856815
+    },
+    "attack.normal_hit_4_1": {
+      "average": 9282.4445798649,
+      "category": "attack",
+      "crit": 19438.991460293328,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 8153.939370928408
+    },
+    "attack.normal_hit_5": {
+      "average": 22661.753782691645,
+      "category": "attack",
+      "crit": 47457.50265103381,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 19906.67057509807
+    },
+    "attack.plunge": {
+      "average": 3308.6964311324396,
+      "category": "attack",
+      "crit": 6928.963713826192,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2906.444510833134
+    },
+    "attack.plunge_high": {
+      "average": 8263.729706327147,
+      "category": "attack",
+      "crit": 17305.632132716026,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 7259.073881172828
+    },
+    "attack.plunge_low": {
+      "average": 6615.990656195282,
+      "category": "attack",
+      "crit": 13854.990973620479,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 5811.657287592482
+    },
+    "burst.skirk_final_dmg": {
+      "average": 75863.50764112096,
+      "category": "burst",
+      "crit": 158870.8733454255,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 66640.46700730934
+    },
+    "burst.skirk_slash_dmg": {
+      "average": 66003.99310418918,
+      "category": "burst",
+      "crit": 138223.40087876582,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 57979.61446256955
+    },
+    "other.skirk_burst_coordinated_attack_dmg": {
+      "average": 42519.90053877777,
+      "category": "other",
+      "crit": 89043.78327867728,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 37350.58023434449
+    },
+    "other.skirk_charged_coordinated_attack_dmg": {
+      "average": 4511.257740089835,
+      "category": "other",
+      "crit": 9447.32822590844,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 3962.805463887768
+    },
+    "other.skirk_crystal_blade_dmg": {
+      "average": 12531.271500249542,
+      "category": "other",
+      "crit": 26242.57840530122,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 11007.7929552438
+    },
+    "other.skirk_normal_coordinated_attack_dmg": {
+      "average": 8660.837057913848,
+      "category": "other",
+      "crit": 18137.241344050086,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 7607.903248343156
+    },
+    "reaction.electrocharged": {
+      "average": 4779.069571508837,
+      "category": "reaction",
+      "crit": 4779.069571508837,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4779.069571508837
+    },
+    "reaction.shatter": {
+      "average": 7168.604357263255,
+      "category": "reaction",
+      "crit": 7168.604357263255,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 7168.604357263255
+    },
+    "reaction.superconduct": {
+      "average": 3584.3021786316276,
+      "category": "reaction",
+      "crit": 3584.3021786316276,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3584.3021786316276
+    },
+    "stats.atk": {
+      "average": 4217.54519358,
+      "category": "stats",
+      "crit": 4217.54519358,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 4217.54519358
+    },
+    "stats.crit_dmg": {
+      "average": 138.4,
+      "category": "stats",
+      "crit": 138.4,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 138.4
+    },
+    "stats.crit_rate": {
+      "average": 10,
+      "category": "stats",
+      "crit": 10,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 10
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1682.2137963,
+      "category": "stats",
+      "crit": 1682.2137963,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1682.2137963
+    },
+    "stats.hp": {
+      "average": 25643.3538435,
+      "category": "stats",
+      "crit": 25643.3538435,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 25643.3538435
+    },
+    "stats.mastery": {
+      "average": 110.128,
+      "category": "stats",
+      "crit": 110.128,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 110.128
+    },
+    "stats.recharge": {
+      "average": 200,
+      "category": "stats",
+      "crit": 200,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 200
+    }
+  },
+  "kind": "party",
+  "repChar": "Skirk",
+  "repSlug": "skirk",
+  "schema": 1,
+  "slug": "skirk-self-buffs",
+  "weapon": "weapon_name.the_alley_flash",
+  "weaponType": "sword"
+}

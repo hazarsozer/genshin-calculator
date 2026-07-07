@@ -260,6 +260,56 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5 — char_skill_elemental_bonus +3 (skill talent level up).
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF C2 "Myriad Mise-en-Scène" — dmg_normal +15 on her own normals, gated C2. raw YunJin.js:418-427.
+  {
+    type: "boolean",
+    name: "yunjin_myriad",
+    stats: { dmg_normal: 15 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  // SELF C4 "Flower and a Fighter" — def_percent +20 (lifts every DEF-scaled hit), gated C4. raw YunJin.js:441-449.
+  {
+    type: "boolean",
+    name: "yunjin_flower",
+    stats: { def_percent: 20 },
+    condition: { type: "constellation", constellation: 4 },
+  },
+  // A4 "Breaking Conventions" — publishes yunjin_traditionalist_stacks = the party's distinct-element
+  // count, so every bonusLeveling:"yunjin_traditionalist_stacks" consumer (the SELF NA DEF multiplier
+  // below AND the burst.yunjin_dmg_bonus static readout feature) scales bonusValues 2.5→5→7.5→11.5%
+  // at 1→4 distinct elements. Ports ConditionStaticYunJin.getData's dynamic-alias half only — its
+  // `getStats` readout (yunjin_traditionalist_stacks as a STAT) is a DISPLAY value no damage feature
+  // reads (the damage path reads the SETTINGS form via bonusLeveling), so it is not modelled.
+  // UNGATED: her gate is ConditionAscensionChar({ascension:4}), which the port has no type for; every
+  // oracle rep builds at ascension 6 (A4 always satisfied), so modelling it ungated is faithful — the
+  // port's convention for auto-active ascension passives (cf. Gorou A1, gorou.ts). Base-inert at
+  // solo: no party → party_elements_count_level absent → bonusLeveling's `|| 1` default holds
+  // (stacks 1 → 2.5%, unchanged). Oracle-locked via the `party` config's yunjin-elements-2/3/4 reps.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/YunJin.js:399-406 (char.conditions) +
+  //         raw/genshin_calc_pub/src/js/classes/Condition/Static/YunJin.js (getData).
+  { type: "settings-copy", from: "party_elements_count_level", to: "yunjin_traditionalist_stacks" },
+];
+
+// SELF "Flying Cloud Flag Formation" NA DEF-buff — the burst grants an additive base-damage term on
+// her OWN normals = DEF × (yunjin_dmg_bonus%(burstLevel) + bonusValues[traditionalist_stacks]), gated
+// by the yunjin_flag master toggle. The SELF mirror of the partyData multiplier, scaling off her OWN
+// def_total (scaling:"def") + own burst level (raw YunJin.js:369-382). Both terms are now ported: the
+// burst% term (the port originally carried multipliers:[] → golden-blind SKIP, fixed in an earlier
+// pass) AND the bonusValues element-count term (Tier-B (ε) — the A4 `settings-copy` condition above
+// publishes yunjin_traditionalist_stacks = party_elements_count_level, oracle-locked via the `party`
+// config's yunjin-elements-2/3/4 reps). At SOLO (no party), party_elements_count_level is absent →
+// bonusLeveling's `|| 1` default holds → the 1-element tier (2.5%), unchanged and faithful.
+const yunjinSelfMultipliers: readonly CharMultiplier[] = [
+  {
+    source: "talent_burst",
+    scaling: "def",
+    leveling: "char_skill_burst",
+    values: talents.get("burst.yunjin_dmg_bonus"),
+    bonusLeveling: "yunjin_traditionalist_stacks",
+    bonusValues: yunjinTradBonus,
+    target: { damageTypes: ["normal"] },
+    condition: { type: "boolean", name: "yunjin_flag" },
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -316,7 +366,7 @@ export const yunJin: DbObjectChar = {
   statTable: YunJinStatTable,
   talents,
   features,
-  multipliers: [],
+  multipliers: yunjinSelfMultipliers,
   conditions: constellationConditions,
   partyData: {
     // loadStats: raw YunJin.js:478-482 lists settings:['char_skill_elemental'], but that's a

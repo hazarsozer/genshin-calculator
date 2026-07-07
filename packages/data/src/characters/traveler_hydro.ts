@@ -8,11 +8,12 @@
  * build); skill + burst are hydro.
  *
  * SKILL HITS (all hydro):
- *   - traveler_torrent_surge_dmg — ATK-scaling talent%. Her second multiplier is
- *     the A4 "Clear Waters" HP→DMG bonus (FeatureMultiplierTravelerHydro), which
- *     reads the `traveler_clear_waters_percent` ConditionNumber (max 100). That
- *     condition is 0 in the fixed solo/no-toggle build, so the bonus contributes
- *     nothing and is omitted (verified: ATK-only term reproduces the oracle).
+ *   - traveler_torrent_surge_dmg — ATK-scaling talent% PLUS the A4 "Clear Waters"
+ *     HP→DMG bonus (FeatureMultiplierTravelerHydro): min(0.45 × HP_total ×
+ *     traveler_clear_waters_percent, 5000), via `bonusStatFactor` + `capValue`.
+ *     The slider ConditionNumber (max 100, a percent stat → /100) is 0 in the fixed
+ *     solo/no-toggle build → the second term is ×0 (base-inert; the ATK-only term
+ *     reproduces the golden). Exercised via the diff-parity slider (self-buffs).
  *   - traveler_dewdrop_dmg — ATK-scaling talent% PLUS the always-on Suffusion
  *     HP-scaling term (`traveler_suffusion_dmg_bonus`, scaling 'hp*'). That second
  *     multiplier carries NO condition in her data, so it folds in unconditionally
@@ -28,7 +29,8 @@
  *   - the C4 Pouring Descent shield (ConditionConstellation 4, OFF at C0; non-damage).
  *
  * No always-on passive ATK/crit/DMG bonuses fold in: the A1 marker is a heal,
- * the A4 "Clear Waters" bonus is gated on a zero-valued condition number, and both
+ * the A4 "Clear Waters" bonus is gated on a zero-valued slider ConditionNumber (its
+ * term is ×0 until the slider is set), and both
  * `traveler_swordfighting_techniques` / `traveler_special_training` are
  * ConditionBoolean toggles (OFF in the fixed solo build). The reaction features
  * (rupture / electrocharged / shatter) are emitted generically from the hydro
@@ -155,13 +157,31 @@ const features: readonly Feature[] = [
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
   // --- Skill: Aquacrest Saber (hydro) ---
-  // Torrent surge: ATK-scaling talent%. A4 Clear Waters HP bonus omitted (its
-  // condition number is 0 in the fixed solo build → contributes nothing).
+  // Torrent surge: ATK-scaling talent% PLUS the A4 "Clear Waters" HP→DMG bonus. Her
+  // FeatureMultiplierTravelerHydro (raw TravelerHydro.js:272-278): scaling 'hp*', values
+  // [45], capValue [5000], getLevel()=1, getTreeBonusMultiplier → makeStatItem(
+  // 'traveler_clear_waters_percent') — so the second term is
+  //   min(0.45 × HP_total × traveler_clear_waters_percent, 5000),
+  // where the ConditionNumber slider (0..100, a percent stat → the bag folds it /100) is
+  // ported as `bonusStatFactor`. The A4 gate (ConditionAscensionChar 4) is auto-active at
+  // the canonical A6 build → modelled ungated (itto/emilie precedent); the slider's own
+  // value>0 gate zeroes the term when unset (base-inert: `traveler_clear_waters_percent`
+  // absent → cStat 0 → min(0, 5000) = 0 → the golden torrent-surge triple is unchanged).
   {
     name: "traveler_torrent_surge_dmg",
     category: "skill",
     element: "hydro",
-    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.traveler_torrent_surge_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_elemental", values: talents.get("skill.traveler_torrent_surge_dmg") },
+      {
+        scaling: "hp",
+        source: "ascension4",
+        leveling: "",
+        values: { getValue: () => 45 },
+        bonusStatFactor: "traveler_clear_waters_percent",
+        capValue: 5000,
+      },
+    ],
   },
   // Dewdrop: ATK-scaling talent% + always-on Suffusion HP-scaling term (no condition).
   {
@@ -220,6 +240,17 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];
 
+// A4 "Clear Waters" input: the ConditionNumber slider (0..100) whose clamped value the torrent-
+// surge A4 multiplier reads via `bonusStatFactor`. Her `traveler_clear_waters_percent` is a
+// percent stat (`_percent` → isPercent), so buildStats folds it /100 (slider 50 → 0.5). The raw
+// ascension-4 subcondition is auto-active at A6 → omitted; the inherent value>0 gate keeps it
+// inert (slider unset → no stat emitted → the A4 factor reads 0). Raw TravelerHydro.js:364-378.
+const clearWatersCondition: Condition = {
+  type: "number",
+  name: "traveler_clear_waters_percent",
+  max: 100,
+};
+
 // ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
@@ -235,5 +266,5 @@ export const travelerHydro: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: constellationConditions,
+  conditions: [clearWatersCondition, ...constellationConditions],
 };

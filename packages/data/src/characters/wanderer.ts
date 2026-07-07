@@ -7,26 +7,32 @@
  * in her data (the Windfavored stance infuses them; the element is set explicitly
  * regardless of the toggle).
  *
- * WINDFAVORED IS OFF AT BASELINE. Her FeatureMultiplierWanderer adds the
- * Fushoudan/Toufukai scaling bonus ONLY when `settings.wanderer_windfavored` is
- * truthy (Multiplier/Wanderer.js:getTreeBonusMultiplier). The fixed canonical
- * build has `settings: {}`, so that bonus is NOT applied and every normal/charged
- * multiplier collapses to the plain base (`talent% × ATK`). Modelled here as a
- * plain FeatureMultiplier — the `scalingValues` (skill.wanderer_fushoudan /
- * wanderer_toufukai) are deliberately dropped because they contribute nothing
- * with the toggle off, which is exactly what the oracle fixture reflects.
+ * WINDFAVORED (wanderer_windfavored). Her FeatureMultiplierWanderer multiplies a
+ * Fushoudan (normals) / Toufukai (charged) scaling bonus into the term ONLY when
+ * `settings.wanderer_windfavored` is truthy — `bonus = scalingValues.getValue(
+ * getLevel('char_skill_elemental'))/100` (Multiplier/Wanderer.js:getTreeBonusMultiplier).
+ * Ported via the gated `scalingMultiplierFromTable`: the fushoudan/toufukai fractions
+ * (÷100) form the table keyed by `char_skill_elemental`, gated by `wanderer_windfavored`;
+ * the base normal/charged % stays the `values` path. char_skill_elemental HAS a C5
+ * `_bonus` (char_skill_elemental_bonus:3) → the bonus-aware level read is exercised at
+ * C5. The fixed canonical build has `settings: {}` → the gate is OFF → the table factor
+ * is 1 → every normal/charged multiplier collapses to the plain `talent% × ATK` term
+ * (exactly what the oracle fixture reflects) → base-inert.
  *
  * A4 "Gales of Reverie" wind arrow (`wanderer_wind_arrow_dmg`): leveling
- * `wanderer_passive_level` is NOT a talent slot, so the engine reads talent
- * level 1 → ValueTable([35, 60]).getValue(1) = 35% ATK. Active at A6 (its
- * ConditionAscensionChar(4) is auto-satisfied). raw: Wanderer.js:288-300.
+ * `wanderer_passive_level` is NOT a talent slot, so the engine reads that settings
+ * key → ValueTable([35, 60]). Default (no C1 / Windfavored off) reads level 1 → 35%
+ * ATK; C1 "Ostentatious Plumage" injects `wanderer_passive_level: 2` while Windfavored
+ * → getValue(2) = 60% ATK. Active at A6 (its ConditionAscensionChar(4) is
+ * auto-satisfied). raw: Wanderer.js:288-300 (feature) + :375-393 (C1).
  *
  * burst_dmg carries `damageBonuses: ['dmg_burst_wanderer']` faithfully; that key
  * is set only by C2 (ConditionNumber, OFF at C0) so it reads 0 here.
  *
- * SKIPPED (constellation-gated, off in the C0 solo build): the C6 duplicate
- * normal hits `wanderer_normal_hit_1/2/3(/3_1)` (gated by c6cond = windfavored
- * AND constellation 6). Conditions/constellation entries are not damage features.
+ * C6 "The Curtains' Melancholic Sway" duplicate normals (`wanderer_normal_hit_1/2/3(/3_1)`,
+ * gated by c6cond = Windfavored AND constellation 6): the 3-hit normal combo fires a
+ * second set at 0.4× the base scaling (0.4 baked into the fushoudan table). raw:
+ * Wanderer.js:179-244.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Wanderer.js
@@ -35,7 +41,14 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Wanderer)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver, TalentTable } from "@genshin/types";
+import type {
+  Condition,
+  DbObjectChar,
+  Feature,
+  FeatureMultiplierEntry,
+  TalentResolver,
+  TalentTable,
+} from "@genshin/types";
 import { Wanderer as WandererStatTable } from "../generated/charTables.js";
 import { Wanderer as WandererTalents } from "../generated/charTalentTables.js";
 
@@ -57,12 +70,55 @@ const talents: TalentResolver = {
     }
     if (talent === "skill") {
       if (name === "skill_dmg") return WandererTalents.s2.p1;
+      // Song of the Wind normal/charged bonuses (s2.p2/p3) — the WINDFAVORED scaling factors.
+      if (name === "fushoudan") return WandererTalents.s2.p2;
+      if (name === "toufukai") return WandererTalents.s2.p3;
     }
     if (talent === "burst") {
       if (name === "burst_dmg") return WandererTalents.s3.p1;
     }
     throw new Error(`wanderer talents: unknown path '${path}'`);
   },
+};
+
+// WINDFAVORED boosts (raw FeatureMultiplierWanderer): the Fushoudan (normals) / Toufukai
+// (charged) fractions (÷100), 15 talent levels, keyed by char_skill_elemental — multiplied
+// into the normal/charged term ONLY while `wanderer_windfavored` is ON. C5 bumps
+// char_skill_elemental (+3) → the bonus-aware level read is exercised there. OFF in every base
+// build → the table factor reverts to 1 → base-inert.
+const frac = (t: TalentTable): readonly number[] =>
+  Array.from({ length: 15 }, (_unused, i) => t.getValue(i + 1) / 100);
+const WINDFAVORED: Condition = { type: "boolean", name: "wanderer_windfavored" };
+const fushoudanBoost: NonNullable<FeatureMultiplierEntry["scalingMultiplierFromTable"]> = {
+  table: frac(talents.get("skill.fushoudan")),
+  levelSetting: "char_skill_elemental",
+  condition: WINDFAVORED,
+};
+const toufukaiBoost: NonNullable<FeatureMultiplierEntry["scalingMultiplierFromTable"]> = {
+  table: frac(talents.get("skill.toufukai")),
+  levelSetting: "char_skill_elemental",
+  condition: WINDFAVORED,
+};
+
+// C6 "The Curtains' Melancholic Sway" duplicate normals (raw Wanderer.js:179-244):
+// while Windfavored, the 3-hit normal combo fires a SECOND set of hits at 0.4× the
+// base scaling. Her FeatureMultiplierWanderer stacks getTreeBonusMultiplier =
+// CMulti([CConst(0.4, source constellation6), CConst(fushoudan/100)]) — i.e. the
+// scalingMultiplier 0.4 (ungated) times the Windfavored fushoudan factor. Since the
+// feature only emits under c6cond (Windfavored AND C6), that product is always
+// 0.4 × fushoudan; the port bakes the 0.4 into the table (the primitive forbids a
+// constant scalingMultiplier alongside the table form, and the observable result is
+// identical because the feature never emits with Windfavored OFF).
+const fushoudanBoostC6: NonNullable<FeatureMultiplierEntry["scalingMultiplierFromTable"]> = {
+  table: frac(talents.get("skill.fushoudan")).map((x) => x * 0.4),
+  levelSetting: "char_skill_elemental",
+  condition: WINDFAVORED,
+};
+// The C6 duplicate-normal gate: Windfavored AND constellation 6 (raw c6cond,
+// ConditionAnd([ConditionBoolean(wanderer_windfavored), ConditionConstellation(6)])).
+const c6cond: Condition = {
+  type: "and",
+  items: [WINDFAVORED, { type: "constellation", constellation: 6 }],
 };
 
 // A4 wind arrow: ValueTable([35, 60]) read at the engine's level-1 default for the
@@ -80,18 +136,19 @@ const windArrowValues: TalentTable = {
 // ---------------------------------------------------------------------------
 
 const features: readonly Feature[] = [
-  // --- Normal attacks (anemo — Windfavored infuses; element set explicitly) ---
+  // --- Normal attacks (anemo — Windfavored infuses; element set explicitly.
+  //     Gated WINDFAVORED fushoudan boost, inert while the toggle is OFF) ---
   {
     name: "normal_hit_1",
     category: "attack",
     element: "anemo",
-    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1") }],
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1"), scalingMultiplierFromTable: fushoudanBoost }],
   },
   {
     name: "normal_hit_2",
     category: "attack",
     element: "anemo",
-    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2") }],
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2"), scalingMultiplierFromTable: fushoudanBoost }],
   },
   // normal_hit_3: 2-hit multihit (same p3 multiplier × 2). Parent models the total.
   // raw: FeatureDamageMultihit({ items: [{ hits: 2, multipliers: [p3] }] }) (Wanderer.js:140-159)
@@ -100,8 +157,8 @@ const features: readonly Feature[] = [
     category: "attack",
     element: "anemo",
     items: [
-      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }] },
-      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3"), scalingMultiplierFromTable: fushoudanBoost }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3"), scalingMultiplierFromTable: fushoudanBoost }] },
     ],
   },
   // normal_hit_3_1: one of the 2 sub-hits of normal_hit_3 (half the parent total).
@@ -111,15 +168,49 @@ const features: readonly Feature[] = [
     name: "normal_hit_3_1",
     category: "attack",
     element: "anemo",
-    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3") }],
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3"), scalingMultiplierFromTable: fushoudanBoost }],
   },
-  // --- Charged attack (anemo) ---
+  // --- C6 duplicate normals (gated c6cond = Windfavored AND C6): the same three
+  //     normal hits again at 0.4× scaling (0.4 baked into the fushoudan table).
+  //     raw/genshin_calc_pub/src/js/db/Char/Wanderer.js:179-244 ---
+  {
+    name: "wanderer_normal_hit_1",
+    category: "attack",
+    element: "anemo",
+    condition: c6cond,
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1"), scalingMultiplierFromTable: fushoudanBoostC6 }],
+  },
+  {
+    name: "wanderer_normal_hit_2",
+    category: "attack",
+    element: "anemo",
+    condition: c6cond,
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2"), scalingMultiplierFromTable: fushoudanBoostC6 }],
+  },
+  {
+    name: "wanderer_normal_hit_3",
+    category: "attack",
+    element: "anemo",
+    condition: c6cond,
+    items: [
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3"), scalingMultiplierFromTable: fushoudanBoostC6 }] },
+      { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3"), scalingMultiplierFromTable: fushoudanBoostC6 }] },
+    ],
+  },
+  {
+    name: "wanderer_normal_hit_3_1",
+    category: "attack",
+    element: "anemo",
+    condition: c6cond,
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3"), scalingMultiplierFromTable: fushoudanBoostC6 }],
+  },
+  // --- Charged attack (anemo; gated WINDFAVORED toufukai boost, inert while OFF) ---
   {
     name: "charged_hit",
     category: "attack",
     damageType: "charged",
     element: "anemo",
-    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit") }],
+    multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.charged_hit"), scalingMultiplierFromTable: toufukaiBoost }],
   },
   // --- Plunge attacks (anemo) ---
   {
@@ -179,16 +270,28 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellations (P2.C Wave-1)
 // ---------------------------------------------------------------------------
-// C1 "Ostentatious Plumage": ConditionStatic with atk_speed_normal + text_percent_dmg,
-//   subCondition on ConditionBoolean(windfavored) — speed stat + display, SKIP.
+// C1 "Ostentatious Plumage": ConditionStatic with atk_speed_normal + text_percent_dmg
+//   (both display/non-damage → SKIP) AND settings { wanderer_passive_level: 2 },
+//   gated by ConditionBoolean(windfavored). The passive-level bump raises the A4
+//   wind-arrow proc from ValueTable([35,60]).getValue(1)=35% to getValue(2)=60% while
+//   Windfavored — ported below. The gate must be constellation>=1 AND windfavored, so
+//   it is a `static` condition (evaluateStatic honours the `.condition` gate; a
+//   `constellation` condition would ignore it).
 // C2 "Isle Amidst White Waves": ConditionNumber toggle (dmg_burst_wanderer) — SKIP.
 // C3 "Wending Gales": +3 burst talent (char_skill_burst_bonus).
 // C4 "Set Adrift into Spring": ConditionStatic, no real stats — SKIP.
 // C5 "Stirring for Hope": +3 skill talent (char_skill_elemental_bonus).
-// C6 "Curtains' Melancholic Sway": ConditionStatic with text_percent_dmg — display, SKIP.
+// C6 "Curtains' Melancholic Sway": ConditionStatic with text_percent_dmg (display → SKIP);
+//    its damage effect is the duplicate-normal features above (gated c6cond).
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Wanderer.js:375-440
 
 const constellationConditions: readonly Condition[] = [
+  // C1 — while Windfavored, wanderer_passive_level → 2 (A4 wind arrow 35% → 60%).
+  {
+    type: "static",
+    settings: { wanderer_passive_level: 2 },
+    condition: { type: "and", items: [{ type: "constellation", constellation: 1 }, WINDFAVORED] },
+  },
   // C3 — +3 Elemental Burst (Kyougen: Five Ceremonial Plays).
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5 — +3 Elemental Skill (Hanega: Song of the Wind).

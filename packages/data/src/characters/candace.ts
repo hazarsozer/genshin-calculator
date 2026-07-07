@@ -294,6 +294,44 @@ const a4DomeBonuses: readonly CharPostEffect[] = PRAYER_ELEMENTS.map((el) => ({
 }));
 
 // ---------------------------------------------------------------------------
+// SELF buffs (the Candace-as-carry mirror of the party "Prayer" kit) — were golden-blind SKIPPED.
+// The port modelled ONLY the party.* teammate layer; the SELF conditions/post-effect are absent from
+// the fixed canonical build, so the 58k DAMAGE goldens never exercised them. A diff-parity sweep
+// surfaced her own normals UNDERSHOOTING (missing the prayer +20 / A4 HP bonus) AND her charged/
+// plunge OVERSHOOTING (the port left them PHYSICAL while her engine infuses them hydro).
+//   - Prayer of the Crimson Crown (candace_prayer_of_the_crimson_crown): flat dmg_normal_<el> +20 +
+//     SELF hydro infusion on her own normals/charged/plunge. Her engine infuses ALL three attack
+//     classes (Normal/Charged/Plunge allowInfusion=true, Damage.js:225-232), so attack_infusion:"hydro"
+//     fixes the charged/plunge overshoot; the flat dmg_normal_<el> lifts only normals (composite key
+//     type `normal`). C0 ConditionBoolean, no ascension gate. raw Candace.js:351-368.
+//   - A4 "Celestial Dome of Sand": dmg_normal_<el> += A4BonusScale × OWN hp (fromStat:"hp", the
+//     Baizhu/Nilou/Hu-Tao self-HP pattern), gated on the prayer toggle (ascension-4 auto-true at the
+//     rep). Accumulates additively onto the prayer's flat 20 in the same key. raw Candace.js:386-401.
+//   - C2 "Moon-Piercing Brilliance": hp_percent +20, lifting every HP-scaled skill/burst hit (and
+//     growing the A4 normal bonus). constellation[1] → THE CONSTELLATION IS A GATE. raw Candace.js:414-422.
+const selfConditions: readonly Condition[] = [
+  {
+    type: "boolean",
+    name: "candace_prayer_of_the_crimson_crown",
+    stats: prayerStats,
+    settings: { attack_infusion: "hydro" },
+  },
+  {
+    type: "boolean",
+    name: "candace_moon_piercing_brilliance",
+    stats: { hp_percent: 20 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+];
+
+const selfPostEffects: readonly CharPostEffect[] = PRAYER_ELEMENTS.map((el) => ({
+  fromStat: "hp",
+  toStat: `dmg_normal_${el}`,
+  ratio: A4BonusScale,
+  conditions: [{ type: "boolean" as const, name: "candace_prayer_of_the_crimson_crown" }],
+}));
+
+// ---------------------------------------------------------------------------
 // DbObjectChar
 // ---------------------------------------------------------------------------
 
@@ -308,7 +346,8 @@ export const candace: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: constellationConditions,
+  conditions: [...constellationConditions, ...selfConditions],
+  postEffects: selfPostEffects,
   // partyData — composite-key Normal-Attack DMG buff (P3.5.2 engine-ext pass).
   // Defined above: the prayer ConditionBoolean (flat 20 per element) + the A4 dome
   // (HP-scaled per element, 7 postEffects), with the `candace_hp_total` HP lift.

@@ -36,9 +36,10 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Clorinde)
  */
 
-import type { CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharMultiplier, CharPostEffect, Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
 import { Clorinde as ClorindeStatTable } from "../generated/charTables.js";
 import { Clorinde as ClorindeTalents } from "../generated/charTalentTables.js";
+import { BOND_OF_LIFE_INPUT } from "../characterConditions.js";
 
 // ---------------------------------------------------------------------------
 // TalentResolver
@@ -249,6 +250,55 @@ const constellationConditions: readonly Condition[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// SELF buffs (were golden-blind SKIPPED — the port carried `multipliers: []` and modelled none of
+// her conditional self STAT buffs; they default OFF/0-stacks in the fixed canonical build, so the
+// 58k DAMAGE goldens never exercised them; a diff-parity sweep surfaced her charged/plunge/skill/
+// burst diverging when the toggles/stacks are on):
+//   - A4 "Lawful Remuneration" (clorinde_lawful_remuneration): SELF crit_rate +10 per stack (max 2),
+//     lifting the expected/crit damage of EVERY hit. ConditionStacks gated ascension-4 (auto-true at
+//     the rep; stacks = the gate). raw Clorinde.js:491-506. → the universal ×1.155 (at 2 stacks).
+//   - C6 "And So Shall I Never Despair" (clorinde_and_so_shall_i_never_despair): SELF crit_rate +10,
+//     crit_dmg +70, gated at C6. raw Clorinde.js:588-597 (constellation[5] → THE CONSTELLATION IS A
+//     GATE). → the c6 jump to ×1.553 (stacks with the A4 crit).
+//   - A1 "Dark-Shattering Flame" (clorinde_dark_shattering_flame): SELF additive electro base-damage
+//     term = perStack% × atk_total × min(stacks, 3) on her electro NORMAL + BURST hits, where the
+//     perStack% is 20 (C0) / 30 (C2+, via clorinde_stacks_level). A FeatureMultiplierClorinde (its
+//     bonus-multiplier override is COMMENTED OUT → a plain additive base term, the Itto-A4 /
+//     Shenhe-icy-quill CharMultiplier surface, element-filtered). raw Clorinde.js:518-530. The
+//     `clorinde_electro_dmg_max` CValueCap (1800%/2700%) is never binding (max 3×30%=90%) → dropped.
+//     → the burst-specific extra (×1.262 over the crit at c0) + the c6 glimbright ×2.252.
+const selfConditions: readonly Condition[] = [
+  // A4 crit-rate stacks (ascension-4 auto-active; stacks are the gate; base-inert at 0).
+  { type: "stacks", name: "clorinde_lawful_remuneration", maxStacks: 2, stats: { crit_rate: 10 } },
+  // C6 crit toggle (constellation 6 gate).
+  {
+    type: "boolean",
+    name: "clorinde_and_so_shall_i_never_despair",
+    stats: { crit_rate: 10, crit_dmg: 70 },
+    condition: { type: "constellation", constellation: 6 },
+  },
+  // C2 raises the A1 per-stack electro value 20 → 30 (her clorinde_stacks_level:2). Inert until the
+  // A1 multiplier has stacks (dark_shattering_flame > 0). raw Clorinde.js:463-470.
+  { type: "constellation", constellation: 2, settings: { clorinde_stacks_level: 2 } },
+];
+
+// A1 "Dark-Shattering Flame" — SELF additive electro base-damage term on her electro normal + burst
+// hits. perStack% selected by clorinde_stacks_level (1→20 / 2→30, the leveling-as-setting index,
+// default level 1), scaled by min(clorinde_dark_shattering_flame, 3) via stacksFactor (×0 at 0 stacks
+// → base-inert; goldens byte-identical). Element-filtered to electro normal/burst (her
+// FeatureMultiplierTarget). raw Clorinde.js:518-530.
+const a1ElectroMultiplier: readonly CharMultiplier[] = [
+  {
+    source: "ascension1",
+    scaling: "atk*",
+    leveling: "clorinde_stacks_level",
+    values: { getValue: (level: number) => (level >= 2 ? 30 : 20) },
+    stacksFactor: { setting: "clorinde_dark_shattering_flame", maxStacks: 3 },
+    target: { damageElements: ["electro"], damageTypes: ["normal", "burst"] },
+  },
+];
+
+// ---------------------------------------------------------------------------
 // Post-effects
 // ---------------------------------------------------------------------------
 // C4 "To Enshrine Tears and Bygone Days": Bond of Life raises Last Lightfall (burst)
@@ -293,7 +343,7 @@ export const clorinde: DbObjectChar = {
   statTable: ClorindeStatTable,
   talents,
   features,
-  multipliers: [],
-  conditions: constellationConditions,
+  multipliers: a1ElectroMultiplier,
+  conditions: [...constellationConditions, ...selfConditions, BOND_OF_LIFE_INPUT],
   postEffects: c4PostEffects,
 };

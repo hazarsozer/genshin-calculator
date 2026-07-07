@@ -1,0 +1,237 @@
+{
+  "element": "hydro",
+  "features": {
+    "attack.charged_hit": {
+      "average": 14650.551362327862,
+      "category": "attack",
+      "crit": 19205.777722566087,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 9602.888861283043
+    },
+    "attack.mona_charged_hit": {
+      "average": 14650.551362327862,
+      "category": "attack",
+      "crit": 19205.777722566087,
+      "damageType": "charged",
+      "format": "",
+      "isReacted": false,
+      "normal": 9602.888861283043
+    },
+    "attack.normal_hit_1": {
+      "average": 1960.3282783648815,
+      "category": "attack",
+      "crit": 2569.843840440578,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1284.921920220289
+    },
+    "attack.normal_hit_2": {
+      "average": 1876.9100537536099,
+      "category": "attack",
+      "crit": 2460.488783400553,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1230.2443917002765
+    },
+    "attack.normal_hit_3": {
+      "average": 2335.7102891156032,
+      "category": "attack",
+      "crit": 3061.941597120688,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1530.970798560344
+    },
+    "attack.normal_hit_4": {
+      "average": 2927.9796838556313,
+      "category": "attack",
+      "crit": 3838.3625021048624,
+      "damageType": "normal",
+      "format": "",
+      "isReacted": false,
+      "normal": 1919.1812510524312
+    },
+    "attack.plunge": {
+      "average": 3132.364709554318,
+      "category": "attack",
+      "crit": 4106.2959932281765,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 2053.1479966140882
+    },
+    "attack.plunge_high": {
+      "average": 7823.327355702853,
+      "category": "attack",
+      "crit": 10255.79737775996,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 5127.89868887998
+    },
+    "attack.plunge_low": {
+      "average": 6263.4021459266205,
+      "category": "attack",
+      "crit": 8210.85203052702,
+      "damageType": "plunge",
+      "format": "",
+      "isReacted": false,
+      "normal": 4105.42601526351
+    },
+    "burst.burst_dmg": {
+      "average": 34341.90746720183,
+      "category": "burst",
+      "crit": 45019.67366770907,
+      "damageType": "burst",
+      "format": "",
+      "isReacted": false,
+      "normal": 22509.836833854533
+    },
+    "other.hydro_dmg_bonus": {
+      "average": 46.4,
+      "category": "other",
+      "crit": 46.4,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 46.4
+    },
+    "reaction.electrocharged": {
+      "average": 4110.225647189781,
+      "category": "reaction",
+      "crit": 4110.225647189781,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 4110.225647189781
+    },
+    "reaction.rupture": {
+      "average": 3719.5752021897806,
+      "category": "reaction",
+      "crit": 3719.5752021897806,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 3719.5752021897806
+    },
+    "reaction.shatter": {
+      "average": 5579.362803284671,
+      "category": "reaction",
+      "crit": 5579.362803284671,
+      "damageType": "reaction",
+      "format": "",
+      "isReacted": false,
+      "normal": 5579.362803284671
+    },
+    "skill.dot_dmg": {
+      "average": 2190.074242748247,
+      "category": "skill",
+      "crit": 2871.02362647577,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 1435.511813237885
+    },
+    "skill.explosion_dmg": {
+      "average": 9088.808107405222,
+      "category": "skill",
+      "crit": 11914.748049874443,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 5957.374024937221
+    },
+    "skill.mona_phantom_explosion_dmg": {
+      "average": 4544.404053702611,
+      "category": "skill",
+      "crit": 5957.374024937221,
+      "damageType": "skill",
+      "format": "",
+      "isReacted": false,
+      "normal": 2978.6870124686106
+    },
+    "stats.atk": {
+      "average": 1967.7915587,
+      "category": "stats",
+      "crit": 1967.7915587,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1967.7915587
+    },
+    "stats.crit_dmg": {
+      "average": 100,
+      "category": "stats",
+      "crit": 100,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 100
+    },
+    "stats.crit_rate": {
+      "average": 52.564,
+      "category": "stats",
+      "crit": 52.564,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 52.564
+    },
+    "stats.crit_value": {
+      "average": 0,
+      "category": "stats",
+      "crit": 0,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 0
+    },
+    "stats.def": {
+      "average": 1529.2712145,
+      "category": "stats",
+      "crit": 1529.2712145,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 1529.2712145
+    },
+    "stats.hp": {
+      "average": 23635.023958,
+      "category": "stats",
+      "crit": 23635.023958,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 23635.023958
+    },
+    "stats.mastery": {
+      "average": 55,
+      "category": "stats",
+      "crit": 55,
+      "damageType": "",
+      "format": "",
+      "isReacted": false,
+      "normal": 55
+    },
+    "stats.recharge": {
+      "average": 231.99999999999997,
+      "category": "stats",
+      "crit": 231.99999999999997,
+      "damageType": "",
+      "format": "percent",
+      "isReacted": false,
+      "normal": 231.99999999999997
+    }
+  },
+  "kind": "party",
+  "repChar": "Mona",
+  "repSlug": "mona",
+  "schema": 1,
+  "slug": "mona-self-buffs",
+  "weapon": "weapon_name.solar_pearl",
+  "weaponType": "catalyst"
+}

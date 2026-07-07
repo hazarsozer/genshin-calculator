@@ -20,18 +20,38 @@
  *   Gate-skirk party fixture: stance ON → only this set fires.
  *
  * Burst (Havoc: Ruin, cryo, always emitted):
- *   skirk_slash_dmg (5-hit per raw, engine reports per-slash), skirk_final_dmg.
- *   FeatureMultiplierSkirkBurst scaling → 1 at 0 skirk_return_to_oblivion stacks.
+ *   skirk_slash_dmg (5-hit per raw, engine reports per-slash), skirk_final_dmg. Each carries a
+ *   SECOND multiplier — the Serpent's Subtlety per-stack ATK bonus (skirk_burst_bonus ×
+ *   skirk_serpents_subtlety, her stacksLeveling → stacksFactor), gated on the subtlety toggle.
+ *   Her FeatureMultiplierSkirkBurst also multiplies BOTH burst terms by the skirk_return_to_oblivion
+ *   partyBonus table (scalingMultiplierFromTable skirkBurstBoost); at 0 return-to-oblivion it is ×1.
+ *
+ * REASON BEYOND REASON (`skirk_reason_beyond_reason`, 0-3) + HAVOC EXTINCTION
+ *   (`skirk_havoc_extinction`): four ConditionLevels add dmg_normal_skirk from the
+ *   skirk_absorption_N_bonus table (indexed by char_skill_burst level) when havoc_extinction is on and
+ *   reason_beyond_reason == N — modelled as talentBonus CharPostEffects (Nahida precedent). Lifts the
+ *   stance normals + the C6 normal-coordinated feature (damageBonuses:['dmg_normal_skirk']).
+ *
+ * SERPENT'S SUBTLETY (`skirk_serpents_subtlety`, 0-12; +10 max at C2): the burst 2nd term above.
+ *
+ * C2 "Into the Abyss" (`skirk_into_the_abyss`): +70% ATK, gated stance + C2.
+ * C4 "Fractured Flow": +10/20/40% ATK by skirk_return_to_oblivion (static-level), gated C4 + the toggle.
+ *
+ * RETURN TO OBLIVION partyBonus (MODELLED via scalingMultiplierFromTable): her
+ *   FeatureMultiplierSkirkNormal (ValueTable[1.1,1.2,1.7]) multiplies every stance-normal + the C6
+ *   normal-coordinated term, and FeatureMultiplierSkirkBurst (ValueTable[1.05,1.15,1.6]) multiplies
+ *   both burst terms + the C6 burst-coordinated term, by a `skirk_return_to_oblivion`-INDEXED base
+ *   multiplier (her getScalingMultiplier: level>0 ? partyBonus.getValue(level) : 1 — the Neuvillette
+ *   form, no gate). Ported via scalingMultiplierFromTable (skirkNormalBoost / skirkBurstBoost). At
+ *   return_to_oblivion=0 the factor is ×1 → base-inert; the plain stance charged/plunge + the C6
+ *   charged-coordinated use a plain FeatureMultiplier (no table).
+ *   Source: raw/.../classes/Feature2/Multiplier/SkirkNormal.js + SkirkBurst.js (getScalingMultiplier).
  *
  * A1 "skirk_mutual_weapons_mentorship": gated by party-elements(cryo+hydro).
  *   Contributes char_skill_elemental_bonus_2:+1 (skill talent level +1 for stance
  *   normals) + char_skill_elemental_bonus_party:+1 (party buff).
  *   Raw Skirk.js:597-607: ConditionBoolean(skirk_mutual_weapons_mentorship) gated
  *   by ConditionBooleanSkirkParty (cryo+hydro-ONLY).
- *
- * No other always-on passive stat bonuses: A1 (skirk_reason_beyond_reason) and
- * A4 (skirk_return_to_oblivion) are ConditionStacks (0 stacks). Cryo-DMG ascension
- * secondary and crit_dmg ascension secondary already in statTable. C0 build.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Skirk.js
@@ -40,7 +60,7 @@
  *   raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js (Skirk)
  */
 
-import type { Condition, DbObjectChar, Feature, TalentResolver } from "@genshin/types";
+import type { CharPostEffect, Condition, DbObjectChar, Feature, FeatureMultiplierEntry, TalentResolver } from "@genshin/types";
 import { Skirk as SkirkStatTable } from "../generated/charTables.js";
 import { Skirk as SkirkTalents } from "../generated/charTalentTables.js";
 
@@ -79,6 +99,13 @@ const talents: TalentResolver = {
     if (talent === "burst") {
       if (name === "skirk_slash_dmg") return SkirkTalents.s3.p1;
       if (name === "skirk_final_dmg") return SkirkTalents.s3.p2;
+      // Serpent's Subtlety per-stack burst bonus (s3.p3) + the 4 reason_beyond_reason
+      // absorption dmg_normal_skirk tables (s3.p4-p7, indexed by char_skill_burst level).
+      if (name === "skirk_burst_bonus") return SkirkTalents.s3.p3;
+      if (name === "skirk_absorption_0_bonus") return SkirkTalents.s3.p4;
+      if (name === "skirk_absorption_1_bonus") return SkirkTalents.s3.p5;
+      if (name === "skirk_absorption_2_bonus") return SkirkTalents.s3.p6;
+      if (name === "skirk_absorption_3_bonus") return SkirkTalents.s3.p7;
     }
     throw new Error(`skirk talents: unknown path '${path}'`);
   },
@@ -93,6 +120,25 @@ const stanceCond: Condition = { type: "boolean", name: "skirk_seven_phase_flash"
 
 /** Gate: stanceCondRev — features active ONLY when Seven-Phase Flash is OFF. */
 const stanceCondRev: Condition = { type: "not", items: [stanceCond] };
+
+// RETURN-TO-OBLIVION partyBonus (raw FeatureMultiplierSkirkNormal / SkirkBurst): a
+// `skirk_return_to_oblivion`-INDEXED ValueTable multiplier on the base term. Her
+// getScalingMultiplier (SkirkNormal.js / SkirkBurst.js:17-26) is the Neuvillette form —
+// `level = settings.skirk_return_to_oblivion; return level > 0 ? partyBonus.getValue(level) : 1`
+// (NO gate; the level>0 guard is the primitive's own). SkirkNormal table [1.1,1.2,1.7] lifts
+// the seven stance normals + the C6 normal-coordinated feature; SkirkBurst table [1.05,1.15,1.6]
+// lifts both burst terms (slash + serpent's-subtlety bonus) + the C6 burst-coordinated feature.
+// The stance charged/plunge + C6 charged-coordinated use a PLAIN FeatureMultiplier → no table.
+// `skirk_return_to_oblivion` is NOT a char-skill slot → no `_bonus` read; at 0 stacks the factor
+// is ×1 → base-inert. raw/.../Feature2/Multiplier/SkirkNormal.js + SkirkBurst.js.
+const skirkNormalBoost: NonNullable<FeatureMultiplierEntry["scalingMultiplierFromTable"]> = {
+  table: [1.1, 1.2, 1.7],
+  levelSetting: "skirk_return_to_oblivion",
+};
+const skirkBurstBoost: NonNullable<FeatureMultiplierEntry["scalingMultiplierFromTable"]> = {
+  table: [1.05, 1.15, 1.6],
+  levelSetting: "skirk_return_to_oblivion",
+};
 
 // ---------------------------------------------------------------------------
 // Features (physical + stance + burst + constellation)
@@ -194,8 +240,9 @@ const features: readonly Feature[] = [
   // Raw: FeatureDamageNormal/Multihit/Charged/Plunge with element:'cryo',
   // leveling:'char_skill_elemental', damageBonuses:['dmg_normal_skirk'],
   // condition: stanceCond. Skirk.js:318-475.
-  // FeatureMultiplierSkirkNormal wraps the multiplier but at 0 skirk_return_to_oblivion
-  // stacks it resolves to scalingMultiplier=1 → plain ATK×talent computation.
+  // FeatureMultiplierSkirkNormal wraps each stance-normal multiplier with the skirk_return_to_oblivion
+  // partyBonus (scalingMultiplierFromTable skirkNormalBoost); at 0 stacks it resolves to ×1 → plain
+  // ATK×talent computation.
   // =========================================================================
 
   // --- Stance normals (cryo, skill-leveled) ---
@@ -205,7 +252,7 @@ const features: readonly Feature[] = [
     element: "cryo",
     damageBonuses: ["dmg_normal_skirk"],
     condition: stanceCond,
-    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_1") }],
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_1"), scalingMultiplierFromTable: skirkNormalBoost }],
   },
   {
     name: "normal_hit_2",
@@ -213,7 +260,7 @@ const features: readonly Feature[] = [
     element: "cryo",
     damageBonuses: ["dmg_normal_skirk"],
     condition: stanceCond,
-    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_2") }],
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_2"), scalingMultiplierFromTable: skirkNormalBoost }],
   },
   // normal_hit_3: 2-hit multihit + child. Raw Skirk.js:340-370.
   {
@@ -223,8 +270,8 @@ const features: readonly Feature[] = [
     damageBonuses: ["dmg_normal_skirk"],
     condition: stanceCond,
     items: [
-      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_3") }] },
-      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_3") }] },
+      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_3"), scalingMultiplierFromTable: skirkNormalBoost }] },
+      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_3"), scalingMultiplierFromTable: skirkNormalBoost }] },
     ],
   },
   {
@@ -233,7 +280,7 @@ const features: readonly Feature[] = [
     element: "cryo",
     damageBonuses: ["dmg_normal_skirk"],
     condition: stanceCond,
-    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_3") }],
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_3"), scalingMultiplierFromTable: skirkNormalBoost }],
   },
   // normal_hit_4: 2-hit multihit + child normal_hit_4_1. Only in stance (no s1 equiv).
   // Raw Skirk.js:372-403; s2.p5 (p4 is a child duplicate, skipped; p5 = the 2-hit parent entry).
@@ -244,8 +291,8 @@ const features: readonly Feature[] = [
     damageBonuses: ["dmg_normal_skirk"],
     condition: stanceCond,
     items: [
-      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_4") }] },
-      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_4") }] },
+      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_4"), scalingMultiplierFromTable: skirkNormalBoost }] },
+      { multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_4"), scalingMultiplierFromTable: skirkNormalBoost }] },
     ],
   },
   {
@@ -254,7 +301,7 @@ const features: readonly Feature[] = [
     element: "cryo",
     damageBonuses: ["dmg_normal_skirk"],
     condition: stanceCond,
-    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_4") }],
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_4"), scalingMultiplierFromTable: skirkNormalBoost }],
   },
   {
     name: "normal_hit_5",
@@ -262,7 +309,7 @@ const features: readonly Feature[] = [
     element: "cryo",
     damageBonuses: ["dmg_normal_skirk"],
     condition: stanceCond,
-    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_5") }],
+    multipliers: [{ leveling: "char_skill_elemental", values: talents.get("skill.normal_hit_5"), scalingMultiplierFromTable: skirkNormalBoost }],
   },
   // --- Stance charged (cryo, 3-hit multihit). Raw Skirk.js:415-444; s2.p8.
   {
@@ -324,13 +371,38 @@ const features: readonly Feature[] = [
     name: "skirk_slash_dmg",
     category: "burst",
     element: "cryo",
-    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.skirk_slash_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.skirk_slash_dmg"), scalingMultiplierFromTable: skirkBurstBoost },
+      // Serpent's Subtlety per-stack ATK bonus (skirk_burst_bonus × skirk_serpents_subtlety), gated on
+      // the subtlety toggle (>0). Her FeatureMultiplierSkirkBurst also multiplies by the
+      // skirk_return_to_oblivion partyBonus table (scalingMultiplierFromTable skirkBurstBoost); ×1 at 0.
+      {
+        scaling: "atk",
+        leveling: "char_skill_burst",
+        values: talents.get("burst.skirk_burst_bonus"),
+        scalingMultiplierFromTable: skirkBurstBoost,
+        stacksFactor: { setting: "skirk_serpents_subtlety", maxStacks: 22 },
+        source: "ascension1",
+        condition: { type: "boolean", name: "skirk_serpents_subtlety" },
+      },
+    ],
   },
   {
     name: "skirk_final_dmg",
     category: "burst",
     element: "cryo",
-    multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.skirk_final_dmg") }],
+    multipliers: [
+      { leveling: "char_skill_burst", values: talents.get("burst.skirk_final_dmg"), scalingMultiplierFromTable: skirkBurstBoost },
+      {
+        scaling: "atk",
+        leveling: "char_skill_burst",
+        values: talents.get("burst.skirk_burst_bonus"),
+        scalingMultiplierFromTable: skirkBurstBoost,
+        stacksFactor: { setting: "skirk_serpents_subtlety", maxStacks: 22 },
+        source: "ascension1",
+        condition: { type: "boolean", name: "skirk_serpents_subtlety" },
+      },
+    ],
   },
 
   // =========================================================================
@@ -363,6 +435,7 @@ const features: readonly Feature[] = [
       {
         leveling: "",
         values: { getValue: (_level: number) => 750 },
+        scalingMultiplierFromTable: skirkBurstBoost,
         source: "constellation6",
       },
     ],
@@ -379,6 +452,7 @@ const features: readonly Feature[] = [
       {
         leveling: "",
         values: { getValue: (_level: number) => 180 },
+        scalingMultiplierFromTable: skirkNormalBoost,
         source: "constellation6",
       },
     ],
@@ -429,8 +503,57 @@ const constellationConditions: readonly Condition[] = [
   },
   // C3: +3 levels to Havoc: Ruin (elemental burst). Raw cons[2].
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
+  // C2 "Into the Abyss" — +70% ATK, gated Seven-Phase-Flash stance AND C2. raw Skirk.js:667-676.
+  {
+    type: "boolean",
+    name: "skirk_into_the_abyss",
+    stats: { atk_percent: 70 },
+    condition: { type: "and", items: [stanceCond, { type: "constellation", constellation: 2 }] },
+  },
+  // C4 "Fractured Flow" — +10/20/40% ATK by skirk_return_to_oblivion (1/2/3), gated C4 + the stacks
+  // toggle. Data-only static-level (her ConditionLevels). raw Skirk.js:680-691. (The SkirkNormal/
+  // SkirkBurst partyBonus scalingMultiplier at return_to_oblivion>0 is now MODELLED via
+  // scalingMultiplierFromTable, so this atk% is exact on every feature.)
+  {
+    type: "static-level",
+    levelSetting: "skirk_return_to_oblivion",
+    levelStats: { atk_percent: [10, 20, 40] },
+    condition: {
+      type: "and",
+      items: [{ type: "constellation", constellation: 4 }, { type: "boolean", name: "skirk_return_to_oblivion" }],
+    },
+  },
   // C5: +3 levels to Warp (elemental skill). Raw cons[4].
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+];
+
+// ---------------------------------------------------------------------------
+// Reason Beyond Reason absorption bonuses (A1/A4) — her 4 ConditionLevels contribute
+// dmg_normal_skirk from the skirk_absorption_N_bonus table (indexed by char_skill_burst level),
+// gated on `skirk_havoc_extinction` AND `skirk_reason_beyond_reason == N` (N = 0..3). Modelled as
+// talentBonus CharPostEffects (Nahida ConditionLevels precedent). OFF (havoc_extinction unset) → inert.
+// raw Skirk.js:608-647. (The stance normals + C6 normal-coordinated feature carry damageBonuses:
+// ['dmg_normal_skirk'], so this lifts them.)
+// ---------------------------------------------------------------------------
+const absorptionPost = (n: number): CharPostEffect => ({
+  priority: 3,
+  fromStat: "atk", // ignored when talentBonus is set
+  toStat: "dmg_normal_skirk",
+  talentBonus: {
+    table: talents.get(`burst.skirk_absorption_${n}_bonus`),
+    levelSetting: "char_skill_burst",
+  },
+  conditions: [
+    { type: "boolean", name: "skirk_havoc_extinction" },
+    { type: "boolean-value", setting: "skirk_reason_beyond_reason", cond: "eq", value: n },
+  ],
+});
+
+const postEffects: readonly CharPostEffect[] = [
+  absorptionPost(0),
+  absorptionPost(1),
+  absorptionPost(2),
+  absorptionPost(3),
 ];
 
 // ---------------------------------------------------------------------------
@@ -448,6 +571,7 @@ export const skirk: DbObjectChar = {
   talents,
   features,
   multipliers: [],
+  postEffects,
   conditions: constellationConditions,
   // partyData — teammate kit buffs (P3.5.2 Bucket A)
   // A4 "Mutual Weapons Mentorship": ConditionBoolean(party.skirk_mutual_weapons_mentorship)

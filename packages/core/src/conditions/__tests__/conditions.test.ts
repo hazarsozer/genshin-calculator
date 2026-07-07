@@ -39,6 +39,8 @@ import type {
   ConditionBooleanEnemyType,
   ConditionBooleanCharElement,
   ConditionDropdownElement,
+  ConditionElementsCount,
+  ConditionSettingsCopy,
   ConditionAnd,
   ConditionOr,
 } from "@genshin/types";
@@ -772,5 +774,167 @@ describe("Noblesse 4pc ATK gate (self-set OR team)", () => {
 
   it("teammate has it (set_other) → active even with no self pieces", () => {
     expect(evaluate(gate, { "set_other.noblesse_oblige_4": true })).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 13. ConditionElementsCount (Gorou General's Glory geo-count tiers)
+//
+//   Counts `element` across the four resonance slots (char_element +
+//   resonance_element_1/2/3); active iff that count >= `count`. Base-inert:
+//   a solo build only ever sets char_element, so any count >= 2 gate is
+//   inactive by construction. Source: .../Condition/ElementsCount.js
+// ---------------------------------------------------------------------------
+
+describe("ConditionElementsCount", () => {
+  it("is inactive with only char_element set (base-inert, solo)", () => {
+    const c: ConditionElementsCount = { type: "elements-count", element: "geo", count: 2 };
+    expect(evaluate(c, { char_element: "geo" })).toBe(false);
+  });
+
+  it("is inactive when the resonance slot holds a different element", () => {
+    const c: ConditionElementsCount = { type: "elements-count", element: "geo", count: 2 };
+    expect(evaluate(c, { char_element: "geo", resonance_element_1: "pyro" })).toBe(false);
+  });
+
+  it("is active once the count threshold is met", () => {
+    const c: ConditionElementsCount = { type: "elements-count", element: "geo", count: 2 };
+    expect(evaluate(c, { char_element: "geo", resonance_element_1: "geo" })).toBe(true);
+  });
+
+  it("count:3 requires char_element plus two matching resonance slots", () => {
+    const c: ConditionElementsCount = { type: "elements-count", element: "geo", count: 3 };
+    expect(evaluate(c, { char_element: "geo", resonance_element_1: "geo" })).toBe(false);
+    expect(
+      evaluate(c, { char_element: "geo", resonance_element_1: "geo", resonance_element_2: "geo" })
+    ).toBe(true);
+  });
+
+  it("respects a gating condition", () => {
+    const gate: ConditionBoolean = { type: "boolean", name: "gate" };
+    const c: ConditionElementsCount = {
+      type: "elements-count",
+      element: "geo",
+      count: 2,
+      condition: gate,
+    };
+    const ctx: EvalContext = { char_element: "geo", resonance_element_1: "geo" };
+    expect(evaluate(c, ctx)).toBe(false);
+    expect(evaluate(c, { ...ctx, gate: true })).toBe(true);
+  });
+
+  it("invert: flips the result", () => {
+    const c: ConditionElementsCount = {
+      type: "elements-count",
+      element: "geo",
+      count: 2,
+      invert: true,
+    };
+    expect(evaluate(c, { char_element: "geo", resonance_element_1: "geo" })).toBe(false);
+    expect(evaluate(c, { char_element: "geo" })).toBe(true);
+  });
+
+  it("conditionStats: returns the stats bag only when active", () => {
+    const c: ConditionElementsCount = {
+      type: "elements-count",
+      element: "geo",
+      count: 2,
+      stats: { crit_dmg_geo: 10 },
+    };
+    expect(conditionStats(c, { char_element: "geo" })).toEqual({});
+    expect(conditionStats(c, { char_element: "geo", resonance_element_1: "geo" })).toEqual({
+      crit_dmg_geo: 10,
+    });
+  });
+
+  // Element SET form (Navia A4: count nearby Pyro/Hydro/Electro/Cryo members).
+  // A resonance slot counts if its element is IN the set. Base-inert: a geo active char
+  // (whose element is NOT in the set) with no party → count 0 < 1 → inactive.
+  it("element-set: counts each slot whose element is in the set", () => {
+    const set = ["pyro", "hydro", "electro", "cryo"] as const;
+    const c1: ConditionElementsCount = { type: "elements-count", element: set, count: 1 };
+    const c2: ConditionElementsCount = { type: "elements-count", element: set, count: 2 };
+    // Navia (geo) solo → 0 in-set → both inactive (base-inert).
+    expect(evaluate(c1, { char_element: "geo" })).toBe(false);
+    // one in-set teammate → count 1 → tier-1 active, tier-2 inactive.
+    expect(evaluate(c1, { char_element: "geo", resonance_element_1: "pyro" })).toBe(true);
+    expect(evaluate(c2, { char_element: "geo", resonance_element_1: "pyro" })).toBe(false);
+    // two in-set teammates → count 2 → both active.
+    const two = { char_element: "geo", resonance_element_1: "pyro", resonance_element_2: "hydro" };
+    expect(evaluate(c1, two)).toBe(true);
+    expect(evaluate(c2, two)).toBe(true);
+  });
+
+  it("element-set: out-of-set slots (geo/anemo/dendro) are not counted", () => {
+    const set = ["pyro", "hydro", "electro", "cryo"] as const;
+    const c1: ConditionElementsCount = { type: "elements-count", element: set, count: 1 };
+    expect(
+      evaluate(c1, {
+        char_element: "geo",
+        resonance_element_1: "anemo",
+        resonance_element_2: "dendro",
+        resonance_element_3: "geo",
+      })
+    ).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 14. ConditionSettingsCopy (dynamic party-count → char stacks key, e.g. YunJin A4)
+//
+//   A base-inert generic settings-publisher: when active (its optional `.condition` gate
+//   passes; absent → always active), republishes `ctx[from]` under the `to` key. Ports the
+//   getData-settings dynamic-alias idiom (cf. ConditionStaticYunJin: yunjin_traditionalist_stacks
+//   = party_elements_count_level). Source: .../Condition/Static/YunJin.js
+// ---------------------------------------------------------------------------
+
+describe("ConditionSettingsCopy", () => {
+  it("ungated: always active, publishes ctx[from] under the `to` key", () => {
+    const c: ConditionSettingsCopy = {
+      type: "settings-copy",
+      from: "party_elements_count_level",
+      to: "yunjin_traditionalist_stacks",
+    };
+    expect(evaluate(c, { party_elements_count_level: 3 })).toBe(true);
+    expect(conditionSettings(c, { party_elements_count_level: 3 })).toEqual({
+      yunjin_traditionalist_stacks: 3,
+    });
+  });
+
+  it("absent `from` key (no party) publishes undefined — a `|| 1`-style consumer default holds", () => {
+    const c: ConditionSettingsCopy = {
+      type: "settings-copy",
+      from: "party_elements_count_level",
+      to: "yunjin_traditionalist_stacks",
+    };
+    const result = conditionSettings(c, {});
+    expect(result.yunjin_traditionalist_stacks).toBeUndefined();
+    expect((result.yunjin_traditionalist_stacks as number | undefined) || 1).toBe(1);
+  });
+
+  it("respects a gating condition — inactive (and publishes nothing) until the gate passes", () => {
+    const gate: ConditionBoolean = { type: "boolean", name: "gate" };
+    const c: ConditionSettingsCopy = {
+      type: "settings-copy",
+      from: "party_elements_count_level",
+      to: "yunjin_traditionalist_stacks",
+      condition: gate,
+    };
+    const ctx: EvalContext = { party_elements_count_level: 3 };
+    expect(evaluate(c, ctx)).toBe(false);
+    expect(conditionSettings(c, ctx)).toEqual({});
+    expect(evaluate(c, { ...ctx, gate: true })).toBe(true);
+    expect(conditionSettings(c, { ...ctx, gate: true })).toEqual({
+      yunjin_traditionalist_stacks: 3,
+    });
+  });
+
+  it("conditionStats: always returns {} — a pure settings-publisher, no stats", () => {
+    const c: ConditionSettingsCopy = {
+      type: "settings-copy",
+      from: "party_elements_count_level",
+      to: "yunjin_traditionalist_stacks",
+    };
+    expect(conditionStats(c, { party_elements_count_level: 3 })).toEqual({});
   });
 });

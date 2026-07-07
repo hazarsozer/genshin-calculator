@@ -7,7 +7,12 @@
  * dendro skill, dendro burst (primary + secondary).
  *
  * A4 "Scholarly Blade": PostEffectStatsMastery → dmg_charged_tighnari (and
- * dmg_burst_tighnari) = 0.06 × min(mastery, 60). Always-active at A6.
+ * dmg_burst_tighnari) = min(0.06 × mastery, 60%). Always-active at A6.
+ *
+ * SELF buffs modelled as toggle/cons-gated conditions (were golden-blind SKIPPED — the port
+ * modelled only the party.* withering mirrors): A1 "Keen Sight" (mastery:50), C2 "Origins Known
+ * from the Stem" (dmg_dendro:20), C4 "Withering Glimpsed in the Leaves" (mastery:60 ×2). A diff-
+ * parity sweep with these toggles also exposed the A4 output cap (60%, not the 3.6% mastery-cap misread).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Tighnari.js
@@ -224,14 +229,19 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
+// SELF buffs (were golden-blind SKIPPED — the port modelled only the party.* mirrors of withering_
+// glimpsed and omitted A1 keen_sight, C2 origins_known + the SELF withering versions; a diff-parity
+// sweep surfaced them):
+//   A1 "Keen Sight" (mastery:50, ungated → lifts every EM consumer: the A4 dmg_charged/burst_tighnari
+//     postEffect AND every dendro reaction), C2 "Origins Known from the Stem" (dmg_dendro:20, gated C2),
+//     C4 "Withering Glimpsed in the Leaves" (mastery:60 + a second mastery:60 needing the first toggle,
+//     gated C4). Modelled below.
 // C1: ConditionStatic stats:{crit_rate_charged:15} — auto-active; folded generically via the engine's crit_rate_<type> fold (see condition below).
-// C2: ConditionBoolean toggle stats:{dmg_dendro:20} — toggle OFF, SKIP.
 // C3: +3 levels to Fashioner's Tanglevine Shaft (burst). Raw cons[2] settings char_skill_burst_bonus:3.
-// C4: ConditionBoolean toggles (mastery) — toggles OFF, SKIP.
 // C5: +3 levels to Vijnana-Phala Mine (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
 // C6: cons-ADDED feature tighnari_clusterbloom_arrow_c6_dmg handled above in features array.
 //     Raw cons[5] has ConditionStatic({stats:{text_percent_dmg:150}}) — display only, SKIP.
-// Raw: db/Char/Tighnari.js constellation array (Tighnari.js:327-408).
+// Raw: db/Char/Tighnari.js conditions[] + constellation array (Tighnari.js:301-408).
 const constellationConditions: readonly Condition[] = [
   // C1 "Beginnings Determined at the Roots": +15% Charged Attack crit rate.
   // ConditionStatic (auto-active, NOT display-only). Consumed by every charged hit via
@@ -241,6 +251,46 @@ const constellationConditions: readonly Condition[] = [
   { type: "constellation", constellation: 3, settings: { char_skill_burst_bonus: 3 } },
   // C5: +3 levels to elemental skill talent.
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF "Keen Sight" (A1) — +50 Elemental Mastery (raw mastery:50), lifting every EM consumer: the
+  // A4 dmg_charged_tighnari/dmg_burst_tighnari postEffect (0.06×EM → charged + burst hits) and every
+  // dendro transformative reaction (burning/electrocharged/rupture/shatter). ConditionBoolean ascension
+  // passive (rep at A6 → modelled ungated, the toggle is the gate). Self-only → golden-blind SKIP.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Tighnari.js:302-313 (conditions[0]).
+  { type: "boolean", name: "tighnari_keen_sight", stats: { mastery: 50 } },
+  // SELF "Origins Known from the Stem" (C2) — +20% Dendro DMG (raw dmg_dendro:20), lifting every dendro
+  // hit (e.g. skill_dmg). ConditionBoolean gated at C2 (constellation[1] → THE CONSTELLATION IS A GATE).
+  // Self-only → golden-blind SKIP. Source: raw/genshin_calc_pub/src/js/db/Char/Tighnari.js:341-348 (constellation[1]).
+  {
+    type: "boolean",
+    name: "tighnari_origins_known_from_the_stem",
+    stats: { dmg_dendro: 20 },
+    condition: { type: "constellation", constellation: 2 },
+  },
+  // SELF "Withering Glimpsed in the Leaves" (C4) — +60 EM (raw mastery:60). ConditionBoolean gated at C4
+  // (constellation[3] → THE CONSTELLATION IS A GATE). SELF mirror of party.tighnari_withering_glimpsed_
+  // in_the_leaves_1. Source: raw/genshin_calc_pub/src/js/db/Char/Tighnari.js:363-370 (constellation[3]).
+  {
+    type: "boolean",
+    name: "tighnari_withering_glimpsed_in_the_leaves_1",
+    stats: { mastery: 60 },
+    condition: { type: "constellation", constellation: 4 },
+  },
+  // SELF "Withering Glimpsed in the Leaves" (C4, second stack) — another +60 EM, requiring the FIRST
+  // toggle also ON (her _2 carries subConditions:[ConditionBoolean(..._1)], raw Tighnari.js:380-383).
+  // Gated C4 AND withering_1. SELF mirror of party.tighnari_withering_glimpsed_in_the_leaves_2.
+  // Source: raw/genshin_calc_pub/src/js/db/Char/Tighnari.js:372-385 (constellation[3]).
+  {
+    type: "boolean",
+    name: "tighnari_withering_glimpsed_in_the_leaves_2",
+    stats: { mastery: 60 },
+    condition: {
+      type: "and",
+      items: [
+        { type: "constellation", constellation: 4 },
+        { type: "boolean", name: "tighnari_withering_glimpsed_in_the_leaves_1" },
+      ],
+    },
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -248,21 +298,26 @@ const constellationConditions: readonly Condition[] = [
 // ---------------------------------------------------------------------------
 
 // A4 "Scholarly Blade" (Tighnari.js:113-123): PostEffectStatsMastery
-// dmg_charged_tighnari = dmg_burst_tighnari = 0.06 × min(mastery, 60).
+// dmg_charged_tighnari = dmg_burst_tighnari = min(0.06 × mastery, 60).
 // Auto-active at ascension 4+; no toggle needed at A6 canonical build.
-// capValue = 0.06 × 60 = 3.6 (the display cap, percent-valued).
+// The OUTPUT (not mastery) is capped at 60% — raw statCap StatTable('', [60]) compared against
+// the 0.0006×mastery FRACTION as CValueCap(items, 0.6) (Stats.js:103-104 / :63-66, isPercent→/100).
+// capValue = 60 (the output cap, in the same displayed-percent units as `bonus = mastery × 0.06`);
+// binds only at EM≈1000. (Was 3.6 — a mastery-cap misread; base-inert vs the goldens since the cap
+// never binds at the canonical EM≈55 where 0.06×55=3.3 < 3.6 < 60, but 3.6 wrongly clamped once
+// keen_sight/withering raised EM — a diff-parity sweep with those self toggles surfaced it.)
 const a4PostEffects: readonly CharPostEffect[] = [
   {
     fromStat: "mastery",
     toStat: "dmg_charged_tighnari",
     ratio: 0.06,
-    capValue: 3.6,
+    capValue: 60,
   },
   {
     fromStat: "mastery",
     toStat: "dmg_burst_tighnari",
     ratio: 0.06,
-    capValue: 3.6,
+    capValue: 60,
   },
 ];
 

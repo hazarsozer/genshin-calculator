@@ -269,11 +269,20 @@ const features: readonly Feature[] = [
 // C4 "Cherishing Breezes": text_percent_reduce:10 (display-only) → SKIP.
 // C5 "Stirring Breeze": +3 Elemental Skill talent levels.
 //    Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
-// C6 "Intertwined Winds": ConditionBoolean toggle (enemy_res_anemo -20 + element shred) → SKIP.
-//    Flag: C6 has a ConditionDropdownElement (element-shred variant) — a cons-ADDED toggle
-//    feature. Not modelled here; reported below.
+// SELF buffs (golden-blind SKIPPED — the port modelled only the party.* C6 mirror + skipped the
+// two shared passive toggles entirely; all are OFF in the fixed solo build, so the 58k DAMAGE
+// goldens never exercised them — a diff-parity sweep surfaced every Anemo hit diverging):
+//   "Swordfighting Techniques" (traveler_swordfighting_techniques): +3 base ATK. Ungated. raw
+//     TravelerAnemo.js:384-392.
+//   "Special Training" (traveler_special_training): +7 base ATK, +15 EM, +50 base HP. Ungated. raw
+//     TravelerAnemo.js:393-403.
+//   C6 "Intertwined Winds" (traveler_intertwined_winds): enemy Anemo RES −20 (lifts her anemo hits +
+//     anemo reactions) + a per-element RES −20 dropdown (traveler_intertwined_winds_element selects
+//     cryo/electro/hydro/pyro → lifts that absorb variant + its reactions), gated at C6 (THE
+//     CONSTELLATION IS A GATE). The SELF mirror of party.traveler_intertwined_winds (the dropdown is
+//     party.* even on the self side in raw). raw TravelerAnemo.js:456-503.
 //
-// Sources: raw/genshin_calc_pub/src/js/db/Char/TravelerAnemo.js:405-520
+// Sources: raw/genshin_calc_pub/src/js/db/Char/TravelerAnemo.js:384-520
 
 const constellationConditions: readonly Condition[] = [
   // C2: recharge +16. ConditionStatic{ stats:{ recharge:16 } }
@@ -285,6 +294,35 @@ const constellationConditions: readonly Condition[] = [
   // C5: +3 Elemental Skill talent levels.
   // Raw cons[4]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
   { type: "constellation", constellation: 5, settings: { char_skill_elemental_bonus: 3 } },
+  // SELF shared passives — +base ATK (every hit) + EM (reactions) + base HP (damage-inert here).
+  // Ungated ConditionBooleans. raw TravelerAnemo.js:384-403.
+  { type: "boolean", name: "traveler_swordfighting_techniques", stats: { atk_base: 3 } },
+  { type: "boolean", name: "traveler_special_training", stats: { atk_base: 7, mastery: 15, hp_base: 50 } },
+  // SELF C6 "Intertwined Winds" part 1 — enemy Anemo RES −20%. ConditionBoolean gated at C6 (THE
+  // CONSTELLATION IS A GATE; base-inert below C6 / when untoggled). raw TravelerAnemo.js:456-464.
+  {
+    type: "boolean",
+    name: "traveler_intertwined_winds",
+    stats: { enemy_res_anemo: -20 },
+    condition: { type: "constellation", constellation: 6 },
+  },
+  // SELF C6 part 2 — the absorbed-element RES −20 dropdown (single-select cryo/electro/hydro/pyro),
+  // gated AND(dropdown==el, traveler_intertwined_winds, cons 6). Mirrors the partyData dropdown but
+  // with the SELF toggle + the C6 gate. raw TravelerAnemo.js:465-503.
+  ...(["cryo", "electro", "hydro", "pyro"] as const).map(
+    (el): Condition => ({
+      type: "static",
+      stats: { [`enemy_res_${el}`]: -20 },
+      condition: {
+        type: "and",
+        items: [
+          { type: "dropdown-element", name: "traveler_intertwined_winds_element", element: el },
+          { type: "boolean", name: "traveler_intertwined_winds" },
+          { type: "constellation", constellation: 6 },
+        ],
+      },
+    })
+  ),
 ];
 
 // ---------------------------------------------------------------------------
