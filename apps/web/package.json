@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "pnpm -w build && next dev",
+    "build": "pnpm -w build && next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "test": "pnpm -w build && vitest run",
+    "typecheck": "pnpm -w build && tsc --noEmit"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
