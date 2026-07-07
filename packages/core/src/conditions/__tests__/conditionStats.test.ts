@@ -97,6 +97,26 @@ describe("conditionStats — non-refine variants emit cond.stats when active", (
     expect(conditionStats(capped, { party_max_mastery: 600 })).toEqual({ party_max_mastery: 600 });
   });
 
+  it("number: minBonusFromConstellation floors the clamped value at/above the constellation when input > 0", () => {
+    // Ports ConditionNumberFurina.getMinValue (raw/.../classes/Condition/Number/Furina.js:4-12):
+    // at C1+ with a positive input, the value floors to +c1bonus (100). Inert at C0 and at input 0.
+    const c: ConditionNumber = {
+      type: "number",
+      name: "furina_fanfare_stacks",
+      max: 300,
+      maxBonusFromConstellation: [{ constellation: 1, bonus: 100 }],
+      minBonusFromConstellation: [{ constellation: 1, bonus: 100 }],
+    };
+    // C0: no floor → 50 stays 50.
+    expect(conditionStats(c, { furina_fanfare_stacks: 50 })).toEqual({ furina_fanfare_stacks: 50 });
+    // C1, input 50 (0 < input < 100): floors to 100.
+    expect(conditionStats(c, { furina_fanfare_stacks: 50, char_constellation: 1 })).toEqual({ furina_fanfare_stacks: 100 });
+    // C1, input 0: inactive (> 0 gate) → {} (floor NOT applied — matches raw settings[name] > 0).
+    expect(conditionStats(c, { furina_fanfare_stacks: 0, char_constellation: 1 })).toEqual({});
+    // C1, input 250 (> 100): unaffected by the floor.
+    expect(conditionStats(c, { furina_fanfare_stacks: 250, char_constellation: 1 })).toEqual({ furina_fanfare_stacks: 250 });
+  });
+
   it("number with noStat: active gate but emits no clamped value", () => {
     const c: ConditionNumber = { type: "number", name: "common.bond_of_life", noStat: true, max: 200 };
     // Active (setting > 0) but noStat → no bond_of_life / common.bond_of_life key emitted.

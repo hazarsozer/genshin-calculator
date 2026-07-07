@@ -6,6 +6,7 @@ import {
   overwriteBuild,
   deleteBuild,
   loadBuild,
+  StorageQuotaError,
 } from "../savedBuilds.js";
 import { DEFAULT_FORM } from "../defaults.js";
 
@@ -96,5 +97,27 @@ describe("savedBuilds", () => {
     const saved = saveBuild("Alpha", DEFAULT_FORM, storage);
     deleteBuild(saved.id, storage);
     expect(listBuilds(storage)).toEqual([]);
+  });
+
+  it("readList filters out malformed entries instead of blind-casting", () => {
+    const bad = JSON.stringify([
+      { id: "a", title: "ok", hash: "h", savedAt: "2026-01-01" },
+      { id: 1, title: "bad-id" },
+      "not-an-object",
+      { id: "b", title: "no-hash", savedAt: "x" },
+    ]);
+    storage.setItem("ck-saved-builds", bad);
+    const list = listBuilds(storage);
+    expect(list.map((b) => b.id)).toEqual(["a"]);
+  });
+
+  it("saveBuild throws StorageQuotaError when setItem fails", () => {
+    const failingStorage: Pick<Storage, "getItem" | "setItem"> = {
+      getItem: () => null,
+      setItem: () => {
+        throw new DOMException("quota", "QuotaExceededError");
+      },
+    };
+    expect(() => saveBuild("t", DEFAULT_FORM, failingStorage)).toThrow(StorageQuotaError);
   });
 });

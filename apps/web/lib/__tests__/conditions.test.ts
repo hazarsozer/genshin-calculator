@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { huTao, ALL_CHARACTERS, ALL_WEAPONS } from "@genshin/data";
-import { collectConditions } from "../conditions.js";
+import { collectConditions, collectSelfWornElementSelects } from "../conditions.js";
 import type { DbObjectWeapon } from "@genshin/types";
 
 /**
@@ -117,5 +117,28 @@ describe("collectConditions", () => {
     expect(ctrl).toBeDefined();
     // humanizeSlug("weapon_totally_absent_xyz") → "Weapon Totally Absent Xyz"
     expect(ctrl!.label).toBe("Weapon Totally Absent Xyz");
+  });
+});
+
+describe("collectSelfWornElementSelects", () => {
+  it("returns no selects when the gating set is not equipped 4pc", () => {
+    expect(collectSelfWornElementSelects([])).toEqual([]);
+    expect(collectSelfWornElementSelects([{ setKey: "ViridescentVenerer", pieces: 2 }])).toEqual([]);
+  });
+
+  it("surfaces a VV element select when ViridescentVenerer 4pc is worn", () => {
+    const out = collectSelfWornElementSelects([{ setKey: "ViridescentVenerer", pieces: 4 }]);
+    const vv = out.find((c) => c.name === "set.viridescent_venerer_4");
+    expect(vv).toBeDefined();
+    expect(vv!.kind).toBe("select");
+    expect([...vv!.options!].sort()).toEqual(["cryo", "electro", "hydro", "pyro"]);
+  });
+
+  it("surfaces an Archaic Petra element select (set_bonus. key) when 4pc is worn", () => {
+    const out = collectSelfWornElementSelects([{ setKey: "ArchaicPetra", pieces: 4 }]);
+    const ap = out.find((c) => c.name === "set_bonus.archaic_petra_4");
+    expect(ap).toBeDefined();
+    expect(ap!.kind).toBe("select");
+    expect([...ap!.options!].sort()).toEqual(["cryo", "electro", "hydro", "pyro"]);
   });
 });

@@ -9,6 +9,7 @@ import {
   overwriteBuild,
   deleteBuild,
   loadBuild,
+  StorageQuotaError,
   type SavedBuild,
 } from "@/lib/savedBuilds";
 import { decodeBuild } from "@/lib/url";
@@ -24,6 +25,18 @@ function rowSubtitle(build: SavedBuild): string {
   const char = findCharacter(decoded.characterKey);
   const name = char ? humanizeSlug(char.name) : decoded.characterKey;
   return `${name} · Lv ${decoded.charLevel}`;
+}
+
+// Module-scope memoization cache keyed by build hash — hooks can't be called
+// inside `filtered.map`, and rowSubtitle's decode is otherwise redone on
+// every render.
+const subtitleCache = new Map<string, string>();
+function memoRowSubtitle(build: SavedBuild): string {
+  const cached = subtitleCache.get(build.hash);
+  if (cached !== undefined) return cached;
+  const v = rowSubtitle(build);
+  subtitleCache.set(build.hash, v);
+  return v;
 }
 
 interface BuildsDrawerProps {
@@ -46,6 +59,7 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
 
   const [saveName, setSaveName] = useState("");
   const [query, setQuery] = useState("");
+  const [storageError, setStorageError] = useState<string | null>(null);
 
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
@@ -65,6 +79,16 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
       if (armTimer.current) clearTimeout(armTimer.current);
     };
   }, []);
+
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (menuOpenId === null) return;
+    function onDocClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpenId(null);
+    }
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [menuOpenId]);
 
   function disarm() {
     if (armTimer.current) clearTimeout(armTimer.current);
@@ -92,7 +116,16 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
 
   function handleSave() {
     const title = saveName.trim() || savePlaceholder;
-    saveBuild(title, form);
+    try {
+      saveBuild(title, form);
+      setStorageError(null);
+    } catch (e) {
+      if (e instanceof StorageQuotaError) {
+        setStorageError(e.message);
+        return;
+      }
+      throw e;
+    }
     setSaveName("");
     refresh();
   }
@@ -107,7 +140,16 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
   }
 
   function handleOverwrite(id: string) {
-    overwriteBuild(id, form);
+    try {
+      overwriteBuild(id, form);
+      setStorageError(null);
+    } catch (e) {
+      if (e instanceof StorageQuotaError) {
+        setStorageError(e.message);
+        return;
+      }
+      throw e;
+    }
     setMenuOpenId(null);
     refresh();
   }
@@ -174,6 +216,12 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
         className="rounded-lg border border-[var(--ck-border)] bg-[var(--ck-bg)] px-2.5 py-1.5 text-[12px] text-[var(--ck-text)] outline-none focus:border-[var(--ck-accent)]"
       />
 
+      {storageError && (
+        <div role="alert" className="text-[10px] text-[var(--ck-accent)]">
+          {storageError}
+        </div>
+      )}
+
       {/* ── List ── */}
       <div className="flex flex-col gap-1.5">
         {filtered.length === 0 && (
@@ -219,9 +267,12 @@ export function BuildsDrawer({ onClose }: BuildsDrawerProps) {
                 </span>
               </div>
 
-              <div className="text-[10px] text-[var(--ck-muted)]">{rowSubtitle(b)}</div>
+              <div className="text-[10px] text-[var(--ck-muted)]">{memoRowSubtitle(b)}</div>
 
-              <div className="relative flex items-center gap-1.5">
+              <div
+                className="relative flex items-center gap-1.5"
+                ref={menuOpen ? menuRef : undefined}
+              >
                 <button
                   type="button"
                   data-testid={`build-load-${b.id}`}

@@ -53,6 +53,8 @@ export interface BuildForm {
      *  Quicken merges the engine's two global catalyze multipliers (Spread
      *  ×1.25 on dendro hits, Aggravate ×1.15 on electro — loader.ts:81). */
     reaction?: "vaporize" | "melt" | "quicken";
+    /** Self-worn dropdown-element picks (VV/Archaic Petra): settings key → element token. */
+    selects?: Record<string, string>;
   };
   enemy: { level: number; resistance: number | Record<string, number> };
   artifactMode: ArtifactMode;

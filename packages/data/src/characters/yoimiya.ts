@@ -20,7 +20,7 @@
  * gated c6cond = Niwabi AND constellation 6): the normal combo fires a second set at 0.6×
  * the yoimiya_bonus_dmg-boosted scaling (0.6 baked into niwabiBoostC6), pyro-infused via the
  * same toggle. raw Yoimiya.js:220-344. Her Feature2.rotationHitCount = 0.5 on these is a
- * ROTATION weight (rotationHitMulti) DEFERRED to the rotation pass — it does not affect the
+ * ROTATION weight, ported here as `rotationHitMulti: 0.5` — it does not affect the
  * per-feature damage triples locked here.
  *
  * SKIPPED (not in solo-C0 fixed build):
@@ -177,6 +177,8 @@ const features: readonly Feature[] = [
     name: "yoimiya_normal_hit_1",
     category: "attack",
     condition: c6cond,
+    // raw Yoimiya.js:222 rotationHitCount: 0.5 — the C6 dup normals count as half a hit in a rotation.
+    rotationHitMulti: 0.5,
     items: [
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1"), scalingMultiplierFromTable: niwabiBoostC6 }] },
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1"), scalingMultiplierFromTable: niwabiBoostC6 }] },
@@ -186,24 +188,32 @@ const features: readonly Feature[] = [
     name: "yoimiya_normal_hit_1_1",
     category: "attack",
     condition: c6cond,
+    // raw Yoimiya.js:245 rotationHitCount: 0.5 — the C6 dup normals count as half a hit in a rotation.
+    rotationHitMulti: 0.5,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_1"), scalingMultiplierFromTable: niwabiBoostC6 }],
   },
   {
     name: "yoimiya_normal_hit_2",
     category: "attack",
     condition: c6cond,
+    // raw Yoimiya.js:262 rotationHitCount: 0.5 — the C6 dup normals count as half a hit in a rotation.
+    rotationHitMulti: 0.5,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_2"), scalingMultiplierFromTable: niwabiBoostC6 }],
   },
   {
     name: "yoimiya_normal_hit_3",
     category: "attack",
     condition: c6cond,
+    // raw Yoimiya.js:277 rotationHitCount: 0.5 — the C6 dup normals count as half a hit in a rotation.
+    rotationHitMulti: 0.5,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_3"), scalingMultiplierFromTable: niwabiBoostC6 }],
   },
   {
     name: "yoimiya_normal_hit_4",
     category: "attack",
     condition: c6cond,
+    // raw Yoimiya.js:292 rotationHitCount: 0.5 — the C6 dup normals count as half a hit in a rotation.
+    rotationHitMulti: 0.5,
     items: [
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4"), scalingMultiplierFromTable: niwabiBoostC6 }] },
       { multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4"), scalingMultiplierFromTable: niwabiBoostC6 }] },
@@ -213,12 +223,16 @@ const features: readonly Feature[] = [
     name: "yoimiya_normal_hit_4_1",
     category: "attack",
     condition: c6cond,
+    // raw Yoimiya.js:315 rotationHitCount: 0.5 — the C6 dup normals count as half a hit in a rotation.
+    rotationHitMulti: 0.5,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_4"), scalingMultiplierFromTable: niwabiBoostC6 }],
   },
   {
     name: "yoimiya_normal_hit_5",
     category: "attack",
     condition: c6cond,
+    // raw Yoimiya.js:332 rotationHitCount: 0.5 — the C6 dup normals count as half a hit in a rotation.
+    rotationHitMulti: 0.5,
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.normal_hit_5"), scalingMultiplierFromTable: niwabiBoostC6 }],
   },
   // --- Charged (aimed) attacks ---

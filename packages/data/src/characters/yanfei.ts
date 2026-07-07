@@ -19,7 +19,9 @@
  *     are display-only text rows, not stat bonuses → nothing to fold.
  *   - A1's conditional `dmg_pyro` flat bonus is Scarlet-Seal-gated (OFF in the
  *     fixed solo build with no seal toggle) → not folded.
- *   - Constellations skipped (C0): yanfei_charged_4 (C6), C4 shield, C1/C2/C3/C5.
+ *   - Constellations C2/C3/C5/C6 are ported (see constellationConditions and the
+ *     C6-gated yanfei_charged_4 feature below). C1 and C4's shield are
+ *     display-only text rows with nothing to fold → skipped.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/YanFei.js

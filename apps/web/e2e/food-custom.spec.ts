@@ -47,7 +47,7 @@ test("equipping a food dish from the Food drawer moves the pinned headline", asy
     timeout: 10_000,
   });
 
-  await page.getByRole("button", { name: "Food", exact: true }).click();
+  await page.getByRole("tab", { name: "Food", exact: true }).click();
   await page.getByTestId(`food-row-${fixture.food.dishKey}-${fixture.food.tier}`).click();
 
   await expect(page.getByTestId("headline-avg")).toHaveText(fmt(fixture.food.expectedHeadlineFood), {
@@ -61,7 +61,7 @@ test("un-equipping the equipped food dish restores the base headline", async ({ 
     timeout: 10_000,
   });
 
-  await page.getByRole("button", { name: "Food", exact: true }).click();
+  await page.getByRole("tab", { name: "Food", exact: true }).click();
   const row = page.getByTestId(`food-row-${fixture.food.dishKey}-${fixture.food.tier}`);
   await expect(row.getByText("Equipped")).toBeVisible();
   await row.click();
@@ -75,13 +75,13 @@ test("a custom ATK buff raises the Stats tab's ATK total", async ({ page }) => {
   await page.goto(`/#${fixture.custom.hashBase}`);
   await expect(page.getByTestId("result-avg").first()).toBeVisible({ timeout: 10_000 });
 
-  await page.getByRole("button", { name: "Buffs", exact: true }).click();
+  await page.getByRole("tab", { name: "Buffs", exact: true }).click();
   await page.getByTestId("custom-buffs-section").click();
   await page.getByTestId("custom-buff-atk").fill("500");
 
   // Close the drawer — its fixed backdrop overlays the results pane and would
   // otherwise block the Stats tab click underneath.
-  await page.getByRole("button", { name: "Buffs", exact: true }).click();
+  await page.getByRole("tab", { name: "Buffs", exact: true }).click();
 
   await page.getByTestId("results-tab-stats").click();
   await expect(page.getByTestId("stat-total-atk_total")).toHaveText(

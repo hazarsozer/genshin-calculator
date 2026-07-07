@@ -34,7 +34,13 @@ function parseSkin(value: string | null): Skin {
 export const useSkinStore = create<SkinState>()((set) => ({
   skin: DEFAULT_SKIN, // SSR-safe; hydrated from localStorage in ThemeRoot on mount
   setSkin: (skin) => {
-    if (typeof window !== "undefined") localStorage.setItem(SKIN_KEY, skin);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(SKIN_KEY, skin);
+      } catch {
+        /* cosmetic — ignore quota */
+      }
+    }
     set({ skin });
   },
 }));

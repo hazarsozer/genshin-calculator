@@ -73,6 +73,9 @@ export function computeBuild(
       stacks: form.conditions.stacks,
       ...(form.conditions.infusion ? { infusion: form.conditions.infusion } : {}),
     }),
+    // Self-worn dropdown-element picks (VV/Archaic Petra) — string settings the engine reads via
+    // ConditionDropdownElement (ctx[name].split(';').includes(element)). Absent → inert.
+    ...(form.conditions.selects ?? {}),
     // BuildSettingsInput has no `reaction` field — the engine reads
     // `settings.reaction` directly off the EvalContext bag (packages/data/src/
     // compileFeature.ts:1054, AMPLIFYING_VARIANT), so it is spread in here rather

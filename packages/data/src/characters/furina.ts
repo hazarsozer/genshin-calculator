@@ -331,9 +331,10 @@ const constellationConditions: readonly Condition[] = [
 // existed. `fanfareHpPost` (below) is exactly that consumer — it uses `exceed:400` (a
 // subtract-then-floor-at-0, NOT a cap) on the RAW clamped value, so it genuinely reads the
 // slider up to 800, making the C2 clamp bump load-bearing and oracle-provable.
-// Also deferred: her getMinValue ALSO floors the value to `c1bonus`(100) at C1 when the
-// raw slider input is > 0 (Condition/Number/Furina.js:4-12) — a quirky "any fanfare at C1
-// snaps to >= 100" edge case with no existing min-bump primitive; affects only inputs
+// Also: her getMinValue ALSO floors the value to `c1bonus`(100) at C1 when the
+// raw slider input is > 0 (Condition/Number/Furina.js:4-12). Ported via the base-inert
+// `minBonusFromConstellation` (C1 +100) on BOTH fanfare conditions — the raw single-slider
+// floor feeds all consumers, so both derived views floor identically. Affects only inputs
 // strictly between 0 and 100 at C1.
 // fanfareDmgPost/fanfareHealingPost apply THEIR OWN maxBase:400 cap on top of the shared
 // slider stat (Furina.js:178,188) — a cap that is UNCONDITIONAL (never bumped by C2), unlike
@@ -351,6 +352,7 @@ const fanfareConditions: readonly Condition[] = [
       { constellation: 1, bonus: 100 },
       { constellation: 2, bonus: 400 },
     ],
+    minBonusFromConstellation: [{ constellation: 1, bonus: 100 }],
   },
   {
     type: "number",
@@ -358,6 +360,7 @@ const fanfareConditions: readonly Condition[] = [
     stat: "furina_fanfare_dmg_healing_stacks",
     max: 300,
     maxBonusFromConstellation: [{ constellation: 1, bonus: 100 }],
+    minBonusFromConstellation: [{ constellation: 1, bonus: 100 }],
   },
 ];
 
