@@ -49,8 +49,10 @@ export interface BuildForm {
     toggles: Record<string, boolean>;
     stacks: Record<string, number>;
     infusion?: string;
-    /** Amplifying-reaction override (settings.reaction) — None/Vaporize/Melt. */
-    reaction?: "vaporize" | "melt";
+    /** Reaction override (settings.reaction) — None/Vaporize/Melt/Quicken.
+     *  Quicken merges the engine's two global catalyze multipliers (Spread
+     *  ×1.25 on dendro hits, Aggravate ×1.15 on electro — loader.ts:81). */
+    reaction?: "vaporize" | "melt" | "quicken";
   };
   enemy: { level: number; resistance: number | Record<string, number> };
   artifactMode: ArtifactMode;

@@ -35,6 +35,7 @@ interface Fixture {
   stats: StatsCase;
   pin: PinCase;
   vaporize: VaporizeCase;
+  quicken: VaporizeCase;
 }
 
 const fixture: Fixture = JSON.parse(
@@ -79,4 +80,20 @@ test("reaction override amplifies the feature, and reverting to None restores th
   await expect(page.getByText(fmt(fixture.vaporize.expectedBase), { exact: true }).first()).toBeVisible({
     timeout: 5_000,
   });
+});
+
+test("quicken override raises the electro burst, and reverting to None restores the base value", async ({
+  page,
+}) => {
+  await page.goto(`/#${fixture.quicken.hash}`);
+  await expect(page.getByTestId("result-avg").first()).toBeVisible({ timeout: 10_000 });
+
+  await expect(
+    page.getByText(fmt(fixture.quicken.expectedAmped), { exact: true }).first()
+  ).toBeVisible({ timeout: 5_000 });
+
+  await page.getByTestId("reaction-select").selectOption("");
+  await expect(
+    page.getByText(fmt(fixture.quicken.expectedBase), { exact: true }).first()
+  ).toBeVisible({ timeout: 5_000 });
 });

@@ -205,6 +205,33 @@ describe("results-depth e2e fixture generation", () => {
     expect(vapFeature, "hu_tao burst.burst_dmg must exist under vaporize").toBeDefined();
     expect(vapFeature!.triple[2]).toBeGreaterThan(baseFeature!.triple[2]);
 
+    // Quicken case: Keqing (electro burst) — Aggravate must raise the burst
+    // average; reverting to None must restore the base value (same assertion
+    // pattern as vaporize above).
+    const keqingBase: BuildForm = {
+      ...DEFAULT_FORM,
+      characterKey: "keqing",
+      weaponKey: "mistsplitter_reforged",
+      conditions: { toggles: {}, stacks: {} },
+    };
+    const quickenForm: BuildForm = {
+      ...keqingBase,
+      conditions: { toggles: {}, stacks: {}, reaction: "quicken" },
+    };
+    const keqingBaseResult = computeBuild(keqingBase, {}, []);
+    const quickenResult = computeBuild(quickenForm, {}, []);
+    expect(keqingBaseResult.error).toBeUndefined();
+    expect(quickenResult.error).toBeUndefined();
+    const keqingBaseFeature = keqingBaseResult.features.find(
+      (f) => f.key === "burst.burst_dmg"
+    );
+    const quickenFeature = quickenResult.features.find(
+      (f) => f.key === "burst.burst_dmg"
+    );
+    expect(keqingBaseFeature, "keqing burst.burst_dmg must exist").toBeDefined();
+    expect(quickenFeature, "keqing burst.burst_dmg must exist under quicken").toBeDefined();
+    expect(quickenFeature!.triple[2]).toBeGreaterThan(keqingBaseFeature!.triple[2]);
+
     const fixture = {
       stats: {
         hash: encodeBuild(statsForm),
@@ -222,6 +249,13 @@ describe("results-depth e2e fixture generation", () => {
         featureKey: vapFeature!.key,
         expectedAmped: vapFeature!.triple[2],
         expectedBase: baseFeature!.triple[2],
+      },
+      quicken: {
+        hash: encodeBuild(quickenForm),
+        featureLabel: quickenFeature!.label,
+        featureKey: quickenFeature!.key,
+        expectedAmped: quickenFeature!.triple[2],
+        expectedBase: keqingBaseFeature!.triple[2],
       },
     };
 

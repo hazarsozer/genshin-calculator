@@ -55,7 +55,7 @@ export interface ExplainFeatureInput {
   stats: Readonly<Record<string, number>>;
   enemy: { level: number; resistance: number | Record<string, number> };
   charLevel: number;
-  reaction?: "vaporize" | "melt";
+  reaction?: "vaporize" | "melt" | "quicken";
 }
 
 export interface ExplainFeatureResult {
@@ -184,8 +184,15 @@ export function explainFeature(
     resKey in stats ? stats[resKey] : fallbackResistance(enemy.resistance, element);
   const resFactor = resFactorFor(r);
 
-  // Amplifying reaction (vaporize/melt only, element must match the variant map).
-  const ampFactor = reaction ? (AMP_FACTORS[reaction][element] ?? 1) : 1;
+  // Amplifying reaction (vaporize/melt only, element must match the variant
+  // map). Quicken has no entry — its catalyze term is ADDITIVE to base damage,
+  // not a multiplier, so ampFactor stays 1 and the term is absorbed into the
+  // solved "Base damage" node below.
+  const ampFactor = reaction
+    ? ((AMP_FACTORS as Record<string, Record<string, number> | undefined>)[reaction]?.[
+        element
+      ] ?? 1)
+    : 1;
 
   // Crit average: 1 + min(rate, 1) × cdmg — reproduces the engine's own
   // avg = noncrit·(1-chance) + crit·chance formula exactly when the feature

@@ -253,3 +253,84 @@ describe("computeBuild — party", () => {
     expect(withStat.stats!.atk_total).toBeGreaterThan(withZeroStat.stats!.atk_total);
   });
 });
+
+// Keqing (electro) + Mistsplitter and Nahida (dendro) + A Thousand Floating
+// Dreams — verify the quicken override reaches the engine's catalyze
+// multipliers (packages/data/src/reactions.ts catalyzeMultipliers, merged by
+// loader.ts:81 when settings.reaction === "quicken"): Aggravate ×1.15 on
+// electro hits, Spread ×1.25 on dendro hits, element-gated per hit. The term
+// is ADDITIVE to base damage (prefactor × levelMult × (1 + 5·EM/(EM+1200) +
+// bonus keys)), not a clean multiplier — the engine side is oracle-gated, so
+// these tests lock the PLUMBING (flows through, right hits, EM-sensitive).
+const keqingForm: BuildForm = {
+  characterKey: "keqing",
+  weaponKey: "mistsplitter_reforged",
+  charLevel: 90,
+  ascension: 6,
+  weaponLevel: 90,
+  weaponAscension: 6,
+  talents: { attack: 10, elemental: 10, burst: 10 },
+  constellation: 0,
+  weaponRefine: 1,
+  conditions: { toggles: {}, stacks: {} },
+  enemy: { level: 90, resistance: 10 },
+  artifactMode: "manual",
+  goodJson: "",
+  manualStats: {},
+  manualSets: [],
+};
+
+const nahidaForm: BuildForm = {
+  ...keqingForm,
+  characterKey: "nahida",
+  weaponKey: "a_thousand_floating_dreams",
+};
+
+describe("computeBuild — quicken override", () => {
+  function avgOf(
+    form: BuildForm,
+    key: string,
+    block: Record<string, number> = SAMPLE_BLOCK
+  ): number {
+    const { features, error } = computeBuild(form, block, []);
+    expect(error).toBeUndefined();
+    const f = features.find((x) => x.key === key);
+    expect(f).toBeDefined();
+    return f!.triple[2];
+  }
+
+  function withQuicken(form: BuildForm): BuildForm {
+    return { ...form, conditions: { toggles: {}, stacks: {}, reaction: "quicken" } };
+  }
+
+  it("raises an electro burst hit under reaction:quicken (Aggravate reaches it)", () => {
+    const baseline = avgOf(keqingForm, "burst.burst_dmg");
+    const quickened = avgOf(withQuicken(keqingForm), "burst.burst_dmg");
+    expect(quickened).toBeGreaterThan(baseline);
+  });
+
+  it("raises a dendro skill hit under reaction:quicken (Spread reaches it)", () => {
+    const baseline = avgOf(nahidaForm, "skill.press_dmg");
+    const quickened = avgOf(withQuicken(nahidaForm), "skill.press_dmg");
+    expect(quickened).toBeGreaterThan(baseline);
+  });
+
+  it("leaves a physical (non-dendro/electro) normal hit unchanged under reaction:quicken", () => {
+    const baseline = avgOf(keqingForm, "attack.normal_hit_1");
+    const quickened = avgOf(withQuicken(keqingForm), "attack.normal_hit_1");
+    expect(quickened).toBe(baseline);
+  });
+
+  it("scales the quicken delta with EM (the 5·EM/(EM+1200) curve reaches it)", () => {
+    const lowEm: Record<string, number> = { ...SAMPLE_BLOCK, mastery_base: 0 };
+    const highEm: Record<string, number> = { ...SAMPLE_BLOCK, mastery_base: 200 };
+    const deltaLow =
+      avgOf(withQuicken(keqingForm), "burst.burst_dmg", lowEm) -
+      avgOf(keqingForm, "burst.burst_dmg", lowEm);
+    const deltaHigh =
+      avgOf(withQuicken(keqingForm), "burst.burst_dmg", highEm) -
+      avgOf(keqingForm, "burst.burst_dmg", highEm);
+    expect(deltaLow).toBeGreaterThan(0);
+    expect(deltaHigh).toBeGreaterThan(deltaLow);
+  });
+});

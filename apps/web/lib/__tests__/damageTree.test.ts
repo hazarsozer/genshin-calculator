@@ -226,3 +226,51 @@ describe("elementFromFeature", () => {
     expect(elementFromFeature(bennett, "burst.atk_bonus", undefined)).toBeNull();
   });
 });
+
+// Quicken and the calc tree: the additive catalyze term is NOT reconstructable
+// from the stat bag, so explainFeature absorbs it into the "Base damage" node
+// (base is solved from noncrit / knownProduct) with NO amp node and NO
+// residual. Before the guard, AMP_FACTORS["quicken"] was undefined and the
+// [element] index crashed.
+describe("explainFeature — quicken", () => {
+  const keqingQuickenForm: BuildForm = {
+    characterKey: "keqing",
+    weaponKey: "mistsplitter_reforged",
+    charLevel: 90,
+    ascension: 6,
+    weaponLevel: 90,
+    weaponAscension: 6,
+    talents: { attack: 10, elemental: 10, burst: 10 },
+    constellation: 0,
+    weaponRefine: 1,
+    conditions: { toggles: {}, stacks: {}, reaction: "quicken" },
+    enemy: { level: 90, resistance: 10 },
+    artifactMode: "manual",
+    goodJson: "",
+    manualStats: {},
+    manualSets: [],
+  };
+
+  it("does not crash, adds no amp node, and self-validates (base absorbs the catalyze term)", () => {
+    const result = computeBuild(keqingQuickenForm, SAMPLE_BLOCK, []);
+    expect(result.error).toBeUndefined();
+    const feat = result.features.find((f) => f.key === "burst.burst_dmg");
+    expect(feat).toBeDefined();
+
+    const explained = explainFeature({
+      avg: feat!.triple[2],
+      noncrit: feat!.triple[0],
+      element: "electro",
+      damageType: "burst",
+      stats: result.stats!,
+      enemy: keqingQuickenForm.enemy,
+      charLevel: keqingQuickenForm.charLevel,
+      reaction: "quicken",
+    });
+    expect(explained).not.toBeNull();
+    expect(
+      explained!.nodes.some((n) => n.label.startsWith("Amplifying reaction"))
+    ).toBe(false);
+    expect(explained!.residual).toBeNull();
+  });
+});

@@ -104,10 +104,14 @@ const TABS: { k: "damage" | "stats"; l: string }[] = [
   { k: "stats", l: "Stats" },
 ];
 
-const REACTION_OPTIONS: { value: "" | "vaporize" | "melt"; label: string }[] = [
+const REACTION_OPTIONS: {
+  value: "" | "vaporize" | "melt" | "quicken";
+  label: string;
+}[] = [
   { value: "", label: "None" },
   { value: "vaporize", label: "Vaporize" },
   { value: "melt", label: "Melt" },
+  { value: "quicken", label: "Quicken" },
 ];
 
 export function Breakdown() {
@@ -164,7 +168,10 @@ export function Breakdown() {
     setForm({
       conditions: {
         ...conditions,
-        reaction: value === "vaporize" || value === "melt" ? value : undefined,
+        reaction:
+          value === "vaporize" || value === "melt" || value === "quicken"
+            ? value
+            : undefined,
       },
     });
   }
