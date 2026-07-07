@@ -15,5 +15,12 @@
     "featureKey": "burst.burst_dmg",
     "expectedAmped": 3102.6630885668037,
     "expectedBase": 2068.442059044536
+  },
+  "quicken": {
+    "hash": "eyJjaGFyYWN0ZXJLZXkiOiJrZXFpbmciLCJ3ZWFwb25LZXkiOiJtaXN0c3BsaXR0ZXJfcmVmb3JnZWQiLCJjaGFyTGV2ZWwiOjkwLCJhc2NlbnNpb24iOjYsIndlYXBvbkxldmVsIjo5MCwid2VhcG9uQXNjZW5zaW9uIjo2LCJ0YWxlbnRzIjp7ImF0dGFjayI6MTAsImVsZW1lbnRhbCI6MTAsImJ1cnN0IjoxMH0sImNvbnN0ZWxsYXRpb24iOjAsIndlYXBvblJlZmluZSI6MSwiY29uZGl0aW9ucyI6eyJ0b2dnbGVzIjp7fSwic3RhY2tzIjp7fSwicmVhY3Rpb24iOiJxdWlja2VuIn0sImVuZW15Ijp7ImxldmVsIjo5MCwicmVzaXN0YW5jZSI6MTB9LCJhcnRpZmFjdE1vZGUiOiJtYW51YWwiLCJnb29kSnNvbiI6IiIsIm1hbnVhbFN0YXRzIjp7fSwibWFudWFsU2V0cyI6W10sInBhcnR5Ijp7Im1lbWJlcnMiOltdfX0",
+    "featureLabel": "Burst Burst Dmg",
+    "featureKey": "burst.burst_dmg",
+    "expectedAmped": 1743.0191940232307,
+    "expectedBase": 848.8648949879346
   }
 }
