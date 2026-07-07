@@ -10,6 +10,7 @@ import { CharacterDrawer } from "@/components/drawers/CharacterDrawer";
 import { WeaponDrawer } from "@/components/drawers/WeaponDrawer";
 import { ArtifactsDrawer } from "@/components/drawers/ArtifactsDrawer";
 import { BuffsTeamDrawer } from "@/components/drawers/BuffsTeamDrawer";
+import { FoodDrawer } from "@/components/drawers/FoodDrawer";
 import { EnemyDrawer } from "@/components/drawers/EnemyDrawer";
 import { useResults } from "@/lib/useResults";
 import { useCountUp, fmt } from "@/lib/motion";
@@ -20,6 +21,7 @@ const DRAWER_TITLES: Record<Exclude<DrawerId, null>, string> = {
   weapon: "Weapon",
   artifacts: "Artifacts",
   buffs: "Buffs & Team",
+  food: "Food",
   enemy: "Enemy",
 };
 
@@ -33,6 +35,8 @@ function DrawerBody({ id }: { id: Exclude<DrawerId, null> }) {
       return <ArtifactsDrawer />;
     case "buffs":
       return <BuffsTeamDrawer />;
+    case "food":
+      return <FoodDrawer />;
     case "enemy":
       return <EnemyDrawer />;
   }

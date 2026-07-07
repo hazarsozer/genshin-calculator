@@ -12,6 +12,7 @@ export type DrawerId =
   | "weapon"
   | "artifacts"
   | "buffs"
+  | "food"
   | "enemy"
   | null;
 
@@ -60,6 +61,18 @@ const ITEMS: RailItem[] = [
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinejoin="round">
         <path d="M12 3l1.9 4.8L19 9.5l-5.1 1.7L12 16l-1.9-4.8L5 9.5l5.1-1.7z" />
+      </svg>
+    ),
+  },
+  {
+    id: "food",
+    label: "Food",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 3v6a2 2 0 0 0 2 2v10" />
+        <path d="M7 3v6" />
+        <path d="M9 3v6" />
+        <path d="M17 3c-1.5 0-2.5 1.5-2.5 4s1 4 2.5 5v9" />
       </svg>
     ),
   },
