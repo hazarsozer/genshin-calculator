@@ -4,7 +4,6 @@
  "constellations/sayu: FINDING non-damage burst.sayu_mujimuji_heal: engine 4630.371896449618 vs oracle 5083.371896449618",
  "constellations/kujou_sara: FINDING non-damage skill.sara_atk_bonus: engine 1261.3661632036801 vs oracle 1489.1128315599",
  "constellations/gorou: fixture feature skill.gorou_lapping_hound_heal ABSENT from engine output",
- "constellations/dori: fixture feature skill.dori_sprinkling_weight ABSENT from engine output",
  "constellations/nilou: fixture feature other.crit_dmg_bonus ABSENT from engine output",
  "constellations/nilou: fixture feature other.crit_rate_bonus ABSENT from engine output",
  "constellations/yaoyao: fixture feature skill.yaoyao_megaradish_heal ABSENT from engine output",
