@@ -167,7 +167,11 @@ export interface ReconstructResult {
  *     - set.multipliers → compileCharacter `extraMultipliers` (Echoes' ValleyRite normal-DMG
  *       variant). Each equipped set's slice is harvested from the registry and concatenated.
  *
- * Then propagate buildStats' returned `settings` into compileCharacter (talent _bonus offsets).
+ * Then propagate buildStats' returned `settings` into compileCharacter (talent _bonus offsets),
+ * and thread its returned `characterMultipliers` (CHARACTER_MULTIPLIERS + partyData Bucket-C
+ * teammate multipliers) into `extraMultipliers` alongside the weapon/set slice — otherwise
+ * teammate multiplier buffs (Shenhe, Faruzan, etc.) and the Song-of-Days-Past global channel
+ * never apply through this reconstruction (partyBuffsBurndown.test.ts:197-216 is the reference).
  *
  * `input.passiveOn` is retained on the interface for caller-signature stability but is no longer
  * consulted: weapon.conditions are wired unconditionally to mirror armory (conditional passives
@@ -202,7 +206,7 @@ export function reconstructPort(input: ReconstructInput): ReconstructResult {
     ...equippedSets.flatMap((s) => s.multipliers ?? []),
   ];
 
-  const { context, settings } = buildStats({
+  const { context, settings, characterMultipliers: partyMultipliers } = buildStats({
     char: input.char,
     weaponStatTable: input.weaponStatTable,
     statBlock: input.statBlock,
@@ -225,7 +229,7 @@ export function reconstructPort(input: ReconstructInput): ReconstructResult {
     settings,
     charLevel: input.levels.charLevel,
     extraFeatures,
-    extraMultipliers,
+    extraMultipliers: [...extraMultipliers, ...partyMultipliers],
   });
 
   return { compiled, context };
