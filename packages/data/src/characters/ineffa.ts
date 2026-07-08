@@ -452,8 +452,8 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // C1: ConditionBoolean toggle (ineffa_rectifying_processor → dmg_reaction_lunarcharged
 //     via the `lunarReactionBonusFromAtk` postEffect, gated `and[constellation1, boolean toggle]`).
-//     ineffa_lunar_bonus_2 display value (her `ineffa_lunar_bonus_2` static readout,
-//     damageType:"") still skipped — not in the damage-output coverage gate.
+//     ineffa_lunar_bonus_2 display value: PORTED as a C1-gated static readout (see
+//     features above; display-gap burndown 2026-07-08), mirroring sibling ineffa_lunar_bonus.
 // C2: ineffa_punishment_edict_dmg feature (cons-added, gated above).
 // C3: +3 levels to Carrier Frequency (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
 // C4: ConditionStatic display-only → SKIP.
