@@ -1,11 +1,8 @@
 [
- "constellations/bennett: FINDING non-damage burst.atk_bonus: engine 1695.6479698704002 vs oracle 2338.244720357",
  "constellations/kujou_sara: FINDING non-damage skill.sara_atk_bonus: engine 1261.3661632036801 vs oracle 1489.1128315599",
  "constellations/nilou: fixture feature other.crit_dmg_bonus ABSENT from engine output",
  "constellations/nilou: fixture feature other.crit_rate_bonus ABSENT from engine output",
  "constellations/yumemizuki_mizuki: fixture feature other.mizuki_elemental_bonus ABSENT from engine output",
  "constellations/escoffier: FINDING non-damage other.escoffier_rehab_diet_heal: engine 2817.8139890995203 vs oracle 3640.6156739165795",
- "constellations/ineffa: fixture feature other.ineffa_lunar_bonus_2 ABSENT from engine output",
- "cons-mid/bennett: FINDING non-damage burst.atk_bonus: engine 1695.6479698704002 vs oracle 2032.0860591304",
- "full-build/bennett: FINDING non-damage burst.atk_bonus: engine 1695.6479698704002 vs oracle 2032.0860591304"
+ "constellations/ineffa: fixture feature other.ineffa_lunar_bonus_2 ABSENT from engine output"
 ]

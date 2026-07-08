@@ -247,21 +247,40 @@ const features: readonly Feature[] = [
   },
   // --- burst.atk_bonus: Fantastic Voyage ATK-buff readout (FeaturePostEffectValue → static) ---
   // Raw Bennet.js:156-175,453-457 — selfBuffPost = PostEffectStats{ from:'atk_base',
-  // percent:getMulti(burst.atk_ratio, 0.01) }, exposed as a FeaturePostEffectValue. The buff =
-  // white base ATK × (burst atk_ratio @L10 × 0.01) = atk_base × 1.008 (the same ratio the live
-  // `fantasticVoyageAtk` CharPostEffect applies — reused here, not hardcoded). The atk_base scaling
-  // now resolves via the eval-bag atk_base emit (buildStats). The selfBuffPost carries NO
-  // application gate (no toggle/asc/cons), so the readout is the canonical C0 value. The C1
-  // percentBonus (+20% ATK, ValueTable([C1BuffBonus/100]) gated by char_constellation≥1) is ABSENT
-  // at C0 → omitted (matches the C0-canonical oracle). The engine divides values.getValue()/100, so
-  // getValue() returns the raw burst atk_ratio table value (100.8) — /100 → 1.008. NEVER baked.
+  // levelSetting:'char_skill_burst', percent:getMulti(burst.atk_ratio, 0.01), percentBonus:
+  // ValueTable([C1BuffBonus/100]) gated bonusCondition char_constellation≥1 }, exposed as a
+  // FeaturePostEffectValue. selfBuffPost carries NO maxLevelSetting (unlike the party-buff
+  // postEffect at Bennet.js:689-697, which IS clamped at 10) — PostEffect.getLevel only clamps
+  // when `maxLevelSetting > 1`, so the self readout's talent level is the UNCLAMPED build burst
+  // level + the C5 `char_skill_burst_bonus:3` offset (raw PostEffect.js getLevel). Ported as a
+  // relevelled talent-table term (was pinned `getValue(10)`, which silently ignored C5's +3).
+  // atk_base × (BennettTalents.s3.p4@level / 100). The atk_base scaling resolves via the eval-bag
+  // atk_base emit (buildStats).
+  //
+  // C1 "Grand Expectation": +20% atk_base additive term (raw percentBonus ValueTable
+  // ([C1BuffBonus=20/100]), bonusCondition char_constellation≥1) — modelled as a second
+  // constellation-gated multiplier per the Fischl-C2 `skill_dmg` precedent (compileFeature.
+  // activeOwnMultipliers filters per-feature multiplier conditions the same way it filters
+  // char-level ones; a static-kind feature's `base` sums ALL active multiplier terms via
+  // cBaseDamage — verified in compileFeature.ts:918-928 before porting). Contributes 0 below C1
+  // (condition inactive → filtered out of activeOwnMultipliers) → the C0 golden is unaffected.
   {
     name: "atk_bonus",
     category: "burst",
     output: { kind: "static" },
     multipliers: [
-      // scaling atk_base × (BennettTalents.s3.p4@L10 / 100) = atk_base × 1.008.
-      { scaling: "atk_base", leveling: "", values: { getValue: () => BennettTalents.s3.p4.getValue(10) } },
+      // scaling atk_base × (BennettTalents.s3.p4@level / 100).
+      { scaling: "atk_base", leveling: "char_skill_burst", values: BennettTalents.s3.p4 },
+      // C1: +20% of atk_base, gated ConditionConstellation(1). Raw Bennet.js:164,171.
+      {
+        scaling: "atk_base",
+        leveling: "",
+        // Raw TalentValues.C1BuffBonus = 20 (percent units — the engine's /100 in
+        // baseDamageTerm turns this into the 0.20 additive fraction).
+        values: { getValue: () => 20 },
+        source: "constellation1",
+        condition: { type: "constellation", constellation: 1 },
+      },
     ],
   },
 ];
