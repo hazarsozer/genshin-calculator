@@ -1,6 +1,5 @@
 [
  "constellations/bennett: FINDING non-damage burst.atk_bonus: engine 1695.6479698704002 vs oracle 2338.244720357",
- "constellations/fischl: fixture feature burst.fischl_her_pilgrimage_of_bleak_heal ABSENT from engine output",
  "constellations/sayu: FINDING non-damage burst.sayu_mujimuji_add_heal: engine 926.0743792899236 vs oracle 1379.0743792899239",
  "constellations/sayu: FINDING non-damage burst.sayu_mujimuji_heal: engine 4630.371896449618 vs oracle 5083.371896449618",
  "constellations/kujou_sara: FINDING non-damage skill.sara_atk_bonus: engine 1261.3661632036801 vs oracle 1489.1128315599",
