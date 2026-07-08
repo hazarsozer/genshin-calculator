@@ -79,7 +79,10 @@ interface Scenario {
   reaction?: "vaporize" | "melt" | "quicken";
   block?: Record<string, number>;
   sets?: EquippedSet[];
-  party?: { members: { slug: string; settings: Record<string, number | boolean> }[] };
+  // A minority of party-buffs teammate settings carry a dropdown STRING value (e.g. Kazuha's
+  // Poetics-of-Fuubutsu absorbed element) — widened past PartyMemberForm's number|boolean; the
+  // engine settings bag accepts any value, and toForm casts at the BuildForm boundary.
+  party?: { members: { slug: string; settings: Record<string, number | boolean | string> }[] };
   /** repo-relative fixture path under tests/golden/fixtures, or null = engine-gated only */
   fixture: string | null;
 }
@@ -178,6 +181,315 @@ function manifestScenarios(): Scenario[] {
     }
   }
   return out;
+}
+
+// ---------------------------------------------------------------------------
+// Party families: party-buffs (teammate kit-buff leak) / party (composition
+// effects: resonance, set_other, self-worn dropdown-elements, bond-of-life,
+// inert party weapons) / party-energy (combined-party burst-energy weapons).
+// Closes the gap the roster sweep left: teammate buffs affect the active
+// char's damage but were never driven through the web BuildForm's party path.
+// ---------------------------------------------------------------------------
+
+interface PartyManifestMember {
+  character?: string;
+  element?: string;
+  origin?: string;
+  settings?: Record<string, unknown>;
+}
+
+interface PartyBuffsManifestItem {
+  slug: string;
+  repSlug: string;
+  weapon: { name: string; type: string };
+  statBlock: string;
+  party: { members: PartyManifestMember[] };
+}
+
+interface PartyFamilyManifestItem {
+  slug: string;
+  repSlug: string;
+  weapon: { name: string; type: string };
+  statBlock: string;
+  party: {
+    members?: PartyManifestMember[];
+    charSettings?: Record<string, unknown>;
+    settings?: Record<string, unknown>;
+    setBonuses?: { setKey: string; pieces: number }[];
+    enemyStatus?: string;
+    bondOfLife?: number;
+  };
+}
+
+interface PartyEnergyManifestItem {
+  slug: string;
+  repSlug: string;
+  statBlock: string;
+  party: { members: PartyManifestMember[]; weaponName: string; weaponType: string; refine: number };
+}
+
+/**
+ * Buff-clean filler roster (tools/oracle/build-configs.mjs FILLER, probe-verified against her
+ * engine to leak no partyData buff) mirrored here so the `party` family's abstract
+ * {element, origin} manifest members — which have no real character — can be reconstructed as
+ * REAL named teammates through the web BuildForm (PartyMemberForm.slug requires an actual
+ * DbObjectChar). Verified: each {slug, origin} pair matches packages/data/src/characters/*.ts.
+ */
+const PARTY_FILLER: Record<string, { slug: string; origin: string }[]> = {
+  pyro: [
+    { slug: "amber", origin: "mondstadt" },
+    { slug: "klee", origin: "mondstadt" },
+    { slug: "xiangling", origin: "liyue" },
+  ],
+  hydro: [
+    { slug: "barbara", origin: "mondstadt" },
+    { slug: "mona", origin: "mondstadt" },
+    { slug: "xingqiu", origin: "liyue" },
+  ],
+  electro: [
+    { slug: "fischl", origin: "mondstadt" },
+    { slug: "lisa", origin: "mondstadt" },
+    { slug: "beidou", origin: "liyue" },
+  ],
+  cryo: [
+    { slug: "kaeya", origin: "mondstadt" },
+    { slug: "chongyun", origin: "liyue" },
+    { slug: "diona", origin: "mondstadt" },
+  ],
+  geo: [
+    { slug: "ningguang", origin: "liyue" },
+    { slug: "noelle", origin: "mondstadt" },
+    { slug: "gorou", origin: "inazuma" },
+  ],
+  dendro: [
+    { slug: "tighnari", origin: "sumeru" },
+    { slug: "collei", origin: "sumeru" },
+    { slug: "yaoyao", origin: "liyue" },
+  ],
+  anemo: [
+    { slug: "sucrose", origin: "mondstadt" },
+    { slug: "jean", origin: "mondstadt" },
+    { slug: "sayu", origin: "inazuma" },
+  ],
+};
+
+/**
+ * Pick a buff-clean filler of the given ELEMENT (origin is irrelevant to every consumer in this
+ * family except CalcOrigin — the origin-different item overrides with an explicit origin-matched
+ * triplet below, since that is the only origin-sensitive consumer; see docstring "CalcOrigin
+ * counts (Charlotte, the only v5.8 consumer)"). Not yet used = not already in this scenario's party.
+ */
+function pickFiller(itemSlug: string, element: string, used: Set<string>): string {
+  const pool = PARTY_FILLER[element];
+  if (!pool) throw new Error(`party/${itemSlug}: no buff-clean filler pool for element '${element}'`);
+  const found = pool.find((f) => !used.has(f.slug));
+  if (!found) {
+    throw new Error(
+      `party/${itemSlug}: no buff-clean filler left for element '${element}' (used=${[...used].join(",")})`
+    );
+  }
+  used.add(found.slug);
+  return found.slug;
+}
+
+/** origin-different is the one item where origin (not just element) must match a specific
+ *  triplet — CalcOrigin's ONLY v5.8 consumer. All three picks are still audited FILLER entries
+ *  (pyro/mondstadt=amber, electro/liyue=beidou, geo/inazuma=gorou). */
+const ORIGIN_SENSITIVE_OVERRIDE: Record<string, string[]> = {
+  "origin-different": ["amber", "beidou", "gorou"],
+};
+
+/**
+ * A manifest item this family CANNOT be gated on through the web BuildForm/page path, with the
+ * reason — surfaced both here (skipped from generation) and as a warning line (visible, not
+ * silently swallowed). Keyed by `<family>/<slug>`.
+ *
+ * The 10 "characterMultipliers dropped" entries are a REAL WEB-LAYER BUG, not an
+ * inexpressible-input case: `packages/data/src/reconstruct.ts`'s `reconstructPort` (the function
+ * `apps/web/lib/calc.ts#computeBuild` calls) destructures only `{ context, settings }` off
+ * `buildStats(...)` and never threads the returned `characterMultipliers` (partyData Bucket-C
+ * teammate multipliers — Shenhe/Faruzan/Escoffier/Citlali/Layla/Xilonen/Xianyun/Sigewinne/YunJin —
+ * PLUS the always-present global CHARACTER_MULTIPLIERS channel, e.g. Song of Days Past) into
+ * `compileCharacter`'s `extraMultipliers`. `packages/data/src/__tests__/partyBurndown.test.ts` /
+ * `partyBuffsBurndown.test.ts` thread `characterMultipliers` manually and are fully GREEN — so the
+ * engine is correct; only the web adapter's wiring drops the channel. `packages/*` is off-limits
+ * for this harness-only task (brief), so these are excluded here and reported as a finding rather
+ * than silently loosened. Fix: reconstructPort should return/consume `characterMultipliers` too.
+ */
+const WEB_LAYER_EXCLUSIONS: { key: string; reason: string }[] = [
+  {
+    key: "party/origin-same",
+    reason:
+      "needs 2x hydro/fontaine + 1x pyro/fontaine teammates; the audited buff-clean FILLER roster " +
+      "(tools/oracle/build-configs.mjs) has no fontaine-origin entries for those elements. Picking an " +
+      "un-probed substitute risks a false web-layer failure from an unverified partyData leak rather " +
+      "than proving a real gap, so it is excluded rather than guessed.",
+  },
+  ...[
+    "party-buffs/shenhe-icyquill-on-ayaka",
+    "party-buffs/faruzan-anemodmg-on-wanderer",
+    "party-buffs/escoffier-cryo-c2-on-ayaka",
+    "party-buffs/citlali-c1-on-ganyu",
+    "party-buffs/layla-c4-on-itto",
+    "party-buffs/xilonen-c4-on-itto",
+    "party-buffs/xianyun-plungeshockwave-on-xiao",
+    "party-buffs/sigewinne-skilldmg-on-diluc",
+    "party-buffs/yunjin-normaldmg-stacks-on-itto",
+    "party/set-other-song-of-days-past-4",
+  ].map((key) => ({
+    key,
+    reason:
+      "REAL WEB-LAYER BUG (not inexpressible input): reconstructPort (packages/data/src/reconstruct.ts, " +
+      "off-limits for this harness task) drops buildStats().characterMultipliers before calling " +
+      "compileCharacter, so this Bucket-C partyData multiplier / CHARACTER_MULTIPLIERS-channel buff " +
+      "never applies through the web path even though the engine itself is oracle-green " +
+      "(packages/data/src/__tests__/partyBurndown.test.ts + partyBuffsBurndown.test.ts pass). " +
+      "See this file's report for repro + fix pointer.",
+  })),
+];
+
+function isWebLayerExcluded(key: string): boolean {
+  return WEB_LAYER_EXCLUSIONS.some((e) => e.key === key);
+}
+
+/**
+ * party-buffs family (97 items): a teammate INTENTIONALLY leaks its own kit buff onto the
+ * recipient active char (party.<char>_<effect>-style settings baked on the member). Mirrors
+ * packages/data/src/__tests__/partyBuffsBurndown.test.ts's manifest decode — the authoritative
+ * reconstruction for this family (every item carries exactly one {character, settings} member).
+ */
+function partyBuffsScenarios(): Scenario[] {
+  const manifest = JSON.parse(
+    readFileSync(join(FIXTURES, "party-buffs", "_manifest.json"), "utf8")
+  ) as { items: PartyBuffsManifestItem[] };
+  const out: Scenario[] = [];
+  for (const item of manifest.items) {
+    if (isWebLayerExcluded(`party-buffs/${item.slug}`)) continue;
+    const member = item.party.members[0];
+    if (!member?.character) throw new Error(`party-buffs/${item.slug}: missing member.character`);
+    out.push(
+      S({
+        id: `party-buffs/${item.slug}`,
+        char: item.repSlug,
+        weapon: item.weapon.name.replace(/^weapon_name\./, ""),
+        block: resolveBlock(item.statBlock),
+        party: {
+          members: [
+            {
+              slug: member.character,
+              settings: (member.settings ?? {}) as Record<string, number | boolean | string>,
+            },
+          ],
+        },
+        fixture: `party-buffs/${item.slug}.json`,
+      })
+    );
+  }
+  return out;
+}
+
+/** Manifest slug already covered by a hand-picked SCENARIOS pilot (kazuha-vv-pyro) — skip to avoid
+ *  duplicate coverage; the hand pilot stays as-is (brief allows either; this preserves its comment). */
+const PARTY_FAMILY_DEDUPE = new Set(["viridescent-venerer-pyro"]);
+
+/**
+ * party family (62 items, minus 1 dedupe + 1 exclusion = 60 generated): party-composition effects
+ * — elemental/origin resonance, GildedDreams/BlizzardStrayer/ViridescentVenerer/ArchaicPetra
+ * self-worn 4pc, every v5.8 set_other team buff, bond-of-life, the two-element gates
+ * (Chevreuse/Nilou/Skirk), Gorou/YunJin/Xilonen/Escoffier/Navia element-count effects, the 4 inert
+ * party-element weapons. Decoded generically off `party.{members,charSettings,settings,setBonuses,
+ * enemyStatus,bondOfLife}` — mirrors packages/data/src/__tests__/partyBurndown.test.ts's manifest
+ * shape (the authoritative reconstruction), substituting each abstract {element,origin} manifest
+ * member with a real named PARTY_FILLER teammate. `charSettings`/`settings` are raw engine settings
+ * keys (e.g. "set_other.noblesse_oblige_4", "chevreuse_tactics") — routed through the SAME
+ * toggles/stacks/selects passthrough every other scenario in this file uses, so they reach the
+ * engine exactly as a real party member's picks would, without requiring the Team drawer to expose
+ * a dedicated widget for each one (the file's existing convention, e.g. nahida-toggles' raw
+ * `party_max_mastery` stack).
+ */
+function partyFamilyScenarios(): Scenario[] {
+  const manifest = JSON.parse(
+    readFileSync(join(FIXTURES, "party", "_manifest.json"), "utf8")
+  ) as { items: PartyFamilyManifestItem[] };
+
+  const out: Scenario[] = [];
+  for (const item of manifest.items) {
+    if (PARTY_FAMILY_DEDUPE.has(item.slug)) continue;
+    if (isWebLayerExcluded(`party/${item.slug}`)) continue;
+
+    const used = new Set<string>([item.repSlug]); // never pick the active rep as its own filler
+    const members = ORIGIN_SENSITIVE_OVERRIDE[item.slug]
+      ? ORIGIN_SENSITIVE_OVERRIDE[item.slug]!.map((slug) => ({ slug, settings: {} }))
+      : (item.party.members ?? []).map((m) => {
+          if (!m.element) throw new Error(`party/${item.slug}: abstract member missing 'element'`);
+          return { slug: pickFiller(item.slug, m.element, used), settings: {} };
+        });
+
+    // char_constellation is carried generically inside charSettings for a few effects (its
+    // ABSENCE vs presence is itself the signal, e.g. gorou-geo-3-c0 vs gorou-geo-3) — pull it
+    // into the dedicated `constellation` field rather than the raw toggle bag.
+    const charSettings = { ...(item.party.charSettings ?? {}) };
+    const constellation =
+      typeof charSettings["char_constellation"] === "number"
+        ? (charSettings["char_constellation"] as number)
+        : undefined;
+    delete charSettings["char_constellation"];
+    // char_skill_elemental restates the default talent level (10, DEFAULT_FORM.talents.elemental)
+    // for xilonen's samplers — dropped, not a raw settings key (buildStats derives it from
+    // form.talents, not from the settings bag).
+    delete charSettings["char_skill_elemental"];
+
+    const extraRaw: Record<string, unknown> = {};
+    if (item.party.enemyStatus !== undefined) extraRaw["common.enemy_status"] = item.party.enemyStatus;
+    if (item.party.bondOfLife !== undefined) extraRaw["common.bond_of_life"] = item.party.bondOfLife;
+
+    out.push(
+      S({
+        id: `party/${item.slug}`,
+        char: item.repSlug,
+        weapon: item.weapon.name.replace(/^weapon_name\./, ""),
+        ...(constellation !== undefined ? { constellation } : {}),
+        ...splitToggles(charSettings, item.party.settings ?? {}, extraRaw),
+        block: resolveBlock(item.statBlock),
+        sets: (item.party.setBonuses ?? []).map((s) => ({ setKey: s.setKey, pieces: s.pieces })),
+        ...(members.length ? { party: { members } } : {}),
+        fixture: `party/${item.slug}.json`,
+      })
+    );
+  }
+  return out;
+}
+
+/** party-energy family (6 items): the combined-party burst-energy dmg_burst bonus on the 3 inert
+ *  weapons (Akuoumaru/Mouun's Moon/Wavebreaker's Fin) — real named teammates (their OWN burst
+ *  energy costs sum into the bonus), mirrors partyEnergyBurndown.test.ts's registry-key map. */
+const PARTY_ENERGY_WEAPON_SLUG: Record<string, string> = {
+  Akoumaru: "akuoumaru",
+  MouunsMoon: "mouuns_moon",
+  WavebreakersFin: "wavebreakers_fin",
+};
+
+function partyEnergyScenarios(): Scenario[] {
+  const manifest = JSON.parse(
+    readFileSync(join(FIXTURES, "party-energy", "_manifest.json"), "utf8")
+  ) as { items: PartyEnergyManifestItem[] };
+  return manifest.items.map((item) => {
+    const weaponSlug = PARTY_ENERGY_WEAPON_SLUG[item.party.weaponName];
+    if (!weaponSlug) throw new Error(`party-energy/${item.slug}: unknown weaponName '${item.party.weaponName}'`);
+    const members = item.party.members.map((m) => {
+      if (!m.character) throw new Error(`party-energy/${item.slug}: abstract member (expected named character)`);
+      return { slug: m.character, settings: {} };
+    });
+    return S({
+      id: `party-energy/${item.slug}`,
+      char: item.repSlug,
+      weapon: weaponSlug,
+      weaponRefine: item.party.refine,
+      block: resolveBlock(item.statBlock),
+      party: { members },
+      fixture: `party-energy/${item.slug}.json`,
+    });
+  });
 }
 
 const SCENARIOS: Scenario[] = [
@@ -305,7 +617,7 @@ function toForm(s: Scenario): BuildForm {
     },
     manualStats: s.block ?? SAMPLE_BLOCK,
     manualSets: s.sets ?? [],
-    ...(s.party ? { party: s.party } : {}),
+    ...(s.party ? { party: s.party as unknown as BuildForm["party"] } : {}),
   };
 }
 
@@ -318,13 +630,24 @@ interface FixtureFeature {
 
 const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
 
-const ALL_SCENARIOS: Scenario[] = [...manifestScenarios(), ...SCENARIOS];
+const ALL_SCENARIOS: Scenario[] = [
+  ...manifestScenarios(),
+  ...partyBuffsScenarios(),
+  ...partyFamilyScenarios(),
+  ...partyEnergyScenarios(),
+  ...SCENARIOS,
+];
 
 describe("browser sweep expectation generation (Aspirine-gated)", () => {
   it("gates every fixture scenario against the oracle and writes the browser fixture", () => {
     const out: unknown[] = [];
     const warnings: string[] = [];
     const failures: string[] = [];
+
+    // Manifest items excluded from the web-path sweep — visible, not silently swallowed.
+    for (const excl of WEB_LAYER_EXCLUSIONS) {
+      warnings.push(`${excl.key}: EXCLUDED from web path: ${excl.reason}`);
+    }
 
     for (const s of ALL_SCENARIOS) {
       const form = toForm(s);
