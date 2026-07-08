@@ -211,6 +211,27 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.heal_percent"), flatValues: talents.get("skill.heal_flat") },
     ],
   },
+  // --- C2 "Gossamer Splice" party heal: skill.baizhu_gossamer_splice_heal ---
+  // Raw: FeatureHeal, category:'skill', partyHeal:1, scaling:'hp*', leveling:'char_skill_elemental',
+  // values:Talents.getMulti({from:'skill.heal', multi:C2HealValue/100=0.20}) — i.e. skill.heal's [%, flat]
+  // table BOTH scaled uniformly by 20%. raw/genshin_calc_pub/src/js/db/Char/Baizhu.js:140,309-322.
+  // Our engine's `scalingMultiplier` field scales the PERCENT term only, NOT `flatValues`
+  // (compileFeature.ts) — per the kirara_party_shield convention, bake the 0.20 ratio into
+  // BOTH values and flatValues via custom getValue instead of scalingMultiplier.
+  {
+    name: "baizhu_gossamer_splice_heal",
+    category: "skill",
+    output: { kind: "heal", partyHeal: true },
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: { getValue: (level: number) => 0.2 * BaizhuTalents.s2.p2.getValue(level) },
+        flatValues: { getValue: (level: number) => 0.2 * BaizhuTalents.s2.p3.getValue(level) },
+      },
+    ],
+  },
   // burst.baizhu_seamless_heal: Gossamer Sprite per-tick heal — getList('burst.baizhu_seamless_heal') = [s3.p5, s3.p6].
   // raw/genshin_calc_pub/src/js/db/Char/Baizhu.js:111-117,351-362.
   {
@@ -250,6 +271,7 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // C1: ConditionStatic (display-only, text only) → SKIP.
 // C2: Cons-added baizhu_gossamer_splice_dmg feature above (ConditionStatic in cons[1] is display-only).
+//   Also unlocks skill.baizhu_gossamer_splice_heal, a party heal = 20% of skill.heal (above).
 // C3: +3 levels to Holistic Revivification (burst). Raw cons[2] settings char_skill_burst_bonus:3.
 // C4: ConditionBoolean toggle (mastery:80) → SKIP (toggle OFF).
 // C5: +3 levels to Universal Diagnosis (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
