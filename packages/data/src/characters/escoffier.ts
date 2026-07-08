@@ -242,7 +242,9 @@ const features: readonly Feature[] = [
 //   self multiplier is also commented out in source). Teammate side is ported in partyData below.
 // C3: +3 levels to Low Temperature Cooking (elemental skill). Raw cons[2] char_skill_elemental_bonus:3.
 // C4: ConditionStatic crit_dmg_escofier_heal:100, gated by ConditionAscensionChar(1) — affects the
-//   escoffier_rehab_diet_heal only (a heal, not a compared damage output). SKIP (pre-existing gap).
+//   escoffier_rehab_diet_heal only (a heal). PORTED below (the ascension gate is always-active at the
+//   canonical A6 build every oracle rep uses, matching the elements-count A4/C1 precedent's ungated
+//   modelling — Escoffier.js:389-393).
 // C5: +3 levels to Scoring Cuts (burst). Raw cons[4] char_skill_burst_bonus:3.
 // C6: ConditionStatic display-only (text_percent_dmg:500). Actual damage is the
 //   escoffier_special_grade_frozen_parfait_dmg feature above. No flat stat needed.
@@ -265,6 +267,12 @@ const charConditions: readonly Condition[] = [
   },
   // C3: +3 levels to elemental skill (Low Temperature Cooking).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
+  // C4: crit_dmg_escofier_heal +100 — the escoffier_rehab_diet_heal feature already carries
+  // critDamageBonuses:['crit_dmg_escofier_heal'] (reads this stat via cStat); previously never
+  // injected → the heal's crit-dmg leg stayed 0. Raw Escoffier.js:389-393 (stats injection, same
+  // mechanism as the C1 crit_dmg_cryo entry above); the ConditionAscensionChar(1) sub-gate is
+  // always-active at the canonical A6 build (see note above).
+  { type: "constellation", constellation: 4, stats: { crit_dmg_escofier_heal: 100 } },
   // C5: +3 levels to burst (Scoring Cuts).
   { type: "constellation", constellation: 5, settings: { char_skill_burst_bonus: 3 } },
 ];

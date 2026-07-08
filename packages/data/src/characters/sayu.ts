@@ -8,7 +8,7 @@
  *
  * Heals (sayu_heal, sayu_mujimuji_heal, sayu_mujimuji_add_heal, sayu_mujimuji_swirl_heal)
  * modelled as output:{kind:"heal"} (P3.5.3). The C6 mastery multipliers on the two
- * mujimuji heals are constellation-gated → omitted at solo C0.
+ * mujimuji heals are constellation-gated and now modelled (300% mastery, cap 6000).
  *
  * sayu_mujimuji_dmg uses a FeatureMultiplierSayuBurst second multiplier conditional on
  * constellation 6 — inactive at C0; only s3.p4 contributes.
@@ -280,14 +280,23 @@ const features: readonly Feature[] = [
       { leveling: "char_skill_burst", values: talents.get("burst.sayu_heal_percent"), flatValues: talents.get("burst.sayu_heal_flat") },
     ],
   },
-  // burst.sayu_mujimuji_heal: Fuufuu Windwheel per-tick heal — ATK% (s3.p6) + flat (s3.p5).
-  // raw Sayu.js:400-416 (the C6 mastery multiplier — ConditionConstellation(6) — is gated OFF at C0; omitted).
+  // burst.sayu_mujimuji_heal: Fuufuu Windwheel per-tick heal — ATK% (s3.p6) + flat (s3.p5)
+  // + C6 mastery add-term (300% mastery, capped 6000, kaveh_bloom_heal precedent for a
+  // static-value scaling:"mastery" multiplier). raw Sayu.js:400-416.
   {
     name: "sayu_mujimuji_heal",
     category: "burst",
     output: { kind: "heal" },
     multipliers: [
       { leveling: "char_skill_burst", values: talents.get("burst.sayu_mujimuji_heal_percent"), flatValues: talents.get("burst.sayu_mujimuji_heal_flat") },
+      {
+        scaling: "mastery",
+        leveling: "",
+        source: "constellation6",
+        values: { getValue: () => 300 },
+        capValue: 6000,
+        condition: { type: "constellation", constellation: 6 },
+      },
     ],
   },
   // other.sayu_mujimuji_swirl_heal: A4 swirl heal — EM-scaled (const 120% EM + 300 flat), auto-active at A6.
@@ -302,8 +311,8 @@ const features: readonly Feature[] = [
   },
   // burst.sayu_mujimuji_add_heal: A4 additional heal = 0.2× the mujimuji_heal tree (her scalingMultiplier:0.2,
   // applied to BOTH the ATK% term AND the flat — List.getTree wraps CSum([%×atk, flat]) in CMulti([…, 0.2]);
-  // the engine has no scalingMultiplier field, so wrap both tables by 0.2). raw Sayu.js:432-448.
-  // (C6 mastery multiplier gated OFF at C0; omitted.)
+  // the engine has no scalingMultiplier field, so wrap both tables by 0.2), PLUS the C6 mastery add-term —
+  // a SEPARATE FeatureMultiplier at full 300%/6000 cap (NOT scaled by the 0.2 factor, per raw). raw Sayu.js:432-450.
   {
     name: "sayu_mujimuji_add_heal",
     category: "burst",
@@ -313,6 +322,14 @@ const features: readonly Feature[] = [
         leveling: "char_skill_burst",
         values: { getValue: (level: number) => 0.2 * SayuTalents.s3.p6.getValue(level) },
         flatValues: { getValue: (level: number) => 0.2 * SayuTalents.s3.p5.getValue(level) },
+      },
+      {
+        scaling: "mastery",
+        leveling: "",
+        source: "constellation6",
+        values: { getValue: () => 300 },
+        capValue: 6000,
+        condition: { type: "constellation", constellation: 6 },
       },
     ],
   },
@@ -334,8 +351,8 @@ const features: readonly Feature[] = [
 // C6 "Sleep O'Clock": ConditionStatic, no real stats → SKIP.
 //   (C6 FeatureMultiplierSayuBurst + mastery FeatureMultiplier in features are
 //   ConditionConstellation-gated intra-feature multipliers — the C6 ATK term on sayu_mujimuji_dmg
-//   IS modelled via coefficientFromStat; the C6 mastery multipliers on the two mujimuji HEALS remain
-//   omitted (pre-existing non-damage gap → out of scope for this damage self-buff fix).)
+//   IS modelled via coefficientFromStat; the C6 mastery multipliers on the two mujimuji HEALS are
+//   now modelled too (kaveh_bloom_heal-precedent static "mastery" multiplier, +300%/cap 6000).)
 //
 // Always-on: C2 (dmg_skill_sayu_press +3.3), C3 (+3 burst talent), C5 (+3 skill talent).
 // Sources: raw/genshin_calc_pub/src/js/db/Char/Sayu.js:478-547

@@ -190,6 +190,20 @@ const features: readonly Feature[] = [
     ],
   },
   // --- FeatureHeal: A4 "Stalwart and True" heals (HP-scaled, auto-active at A6) ---
+  // --- C4 "An Oath Abiding" self heal riding the Leonine Bite burst ---
+  // raw: FeatureHeal({ name:'dehya_an_oath_abiding_heal', category:'burst',
+  //   multipliers:[FeatureMultiplier({ scaling:'hp*', source:'constellation4',
+  //     values:new ValueTable([TalentValues.C4SelfHeal=2.5]) })],
+  //   condition:ConditionConstellation({constellation:4}) })  Dehya.js:324-334. No partyHeal → self only.
+  {
+    name: "dehya_an_oath_abiding_heal",
+    category: "burst",
+    output: { kind: "heal" },
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 2.5 }, source: "constellation4" },
+    ],
+  },
   // raw: FeatureHeal({ name:'dehya_stalwart_and_true_heal', category:'other',
   //   multipliers:[FeatureMultiplier({ scaling:'hp*', source:'ascension4',
   //     values:new ValueTable([TalentValues.A4Heal=20]) })],
@@ -229,7 +243,9 @@ const features: readonly Feature[] = [
 //   parity sweep surfaced dehya_field_dmg diverging from cons 2). Lifts dehya_field_dmg (declares
 //   dmg_skill_dehya in damageBonuses).
 // C3 "A Rage Swift as Fire": +3 Elemental Burst talent levels.
-// C4 "An Oath Abiding": heal on burst (text_percent_heal, display-only) → SKIP.
+// C4 "An Oath Abiding": heal on burst (text_percent_heal, display-only) → the display text is
+//   inert; the actual heal is the burst.dehya_an_oath_abiding_heal FeatureHeal above
+//   (display-gap burndown Task 3).
 // C5 "The Alpha Lumine": +3 Elemental Skill talent levels.
 // C6 "The Burning Claws Cleaving": crit_rate_burst +10% (static, already modelled) + ConditionStacks
 //   crit_dmg_burst +15/stack (max 4 = +60%) on her burst hits (modelled below) — was golden-blind

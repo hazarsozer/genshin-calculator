@@ -10,7 +10,9 @@
  *   - Burst: burst_dmg + xianyun_starwicker_dmg.
  *
  * Heals (burst.heal, burst.heal_dot) modelled as output:{kind:"heal"} (ATK-scaled,
- * P3.5.3). The 3 C4 "mystery" heals (ConditionConstellation(4)) stay omitted (solo C0).
+ * P3.5.3). The 3 C4 "mystery" heals (other.xianyun_mystery_{1,2,3}_heal, all
+ * partyHeal:true, ConditionConstellation(4)) are also modelled (display-gap
+ * burndown Task 4).
  *
  * SELF passives (Tier-B, ported):
  *   - A1 `xianyun_galefeather_pursuit` — a plunge crit-rate stacks condition
@@ -213,6 +215,41 @@ const features: readonly Feature[] = [
       { leveling: "char_skill_burst", values: talents.get("burst.heal_dot_percent"), flatValues: talents.get("burst.heal_dot_flat") },
     ],
   },
+  // --- C4 "The Wine-Cellar's Cloudy Vintage" mystery heals (other.xianyun_mystery_{1,2,3}_heal) ---
+  // raw: 3× FeatureHeal({ category:'other', partyHeal:true, multipliers:[FeatureMultiplier({
+  //   source:'constellation4', values:new StatTable('xianyun_mystery_{1,2,3}_heal', [50/80/150]) })],
+  //   condition:ConditionConstellation({constellation:4}) })  Xianyun.js:284-316. No `scaling` field
+  // on any of the three → default atk* (same as heal/heal_dot above). ALL THREE carry
+  // `partyHeal:true` in raw — this corrects an earlier assumption that mystery_1 was self-only;
+  // verified directly against Xianyun.js:284-293 (mystery_1's own FeatureHeal block also sets
+  // `partyHeal: true`, identical to mystery_2/_3). Constant values → leveling:"".
+  {
+    name: "xianyun_mystery_1_heal",
+    category: "other",
+    output: { kind: "heal", partyHeal: true },
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      { scaling: "atk", leveling: "", values: { getValue: () => 50 }, source: "constellation4" },
+    ],
+  },
+  {
+    name: "xianyun_mystery_2_heal",
+    category: "other",
+    output: { kind: "heal", partyHeal: true },
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      { scaling: "atk", leveling: "", values: { getValue: () => 80 }, source: "constellation4" },
+    ],
+  },
+  {
+    name: "xianyun_mystery_3_heal",
+    category: "other",
+    output: { kind: "heal", partyHeal: true },
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      { scaling: "atk", leveling: "", values: { getValue: () => 150 }, source: "constellation4" },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -222,7 +259,9 @@ const features: readonly Feature[] = [
 // C2 "Aloof from the World": ConditionBoolean toggle (atk_percent:20) + a settings-publisher
 //   (xianyun_a4_level:2, the A4 conversion's level-2 tier) — both ported below.
 // C3 "Creations of Star and Moon": +3 burst talent (char_skill_burst_bonus).
-// C4 "Mystery Millet Gourmet": ConditionStatic with text_percent (display-only) — SKIP.
+// C4 "Mystery Millet Gourmet": ConditionStatic with text_percent (display-only) — SKIP; the
+//   actual heals are the other.xianyun_mystery_{1,2,3}_heal features above (display-gap
+//   burndown Task 4).
 // C5 "Astride Rose-Tinted Clouds": +3 skill talent (char_skill_elemental_bonus).
 // C6 "They Call Her Cloud Retainer": ConditionStacksLevels (crit_dmg_xianyun) —
 //   ported below as `cloudkeepersSpirit` (stacks-table, base-inert at 0 stacks).

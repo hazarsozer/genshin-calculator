@@ -54,7 +54,8 @@
  * Transcribed from raw/genshin_calc_pub/src/js/db/generated/CharTalentTables.js:5397.
  *
  * Non-damage output: burst.heal_dot — DEF-scaled burst heal, modelled as output:{kind:"heal"}
- *   (P3.5.3). The separate C6 `other` party heal (ConditionConstellation(6)) stays out (solo C0).
+ *   (P3.5.3). other.xilonen_heal_on_hit — C6-gated DEF-scaled party heal-on-hit, modelled
+ *   (display-gap burndown Task 5).
  * Skipped (display-only, empty damageType → not asserted by the golden harness):
  *   - reaction.crystalize (geo shield/crystallize, damageType "").
  * Geo universals (reaction.electrocharged, reaction.shatter) are auto-emitted by
@@ -248,6 +249,20 @@ const features: readonly Feature[] = [
     output: { kind: "heal" },
     multipliers: [
       { scaling: "def", leveling: "char_skill_burst", values: talents.get("burst.heal_dot_percent"), flatValues: talents.get("burst.heal_dot_flat") },
+    ],
+  },
+  // --- C6 "Imperishable Night Carnival" heal-on-hit party heal (other.xilonen_heal_on_hit) ---
+  // Raw: FeatureHeal, category:'other', partyHeal:true, scaling:'def*', leveling:'char_skill_burst',
+  // values: StatTable('xilonen_heal_on_hit', [C6DefHeal=120]) — a fixed 120% DEF (single-entry
+  // StatTable, constant regardless of level), gated ConditionConstellation(6).
+  // raw/genshin_calc_pub/src/js/db/Char/Xilonen.js:369-378.
+  {
+    name: "xilonen_heal_on_hit",
+    category: "other",
+    output: { kind: "heal", partyHeal: true },
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      { scaling: "def", leveling: "char_skill_burst", values: { getValue: () => 120 } },
     ],
   },
 ];

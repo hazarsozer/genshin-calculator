@@ -20,8 +20,9 @@
  *   - A1's conditional `dmg_pyro` flat bonus is Scarlet-Seal-gated (OFF in the
  *     fixed solo build with no seal toggle) → not folded.
  *   - Constellations C2/C3/C5/C6 are ported (see constellationConditions and the
- *     C6-gated yanfei_charged_4 feature below). C1 and C4's shield are
- *     display-only text rows with nothing to fold → skipped.
+ *     C6-gated yanfei_charged_4 feature below). C1's text_percent is a display-only
+ *     text row with nothing to fold → skipped. C4's shield (other.yanfei_shield) IS a
+ *     real FeatureShield, ported in the features list below (Task 2, display-gap burndown).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/YanFei.js
@@ -172,6 +173,22 @@ const features: readonly Feature[] = [
     element: "pyro",
     multipliers: [{ leveling: "char_skill_attack", values: talents.get("attack.plunge_high") }],
   },
+  // --- C4 shield: other.yanfei_shield ---
+  // FeatureShield, HP-scaled constant (no talent leveling — source:'constellation4',
+  // values:StatTable('yanfei_shield', [45])). Gated ConditionConstellation(4). The prior
+  // header comment dismissed C4's shield as a "display-only text row" — that described
+  // the cons-array text_percent_hp:45 readout; the FeatureShield itself is a separate
+  // features-array entry the display-gap sweep's non-damage fixture now checks.
+  // raw/genshin_calc_pub/src/js/db/Char/YanFei.js:279-290 (values [45], pyro).
+  {
+    name: "yanfei_shield",
+    category: "other",
+    output: { kind: "shield" },
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 45 } },
+    ],
+  },
   // --- Skill: Signed Edict ---
   {
     name: "skill_dmg",
@@ -211,8 +228,9 @@ const BRILLIANCE_DMG_CHARGED: readonly number[] = [
 //     A GATE). text_percent_hp display omitted. raw YanFei.js:379-388.
 // C1: ConditionStatic stats:{text_percent:10} — display-only, SKIP.
 // C3: +3 levels to Signed Edict (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
-// C4: ConditionStatic stats:{text_percent_hp:45} — display-only; shield feature has damageType:""
-//     → skipped per brief (no damage triple, category 'other' in fixture).
+// C4: ConditionStatic stats:{text_percent_hp:45} display row is display-only; but the
+//     FeatureShield itself (other.yanfei_shield, no damage triple, category 'other') is
+//     ported above in the features list (Task 2, display-gap burndown).
 // C5: +3 levels to Done Deal (burst). Raw char-level condition with
 //     subConditions:[ConditionConstellation({constellation:5})].
 // C6: cons-ADDED feature yanfei_charged_4 handled above in features array.

@@ -12,8 +12,9 @@
  * still emitted (the condition gates APPLICATION, not the display) → modelled as
  * output:{kind:"static"} (P3.5.3). skill.heal_dot (FeatureHeal) also modelled.
  *
- * C2 'chevreuse_chain_explosion_dmg' is C2-gated → not active at C0, omit.
- * C6 party heals are C6-gated → omit.
+ * C2 'chevreuse_chain_explosion_dmg' is C2-gated (skill.chevreuse_chain_explosion_dmg feature
+ * above). C6 skill.chevreuse_heal_dot (a second FeatureHeal distinct from the base skill.heal_dot)
+ * is C6-gated (feature above, P3.5.4 display-gap burndown Task 4).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Chevreuse.js
@@ -209,6 +210,22 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.heal_dot_percent"), flatValues: talents.get("skill.heal_dot_flat") },
     ],
   },
+  // --- C6 "In Pursuit of Ending Evil" heal (skill.chevreuse_heal_dot) — distinct from the base
+  // skill.heal_dot above. raw: FeatureHeal({ category:'skill', name:'chevreuse_heal_dot',
+  //   multipliers:[FeatureMultiplier({ scaling:'hp*', source:'constellation6',
+  //     values:new ValueTable([TalentValues.C6PartyHeal=10]) })],
+  //   condition:ConditionConstellation({constellation:6}) })  Chevreuse.js:325-333. No partyHeal
+  // flag on this FeatureHeal in raw (despite the "party heal" C6 name) → self-only, no
+  // `partyHeal:true`. Constant value → leveling:"".
+  {
+    name: "chevreuse_heal_dot",
+    category: "skill",
+    output: { kind: "heal" },
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 10 }, source: "constellation6" },
+    ],
+  },
   // --- A4 "Vertical Force Coordination" static readout: other.atk_bonus = HP → ATK% (capped) ---
   // FeaturePostEffectValue(atkBuffPost = PostEffectStatsHP, percent=StatTable('atk_percent',[AtkBuffValue/1000=0.001]),
   // statCap=StatTable('',[AtkBuffCap=40])), format:'percent'. 'atk_percent' is isPercent → /100 and the format ×100
@@ -235,6 +252,7 @@ const features: readonly Feature[] = [
 // C4 "The Secret to Rapid-Fire Multishots": ConditionStatic display-only → SKIP.
 // C5: +3 levels to Ring of Bursting Grenades (burst). Raw cons[4] settings char_skill_burst_bonus:3.
 // C6 "In Pursuit of Ending Evil": ConditionStacks (dmg_pyro/electro per stack, toggle) → SKIP.
+//   Also unlocks the skill.chevreuse_heal_dot FeatureHeal above (display-gap burndown Task 4).
 // Raw: Chevreuse.js:408-470 (constellation array).
 const constellationConditions: readonly Condition[] = [
   // A1 "Vanguard's Coordinated Tactics" (chevreuse_tactics co-toggle): with a Pyro+Electro-ONLY

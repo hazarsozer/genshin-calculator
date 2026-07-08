@@ -20,7 +20,9 @@
  *   - mizuki_swirl_bonus: A-passive Dreamdrifter swirl-DMG% from EM — PostEffectStatsMastery,
  *     percent=getAlias('skill.mizuki_em_buff'→dmg_reaction_swirl). em_buff(s2.p2)=0.45 per EM →
  *     0.45×mastery_total (≈76.59). The mizuki_dreamdrifter toggle gates APPLICATION not the readout.
- * OMITTED: mizuki_elemental_bonus (C2 display row, constellation-gated, C0 build).
+ *   - mizuki_elemental_bonus: C2 static readout, EM → pyro/hydro/electro/cryo DMG% — 0.04×mastery_total,
+ *     gated ConditionConstellation(2) (feature-level; the mizuki_dreamdrifter toggle is ignored per
+ *     the same FeaturePostEffectValue precedent as mizuki_swirl_bonus).
  *
  * STANCE / PASSIVES (all conditional → OFF in the fixed solo C0 build):
  *   - "Dreamdrifter" (ConditionBoolean) toggles the swirl-EM buff + C1/C2/C6 riders.
@@ -194,6 +196,26 @@ const features: readonly Feature[] = [
     output: { kind: "static" },
     multipliers: [
       { scaling: "mastery", leveling: "char_skill_elemental", values: { getValue: (lv: number) => MizukiTalents.s2.p2.getValue(lv) * 100 } },
+    ],
+  },
+  // --- C2 static readout: other.mizuki_elemental_bonus = EM → pyro/hydro/electro/cryo DMG% ---
+  // buffElemental = PostEffectStatsMastery, percent=[StatTable('dmg_pyro'|'dmg_hydro'|'dmg_electro'|
+  // 'dmg_cryo', [C2ElemBonus/100=0.04])], gated conditions:[mizuki_dreamdrifter, ConditionConstellation(2)]
+  // AND feature condition:ConditionConstellation(2) (Mizuki.js:137-147,293-297). 'dmg_<element>' isPercent
+  // (Stats.js `dmg_` prefix) → her /100 and format:'percent' ×100 CANCEL → displayed = 0.04×mastery_total.
+  // values = C2ElemBonus (=4) folds the percent-format ×100 in, same convention as mizuki_swirl_bonus /
+  // kazuha_crimson_momiji. No levelSetting on buffElemental (a plain constant, not talent-leveled) →
+  // leveling:"" (level is irrelevant since values ignores it). Modelled WITHOUT the mizuki_dreamdrifter
+  // toggle (FeaturePostEffectValue ignores the postEffect's own conditions — the Hu Tao atk-bonus /
+  // kazuha_crimson_momiji precedent) but WITH the feature-level ConditionConstellation(2) gate (both the
+  // postEffect's bonusCondition-equivalent AND the FeaturePostEffectValue's own `condition` are C2 here).
+  {
+    name: "mizuki_elemental_bonus",
+    category: "other",
+    output: { kind: "static" },
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      { scaling: "mastery", leveling: "", values: { getValue: () => 4 } },
     ],
   },
 ];

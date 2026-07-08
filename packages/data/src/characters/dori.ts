@@ -204,6 +204,20 @@ const features: readonly Feature[] = [
       { scaling: "recharge_total", leveling: "", values: { getValue: () => 5 }, capValue: 15 },
     ],
   },
+  // --- C6 "Sprinkling Weight" party heal (skill.dori_sprinkling_weight) ---
+  // Raw: FeatureHeal, category:'skill', partyHeal:1, scaling:'hp*', ValueTable([C6Heal=4]),
+  // ConditionConstellation(6). raw/genshin_calc_pub/src/js/db/Char/Dori.js:294-304. Distinct from
+  // the SELF electro-infusion boolean condition of the same name in constellationConditions below
+  // (Feature.name and Condition.name are separate namespaces).
+  {
+    name: "dori_sprinkling_weight",
+    category: "skill",
+    output: { kind: "heal", partyHeal: true },
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 4 } },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -222,9 +236,11 @@ const features: readonly Feature[] = [
 //   Condition({settings:{allowed_infusion_electro:1}}) (always-on at C6) + a ConditionBoolean
 //   dori_sprinkling_weight {settings:{attack_infusion_electro:1}, text_percent: C6Heal heal}.
 //   The canonical port collapses attack_infusion_electro:1 → attack_infusion:"electro" (the
-//   Diluc-dawn pattern; allowed_infusion is not read by resolveElement). SELF-only (the C6
-//   heal is non-damage, out of scope) → was golden-blind SKIPPED (a diff-parity sweep at
-//   dori_sprinkling_weight surfaced the 30 physical-attack rows diverging only at cons 6).
+//   Diluc-dawn pattern; allowed_infusion is not read by resolveElement). SELF-only → was
+//   golden-blind SKIPPED (a diff-parity sweep at dori_sprinkling_weight surfaced the 30
+//   physical-attack rows diverging only at cons 6). The C6 party heal (also named
+//   "Sprinkling Weight") is a separate FeatureHeal, ported as skill.dori_sprinkling_weight
+//   above (display-gap burndown Task 3).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to elemental skill (Troubleshooter Cannon).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },

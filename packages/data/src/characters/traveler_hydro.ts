@@ -23,10 +23,10 @@
  *
  * NON-DAMAGE outputs:
  *   - skill.traveler_spotless_waters_heal — A1 heal (7% HP, auto-active at A6). Ported P3.5.3.
- *
- * SKIPPED (not C0-unconditional damage triples → excluded by the golden harness,
- * which only asserts non-empty-damageType fixture entries):
- *   - the C4 Pouring Descent shield (ConditionConstellation 4, OFF at C0; non-damage).
+ *   - skill.traveler_pouring_descent_shield — C4 shield, HP-scaled constant 10% (raw
+ *     TravelerHydro.js:325-335, `shield_hp_scale=10`), gated ConditionConstellation(4).
+ *     Ported Task 2 (display-gap burndown); see the feature comment below for the
+ *     `text_percent_hp_2` verification.
  *
  * No always-on passive ATK/crit/DMG bonuses fold in: the A1 marker is a heal,
  * the A4 "Clear Waters" bonus is gated on a zero-valued slider ConditionNumber (its
@@ -206,6 +206,30 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "ascension1", values: { getValue: () => 7 } },
     ],
   },
+  // --- C4 "Pouring Descent II" shield: skill.traveler_pouring_descent_shield ---
+  // FeatureShield, HP-scaled constant (no talent leveling — source:'ascension4',
+  // values:StatTable('traveler_pouring_descent_shield', [shield_hp_scale=10])). Gated
+  // ConditionConstellation(4) (the `source:'ascension4'` field is display-naming only —
+  // the ACTUAL gate raw checks is the constellation condition, same "source doesn't
+  // match condition" quirk as her C4 torrent-surge/A4 term above).
+  // VERIFIED the `text_percent_hp_2:10` flat-component question the task brief raised:
+  // it does NOT belong to this FeatureShield. It lives on a SEPARATE ConditionStatic
+  // display block (raw TravelerHydro.js:425-436, the C4 constellation's description
+  // stats: { text_percent_hp: shield_hp_scale, text_percent_hp_2: 10 }) — a duplicate
+  // display-only readout of the same 10% value (both equal `shield_hp_scale`), not a
+  // second additive term in the shield's `multipliers` list (which has exactly ONE
+  // FeatureMultiplier, TravelerHydro.js:325-334, no flatValues). So this is a plain
+  // single-value percent-of-HP shield, no custom getValue / flatValues baking needed.
+  // raw/genshin_calc_pub/src/js/db/Char/TravelerHydro.js:325-335,433. shield_hp_scale = 10 (:132).
+  {
+    name: "traveler_pouring_descent_shield",
+    category: "skill",
+    output: { kind: "shield" },
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 10 } },
+    ],
+  },
   // Spiritbreath Thorn: ATK-scaling talent% (cannotReact has no effect on the non-reacted path).
   {
     name: "spiritbreath_thorn_dmg",
@@ -228,7 +252,9 @@ const features: readonly Feature[] = [
 // C1 "Swelling Lake": ConditionStatic, no real stats — SKIP.
 // C2 "Trickling Purity": ConditionStatic, no real stats — SKIP.
 // C3 "Pouring Descent": +3 skill talent (char_skill_elemental_bonus).
-// C4 "Pouring Descent II": ConditionStatic with text_percent_hp (display-only) — SKIP.
+// C4 "Pouring Descent II": ConditionStatic cons-array display row (text_percent_hp/_2,
+//   display-only) — SKIP. The actual shield (skill.traveler_pouring_descent_shield) is a
+//   separate FeatureShield in the features list above, ported (Task 2, display-gap burndown).
 // C5 "Tides of Justice": +3 burst talent (char_skill_burst_bonus).
 // C6 "Tides of Justice II": ConditionStatic with text_percent_hp (display-only) — SKIP.
 // Sources: raw/genshin_calc_pub/src/js/db/Char/TravelerHydro.js:400-462

@@ -172,6 +172,21 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "char_skill_burst", values: talents.get("burst.heal") },
     ],
   },
+  // --- C1 "Bringer of Blessing" burst heal (burst.gaming_bringer_of_blessing_heal) ---
+  // raw: FeatureHeal({ category:'burst', multipliers:[FeatureMultiplier({ scaling:'hp*',
+  //   leveling:'char_skill_burst', values:new ValueTable([TalentValues.C1Heal=15]) })],
+  //   condition:ConditionConstellation({constellation:1}) })  Gaming.js:263-272. Constant value
+  // (ValueTable single entry) but leveled per raw's own `leveling:'char_skill_burst'` field, same
+  // shape as fischl_her_pilgrimage_of_bleak's constant-leveled multiplier.
+  {
+    name: "gaming_bringer_of_blessing_heal",
+    category: "burst",
+    output: { kind: "heal" },
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      { scaling: "hp", leveling: "char_skill_burst", values: { getValue: () => 15 }, source: "constellation1" },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -181,7 +196,8 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C Wave-1)
 // ---------------------------------------------------------------------------
-// C1 "Bringer of Blessing": text_percent_heal (display-only) → SKIP.
+// C1 "Bringer of Blessing": text_percent_heal (display-only) is inert; the actual heal is the
+//   burst.gaming_bringer_of_blessing_heal FeatureHeal above (display-gap burndown Task 3).
 // C2 "Plum Blossoms Underfoot": SELF ConditionBoolean toggle (atk_percent:20), gated C2. Now
 //   ported (was a golden-blind SKIP — no golden toggles it).
 // C4 "Soar Across Mountains": ConditionStatic no real stats → SKIP.

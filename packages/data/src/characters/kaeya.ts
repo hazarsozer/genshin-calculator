@@ -142,6 +142,22 @@ const features: readonly Feature[] = [
     element: "cryo",
     multipliers: [{ leveling: "char_skill_burst", values: talents.get("burst.burst_dmg") }],
   },
+  // --- C4 "Frozen Kiss" shield: other.kaeya_shield ---
+  // FeatureShield, HP-scaled constant (no talent leveling — source:'constellation4',
+  // values:ValueTable([C4Shield=30])). Gated ConditionConstellation(4). The constellation
+  // comment block below flags this cons's shield as "not in the golden fixture → SKIP" —
+  // that was true of the old damage-only golden gate; the display-gap sweep added a
+  // non-damage `other.kaeya_shield` fixture entry this feature must satisfy.
+  // raw/genshin_calc_pub/src/js/db/Char/Kaeya.js:279-290. TalentValues.C4Shield = 30 (Kaeya.js:109).
+  {
+    name: "kaeya_shield",
+    category: "other",
+    output: { kind: "shield" },
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 30 } },
+    ],
+  },
   // --- A1 "Cold-Blooded Strike" heal: skill.kaeya_coldblooded_strike = 15% of ATK (FeatureHeal) ---
   // FeatureMultiplier source:'ascension1', ValueTable([A1Heal=15]), no scaling → ATK-default, auto-active at A6.
   // raw/genshin_calc_pub/src/js/db/Char/Kaeya.js:259-270,107
@@ -163,9 +179,10 @@ const features: readonly Feature[] = [
 //   so the 58k DAMAGE goldens are blind; a diff-parity sweep surfaced the 8 normal/charged avg rows
 //   diverging from cons 1). No party.* mirror exists (self-only). raw Kaeya.js:315-324.
 // C2 "Never-Ending Performance": ConditionStatic, no real stats → SKIP.
-// C4 "Frozen Kiss": FeatureShield gated by ConditionConstellation(4) —
-//   shield features are not damage triples (no element/damageType multiplier),
-//   not in the golden fixture → SKIP (no cons-feature flag needed).
+// C4 "Frozen Kiss": FeatureShield gated by ConditionConstellation(4). Not a damage triple
+//   (no element/damageType multiplier) — absent from the DAMAGE golden gate, but the
+//   display-gap browser sweep exercises non-damage shield outputs too; ported as
+//   other.kaeya_shield in the features list above (Task 2, display-gap burndown).
 // C6 "Glacial Whirlwind": ConditionStatic, no real stats → SKIP.
 //
 // Always-on: C3 (+3 skill talent), C5 (+3 burst talent).

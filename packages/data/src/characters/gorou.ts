@@ -205,6 +205,20 @@ const features: readonly Feature[] = [
       { leveling: "char_skill_elemental", values: { getValue: () => 0 }, flatValues: talents.get("skill.gorou_def_bonus") },
     ],
   },
+  // --- C4 "Lapping Hound: Warm as Water" heal (skill.gorou_lapping_hound_heal) ---
+  // Raw: FeatureHeal, category:'skill', scaling:'def*', leveling:'char_skill_elemental',
+  // values: ValueTable([TalentValues.C4Heal=50]) (a fixed 50%, not talent-table leveled —
+  // ValueTable has a single entry so getValue(level) is constant), gated ConditionConstellation(4).
+  // raw/genshin_calc_pub/src/js/db/Char/Gorou.js:266-278.
+  {
+    name: "gorou_lapping_hound_heal",
+    category: "skill",
+    output: { kind: "heal" },
+    condition: { type: "constellation", constellation: 4 },
+    multipliers: [
+      { scaling: "def", leveling: "char_skill_elemental", values: { getValue: () => 50 } },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -227,8 +241,8 @@ const GOROU_DEF_BONUS = [
 // ---------------------------------------------------------------------------
 // C1 "Rushing Hound: Swift as the Wind": ConditionStatic, no real stats → SKIP.
 // C2 "Steady Hound: Steadfast as a Clock": ConditionStatic, no real stats → SKIP.
-// C4 "Lapping Hound: Warm as Water": FeatureHeal gated by ConditionConstellation(4)
-//   (heal feature, not a damage triple → not in golden suite) → SKIP.
+// C4 "Lapping Hound: Warm as Water": FeatureHeal gated by ConditionConstellation(4),
+//   ported above as skill.gorou_lapping_hound_heal (display-gap burndown Task 5).
 // C6 "Inviolable Essence": Condition(crit_dmg_geo) gated by gorou_generals_war_banner
 //   (+ ConditionElementsCount tiers). All three tiers ported below: the banner-only tier
 //   (crit_dmg_geo +10), and the geo-count≥2/≥3 tiers (+10/+20, cumulative) via the

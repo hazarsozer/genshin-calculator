@@ -221,6 +221,22 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.sigewinne_bounce_end_heal") },
     ],
   },
+  // --- C2 "Can the Most Merciful of Spirits Defeat Its Foes" shield: other.sigewinne_bubbly_shield ---
+  // FeatureShield, HP-scaled constant (no talent leveling — source:'constellation2',
+  // values:ValueTable([C2Shield=30])). Gated ConditionConstellation(2). The constellation
+  // comment block below flags C2's shield/text_percent/enemy_res_hydro cluster as "SKIP" —
+  // that covered the display text + the enemy-RES toggle; the FeatureShield itself is a
+  // separate features-array entry the display-gap sweep's non-damage fixture checks.
+  // raw/genshin_calc_pub/src/js/db/Char/Sigewinne.js:291-302. C2Shield = 30 (:132).
+  {
+    name: "sigewinne_bubbly_shield",
+    category: "other",
+    output: { kind: "shield" },
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 30 } },
+    ],
+  },
   // --- A1/C1 "Requires Appropriate Rest" static readout: other.sigewinne_hp_buff = HP-above-30000 → DMG (capped) ---
   // FeaturePostEffectValue(PostEffectStatsHP, exceed=A1MinHP=30000, percent=StatTable('',[A1DmgBonus/1000=0.08,
   // C1DmgBonus/1000=0.1]), statCap=ValueTable([A1DmgBonusMax=2800, C1DmgBonusMax=3500]), levelSetting
@@ -255,7 +271,9 @@ const features: readonly Feature[] = [
 //   appropriate_rest toggle → OFF in canonical fixture. Inert for the damage triple.
 //   Ported for correctness (setting is real, display stats skipped).
 // C2 "Can the Most Merciful of Spirits Defeat Its Foes": ConditionStatic text_percent
-//   (display) + ConditionBoolean enemy_res_hydro (toggle) → SKIP.
+//   (display) + ConditionBoolean enemy_res_hydro (toggle) → SKIP. The C2 shield itself
+//   (other.sigewinne_bubbly_shield) is a separate FeatureShield in the features list
+//   above, ported (Task 2, display-gap burndown).
 // C3 "Can the Loveliest of Spirits Keep Decay at Bay": +3 Elemental Skill levels.
 //   Raw cons[2]: Condition{ settings:{ char_skill_elemental_bonus:3 } }
 // C4: ConditionStatic no real stats → SKIP.

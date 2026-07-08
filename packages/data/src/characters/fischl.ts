@@ -242,6 +242,19 @@ const features: readonly Feature[] = [
       },
     ],
   },
+  // --- C6 party heal riding along with "Her Pilgrimage of Bleak" ---
+  // Raw: FeatureHeal, category:'burst', partyHeal:1, scaling:'hp*', ValueTable([C4BurstHeal=20]),
+  // ConditionConstellation(6). The value table is named "C4BurstHeal" (raw/genshin_calc_pub/src/js/db/Char/Fischl.js:107)
+  // but the feature's produce-gate is ConditionConstellation(6), not 4 (Fischl.js:307-319) — gate at 6.
+  {
+    name: "fischl_her_pilgrimage_of_bleak_heal",
+    category: "burst",
+    output: { kind: "heal", partyHeal: true },
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 20 }, source: "constellation4" },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -256,7 +269,9 @@ const features: readonly Feature[] = [
 //   as fischl_her_pilgrimage_of_bleak feature above.
 // C5 "Against the Fleeing Light": +3 levels to Midnight Phantasmagoria (burst). Raw cons[4] settings char_skill_burst_bonus:3.
 // C6 "Evernight Raven": ConditionStatic (display-only) → SKIP; damage modeled as
-//   fischl_evernight_raven feature above.
+//   fischl_evernight_raven feature above. C6 also unlocks the party heal riding on
+//   "Her Pilgrimage of Bleak" (fischl_her_pilgrimage_of_bleak_heal feature above,
+//   display-gap burndown Task 3).
 // Raw: db/Char/Fischl.js constellation array (Fischl.js:344-409).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Nightrider (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
