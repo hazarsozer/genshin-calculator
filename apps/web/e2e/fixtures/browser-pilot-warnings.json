@@ -19,7 +19,6 @@
  "constellations/xianyun: fixture feature other.xianyun_mystery_1_heal ABSENT from engine output",
  "constellations/xianyun: fixture feature other.xianyun_mystery_2_heal ABSENT from engine output",
  "constellations/xianyun: fixture feature other.xianyun_mystery_3_heal ABSENT from engine output",
- "constellations/sigewinne: fixture feature other.sigewinne_bubbly_shield ABSENT from engine output",
  "constellations/xilonen: fixture feature other.xilonen_heal_on_hit ABSENT from engine output",
  "constellations/yumemizuki_mizuki: fixture feature other.mizuki_elemental_bonus ABSENT from engine output",
  "constellations/escoffier: FINDING non-damage other.escoffier_rehab_diet_heal: engine 2817.8139890995203 vs oracle 3640.6156739165795",
