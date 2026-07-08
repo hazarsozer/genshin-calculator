@@ -1,5 +1,4 @@
 [
- "constellations/beidou: fixture feature burst.beidou_stormbreaker_shield ABSENT from engine output",
  "constellations/bennett: FINDING non-damage burst.atk_bonus: engine 1695.6479698704002 vs oracle 2338.244720357",
  "constellations/fischl: fixture feature burst.fischl_her_pilgrimage_of_bleak_heal ABSENT from engine output",
  "constellations/kaeya: fixture feature other.kaeya_shield ABSENT from engine output",

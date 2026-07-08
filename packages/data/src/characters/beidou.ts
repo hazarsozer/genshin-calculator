@@ -194,6 +194,22 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
     ],
   },
+  // --- C1 "Sea Beast's Scourge" shield: burst.beidou_stormbreaker_shield ---
+  // FeatureShield, HP-scaled constant (no talent leveling — source:'constellation1',
+  // values:ValueTable([C1Shield=16])). Gated ConditionConstellation(1). The constellation
+  // comment block below flags this cons's `text_percent_shield:16` as display-only SKIP —
+  // that text row lives on the separate ConditionStatic description block; THIS FeatureShield
+  // is a distinct features-array entry (not from the cons array) and was missed by that SKIP note.
+  // raw/genshin_calc_pub/src/js/db/Char/Beidou.js:336-346. TalentValues.C1Shield = 16 (:131).
+  {
+    name: "beidou_stormbreaker_shield",
+    category: "burst",
+    output: { kind: "shield" },
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 16 } },
+    ],
+  },
   // --- Burst: Stormbreaker ---
   // raw/genshin_calc_pub/src/js/db/Char/Beidou.js:302-321
   {
@@ -226,9 +242,9 @@ const features: readonly Feature[] = [
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
-// C1 "Sea Beast's Scourge": ConditionStatic (text_percent_shield:16) display-only → SKIP.
-//   The C1 shield (beidou_stormbreaker_shield) is in the features list above as a
-//   FeatureShield — already emitted from raw features, not from the cons array.
+// C1 "Sea Beast's Scourge": ConditionStatic (text_percent_shield:16) display-only → SKIP for the
+//   cons-array display row; the C1 shield itself (beidou_stormbreaker_shield) is a separate
+//   FeatureShield in the features list above, ported (Task 2, display-gap burndown).
 // C2 "Upon the Turbulent Sea, the Thunder Arises": ConditionStatic display-only → SKIP.
 // C3: +3 levels to Tidecaller (skill). Raw cons[2] settings char_skill_elemental_bonus:3.
 // C4 "Stunning Revenge": ConditionStatic (text_percent_dmg:20) display-only → SKIP.
