@@ -233,6 +233,36 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "", values: { getValue: () => 0.9 }, exceedStatValue: 30000, capValue: 400 },
     ],
   },
+  // --- C6 "Frostfall Storm" static readouts: HP → crit_rate / crit_dmg (capped), gated C6 ---
+  // Raw Nilou.js:165-179,399-410 — critRatePost/critDmgPost = PostEffectStatsHP{
+  // percent:StatTable('crit_rate',[C6CritRate/1000=0.0006]), statCap:StatTable('',[C6CritRateMax=30]),
+  // conditions:[ConditionConstellation(6)] } (crit_dmg: C6CritDmg/1000=0.0012, statCap 60), each exposed
+  // as a FeaturePostEffectValue with its own `condition:ConditionConstellation(6)` (both the postEffect's
+  // OWN condition AND the feature's condition gate C6 — unlike nilou_bloom_bonus above, whose party/asc
+  // gates are on the postEffect only and the readout is ungated). 'crit_rate'/'crit_dmg' are isPercent
+  // (Stats.js `crit_` prefix) → her /100 and format:'percent' ×100 CANCEL, so displayed = ratio×hp_total
+  // capped at the raw statCap. values = ratio×100 (0.06 / 0.12) folds the percent-format ×100 in, same
+  // convention as nilou_bloom_bonus; capValue = the raw statCap directly (30 / 60). Same
+  // {fromStat:"hp",...} ratios already drive the GLOBAL c6CritPostEffects below (crit_rate/crit_dmg
+  // stat bag contributions) — these are the matching per-feature READOUTS the oracle also dumps.
+  {
+    name: "crit_rate_bonus",
+    category: "other",
+    output: { kind: "static" },
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 0.06 }, capValue: 30 },
+    ],
+  },
+  {
+    name: "crit_dmg_bonus",
+    category: "other",
+    output: { kind: "static" },
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 0.12 }, capValue: 60 },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
