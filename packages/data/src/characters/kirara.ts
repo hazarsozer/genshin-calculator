@@ -253,6 +253,32 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_max_percent"), flatValues: talents.get("skill.shield_max_flat") },
     ],
   },
+  // --- C2 "Realm of Mausoleum Cats" party shield: skill.kirara_party_shield ---
+  // New FeatureShield (absent below C2): a party ally's shield is C2PartyShield/100 = 40% of
+  // `skill.shield`'s magnitude (s2.p2 % HP + s2.p3 flat), NOT shield_max_absorption. Raw's
+  // `Talents.getMulti` scales BOTH the percent and flat tables uniformly; our engine's
+  // `scalingMultiplier` field only scales the percent term (compileFeature.ts:436-466 vs
+  // :583-586), so (per the sayu/mizuki/diona/layla convention) the ×0.40 factor is baked into
+  // both values and flatValues via a custom getValue.
+  // raw: FeatureShield{ name:'kirara_party_shield', category:'skill', element:'dendro',
+  //   multipliers:[FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+  //     values:Talents.getMulti({from:'skill.shield_absorption', multi:C2PartyShield/100})}],
+  //   condition:ConditionConstellation({constellation:2})}  Kirara.js:368-382.
+  // C2PartyShield = 40 (raw/genshin_calc_pub/src/js/db/Char/Kirara.js:155)
+  {
+    name: "kirara_party_shield",
+    category: "skill",
+    output: { kind: "shield" },
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: { getValue: (level: number) => 0.4 * KiraraTalents.s2.p2.getValue(level) },
+        flatValues: { getValue: (level: number) => 0.4 * KiraraTalents.s2.p3.getValue(level) },
+      },
+    ],
+  },
   // --- C1 "Material Circulation": extra burst explosion that scales with HP.
   // Raw: FeatureDamageBurst kirara_cat_grass_explosion_extra_dmg, FeatureMultiplierKiraraBurst
   // (floor(HP/8000) capped at 4), damageBonuses:['dmg_burst_kirara'], cannotReact:true.
