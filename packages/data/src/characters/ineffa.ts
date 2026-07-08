@@ -425,6 +425,26 @@ const features: readonly Feature[] = [
       { scaling: "atk", leveling: "", values: { getValue: () => PASSIVE_LUNAR_SCALE }, capValue: PASSIVE_LUNAR_SCALE_CAP },
     ],
   },
+  // --- other.ineffa_lunar_bonus_2: C1 lunar-charged DMG-bonus readout (FeaturePostEffectValue(lunarPost2) → static) ---
+  // Raw Ineffa.js:144-151,331-337 — lunarPost2 = PostEffectStatsAtk({ percent: StatTable('dmg_reaction_lunarcharged',
+  // [C1AtkScale/100 = 0.025]), statCap: ValueTable([C1AtkScaleCap=50]) }), format:'percent', condition:
+  // ConditionAnd([ConditionConstellation(1), ConditionBoolean(ineffa_rectifying_processor)]) on the postEffect,
+  // PLUS the feature's own condition:ConditionConstellation(1). 'dmg_reaction_lunarcharged' isPercent (Stats.js
+  // `dmg_` prefix) → her /100 and format:'percent' ×100 CANCEL = 0.025×atk_total, capped 50. values = C1AtkScale
+  // (=2.5) folds the percent-format ×100 in — the SAME ratio the lunarReactionBonusFromAtk postEffect above
+  // applies (reused constants, not re-derived). Modelled WITHOUT the ineffa_rectifying_processor toggle
+  // (FeaturePostEffectValue ignores the postEffect's own conditions — the sibling ineffa_lunar_bonus precedent)
+  // but WITH the feature-level ConditionConstellation(1) gate (mirrors the postEffect's ConditionAnd's
+  // constellation half).
+  {
+    name: "ineffa_lunar_bonus_2",
+    category: "other",
+    output: { kind: "static" },
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      { scaling: "atk", leveling: "", values: { getValue: () => C1_ATK_SCALE }, capValue: C1_ATK_SCALE_CAP },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
