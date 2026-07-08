@@ -164,16 +164,63 @@ const features: readonly Feature[] = [
   },
   // --- Shield (FeatureShield): skill.layla_base_shield_dmg_absorption ---
   // FeatureMultiplierList: (percent/100 × hp_total) + flat, then × (1 + shield).
+  // C1 "Stars Never Wander" (C1ShieldBonus=20) adds a +20% shield-STRENGTH variant, gated the
+  // same ConditionNot([C1]) / ConditionConstellation(1) shape as Diona's C2 shields. Raw's
+  // `scalingMultiplier` wraps her WHOLE FeatureMultiplierList tree (percent×hp + flat) but our
+  // engine's `scalingMultiplier` field only scales the percent term (compileFeature.ts:436-466 vs
+  // :583-586) — so (per the sayu/mizuki/diona convention) the C1 variant bakes ×1.20 into BOTH
+  // values and flatValues via a custom getValue, rather than the literal `scalingMultiplier` field.
   // raw: FeatureShield{ name:'layla_base_shield_dmg_absorption', category:'skill',
-  //   multipliers:[FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
-  //     values:Talents.getList('skill.layla_base_shield_dmg_absorption')},...] }
-  // C0 (settings:{}) → the ConditionNot[C1] branch is the only active entry → s2.p3 % + s2.p4 flat.
+  //   multipliers:[
+  //     FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+  //       values:Talents.getList('skill.layla_base_shield_dmg_absorption'), condition:ConditionNot([C1])},
+  //     FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+  //       scalingMultiplier:1+C1ShieldBonus/100, values:Talents.getList('skill.layla_base_shield_dmg_absorption'),
+  //       condition:ConditionConstellation({constellation:1})},
+  //   ]}  Layla.js:268-302.
+  // C1ShieldBonus = 20 (raw/genshin_calc_pub/src/js/db/Char/Layla.js:125)
   {
     name: "layla_base_shield_dmg_absorption",
     category: "skill",
     output: { kind: "shield" },
     multipliers: [
-      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.layla_base_shield_dmg_absorption"), flatValues: talents.get("skill.layla_base_shield_dmg_absorption_flat") },
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.layla_base_shield_dmg_absorption"),
+        flatValues: talents.get("skill.layla_base_shield_dmg_absorption_flat"),
+        condition: { type: "not", items: [{ type: "constellation", constellation: 1 }] },
+      },
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: { getValue: (level: number) => 1.2 * LaylaTalents.s2.p3.getValue(level) },
+        flatValues: { getValue: (level: number) => 1.2 * LaylaTalents.s2.p4.getValue(level) },
+        condition: { type: "constellation", constellation: 1 },
+      },
+    ],
+  },
+  // --- C1 party shield: skill.layla_party_shield ---
+  // New FeatureShield (absent below C1); the C1-variant magnitude above (already ×1.20) further ×
+  // C1PartyShield/100 = ×0.35 → factor 1.20×0.35 = 0.42, baked into both tables (same convention).
+  // raw: FeatureShield{ name:'layla_party_shield', category:'skill',
+  //   multipliers:[FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+  //     scalingMultiplier:(1+C1ShieldBonus/100)*(C1PartyShield/100),
+  //     values:Talents.getList('skill.layla_base_shield_dmg_absorption')}],
+  //   condition:ConditionConstellation({constellation:1})}  Layla.js:303-317.
+  // C1PartyShield = 35 (raw/genshin_calc_pub/src/js/db/Char/Layla.js:126)
+  {
+    name: "layla_party_shield",
+    category: "skill",
+    output: { kind: "shield" },
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: { getValue: (level: number) => 0.42 * LaylaTalents.s2.p3.getValue(level) },
+        flatValues: { getValue: (level: number) => 0.42 * LaylaTalents.s2.p4.getValue(level) },
+      },
     ],
   },
   // --- Burst: Dream of the Star-Stream Shaker (cryo) ---

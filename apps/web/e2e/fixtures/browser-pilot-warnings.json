@@ -11,8 +11,6 @@
  "constellations/dori: fixture feature skill.dori_sprinkling_weight ABSENT from engine output",
  "constellations/nilou: fixture feature other.crit_dmg_bonus ABSENT from engine output",
  "constellations/nilou: fixture feature other.crit_rate_bonus ABSENT from engine output",
- "constellations/layla: FINDING non-damage skill.layla_base_shield_dmg_absorption: engine 9780.806015137656 vs oracle 11736.967218165186",
- "constellations/layla: fixture feature skill.layla_party_shield ABSENT from engine output",
  "constellations/yaoyao: fixture feature skill.yaoyao_megaradish_heal ABSENT from engine output",
  "constellations/dehya: fixture feature burst.dehya_an_oath_abiding_heal ABSENT from engine output",
  "constellations/baizhu: fixture feature skill.baizhu_gossamer_splice_heal ABSENT from engine output",
