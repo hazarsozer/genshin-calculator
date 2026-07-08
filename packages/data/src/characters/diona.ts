@@ -138,21 +138,51 @@ const features: readonly Feature[] = [
   // --- Shields (FeatureShield): skill.shield_press, skill.shield_hold ---
   // FeatureMultiplierList: (percent/100 × hp_total) + flat, then × (1 + shield).
   // Both scale from the same base table (s2.p2 % + s2.p3 flat); hold = 1.75× both.
-  // C0 (settings:{}) → ConditionNot[C2] branch active → use base tables.
+  // C2 "Shaken, Not Purred" (TalentValues.C2ShieldBonus=15) adds a +15% shield-STRENGTH
+  // variant on each: press ratio 1×→1.15×, hold ratio 1.75×→(1.75+0.15)=1.90×. Raw gates
+  // the base term ConditionNot([C2]) and adds a second ConditionConstellation(2) term whose
+  // `scalingMultiplier` wraps her WHOLE FeatureMultiplierList tree (percent×hp + flat) — our
+  // engine's `scalingMultiplier` field only scales the percent term, NOT flatValues
+  // (compileFeature.ts:436-466 vs :583-586), so (per the sayu/mizuki convention) the C2
+  // variant bakes the ratio into BOTH values and flatValues via a custom getValue, exactly
+  // like the existing hold 1.75× pattern below, rather than using the `scalingMultiplier` field.
   // raw: FeatureShield{name:'shield_press', category:'skill', element:'cryo',
-  //   multipliers:[FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
-  //     values:Talents.getList('skill.diona_base_shield_dmg_absorption'), condition:ConditionNot([C2])},...]}
+  //   multipliers:[
+  //     FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+  //       values:Talents.getList('skill.diona_base_shield_dmg_absorption'), condition:ConditionNot([C2])},
+  //     FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+  //       values:Talents.getMulti({from:'skill.diona_base_shield_dmg_absorption',multi:1+C2ShieldBonus/100}),
+  //       condition:ConditionConstellation({constellation:2})},
+  //   ]}  Diona.js:253-278.
   // raw: FeatureShield{name:'shield_hold', category:'skill', element:'cryo',
-  //   multipliers:[FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
-  //     values:Talents.getMulti({from:'skill.diona_base_shield_dmg_absorption',multi:1.75}),
-  //     condition:ConditionNot([C2])},...]}
-  // ShieldHoldRatio = 1.75 (raw/genshin_calc_pub/src/js/db/Char/Diona.js:129)
+  //   multipliers:[
+  //     FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+  //       values:Talents.getMulti({from:'skill.diona_base_shield_dmg_absorption',multi:1.75}),
+  //       condition:ConditionNot([C2])},
+  //     FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+  //       values:Talents.getMulti({from:'skill.diona_base_shield_dmg_absorption',multi:1.75+C2ShieldBonus/100}),
+  //       condition:ConditionConstellation({constellation:2})},
+  //   ]}  Diona.js:279-303.
+  // ShieldHoldRatio = 1.75, C2ShieldBonus = 15 (raw/genshin_calc_pub/src/js/db/Char/Diona.js:129,134)
   {
     name: "shield_press",
     category: "skill",
     output: { kind: "shield" },
     multipliers: [
-      { scaling: "hp", leveling: "char_skill_elemental", values: talents.get("skill.shield_percent"), flatValues: talents.get("skill.shield_flat") },
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: talents.get("skill.shield_percent"),
+        flatValues: talents.get("skill.shield_flat"),
+        condition: { type: "not", items: [{ type: "constellation", constellation: 2 }] },
+      },
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: { getValue: (level: number) => 1.15 * DionaTalents.s2.p2.getValue(level) },
+        flatValues: { getValue: (level: number) => 1.15 * DionaTalents.s2.p3.getValue(level) },
+        condition: { type: "constellation", constellation: 2 },
+      },
     ],
   },
   {
@@ -165,6 +195,59 @@ const features: readonly Feature[] = [
         leveling: "char_skill_elemental",
         values: { getValue: (level: number) => 1.75 * DionaTalents.s2.p2.getValue(level) },
         flatValues: { getValue: (level: number) => 1.75 * DionaTalents.s2.p3.getValue(level) },
+        condition: { type: "not", items: [{ type: "constellation", constellation: 2 }] },
+      },
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: { getValue: (level: number) => 1.9 * DionaTalents.s2.p2.getValue(level) },
+        flatValues: { getValue: (level: number) => 1.9 * DionaTalents.s2.p3.getValue(level) },
+        condition: { type: "constellation", constellation: 2 },
+      },
+    ],
+  },
+  // --- C2 party shields: skill.party_shield_press, skill.party_shield_hold ---
+  // New FeatureShields (absent below C2); each is the C2-variant magnitude above (already ×1.15 /
+  // ×1.90) further × C2PartyShield/100 = ×0.5 — i.e. a party ally's shield is 50% as strong as
+  // Diona's own C2-boosted shield. Both tables (percent + flat) scaled uniformly (same
+  // custom-getValue convention as the C2 variants above): press factor = 1.15×0.5 = 0.575;
+  // hold factor = 1.90×0.5 = 0.95.
+  // raw: FeatureShield{name:'party_shield_press', category:'skill', element:'cryo',
+  //   multipliers:[FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+  //     values:Talents.getMulti({from:'skill.diona_base_shield_dmg_absorption',
+  //       multi:(1+C2ShieldBonus/100)*C2PartyShield/100})}],
+  //   condition:ConditionConstellation({constellation:2})}  Diona.js:304-318.
+  // raw: FeatureShield{name:'party_shield_hold', category:'skill', element:'cryo',
+  //   multipliers:[FeatureMultiplierList{scaling:'hp*', leveling:'char_skill_elemental',
+  //     values:Talents.getMulti({from:'skill.diona_base_shield_dmg_absorption',
+  //       multi:(1.75+C2ShieldBonus/100)*(C2PartyShield/100)})}],
+  //   condition:ConditionConstellation({constellation:2})}  Diona.js:319-335.
+  // C2PartyShield = 50 (raw/genshin_calc_pub/src/js/db/Char/Diona.js:133)
+  {
+    name: "party_shield_press",
+    category: "skill",
+    output: { kind: "shield" },
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: { getValue: (level: number) => 0.575 * DionaTalents.s2.p2.getValue(level) },
+        flatValues: { getValue: (level: number) => 0.575 * DionaTalents.s2.p3.getValue(level) },
+      },
+    ],
+  },
+  {
+    name: "party_shield_hold",
+    category: "skill",
+    output: { kind: "shield" },
+    condition: { type: "constellation", constellation: 2 },
+    multipliers: [
+      {
+        scaling: "hp",
+        leveling: "char_skill_elemental",
+        values: { getValue: (level: number) => 0.95 * DionaTalents.s2.p2.getValue(level) },
+        flatValues: { getValue: (level: number) => 0.95 * DionaTalents.s2.p3.getValue(level) },
       },
     ],
   },

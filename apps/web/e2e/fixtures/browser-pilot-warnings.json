@@ -1,10 +1,6 @@
 [
  "constellations/beidou: fixture feature burst.beidou_stormbreaker_shield ABSENT from engine output",
  "constellations/bennett: FINDING non-damage burst.atk_bonus: engine 1695.6479698704002 vs oracle 2338.244720357",
- "constellations/diona: fixture feature skill.party_shield_hold ABSENT from engine output",
- "constellations/diona: fixture feature skill.party_shield_press ABSENT from engine output",
- "constellations/diona: FINDING non-damage skill.shield_hold: engine 9438.035538070475 vs oracle 10247.01001276223",
- "constellations/diona: FINDING non-damage skill.shield_press: engine 5393.163164611699 vs oracle 6202.137639303455",
  "constellations/fischl: fixture feature burst.fischl_her_pilgrimage_of_bleak_heal ABSENT from engine output",
  "constellations/kaeya: fixture feature other.kaeya_shield ABSENT from engine output",
  "constellations/yanfei: fixture feature other.yanfei_shield ABSENT from engine output",
