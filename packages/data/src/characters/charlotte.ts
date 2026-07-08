@@ -4,7 +4,8 @@
  * 3-hit normal combo (all cryo), cryo charged hit, cryo plunge, cryo
  * spiritbreath thorn (from normals, also damageType=charged), cryo skill
  * (press / hold / snappy-silhouette mark / focused-impression mark), cryo burst
- * (burst_dmg + kamera_dmg). Heals (heal, charlotte_kamera_heal) have no
+ * (burst_dmg + kamera_dmg). Heals (heal, charlotte_kamera_heal,
+ * charlotte_verification_heal [C1], charlotte_coordinate_heal [C6]) have no
  * damageType and are skipped by the golden harness.
  *
  * A4 "Diversified Investigation" — two ConditionStaticLevel paths:
@@ -261,6 +262,37 @@ const features: readonly Feature[] = [
       },
     ],
   },
+  // --- C1 "A Need to Verify Facts" burst heal (burst.charlotte_verification_heal) ---
+  // raw: FeatureHeal({ category:'burst', name:'charlotte_verification_heal',
+  //   multipliers:[FeatureMultiplier({ source:'constellation1',
+  //     values:new ValueTable([TalenValues.C1VerificationHeal=80]) })],
+  //   condition:ConditionConstellation({constellation:1}) })  Charlotte.js:347-355. No `scaling`
+  // field in raw → default atk* (same as heal/charlotte_kamera_heal above). No leveling table
+  // (constant value) → leveling:"".
+  {
+    name: "charlotte_verification_heal",
+    category: "burst",
+    output: { kind: "heal" },
+    condition: { type: "constellation", constellation: 1 },
+    multipliers: [
+      { scaling: "atk", leveling: "", values: { getValue: () => 80 }, source: "constellation1" },
+    ],
+  },
+  // --- C6 "A Summation of Interest" burst heal (burst.charlotte_coordinate_heal) ---
+  // raw: FeatureHeal({ category:'burst', name:'charlotte_coordinate_heal',
+  //   multipliers:[FeatureMultiplier({ source:'constellation6',
+  //     values:new ValueTable([TalenValues.C6CoordHeal=42]) })],
+  //   condition:ConditionConstellation({constellation:6}) })  Charlotte.js:375-383. Default atk*
+  // scaling, constant value, riding alongside the C6 charlotte_coordinate_dmg feature above.
+  {
+    name: "charlotte_coordinate_heal",
+    category: "burst",
+    output: { kind: "heal" },
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      { scaling: "atk", leveling: "", values: { getValue: () => 42 }, source: "constellation6" },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -282,8 +314,8 @@ const a4DiffOrigin: Condition = {
 // ---------------------------------------------------------------------------
 // Constellation conditions (P2.C)
 // ---------------------------------------------------------------------------
-// C1 "A Need to Verify Facts": ConditionStatic display-only (charlotte_verification_heal is
-//    a FeatureHeal with damageType:"" — outside coverage gate; no flat-stat condition).
+// C1 "A Need to Verify Facts": ConditionStatic display-only — no flat-stat condition; the actual
+//    heal is the burst.charlotte_verification_heal FeatureHeal above (display-gap burndown Task 4).
 // C2 "A Duty to Pursue Truth": ConditionStacks charlotte_pursue_truth (atk_percent +10/stack, max 3
 //    = +30% ATK on every hit), gated C2. SELF buff (no party.* mirror) — was golden-blind SKIPPED;
 //    modelled below. raw Charlotte.js:443-446 (constellation[1]).
@@ -292,7 +324,9 @@ const a4DiffOrigin: Condition = {
 //    scalingMultiplier ×1.1 gate on her 3 burst damage features (folded into the feature multipliers
 //    above via c4OverseeGate). Its own stat is text_percent_dmg (display) → no stat condition here.
 // C5: +3 levels to Freezing Point Composition (skill). Raw cons[4] settings char_skill_elemental_bonus:3.
-// C6 "A Summation of Interest": cons-added feature above; ConditionStatic display wrapper → no condition here.
+// C6 "A Summation of Interest": cons-added feature above; ConditionStatic display wrapper → no
+//    condition here. Also unlocks the burst.charlotte_coordinate_heal FeatureHeal above
+//    (display-gap burndown Task 4).
 // Raw: Charlotte.js constellation array (Charlotte.js:424-493).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to elemental burst.
