@@ -9,9 +9,10 @@
  * first multiplier's StatTable name (her Feature2 name-fallback pattern). In our
  * port, every feature gets an explicit name matching the fixture key.
  *
- * Heals (yaoyao_radish_heal, yaoyao_in_others_shoes_heal, yaoyao_white_radish_heal)
- * and other.mastery_bonus are non-damage outputs (empty damageType) → modelled as
- * output:{kind:"heal"/"static"} (P3.5.3). All HP-scaled (no healing-bonus passive).
+ * Heals (yaoyao_radish_heal, yaoyao_in_others_shoes_heal, yaoyao_white_radish_heal,
+ * yaoyao_megaradish_heal [C6]) and other.mastery_bonus are non-damage outputs (empty
+ * damageType) → modelled as output:{kind:"heal"/"static"} (P3.5.3 / Task 4). All
+ * HP-scaled (no healing-bonus passive).
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Yaoyao.js
@@ -193,6 +194,21 @@ const features: readonly Feature[] = [
       { scaling: "hp", leveling: "ascension4", values: { getValue: () => 0.8 } },
     ],
   },
+  // --- C6 "Beneficent" skill heal (skill.yaoyao_megaradish_heal) — distinct from
+  // skill.yaoyao_radish_heal above. raw: FeatureHeal({ category:'skill',
+  //   multipliers:[FeatureMultiplier({ scaling:'hp*', source:'constellation6',
+  //     values:new StatTable('yaoyao_megaradish_heal', [7.5]) })],
+  //   condition:ConditionConstellation({constellation:6}) })  Yaoyao.js:285-295. No partyHeal
+  // flag in raw → self-only. No leveling table (constant value) → leveling:"".
+  {
+    name: "yaoyao_megaradish_heal",
+    category: "skill",
+    output: { kind: "heal" },
+    condition: { type: "constellation", constellation: 6 },
+    multipliers: [
+      { scaling: "hp", leveling: "", values: { getValue: () => 7.5 }, source: "constellation6" },
+    ],
+  },
   // burst.yaoyao_white_radish_heal: party heal, FeatureMultiplierList scaling hp*, getList = [s3.p2 (%), s3.p3 (flat)].
   // raw/genshin_calc_pub/src/js/db/Char/Yaoyao.js:108-115,325-334.
   {
@@ -230,7 +246,8 @@ const features: readonly Feature[] = [
 // C5: +3 levels to Moonjade Descent (burst).
 //   Raw cons[4] settings char_skill_burst_bonus:3. Yaoyao.js:420-430.
 // C6 "Beneficent": ConditionStatic (display-only text_percent_atk/heal) → SKIP.
-//   The actual C6 damage is the yaoyao_megaradish_dmg feature above.
+//   The actual C6 damage is the yaoyao_megaradish_dmg feature above; the actual C6 heal is the
+//   skill.yaoyao_megaradish_heal feature above (display-gap burndown Task 4).
 const constellationConditions: readonly Condition[] = [
   // C3: +3 levels to Raphanus Sky Cluster (elemental skill).
   { type: "constellation", constellation: 3, settings: { char_skill_elemental_bonus: 3 } },
