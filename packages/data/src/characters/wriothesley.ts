@@ -48,8 +48,6 @@
  *   as one burst multiplier (s3.p1), matching the fixture.
  *
  * SKIPPED (not damage triples / not active in solo C0):
- *   - wriothesley_vaulting_fist_heal (FeatureHeal, damageType "" → display-only, the
- *     golden harness filters non-damageType entries; an HP-scaling heal, not damage).
  *   - chilling-penalty / reckoning-for-sin / redemption conditions (toggles & stacks,
  *     OFF in the fixed solo build) and all constellations (C0 build).
  *   - reaction.{superconduct,electrocharged,shatter}: emitted generically from the
@@ -224,9 +222,17 @@ const features: readonly Feature[] = [
   // raw: FeatureHeal({ name:'wriothesley_vaulting_fist_heal', category:'attack',
   //   multipliers:[{ scaling:'hp*', source:'ascension1', leveling:'wriothesley_heal_level',
   //     values: new ValueTable([30, 50]) }] })  Wriothesley.js:229-240.
-  // wriothesley_heal_level is set to 2 by ConditionStatic C4 (always-on at canonical A6):
-  //   Wriothesley.js:353-360: settings:{ wriothesley_heal_level:2 }, subConditions:[ConditionAscensionChar(1)].
-  // ValueTable([30, 50]): getValue(1)=30, getValue(2)=50. Level 2 → 50% HP.
+  // wriothesley_heal_level is published as 2 by the `wriothesley_heal_level` static condition
+  // below (constellationConditions) — raw's ConditionStatic lives INSIDE constellation[3] (=
+  // C4 "Redemption for the Suffering", Wriothesley.js:350-360), gated ConditionAscensionChar(1)
+  // (dropped — always-on at canonical A6, same precedent as varesa_a1_level/wanderer_passive_level)
+  // AND constellation>=4 (the array-index gate — real and load-bearing: weapon-passive/wriothesley.json
+  // (C0) expects the level-1 value 8045.69, constellations/wriothesley.json (C6) expects the
+  // level-2 value 13409.48). The task brief's "ASCENSION-gated, not constellation" premise missed
+  // this C4 wrapper — corrected via the weapon-passive/base family cross-check.
+  // Without the publisher, `ctx.settings["wriothesley_heal_level"]` is unset →
+  // compileFeature's settings-driven leveling fallback defaults to level 1 → stuck at 30%
+  // (the bug this fixes). ValueTable([30, 50]): getValue(1)=30, getValue(2)=50 → 50% HP.
   {
     name: "wriothesley_vaulting_fist_heal",
     category: "attack",
@@ -265,9 +271,18 @@ const features: readonly Feature[] = [
 // C6 "Esteem for the Innocent": ConditionStatic crit_rate_charged_wriothesley:10 +
 //   crit_dmg_charged_wriothesley:80, subConditions:[ConditionAscensionChar(1)] → always-on.
 //   Keys already in wriothesley_vaulting_fist_dmg critRateBonuses/critDamageBonuses.
-// Sources: raw/genshin_calc_pub/src/js/db/Char/Wriothesley.js:312-430
+// C4 "Redemption for the Suffering" (heal component): ConditionStatic publishing
+//   wriothesley_heal_level:2, gated constellation[3]=C4 AND ConditionAscensionChar(1)
+//   (ascension arm dropped — always-on at canonical A6). Read by
+//   wriothesley_vaulting_fist_heal above.
+// Sources: raw/genshin_calc_pub/src/js/db/Char/Wriothesley.js:312-430,350-360
 
 const constellationConditions: readonly Condition[] = [
+  // C4 heal-level publisher — pure-ascension arm dropped (always-on at canonical A6),
+  // matching the varesa_a1_level / wanderer_passive_level precedent for the ascension gate;
+  // the constellation:4 gate is real (weapon-passive/base @C0 expects level-1, constellations @C6
+  // expects level-2 — verified via cross-family fixture check).
+  { type: "constellation", constellation: 4, settings: { wriothesley_heal_level: 2 } },
   // C1 — dmg_charged_wriothesley +150% (charged attack DMG on Vaulting Fist).
   // Wired via damageBonuses:['dmg_charged_wriothesley'] on wriothesley_vaulting_fist_dmg.
   { type: "constellation", constellation: 1, stats: { dmg_charged_wriothesley: 150 } },
