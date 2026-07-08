@@ -184,20 +184,23 @@ const features: readonly Feature[] = [
   },
   // --- skill.sara_atk_bonus: Tengu Juurai self-ATK-buff readout (FeaturePostEffectValue → static) ---
   // Raw Sara.js:107-118,235-239 — atkBuffPost = PostEffectStats{ from:'atk_base' (the wielder's
-  // own white base ATK), percent:getMulti(skill.sara_atk_bonus, 0.01) }, exposed as a
-  // FeaturePostEffectValue. The buff = atk_base × (SaraTalents.s2.p2 @L10 × 0.01) = atk_base ×
-  // 0.77328 (the SAME ratio the partyData Tengu Juurai battery applies — reused below, not
-  // hardcoded). The atk_base scaling now resolves via the eval-bag atk_base emit. The readout is
-  // modelled WITHOUT the atkBuffPost's `sara_tengu_juurai` application gate → the canonical value
-  // the oracle dumps. The engine divides values.getValue()/100, so getValue() returns the raw
-  // skill atk_bonus table value (77.328; /100 → 0.77328). NEVER baked.
+  // own white base ATK), levelSetting:'char_skill_elemental', percent:getMulti(skill.sara_atk_bonus,
+  // 0.01) }, exposed as a FeaturePostEffectValue. atkBuffPost carries NO maxLevelSetting (unlike
+  // the party-buff postEffect at Sara.js:410-411, which IS clamped at 10) — PostEffect.getLevel
+  // only clamps when `maxLevelSetting > 1`, so the self readout's talent level is the UNCLAMPED
+  // build skill level. Relevelled via leveling:"char_skill_elemental" (Hu-Tao pattern, commit
+  // 4b785f5) — was pinned `getValue(10)`, which silently ignored any constellation `_bonus`
+  // offset on the elemental skill slot. atk_base × (SaraTalents.s2.p2@level / 100) = atk_base ×
+  // 0.77328 at L10 (the SAME ratio the partyData Tengu Juurai battery applies). The atk_base
+  // scaling resolves via the eval-bag atk_base emit. The readout is modelled WITHOUT the
+  // atkBuffPost's `sara_tengu_juurai` application gate → the canonical value the oracle dumps.
   {
     name: "sara_atk_bonus",
     category: "skill",
     output: { kind: "static" },
     multipliers: [
-      // scaling atk_base × (SaraTalents.s2.p2@L10 / 100) = atk_base × 0.77328.
-      { scaling: "atk_base", leveling: "", values: { getValue: () => SaraTalents.s2.p2.getValue(10) } },
+      // scaling atk_base × (SaraTalents.s2.p2@level / 100).
+      { scaling: "atk_base", leveling: "char_skill_elemental", values: SaraTalents.s2.p2 },
     ],
   },
   // --- skill.sara_decorum: A4 "Decorum" ER recharge readout (FeaturePostEffectValue → static) ---
