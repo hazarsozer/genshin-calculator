@@ -9108,6 +9108,28 @@
   ]
  },
  {
+  "id": "party-buffs/citlali-c1-on-ganyu",
+  "char": "ganyu",
+  "hash": "eyJjaGFyYWN0ZXJLZXkiOiJnYW55dSIsIndlYXBvbktleSI6ImFsbGV5X2h1bnRlciIsImNoYXJMZXZlbCI6OTAsImFzY2Vuc2lvbiI6Niwid2VhcG9uTGV2ZWwiOjkwLCJ3ZWFwb25Bc2NlbnNpb24iOjYsInRhbGVudHMiOnsiYXR0YWNrIjoxMCwiZWxlbWVudGFsIjoxMCwiYnVyc3QiOjEwfSwiY29uc3RlbGxhdGlvbiI6MCwid2VhcG9uUmVmaW5lIjoxLCJjb25kaXRpb25zIjp7InRvZ2dsZXMiOnt9LCJzdGFja3MiOnt9fSwiZW5lbXkiOnsibGV2ZWwiOjkwLCJyZXNpc3RhbmNlIjoxMH0sImFydGlmYWN0TW9kZSI6Im1hbnVhbCIsImdvb2RKc29uIjoiIiwibWFudWFsU3RhdHMiOnsiYXRrX2Jhc2UiOjg3MSwiYXRrX3BlcmNlbnQiOjE4LCJjcml0X2RtZ19iYXNlIjo1MCwiY3JpdF9yYXRlX2Jhc2UiOjUsImRlZl9iYXNlIjo4NzYsImRtZ19idXJzdCI6NjQsImRtZ19jaGFyZ2VkIjoxNiwiZG1nX2VsZWN0cm8iOjIsImRtZ19ub3JtYWwiOjgsImRtZ19waHlzIjo0LCJkbWdfc2tpbGwiOjMyLCJocF9iYXNlIjoxMzIyNiwibWFzdGVyeV9iYXNlIjo1NSwicmVjaGFyZ2VfYmFzZSI6MTAwfSwibWFudWFsU2V0cyI6W10sInBhcnR5Ijp7Im1lbWJlcnMiOlt7InNsdWciOiJjaXRsYWxpIiwic2V0dGluZ3MiOnsiY2l0bGFsaV9tYXN0ZXJ5X3RvdGFsIjo5MDAsInBhcnR5LmNpdGxhbGlfcmFkaWFudF9ibGFkZXNfb2ZfY2VudHpvbl9taW1peGNvYWgiOnRydWV9fV19fQ",
+  "checks": [
+   {
+    "featureKey": "attack.ganyu_frostflake_bloom",
+    "avg": 7069,
+    "text": "7,069"
+   },
+   {
+    "featureKey": "skill.skill_dmg",
+    "avg": 5358,
+    "text": "5,358"
+   },
+   {
+    "featureKey": "attack.plunge_high",
+    "avg": 4812,
+    "text": "4,812"
+   }
+  ]
+ },
+ {
   "id": "party-buffs/collei-em-on-alhaitham",
   "char": "alhaitham",
   "hash": "eyJjaGFyYWN0ZXJLZXkiOiJhbGhhaXRoYW0iLCJ3ZWFwb25LZXkiOiJ0aGVfYWxsZXlfZmxhc2giLCJjaGFyTGV2ZWwiOjkwLCJhc2NlbnNpb24iOjYsIndlYXBvbkxldmVsIjo5MCwid2VhcG9uQXNjZW5zaW9uIjo2LCJ0YWxlbnRzIjp7ImF0dGFjayI6MTAsImVsZW1lbnRhbCI6MTAsImJ1cnN0IjoxMH0sImNvbnN0ZWxsYXRpb24iOjAsIndlYXBvblJlZmluZSI6MSwiY29uZGl0aW9ucyI6eyJ0b2dnbGVzIjp7fSwic3RhY2tzIjp7fX0sImVuZW15Ijp7ImxldmVsIjo5MCwicmVzaXN0YW5jZSI6MTB9LCJhcnRpZmFjdE1vZGUiOiJtYW51YWwiLCJnb29kSnNvbiI6IiIsIm1hbnVhbFN0YXRzIjp7ImF0a19iYXNlIjo4NzEsImF0a19wZXJjZW50IjoxOCwiY3JpdF9kbWdfYmFzZSI6NTAsImNyaXRfcmF0ZV9iYXNlIjo1LCJkZWZfYmFzZSI6ODc2LCJkbWdfYnVyc3QiOjY0LCJkbWdfY2hhcmdlZCI6MTYsImRtZ19lbGVjdHJvIjoyLCJkbWdfbm9ybWFsIjo4LCJkbWdfcGh5cyI6NCwiZG1nX3NraWxsIjozMiwiaHBfYmFzZSI6MTMyMjYsIm1hc3RlcnlfYmFzZSI6NTUsInJlY2hhcmdlX2Jhc2UiOjEwMH0sIm1hbnVhbFNldHMiOltdLCJwYXJ0eSI6eyJtZW1iZXJzIjpbeyJzbHVnIjoiY29sbGVpIiwic2V0dGluZ3MiOnsicGFydHkuY29sbGVpX2dpZnRfb2ZfdGhlX3dvb2RzIjp0cnVlfX1dfX0",
@@ -9174,6 +9196,28 @@
   ]
  },
  {
+  "id": "party-buffs/escoffier-cryo-c2-on-ayaka",
+  "char": "kamisato_ayaka",
+  "hash": "eyJjaGFyYWN0ZXJLZXkiOiJrYW1pc2F0b19heWFrYSIsIndlYXBvbktleSI6InRoZV9hbGxleV9mbGFzaCIsImNoYXJMZXZlbCI6OTAsImFzY2Vuc2lvbiI6Niwid2VhcG9uTGV2ZWwiOjkwLCJ3ZWFwb25Bc2NlbnNpb24iOjYsInRhbGVudHMiOnsiYXR0YWNrIjoxMCwiZWxlbWVudGFsIjoxMCwiYnVyc3QiOjEwfSwiY29uc3RlbGxhdGlvbiI6MCwid2VhcG9uUmVmaW5lIjoxLCJjb25kaXRpb25zIjp7InRvZ2dsZXMiOnt9LCJzdGFja3MiOnt9fSwiZW5lbXkiOnsibGV2ZWwiOjkwLCJyZXNpc3RhbmNlIjoxMH0sImFydGlmYWN0TW9kZSI6Im1hbnVhbCIsImdvb2RKc29uIjoiIiwibWFudWFsU3RhdHMiOnsiYXRrX2Jhc2UiOjg3MSwiYXRrX3BlcmNlbnQiOjE4LCJjcml0X2RtZ19iYXNlIjo1MCwiY3JpdF9yYXRlX2Jhc2UiOjUsImRlZl9iYXNlIjo4NzYsImRtZ19idXJzdCI6NjQsImRtZ19jaGFyZ2VkIjoxNiwiZG1nX2VsZWN0cm8iOjIsImRtZ19ub3JtYWwiOjgsImRtZ19waHlzIjo0LCJkbWdfc2tpbGwiOjMyLCJocF9iYXNlIjoxMzIyNiwibWFzdGVyeV9iYXNlIjo1NSwicmVjaGFyZ2VfYmFzZSI6MTAwfSwibWFudWFsU2V0cyI6W10sInBhcnR5Ijp7Im1lbWJlcnMiOlt7InNsdWciOiJlc2NvZmZpZXIiLCJzZXR0aW5ncyI6eyJlc2NvZmZpZXJfYXRrX3RvdGFsIjoyMjAwLCJwYXJ0eV9lc2NvZmZpZXJfZnJlc2hfZnJhZ3JhbnRfc3Rld19pc19hbl9hcnQiOnRydWV9fV19fQ",
+  "checks": [
+   {
+    "featureKey": "burst.ayaka_bladestorm_dmg",
+    "avg": 9946,
+    "text": "9,946"
+   },
+   {
+    "featureKey": "skill.skill_dmg",
+    "avg": 9868,
+    "text": "9,868"
+   },
+   {
+    "featureKey": "burst.ayaka_slashing_dmg",
+    "avg": 8109,
+    "text": "8,109"
+   }
+  ]
+ },
+ {
   "id": "party-buffs/eula-resshred-on-ganyu",
   "char": "ganyu",
   "hash": "eyJjaGFyYWN0ZXJLZXkiOiJnYW55dSIsIndlYXBvbktleSI6ImFsbGV5X2h1bnRlciIsImNoYXJMZXZlbCI6OTAsImFzY2Vuc2lvbiI6Niwid2VhcG9uTGV2ZWwiOjkwLCJ3ZWFwb25Bc2NlbnNpb24iOjYsInRhbGVudHMiOnsiYXR0YWNrIjoxMCwiZWxlbWVudGFsIjoxMCwiYnVyc3QiOjEwfSwiY29uc3RlbGxhdGlvbiI6MCwid2VhcG9uUmVmaW5lIjoxLCJjb25kaXRpb25zIjp7InRvZ2dsZXMiOnt9LCJzdGFja3MiOnt9fSwiZW5lbXkiOnsibGV2ZWwiOjkwLCJyZXNpc3RhbmNlIjoxMH0sImFydGlmYWN0TW9kZSI6Im1hbnVhbCIsImdvb2RKc29uIjoiIiwibWFudWFsU3RhdHMiOnsiYXRrX2Jhc2UiOjg3MSwiYXRrX3BlcmNlbnQiOjE4LCJjcml0X2RtZ19iYXNlIjo1MCwiY3JpdF9yYXRlX2Jhc2UiOjUsImRlZl9iYXNlIjo4NzYsImRtZ19idXJzdCI6NjQsImRtZ19jaGFyZ2VkIjoxNiwiZG1nX2VsZWN0cm8iOjIsImRtZ19ub3JtYWwiOjgsImRtZ19waHlzIjo0LCJkbWdfc2tpbGwiOjMyLCJocF9iYXNlIjoxMzIyNiwibWFzdGVyeV9iYXNlIjo1NSwicmVjaGFyZ2VfYmFzZSI6MTAwfSwibWFudWFsU2V0cyI6W10sInBhcnR5Ijp7Im1lbWJlcnMiOlt7InNsdWciOiJldWxhIiwic2V0dGluZ3MiOnsiZXVsYV9jaGFyX3NraWxsX2VsZW1lbnRhbCI6MTAsInBhcnR5LmV1bGFfaWNld2hpcmxfYnJhbmQiOnRydWV9fV19fQ",
@@ -9192,6 +9236,28 @@
     "featureKey": "attack.plunge_high",
     "avg": 4602,
     "text": "4,602"
+   }
+  ]
+ },
+ {
+  "id": "party-buffs/faruzan-anemodmg-on-wanderer",
+  "char": "wanderer",
+  "hash": "eyJjaGFyYWN0ZXJLZXkiOiJ3YW5kZXJlciIsIndlYXBvbktleSI6InNvbGFyX3BlYXJsIiwiY2hhckxldmVsIjo5MCwiYXNjZW5zaW9uIjo2LCJ3ZWFwb25MZXZlbCI6OTAsIndlYXBvbkFzY2Vuc2lvbiI6NiwidGFsZW50cyI6eyJhdHRhY2siOjEwLCJlbGVtZW50YWwiOjEwLCJidXJzdCI6MTB9LCJjb25zdGVsbGF0aW9uIjowLCJ3ZWFwb25SZWZpbmUiOjEsImNvbmRpdGlvbnMiOnsidG9nZ2xlcyI6e30sInN0YWNrcyI6e319LCJlbmVteSI6eyJsZXZlbCI6OTAsInJlc2lzdGFuY2UiOjEwfSwiYXJ0aWZhY3RNb2RlIjoibWFudWFsIiwiZ29vZEpzb24iOiIiLCJtYW51YWxTdGF0cyI6eyJhdGtfYmFzZSI6ODcxLCJhdGtfcGVyY2VudCI6MTgsImNyaXRfZG1nX2Jhc2UiOjUwLCJjcml0X3JhdGVfYmFzZSI6NSwiZGVmX2Jhc2UiOjg3NiwiZG1nX2J1cnN0Ijo2NCwiZG1nX2NoYXJnZWQiOjE2LCJkbWdfZWxlY3RybyI6MiwiZG1nX25vcm1hbCI6OCwiZG1nX3BoeXMiOjQsImRtZ19za2lsbCI6MzIsImhwX2Jhc2UiOjEzMjI2LCJtYXN0ZXJ5X2Jhc2UiOjU1LCJyZWNoYXJnZV9iYXNlIjoxMDB9LCJtYW51YWxTZXRzIjpbXSwicGFydHkiOnsibWVtYmVycyI6W3sic2x1ZyI6ImZhcnV6YW4iLCJzZXR0aW5ncyI6eyJmYXJ1emFuX2F0a19iYXNlIjo4MDAsInBhcnR5LmZhcnV6YW5fbG9zdF93aXNkb21fb2ZfdGhlX3NldmVuX2NhdmVybnMiOnRydWV9fV19fQ",
+  "checks": [
+   {
+    "featureKey": "burst.burst_dmg",
+    "avg": 6475,
+    "text": "6,475"
+   },
+   {
+    "featureKey": "attack.plunge_high",
+    "avg": 4170,
+    "text": "4,170"
+   },
+   {
+    "featureKey": "attack.charged_hit",
+    "avg": 4131,
+    "text": "4,131"
    }
   ]
  },
@@ -9702,6 +9768,28 @@
   ]
  },
  {
+  "id": "party-buffs/layla-c4-on-itto",
+  "char": "arataki_itto",
+  "hash": "eyJjaGFyYWN0ZXJLZXkiOiJhcmF0YWtpX2l0dG8iLCJ3ZWFwb25LZXkiOiJ0aGVfYmVsbCIsImNoYXJMZXZlbCI6OTAsImFzY2Vuc2lvbiI6Niwid2VhcG9uTGV2ZWwiOjkwLCJ3ZWFwb25Bc2NlbnNpb24iOjYsInRhbGVudHMiOnsiYXR0YWNrIjoxMCwiZWxlbWVudGFsIjoxMCwiYnVyc3QiOjEwfSwiY29uc3RlbGxhdGlvbiI6MCwid2VhcG9uUmVmaW5lIjoxLCJjb25kaXRpb25zIjp7InRvZ2dsZXMiOnt9LCJzdGFja3MiOnt9fSwiZW5lbXkiOnsibGV2ZWwiOjkwLCJyZXNpc3RhbmNlIjoxMH0sImFydGlmYWN0TW9kZSI6Im1hbnVhbCIsImdvb2RKc29uIjoiIiwibWFudWFsU3RhdHMiOnsiYXRrX2Jhc2UiOjg3MSwiYXRrX3BlcmNlbnQiOjE4LCJjcml0X2RtZ19iYXNlIjo1MCwiY3JpdF9yYXRlX2Jhc2UiOjUsImRlZl9iYXNlIjo4NzYsImRtZ19idXJzdCI6NjQsImRtZ19jaGFyZ2VkIjoxNiwiZG1nX2VsZWN0cm8iOjIsImRtZ19ub3JtYWwiOjgsImRtZ19waHlzIjo0LCJkbWdfc2tpbGwiOjMyLCJocF9iYXNlIjoxMzIyNiwibWFzdGVyeV9iYXNlIjo1NSwicmVjaGFyZ2VfYmFzZSI6MTAwfSwibWFudWFsU2V0cyI6W10sInBhcnR5Ijp7Im1lbWJlcnMiOlt7InNsdWciOiJsYXlsYSIsInNldHRpbmdzIjp7ImxheWxhX21heF9ocCI6NTAwMDAsInBhcnR5LmxheWxhX3N0YXJyeV9pbGx1bWluYXRpb24iOnRydWV9fV19fQ",
+  "checks": [
+   {
+    "featureKey": "skill.skill_dmg",
+    "avg": 8051,
+    "text": "8,051"
+   },
+   {
+    "featureKey": "attack.itto_kesagiri_final_slash_dmg",
+    "avg": 7188,
+    "text": "7,188"
+   },
+   {
+    "featureKey": "attack.plunge_high",
+    "avg": 4635,
+    "text": "4,635"
+   }
+  ]
+ },
+ {
   "id": "party-buffs/lisa-defshred-on-ganyu",
   "char": "ganyu",
   "hash": "eyJjaGFyYWN0ZXJLZXkiOiJnYW55dSIsIndlYXBvbktleSI6ImFsbGV5X2h1bnRlciIsImNoYXJMZXZlbCI6OTAsImFzY2Vuc2lvbiI6Niwid2VhcG9uTGV2ZWwiOjkwLCJ3ZWFwb25Bc2NlbnNpb24iOjYsInRhbGVudHMiOnsiYXR0YWNrIjoxMCwiZWxlbWVudGFsIjoxMCwiYnVyc3QiOjEwfSwiY29uc3RlbGxhdGlvbiI6MCwid2VhcG9uUmVmaW5lIjoxLCJjb25kaXRpb25zIjp7InRvZ2dsZXMiOnt9LCJzdGFja3MiOnt9fSwiZW5lbXkiOnsibGV2ZWwiOjkwLCJyZXNpc3RhbmNlIjoxMH0sImFydGlmYWN0TW9kZSI6Im1hbnVhbCIsImdvb2RKc29uIjoiIiwibWFudWFsU3RhdHMiOnsiYXRrX2Jhc2UiOjg3MSwiYXRrX3BlcmNlbnQiOjE4LCJjcml0X2RtZ19iYXNlIjo1MCwiY3JpdF9yYXRlX2Jhc2UiOjUsImRlZl9iYXNlIjo4NzYsImRtZ19idXJzdCI6NjQsImRtZ19jaGFyZ2VkIjoxNiwiZG1nX2VsZWN0cm8iOjIsImRtZ19ub3JtYWwiOjgsImRtZ19waHlzIjo0LCJkbWdfc2tpbGwiOjMyLCJocF9iYXNlIjoxMzIyNiwibWFzdGVyeV9iYXNlIjo1NSwicmVjaGFyZ2VfYmFzZSI6MTAwfSwibWFudWFsU2V0cyI6W10sInBhcnR5Ijp7Im1lbWJlcnMiOlt7InNsdWciOiJsaXNhIiwic2V0dGluZ3MiOnsicGFydHkubGlzYV9zdGF0aWNfZWxlY3RyaWNpdHlfZmllbGQiOnRydWV9fV19fQ",
@@ -10142,6 +10230,50 @@
   ]
  },
  {
+  "id": "party-buffs/shenhe-icyquill-on-ayaka",
+  "char": "kamisato_ayaka",
+  "hash": "eyJjaGFyYWN0ZXJLZXkiOiJrYW1pc2F0b19heWFrYSIsIndlYXBvbktleSI6InRoZV9hbGxleV9mbGFzaCIsImNoYXJMZXZlbCI6OTAsImFzY2Vuc2lvbiI6Niwid2VhcG9uTGV2ZWwiOjkwLCJ3ZWFwb25Bc2NlbnNpb24iOjYsInRhbGVudHMiOnsiYXR0YWNrIjoxMCwiZWxlbWVudGFsIjoxMCwiYnVyc3QiOjEwfSwiY29uc3RlbGxhdGlvbiI6MCwid2VhcG9uUmVmaW5lIjoxLCJjb25kaXRpb25zIjp7InRvZ2dsZXMiOnt9LCJzdGFja3MiOnt9fSwiZW5lbXkiOnsibGV2ZWwiOjkwLCJyZXNpc3RhbmNlIjoxMH0sImFydGlmYWN0TW9kZSI6Im1hbnVhbCIsImdvb2RKc29uIjoiIiwibWFudWFsU3RhdHMiOnsiYXRrX2Jhc2UiOjg3MSwiYXRrX3BlcmNlbnQiOjE4LCJjcml0X2RtZ19iYXNlIjo1MCwiY3JpdF9yYXRlX2Jhc2UiOjUsImRlZl9iYXNlIjo4NzYsImRtZ19idXJzdCI6NjQsImRtZ19jaGFyZ2VkIjoxNiwiZG1nX2VsZWN0cm8iOjIsImRtZ19ub3JtYWwiOjgsImRtZ19waHlzIjo0LCJkbWdfc2tpbGwiOjMyLCJocF9iYXNlIjoxMzIyNiwibWFzdGVyeV9iYXNlIjo1NSwicmVjaGFyZ2VfYmFzZSI6MTAwfSwibWFudWFsU2V0cyI6W10sInBhcnR5Ijp7Im1lbWJlcnMiOlt7InNsdWciOiJzaGVuaGUiLCJzZXR0aW5ncyI6eyJwYXJ0eS5zaGVuaGVfaWN5X3F1aWxsIjp0cnVlLCJzaGVuaGVfYXRrX3RvdGFsIjoyMDAwLCJzaGVuaGVfY2hhcl9za2lsbF9lbGVtZW50YWwiOjEwfX1dfX0",
+  "checks": [
+   {
+    "featureKey": "skill.skill_dmg",
+    "avg": 7409,
+    "text": "7,409"
+   },
+   {
+    "featureKey": "burst.ayaka_bladestorm_dmg",
+    "avg": 6891,
+    "text": "6,891"
+   },
+   {
+    "featureKey": "burst.ayaka_slashing_dmg",
+    "avg": 5054,
+    "text": "5,054"
+   }
+  ]
+ },
+ {
+  "id": "party-buffs/sigewinne-skilldmg-on-diluc",
+  "char": "diluc",
+  "hash": "eyJjaGFyYWN0ZXJLZXkiOiJkaWx1YyIsIndlYXBvbktleSI6InRoZV9iZWxsIiwiY2hhckxldmVsIjo5MCwiYXNjZW5zaW9uIjo2LCJ3ZWFwb25MZXZlbCI6OTAsIndlYXBvbkFzY2Vuc2lvbiI6NiwidGFsZW50cyI6eyJhdHRhY2siOjEwLCJlbGVtZW50YWwiOjEwLCJidXJzdCI6MTB9LCJjb25zdGVsbGF0aW9uIjowLCJ3ZWFwb25SZWZpbmUiOjEsImNvbmRpdGlvbnMiOnsidG9nZ2xlcyI6e30sInN0YWNrcyI6e319LCJlbmVteSI6eyJsZXZlbCI6OTAsInJlc2lzdGFuY2UiOjEwfSwiYXJ0aWZhY3RNb2RlIjoibWFudWFsIiwiZ29vZEpzb24iOiIiLCJtYW51YWxTdGF0cyI6eyJhdGtfYmFzZSI6ODcxLCJhdGtfcGVyY2VudCI6MTgsImNyaXRfZG1nX2Jhc2UiOjUwLCJjcml0X3JhdGVfYmFzZSI6NSwiZGVmX2Jhc2UiOjg3NiwiZG1nX2J1cnN0Ijo2NCwiZG1nX2NoYXJnZWQiOjE2LCJkbWdfZWxlY3RybyI6MiwiZG1nX25vcm1hbCI6OCwiZG1nX3BoeXMiOjQsImRtZ19za2lsbCI6MzIsImhwX2Jhc2UiOjEzMjI2LCJtYXN0ZXJ5X2Jhc2UiOjU1LCJyZWNoYXJnZV9iYXNlIjoxMDB9LCJtYW51YWxTZXRzIjpbXSwicGFydHkiOnsibWVtYmVycyI6W3sic2x1ZyI6InNpZ2V3aW5uZSIsInNldHRpbmdzIjp7InBhcnR5LnNpZ2V3aW5uZV9yZXF1aXJlc19hcHByb3ByaWF0ZV9yZXN0Ijp0cnVlLCJzaWdld2lubmVfYnVmZl9sZXZlbCI6MSwic2lnZXdpbm5lX2hwX3RvdGFsIjo0NTAwMH19XX19",
+  "checks": [
+   {
+    "featureKey": "burst.diluc_burst_slash",
+    "avg": 7087,
+    "text": "7,087"
+   },
+   {
+    "featureKey": "burst.diluc_burst_explosion",
+    "avg": 7087,
+    "text": "7,087"
+   },
+   {
+    "featureKey": "attack.plunge_high",
+    "avg": 5409,
+    "text": "5,409"
+   }
+  ]
+ },
+ {
   "id": "party-buffs/skirk-skilldmg-on-mona",
   "char": "mona",
   "hash": "eyJjaGFyYWN0ZXJLZXkiOiJtb25hIiwid2VhcG9uS2V5Ijoic29sYXJfcGVhcmwiLCJjaGFyTGV2ZWwiOjkwLCJhc2NlbnNpb24iOjYsIndlYXBvbkxldmVsIjo5MCwid2VhcG9uQXNjZW5zaW9uIjo2LCJ0YWxlbnRzIjp7ImF0dGFjayI6MTAsImVsZW1lbnRhbCI6MTAsImJ1cnN0IjoxMH0sImNvbnN0ZWxsYXRpb24iOjAsIndlYXBvblJlZmluZSI6MSwiY29uZGl0aW9ucyI6eyJ0b2dnbGVzIjp7fSwic3RhY2tzIjp7fX0sImVuZW15Ijp7ImxldmVsIjo5MCwicmVzaXN0YW5jZSI6MTB9LCJhcnRpZmFjdE1vZGUiOiJtYW51YWwiLCJnb29kSnNvbiI6IiIsIm1hbnVhbFN0YXRzIjp7ImF0a19iYXNlIjo4NzEsImF0a19wZXJjZW50IjoxOCwiY3JpdF9kbWdfYmFzZSI6NTAsImNyaXRfcmF0ZV9iYXNlIjo1LCJkZWZfYmFzZSI6ODc2LCJkbWdfYnVyc3QiOjY0LCJkbWdfY2hhcmdlZCI6MTYsImRtZ19lbGVjdHJvIjoyLCJkbWdfbm9ybWFsIjo4LCJkbWdfcGh5cyI6NCwiZG1nX3NraWxsIjozMiwiaHBfYmFzZSI6MTMyMjYsIm1hc3RlcnlfYmFzZSI6NTUsInJlY2hhcmdlX2Jhc2UiOjEwMH0sIm1hbnVhbFNldHMiOltdLCJwYXJ0eSI6eyJtZW1iZXJzIjpbeyJzbHVnIjoic2tpcmsiLCJzZXR0aW5ncyI6eyJwYXJ0eS5za2lya19tdXR1YWxfd2VhcG9uc19tZW50b3JzaGlwIjp0cnVlfX1dfX0",
@@ -10472,6 +10604,50 @@
   ]
  },
  {
+  "id": "party-buffs/xianyun-plungeshockwave-on-xiao",
+  "char": "xiao",
+  "hash": "eyJjaGFyYWN0ZXJLZXkiOiJ4aWFvIiwid2VhcG9uS2V5IjoiYmxhY2tjbGlmZl9wb2xlIiwiY2hhckxldmVsIjo5MCwiYXNjZW5zaW9uIjo2LCJ3ZWFwb25MZXZlbCI6OTAsIndlYXBvbkFzY2Vuc2lvbiI6NiwidGFsZW50cyI6eyJhdHRhY2siOjEwLCJlbGVtZW50YWwiOjEwLCJidXJzdCI6MTB9LCJjb25zdGVsbGF0aW9uIjowLCJ3ZWFwb25SZWZpbmUiOjEsImNvbmRpdGlvbnMiOnsidG9nZ2xlcyI6e30sInN0YWNrcyI6e319LCJlbmVteSI6eyJsZXZlbCI6OTAsInJlc2lzdGFuY2UiOjEwfSwiYXJ0aWZhY3RNb2RlIjoibWFudWFsIiwiZ29vZEpzb24iOiIiLCJtYW51YWxTdGF0cyI6eyJhdGtfYmFzZSI6ODcxLCJhdGtfcGVyY2VudCI6MTgsImNyaXRfZG1nX2Jhc2UiOjUwLCJjcml0X3JhdGVfYmFzZSI6NSwiZGVmX2Jhc2UiOjg3NiwiZG1nX2J1cnN0Ijo2NCwiZG1nX2NoYXJnZWQiOjE2LCJkbWdfZWxlY3RybyI6MiwiZG1nX25vcm1hbCI6OCwiZG1nX3BoeXMiOjQsImRtZ19za2lsbCI6MzIsImhwX2Jhc2UiOjEzMjI2LCJtYXN0ZXJ5X2Jhc2UiOjU1LCJyZWNoYXJnZV9iYXNlIjoxMDB9LCJtYW51YWxTZXRzIjpbXSwicGFydHkiOnsibWVtYmVycyI6W3sic2x1ZyI6InhpYW55dW4iLCJzZXR0aW5ncyI6eyJwYXJ0eS54aWFueXVuX2NvbnNpZGVyX3RoZV9hZGVwdHVzX2luX2hlcl9yZWFsbSI6dHJ1ZSwieGlhbnl1bl9hdGtfdG90YWwiOjI0MDB9fV19fQ",
+  "checks": [
+   {
+    "featureKey": "attack.plunge_high",
+    "avg": 8872,
+    "text": "8,872"
+   },
+   {
+    "featureKey": "skill.skill_dmg",
+    "avg": 8016,
+    "text": "8,016"
+   },
+   {
+    "featureKey": "attack.plunge_low",
+    "avg": 7754,
+    "text": "7,754"
+   }
+  ]
+ },
+ {
+  "id": "party-buffs/xilonen-c4-on-itto",
+  "char": "arataki_itto",
+  "hash": "eyJjaGFyYWN0ZXJLZXkiOiJhcmF0YWtpX2l0dG8iLCJ3ZWFwb25LZXkiOiJ0aGVfYmVsbCIsImNoYXJMZXZlbCI6OTAsImFzY2Vuc2lvbiI6Niwid2VhcG9uTGV2ZWwiOjkwLCJ3ZWFwb25Bc2NlbnNpb24iOjYsInRhbGVudHMiOnsiYXR0YWNrIjoxMCwiZWxlbWVudGFsIjoxMCwiYnVyc3QiOjEwfSwiY29uc3RlbGxhdGlvbiI6MCwid2VhcG9uUmVmaW5lIjoxLCJjb25kaXRpb25zIjp7InRvZ2dsZXMiOnt9LCJzdGFja3MiOnt9fSwiZW5lbXkiOnsibGV2ZWwiOjkwLCJyZXNpc3RhbmNlIjoxMH0sImFydGlmYWN0TW9kZSI6Im1hbnVhbCIsImdvb2RKc29uIjoiIiwibWFudWFsU3RhdHMiOnsiYXRrX2Jhc2UiOjg3MSwiYXRrX3BlcmNlbnQiOjE4LCJjcml0X2RtZ19iYXNlIjo1MCwiY3JpdF9yYXRlX2Jhc2UiOjUsImRlZl9iYXNlIjo4NzYsImRtZ19idXJzdCI6NjQsImRtZ19jaGFyZ2VkIjoxNiwiZG1nX2VsZWN0cm8iOjIsImRtZ19ub3JtYWwiOjgsImRtZ19waHlzIjo0LCJkbWdfc2tpbGwiOjMyLCJocF9iYXNlIjoxMzIyNiwibWFzdGVyeV9iYXNlIjo1NSwicmVjaGFyZ2VfYmFzZSI6MTAwfSwibWFudWFsU2V0cyI6W10sInBhcnR5Ijp7Im1lbWJlcnMiOlt7InNsdWciOiJ4aWxvbmVuIiwic2V0dGluZ3MiOnsicGFydHkueGlsb25lbl9zdWNoaXRsc190cmFuY2UiOnRydWUsInhpbG9uZW5fZGVmX3RvdGFsIjozMDAwfX1dfX0",
+  "checks": [
+   {
+    "featureKey": "skill.skill_dmg",
+    "avg": 8051,
+    "text": "8,051"
+   },
+   {
+    "featureKey": "attack.itto_kesagiri_final_slash_dmg",
+    "avg": 6804,
+    "text": "6,804"
+   },
+   {
+    "featureKey": "attack.plunge_high",
+    "avg": 5814,
+    "text": "5,814"
+   }
+  ]
+ },
+ {
   "id": "party-buffs/xilonen-sampler-cryo-on-ganyu",
   "char": "ganyu",
   "hash": "eyJjaGFyYWN0ZXJLZXkiOiJnYW55dSIsIndlYXBvbktleSI6ImFsbGV5X2h1bnRlciIsImNoYXJMZXZlbCI6OTAsImFzY2Vuc2lvbiI6Niwid2VhcG9uTGV2ZWwiOjkwLCJ3ZWFwb25Bc2NlbnNpb24iOjYsInRhbGVudHMiOnsiYXR0YWNrIjoxMCwiZWxlbWVudGFsIjoxMCwiYnVyc3QiOjEwfSwiY29uc3RlbGxhdGlvbiI6MCwid2VhcG9uUmVmaW5lIjoxLCJjb25kaXRpb25zIjp7InRvZ2dsZXMiOnt9LCJzdGFja3MiOnt9fSwiZW5lbXkiOnsibGV2ZWwiOjkwLCJyZXNpc3RhbmNlIjoxMH0sImFydGlmYWN0TW9kZSI6Im1hbnVhbCIsImdvb2RKc29uIjoiIiwibWFudWFsU3RhdHMiOnsiYXRrX2Jhc2UiOjg3MSwiYXRrX3BlcmNlbnQiOjE4LCJjcml0X2RtZ19iYXNlIjo1MCwiY3JpdF9yYXRlX2Jhc2UiOjUsImRlZl9iYXNlIjo4NzYsImRtZ19idXJzdCI6NjQsImRtZ19jaGFyZ2VkIjoxNiwiZG1nX2VsZWN0cm8iOjIsImRtZ19ub3JtYWwiOjgsImRtZ19waHlzIjo0LCJkbWdfc2tpbGwiOjMyLCJocF9iYXNlIjoxMzIyNiwibWFzdGVyeV9iYXNlIjo1NSwicmVjaGFyZ2VfYmFzZSI6MTAwfSwibWFudWFsU2V0cyI6W10sInBhcnR5Ijp7Im1lbWJlcnMiOlt7InNsdWciOiJ4aWxvbmVuIiwic2V0dGluZ3MiOnsicGFydHkueGlsb25lbl9zYW1wbGVycyI6dHJ1ZSwieGlsb25lbl9jaGFyX3NraWxsX2VsZW1lbnRhbCI6MTB9fV19fQ",
@@ -10622,6 +10798,28 @@
     "featureKey": "attack.plunge_high",
     "avg": 4250,
     "text": "4,250"
+   }
+  ]
+ },
+ {
+  "id": "party-buffs/yunjin-normaldmg-stacks-on-itto",
+  "char": "arataki_itto",
+  "hash": "eyJjaGFyYWN0ZXJLZXkiOiJhcmF0YWtpX2l0dG8iLCJ3ZWFwb25LZXkiOiJ0aGVfYmVsbCIsImNoYXJMZXZlbCI6OTAsImFzY2Vuc2lvbiI6Niwid2VhcG9uTGV2ZWwiOjkwLCJ3ZWFwb25Bc2NlbnNpb24iOjYsInRhbGVudHMiOnsiYXR0YWNrIjoxMCwiZWxlbWVudGFsIjoxMCwiYnVyc3QiOjEwfSwiY29uc3RlbGxhdGlvbiI6MCwid2VhcG9uUmVmaW5lIjoxLCJjb25kaXRpb25zIjp7InRvZ2dsZXMiOnt9LCJzdGFja3MiOnt9fSwiZW5lbXkiOnsibGV2ZWwiOjkwLCJyZXNpc3RhbmNlIjoxMH0sImFydGlmYWN0TW9kZSI6Im1hbnVhbCIsImdvb2RKc29uIjoiIiwibWFudWFsU3RhdHMiOnsiYXRrX2Jhc2UiOjg3MSwiYXRrX3BlcmNlbnQiOjE4LCJjcml0X2RtZ19iYXNlIjo1MCwiY3JpdF9yYXRlX2Jhc2UiOjUsImRlZl9iYXNlIjo4NzYsImRtZ19idXJzdCI6NjQsImRtZ19jaGFyZ2VkIjoxNiwiZG1nX2VsZWN0cm8iOjIsImRtZ19ub3JtYWwiOjgsImRtZ19waHlzIjo0LCJkbWdfc2tpbGwiOjMyLCJocF9iYXNlIjoxMzIyNiwibWFzdGVyeV9iYXNlIjo1NSwicmVjaGFyZ2VfYmFzZSI6MTAwfSwibWFudWFsU2V0cyI6W10sInBhcnR5Ijp7Im1lbWJlcnMiOlt7InNsdWciOiJ5dW5famluIiwic2V0dGluZ3MiOnsicGFydHkueXVuamluX2ZsYWciOnRydWUsInl1bmppbl9jaGFyX3NraWxsX2J1cnN0IjoxMCwieXVuamluX2RlZl90b3RhbCI6MjUwMCwieXVuamluX3RyYWRpdGlvbmFsaXN0X3N0YWNrcyI6NH19XX19",
+  "checks": [
+   {
+    "featureKey": "skill.skill_dmg",
+    "avg": 8051,
+    "text": "8,051"
+   },
+   {
+    "featureKey": "attack.itto_kesagiri_final_slash_dmg",
+    "avg": 5444,
+    "text": "5,444"
+   },
+   {
+    "featureKey": "attack.plunge_high",
+    "avg": 4635,
+    "text": "4,635"
    }
   ]
  },
@@ -11634,6 +11832,28 @@
     "featureKey": "attack.plunge_high",
     "avg": 4027,
     "text": "4,027"
+   }
+  ]
+ },
+ {
+  "id": "party/set-other-song-of-days-past-4",
+  "char": "sigewinne",
+  "hash": "eyJjaGFyYWN0ZXJLZXkiOiJzaWdld2lubmUiLCJ3ZWFwb25LZXkiOiJhbGxleV9odW50ZXIiLCJjaGFyTGV2ZWwiOjkwLCJhc2NlbnNpb24iOjYsIndlYXBvbkxldmVsIjo5MCwid2VhcG9uQXNjZW5zaW9uIjo2LCJ0YWxlbnRzIjp7ImF0dGFjayI6MTAsImVsZW1lbnRhbCI6MTAsImJ1cnN0IjoxMH0sImNvbnN0ZWxsYXRpb24iOjAsIndlYXBvblJlZmluZSI6MSwiY29uZGl0aW9ucyI6eyJ0b2dnbGVzIjp7InNldF9vdGhlci5zb25nX29mX2RheXNfcGFzdF80Ijp0cnVlfSwic3RhY2tzIjp7InBhcnR5X2RheXNfcGFzdF9oZWFsaW5nX3JlY29yZGVkIjoxNTAwMH19LCJlbmVteSI6eyJsZXZlbCI6OTAsInJlc2lzdGFuY2UiOjEwfSwiYXJ0aWZhY3RNb2RlIjoibWFudWFsIiwiZ29vZEpzb24iOiIiLCJtYW51YWxTdGF0cyI6eyJhdGtfYmFzZSI6ODcxLCJhdGtfcGVyY2VudCI6MTgsImNyaXRfZG1nX2Jhc2UiOjUwLCJjcml0X3JhdGVfYmFzZSI6NSwiZGVmX2Jhc2UiOjg3NiwiZG1nX2J1cnN0Ijo2NCwiZG1nX2NoYXJnZWQiOjE2LCJkbWdfZWxlY3RybyI6MiwiZG1nX25vcm1hbCI6OCwiZG1nX3BoeXMiOjQsImRtZ19za2lsbCI6MzIsImhwX2Jhc2UiOjEzMjI2LCJtYXN0ZXJ5X2Jhc2UiOjU1LCJyZWNoYXJnZV9iYXNlIjoxMDB9LCJtYW51YWxTZXRzIjpbXSwicGFydHkiOnsibWVtYmVycyI6W119fQ",
+  "checks": [
+   {
+    "featureKey": "burst.burst_dmg",
+    "avg": 6861,
+    "text": "6,861"
+   },
+   {
+    "featureKey": "attack.plunge_high",
+    "avg": 4041,
+    "text": "4,041"
+   },
+   {
+    "featureKey": "attack.charged_aimed",
+    "avg": 3727,
+    "text": "3,727"
    }
   ]
  },

@@ -304,17 +304,11 @@ const ORIGIN_SENSITIVE_OVERRIDE: Record<string, string[]> = {
  * reason — surfaced both here (skipped from generation) and as a warning line (visible, not
  * silently swallowed). Keyed by `<family>/<slug>`.
  *
- * The 10 "characterMultipliers dropped" entries are a REAL WEB-LAYER BUG, not an
- * inexpressible-input case: `packages/data/src/reconstruct.ts`'s `reconstructPort` (the function
- * `apps/web/lib/calc.ts#computeBuild` calls) destructures only `{ context, settings }` off
- * `buildStats(...)` and never threads the returned `characterMultipliers` (partyData Bucket-C
- * teammate multipliers — Shenhe/Faruzan/Escoffier/Citlali/Layla/Xilonen/Xianyun/Sigewinne/YunJin —
- * PLUS the always-present global CHARACTER_MULTIPLIERS channel, e.g. Song of Days Past) into
- * `compileCharacter`'s `extraMultipliers`. `packages/data/src/__tests__/partyBurndown.test.ts` /
- * `partyBuffsBurndown.test.ts` thread `characterMultipliers` manually and are fully GREEN — so the
- * engine is correct; only the web adapter's wiring drops the channel. `packages/*` is off-limits
- * for this harness-only task (brief), so these are excluded here and reported as a finding rather
- * than silently loosened. Fix: reconstructPort should return/consume `characterMultipliers` too.
+ * The 10 "characterMultipliers dropped" entries formerly excluded here (Shenhe/Faruzan/
+ * Escoffier/Citlali/Layla/Xilonen/Xianyun/Sigewinne/YunJin party-buffs + the Song-of-Days-Past
+ * set_other item) were a REAL WEB-LAYER BUG: `reconstructPort` (packages/data/src/reconstruct.ts)
+ * dropped `buildStats().characterMultipliers` before calling `compileCharacter`. Fixed by
+ * threading `characterMultipliers` into `extraMultipliers` there — all 10 are re-included below.
  */
 const WEB_LAYER_EXCLUSIONS: { key: string; reason: string }[] = [
   {
@@ -325,27 +319,6 @@ const WEB_LAYER_EXCLUSIONS: { key: string; reason: string }[] = [
       "un-probed substitute risks a false web-layer failure from an unverified partyData leak rather " +
       "than proving a real gap, so it is excluded rather than guessed.",
   },
-  ...[
-    "party-buffs/shenhe-icyquill-on-ayaka",
-    "party-buffs/faruzan-anemodmg-on-wanderer",
-    "party-buffs/escoffier-cryo-c2-on-ayaka",
-    "party-buffs/citlali-c1-on-ganyu",
-    "party-buffs/layla-c4-on-itto",
-    "party-buffs/xilonen-c4-on-itto",
-    "party-buffs/xianyun-plungeshockwave-on-xiao",
-    "party-buffs/sigewinne-skilldmg-on-diluc",
-    "party-buffs/yunjin-normaldmg-stacks-on-itto",
-    "party/set-other-song-of-days-past-4",
-  ].map((key) => ({
-    key,
-    reason:
-      "REAL WEB-LAYER BUG (not inexpressible input): reconstructPort (packages/data/src/reconstruct.ts, " +
-      "off-limits for this harness task) drops buildStats().characterMultipliers before calling " +
-      "compileCharacter, so this Bucket-C partyData multiplier / CHARACTER_MULTIPLIERS-channel buff " +
-      "never applies through the web path even though the engine itself is oracle-green " +
-      "(packages/data/src/__tests__/partyBurndown.test.ts + partyBuffsBurndown.test.ts pass). " +
-      "See this file's report for repro + fix pointer.",
-  })),
 ];
 
 function isWebLayerExcluded(key: string): boolean {
