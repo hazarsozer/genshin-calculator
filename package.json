@@ -5,16 +5,12 @@
   "scripts": {
     "build": "tsc -b",
     "test": "pnpm -r --filter='./packages/*' test",
-    "typecheck": "pnpm -r --filter='./packages/*' typecheck",
-    "kb:gen": "node tools/kb-gen/kb-gen.mjs",
-    "kb:manifest": "node tools/kb-gen/manifest.mjs",
-    "kb:lint": "node tools/kb-gen/lint.mjs"
+    "typecheck": "pnpm -r --filter='./packages/*' typecheck"
   },
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
-    "esbuild": "0.28.0",
     "typescript": "^5.4.5"
   }
 }

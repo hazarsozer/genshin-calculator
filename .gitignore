@@ -14,16 +14,8 @@ Thumbs.db
 .idea/
 .vscode/
 
-# Obsidian: keep vault content + shared settings, ignore volatile local state
-.obsidian/workspace*
-.obsidian/cache
-
-# raw/ image blobs are intentionally excluded from the vendor (regenerable via her make_*_images.py)
-raw/**/*.png
-raw/**/*.jpg
-raw/**/*.jpeg
-raw/**/*.webp
-raw/**/*.ttf
+# Claude Code local agent state
+.claude/
 
 # TypeScript build output
 packages/*/dist/
@@ -33,18 +25,4 @@ packages/*/dist/
 coverage/
 packages/*/coverage/
 
-# Playwright artifacts
-apps/web/test-results/
-apps/web/playwright-report/
-
 # pnpm lock is committed; node_modules already covered above
-.superpowers/
-
-# Local tooling — never publish (MCP registration, browser-session artifacts, editor state)
-.mcp.json
-.playwright-mcp/
-scratchpad/
-wiki/.obsidian/
-*.png
-!apps/web/**/*.png
-probe.stderr
