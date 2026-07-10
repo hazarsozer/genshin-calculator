@@ -18,9 +18,11 @@
  *
  * For each manifest item the harness reconstructs the SAME party input her oracle used —
  * `buildStats({ char: rep, party: <manifest.party>, settings, setBonuses, … })` → `compileCharacter`
- * — and PROVES it matches the oracle (every produced damage feature's triple within abs 0.1, +
- * the mis-key guard + the full-coverage gate), OR fails with a precise "not yet matching — burndown"
- * test (the ② gate).
+ * — and PROVES it matches the oracle (every produced OUTPUT — damage triples AND non-damage
+ * heal/shield/crystallize/static readouts — within abs 0.1, + the mis-key guard + the
+ * full-coverage gate), OR fails with a precise "not yet matching — burndown" test (the ② gate).
+ * Non-damage asserted since 2026-07-10 (the maiden/tenacity/charlotte gaps hid behind
+ * damage-only assertion); only "stats" entries stay out.
  *
  * THE SUITE IS INTENTIONALLY RED OVERALL. The party INPUT layer is wired (Phase A: buildPartyContext
  * → buildStats), but most CONSUMERS are not yet ported (GildedDreams 4pc / BlizzardStrayer 4pc /
@@ -77,7 +79,7 @@ import type {
   Element,
   EvalContext,
 } from "@genshin/types";
-import { type FixtureEntry, isDamageTripleEntry } from "./_fixtureEntry.js";
+import { type FixtureEntry, isAssertableOutput } from "./_fixtureEntry.js";
 
 // ---------------------------------------------------------------------------
 // Constants — mirror goldenConfig.test.ts / armory.test.ts
@@ -349,17 +351,21 @@ function assertItemAgainstFixture(
   context: ReturnType<typeof buildStats>["context"],
   compiled: Readonly<Record<string, CompiledFeature>>
 ): void {
-  const allDamageKeys = Object.entries(fixture.features)
-    .filter(([, e]) => isDamageTripleEntry(e))
+  // Every OUTPUT her engine emits — damage triples AND non-damage readouts (heal/shield/
+  // crystallize/static). Damage-only assertion left this suite blind to the maiden/tenacity/
+  // charlotte non-damage gaps (closed 2026-07-10); only "stats" entries stay out (covered by
+  // buildStats.test.ts / characters.test.ts).
+  const allAssertableKeys = Object.entries(fixture.features)
+    .filter(([, e]) => isAssertableOutput(e))
     .map(([k]) => k);
 
   const producedKeys = Object.keys(compiled).filter((k) => k in fixture.features);
-  const unmodelledKeys = allDamageKeys.filter((k) => !(k in compiled));
+  const unmodelledKeys = allAssertableKeys.filter((k) => !(k in compiled));
   const orphanKeys = Object.keys(compiled).filter((k) => !(k in fixture.features));
 
   for (const key of producedKeys) {
     const oracle = fixture.features[key]!;
-    if (!isDamageTripleEntry(oracle)) continue;
+    if (!isAssertableOutput(oracle)) continue;
 
     it(`${key} normal within ${TOLERANCE}`, () => {
       const result = compiled[key]!(context);
@@ -394,11 +400,11 @@ function assertItemAgainstFixture(
     ).toEqual([]);
   });
 
-  // Full-coverage gate: no unmodelled fixture damage feature.
-  it(`${slug}: full coverage — no unmodelled fixture damage feature`, () => {
+  // Full-coverage gate: no unmodelled fixture output (damage or non-damage readout).
+  it(`${slug}: full coverage — no unmodelled fixture output`, () => {
     expect(
       unmodelledKeys,
-      `${slug}: unmodelled fixture damage features: ${unmodelledKeys.join(", ")}`
+      `${slug}: unmodelled fixture outputs: ${unmodelledKeys.join(", ")}`
     ).toEqual([]);
   });
 }
@@ -445,12 +451,14 @@ for (const item of manifest.items) {
   const setBonuses = item.party.setBonuses ?? [];
   // Inert-weapon family: equip that weapon's passive (its own conditions, ON to max via the
   // oracle); other effects keep the default weapon passive OFF (no extra conditions).
-  // Inject weapon_refine (from manifest base) so refine-scaled weapon conditions resolve
+  // Inject weapon_refine (from manifest base) UNCONDITIONALLY so refine-scaled weapon
+  // conditions AND refine-leveled weapon FEATURES (the Bell shield's value table) resolve
   // correctly — mirrors how armory.test.ts injects item.weapon.refine. Without this,
   // refineBag returns undefined and every refinementStats-based condition returns {}.
-  const settings: EvalContext = isWeaponEffect
-    ? { ...settingsFromManifest(item.party), weapon_refine: manifest.base.weapon.refine }
-    : settingsFromManifest(item.party);
+  const settings: EvalContext = {
+    ...settingsFromManifest(item.party),
+    weapon_refine: manifest.base.weapon.refine,
+  };
 
   describe(`party: ${slug} (${item.repSlug})`, () => {
     const fixture = loadFixture(slug);
@@ -478,7 +486,11 @@ for (const item of manifest.items) {
       talentLevels: TALENTS,
       settings: propagated,
       charLevel: LEVELS.charLevel,
-      extraFeatures: isWeaponEffect ? weapon.features ?? [] : [],
+      // The equipped weapon's OUTPUT features are always compiled (her engine emits them
+      // whenever the weapon is equipped — e.g. the Bell shield readout on every claymore
+      // rep), exactly as reconstructPort/armory wire them. Weapon CONDITIONS stay gated on
+      // the inert-weapon family above (passive OFF default) — unchanged.
+      extraFeatures: weapon.features ?? [],
       // Weapon-sourced char-level multipliers (inert-weapon family only) PLUS the global
       // CHARACTER_MULTIPLIERS team-buff channel (Song of Days Past 4pc team). The global
       // entries are gated on their own `set_other.*` toggle, so they are inert for every
