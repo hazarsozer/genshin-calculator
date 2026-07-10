@@ -267,8 +267,9 @@ const resonanceNone: Condition = {
 // `set_other.<set>_4` boolean (true = teammate has the set; absent = inert).
 //
 // Source: raw/genshin_calc_pub/src/js/db/Buffs/Artifacts.js
-// Port convention: display-only `text_*` and `shield` keys omitted (same as
-// gilded-dreams.ts / resonance convention). Stats are RAW percents.
+// Port convention: display-only `text_*` keys omitted (same as gilded-dreams.ts /
+// resonance convention). `shield` is a REAL stat (shield features + crystallize
+// readout multiply by (1 + shield)) — never drop it. Stats are RAW percents.
 // ===========================================================================
 
 /**
@@ -318,14 +319,17 @@ const setOtherDeepwoodMemories4: Condition = {
 };
 
 /**
- * Tenacity of the Millelith 4pc — +20% ATK.
+ * Tenacity of the Millelith 4pc — +20% ATK, +30% Shield Strength.
  * Source: Buffs/Artifacts.js:217-232 — OR(AND(set.tenacity_of_the_millelith_4, piecesCount TenacityofMillelith≥4),
- * set_other.tenacity_of_the_millelith_4). `shield:30` omitted (non-damage). Fires once.
+ * set_other.tenacity_of_the_millelith_4). Fires once.
+ * `shield` is NOT display-only here (unlike the resonance ports): it feeds every shield feature
+ * and the crystallize readout via `cMultiplierBonus([cStat("shield")])` (compileFeature.ts:915,934)
+ * — omitting it left the party crystallize readout exactly ÷1.30 vs oracle.
  * Note: piecesCount setName is "TenacityofMillelith" (lowercase "of") — her ArtifactSet.name key.
  */
 const setOtherTenacityOfTheMillelith4: Condition = {
   type: "static",
-  stats: { atk_percent: 20 },
+  stats: { shield: 30, atk_percent: 20 },
   condition: {
     type: "or",
     items: [
@@ -337,6 +341,35 @@ const setOtherTenacityOfTheMillelith4: Condition = {
         ],
       },
       { type: "boolean", name: "set_other.tenacity_of_the_millelith_4" },
+    ],
+  },
+};
+
+/**
+ * Maiden Beloved 4pc — +20% Healing Received (party-wide).
+ * Source: Buffs/Artifacts.js:186-201 — OR(AND(set.maiden_beloved_4, piecesCount MaidenBeloved≥4),
+ * set_other.maiden_beloved_4), stats { healing_recv: 20 }.
+ * NOTE (faithful raw duplication): her SET FILE's 4pc bonus (MaidenBeloved.js:29-41, ported in
+ * artifacts/sets/maiden-beloved.ts) ALSO carries healing_recv: 20 under the same self-worn
+ * toggle — so a self-worn+toggled Maiden 4pc stacks both carriers in her engine (40), while a
+ * teammate-worn one applies this condition alone (20). We mirror that structure verbatim and
+ * let the oracle adjudicate; without this condition the teammate-worn path contributed nothing
+ * (heals exactly ÷1.20 vs oracle, browser-pilot-warnings 2026-07-08).
+ */
+const setOtherMaidenBeloved4: Condition = {
+  type: "static",
+  stats: { healing_recv: 20 },
+  condition: {
+    type: "or",
+    items: [
+      {
+        type: "and",
+        items: [
+          { type: "boolean", name: "set.maiden_beloved_4" },
+          { type: "pieces-count", setName: "MaidenBeloved", count: 4 },
+        ],
+      },
+      { type: "boolean", name: "set_other.maiden_beloved_4" },
     ],
   },
 };
@@ -1003,6 +1036,7 @@ export const CHARACTER_CONDITIONS: readonly Condition[] = [
   setOtherNoblesseOblige4,
   setOtherDeepwoodMemories4,
   setOtherTenacityOfTheMillelith4,
+  setOtherMaidenBeloved4,
   setOtherInstructor4,
   ...setViridescentVenerer4SwirlConditions,
   ...setArchaicPetra4DmgConditions,

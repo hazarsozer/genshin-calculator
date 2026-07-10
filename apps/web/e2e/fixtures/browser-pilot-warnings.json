@@ -1,6 +1,3 @@
 [
- "party/origin-same: EXCLUDED from web path: needs 2x hydro/fontaine + 1x pyro/fontaine teammates; the audited buff-clean FILLER roster (tools/oracle/build-configs.mjs) has no fontaine-origin entries for those elements. Picking an un-probed substitute risks a false web-layer failure from an unverified partyData leak rather than proving a real gap, so it is excluded rather than guessed.",
- "party/set-other-maiden-beloved-4: FINDING non-damage skill.sigewinne_bolstering_bubblebalm_heal: engine 2318.2934027291367 vs oracle 2781.952083274964",
- "party/set-other-maiden-beloved-4: FINDING non-damage skill.sigewinne_bounce_end_heal: engine 17113.6835588208 vs oracle 20536.42027058496",
- "party/set-other-tenacity-of-the-millelith-4: FINDING non-damage reaction.crystalize: engine 2161.7331008659794 vs oracle 2810.2530311257738"
+ "party/origin-same: EXCLUDED from web path: needs 2x hydro/fontaine + 1x pyro/fontaine teammates; the audited buff-clean FILLER roster (tools/oracle/build-configs.mjs) has no fontaine-origin entries for those elements. Picking an un-probed substitute risks a false web-layer failure from an unverified partyData leak rather than proving a real gap, so it is excluded rather than guessed."
 ]

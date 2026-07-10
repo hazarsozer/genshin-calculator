@@ -4,10 +4,12 @@
  * 2pc: HP% +20 (always-on static once 2 pieces equipped).
  * 4pc: after the wearer's Skill hits a foe, all party members gain ATK% +20 and
  *      Shield Strength +30 for 3s. The per-set 4pc toggle carries only `text_percent: 30`
- *      and `text_percent2: 20` (display markers, numeric no-ops). The real atk_percent:20
- *      lives ONCE in CHARACTER_CONDITIONS (characterConditions.ts), gated by
+ *      and `text_percent2: 20` (display markers, numeric no-ops). The real stats
+ *      (atk_percent: 20 + shield: 30) live ONCE in CHARACTER_CONDITIONS
+ *      (characterConditions.ts), gated by
  *      OR(AND(set.tenacity_of_the_millelith_4, piecesCount TenacityofMillelith≥4),
- *         set_other.tenacity_of_the_millelith_4). Fires once.
+ *         set_other.tenacity_of_the_millelith_4). Fires once. `shield` feeds shield
+ *      features and the crystallize readout (compileFeature (1 + shield) factor).
  *
  * KEY DISTINCTION:
  *   - `goodId` = "TenacityofMillelith"  (lowercase "of" — her ArtifactSet.name key)
