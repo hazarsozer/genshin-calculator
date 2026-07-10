@@ -9,9 +9,9 @@
  * damageType and are skipped by the golden harness.
  *
  * A4 "Diversified Investigation" — two ConditionStaticLevel paths:
- *   same-origin  → healing (no dmg features → inert in golden harness)
+ *   same-origin  → healing [0,5,10,15] gated on party_origin_same ≥ 1 (feeds her heal readouts)
  *   diff-origin  → dmg_cryo [0,5,10,15] gated on party_origin_different ≥ 1
- * Solo: party_origin_different absent/0 → level 1 → table[0] = 0 → no effect.
+ * Solo: both settings absent/0 → level 1 → table[0] = 0 → no effect.
  *
  * Sources:
  *   raw/genshin_calc_pub/src/js/db/Char/Charlotte.js
@@ -301,7 +301,6 @@ const features: readonly Feature[] = [
 // levelSetting: party_origin_different; fromZero:true → level = party_origin_different + 1.
 // table (raw StatTable, excl. text_number display entry): [0, 5, 10, 15].
 // gated by ConditionBoolean(party_origin_different) — only active when ≥ 1 diff-origin member.
-// same-origin path gives healing only → no dmg stat → inert in golden harness (omitted).
 // ---------------------------------------------------------------------------
 const a4DiffOrigin: Condition = {
   type: "static-level",
@@ -309,6 +308,18 @@ const a4DiffOrigin: Condition = {
   fromZero: true,
   levelStats: { dmg_cryo: [0, 5, 10, 15] },
   condition: { type: "boolean", name: "party_origin_different" },
+};
+
+// same-origin path (Charlotte.js:395-408): healing +5%/10%/15% per 1/2/3 same-origin
+// (Fontaine) party members — outgoing-healing bonus feeding her heal features'
+// (1 + healing + …) factor. Was omitted as "inert in golden harness" (damage-only-era
+// fossil): her burst heals ran ÷1.15 vs the party/origin-same oracle (found 2026-07-10).
+const a4SameOrigin: Condition = {
+  type: "static-level",
+  levelSetting: "party_origin_same",
+  fromZero: true,
+  levelStats: { healing: [0, 5, 10, 15] },
+  condition: { type: "boolean", name: "party_origin_same" },
 };
 
 // ---------------------------------------------------------------------------
@@ -359,5 +370,5 @@ export const charlotte: DbObjectChar = {
   talents,
   features,
   multipliers: [],
-  conditions: [a4DiffOrigin, ...constellationConditions],
+  conditions: [a4DiffOrigin, a4SameOrigin, ...constellationConditions],
 };
